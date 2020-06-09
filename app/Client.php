@@ -21,7 +21,7 @@ class Client extends Model
 
     public function allClients()
     {
-        return $this->clients()->with('clients');
+        return $this->clients()->with('allClients');
     }
 
     public function teams()

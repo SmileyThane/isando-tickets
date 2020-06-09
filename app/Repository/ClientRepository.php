@@ -46,7 +46,7 @@ class ClientRepository
 
     public function find($id)
     {
-        return Client::where('id', $id)->with('teams', 'employees')->first();
+        return Client::where('id', $id)->with('teams', 'employees', 'clients')->first();
     }
 
     public function create(Request $request)

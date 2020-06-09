@@ -32,7 +32,7 @@ class CompanyRepository
         if (Auth::user()->employee->hasRole(Role::COMPANY_CLIENT)) {
             $company = null;
         } else {
-            $company = Company::find($id ?? Auth::user()->employee->company_id);
+            $company = Company::where('id',$id ?? Auth::user()->employee->company_id)->with('employees', 'clients', 'teams')->first();
         }
         return $company;
     }
@@ -54,6 +54,7 @@ class CompanyRepository
     public function update(Request $request, $id)
     {
         $company = Company::find($id);
+        //modify it
         foreach ($request->all() as $param => $value) {
             $company->$param = $value;
         }
