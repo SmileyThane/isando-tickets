@@ -3,15 +3,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Client;
-use App\Company;
 use App\Http\Controllers\Controller;
-use App\Repository\ClientRepository;
 use App\Repository\TeamRepository;
 use App\Repository\UserRepository;
-use App\Team;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class TeamController extends Controller
 {

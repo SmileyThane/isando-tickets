@@ -3,13 +3,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Company;
 use App\Http\Controllers\Controller;
 use App\Repository\CompanyRepository;
 use App\Repository\CompanyUserRepository;
-use App\Repository\UserRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {

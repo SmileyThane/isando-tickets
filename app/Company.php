@@ -14,6 +14,11 @@ class Company extends Model
         return $this->hasMany(CompanyUser::class, 'company_id', 'id');
     }
 
+    public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CompanyProduct::class, 'company_id', 'id');
+    }
+
     public function clients()
     {
         return $this->morphMany( Client::class, 'supplier');

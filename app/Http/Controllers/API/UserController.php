@@ -16,13 +16,15 @@ class UserController extends Controller
         $this->userRepo = $userRepository;
     }
 
-    public function find($id = null) {
+    public function find($id = null)
+    {
         $id = $id ?? Auth::id();
         $user = $this->userRepo->find($id);
         return self::showResponse(true, $user);
     }
 
-    public function update() {
+    public function update()
+    {
         $id = Auth::id();
         $user = $this->userRepo->update($id);
         return self::showResponse(true, $user);

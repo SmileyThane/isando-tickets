@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\ClientCompanyUser;
 use App\Company;
+use App\CompanyProduct;
 use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -68,6 +69,26 @@ class CompanyRepository
         $company = Company::find($id);
         if ($company) {
             $company->delete();
+            $result = true;
+        }
+        return $result;
+    }
+
+    public function attachProduct(Request $request)
+    {
+        $clientCompanyUser = CompanyProduct::firstOrCreate(
+            ['company_id' => $request->company_id],
+            ['product_id' => $request->product_id]
+        );
+        return true;
+    }
+
+    public function detachProduct(Request $request, $id)
+    {
+        $result = false;
+        $client = CompanyProduct::find($id);
+        if ($client) {
+            $client->delete();
             $result = true;
         }
         return $result;
