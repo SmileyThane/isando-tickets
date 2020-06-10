@@ -8,5 +8,4 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TicketAnswer extends Model
 {
     use SoftDeletes;
-
 }

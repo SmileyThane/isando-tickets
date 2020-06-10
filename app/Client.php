@@ -16,7 +16,7 @@ class Client extends Model
 
     public function clients()
     {
-        return $this->morphMany( self::class, 'supplier');
+        return $this->morphMany(self::class, 'supplier');
     }
 
     public function allClients()
@@ -26,11 +26,11 @@ class Client extends Model
 
     public function teams()
     {
-        return $this->morphMany( Team::class, 'team_owner');
+        return $this->morphMany(Team::class, 'team_owner');
     }
 
     public function employees()
     {
-        return $this->hasMany( ClientCompanyUser::class, 'client_id', 'id');
+        return $this->hasMany(ClientCompanyUser::class, 'client_id', 'id');
     }
 }

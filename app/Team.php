@@ -12,11 +12,11 @@ class Team extends Model
 
     public function teams()
     {
-        return $this->morphMany( self::class, 'team_owner');
+        return $this->morphMany(self::class, 'team_owner');
     }
 
     public function employees()
     {
-        return $this->hasMany( TeamCompanyUser::class, 'team_id', 'id');
+        return $this->hasMany(TeamCompanyUser::class, 'team_id', 'id');
     }
 }

@@ -8,5 +8,4 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ProductCompanyUser extends Model
 {
     use SoftDeletes;
-
 }

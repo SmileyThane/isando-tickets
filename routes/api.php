@@ -51,15 +51,27 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('team/employee/{id}', 'API\TeamController@detach');
 
     //product management
-    Route::get('product', 'API\TeamController@get');
-    Route::post('product', 'API\TeamController@create');
-    Route::get('product/{id}', 'API\TeamController@find');
-    Route::patch('product/{id}', 'API\TeamController@update');
-    Route::delete('product/{id}', 'API\TeamController@delete');
-    Route::post('product/employee', 'API\TeamController@attachEmployee');
-    Route::delete('product/employee/{id}', 'API\TeamController@detachEmployee');
-    Route::post('product/client', 'API\TeamController@attachClient');
-    Route::delete('product/client/{id}', 'API\TeamController@detachClient');
-    
+    Route::get('product', 'API\ProductController@get');
+    Route::post('product', 'API\ProductController@create');
+    Route::get('product/{id}', 'API\ProductController@find');
+    Route::patch('product/{id}', 'API\ProductController@update');
+    Route::delete('product/{id}', 'API\ProductController@delete');
+    Route::post('product/employee', 'API\ProductController@attachEmployee');
+    Route::delete('product/employee/{id}', 'API\ProductController@detachEmployee');
+    Route::post('product/client', 'API\ProductController@attachClient');
+    Route::delete('product/client/{id}', 'API\ProductController@detachClient');
+
+    //ticket management
+    Route::get('ticket', 'API\TicketController@get');
+    Route::post('ticket', 'API\TicketController@create');
+    Route::get('ticket/{id}', 'API\TicketController@find');
+    Route::patch('ticket/{id}', 'API\TicketController@update');
+    Route::delete('ticket/{id}', 'API\TicketController@delete');
+    Route::post('ticket/{id}/team', 'API\TicketController@attachTeam');
+    Route::post('ticket/{id}/employee', 'API\TicketController@attachEmployee');
+    Route::post('ticket/{id}/contact', 'API\TicketController@attachContact');
+    Route::post('ticket/{id}/answer', 'API\TicketController@addAnswer');
+    Route::post('ticket/{id}/notice', 'API\TicketController@addNotice');
+
 });
 

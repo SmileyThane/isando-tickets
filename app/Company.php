@@ -21,12 +21,12 @@ class Company extends Model
 
     public function clients()
     {
-        return $this->morphMany( Client::class, 'supplier');
+        return $this->morphMany(Client::class, 'supplier');
     }
 
     public function teams()
     {
-        return $this->morphMany( Team::class, 'team_owner');
+        return $this->morphMany(Team::class, 'team_owner');
     }
 
 }

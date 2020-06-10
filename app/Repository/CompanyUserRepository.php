@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
-use App\TeamCompanyUser;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

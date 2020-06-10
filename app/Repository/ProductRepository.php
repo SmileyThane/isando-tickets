@@ -4,9 +4,6 @@
 namespace App\Repository;
 
 
-use App\Client;
-use App\ClientCompanyUser;
-use App\Company;
 use App\CompanyProduct;
 use App\Product;
 use App\ProductClient;

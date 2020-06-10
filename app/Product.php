@@ -11,12 +11,12 @@ class Product extends Model
 
     public function employees(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany( ProductCompanyUser::class, 'product_id', 'id');
+        return $this->hasMany(ProductCompanyUser::class, 'product_id', 'id');
     }
 
     public function clients(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany( ProductClient::class, 'product_id', 'id');
+        return $this->hasMany(ProductClient::class, 'product_id', 'id');
     }
 
 }

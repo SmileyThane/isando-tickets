@@ -4,7 +4,6 @@
 namespace App\Repository;
 
 
-use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
 use App\Role;
@@ -33,7 +32,7 @@ class CompanyRepository
         if (Auth::user()->employee->hasRole(Role::COMPANY_CLIENT)) {
             $company = null;
         } else {
-            $company = Company::where('id',$id ?? Auth::user()->employee->company_id)->with('employees', 'clients', 'teams')->first();
+            $company = Company::where('id', $id ?? Auth::user()->employee->company_id)->with('employees', 'clients', 'teams')->first();
         }
         return $company;
     }
