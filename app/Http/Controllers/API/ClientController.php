@@ -67,4 +67,10 @@ class ClientController extends Controller
         $result = $this->clientRepo->attach($request);
         return self::showResponse($result);
     }
+
+    public function detach(Request $request, $id)
+    {
+        $result = $this->clientRepo->detach($request, $id);
+        return self::showResponse($result);
+    }
 }

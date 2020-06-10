@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,12 +24,15 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('logout', 'API\AuthController@logout');
 
     Route::get('user', 'API\UserController@find');
+    Route::post('user', 'API\UserController@update');
 
     Route::get('company/{id?}', 'API\CompanyController@find');
+    Route::post('company/employee/invite', 'API\CompanyController@invite');
 
     Route::get('client', 'API\ClientController@get');
     Route::post('client', 'API\ClientController@create');
     Route::post('client/employee', 'API\ClientController@attach');
+    Route::delete('client/employee/{id}', 'API\ClientController@detach');
 
     Route::get('client/{id}', 'API\ClientController@find');
     Route::patch('client/{id}', 'API\ClientController@update');
@@ -39,6 +41,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('team', 'API\TeamController@get');
     Route::post('team', 'API\TeamController@create');
     Route::post('team/employee', 'API\TeamController@attach');
+    Route::delete('team/employee/{id}', 'API\TeamController@detach');
 
     Route::get('team/{id}', 'API\TeamController@find');
     Route::patch('team/{id}', 'API\TeamController@update');

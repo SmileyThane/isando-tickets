@@ -91,5 +91,16 @@ class ClientRepository
         return true;
     }
 
+    public function detach(Request $request, $id)
+    {
+        $result = false;
+        $client = ClientCompanyUser::find($id);
+        if ($client) {
+            $client->delete();
+            $result = true;
+        }
+        return $result;
+    }
+
 
 }

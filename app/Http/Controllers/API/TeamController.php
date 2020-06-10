@@ -69,4 +69,10 @@ class TeamController extends Controller
         $result = $this->teamRepo->attach($request);
         return self::showResponse($result);
     }
+
+    public function detach(Request $request, $id)
+    {
+        $result = $this->teamRepo->detach($request, $id);
+        return self::showResponse($result);
+    }
 }

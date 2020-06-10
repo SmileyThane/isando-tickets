@@ -78,11 +78,22 @@ class TeamRepository
 
     public function attach(Request $request)
     {
-        $clientCompanyUser = TeamCompanyUser::firstOrCreate(
+        $teamCompanyUser = TeamCompanyUser::firstOrCreate(
             ['team_id' => $request->team_id],
             ['company_user_id' => $request->company_user_id]
         );
         return true;
+    }
+
+    public function detach(Request $request, $id)
+    {
+        $result = false;
+        $teamCompanyUser = TeamCompanyUser::find($id);
+        if ($teamCompanyUser) {
+            $teamCompanyUser->delete();
+            $result = true;
+        }
+        return $result;
     }
 
 }

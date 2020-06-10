@@ -21,4 +21,10 @@ class UserController extends Controller
         $user = $this->userRepo->find($id);
         return self::showResponse(true, $user);
     }
+
+    public function update() {
+        $id = Auth::id();
+        $user = $this->userRepo->update($id);
+        return self::showResponse(true, $user);
+    }
 }
