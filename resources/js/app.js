@@ -13,25 +13,8 @@ import Routes from './routes'
 import 'vuetify/dist/vuetify.min.css'
 
 Vue.use(Vuetify)
-
 Vue.use(VueRouter)
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
 const router = new VueRouter({
     mode: 'history',
     routes: Routes
@@ -43,8 +26,10 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         axios.get('api/user').then(response => {
             response = response.data
+            localStorage.setItem('name', response.data.name)
             if (response.success === false) {
                 localStorage.setItem('auth_token', null)
+
             }
         });
         if (localStorage.getItem('auth_token') === null) {

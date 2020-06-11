@@ -7,6 +7,17 @@
         <v-app-bar-nav-icon @click.stop="localDrawer = !localDrawer"></v-app-bar-nav-icon>
         <v-toolbar-title>{{ this.$route.name }}</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-chip
+            class="ma-3"
+            color="white"
+            text-color="black"
+        >
+            <v-avatar left>
+                <v-icon>mdi-account-circle</v-icon>
+            </v-avatar>
+            <v-label >{{username}}</v-label>
+
+        </v-chip>
 
         <v-menu
             left
@@ -19,7 +30,7 @@
             </template>
 
             <v-list>
-                <v-list-item link>
+                <v-list-item link to="/user">
                     <v-list-item-title>Profile</v-list-item-title>
                     <v-list-item-action>
                         <v-icon>mdi-account-settings</v-icon>
@@ -41,17 +52,25 @@
         name: "Header",
         props: {value: {type: Boolean}},
         data: () => ({
+            username:'',
             localDrawer: null
         }),
         watch: {
             value: function () {
                 this.localDrawer = this.value
+
             },
             localDrawer: function () {
                 this.$emit('input', this.localDrawer)
             }
         },
+        mounted() {
+            this.getUsername()
+        },
         methods: {
+            getUsername(){
+                this.username = localStorage.getItem('name')
+            },
             logout(e) {
                 e.preventDefault()
                 localStorage.removeItem('auth_token')

@@ -7,6 +7,7 @@ import Team from './views/team/index'
 import Ticket from './views/ticket/index'
 import CreateTicket from './views/ticket/create'
 import Login from './views/Auth/Login'
+import Profile from './views/Auth/Profile'
 
 
 export default [
@@ -31,7 +32,7 @@ export default [
         meta: {
             requiresAuth: true,
         },
-        component: User
+        component: Profile
     },
     {
         path: '/company',

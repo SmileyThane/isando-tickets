@@ -10,13 +10,16 @@ use Illuminate\Support\Facades\Validator;
 
 class UserRepository
 {
-    public function validate($request)
+    public function validate($request, $new = true)
     {
-        $validator = Validator::make($request->all(), [
+        $params = [
             'name' => 'required',
-            'email' => 'required|unique:users',
-        ]);
-
+            'password' => 'sometimes|min:8',
+        ];
+        if ($new === true) {
+            $params['email'] = 'required|unique:users';
+        }
+        $validator = Validator::make($request->all(), $params);
         if ($validator->fails()) {
             return $validator->errors();
         }
@@ -41,12 +44,11 @@ class UserRepository
     public function update(Request $request, $id)
     {
         $user = User::find($id);
-        foreach ($request->all() as $param => $value) {
-            if ($param !== 'password') {
-                $user->$param = $value;
+        $user->update($request->toArray());
+            if (isset($request->password) && $request->password !== '') {
+                $user->password = bcrypt($request->password);
+                $user->save();
             }
-        }
-        $user->save();
         return $user;
     }
 
