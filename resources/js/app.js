@@ -33,11 +33,33 @@ Vue.use(VueRouter)
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 const router = new VueRouter({
-    // mode: 'history',
+    mode: 'history',
     routes: Routes
 });
-const vuetify = new Vuetify();
 
+
+router.beforeEach((to, from, next) => {
+
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        axios.get('api/user').then(response => {
+            response = response.data
+            if (response.success === false) {
+                localStorage.setItem('auth_token', null)
+            }
+        });
+        if (localStorage.getItem('auth_token') === null) {
+            next({
+                path: '/login',
+                // params: {nextUrl: to.fullPath}
+            })
+        }
+        next()
+    } else {
+        next()
+    }
+})
+
+const vuetify = new Vuetify();
 const app = new Vue({
     el: '#app',
     components: {App},

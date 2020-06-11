@@ -79,8 +79,8 @@ class ProductRepository
     public function attachEmployee(Request $request)
     {
         $clientCompanyUser = ProductCompanyUser::firstOrCreate(
-            ['client_id' => $request->product_id],
-            ['company_user_id' => $request->company_user_id]
+            ['client_id' => $request->product_id,
+            'company_user_id' => $request->company_user_id]
         );
         return true;
     }
@@ -99,8 +99,8 @@ class ProductRepository
     public function attachClient(Request $request)
     {
         $clientCompanyUser = ProductClient::firstOrCreate(
-            ['client_id' => $request->client_id],
-            ['product_id' => $request->product_id]
+            ['client_id' => $request->client_id,
+            'product_id' => $request->product_id]
         );
         return true;
     }

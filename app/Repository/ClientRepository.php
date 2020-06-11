@@ -85,8 +85,8 @@ class ClientRepository
     public function attach(Request $request)
     {
         $clientCompanyUser = ClientCompanyUser::firstOrCreate(
-            ['client_id' => $request->client_id],
-            ['company_user_id' => $request->company_user_id]
+            ['client_id' => $request->client_id,
+            'company_user_id' => $request->company_user_id]
         );
         return true;
     }

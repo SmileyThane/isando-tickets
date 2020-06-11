@@ -30,4 +30,10 @@ class CompanyController extends Controller
         return $this->companyUserRepo->invite($request);
     }
 
+    public function attachProduct(Request $request)
+    {
+        $result =  $this->companyRepo->attachProduct($request);
+        return self::showResponse($result);
+    }
+
 }

@@ -59,7 +59,7 @@ class TicketRepository
                 }
             }
         }
-        return $tickets->paginate();
+        return $tickets->with('creator', 'contact.userData', 'product', 'team', 'priority', 'status')->paginate();
     }
 
 

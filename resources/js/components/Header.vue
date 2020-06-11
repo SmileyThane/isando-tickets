@@ -5,7 +5,7 @@
         dark
     >
         <v-app-bar-nav-icon @click.stop="localDrawer = !localDrawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>Isando</v-toolbar-title>
+        <v-toolbar-title>{{ this.$route.name }}</v-toolbar-title>
         <v-spacer></v-spacer>
 
         <v-menu
@@ -25,7 +25,7 @@
                         <v-icon>mdi-account-settings</v-icon>
                     </v-list-item-action>
                 </v-list-item>
-                <v-list-item link>
+                <v-list-item link @click="logout">
                     <v-list-item-title>Logout</v-list-item-title>
                     <v-list-item-action>
                         <v-icon>mdi-logout</v-icon>
@@ -49,6 +49,13 @@
             },
             localDrawer: function () {
                 this.$emit('input', this.localDrawer)
+            }
+        },
+        methods: {
+            logout(e) {
+                e.preventDefault()
+                localStorage.removeItem('auth_token')
+                window.open('login', '_self')
             }
         }
 

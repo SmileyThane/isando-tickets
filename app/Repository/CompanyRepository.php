@@ -76,8 +76,8 @@ class CompanyRepository
     public function attachProduct(Request $request)
     {
         $clientCompanyUser = CompanyProduct::firstOrCreate(
-            ['company_id' => $request->company_id],
-            ['product_id' => $request->product_id]
+            ['company_id' => $request->company_id,
+            'product_id' => $request->product_id]
         );
         return true;
     }

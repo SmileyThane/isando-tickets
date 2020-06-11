@@ -1,15 +1,9 @@
 <template>
     <v-app id="inspire">
-        <sidebar v-model="drawer"></sidebar>
-        <app-header v-model="drawer"></app-header>
-
+        <sidebar v-if="is_authorized === true" v-model="drawer"></sidebar>
+        <app-header v-if="is_authorized === true" v-model="drawer"></app-header>
         <v-content>
-<!--            <v-container-->
-<!--                class="fill-height"-->
-<!--                fluid-->
-<!--            >-->
-                <router-view></router-view>
-<!--            </v-container>-->
+            <router-view></router-view>
         </v-content>
         <appFooter></appFooter>
     </v-app>
@@ -26,6 +20,7 @@
         },
         data: () => ({
             drawer: false,
+            is_authorized: localStorage.getItem('auth_token') !== null
         }),
         components: {
             'sidebar': Sidebar,

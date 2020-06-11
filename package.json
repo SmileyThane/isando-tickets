@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "@mdi/font": "^5.3.45",
-        "axios": "^0.19",
+        "axios": "^0.19.2",
         "bootstrap": "^4.0.0",
         "cross-env": "^7.0",
         "deepmerge": "^4.2.2",
@@ -28,6 +28,7 @@
         "vuetifyjs-mix-extension": "0.0.8"
     },
     "dependencies": {
+        "moment": "^2.26.0",
         "vue-router": "^3.3.2",
         "vuetify": "^2.2.32"
     }
