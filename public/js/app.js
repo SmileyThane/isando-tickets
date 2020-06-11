@@ -2249,9 +2249,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      alert: false,
       email: "",
       password: ""
     };
@@ -2263,6 +2272,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     handleSubmit: function handleSubmit(e) {
+      var _this = this;
+
       e.preventDefault();
 
       if (this.password.length > 0) {
@@ -2279,6 +2290,7 @@ __webpack_require__.r(__webpack_exports__);
             window.open('tickets', '_self');
           } else {
             console.log('error');
+            _this.alert = true;
           }
         });
       }
@@ -39633,6 +39645,16 @@ var render = function() {
                 { attrs: { cols: "12", sm: "8", md: "4" } },
                 [
                   _c(
+                    "v-alert",
+                    { attrs: { type: "error", value: _vm.alert } },
+                    [
+                      _vm._v(
+                        "\n                    Invalid Username or Password\n                "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
                     "v-card",
                     { staticClass: "elevation-12" },
                     [
@@ -39655,6 +39677,7 @@ var render = function() {
                             [
                               _c("v-text-field", {
                                 attrs: {
+                                  color: "green",
                                   label: "Login",
                                   name: "email",
                                   "prepend-icon": "mdi-account",
@@ -39672,6 +39695,7 @@ var render = function() {
                               _vm._v(" "),
                               _c("v-text-field", {
                                 attrs: {
+                                  color: "green",
                                   id: "password",
                                   label: "Password",
                                   name: "password",
