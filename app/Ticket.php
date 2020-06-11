@@ -25,8 +25,6 @@ class Ticket extends Model
 
     public function getLastUpdateAttribute()
     {
-//        $notificationForJohn = $johnDateFactory->make($gameStart)->isoFormat('lll')."\n".
-//            $johnDateFactory->make($move)->calendar()."\n";
         return Carbon::parse($this->attributes['updated_at'])->calendar();
     }
 

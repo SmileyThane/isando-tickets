@@ -18,7 +18,8 @@
                     <v-alert
                         :type="errorType"
                         :value="alert"
-                        v-for="(item) in error"
+                        v-for="(item, key) in error"
+                        v-bind:key="key"
                     >
                         {{item}}
                     </v-alert>
@@ -164,7 +165,6 @@
                 });
             },
             parseErrors(errorTypes) {
-
                 for (let typeIndex in errorTypes) {
                     let errorType = errorTypes[typeIndex]
                     for (let errorIndex in errorType) {

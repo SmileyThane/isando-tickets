@@ -1,5 +1,4 @@
 import Home from './views/Home'
-import User from './views/user/index'
 import Company from './views/company/index'
 import Customer from './views/customer/index'
 import Product from './views/product/index'
@@ -23,12 +22,12 @@ export default [
     },
     {
         path: '/home',
-        name: 'home',
+        name: 'Home',
         component: Home
     },
     {
         path: '/user',
-        name: 'user',
+        name: 'Profile',
         meta: {
             requiresAuth: true,
         },
@@ -36,7 +35,7 @@ export default [
     },
     {
         path: '/company',
-        name: 'company',
+        name: 'Companies',
         meta: {
             requiresAuth: true,
         },
@@ -44,7 +43,7 @@ export default [
     },
     {
         path: '/product',
-        name: 'product',
+        name: 'Products',
         meta: {
             requiresAuth: true,
         },
@@ -52,7 +51,7 @@ export default [
     },
     {
         path: '/customer',
-        name: 'customer',
+        name: 'Customers',
         meta: {
             requiresAuth: true,
         },
@@ -60,7 +59,7 @@ export default [
     },
     {
         path: '/team',
-        name: 'team',
+        name: 'Teams',
         meta: {
             requiresAuth: true,
         },
@@ -68,7 +67,7 @@ export default [
     },
     {
         path: '/tickets',
-        name: 'tickets',
+        name: 'Tickets',
         meta: {
             requiresAuth: true,
         },
@@ -76,7 +75,7 @@ export default [
     },
     {
         path: '/ticket/create',
-        name: 'createTicket',
+        name: 'Create Ticket',
         meta: {
             requiresAuth: true,
         },

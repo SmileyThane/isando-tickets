@@ -26,7 +26,7 @@
         :items="tickets"
         :single-expand="singleExpand"
         :expanded.sync="expanded"
-        item-key="name"
+        item-key="id"
         show-expand
         class="elevation-1"
     >
