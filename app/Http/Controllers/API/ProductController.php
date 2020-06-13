@@ -19,9 +19,9 @@ class ProductController extends Controller
         $this->productRepo = $productRepository;
     }
 
-    public function get(Request $request)
+    public function get()
     {
-        $clients = $this->productRepo->all($request);
+        $clients = $this->productRepo->all();
         return self::showResponse(true, $clients);
     }
 
@@ -45,7 +45,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $success = false;
-        $result = $this->productRepo->validate($request, false);
+        $result = $this->productRepo->validate($request);
         if ($result === true) {
             $result = $this->productRepo->update($request, $id);
             $success = true;
@@ -53,7 +53,7 @@ class ProductController extends Controller
         return self::showResponse($success, $result);
     }
 
-    public function delete(Request $request, $id)
+    public function delete($id)
     {
         $result = $this->productRepo->delete($id);
         return self::showResponse($result);
@@ -65,9 +65,9 @@ class ProductController extends Controller
         return self::showResponse($result);
     }
 
-    public function detachEmployee(Request $request, $id)
+    public function detachEmployee($id)
     {
-        $result = $this->productRepo->detachEmployee($request, $id);
+        $result = $this->productRepo->detachEmployee($id);
         return self::showResponse($result);
     }
 
@@ -77,9 +77,9 @@ class ProductController extends Controller
         return self::showResponse($result);
     }
 
-    public function detachClient(Request $request, $id)
+    public function detachClient($id)
     {
-        $result = $this->productRepo->detachClient($request, $id);
+        $result = $this->productRepo->detachClient($id);
         return self::showResponse($result);
     }
 }

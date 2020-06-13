@@ -18,11 +18,11 @@ class ProductRepository
 
     protected $companyRepo;
 
-    public function __construct(UserRepository $userRepository, CompanyRepository $companyRepository)
+    public function __construct(CompanyRepository $companyRepository)
     {
         $this->companyRepo = $companyRepository;
     }
-    public function validate($request, $new = true)
+    public function validate($request)
     {
         $params = [
             'product_name' => 'required',
@@ -35,7 +35,7 @@ class ProductRepository
         return true;
     }
 
-    public function all(Request $request)
+    public function all()
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
@@ -87,14 +87,14 @@ class ProductRepository
 
     public function attachEmployee(Request $request)
     {
-        $clientCompanyUser = ProductCompanyUser::firstOrCreate(
+        ProductCompanyUser::firstOrCreate(
             ['client_id' => $request->product_id,
             'company_user_id' => $request->company_user_id]
         );
         return true;
     }
 
-    public function detachEmployee(Request $request, $id)
+    public function detachEmployee($id)
     {
         $result = false;
         $client = ProductCompanyUser::find($id);
@@ -107,14 +107,14 @@ class ProductRepository
 
     public function attachClient(Request $request)
     {
-        $clientCompanyUser = ProductClient::firstOrCreate(
+        ProductClient::firstOrCreate(
             ['client_id' => $request->client_id,
             'product_id' => $request->product_id]
         );
         return true;
     }
 
-    public function detachClient(Request $request, $id)
+    public function detachClient($id)
     {
         $result = false;
         $client = ProductClient::find($id);
