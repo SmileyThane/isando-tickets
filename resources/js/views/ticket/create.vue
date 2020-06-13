@@ -1,71 +1,211 @@
 <template>
-
-    <div>
-        <v-row justify="space-around">
-            <v-col cols="12">
-                <p class="title text-center">Create new ticket</p>
-                <!--                            <v-slider v-model="steps" label="Create new ticket" min="2" max="20"></v-slider>-->
-            </v-col>
-            <!--                        <v-switch v-model="vertical" label="Vertical"></v-switch>-->
-            <!--                        <v-switch v-model="altLabels" label="altLabels"></v-switch>-->
-            <!--                        <v-switch v-model="editable" label="Editable"></v-switch>-->
-        </v-row>
-        <v-stepper
-            v-model="e1"
-            :vertical="vertical"
-            :alt-labels="altLabels"
-
-        >
-            <v-stepper-header>
-                <template v-for="n in steps">
-                    <v-stepper-step
-                        :key="`${n}-step`"
-                        :complete="e1 > n"
-                        :step="n"
-                        :editable="editable"
-                        :color="'green'"
-                    >
-                        Step {{ n }}
-                    </v-stepper-step>
-
-                    <v-divider
-                        v-if="n !== steps"
-                        :key="n"
-                    ></v-divider>
-                </template>
-            </v-stepper-header>
-
-            <v-stepper-items
+    <v-container>
+        <div>
+            <v-row justify="space-around">
+                <v-col cols="12">
+                    <p class="title text-center">Create new ticket</p>
+                    <!--                            <v-slider v-model="steps" label="Create new ticket" min="2" max="20"></v-slider>-->
+                </v-col>
+            </v-row>
+            <v-stepper
+                v-model="e1"
+                :alt-labels="altLabels"
 
             >
-                <v-stepper-content
-                    v-for="n in steps"
-                    :key="`${n}-content`"
-                    :step="n"
-                >
-                    <v-card
-                        class="mb-12"
-                        color="grey lighten-1"
-                        height="200px"
-                    ></v-card>
+                <v-stepper-header>
+                    <template v-for="n in steps">
+                        <v-stepper-step
+                            :key="`${n}-step`"
+                            :complete="e1 > n"
+                            :step="n"
+                            :editable="editable"
+                            :color="'green'"
+                        >
+                            Step {{ n }}
+                        </v-stepper-step>
 
-                    <v-btn
-                        :color="n !== steps ?  'primary' : '#4caf50'"
-                        @click="n !== steps ? nextStep(n) : submit()"
-                        v-text="n !== steps ? 'Continue' : 'Submit'"
+                        <v-divider
+                            v-if="n !== steps"
+                            :key="n"
+                        ></v-divider>
+                    </template>
+                </v-stepper-header>
+
+                <v-stepper-items
+
+                >
+                    <v-form>
+                        <v-stepper-content step="1">
+                            <v-card-text>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <v-select
+                                            label="From"
+                                            color="green"
+                                            item-color="green"
+                                            item-text="name"
+                                            item-value="item"
+                                            :items="suppliers"
+                                            v-model="ticketFrom.from"
+                                        />
+                                    </div>
+                                    <v-col cols="md-6">
+                                        <v-autocomplete
+                                            color="green"
+                                            item-color="green"
+                                            item-text="name"
+                                            item-value="item"
+                                            v-model="ticketFrom.to"
+                                            :items="suppliers"
+                                            label="To"
+                                        ></v-autocomplete>
+                                    </v-col>
+                                    <v-col cols="md-6">
+                                        <v-autocomplete
+                                            color="green"
+                                            item-color="green"
+                                            item-text="user_data.email"
+                                            item-value="id"
+                                            v-model="ticketFrom.contact_company_user_id"
+                                            :items="employees"
+                                            label="Contact"
+                                        ></v-autocomplete>
+                                    </v-col>
+                                    <div class="col-md-6">
+                                        <v-select
+                                            label="Product"
+                                            color="green"
+                                            item-color="green"
+                                            item-text="product_data.name"
+                                            item-value="product_data.id"
+                                            :items="products"
+                                            v-model="ticketFrom.to_product_id"
+                                        />
+                                    </div>
+                                    <v-col cols="12">
+                                        <v-textarea
+                                            label="Availability"
+                                            color="green"
+                                            item-color="green"
+                                            auto-grow
+                                            outlined
+                                            rows="3"
+                                            row-height="25"
+                                        ></v-textarea>
+                                    </v-col>
+                                </div>
+                            </v-card-text>
+                        </v-stepper-content>
+
+                        <v-stepper-content step="2">
+                            <v-card-text>
+                                <div class="row">
+                                    <v-col cols="md-6">
+                                        <v-text-field
+                                            color="green"
+                                            item-color="green"
+                                            label="Title"
+                                            v-model="ticketFrom.name"
+                                        ></v-text-field>
+                                    </v-col>
+                                    <div class="col-md-6">
+                                        <v-select
+                                            label="Priority"
+                                            color="green"
+                                            item-color="green"
+                                            item-text="name"
+                                            item-value="id"
+                                            :items="priorities"
+                                            v-model="ticketFrom.priority_id"
+                                        />
+                                    </div>
+                                    <v-col cols="md-6">
+                                        <v-textarea
+                                            label="IP address(es) of the servers (for remote access)"
+                                            color="green"
+                                            item-color="green"
+                                            auto-grow
+                                            outlined
+                                            rows="3"
+                                            row-height="25"
+                                            v-model="ticketFrom.connection_details"
+                                        ></v-textarea>
+                                    </v-col>
+                                    <v-col cols="md-6">
+                                        <v-textarea
+                                            label="Access details"
+                                            color="green"
+                                            item-color="green"
+                                            auto-grow
+                                            outlined
+                                            rows="3"
+                                            row-height="25"
+                                            v-model="ticketFrom.access_details"
+                                        ></v-textarea>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-textarea
+                                            label="Description"
+                                            color="green"
+                                            item-color="green"
+                                            auto-grow
+                                            outlined
+                                            rows="3"
+                                            row-height="25"
+                                            v-model="ticketFrom.description"
+                                        ></v-textarea>
+                                    </v-col>
+                                </div>
+                            </v-card-text>
+                        </v-stepper-content>
+                        <v-stepper-content step="3">
+                            <div>
+                                <v-file-input
+                                    chips
+                                    chips-color="green"
+                                    multiple
+                                    label="Attach a Document(s)"
+                                    color="green"
+                                    item-color="green"
+                                    prepend-icon="mdi-paperclip"
+                                    :show-size="1000"
+                                >
+                                    <template v-slot:selection="{ index, text }">
+                                        <v-chip
+                                            color="green"
+                                        >
+                                            {{ text }}
+                                        </v-chip>
+                                    </template>
+                                </v-file-input>
+                            </div>
+                        </v-stepper-content>
+                    </v-form>
+
+                    <v-stepper-content
+                        v-for="n in steps"
+                        :key="`${n}-content`"
+                        :step="n"
                     >
-                    </v-btn>
-                    <v-btn
-                        text
-                        @click="previousStep(n)"
-                    >
-                        Cancel
-                    </v-btn>
-                </v-stepper-content>
-            </v-stepper-items>
-            <v-spacer></v-spacer>
-        </v-stepper>
-    </div>
+                        <v-btn
+                            style="color: white;"
+                            color="#4caf50"
+                            @click="n !== steps ? nextStep(n) : submit()"
+                            v-text="n !== steps ? 'Continue' : 'Submit'"
+                        >
+                        </v-btn>
+                        <v-btn
+                            text
+                            @click="previousStep(n)"
+                        >
+                            Cancel
+                        </v-btn>
+                    </v-stepper-content>
+                </v-stepper-items>
+                <v-spacer></v-spacer>
+            </v-stepper>
+        </div>
+    </v-container>
 </template>
 <script>
     export default {
@@ -76,9 +216,27 @@
                 vertical: false,
                 altLabels: true,
                 editable: true,
+                ticketFrom: {
+                    from: '',
+                    from_entity_type: '',
+                    from_entity_id: '',
+                    to: '',
+                    to_entity_type: '',
+                    to_entity_id: '',
+                    contact_company_user_id: '',
+                    to_product_id: '',
+                    priority_id: '',
+                    name: '',
+                    description: '',
+                    connection_details: '',
+                    access_details: ''
+                },
+                suppliers: [],
+                products: [],
+                priorities: [],
+                employees:[]
             }
         },
-
         watch: {
             steps(val) {
                 if (this.e1 > val) {
@@ -90,7 +248,12 @@
                 requestAnimationFrame(() => this.e1 = 1) // Workarounds
             },
         },
-
+        mounted() {
+            this.getSuppliers()
+            this.getProducts()
+            this.getPriorities()
+            this.getCompany()
+        },
         methods: {
             onInput(val) {
                 this.steps = parseInt(val)
@@ -109,12 +272,72 @@
                     this.e1 = n - 1
                 }
             },
+            getSuppliers() {
+                axios.get('api/supplier').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.suppliers = response.data
+                        this.ticketFrom.from = this.suppliers[0]
+                        this.ticketFrom.to = this.suppliers[0]
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
+            getProducts() {
+                axios.get('api/product').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.products = response.data.data
+                        this.ticketFrom.to_product_id = this.products[0].id
+
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            getPriorities() {
+                axios.get('api/ticket_priorities').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.priorities = response.data
+                        this.ticketFrom.priority_id = this.priorities[0].id
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            getCompany() {
+                axios.get('api/company').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.employees = response.data.employees
+                        // this.ticketFrom.contact_company_user_id = this.employees[0].id
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
             submit() {
-                alert("Submitted")
-            }
-        },
-        mounted() {
-            console.log('Component mounted.')
+                this.ticketFrom.from_entity_type = Object.keys(this.ticketFrom.from.item)[0]
+                this.ticketFrom.from_entity_id = Object.values(this.ticketFrom.from.item)[0]
+                this.ticketFrom.to_entity_type = Object.keys(this.ticketFrom.to.item)[0]
+                this.ticketFrom.to_entity_id = Object.values(this.ticketFrom.to.item)[0]
+                this.addTicket()
+            },
+            addTicket() {
+                axios.post('api/ticket', this.ticketFrom).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        window.open('/tickets','_self')
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
         }
     }
 </script>

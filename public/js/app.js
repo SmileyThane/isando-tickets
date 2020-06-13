@@ -2012,7 +2012,7 @@ __webpack_require__.r(__webpack_exports__);
     logout: function logout(e) {
       e.preventDefault();
       localStorage.removeItem('auth_token');
-      window.open('login', '_self');
+      window.open('/login', '_self');
     }
   }
 });
@@ -2709,6 +2709,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2774,7 +2775,7 @@ __webpack_require__.r(__webpack_exports__);
     getSuppliers: function getSuppliers() {
       var _this3 = this;
 
-      axios.get('api/supplier', this.clientForm).then(function (response) {
+      axios.get('api/supplier').then(function (response) {
         response = response.data;
 
         if (response.success === true) {
@@ -3141,6 +3142,146 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3148,7 +3289,26 @@ __webpack_require__.r(__webpack_exports__);
       steps: 3,
       vertical: false,
       altLabels: true,
-      editable: true
+      editable: true,
+      ticketFrom: {
+        from: '',
+        from_entity_type: '',
+        from_entity_id: '',
+        to: '',
+        to_entity_type: '',
+        to_entity_id: '',
+        contact_company_user_id: '',
+        to_product_id: '',
+        priority_id: '',
+        name: '',
+        description: '',
+        connection_details: '',
+        access_details: ''
+      },
+      suppliers: [],
+      products: [],
+      priorities: [],
+      employees: []
     };
   },
   watch: {
@@ -3165,6 +3325,12 @@ __webpack_require__.r(__webpack_exports__);
         return _this.e1 = 1;
       }); // Workarounds
     }
+  },
+  mounted: function mounted() {
+    this.getSuppliers();
+    this.getProducts();
+    this.getPriorities();
+    this.getCompany();
   },
   methods: {
     onInput: function onInput(val) {
@@ -3184,12 +3350,80 @@ __webpack_require__.r(__webpack_exports__);
         this.e1 = n - 1;
       }
     },
+    getSuppliers: function getSuppliers() {
+      var _this2 = this;
+
+      axios.get('api/supplier').then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this2.suppliers = response.data;
+          _this2.ticketFrom.from = _this2.suppliers[0];
+          _this2.ticketFrom.to = _this2.suppliers[0];
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    getProducts: function getProducts() {
+      var _this3 = this;
+
+      axios.get('api/product').then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this3.products = response.data.data;
+          _this3.ticketFrom.to_product_id = _this3.products[0].id;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    getPriorities: function getPriorities() {
+      var _this4 = this;
+
+      axios.get('api/ticket_priorities').then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this4.priorities = response.data;
+          _this4.ticketFrom.priority_id = _this4.priorities[0].id;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    getCompany: function getCompany() {
+      var _this5 = this;
+
+      axios.get('api/company').then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this5.employees = response.data.employees; // this.ticketFrom.contact_company_user_id = this.employees[0].id
+        } else {
+          console.log('error');
+        }
+      });
+    },
     submit: function submit() {
-      alert("Submitted");
+      this.ticketFrom.from_entity_type = Object.keys(this.ticketFrom.from.item)[0];
+      this.ticketFrom.from_entity_id = Object.values(this.ticketFrom.from.item)[0];
+      this.ticketFrom.to_entity_type = Object.keys(this.ticketFrom.to.item)[0];
+      this.ticketFrom.to_entity_id = Object.values(this.ticketFrom.to.item)[0];
+      this.addTicket();
+    },
+    addTicket: function addTicket() {
+      axios.post('api/ticket', this.ticketFrom).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          window.open('/tickets', '_self');
+        } else {
+          console.log('error');
+        }
+      });
     }
-  },
-  mounted: function mounted() {
-    console.log('Component mounted.');
   }
 });
 
@@ -39661,25 +39895,6 @@ var render = function() {
           _vm._v(" "),
           _c(
             "v-list-item",
-            { attrs: { link: "", to: "/customer" } },
-            [
-              _c(
-                "v-list-item-action",
-                [_c("v-icon", [_vm._v("mdi-account-network")])],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-list-item-content",
-                [_c("v-list-item-title", [_vm._v("Customer")])],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-list-item",
             { attrs: { link: "", to: "/company" } },
             [
               _c(
@@ -39691,6 +39906,25 @@ var render = function() {
               _c(
                 "v-list-item-content",
                 [_c("v-list-item-title", [_vm._v("Company")])],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-list-item",
+            { attrs: { link: "", to: "/customer" } },
+            [
+              _c(
+                "v-list-item-action",
+                [_c("v-icon", [_vm._v("mdi-account-network")])],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-list-item-content",
+                [_c("v-list-item-title", [_vm._v("Customer")])],
                 1
               )
             ],
@@ -39783,7 +40017,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "v-list-item",
-                { attrs: { link: "", to: "/ticket/create" } },
+                { attrs: { link: "", to: "/ticket_create" } },
                 [
                   _c(
                     "v-list-item-action",
@@ -40490,8 +40724,9 @@ var render = function() {
                                   [
                                     _c("v-select", {
                                       attrs: {
-                                        color: "green",
                                         label: "Supplier",
+                                        color: "green",
+                                        "item-color": "green",
                                         "item-text": "name",
                                         "item-value": "item",
                                         items: _vm.suppliers
@@ -40923,119 +41158,476 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "v-row",
-        { attrs: { justify: "space-around" } },
-        [
-          _c("v-col", { attrs: { cols: "12" } }, [
-            _c("p", { staticClass: "title text-center" }, [
-              _vm._v("Create new ticket")
+  return _c("v-container", [
+    _c(
+      "div",
+      [
+        _c(
+          "v-row",
+          { attrs: { justify: "space-around" } },
+          [
+            _c("v-col", { attrs: { cols: "12" } }, [
+              _c("p", { staticClass: "title text-center" }, [
+                _vm._v("Create new ticket")
+              ])
             ])
-          ])
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-stepper",
-        {
-          attrs: { vertical: _vm.vertical, "alt-labels": _vm.altLabels },
-          model: {
-            value: _vm.e1,
-            callback: function($$v) {
-              _vm.e1 = $$v
-            },
-            expression: "e1"
-          }
-        },
-        [
-          _c(
-            "v-stepper-header",
-            [
-              _vm._l(_vm.steps, function(n) {
-                return [
-                  _c(
-                    "v-stepper-step",
-                    {
-                      key: n + "-step",
-                      attrs: {
-                        complete: _vm.e1 > n,
-                        step: n,
-                        editable: _vm.editable,
-                        color: "green"
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                    Step " +
-                          _vm._s(n) +
-                          "\n                "
-                      )
-                    ]
-                  ),
-                  _vm._v(" "),
-                  n !== _vm.steps ? _c("v-divider", { key: n }) : _vm._e()
-                ]
-              })
-            ],
-            2
-          ),
-          _vm._v(" "),
-          _c(
-            "v-stepper-items",
-            _vm._l(_vm.steps, function(n) {
-              return _c(
-                "v-stepper-content",
-                { key: n + "-content", attrs: { step: n } },
-                [
-                  _c("v-card", {
-                    staticClass: "mb-12",
-                    attrs: { color: "grey lighten-1", height: "200px" }
-                  }),
-                  _vm._v(" "),
-                  _c("v-btn", {
-                    attrs: { color: n !== _vm.steps ? "primary" : "#4caf50" },
-                    domProps: {
-                      textContent: _vm._s(
-                        n !== _vm.steps ? "Continue" : "Submit"
-                      )
-                    },
-                    on: {
-                      click: function($event) {
-                        n !== _vm.steps ? _vm.nextStep(n) : _vm.submit()
-                      }
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { text: "" },
-                      on: {
-                        click: function($event) {
-                          return _vm.previousStep(n)
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "v-stepper",
+          {
+            attrs: { "alt-labels": _vm.altLabels },
+            model: {
+              value: _vm.e1,
+              callback: function($$v) {
+                _vm.e1 = $$v
+              },
+              expression: "e1"
+            }
+          },
+          [
+            _c(
+              "v-stepper-header",
+              [
+                _vm._l(_vm.steps, function(n) {
+                  return [
+                    _c(
+                      "v-stepper-step",
+                      {
+                        key: n + "-step",
+                        attrs: {
+                          complete: _vm.e1 > n,
+                          step: n,
+                          editable: _vm.editable,
+                          color: "green"
                         }
-                      }
-                    },
-                    [_vm._v("\n                    Cancel\n                ")]
+                      },
+                      [
+                        _vm._v(
+                          "\n                        Step " +
+                            _vm._s(n) +
+                            "\n                    "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    n !== _vm.steps ? _c("v-divider", { key: n }) : _vm._e()
+                  ]
+                })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c(
+              "v-stepper-items",
+              [
+                _c(
+                  "v-form",
+                  [
+                    _c(
+                      "v-stepper-content",
+                      { attrs: { step: "1" } },
+                      [
+                        _c("v-card-text", [
+                          _c(
+                            "div",
+                            { staticClass: "row" },
+                            [
+                              _c(
+                                "div",
+                                { staticClass: "col-md-6" },
+                                [
+                                  _c("v-select", {
+                                    attrs: {
+                                      label: "From",
+                                      color: "green",
+                                      "item-color": "green",
+                                      "item-text": "name",
+                                      "item-value": "item",
+                                      items: _vm.suppliers
+                                    },
+                                    model: {
+                                      value: _vm.ticketFrom.from,
+                                      callback: function($$v) {
+                                        _vm.$set(_vm.ticketFrom, "from", $$v)
+                                      },
+                                      expression: "ticketFrom.from"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "md-6" } },
+                                [
+                                  _c("v-autocomplete", {
+                                    attrs: {
+                                      color: "green",
+                                      "item-color": "green",
+                                      "item-text": "name",
+                                      "item-value": "item",
+                                      items: _vm.suppliers,
+                                      label: "To"
+                                    },
+                                    model: {
+                                      value: _vm.ticketFrom.to,
+                                      callback: function($$v) {
+                                        _vm.$set(_vm.ticketFrom, "to", $$v)
+                                      },
+                                      expression: "ticketFrom.to"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "md-6" } },
+                                [
+                                  _c("v-autocomplete", {
+                                    attrs: {
+                                      color: "green",
+                                      "item-color": "green",
+                                      "item-text": "user_data.email",
+                                      "item-value": "id",
+                                      items: _vm.employees,
+                                      label: "Contact"
+                                    },
+                                    model: {
+                                      value:
+                                        _vm.ticketFrom.contact_company_user_id,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.ticketFrom,
+                                          "contact_company_user_id",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "ticketFrom.contact_company_user_id"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "col-md-6" },
+                                [
+                                  _c("v-select", {
+                                    attrs: {
+                                      label: "Product",
+                                      color: "green",
+                                      "item-color": "green",
+                                      "item-text": "product_data.name",
+                                      "item-value": "product_data.id",
+                                      items: _vm.products
+                                    },
+                                    model: {
+                                      value: _vm.ticketFrom.to_product_id,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.ticketFrom,
+                                          "to_product_id",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "ticketFrom.to_product_id"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12" } },
+                                [
+                                  _c("v-textarea", {
+                                    attrs: {
+                                      label: "Availability",
+                                      color: "green",
+                                      "item-color": "green",
+                                      "auto-grow": "",
+                                      outlined: "",
+                                      rows: "3",
+                                      "row-height": "25"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ])
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "v-stepper-content",
+                      { attrs: { step: "2" } },
+                      [
+                        _c("v-card-text", [
+                          _c(
+                            "div",
+                            { staticClass: "row" },
+                            [
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "md-6" } },
+                                [
+                                  _c("v-text-field", {
+                                    attrs: {
+                                      color: "green",
+                                      "item-color": "green",
+                                      label: "Title"
+                                    },
+                                    model: {
+                                      value: _vm.ticketFrom.name,
+                                      callback: function($$v) {
+                                        _vm.$set(_vm.ticketFrom, "name", $$v)
+                                      },
+                                      expression: "ticketFrom.name"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "col-md-6" },
+                                [
+                                  _c("v-select", {
+                                    attrs: {
+                                      label: "Priority",
+                                      color: "green",
+                                      "item-color": "green",
+                                      "item-text": "name",
+                                      "item-value": "id",
+                                      items: _vm.priorities
+                                    },
+                                    model: {
+                                      value: _vm.ticketFrom.priority_id,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.ticketFrom,
+                                          "priority_id",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "ticketFrom.priority_id"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "md-6" } },
+                                [
+                                  _c("v-textarea", {
+                                    attrs: {
+                                      label:
+                                        "IP address(es) of the servers (for remote access)",
+                                      color: "green",
+                                      "item-color": "green",
+                                      "auto-grow": "",
+                                      outlined: "",
+                                      rows: "3",
+                                      "row-height": "25"
+                                    },
+                                    model: {
+                                      value: _vm.ticketFrom.connection_details,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.ticketFrom,
+                                          "connection_details",
+                                          $$v
+                                        )
+                                      },
+                                      expression:
+                                        "ticketFrom.connection_details"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "md-6" } },
+                                [
+                                  _c("v-textarea", {
+                                    attrs: {
+                                      label: "Access details",
+                                      color: "green",
+                                      "item-color": "green",
+                                      "auto-grow": "",
+                                      outlined: "",
+                                      rows: "3",
+                                      "row-height": "25"
+                                    },
+                                    model: {
+                                      value: _vm.ticketFrom.access_details,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.ticketFrom,
+                                          "access_details",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "ticketFrom.access_details"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12" } },
+                                [
+                                  _c("v-textarea", {
+                                    attrs: {
+                                      label: "Description",
+                                      color: "green",
+                                      "item-color": "green",
+                                      "auto-grow": "",
+                                      outlined: "",
+                                      rows: "3",
+                                      "row-height": "25"
+                                    },
+                                    model: {
+                                      value: _vm.ticketFrom.description,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.ticketFrom,
+                                          "description",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "ticketFrom.description"
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ])
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c("v-stepper-content", { attrs: { step: "3" } }, [
+                      _c(
+                        "div",
+                        [
+                          _c("v-file-input", {
+                            attrs: {
+                              chips: "",
+                              "chips-color": "green",
+                              multiple: "",
+                              label: "Attach a Document(s)",
+                              color: "green",
+                              "item-color": "green",
+                              "prepend-icon": "mdi-paperclip",
+                              "show-size": 1000
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "selection",
+                                fn: function(ref) {
+                                  var index = ref.index
+                                  var text = ref.text
+                                  return [
+                                    _c(
+                                      "v-chip",
+                                      { attrs: { color: "green" } },
+                                      [
+                                        _vm._v(
+                                          "\n                                        " +
+                                            _vm._s(text) +
+                                            "\n                                    "
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                }
+                              }
+                            ])
+                          })
+                        ],
+                        1
+                      )
+                    ])
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _vm._l(_vm.steps, function(n) {
+                  return _c(
+                    "v-stepper-content",
+                    { key: n + "-content", attrs: { step: n } },
+                    [
+                      _c("v-btn", {
+                        staticStyle: { color: "white" },
+                        attrs: { color: "#4caf50" },
+                        domProps: {
+                          textContent: _vm._s(
+                            n !== _vm.steps ? "Continue" : "Submit"
+                          )
+                        },
+                        on: {
+                          click: function($event) {
+                            n !== _vm.steps ? _vm.nextStep(n) : _vm.submit()
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { text: "" },
+                          on: {
+                            click: function($event) {
+                              return _vm.previousStep(n)
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                        Cancel\n                    "
+                          )
+                        ]
+                      )
+                    ],
+                    1
                   )
-                ],
-                1
-              )
-            }),
-            1
-          ),
-          _vm._v(" "),
-          _c("v-spacer")
-        ],
-        1
-      )
-    ],
-    1
-  )
+                })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c("v-spacer")
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -41134,12 +41726,18 @@ var render = function() {
                   _vm._v(" "),
                   _c("p", [
                     _c("strong", [_vm._v("Contact name:")]),
-                    _vm._v(" " + _vm._s(item.contact.user_data.name))
+                    _vm._v(
+                      " " +
+                        _vm._s(item.contact ? item.contact.user_data.name : "")
+                    )
                   ]),
                   _vm._v(" "),
                   _c("p", [
                     _c("strong", [_vm._v("Contact email:")]),
-                    _vm._v(" " + _vm._s(item.contact.user_data.email))
+                    _vm._v(
+                      " " +
+                        _vm._s(item.contact ? item.contact.user_data.email : "")
+                    )
                   ]),
                   _vm._v(" "),
                   _c("p", [
@@ -98609,7 +99207,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   component: _views_ticket_index__WEBPACK_IMPORTED_MODULE_5__["default"]
 }, {
-  path: '/ticket/create',
+  path: '/ticket_create',
   name: 'Create Ticket',
   meta: {
     requiresAuth: true

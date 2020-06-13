@@ -73,6 +73,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('ticket/{id}/contact', 'API\TicketController@attachContact');
     Route::post('ticket/{id}/answer', 'API\TicketController@addAnswer');
     Route::post('ticket/{id}/notice', 'API\TicketController@addNotice');
-
+    Route::get('ticket_priorities', 'API\TicketController@priorities');
 });
 

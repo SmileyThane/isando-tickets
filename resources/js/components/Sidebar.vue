@@ -24,20 +24,20 @@
                     <v-list-item-title>Home</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item link to="/customer">
-                <v-list-item-action>
-                    <v-icon>mdi-account-network</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>Customer</v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
             <v-list-item link to="/company">
                 <v-list-item-action>
                     <v-icon>mdi-office-building</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
                     <v-list-item-title>Company</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item link to="/customer">
+                <v-list-item-action>
+                    <v-icon>mdi-account-network</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>Customer</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/product">
@@ -77,7 +77,7 @@
                         <v-list-item-title>Tickets List</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/ticket/create">
+                <v-list-item link to="/ticket_create">
                     <v-list-item-action>
                         <v-icon>mdi-shape-rectangle-plus</v-icon>
                     </v-list-item-action>

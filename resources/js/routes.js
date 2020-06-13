@@ -74,7 +74,7 @@ export default [
         component: Ticket
     },
     {
-        path: '/ticket/create',
+        path: '/ticket_create',
         name: 'Create Ticket',
         meta: {
             requiresAuth: true,

@@ -39,8 +39,9 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-select
-                                                    color="green"
                                                     label="Supplier"
+                                                    color="green"
+                                                    item-color="green"
                                                     item-text="name"
                                                     item-value="item"
                                                     v-model="clientForm.supplier_object"
@@ -133,7 +134,7 @@
                 // console.log(this.clientForm);
             },
             getSuppliers() {
-                axios.get('api/supplier', this.clientForm).then(response => {
+                axios.get('api/supplier').then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.suppliers = response.data

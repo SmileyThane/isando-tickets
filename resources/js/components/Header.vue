@@ -74,7 +74,7 @@
             logout(e) {
                 e.preventDefault()
                 localStorage.removeItem('auth_token')
-                window.open('login', '_self')
+                window.open('/login', '_self')
             }
         }
 

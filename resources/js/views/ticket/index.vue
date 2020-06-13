@@ -23,8 +23,8 @@
                     <p><strong>From:</strong> {{ item.from.name }}</p>
                     <p><strong>To:</strong> {{ item.to.name }}</p>
                     <p><strong>Description:</strong> {{ item.description }}</p>
-                    <p><strong>Contact name:</strong> {{ item.contact.user_data.name }}</p>
-                    <p><strong>Contact email:</strong> {{ item.contact.user_data.email }}</p>
+                    <p><strong>Contact name:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
+                    <p><strong>Contact email:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
                     <p><strong>Due date:</strong> {{ item.due_date }}</p>
                     <p><strong>Access details:</strong> {{ item.access_details }}</p>
                 </td>

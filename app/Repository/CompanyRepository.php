@@ -32,7 +32,7 @@ class CompanyRepository
         if (Auth::user()->employee->hasRole(Role::COMPANY_CLIENT)) {
             $company = null;
         } else {
-            $company = Company::where('id', $id ?? Auth::user()->employee->company_id)->with('employees', 'clients', 'teams')->first();
+            $company = Company::where('id', $id ?? Auth::user()->employee->company_id)->with('employees.userData', 'clients', 'teams')->first();
         }
         return $company;
     }
@@ -42,7 +42,7 @@ class CompanyRepository
         $company = new Company();
         $company->name = $request->company_name;
         $company->company_number = $request->company_number;
-        $company->domain_hash = rand(0, 99999999);
+        $company->domain_hash = random_int(0, 99999999);
         $company->photo = $request->photo;
         $company->description = $request->description;
         $company->registration_date = $request->registration_date ?? now();
@@ -75,14 +75,14 @@ class CompanyRepository
 
     public function attachProduct(Request $request)
     {
-        $companyProduct = CompanyProduct::firstOrCreate(
+        CompanyProduct::firstOrCreate(
             ['company_id' => $request->company_id,
             'product_id' => $request->product_id]
         );
         return true;
     }
 
-    public function detachProduct(Request $request, $id)
+    public function detachProduct($id)
     {
         $result = false;
         $client = CompanyProduct::find($id);

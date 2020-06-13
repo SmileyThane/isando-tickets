@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Repository\TicketRepository;
+use App\TicketPriority;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -20,6 +21,11 @@ class TicketController extends Controller
     {
         $tickets = $this->ticketRepo->all($request);
         return self::showResponse(true, $tickets);
+    }
+
+    public function priorities()
+    {
+        return self::showResponse(true, TicketPriority::all());
     }
 
     public function find($id)
@@ -42,7 +48,7 @@ class TicketController extends Controller
     public function update(Request $request, $id)
     {
         $success = false;
-        $result = $this->ticketRepo->validate($request, false);
+        $result = $this->ticketRepo->validate($request);
         if ($result === true) {
             $result = $this->ticketRepo->update($request, $id);
             $success = true;
@@ -50,7 +56,7 @@ class TicketController extends Controller
         return self::showResponse($success, $result);
     }
 
-    public function delete(Request $request, $id)
+    public function delete($id)
     {
         $result = $this->ticketRepo->delete($id);
         return self::showResponse($result);

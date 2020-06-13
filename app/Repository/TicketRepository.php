@@ -16,15 +16,15 @@ use Illuminate\Support\Facades\Validator;
 class TicketRepository
 {
 
-    public function validate($request, $new = true)
+    public function validate($request)
     {
         $params = [
             'from_entity_id' => 'required',
             'from_entity_type' => 'required',
             'to_entity_id' => 'required',
             'to_entity_type' => 'required',
-            'from_company_user_id' => 'required',
-            'contact_company_user_id' => 'required',
+//            'from_company_user_id' => 'required',
+//            'contact_company_user_id' => 'required',
             'priority_id' => 'required',
             'name' => 'required',
         ];
@@ -59,7 +59,7 @@ class TicketRepository
                 }
             }
         }
-        return $tickets->with('creator', 'contact.userData', 'product', 'team', 'priority', 'status')->paginate();
+        return $tickets->with('creator', 'contact.userData', 'product', 'team', 'priority', 'status')->orderBy('created_at', 'desc')->paginate();
     }
 
 
@@ -71,13 +71,13 @@ class TicketRepository
     public function create(Request $request)
     {
         $ticket = new Ticket();
-        $ticket->name = $request->team_name;
-        $ticket->description = $request->team_description;
+        $ticket->name = $request->name;
+        $ticket->description = $request->description;
         $ticket->from_entity_id = $request->from_entity_id;
         $ticket->from_entity_type = $request->from_entity_type;
         $ticket->to_entity_id = $request->to_entity_id;
         $ticket->to_entity_type = $request->to_entity_type;
-        $ticket->from_company_user_id = $request->from_company_user_id;
+        $ticket->from_company_user_id = Auth::user()->employee->id;
         $ticket->contact_company_user_id = $request->contact_company_user_id;
         $ticket->to_company_user_id = $request->to_company_user_id;
         $ticket->to_team_id = $request->to_team_id;
