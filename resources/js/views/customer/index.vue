@@ -126,7 +126,7 @@
                 axios.post('api/client', this.clientForm).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.getCompanies()
+                        this.getClients()
                     } else {
                         console.log('error')
                     }
