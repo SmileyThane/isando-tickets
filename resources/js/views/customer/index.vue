@@ -1,36 +1,78 @@
 <template>
-    <v-container
-        class="fill-height"
-        fluid
-    >
+    <v-container>
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">List fof Customers</div>
+                    <div class="card-header"></div>
 
                     <div class="card-body">
-                        <template>
-                            <v-data-table
-                                :headers="headers"
-                                :items="customers"
-                                :items-per-page="25"
-                                class="elevation-1"
-                            ></v-data-table>
-                        </template>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    Add New Client
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Name"
+                                                    name="company_name"
+                                                    type="text"
+                                                    v-model="clientForm.client_name"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Description"
+                                                    name="company_description"
+                                                    type="text"
+                                                    v-model="clientForm.client_description"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <v-select
+                                                    color="green"
+                                                    label="Supplier"
+                                                    item-text="name"
+                                                    item-value="item"
+                                                    v-model="clientForm.supplier_object"
+                                                    :items="suppliers"
+                                                />
+                                            </div>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                color="green"
+                                                @click="addClient"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                        <v-data-table
+                            :headers="headers"
+                            :items="customers"
+                            :items-per-page="25"
+                            class="elevation-1"
+                        ></v-data-table>
                     </div>
                 </div>
             </div>
         </div>
     </v-container>
-</template>
-
-<template>
-    <v-data-table
-        :headers="headers"
-        :items="customers"
-        :items-per-page="25"
-        class="elevation-1"
-    ></v-data-table>
 </template>
 
 
@@ -48,15 +90,25 @@
                     },
                     {text: 'name', value: 'name'},
                     {text: 'Description', value: 'description'},
+                    {text: 'Actions', value: ''},
                 ],
                 customers: [],
+                clientForm: {
+                    client_name: '',
+                    client_description: '',
+                    supplier_object: '',
+                    supplier_type: '',
+                    supplier_id: ''
+                },
+                suppliers: [],
             }
         },
         mounted() {
-            this.getCompanies()
+            this.getClients()
+            this.getSuppliers()
         },
         methods: {
-            getCompanies() {
+            getClients() {
                 axios.get('api/client').then(response => {
                     response = response.data
                     if (response.success === true) {
@@ -65,7 +117,30 @@
                     } else {
                         console.log('error')
                     }
-
+                });
+            },
+            addClient() {
+                this.clientForm.supplier_type = Object.keys(this.clientForm.supplier_object.item)[0]
+                this.clientForm.supplier_id = Object.values(this.clientForm.supplier_object.item)[0]
+                axios.post('api/client', this.clientForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompanies()
+                    } else {
+                        console.log('error')
+                    }
+                });
+                // console.log(this.clientForm);
+            },
+            getSuppliers() {
+                axios.get('api/supplier', this.clientForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.suppliers = response.data
+                        this.clientForm.supplier_object = this.suppliers[0]
+                    } else {
+                        console.log('error')
+                    }
                 });
             }
         }

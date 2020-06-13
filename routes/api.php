@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     //client management
     Route::get('client', 'API\ClientController@get');
+    Route::get('supplier', 'API\ClientController@suppliers');
     Route::post('client', 'API\ClientController@create');
     Route::get('client/{id}', 'API\ClientController@find');
     Route::patch('client/{id}', 'API\ClientController@update');

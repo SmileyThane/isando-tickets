@@ -1,36 +1,68 @@
 <template>
-    <v-container
-        class="fill-height"
-        fluid
-    >
+    <v-container>
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">List fof Customers</div>
+                    <div class="card-header"></div>
 
                     <div class="card-body">
-                        <template>
-                            <v-data-table
-                                :headers="headers"
-                                :items="customers"
-                                :items-per-page="25"
-                                class="elevation-1"
-                            ></v-data-table>
-                        </template>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    Add New Product
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Name"
+                                                    name="product_name"
+                                                    type="text"
+                                                    v-model="productForm.product_name"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Description"
+                                                    name="product_name"
+                                                    type="text"
+                                                    v-model="productForm.product_description"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                color="green"
+                                                @click="addProduct"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                        <v-data-table
+                            :headers="headers"
+                            :items="products"
+                            :items-per-page="25"
+                            class="elevation-1"
+                        ></v-data-table>
                     </div>
                 </div>
             </div>
         </div>
     </v-container>
-</template>
-
-<template>
-    <v-data-table
-        :headers="headers"
-        :items="products"
-        :items-per-page="25"
-        class="elevation-1"
-    ></v-data-table>
 </template>
 
 
@@ -48,26 +80,40 @@
                     },
                     {text: 'name', value: 'product_data.name'},
                     {text: 'Description', value: 'product_data.description'},
+                    {text: 'Actions', value: ''},
                 ],
                 products: [],
+                productForm: {
+                    product_name: '',
+                    product_description: '',
+                },
             }
         },
         mounted() {
-            this.getCompanies()
+            this.getProducts()
         },
         methods: {
-            getCompanies() {
+            getProducts() {
                 axios.get('api/product').then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.products = response.data.data
-                        // console.log(this.customers);
                     } else {
                         console.log('error')
                     }
 
                 });
-            }
+            },
+            addProduct() {
+                axios.post('api/product', this.productForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getProducts()
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
         }
     }
 </script>

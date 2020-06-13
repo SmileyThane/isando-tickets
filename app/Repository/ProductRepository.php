@@ -16,6 +16,12 @@ use Illuminate\Support\Facades\Validator;
 class ProductRepository
 {
 
+    protected $companyRepo;
+
+    public function __construct(UserRepository $userRepository, CompanyRepository $companyRepository)
+    {
+        $this->companyRepo = $companyRepository;
+    }
     public function validate($request, $new = true)
     {
         $params = [
@@ -52,6 +58,9 @@ class ProductRepository
         $product->description = $request->product_description;
         $product->photo = $request->product_photo;
         $product->save();
+        $request->product_id = $product->id;
+        $request->company_id = Auth::user()->employee->company_id;
+        $this->companyRepo->attachProduct($request);
         return $product;
     }
 

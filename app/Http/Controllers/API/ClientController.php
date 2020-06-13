@@ -25,6 +25,12 @@ class ClientController extends Controller
         return self::showResponse(true, $clients);
     }
 
+    public function suppliers(Request $request)
+    {
+        $suppliers = $this->clientRepo->suppliers($request);
+        return self::showResponse(true, $suppliers);
+    }
+
     public function find($id)
     {
         $client = $this->clientRepo->find($id);

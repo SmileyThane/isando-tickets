@@ -3,10 +3,12 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Company;
 use App\Http\Controllers\Controller;
 use App\Repository\TeamRepository;
 use App\Repository\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TeamController extends Controller
 {
@@ -34,6 +36,10 @@ class TeamController extends Controller
     public function create(Request $request)
     {
         $success = false;
+        if (!array_key_exists('owner_id', $request->all())) {
+            $request['owner_id'] = Auth::user()->employee->company_id;
+            $request['owner_type'] = Company::class;
+        }
         $result = $this->teamRepo->validate($request);
         if ($result === true) {
             $result = $this->teamRepo->create($request);

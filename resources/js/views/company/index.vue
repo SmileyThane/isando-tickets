@@ -1,36 +1,23 @@
 <template>
-        <v-container
-            class="fill-height"
-            fluid
-        >
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header">Companies</div>
+    <v-container>
+        <div class="row justify-content-center">
+            <div class="col-md-12">
 
-                        <div class="card-body">
-                            <template>
-                                <v-data-table
-                                    :headers="headers"
-                                    :items="companies"
-                                    :items-per-page="25"
-                                    class="elevation-1"
-                                ></v-data-table>
-                            </template>
-                        </div>
+                <div class="card">
+                    <div class="card-header"></div>
+
+                    <div class="card-body">
+                        <v-data-table
+                            :headers="headers"
+                            :items="companies"
+                            :items-per-page="25"
+                            class="elevation-1"
+                        ></v-data-table>
                     </div>
                 </div>
             </div>
-        </v-container>
-</template>
-
-<template>
-    <v-data-table
-        :headers="headers"
-        :items="companies"
-        :items-per-page="25"
-        class="elevation-1"
-    ></v-data-table>
+        </div>
+    </v-container>
 </template>
 
 
@@ -49,6 +36,7 @@
                     {text: 'name', value: 'name'},
                     {text: 'Company number', value: 'company_number'},
                     {text: 'Description', value: 'description'},
+                    {text: 'Actions', value: ''},
                 ],
                 companies: [],
             }
