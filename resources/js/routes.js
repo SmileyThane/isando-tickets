@@ -6,6 +6,7 @@ import Team from './views/team/index'
 import Ticket from './views/ticket/index'
 import CreateTicket from './views/ticket/create'
 import Login from './views/Auth/Login'
+import Register from './views/Auth/Register'
 import Profile from './views/Auth/Profile'
 
 
@@ -21,9 +22,14 @@ export default [
         component: Login
     },
     {
+        path: '/register',
+        name: 'Register',
+        component: Register
+    },
+    {
         path: '/home',
         name: 'Home',
-        component: Home
+        component: Ticket
     },
     {
         path: '/user',

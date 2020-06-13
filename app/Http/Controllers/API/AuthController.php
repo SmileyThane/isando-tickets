@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
+use App\Plan;
 use App\Repository\CompanyRepository;
 use App\Repository\CompanyUserRepository;
 use App\Repository\LicenceRepository;
@@ -93,5 +94,10 @@ class AuthController extends Controller
             return self::showResponse(true);
         }
         return self::showResponse(false, $errors);
+    }
+
+    public function plans()
+    {
+        return self::showResponse(true, Plan::all());
     }
 }

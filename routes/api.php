@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('register', 'API\AuthController@register');
 Route::post('login', 'API\AuthController@login');
+Route::get('plans', 'API\AuthController@plans');
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('logout', 'API\AuthController@logout');
