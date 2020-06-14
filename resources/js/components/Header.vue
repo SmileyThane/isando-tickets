@@ -52,7 +52,7 @@
         name: "Header",
         props: {value: {type: Boolean}},
         data: () => ({
-            username:'',
+            username: localStorage.getItem('name'),
             localDrawer: null
         }),
         watch: {

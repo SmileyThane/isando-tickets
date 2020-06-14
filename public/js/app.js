@@ -1990,7 +1990,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      username: '',
+      username: localStorage.getItem('name'),
       localDrawer: null
     };
   },
@@ -99339,7 +99339,7 @@ router.beforeEach(function (to, from, next) {
   })) {
     axios.get('api/user').then(function (response) {
       response = response.data;
-      response.success === false ? localStorage.setItem('auth_token', null) : localStorage.setItem('name', response.data.name);
+      response.success !== true ? localStorage.setItem('auth_token', null) : localStorage.setItem('name', response.data.name);
     });
 
     if (localStorage.getItem('auth_token') === null) {
