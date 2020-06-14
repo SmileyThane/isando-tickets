@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
+use App\Notifications\RegularInviteEmail;
 use App\Plan;
 use App\Repository\CompanyRepository;
 use App\Repository\CompanyUserRepository;
@@ -88,9 +89,11 @@ class AuthController extends Controller
             $company = $this->companyRepo->create($request);
             $request->company_id = $company->id;
             $license = $this->licenseRepo->create($request);
+            $request->password = Controller::getRandomString();
             $user = $this->userRepo->create($request);
             $companyUser = $this->companyUserRepo->create($company->id, $user->id);
             $this->roleRepo->attach($companyUser->id, CompanyUser::class, Role::LICENSE_OWNER);
+            $user->notify(new RegularInviteEmail($user->name, Role::LICENSE_OWNER, $user->email, $request->password));
             return self::showResponse(true);
         }
         return self::showResponse(false, $errors);
