@@ -2946,7 +2946,7 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
-          _this2.getCompanies();
+          _this2.getClients();
         } else {
           console.log('error');
         }
@@ -3462,6 +3462,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3483,12 +3484,18 @@ __webpack_require__.r(__webpack_exports__);
         name: '',
         description: '',
         connection_details: '',
-        access_details: ''
+        access_details: '',
+        files: []
       },
       suppliers: [],
       products: [],
       priorities: [],
-      employees: []
+      employees: [],
+      onFileChange: function onFileChange(form) {
+        this[form].files = null;
+        console.log(event.target.files);
+        this[form].files = event.target.files;
+      }
     };
   },
   watch: {
@@ -3594,7 +3601,23 @@ __webpack_require__.r(__webpack_exports__);
       this.addTicket();
     },
     addTicket: function addTicket() {
-      axios.post('api/ticket', this.ticketFrom).then(function (response) {
+      var config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      };
+      var formData = new FormData();
+
+      for (var key in this.ticketFrom) {
+        if (key !== 'files') {
+          formData.append(key, this.ticketFrom[key]);
+        }
+      }
+
+      Array.from(this.ticketFrom.files).forEach(function (file) {
+        return formData.append('files[]', file);
+      });
+      axios.post('api/ticket', formData, config).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
@@ -42010,6 +42033,11 @@ var render = function() {
                               "item-color": "green",
                               "prepend-icon": "mdi-paperclip",
                               "show-size": 1000
+                            },
+                            on: {
+                              change: function($event) {
+                                return _vm.onFileChange("ticketFrom")
+                              }
                             },
                             scopedSlots: _vm._u([
                               {

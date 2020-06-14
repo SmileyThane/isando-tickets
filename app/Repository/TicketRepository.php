@@ -16,6 +16,13 @@ use Illuminate\Support\Facades\Validator;
 class TicketRepository
 {
 
+    protected $fileRepo;
+
+    public function __construct(FileRepository $fileRepository)
+    {
+        $this->fileRepo = $fileRepository;
+    }
+
     public function validate($request)
     {
         $params = [
@@ -88,6 +95,11 @@ class TicketRepository
         $ticket->access_details = $request->access_details;
         $ticket->save();
         $this->addHistoryItem($ticket->id, 'Ticket created');
+        $files = $request['files'];
+        foreach ($files as $file)
+        {
+            $this->fileRepo->store($file, $ticket->id, Ticket::class);
+        }
         return $ticket;
     }
 

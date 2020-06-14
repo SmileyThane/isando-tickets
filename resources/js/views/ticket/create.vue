@@ -169,6 +169,7 @@
                                     item-color="green"
                                     prepend-icon="mdi-paperclip"
                                     :show-size="1000"
+                                    v-on:change="onFileChange('ticketFrom')"
                                 >
                                     <template v-slot:selection="{ index, text }">
                                         <v-chip
@@ -229,12 +230,18 @@
                     name: '',
                     description: '',
                     connection_details: '',
-                    access_details: ''
+                    access_details: '',
+                    files:[]
                 },
                 suppliers: [],
                 products: [],
                 priorities: [],
-                employees:[]
+                employees:[],
+                onFileChange(form) {
+                    this[form].files = null;
+                    console.log(event.target.files);
+                    this[form].files = event.target.files;
+                },
             }
         },
         watch: {
@@ -329,7 +336,17 @@
                 this.addTicket()
             },
             addTicket() {
-                axios.post('api/ticket', this.ticketFrom).then(response => {
+                const config = {
+                    headers: {'content-type': 'multipart/form-data'}
+                }
+                let formData = new FormData();
+                for ( let key in this.ticketFrom ) {
+                    if (key !== 'files') {
+                        formData.append(key, this.ticketFrom[key]);
+                    }
+                }
+                Array.from(this.ticketFrom.files).forEach(file => formData.append('files[]', file));
+                axios.post('api/ticket', formData, config).then(response => {
                     response = response.data
                     if (response.success === true) {
                         window.open('/tickets','_self')
