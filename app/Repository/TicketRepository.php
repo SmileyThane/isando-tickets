@@ -72,7 +72,7 @@ class TicketRepository
 
     public function find($id)
     {
-        return Ticket::where('id', $id)->with('creator', 'contact.userData', 'product', 'team', 'priority', 'status')->first();
+        return Ticket::where('id', $id)->with('creator', 'contact.userData', 'product', 'team', 'priority', 'status', 'answers.employee.userData', 'histories.employee.userData', 'notices.employee.userData')->first();
     }
 
     public function create(Request $request)

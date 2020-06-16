@@ -57,4 +57,19 @@ class Ticket extends Model
     {
         return $this->hasOne(TicketStatus::class, 'id', 'status_id');
     }
+
+    public function answers()
+    {
+        return $this->hasMany(TicketAnswer::class, 'ticket_id', 'id');
+    }
+
+    public function histories()
+    {
+        return $this->hasMany(TicketHistory::class, 'ticket_id', 'id');
+    }
+
+    public function notices()
+    {
+        return $this->hasMany(TicketNotice::class, 'ticket_id', 'id');
+    }
 }

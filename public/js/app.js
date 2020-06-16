@@ -4021,6 +4021,132 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4028,9 +4154,7 @@ __webpack_require__.r(__webpack_exports__);
       errorType: '',
       error: [],
       ticket: {
-        name: "",
-        email: "",
-        password: ""
+        answers: []
       }
     };
   },
@@ -42657,7 +42781,6 @@ var render = function() {
                 [
                   _c(
                     "v-toolbar",
-                    { attrs: { dark: "", flat: "" } },
                     [
                       _c("v-toolbar-title", [
                         _vm._v("Ticket: " + _vm._s(_vm.ticket.name))
@@ -42684,36 +42807,103 @@ var render = function() {
                       _c(
                         "v-row",
                         [
-                          _c("v-col", { attrs: { cols: "12", md: "6" } }, [
-                            _c("p", [
-                              _c("strong", [_vm._v("From:")]),
-                              _vm._v(" " + _vm._s(_vm.ticket.from.name))
-                            ])
-                          ]),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "12", md: "6" } },
+                            [
+                              _c("v-label", [_c("strong", [_vm._v("From:")])]),
+                              _vm._v(" "),
+                              _c("v-textarea", {
+                                attrs: {
+                                  label: "Description",
+                                  "auto-grow": "",
+                                  rows: "3",
+                                  "row-height": "25",
+                                  shaped: "",
+                                  disabled: ""
+                                },
+                                domProps: {
+                                  textContent: _vm._s(_vm.ticket.from.name)
+                                }
+                              })
+                            ],
+                            1
+                          ),
                           _vm._v(" "),
-                          _c("v-col", { attrs: { cols: "12", md: "6" } }, [
-                            _c("p", [
-                              _c("strong", [_vm._v("To:")]),
-                              _vm._v(" " + _vm._s(_vm.ticket.to.name))
-                            ])
-                          ]),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "12", md: "6" } },
+                            [
+                              _c("v-label", [_c("strong", [_vm._v("To:")])]),
+                              _vm._v(" "),
+                              _c("v-textarea", {
+                                attrs: {
+                                  label: "To",
+                                  "auto-grow": "",
+                                  rows: "3",
+                                  "row-height": "25",
+                                  shaped: "",
+                                  disabled: ""
+                                },
+                                domProps: {
+                                  textContent: _vm._s(_vm.ticket.to.name)
+                                }
+                              })
+                            ],
+                            1
+                          ),
                           _vm._v(" "),
-                          _c("v-col", { attrs: { cols: "12", md: "6" } }, [
-                            _c("p", [
-                              _c("strong", [_vm._v("Priority:")]),
-                              _vm._v(" " + _vm._s(_vm.ticket.priority.name))
-                            ])
-                          ]),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "12", md: "6" } },
+                            [
+                              _c("v-label", [
+                                _c("strong", [_vm._v("Priority:")])
+                              ]),
+                              _vm._v(" "),
+                              _c("v-textarea", {
+                                attrs: {
+                                  label: "Priority",
+                                  "auto-grow": "",
+                                  rows: "3",
+                                  "row-height": "25",
+                                  shaped: "",
+                                  disabled: ""
+                                },
+                                domProps: {
+                                  textContent: _vm._s(_vm.ticket.priority.name)
+                                }
+                              })
+                            ],
+                            1
+                          ),
                           _vm._v(" "),
-                          _c("v-col", { attrs: { cols: "12", md: "6" } }, [
-                            _c("p", [
-                              _c("strong", [_vm._v("Due date:")]),
-                              _vm._v(
-                                " " +
-                                  _vm._s(_vm.ticket.due_date || "No due date")
-                              )
-                            ])
-                          ]),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "12", md: "6" } },
+                            [
+                              _c("v-label", [
+                                _c("strong", [_vm._v("Due date:")])
+                              ]),
+                              _vm._v(" "),
+                              _c("v-textarea", {
+                                attrs: {
+                                  label: "Priority",
+                                  "auto-grow": "",
+                                  rows: "3",
+                                  "row-height": "25",
+                                  shaped: "",
+                                  disabled: ""
+                                },
+                                domProps: {
+                                  textContent: _vm._s(
+                                    _vm.ticket.due_date || "No due date"
+                                  )
+                                }
+                              })
+                            ],
+                            1
+                          ),
                           _vm._v(" "),
                           _vm.ticket.contact
                             ? _c(
@@ -42723,40 +42913,60 @@ var render = function() {
                                     "v-col",
                                     { attrs: { cols: "12", md: "6" } },
                                     [
-                                      _c("p", [
-                                        _c("strong", [_vm._v("Contact name:")]),
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.ticket.contact
-                                                ? _vm.ticket.contact.user_data
-                                                    .name
-                                                : ""
-                                            )
-                                        )
-                                      ])
-                                    ]
+                                      _c("v-label", [
+                                        _c("strong", [_vm._v("Contact name:")])
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("v-textarea", {
+                                        attrs: {
+                                          label: "Priority",
+                                          "auto-grow": "",
+                                          rows: "3",
+                                          "row-height": "25",
+                                          shaped: "",
+                                          disabled: ""
+                                        },
+                                        domProps: {
+                                          textContent: _vm._s(
+                                            _vm.ticket.contact
+                                              ? _vm.ticket.contact.user_data
+                                                  .name
+                                              : ""
+                                          )
+                                        }
+                                      })
+                                    ],
+                                    1
                                   ),
                                   _vm._v(" "),
                                   _c(
                                     "v-col",
                                     { attrs: { cols: "12", md: "6" } },
                                     [
-                                      _c("p", [
-                                        _c("strong", [
-                                          _vm._v("Contact email:")
-                                        ]),
-                                        _vm._v(
-                                          " " +
-                                            _vm._s(
-                                              _vm.ticket.contact
-                                                ? _vm.ticket.contact.user_data
-                                                    .email
-                                                : ""
-                                            )
-                                        )
-                                      ])
-                                    ]
+                                      _c("v-label", [
+                                        _c("strong", [_vm._v("Contact email:")])
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("v-textarea", {
+                                        attrs: {
+                                          label: "Priority",
+                                          "auto-grow": "",
+                                          rows: "3",
+                                          "row-height": "25",
+                                          shaped: "",
+                                          disabled: ""
+                                        },
+                                        domProps: {
+                                          textContent: _vm._s(
+                                            _vm.ticket.contact
+                                              ? _vm.ticket.contact.user_data
+                                                  .email
+                                              : ""
+                                          )
+                                        }
+                                      })
+                                    ],
+                                    1
                                   )
                                 ],
                                 1
@@ -42773,15 +42983,12 @@ var render = function() {
                               _vm._v(" "),
                               _c("v-textarea", {
                                 attrs: {
-                                  label: "Description",
                                   "auto-grow": "",
                                   rows: "3",
                                   "row-height": "25",
                                   shaped: "",
-                                  disabled: ""
-                                },
-                                domProps: {
-                                  textContent: _vm._s(_vm.ticket.description)
+                                  disabled: "",
+                                  value: _vm.ticket.description
                                 }
                               })
                             ],
@@ -42802,18 +43009,12 @@ var render = function() {
                               _vm._v(" "),
                               _c("v-textarea", {
                                 attrs: {
-                                  label:
-                                    "IP address(es) of the servers (for remote access)",
                                   "auto-grow": "",
                                   rows: "3",
                                   "row-height": "25",
                                   shaped: "",
-                                  disabled: ""
-                                },
-                                domProps: {
-                                  textContent: _vm._s(
-                                    _vm.ticket.connection_details
-                                  )
+                                  disabled: "",
+                                  value: _vm.ticket.connection_details
                                 }
                               })
                             ],
@@ -42830,15 +43031,12 @@ var render = function() {
                               _vm._v(" "),
                               _c("v-textarea", {
                                 attrs: {
-                                  label: "Access details:",
                                   "auto-grow": "",
                                   rows: "3",
                                   "row-height": "25",
                                   shaped: "",
-                                  disabled: ""
-                                },
-                                domProps: {
-                                  textContent: _vm._s(_vm.ticket.access_details)
+                                  disabled: "",
+                                  value: _vm.ticket.access_details
                                 }
                               })
                             ],
@@ -42849,6 +43047,232 @@ var render = function() {
                       )
                     ],
                     1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-expansion-panels",
+                    [
+                      _c(
+                        "v-expansion-panel",
+                        [
+                          _c(
+                            "v-expansion-panel-header",
+                            {
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "actions",
+                                  fn: function() {
+                                    return [
+                                      _c(
+                                        "v-icon",
+                                        { attrs: { color: "submit" } },
+                                        [_vm._v("mdi-plus")]
+                                      )
+                                    ]
+                                  },
+                                  proxy: true
+                                }
+                              ])
+                            },
+                            [
+                              _vm._v(
+                                "\n                            Create Answer\n                            "
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel-content",
+                            [
+                              _c("v-form", [
+                                _c(
+                                  "div",
+                                  { staticClass: "row" },
+                                  [
+                                    _c(
+                                      "div",
+                                      { staticClass: "col-md-12" },
+                                      [
+                                        _c("v-textarea", {
+                                          attrs: {
+                                            label: "Description",
+                                            "prepend-icon": "mdi-text",
+                                            color: "green",
+                                            "item-color": "green",
+                                            "auto-grow": "",
+                                            rows: "3",
+                                            "row-height": "25",
+                                            shaped: ""
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "col-md-12" },
+                                      [
+                                        _c("v-file-input", {
+                                          attrs: {
+                                            chips: "",
+                                            "chips-color": "green",
+                                            multiple: "",
+                                            label: "Attach a Document(s)",
+                                            color: "green",
+                                            "item-color": "green",
+                                            "prepend-icon": "mdi-paperclip",
+                                            "show-size": 1000
+                                          },
+                                          on: {
+                                            change: function($event) {
+                                              return _vm.onFileChange(
+                                                "ticketFrom"
+                                              )
+                                            }
+                                          },
+                                          scopedSlots: _vm._u([
+                                            {
+                                              key: "selection",
+                                              fn: function(ref) {
+                                                var index = ref.index
+                                                var text = ref.text
+                                                return [
+                                                  _c(
+                                                    "v-chip",
+                                                    {
+                                                      attrs: { color: "green" }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                                                    " +
+                                                          _vm._s(text) +
+                                                          "\n                                                "
+                                                      )
+                                                    ]
+                                                  )
+                                                ]
+                                              }
+                                            }
+                                          ])
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: {
+                                          dark: "",
+                                          fab: "",
+                                          right: "",
+                                          bottom: "",
+                                          color: "green"
+                                        },
+                                        on: { click: function($event) {} }
+                                      },
+                                      [_c("v-icon", [_vm._v("mdi-plus")])],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ])
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("v-spacer", [_vm._v("\n                 \n            ")]),
+              _vm._v(" "),
+              _c(
+                "v-card",
+                [
+                  _c(
+                    "v-toolbar",
+                    { attrs: { flat: "" } },
+                    [_c("v-toolbar-title", [_vm._v("Ticket Answers")])],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-container",
+                    [
+                      _c("v-row", {
+                        attrs: { align: "center", justify: "center" }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-card-text",
+                    _vm._l(_vm.ticket.answers, function(answer) {
+                      return _c(
+                        "div",
+                        { key: answer.id },
+                        [
+                          _c(
+                            "v-card",
+                            { staticClass: "mx-auto", attrs: { outlined: "" } },
+                            [
+                              _c(
+                                "v-list-item",
+                                { attrs: { "three-line": "" } },
+                                [
+                                  _c(
+                                    "v-list-item-content",
+                                    [
+                                      _c(
+                                        "h1",
+                                        {
+                                          staticClass: "text-right caption mb-2"
+                                        },
+                                        [_vm._v(_vm._s(answer.created_at))]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-list-item-title",
+                                        { staticClass: "mb-2" },
+                                        [_vm._v(_vm._s(answer.answer))]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-list-item-subtitle", [
+                                        _vm._v(
+                                          _vm._s(
+                                            answer.employee.user_data.email
+                                          )
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c("v-spacer", [
+                            _vm._v(
+                              "\n                             \n                        "
+                            )
+                          ])
+                        ],
+                        1
+                      )
+                    }),
+                    0
                   )
                 ],
                 1
@@ -42866,7 +43290,6 @@ var render = function() {
                 [
                   _c(
                     "v-toolbar",
-                    { attrs: { dark: "", flat: "" } },
                     [
                       _c("v-toolbar-title", [_vm._v("Ticket Actions")]),
                       _vm._v(" "),
@@ -43042,67 +43465,82 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "v-expansion-panel-content",
-                                [
-                                  _c("v-form", [
-                                    _c(
-                                      "div",
-                                      { staticClass: "row" },
-                                      [
-                                        _c(
-                                          "div",
-                                          { staticClass: "col-md-6" },
-                                          [
-                                            _c("v-text-field", {
-                                              attrs: {
-                                                color: "green",
-                                                label: "Name",
-                                                name: "team_name",
-                                                type: "text",
-                                                required: ""
-                                              }
-                                            })
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "div",
-                                          { staticClass: "col-md-6" },
-                                          [
-                                            _c("v-text-field", {
-                                              attrs: {
-                                                color: "green",
-                                                label: "Description",
-                                                name: "team_description",
-                                                type: "text",
-                                                required: ""
-                                              }
-                                            })
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "v-btn",
-                                          {
-                                            attrs: {
-                                              dark: "",
-                                              fab: "",
-                                              right: "",
-                                              bottom: "",
-                                              color: "green"
-                                            },
-                                            on: { click: function($event) {} }
-                                          },
-                                          [_c("v-icon", [_vm._v("mdi-plus")])],
-                                          1
+                                _vm._l(_vm.ticket.history, function(
+                                  historyItem
+                                ) {
+                                  return _c(
+                                    "div",
+                                    { key: historyItem.id },
+                                    [
+                                      _c(
+                                        "v-card",
+                                        {
+                                          staticClass: "mx-auto",
+                                          attrs: { outlined: "" }
+                                        },
+                                        [
+                                          _c(
+                                            "v-list-item",
+                                            { attrs: { "three-line": "" } },
+                                            [
+                                              _c(
+                                                "v-list-item-content",
+                                                [
+                                                  _c(
+                                                    "h1",
+                                                    {
+                                                      staticClass:
+                                                        "text-right caption mb-2"
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(
+                                                          historyItem.created_at
+                                                        )
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-list-item-title",
+                                                    { staticClass: "mb-2" },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(
+                                                          historyItem.description
+                                                        )
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("v-list-item-subtitle", [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        historyItem.employee
+                                                          .user_data.email
+                                                      )
+                                                    )
+                                                  ])
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-spacer", [
+                                        _vm._v(
+                                          "\n                                         \n                                    "
                                         )
-                                      ],
-                                      1
-                                    )
-                                  ])
-                                ],
-                                1
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                }),
+                                0
                               )
                             ],
                             1
@@ -43139,67 +43577,80 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "v-expansion-panel-content",
-                                [
-                                  _c("v-form", [
-                                    _c(
-                                      "div",
-                                      { staticClass: "row" },
-                                      [
-                                        _c(
-                                          "div",
-                                          { staticClass: "col-md-6" },
-                                          [
-                                            _c("v-text-field", {
-                                              attrs: {
-                                                color: "green",
-                                                label: "Name",
-                                                name: "team_name",
-                                                type: "text",
-                                                required: ""
-                                              }
-                                            })
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "div",
-                                          { staticClass: "col-md-6" },
-                                          [
-                                            _c("v-text-field", {
-                                              attrs: {
-                                                color: "green",
-                                                label: "Description",
-                                                name: "team_description",
-                                                type: "text",
-                                                required: ""
-                                              }
-                                            })
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "v-btn",
-                                          {
-                                            attrs: {
-                                              dark: "",
-                                              fab: "",
-                                              right: "",
-                                              bottom: "",
-                                              color: "green"
-                                            },
-                                            on: { click: function($event) {} }
-                                          },
-                                          [_c("v-icon", [_vm._v("mdi-plus")])],
-                                          1
+                                _vm._l(_vm.ticket.histories, function(history) {
+                                  return _c(
+                                    "div",
+                                    { key: history.id },
+                                    [
+                                      _c(
+                                        "v-card",
+                                        {
+                                          staticClass: "mx-auto",
+                                          attrs: { outlined: "" }
+                                        },
+                                        [
+                                          _c(
+                                            "v-list-item",
+                                            { attrs: { "three-line": "" } },
+                                            [
+                                              _c(
+                                                "v-list-item-content",
+                                                [
+                                                  _c(
+                                                    "h1",
+                                                    {
+                                                      staticClass:
+                                                        "text-right caption mb-2"
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(
+                                                          history.created_at
+                                                        )
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-list-item-title",
+                                                    { staticClass: "mb-2" },
+                                                    [
+                                                      _vm._v(
+                                                        _vm._s(
+                                                          history.description
+                                                        )
+                                                      )
+                                                    ]
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c("v-list-item-subtitle", [
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        history.employee
+                                                          .user_data.email
+                                                      )
+                                                    )
+                                                  ])
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-spacer", [
+                                        _vm._v(
+                                          "\n                                         \n                                    "
                                         )
-                                      ],
-                                      1
-                                    )
-                                  ])
-                                ],
-                                1
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                }),
+                                0
                               )
                             ],
                             1
