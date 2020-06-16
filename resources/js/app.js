@@ -25,7 +25,7 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         axios.get('api/user').then(response => {
             response = response.data
-            response.success !== true ?
+            response.success === false ?
                 localStorage.setItem('auth_token', null) :
                 localStorage.setItem('name', response.data.name)
         });

@@ -17,6 +17,21 @@
                     <v-switch v-model="singleExpand" label="Single expand" color="green" class="mt-2"></v-switch>
                 </v-toolbar>
             </template>
+            <template v-slot:item.actions="{ item }">
+                <v-icon
+                    small
+                    class="mr-2"
+                    @click="showItem(item)"
+                >
+                    mdi-eye
+                </v-icon>
+                <v-icon
+                    small
+                    @click="showItem(item)"
+                >
+                    mdi-delete
+                </v-icon>
+            </template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
                     <p></p>
@@ -52,7 +67,7 @@
                     {text: 'Product', value: 'product.name'},
                     {text: 'Title', value: 'name'},
                     {text: 'Last update', value: 'last_update'},
-                    {text: 'Actions', value: ''},
+                    {text: 'Actions', value: 'actions', sortable: false},
                 ],
                 tickets: [],
             }
@@ -71,6 +86,9 @@
                     }
 
                 });
+            },
+            showItem(item) {
+                this.$router.push(`/ticket/${item.id}`)
             }
         }
     }

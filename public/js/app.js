@@ -3676,6 +3676,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3706,7 +3721,8 @@ __webpack_require__.r(__webpack_exports__);
         value: 'last_update'
       }, {
         text: 'Actions',
-        value: ''
+        value: 'actions',
+        sortable: false
       }],
       tickets: []
     };
@@ -3727,6 +3743,323 @@ __webpack_require__.r(__webpack_exports__);
           console.log('error');
         }
       });
+    },
+    showItem: function showItem(item) {
+      this.$router.push("/ticket/".concat(item.id));
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/ticket/item.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/ticket/item.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      alert: false,
+      errorType: '',
+      error: [],
+      ticket: {
+        name: "",
+        email: "",
+        password: ""
+      }
+    };
+  },
+  mounted: function mounted() {
+    this.getTicket(); // if (localStorage.getticket('auth_token')) {
+    //     this.$router.push('tickets')
+    // }
+  },
+  methods: {
+    getTicket: function getTicket() {
+      var _this = this;
+
+      axios.get("/api/ticket/".concat(this.$route.params.id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this.ticket = response.data; // console.log(this.userData);
+        }
+      });
+    },
+    parseErrors: function parseErrors(errorTypes) {
+      for (var typeIndex in errorTypes) {
+        var errorType = errorTypes[typeIndex];
+
+        for (var errorIndex in errorType) {
+          this.error.push(errorType[errorIndex]);
+        }
+      } // console.log(this.error)
+
     }
   }
 });
@@ -42195,6 +42528,40 @@ var render = function() {
             proxy: true
           },
           {
+            key: "item.actions",
+            fn: function(ref) {
+              var item = ref.item
+              return [
+                _c(
+                  "v-icon",
+                  {
+                    staticClass: "mr-2",
+                    attrs: { small: "" },
+                    on: {
+                      click: function($event) {
+                        return _vm.showItem(item)
+                      }
+                    }
+                  },
+                  [_vm._v("\n                mdi-eye\n            ")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-icon",
+                  {
+                    attrs: { small: "" },
+                    on: {
+                      click: function($event) {
+                        return _vm.showItem(item)
+                      }
+                    }
+                  },
+                  [_vm._v("\n                mdi-delete\n            ")]
+                )
+              ]
+            }
+          },
+          {
             key: "expanded-item",
             fn: function(ref) {
               var headers = ref.headers
@@ -42249,6 +42616,609 @@ var render = function() {
           }
         ])
       })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/ticket/item.vue?vue&type=template&id=d39875f2&":
+/*!*********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/ticket/item.vue?vue&type=template&id=d39875f2& ***!
+  \*********************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-container",
+    [
+      _c(
+        "v-row",
+        [
+          _c(
+            "v-col",
+            { attrs: { cols: "12", sm: "12", md: "8" } },
+            [
+              _c(
+                "v-card",
+                [
+                  _c(
+                    "v-toolbar",
+                    { attrs: { dark: "", flat: "" } },
+                    [
+                      _c("v-toolbar-title", [
+                        _vm._v("Ticket: " + _vm._s(_vm.ticket.name))
+                      ]),
+                      _vm._v(" "),
+                      _c("v-spacer")
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-container",
+                    [
+                      _c("v-row", {
+                        attrs: { align: "center", justify: "center" }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-card-text",
+                    [
+                      _c(
+                        "v-row",
+                        [
+                          _c("v-col", { attrs: { cols: "12", md: "6" } }, [
+                            _c("p", [
+                              _c("strong", [_vm._v("From:")]),
+                              _vm._v(" " + _vm._s(_vm.ticket.from.name))
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("v-col", { attrs: { cols: "12", md: "6" } }, [
+                            _c("p", [
+                              _c("strong", [_vm._v("To:")]),
+                              _vm._v(" " + _vm._s(_vm.ticket.to.name))
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("v-col", { attrs: { cols: "12", md: "6" } }, [
+                            _c("p", [
+                              _c("strong", [_vm._v("Priority:")]),
+                              _vm._v(" " + _vm._s(_vm.ticket.priority.name))
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("v-col", { attrs: { cols: "12", md: "6" } }, [
+                            _c("p", [
+                              _c("strong", [_vm._v("Due date:")]),
+                              _vm._v(
+                                " " +
+                                  _vm._s(_vm.ticket.due_date || "No due date")
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _vm.ticket.contact
+                            ? _c(
+                                "div",
+                                [
+                                  _c(
+                                    "v-col",
+                                    { attrs: { cols: "12", md: "6" } },
+                                    [
+                                      _c("p", [
+                                        _c("strong", [_vm._v("Contact name:")]),
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.ticket.contact
+                                                ? _vm.ticket.contact.user_data
+                                                    .name
+                                                : ""
+                                            )
+                                        )
+                                      ])
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-col",
+                                    { attrs: { cols: "12", md: "6" } },
+                                    [
+                                      _c("p", [
+                                        _c("strong", [
+                                          _vm._v("Contact email:")
+                                        ]),
+                                        _vm._v(
+                                          " " +
+                                            _vm._s(
+                                              _vm.ticket.contact
+                                                ? _vm.ticket.contact.user_data
+                                                    .email
+                                                : ""
+                                            )
+                                        )
+                                      ])
+                                    ]
+                                  )
+                                ],
+                                1
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "12" } },
+                            [
+                              _c("v-label", [
+                                _c("strong", [_vm._v("Description")])
+                              ]),
+                              _vm._v(" "),
+                              _c("v-textarea", {
+                                attrs: {
+                                  label: "Description",
+                                  "auto-grow": "",
+                                  rows: "3",
+                                  "row-height": "25",
+                                  shaped: "",
+                                  disabled: ""
+                                },
+                                domProps: {
+                                  textContent: _vm._s(_vm.ticket.description)
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "12", sm: "6" } },
+                            [
+                              _c("v-label", [
+                                _c("strong", [
+                                  _vm._v(
+                                    "IP address(es) of the servers (for remote access)"
+                                  )
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c("v-textarea", {
+                                attrs: {
+                                  label:
+                                    "IP address(es) of the servers (for remote access)",
+                                  "auto-grow": "",
+                                  rows: "3",
+                                  "row-height": "25",
+                                  shaped: "",
+                                  disabled: ""
+                                },
+                                domProps: {
+                                  textContent: _vm._s(
+                                    _vm.ticket.connection_details
+                                  )
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "12", sm: "6" } },
+                            [
+                              _c("v-label", [
+                                _c("strong", [_vm._v("Access details:")])
+                              ]),
+                              _vm._v(" "),
+                              _c("v-textarea", {
+                                attrs: {
+                                  label: "Access details:",
+                                  "auto-grow": "",
+                                  rows: "3",
+                                  "row-height": "25",
+                                  shaped: "",
+                                  disabled: ""
+                                },
+                                domProps: {
+                                  textContent: _vm._s(_vm.ticket.access_details)
+                                }
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-col",
+            { attrs: { cols: "12", sm: "12", md: "4" } },
+            [
+              _c(
+                "v-card",
+                [
+                  _c(
+                    "v-toolbar",
+                    { attrs: { dark: "", flat: "" } },
+                    [
+                      _c("v-toolbar-title", [_vm._v("Ticket Actions")]),
+                      _vm._v(" "),
+                      _c("v-spacer")
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-container",
+                    [
+                      _c("v-row", {
+                        attrs: { align: "center", justify: "center" }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-card-actions",
+                    [
+                      _c(
+                        "v-row",
+                        { attrs: { align: "center", justify: "center" } },
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              staticStyle: { color: "white" },
+                              attrs: { color: "green" },
+                              on: { click: _vm.updateUser }
+                            },
+                            [_vm._v("Close Ticket")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-card-text",
+                    [
+                      _c(
+                        "v-expansion-panels",
+                        [
+                          _c(
+                            "v-expansion-panel",
+                            [
+                              _c(
+                                "v-expansion-panel-header",
+                                {
+                                  scopedSlots: _vm._u([
+                                    {
+                                      key: "actions",
+                                      fn: function() {
+                                        return [
+                                          _c(
+                                            "v-icon",
+                                            { attrs: { color: "submit" } },
+                                            [_vm._v("mdi-plus")]
+                                          )
+                                        ]
+                                      },
+                                      proxy: true
+                                    }
+                                  ])
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                Assign to:\n                                "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-expansion-panel-content",
+                                [
+                                  _c("v-form", [
+                                    _c(
+                                      "div",
+                                      { staticClass: "row" },
+                                      [
+                                        _c(
+                                          "div",
+                                          { staticClass: "col-md-6" },
+                                          [
+                                            _c("v-text-field", {
+                                              attrs: {
+                                                color: "green",
+                                                label: "Name",
+                                                name: "team_name",
+                                                type: "text",
+                                                required: ""
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          { staticClass: "col-md-6" },
+                                          [
+                                            _c("v-text-field", {
+                                              attrs: {
+                                                color: "green",
+                                                label: "Description",
+                                                name: "team_description",
+                                                type: "text",
+                                                required: ""
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-btn",
+                                          {
+                                            attrs: {
+                                              dark: "",
+                                              fab: "",
+                                              right: "",
+                                              bottom: "",
+                                              color: "green"
+                                            },
+                                            on: { click: function($event) {} }
+                                          },
+                                          [_c("v-icon", [_vm._v("mdi-plus")])],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ])
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel",
+                            [
+                              _c(
+                                "v-expansion-panel-header",
+                                {
+                                  scopedSlots: _vm._u([
+                                    {
+                                      key: "actions",
+                                      fn: function() {
+                                        return [
+                                          _c(
+                                            "v-icon",
+                                            { attrs: { color: "submit" } },
+                                            [_vm._v("mdi-plus")]
+                                          )
+                                        ]
+                                      },
+                                      proxy: true
+                                    }
+                                  ])
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                Ticket notices\n                                "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-expansion-panel-content",
+                                [
+                                  _c("v-form", [
+                                    _c(
+                                      "div",
+                                      { staticClass: "row" },
+                                      [
+                                        _c(
+                                          "div",
+                                          { staticClass: "col-md-6" },
+                                          [
+                                            _c("v-text-field", {
+                                              attrs: {
+                                                color: "green",
+                                                label: "Name",
+                                                name: "team_name",
+                                                type: "text",
+                                                required: ""
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          { staticClass: "col-md-6" },
+                                          [
+                                            _c("v-text-field", {
+                                              attrs: {
+                                                color: "green",
+                                                label: "Description",
+                                                name: "team_description",
+                                                type: "text",
+                                                required: ""
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-btn",
+                                          {
+                                            attrs: {
+                                              dark: "",
+                                              fab: "",
+                                              right: "",
+                                              bottom: "",
+                                              color: "green"
+                                            },
+                                            on: { click: function($event) {} }
+                                          },
+                                          [_c("v-icon", [_vm._v("mdi-plus")])],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ])
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel",
+                            [
+                              _c(
+                                "v-expansion-panel-header",
+                                {
+                                  scopedSlots: _vm._u([
+                                    {
+                                      key: "actions",
+                                      fn: function() {
+                                        return [
+                                          _c(
+                                            "v-icon",
+                                            { attrs: { color: "submit" } },
+                                            [_vm._v("mdi-plus")]
+                                          )
+                                        ]
+                                      },
+                                      proxy: true
+                                    }
+                                  ])
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                Ticket history\n                                "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-expansion-panel-content",
+                                [
+                                  _c("v-form", [
+                                    _c(
+                                      "div",
+                                      { staticClass: "row" },
+                                      [
+                                        _c(
+                                          "div",
+                                          { staticClass: "col-md-6" },
+                                          [
+                                            _c("v-text-field", {
+                                              attrs: {
+                                                color: "green",
+                                                label: "Name",
+                                                name: "team_name",
+                                                type: "text",
+                                                required: ""
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          { staticClass: "col-md-6" },
+                                          [
+                                            _c("v-text-field", {
+                                              attrs: {
+                                                color: "green",
+                                                label: "Description",
+                                                name: "team_description",
+                                                type: "text",
+                                                required: ""
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-btn",
+                                          {
+                                            attrs: {
+                                              dark: "",
+                                              fab: "",
+                                              right: "",
+                                              bottom: "",
+                                              color: "green"
+                                            },
+                                            on: { click: function($event) {} }
+                                          },
+                                          [_c("v-icon", [_vm._v("mdi-plus")])],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ])
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
     ],
     1
   )
@@ -99339,7 +100309,7 @@ router.beforeEach(function (to, from, next) {
   })) {
     axios.get('api/user').then(function (response) {
       response = response.data;
-      response.success !== true ? localStorage.setItem('auth_token', null) : localStorage.setItem('name', response.data.name);
+      response.success === false ? localStorage.setItem('auth_token', null) : localStorage.setItem('name', response.data.name);
     });
 
     if (localStorage.getItem('auth_token') === null) {
@@ -99635,9 +100605,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _views_team_index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./views/team/index */ "./resources/js/views/team/index.vue");
 /* harmony import */ var _views_ticket_index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./views/ticket/index */ "./resources/js/views/ticket/index.vue");
 /* harmony import */ var _views_ticket_create__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./views/ticket/create */ "./resources/js/views/ticket/create.vue");
-/* harmony import */ var _views_Auth_Login__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./views/Auth/Login */ "./resources/js/views/Auth/Login.vue");
-/* harmony import */ var _views_Auth_Register__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./views/Auth/Register */ "./resources/js/views/Auth/Register.vue");
-/* harmony import */ var _views_Auth_Profile__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./views/Auth/Profile */ "./resources/js/views/Auth/Profile.vue");
+/* harmony import */ var _views_ticket_item__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./views/ticket/item */ "./resources/js/views/ticket/item.vue");
+/* harmony import */ var _views_Auth_Login__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./views/Auth/Login */ "./resources/js/views/Auth/Login.vue");
+/* harmony import */ var _views_Auth_Register__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./views/Auth/Register */ "./resources/js/views/Auth/Register.vue");
+/* harmony import */ var _views_Auth_Profile__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./views/Auth/Profile */ "./resources/js/views/Auth/Profile.vue");
+
 
 
 
@@ -99651,15 +100623,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ([{
   path: '/',
   name: 'main',
-  component: _views_Auth_Login__WEBPACK_IMPORTED_MODULE_7__["default"]
+  component: _views_Auth_Login__WEBPACK_IMPORTED_MODULE_8__["default"]
 }, {
   path: '/login',
   name: 'login',
-  component: _views_Auth_Login__WEBPACK_IMPORTED_MODULE_7__["default"]
+  component: _views_Auth_Login__WEBPACK_IMPORTED_MODULE_8__["default"]
 }, {
   path: '/register',
   name: 'Register',
-  component: _views_Auth_Register__WEBPACK_IMPORTED_MODULE_8__["default"]
+  component: _views_Auth_Register__WEBPACK_IMPORTED_MODULE_9__["default"]
 }, {
   path: '/home',
   name: 'Home',
@@ -99670,7 +100642,7 @@ __webpack_require__.r(__webpack_exports__);
   meta: {
     requiresAuth: true
   },
-  component: _views_Auth_Profile__WEBPACK_IMPORTED_MODULE_9__["default"]
+  component: _views_Auth_Profile__WEBPACK_IMPORTED_MODULE_10__["default"]
 }, {
   path: '/company',
   name: 'Companies',
@@ -99713,6 +100685,13 @@ __webpack_require__.r(__webpack_exports__);
     requiresAuth: true
   },
   component: _views_ticket_create__WEBPACK_IMPORTED_MODULE_6__["default"]
+}, {
+  path: '/ticket/:id',
+  name: 'Ticket',
+  meta: {
+    requiresAuth: true
+  },
+  component: _views_ticket_item__WEBPACK_IMPORTED_MODULE_7__["default"]
 }]);
 
 /***/ }),
@@ -100471,6 +101450,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_fb3a35e4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_template_id_fb3a35e4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/views/ticket/item.vue":
+/*!********************************************!*\
+  !*** ./resources/js/views/ticket/item.vue ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _item_vue_vue_type_template_id_d39875f2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./item.vue?vue&type=template&id=d39875f2& */ "./resources/js/views/ticket/item.vue?vue&type=template&id=d39875f2&");
+/* harmony import */ var _item_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./item.vue?vue&type=script&lang=js& */ "./resources/js/views/ticket/item.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _item_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _item_vue_vue_type_template_id_d39875f2___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _item_vue_vue_type_template_id_d39875f2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/views/ticket/item.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/views/ticket/item.vue?vue&type=script&lang=js&":
+/*!*********************************************************************!*\
+  !*** ./resources/js/views/ticket/item.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_item_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./item.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/ticket/item.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_item_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/views/ticket/item.vue?vue&type=template&id=d39875f2&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/views/ticket/item.vue?vue&type=template&id=d39875f2& ***!
+  \***************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_item_vue_vue_type_template_id_d39875f2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./item.vue?vue&type=template&id=d39875f2& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/ticket/item.vue?vue&type=template&id=d39875f2&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_item_vue_vue_type_template_id_d39875f2___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_item_vue_vue_type_template_id_d39875f2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

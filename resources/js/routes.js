@@ -5,6 +5,7 @@ import Product from './views/product/index'
 import Team from './views/team/index'
 import Ticket from './views/ticket/index'
 import CreateTicket from './views/ticket/create'
+import SingleTicket from './views/ticket/item'
 import Login from './views/Auth/Login'
 import Register from './views/Auth/Register'
 import Profile from './views/Auth/Profile'
@@ -86,5 +87,13 @@ export default [
             requiresAuth: true,
         },
         component: CreateTicket
-    }
+    },
+    {
+        path: '/ticket/:id',
+        name: 'Ticket',
+        meta: {
+            requiresAuth: true,
+        },
+        component: SingleTicket
+    },
 ];
