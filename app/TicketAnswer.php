@@ -21,4 +21,9 @@ class TicketAnswer extends Model
         return $this->hasOne(CompanyUser::class, 'id', 'company_user_id');
     }
 
+    public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(File::class, 'model');
+    }
+
 }

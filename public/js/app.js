@@ -3617,7 +3617,7 @@ __webpack_require__.r(__webpack_exports__);
       Array.from(this.ticketFrom.files).forEach(function (file) {
         return formData.append('files[]', file);
       });
-      axios.post('api/ticket', formData, config).then(function (response) {
+      axios.post('/api/ticket', formData, config).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
@@ -4147,6 +4147,43 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4154,7 +4191,84 @@ __webpack_require__.r(__webpack_exports__);
       errorType: '',
       error: [],
       ticket: {
-        answers: []
+        attachments: [{
+          name: '',
+          link: ''
+        }],
+        from: {
+          name: ''
+        },
+        from_entity_type: '',
+        from_entity_id: '',
+        to: {
+          name: ''
+        },
+        priority: {
+          name: ''
+        },
+        contact: {
+          user_data: {
+            name: '',
+            email: ''
+          }
+        },
+        to_entity_type: '',
+        to_entity_id: '',
+        contact_company_user_id: '',
+        to_product_id: '',
+        priority_id: '',
+        name: '',
+        description: '',
+        connection_details: '',
+        access_details: '',
+        answers: [{
+          created_at: '',
+          files: [],
+          attachments: [{
+            name: '',
+            link: ''
+          }],
+          employee: {
+            name: '',
+            email: ''
+          },
+          answer: ''
+        }],
+        history: [{
+          created_at: '',
+          files: [],
+          attachments: [{
+            name: '',
+            link: ''
+          }],
+          employee: {
+            name: '',
+            email: ''
+          },
+          description: ''
+        }],
+        notices: [{
+          created_at: '',
+          files: [],
+          attachments: [{
+            name: '',
+            link: ''
+          }],
+          employee: {
+            name: '',
+            email: ''
+          },
+          description: ''
+        }]
+      },
+      ticketAnswer: {
+        files: [],
+        answer: ''
+      },
+      onFileChange: function onFileChange(form) {
+        this[form].files = null;
+        console.log(event.target.files);
+        this[form].files = event.target.files;
       }
     };
   },
@@ -4172,6 +4286,39 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this.ticket = response.data; // console.log(this.userData);
+        }
+      });
+    },
+    addTicketAnswer: function addTicketAnswer() {
+      var _this2 = this;
+
+      var config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      };
+      console.log(this.ticketAnswer);
+      var formData = new FormData();
+
+      for (var key in this.ticketAnswer) {
+        if (key !== 'files') {
+          formData.append(key, this.ticketAnswer[key]);
+        }
+      }
+
+      Array.from(this.ticketAnswer.files).forEach(function (file) {
+        return formData.append('files[]', file);
+      });
+      axios.post("/api/ticket/".concat(this.$route.params.id, "/answer"), formData, config).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this2.ticketAnswer.answer = '';
+          _this2.ticketAnswer.files = [];
+
+          _this2.getTicket();
+        } else {
+          console.log('error');
         }
       });
     },
@@ -43044,7 +43191,49 @@ var render = function() {
                           )
                         ],
                         1
-                      )
+                      ),
+                      _vm._v(" "),
+                      _vm.ticket.attachments
+                        ? _c(
+                            "v-col",
+                            { attrs: { cols: "12" } },
+                            [
+                              _c("v-label", [
+                                _c("strong", [_vm._v("Attachments")])
+                              ]),
+                              _vm._v(" "),
+                              _vm._l(_vm.ticket.attachments, function(
+                                attachment
+                              ) {
+                                return _c(
+                                  "div",
+                                  [
+                                    _c(
+                                      "v-chip",
+                                      {
+                                        staticClass: "ma-2",
+                                        attrs: {
+                                          color: "green",
+                                          "text-color": "white",
+                                          href: attachment.link
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                                " +
+                                            _vm._s(attachment.name) +
+                                            "\n                            "
+                                        )
+                                      ]
+                                    )
+                                  ],
+                                  1
+                                )
+                              })
+                            ],
+                            2
+                          )
+                        : _vm._e()
                     ],
                     1
                   ),
@@ -43103,6 +43292,17 @@ var render = function() {
                                             rows: "3",
                                             "row-height": "25",
                                             shaped: ""
+                                          },
+                                          model: {
+                                            value: _vm.ticketAnswer.answer,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.ticketAnswer,
+                                                "answer",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "ticketAnswer.answer"
                                           }
                                         })
                                       ],
@@ -43127,7 +43327,7 @@ var render = function() {
                                           on: {
                                             change: function($event) {
                                               return _vm.onFileChange(
-                                                "ticketFrom"
+                                                "ticketAnswer"
                                               )
                                             }
                                           },
@@ -43170,7 +43370,7 @@ var render = function() {
                                           bottom: "",
                                           color: "green"
                                         },
-                                        on: { click: function($event) {} }
+                                        on: { click: _vm.addTicketAnswer }
                                       },
                                       [_c("v-icon", [_vm._v("mdi-plus")])],
                                       1
@@ -43246,13 +43446,62 @@ var render = function() {
                                         [_vm._v(_vm._s(answer.answer))]
                                       ),
                                       _vm._v(" "),
-                                      _c("v-list-item-subtitle", [
-                                        _vm._v(
-                                          _vm._s(
-                                            answer.employee.user_data.email
+                                      _c(
+                                        "v-list-item-subtitle",
+                                        { staticClass: "mb-3" },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              answer.employee.user_data.email
+                                            )
                                           )
-                                        )
-                                      ])
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      answer.attachments.length > 0
+                                        ? _c(
+                                            "v-col",
+                                            { attrs: { cols: "12" } },
+                                            [
+                                              _c("h4", [_vm._v("Attachments")]),
+                                              _vm._v(" "),
+                                              _vm._l(
+                                                answer.attachments,
+                                                function(attachment) {
+                                                  return _c(
+                                                    "div",
+                                                    [
+                                                      _c(
+                                                        "v-chip",
+                                                        {
+                                                          staticClass: "ma-2",
+                                                          attrs: {
+                                                            color: "green",
+                                                            "text-color":
+                                                              "white",
+                                                            href:
+                                                              attachment.link
+                                                          }
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            "\n                                                " +
+                                                              _vm._s(
+                                                                attachment.name
+                                                              ) +
+                                                              "\n                                            "
+                                                          )
+                                                        ]
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                }
+                                              )
+                                            ],
+                                            2
+                                          )
+                                        : _vm._e()
                                     ],
                                     1
                                   )
@@ -43320,7 +43569,7 @@ var render = function() {
                             {
                               staticStyle: { color: "white" },
                               attrs: { color: "green" },
-                              on: { click: _vm.updateUser }
+                              on: { click: function($event) {} }
                             },
                             [_vm._v("Close Ticket")]
                           )
@@ -43508,7 +43757,8 @@ var render = function() {
                                                       _vm._v(
                                                         _vm._s(
                                                           historyItem.description
-                                                        )
+                                                        ) +
+                                                          "\n                                                "
                                                       )
                                                     ]
                                                   ),
@@ -43518,7 +43768,8 @@ var render = function() {
                                                       _vm._s(
                                                         historyItem.employee
                                                           .user_data.email
-                                                      )
+                                                      ) +
+                                                        "\n                                                "
                                                     )
                                                   ])
                                                 ],
@@ -43597,7 +43848,7 @@ var render = function() {
                                                 "v-list-item-content",
                                                 [
                                                   _c(
-                                                    "h1",
+                                                    "p",
                                                     {
                                                       staticClass:
                                                         "text-right caption mb-2"
@@ -43618,7 +43869,8 @@ var render = function() {
                                                       _vm._v(
                                                         _vm._s(
                                                           history.description
-                                                        )
+                                                        ) +
+                                                          "\n                                                "
                                                       )
                                                     ]
                                                   ),
@@ -43628,7 +43880,8 @@ var render = function() {
                                                       _vm._s(
                                                         history.employee
                                                           .user_data.email
-                                                      )
+                                                      ) +
+                                                        "\n                                                "
                                                     )
                                                   ])
                                                 ],

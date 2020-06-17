@@ -23,53 +23,58 @@ class Ticket extends Model
         return $this->attributes['to_entity_type']::find($this->attributes['to_entity_id']);
     }
 
-    public function getLastUpdateAttribute()
+    public function getLastUpdateAttribute(): string
     {
         return Carbon::parse($this->attributes['updated_at'])->calendar();
     }
 
-    public function creator()
+    public function creator(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(CompanyUser::class, 'id', 'from_company_user_id');
     }
 
-    public function contact()
+    public function contact(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(CompanyUser::class, 'id', 'contact_company_user_id');
     }
 
-    public function product()
+    public function product(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Product::class, 'id', 'to_product_id');
     }
 
-    public function team()
+    public function team(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Team::class, 'id', 'to_team_id');
     }
 
-    public function priority()
+    public function priority(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(TicketPriority::class, 'id', 'priority_id');
     }
 
-    public function status()
+    public function status(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(TicketStatus::class, 'id', 'status_id');
     }
 
-    public function answers()
+    public function answers(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(TicketAnswer::class, 'ticket_id', 'id');
     }
 
-    public function histories()
+    public function histories(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(TicketHistory::class, 'ticket_id', 'id');
     }
 
-    public function notices()
+    public function notices(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(TicketNotice::class, 'ticket_id', 'id');
+    }
+
+    public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(File::class, 'model');
     }
 }

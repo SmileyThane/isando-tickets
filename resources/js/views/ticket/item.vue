@@ -1,19 +1,15 @@
 <template>
 
 
-    <v-container
-    >
-        <v-row
-        >
+    <v-container>
+        <v-row>
             <v-col
                 cols="12"
                 sm="12"
                 md="8"
             >
-
                 <v-card>
-                    <v-toolbar
-                    >
+                    <v-toolbar>
                         <v-toolbar-title>Ticket: {{ ticket.name }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
@@ -150,6 +146,24 @@
                                 ></v-textarea>
                             </v-col>
                         </v-row>
+                        <v-col cols="12" v-if="ticket.attachments">
+                            <v-label>
+                                <strong>Attachments</strong>
+                            </v-label>
+                            <div
+                                v-for="attachment in ticket.attachments"
+                            >
+                                <v-chip
+                                    class="ma-2"
+                                    color="green"
+                                    text-color="white"
+                                    :href="attachment.link"
+                                >
+                                    {{attachment.name}}
+                                </v-chip>
+                            </div>
+
+                        </v-col>
                     </v-card-text>
                     <v-expansion-panels>
                         <v-expansion-panel>
@@ -172,6 +186,7 @@
                                                 rows="3"
                                                 row-height="25"
                                                 shaped
+                                                v-model="ticketAnswer.answer"
                                             ></v-textarea>
                                         </div>
                                         <div class="col-md-12">
@@ -184,7 +199,7 @@
                                                 item-color="green"
                                                 prepend-icon="mdi-paperclip"
                                                 :show-size="1000"
-                                                v-on:change="onFileChange('ticketFrom')"
+                                                v-on:change="onFileChange('ticketAnswer')"
                                             >
                                                 <template v-slot:selection="{ index, text }">
                                                     <v-chip
@@ -201,7 +216,7 @@
                                             right
                                             bottom
                                             color="green"
-                                            @click=""
+                                            @click="addTicketAnswer"
                                         >
                                             <v-icon>mdi-plus</v-icon>
                                         </v-btn>
@@ -237,8 +252,26 @@
                                     <v-list-item-content>
                                         <h1 class="text-right caption mb-2">{{answer.created_at}}</h1>
                                         <v-list-item-title class="mb-2">{{answer.answer}}</v-list-item-title>
-                                        <v-list-item-subtitle>{{answer.employee.user_data.email}}</v-list-item-subtitle>
+                                        <v-list-item-subtitle class="mb-3">{{answer.employee.user_data.email}}</v-list-item-subtitle>
+
+                                        <v-col cols="12" v-if="answer.attachments.length > 0 ">
+                                            <h4 >Attachments</h4>
+                                            <div
+                                                v-for="attachment in answer.attachments"
+                                            >
+                                                <v-chip
+                                                    class="ma-2"
+                                                    color="green"
+                                                    text-color="white"
+                                                    :href="attachment.link"
+                                                >
+                                                    {{attachment.name}}
+                                                </v-chip>
+                                            </div>
+
+                                        </v-col>
                                     </v-list-item-content>
+
                                 </v-list-item>
 
                             </v-card>
@@ -267,7 +300,7 @@
                     <v-card-actions>
                         <v-row align="center"
                                justify="center">
-                            <v-btn color="green" style="color: white;" @click="updateUser">Close Ticket</v-btn>
+                            <v-btn color="green" style="color: white;" @click="">Close Ticket</v-btn>
                         </v-row>
                     </v-card-actions>
                     <v-card-text>
@@ -333,8 +366,10 @@
                                             <v-list-item three-line>
                                                 <v-list-item-content>
                                                     <h1 class="text-right caption mb-2">{{historyItem.created_at}}</h1>
-                                                    <v-list-item-title class="mb-2">{{historyItem.description}}</v-list-item-title>
-                                                    <v-list-item-subtitle>{{historyItem.employee.user_data.email}}</v-list-item-subtitle>
+                                                    <v-list-item-title class="mb-2">{{historyItem.description}}
+                                                    </v-list-item-title>
+                                                    <v-list-item-subtitle>{{historyItem.employee.user_data.email}}
+                                                    </v-list-item-subtitle>
                                                 </v-list-item-content>
                                             </v-list-item>
 
@@ -362,9 +397,11 @@
                                         >
                                             <v-list-item three-line>
                                                 <v-list-item-content>
-                                                    <h1 class="text-right caption mb-2">{{history.created_at}}</h1>
-                                                    <v-list-item-title class="mb-2">{{history.description}}</v-list-item-title>
-                                                    <v-list-item-subtitle>{{history.employee.user_data.email}}</v-list-item-subtitle>
+                                                    <p class="text-right caption mb-2">{{history.created_at}}</p>
+                                                    <v-list-item-title class="mb-2">{{history.description}}
+                                                    </v-list-item-title>
+                                                    <v-list-item-subtitle>{{history.employee.user_data.email}}
+                                                    </v-list-item-subtitle>
                                                 </v-list-item-content>
                                             </v-list-item>
 
@@ -392,8 +429,92 @@
                 errorType: '',
                 error: [],
                 ticket: {
-                    answers: []
-                }
+                    attachments: [{
+                        name: '',
+                        link: ''
+                    }
+                    ],
+                    from: {
+                        name: ''
+                    },
+                    from_entity_type: '',
+                    from_entity_id: '',
+                    to: {
+                        name: ''
+                    },
+                    priority: {
+                        name: ''
+                    },
+                    contact: {
+                        user_data:{
+                            name: '',
+                            email: ''
+                        }
+                    },
+                    to_entity_type: '',
+                    to_entity_id: '',
+                    contact_company_user_id: '',
+                    to_product_id: '',
+                    priority_id: '',
+                    name: '',
+                    description: '',
+                    connection_details: '',
+                    access_details: '',
+                    answers: [
+                        {
+                            created_at:'',
+                            files: [],
+                            attachments: [{
+                                name:'',
+                                link:''
+                            }],
+                            employee: {
+                                name: '',
+                                email: ''
+                            },
+                            answer: ''
+                        }
+                    ],
+                    history: [
+                        {
+                            created_at:'',
+                            files: [],
+                            attachments: [{
+                                name:'',
+                                link:''
+                            }],
+                            employee: {
+                                name: '',
+                                email: ''
+                            },
+                            description: ''
+                        }
+                    ],
+                    notices: [
+                        {
+                            created_at:'',
+                            files: [],
+                            attachments: [{
+                                name:'',
+                                link:''
+                            }],
+                            employee: {
+                                name: '',
+                                email: ''
+                            },
+                            description: ''
+                        }
+                    ],
+                },
+                ticketAnswer: {
+                    files: [],
+                    answer: ''
+                },
+                onFileChange(form) {
+                    this[form].files = null;
+                    console.log(event.target.files);
+                    this[form].files = event.target.files;
+                },
             }
         },
         mounted() {
@@ -412,7 +533,29 @@
                     }
                 });
             },
-
+            addTicketAnswer() {
+                const config = {
+                    headers: {'content-type': 'multipart/form-data'}
+                }
+                console.log(this.ticketAnswer);
+                let formData = new FormData();
+                for (let key in this.ticketAnswer) {
+                    if (key !== 'files') {
+                        formData.append(key, this.ticketAnswer[key]);
+                    }
+                }
+                Array.from(this.ticketAnswer.files).forEach(file => formData.append('files[]', file));
+                axios.post(`/api/ticket/${this.$route.params.id}/answer`, formData, config).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.ticketAnswer.answer = ''
+                        this.ticketAnswer.files = []
+                        this.getTicket()
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
             parseErrors(errorTypes) {
                 for (let typeIndex in errorTypes) {
                     let errorType = errorTypes[typeIndex]

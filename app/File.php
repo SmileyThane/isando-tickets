@@ -16,4 +16,8 @@ class File extends Model
         return url('/') . Storage::url($this->attributes['filepath'] . $this->attributes['name']);
     }
 
+    public function attacheable()
+    {
+        return $this->morphTo();
+    }
 }

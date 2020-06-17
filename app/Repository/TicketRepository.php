@@ -8,6 +8,7 @@ use App\ProductCompanyUser;
 use App\Role;
 use App\TeamCompanyUser;
 use App\Ticket;
+use App\TicketAnswer;
 use App\TicketHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -72,7 +73,10 @@ class TicketRepository
 
     public function find($id)
     {
-        return Ticket::where('id', $id)->with('creator', 'contact.userData', 'product', 'team', 'priority', 'status', 'answers.employee.userData', 'histories.employee.userData', 'notices.employee.userData')->first();
+        return Ticket::where('id', $id)
+            ->with('creator', 'contact.userData', 'product', 'team',
+                'priority', 'status', 'answers.employee.userData', 'answers.attachments',
+                'histories.employee.userData', 'notices.employee.userData', 'attachments')->first();
     }
 
     public function create(Request $request)
@@ -95,7 +99,7 @@ class TicketRepository
         $ticket->access_details = $request->access_details;
         $ticket->save();
         $this->addHistoryItem($ticket->id, 'Ticket created');
-        $files = $request['files'];
+        $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
         foreach ($files as $file)
         {
             $this->fileRepo->store($file, $ticket->id, Ticket::class);
@@ -168,10 +172,17 @@ class TicketRepository
 
     public function addAnswer(Request $request, $id)
     {
-        $ticket = Ticket::find($id);
-        $ticket->contact_company_user_id = $request->contact_company_user_id;
-        $ticket->save();
-        $this->addHistoryItem($ticket->id, 'Answer added');
+        $ticketAnswer = new TicketAnswer();
+        $ticketAnswer->ticket_id = $id;
+        $ticketAnswer->company_user_id = Auth::user()->employee->id;
+        $ticketAnswer->answer = $request->answer;
+        $ticketAnswer->save();
+        $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
+        foreach ($files as $file)
+        {
+            $this->fileRepo->store($file, $ticketAnswer->id, TicketAnswer::class);
+        }
+        $this->addHistoryItem($ticketAnswer->ticket_id, 'Answer added');
         return true;
     }
 

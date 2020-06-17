@@ -346,7 +346,7 @@
                     }
                 }
                 Array.from(this.ticketFrom.files).forEach(file => formData.append('files[]', file));
-                axios.post('api/ticket', formData, config).then(response => {
+                axios.post('/api/ticket', formData, config).then(response => {
                     response = response.data
                     if (response.success === true) {
                         window.open('/tickets','_self')
