@@ -110,15 +110,16 @@ class TicketRepository
     public function update(Request $request, $id)
     {
         $ticket = Ticket::find($id);
-//        $ticket->to_entity_id = $request->to_entity_id;
-//        $ticket->to_entity_type = $request->to_entity_type;
-        $ticket->contact_company_user_id = $request->contact_company_user_id;
-        $ticket->to_company_user_id = $request->to_company_user_id;
-        $ticket->to_team_id = $request->to_team_id;
-//        $ticket->priority_id = $request->priority_id;
-        $ticket->due_date = $request->due_date;
-        $ticket->save();
-        $this->addHistoryItem($ticket->id, 'Ticket updated');
+        if ($request->status_id !== $ticket->status_id) {
+            $this->updateStatus($request, $id);
+        } else {
+            $ticket->contact_company_user_id = $request->contact_company_user_id;
+            $ticket->to_company_user_id = $request->to_company_user_id;
+            $ticket->to_team_id = $request->to_team_id;
+            $ticket->due_date = $request->due_date;
+            $ticket->save();
+            $this->addHistoryItem($ticket->id, 'Ticket updated');
+        }
         return $ticket;
     }
 

@@ -20,12 +20,17 @@
                     </v-container>
                     <v-card-text>
                         <v-row>
+                            <v-col cols="12">
+                                <v-label>
+                                    <strong>Status: {{ticket.status.name}}</strong>
+                                </v-label>
+                            </v-col>
                             <v-col cols="12" md="6">
                                 <v-label>
                                     <strong>From:</strong>
                                 </v-label>
                                 <v-textarea
-                                    label="Description"
+                                    label="From"
                                     auto-grow
                                     rows="3"
                                     row-height="25"
@@ -300,7 +305,7 @@
                     <v-card-actions>
                         <v-row align="center"
                                justify="center">
-                            <v-btn color="green" style="color: white;" @click="">Close Ticket</v-btn>
+                            <v-btn color="green" style="color: white;" @click="closeTicket">Close Ticket</v-btn>
                         </v-row>
                     </v-card-actions>
                     <v-card-text>
@@ -327,13 +332,13 @@
                                                     v-model="ticket.to_team_id"
                                                     :items="ticket.to.teams"
                                                     label="Team"
-                                                    :disabled="ticket.to_team_id !== null"
+                                                    :disabled="selectionDisabled"
                                                     @change="selectTeam"
                                                 ></v-autocomplete>
                                             </v-col>
                                             <v-col cols="12">
                                                 <v-autocomplete
-                                                    :disabled="ticket.to_company_user_id !== null"
+                                                    :disabled="selectionDisabled"
                                                     color="green"
                                                     item-color="green"
                                                     item-text="employee.user_data.email"
@@ -343,7 +348,7 @@
                                                     label="Person"
                                                 ></v-autocomplete>
                                             </v-col>
-                                            <v-btn v-if="ticket.to_company_user_id === null"
+                                            <v-btn v-if="selectionDisabled === false"
                                                 dark
                                                 fab
                                                 right
@@ -434,12 +439,14 @@
     export default {
         data() {
             return {
+                selectionDisabled: false,
                 assignPanel : [],
                 alert: false,
                 errorType: '',
                 error: [],
                 employees:[],
                 ticket: {
+                    status_id:'',
                     to_company_user_id:'',
                     attachments: [{
                         name: '',
@@ -462,6 +469,9 @@
                             name: '',
                             email: ''
                         }
+                    },
+                    status: {
+                        name:''
                     },
                     to_entity_type: '',
                     to_entity_id: '',
@@ -554,6 +564,9 @@
             selectTeam()
             {
                 if (this.ticket.to_team_id !== null) {
+                    if (this.ticket.to_company_user_id){
+                        this.selectionDisabled = true
+                    }
                     this.assignPanel = [0];
                     axios.get(`/api/team/${this.ticket.to_team_id}`).then(response => {
                         response = response.data
@@ -570,11 +583,16 @@
                 axios.patch(`/api/ticket/${this.$route.params.id}`, this.ticket).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.getTeams()
+                        this.getTicket()
                     } else {
                         console.log('error')
                     }
                 });
+            },
+            closeTicket()
+            {
+                this.ticket.status_id = 5;
+                this.updateTicket();
             },
             addTicketAnswer() {
                 const config = {

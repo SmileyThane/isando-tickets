@@ -4193,15 +4193,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      selectionDisabled: false,
       assignPanel: [],
       alert: false,
       errorType: '',
       error: [],
       employees: [],
       ticket: {
+        status_id: '',
         to_company_user_id: '',
         attachments: [{
           name: '',
@@ -4223,6 +4230,9 @@ __webpack_require__.r(__webpack_exports__);
             name: '',
             email: ''
           }
+        },
+        status: {
+          name: ''
         },
         to_entity_type: '',
         to_entity_id: '',
@@ -4313,6 +4323,10 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       if (this.ticket.to_team_id !== null) {
+        if (this.ticket.to_company_user_id) {
+          this.selectionDisabled = true;
+        }
+
         this.assignPanel = [0];
         axios.get("/api/team/".concat(this.ticket.to_team_id)).then(function (response) {
           response = response.data;
@@ -4330,11 +4344,15 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
-          _this3.getTeams();
+          _this3.getTicket();
         } else {
           console.log('error');
         }
       });
+    },
+    closeTicket: function closeTicket() {
+      this.ticket.status_id = 5;
+      this.updateTicket();
     },
     addTicketAnswer: function addTicketAnswer() {
       var _this4 = this;
@@ -43008,13 +43026,28 @@ var render = function() {
                         [
                           _c(
                             "v-col",
+                            { attrs: { cols: "12" } },
+                            [
+                              _c("v-label", [
+                                _c("strong", [
+                                  _vm._v(
+                                    "Status: " + _vm._s(_vm.ticket.status.name)
+                                  )
+                                ])
+                              ])
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
                             { attrs: { cols: "12", md: "6" } },
                             [
                               _c("v-label", [_c("strong", [_vm._v("From:")])]),
                               _vm._v(" "),
                               _c("v-textarea", {
                                 attrs: {
-                                  label: "Description",
+                                  label: "From",
                                   "auto-grow": "",
                                   rows: "3",
                                   "row-height": "25",
@@ -43621,7 +43654,7 @@ var render = function() {
                             {
                               staticStyle: { color: "white" },
                               attrs: { color: "green" },
-                              on: { click: function($event) {} }
+                              on: { click: _vm.closeTicket }
                             },
                             [_vm._v("Close Ticket")]
                           )
@@ -43697,8 +43730,7 @@ var render = function() {
                                                 "item-value": "id",
                                                 items: _vm.ticket.to.teams,
                                                 label: "Team",
-                                                disabled:
-                                                  _vm.ticket.to_team_id !== null
+                                                disabled: _vm.selectionDisabled
                                               },
                                               on: { change: _vm.selectTeam },
                                               model: {
@@ -43723,10 +43755,7 @@ var render = function() {
                                           [
                                             _c("v-autocomplete", {
                                               attrs: {
-                                                disabled:
-                                                  _vm.ticket
-                                                    .to_company_user_id !==
-                                                  null,
+                                                disabled: _vm.selectionDisabled,
                                                 color: "green",
                                                 "item-color": "green",
                                                 "item-text":
@@ -43753,7 +43782,7 @@ var render = function() {
                                           1
                                         ),
                                         _vm._v(" "),
-                                        _vm.ticket.to_company_user_id === null
+                                        _vm.selectionDisabled === false
                                           ? _c(
                                               "v-btn",
                                               {
