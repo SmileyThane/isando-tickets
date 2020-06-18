@@ -4184,13 +4184,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      assignPanel: [],
       alert: false,
       errorType: '',
       error: [],
+      employees: [],
       ticket: {
+        to_company_user_id: '',
         attachments: [{
           name: '',
           link: ''
@@ -4214,6 +4226,7 @@ __webpack_require__.r(__webpack_exports__);
         },
         to_entity_type: '',
         to_entity_id: '',
+        to_team_id: '',
         contact_company_user_id: '',
         to_product_id: '',
         priority_id: '',
@@ -4229,12 +4242,14 @@ __webpack_require__.r(__webpack_exports__);
             link: ''
           }],
           employee: {
-            name: '',
-            email: ''
+            user_data: {
+              name: '',
+              email: ''
+            }
           },
           answer: ''
         }],
-        history: [{
+        histories: [{
           created_at: '',
           files: [],
           attachments: [{
@@ -4242,8 +4257,10 @@ __webpack_require__.r(__webpack_exports__);
             link: ''
           }],
           employee: {
-            name: '',
-            email: ''
+            user_data: {
+              name: '',
+              email: ''
+            }
           },
           description: ''
         }],
@@ -4285,12 +4302,42 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
-          _this.ticket = response.data; // console.log(this.userData);
+          _this.ticket = response.data;
+
+          _this.selectTeam(); // console.log(this.userData);
+
+        }
+      });
+    },
+    selectTeam: function selectTeam() {
+      var _this2 = this;
+
+      if (this.ticket.to_team_id !== null) {
+        this.assignPanel = [0];
+        axios.get("/api/team/".concat(this.ticket.to_team_id)).then(function (response) {
+          response = response.data;
+
+          if (response.success === true) {
+            _this2.employees = response.data.employees; // console.log(this.employees);
+          }
+        });
+      }
+    },
+    updateTicket: function updateTicket() {
+      var _this3 = this;
+
+      axios.patch("/api/ticket/".concat(this.$route.params.id), this.ticket).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this3.getTeams();
+        } else {
+          console.log('error');
         }
       });
     },
     addTicketAnswer: function addTicketAnswer() {
-      var _this2 = this;
+      var _this4 = this;
 
       var config = {
         headers: {
@@ -4313,10 +4360,10 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
-          _this2.ticketAnswer.answer = '';
-          _this2.ticketAnswer.files = [];
+          _this4.ticketAnswer.answer = '';
+          _this4.ticketAnswer.files = [];
 
-          _this2.getTicket();
+          _this4.getTicket();
         } else {
           console.log('error');
         }
@@ -42930,7 +42977,12 @@ var render = function() {
                     "v-toolbar",
                     [
                       _c("v-toolbar-title", [
-                        _vm._v("Ticket: " + _vm._s(_vm.ticket.name))
+                        _vm._v(
+                          "#" +
+                            _vm._s(_vm.ticket.id) +
+                            " " +
+                            _vm._s(_vm.ticket.name)
+                        )
                       ]),
                       _vm._v(" "),
                       _c("v-spacer")
@@ -43585,6 +43637,16 @@ var render = function() {
                     [
                       _c(
                         "v-expansion-panels",
+                        {
+                          attrs: { multiple: "" },
+                          model: {
+                            value: _vm.assignPanel,
+                            callback: function($$v) {
+                              _vm.assignPanel = $$v
+                            },
+                            expression: "assignPanel"
+                          }
+                        },
                         [
                           _c(
                             "v-expansion-panel",
@@ -43624,16 +43686,31 @@ var render = function() {
                                       { staticClass: "row" },
                                       [
                                         _c(
-                                          "div",
-                                          { staticClass: "col-md-6" },
+                                          "v-col",
+                                          { attrs: { cols: "md-12" } },
                                           [
-                                            _c("v-text-field", {
+                                            _c("v-autocomplete", {
                                               attrs: {
                                                 color: "green",
-                                                label: "Name",
-                                                name: "team_name",
-                                                type: "text",
-                                                required: ""
+                                                "item-color": "green",
+                                                "item-text": "name",
+                                                "item-value": "id",
+                                                items: _vm.ticket.to.teams,
+                                                label: "Team",
+                                                disabled:
+                                                  _vm.ticket.to_team_id !== null
+                                              },
+                                              on: { change: _vm.selectTeam },
+                                              model: {
+                                                value: _vm.ticket.to_team_id,
+                                                callback: function($$v) {
+                                                  _vm.$set(
+                                                    _vm.ticket,
+                                                    "to_team_id",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression: "ticket.to_team_id"
                                               }
                                             })
                                           ],
@@ -43641,37 +43718,62 @@ var render = function() {
                                         ),
                                         _vm._v(" "),
                                         _c(
-                                          "div",
-                                          { staticClass: "col-md-6" },
+                                          "v-col",
+                                          { attrs: { cols: "12" } },
                                           [
-                                            _c("v-text-field", {
+                                            _c("v-autocomplete", {
                                               attrs: {
+                                                disabled:
+                                                  _vm.ticket
+                                                    .to_company_user_id !==
+                                                  null,
                                                 color: "green",
-                                                label: "Description",
-                                                name: "team_description",
-                                                type: "text",
-                                                required: ""
+                                                "item-color": "green",
+                                                "item-text":
+                                                  "employee.user_data.email",
+                                                "item-value": "employee.id",
+                                                items: _vm.employees,
+                                                label: "Person"
+                                              },
+                                              model: {
+                                                value:
+                                                  _vm.ticket.to_company_user_id,
+                                                callback: function($$v) {
+                                                  _vm.$set(
+                                                    _vm.ticket,
+                                                    "to_company_user_id",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression:
+                                                  "ticket.to_company_user_id"
                                               }
                                             })
                                           ],
                                           1
                                         ),
                                         _vm._v(" "),
-                                        _c(
-                                          "v-btn",
-                                          {
-                                            attrs: {
-                                              dark: "",
-                                              fab: "",
-                                              right: "",
-                                              bottom: "",
-                                              color: "green"
-                                            },
-                                            on: { click: function($event) {} }
-                                          },
-                                          [_c("v-icon", [_vm._v("mdi-plus")])],
-                                          1
-                                        )
+                                        _vm.ticket.to_company_user_id === null
+                                          ? _c(
+                                              "v-btn",
+                                              {
+                                                attrs: {
+                                                  dark: "",
+                                                  fab: "",
+                                                  right: "",
+                                                  bottom: "",
+                                                  color: "green"
+                                                },
+                                                on: { click: _vm.updateTicket }
+                                              },
+                                              [
+                                                _c("v-icon", [
+                                                  _vm._v("mdi-plus")
+                                                ])
+                                              ],
+                                              1
+                                            )
+                                          : _vm._e()
                                       ],
                                       1
                                     )

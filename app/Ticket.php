@@ -20,7 +20,7 @@ class Ticket extends Model
 
     public function getToAttribute()
     {
-        return $this->attributes['to_entity_type']::find($this->attributes['to_entity_id']);
+        return $this->attributes['to_entity_type']::where('id',$this->attributes['to_entity_id'])->with('teams')->first();
     }
 
     public function getLastUpdateAttribute(): string

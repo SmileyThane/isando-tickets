@@ -12,4 +12,8 @@ class TeamCompanyUser extends Model
     protected $fillable = ['id', 'team_id', 'company_user_id'];
     protected $hidden = ['updated_at', 'created_at'];
 
+    public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(CompanyUser::class, 'id', 'company_user_id');
+    }
 }

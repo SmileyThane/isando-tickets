@@ -40,7 +40,7 @@ class TeamRepository
 
     public function find($id)
     {
-        return Team::where('id', $id)->with('employees')->first();
+        return Team::where('id', $id)->with('employees.employee.userData')->first();
     }
 
     public function create(Request $request)

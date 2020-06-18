@@ -10,7 +10,7 @@
             >
                 <v-card>
                     <v-toolbar>
-                        <v-toolbar-title>Ticket: {{ ticket.name }}</v-toolbar-title>
+                        <v-toolbar-title>#{{ ticket.id }} {{ ticket.name }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-container>
@@ -304,7 +304,10 @@
                         </v-row>
                     </v-card-actions>
                     <v-card-text>
-                        <v-expansion-panels>
+                        <v-expansion-panels
+                            multiple
+                            v-model="assignPanel"
+                        >
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     Assign to:
@@ -315,32 +318,38 @@
                                 <v-expansion-panel-content>
                                     <v-form>
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <v-text-field
+                                            <v-col cols="md-12">
+                                                <v-autocomplete
                                                     color="green"
-                                                    label="Name"
-                                                    name="team_name"
-                                                    type="text"
-                                                    required
-                                                ></v-text-field>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <v-text-field
+                                                    item-color="green"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="ticket.to_team_id"
+                                                    :items="ticket.to.teams"
+                                                    label="Team"
+                                                    :disabled="ticket.to_team_id !== null"
+                                                    @change="selectTeam"
+                                                ></v-autocomplete>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-autocomplete
+                                                    :disabled="ticket.to_company_user_id !== null"
                                                     color="green"
-                                                    label="Description"
-                                                    name="team_description"
-                                                    type="text"
-
-                                                    required
-                                                ></v-text-field>
-                                            </div>
-                                            <v-btn
+                                                    item-color="green"
+                                                    item-text="employee.user_data.email"
+                                                    item-value="employee.id"
+                                                    v-model="ticket.to_company_user_id"
+                                                    :items="employees"
+                                                    label="Person"
+                                                ></v-autocomplete>
+                                            </v-col>
+                                            <v-btn v-if="ticket.to_company_user_id === null"
                                                 dark
                                                 fab
                                                 right
                                                 bottom
                                                 color="green"
-                                                @click=""
+                                                @click="updateTicket"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
                                             </v-btn>
@@ -425,10 +434,13 @@
     export default {
         data() {
             return {
+                assignPanel : [],
                 alert: false,
                 errorType: '',
                 error: [],
+                employees:[],
                 ticket: {
+                    to_company_user_id:'',
                     attachments: [{
                         name: '',
                         link: ''
@@ -453,6 +465,7 @@
                     },
                     to_entity_type: '',
                     to_entity_id: '',
+                    to_team_id:'',
                     contact_company_user_id: '',
                     to_product_id: '',
                     priority_id: '',
@@ -469,13 +482,15 @@
                                 link:''
                             }],
                             employee: {
-                                name: '',
-                                email: ''
+                                user_data:{
+                                    name: '',
+                                    email: ''
+                                }
                             },
                             answer: ''
                         }
                     ],
-                    history: [
+                    histories: [
                         {
                             created_at:'',
                             files: [],
@@ -484,8 +499,10 @@
                                 link:''
                             }],
                             employee: {
-                                name: '',
-                                email: ''
+                                user_data:{
+                                    name: '',
+                                    email: ''
+                                }
                             },
                             description: ''
                         }
@@ -529,7 +546,33 @@
                     response = response.data
                     if (response.success === true) {
                         this.ticket = response.data
+                        this.selectTeam();
                         // console.log(this.userData);
+                    }
+                });
+            },
+            selectTeam()
+            {
+                if (this.ticket.to_team_id !== null) {
+                    this.assignPanel = [0];
+                    axios.get(`/api/team/${this.ticket.to_team_id}`).then(response => {
+                        response = response.data
+                        if (response.success === true) {
+                            this.employees = response.data.employees
+                            // console.log(this.employees);
+                        }
+                    });
+
+                }
+            },
+            updateTicket()
+            {
+                axios.patch(`/api/ticket/${this.$route.params.id}`, this.ticket).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getTeams()
+                    } else {
+                        console.log('error')
                     }
                 });
             },
