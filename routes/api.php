@@ -23,7 +23,7 @@ Route::get('plans', 'API\AuthController@plans');
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('logout', 'API\AuthController@logout');
-
+    Route::get('roles', 'API\UserController@roles');
     //user management
     Route::get('user', 'API\UserController@find');
     Route::post('user', 'API\UserController@update');
@@ -31,7 +31,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     //company management
     Route::get('company/{id?}', 'API\CompanyController@find');
     Route::post('company/{id}', 'API\CompanyController@update');
-    Route::post('company/employee', 'API\CompanyController@invite');
+    Route::post('company/{id}/employee', 'API\CompanyController@invite');
     Route::post('company/product', 'API\CompanyController@attachProduct');
 
     //client management

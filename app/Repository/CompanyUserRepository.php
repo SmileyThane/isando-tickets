@@ -65,20 +65,20 @@ class CompanyUserRepository
     public function invite(Request $request)
     {
         $isNew = false;
-        $request->password = Controller::getRandomString();
-        $user = User::where('email', $request->email)->first();
+        $request['password'] = Controller::getRandomString();
+        $user = User::where('email', $request['email'])->first();
         if (!$user) {
-            $this->userRepo->create($request);
+            $user = $this->userRepo->create($request);
             $isNew = true;
         }
-        $request->user_id = $user->id;
+        $request['user_id'] = $user->id;
         $isValid = $this->validate($request);
         if ($isValid === true) {
-            $companyUser = $this->create($request->company_id, $request->user_id);
-            $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request->role_id);
+            $companyUser = $this->create($request['company_id'], $request['user_id']);
+            $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
             return Controller::showResponse(true, $companyUser);
         }
-        $isNew === true ? $user->notify(new RegularInviteEmail($request->name, $request->role_id, $request->email, $request->password)) : null;
+        $isNew === true ? $user->notify(new RegularInviteEmail($request['name'], $request['role_id'], $request['email'], $request['password'])) : null;
         return Controller::showResponse(false, $isValid);
     }
 

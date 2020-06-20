@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Repository\UserRepository;
+use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,4 +37,10 @@ class UserController extends Controller
         }
         return self::showResponse($success, $result ?? $isValid);
     }
+
+    public function roles()
+    {
+        return self::showResponse(true, Role::all());
+    }
+
 }

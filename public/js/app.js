@@ -2991,6 +2991,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3021,11 +3022,22 @@ __webpack_require__.r(__webpack_exports__);
           user_data: ''
         }]
       },
-      employeeForm: {}
+      employeeForm: {
+        name: '',
+        email: '',
+        role_id: '',
+        company_id: ''
+      },
+      roles: [{
+        id: '',
+        name: ''
+      }]
     };
   },
   mounted: function mounted() {
     this.getCompany();
+    this.getRoles();
+    this.employeeForm.company_id = this.$route.params.id;
   },
   methods: {
     getCompany: function getCompany() {
@@ -3041,15 +3053,40 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    addEmployee: function addEmployee() {},
-    updateCompany: function updateCompany() {
+    getRoles: function getRoles() {
       var _this2 = this;
+
+      axios.get('/api/roles').then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this2.roles = response.data;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    addEmployee: function addEmployee() {
+      var _this3 = this;
+
+      axios.post("/api/company/".concat(this.$route.params.id, "/employee"), this.employeeForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this3.getCompany();
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    updateCompany: function updateCompany() {
+      var _this4 = this;
 
       axios.post("/api/company/".concat(this.$route.params.id), this.company).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
-          _this2.company = response.data;
+          _this4.company = response.data;
         } else {
           console.log('error');
         }
@@ -42340,7 +42377,7 @@ var render = function() {
                                   attrs: {
                                     color: "green",
                                     label: "Name",
-                                    name: "product_name",
+                                    name: "name",
                                     type: "text",
                                     required: ""
                                   },
@@ -42364,16 +42401,16 @@ var render = function() {
                                   attrs: {
                                     color: "green",
                                     label: "Email",
-                                    name: "product_name",
+                                    name: "email",
                                     type: "text",
                                     required: ""
                                   },
                                   model: {
-                                    value: _vm.employeeForm.name,
+                                    value: _vm.employeeForm.email,
                                     callback: function($$v) {
-                                      _vm.$set(_vm.employeeForm, "name", $$v)
+                                      _vm.$set(_vm.employeeForm, "email", $$v)
                                     },
-                                    expression: "employeeForm.name"
+                                    expression: "employeeForm.email"
                                   }
                                 })
                               ],
@@ -42384,20 +42421,21 @@ var render = function() {
                               "div",
                               { staticClass: "col-md-4" },
                               [
-                                _c("v-text-field", {
+                                _c("v-select", {
                                   attrs: {
-                                    color: "green",
                                     label: "Role",
-                                    name: "product_name",
-                                    type: "text",
-                                    required: ""
+                                    color: "green",
+                                    "item-color": "green",
+                                    "item-text": "name",
+                                    "item-value": "id",
+                                    items: _vm.roles
                                   },
                                   model: {
-                                    value: _vm.employeeForm.name,
+                                    value: _vm.employeeForm.role_id,
                                     callback: function($$v) {
-                                      _vm.$set(_vm.employeeForm, "name", $$v)
+                                      _vm.$set(_vm.employeeForm, "role_id", $$v)
                                     },
-                                    expression: "employeeForm.name"
+                                    expression: "employeeForm.role_id"
                                   }
                                 })
                               ],

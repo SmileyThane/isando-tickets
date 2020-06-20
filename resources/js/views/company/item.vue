@@ -112,7 +112,7 @@
                                         <v-text-field
                                             color="green"
                                             label="Name"
-                                            name="product_name"
+                                            name="name"
                                             type="text"
                                             v-model="employeeForm.name"
                                             required
@@ -122,21 +122,22 @@
                                         <v-text-field
                                             color="green"
                                             label="Email"
-                                            name="product_name"
+                                            name="email"
                                             type="text"
-                                            v-model="employeeForm.name"
+                                            v-model="employeeForm.email"
                                             required
                                         ></v-text-field>
                                     </div>
                                     <div class="col-md-4">
-                                        <v-text-field
-                                            color="green"
+                                        <v-select
                                             label="Role"
-                                            name="product_name"
-                                            type="text"
-                                            v-model="employeeForm.name"
-                                            required
-                                        ></v-text-field>
+                                            color="green"
+                                            item-color="green"
+                                            item-text="name"
+                                            item-value="id"
+                                            :items="roles"
+                                            v-model="employeeForm.role_id"
+                                        />
                                     </div>
                                     <v-btn
                                         dark
@@ -190,11 +191,25 @@
                         }
                     ]
                 },
-                employeeForm: {},
+                employeeForm: {
+                    name: '',
+                    email: '',
+                    role_id: '',
+                    company_id: ''
+                },
+                roles: [
+                    {
+                        id: '',
+                        name: ''
+                    }
+                ]
+
             }
         },
         mounted() {
             this.getCompany()
+            this.getRoles()
+            this.employeeForm.company_id = this.$route.params.id
         },
         methods: {
             getCompany() {
@@ -208,8 +223,27 @@
 
                 });
             },
-            addEmployee() {
+            getRoles() {
+                axios.get('/api/roles').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.roles = response.data
+                    } else {
+                        console.log('error')
+                    }
 
+                });
+            },
+            addEmployee() {
+                axios.post(`/api/company/${this.$route.params.id}/employee`, this.employeeForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                    } else {
+                        console.log('error')
+                    }
+
+                });
             },
             updateCompany() {
                 axios.post(`/api/company/${this.$route.params.id}`, this.company).then(response => {
