@@ -25,6 +25,12 @@ class CompanyController extends Controller
         return self::showResponse(true, $company);
     }
 
+    public function update(Request $request, $id)
+    {
+        $company = $this->companyRepo->update( $request, $id);
+        return self::showResponse(true, $company);
+    }
+
     public function invite(Request $request)
     {
         return $this->companyUserRepo->invite($request);

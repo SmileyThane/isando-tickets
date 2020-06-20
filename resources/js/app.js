@@ -23,11 +23,10 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        axios.get('api/user').then(response => {
-            response = response.data
-            response.success === false ?
+        axios.get('/api/user').then(response => {
+            response.data === null || response.data.success === false ?
                 localStorage.setItem('auth_token', null) :
-                localStorage.setItem('name', response.data.name)
+                localStorage.setItem('name', response.data.data.name)
         });
         if (localStorage.getItem('auth_token') === null) {
             next({path: '/login'})

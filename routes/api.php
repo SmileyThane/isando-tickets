@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     //company management
     Route::get('company/{id?}', 'API\CompanyController@find');
+    Route::post('company/{id}', 'API\CompanyController@update');
     Route::post('company/employee', 'API\CompanyController@invite');
     Route::post('company/product', 'API\CompanyController@attachProduct');
 

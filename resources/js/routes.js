@@ -1,5 +1,6 @@
 import Home from './views/Home'
 import Company from './views/company/index'
+import SingleCompany from './views/company/item'
 import Customer from './views/customer/index'
 import Product from './views/product/index'
 import Team from './views/team/index'
@@ -47,6 +48,14 @@ export default [
             requiresAuth: true,
         },
         component: Company
+    },
+    {
+        path: '/company/:id',
+        name: 'Company Data',
+        meta: {
+            requiresAuth: true,
+        },
+        component: SingleCompany
     },
     {
         path: '/product',

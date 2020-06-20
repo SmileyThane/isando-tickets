@@ -53,11 +53,11 @@ class CompanyRepository
 
     public function update(Request $request, $id)
     {
-        $company = Company::find($id);
-        //modify it
-        foreach ($request->all() as $param => $value) {
-            $company->$param = $value;
-        }
+        $company = Company::where('id', $id)->with('employees.userData', 'clients', 'teams')->first();
+        $company->name = $request->name;
+        $company->company_number = $request->company_number;
+        $company->description = $request->description;
+        $company->registration_date = $request->registration_date ?? now();
         $company->save();
         return $company;
     }
