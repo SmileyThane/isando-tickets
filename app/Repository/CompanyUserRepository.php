@@ -10,6 +10,7 @@ use App\Notifications\RegularInviteEmail;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class CompanyUserRepository
 {
@@ -26,8 +27,14 @@ class CompanyUserRepository
     public function validate($request)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
             'company_id' => 'required',
+            'user_id' => [
+                'required',
+                Rule::unique('company_users')->where(function ($query) use($request) {
+                    return $query->where('company_id', $request['company_id'])
+                        ->where('user_id', $request['user_id']);
+                }),
+            ],
         ]);
 
         if ($validator->fails()) {
@@ -72,8 +79,7 @@ class CompanyUserRepository
         }
         $request['user_id'] = $user->id;
         $isValid = $this->validate($request);
-        $isExists = CompanyUser::where(['company_id' => $request['company_id'], 'user_id' => $request['user_id']])->exists();
-        if ($isValid === true && $isExists === false) {
+        if ($isValid === true) {
             $companyUser = $this->create($request['company_id'], $request['user_id']);
             $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
             $isNew === true ? $user->notify(new RegularInviteEmail($request['name'], $request['role_id'], $request['email'], $request['password'])) : null;

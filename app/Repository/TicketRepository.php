@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Notifications\NewTicket;
 use App\ProductCompanyUser;
 use App\Role;
 use App\TeamCompanyUser;
@@ -100,8 +101,7 @@ class TicketRepository
         $ticket->save();
         $this->addHistoryItem($ticket->id, 'Ticket created');
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
-        foreach ($files as $file)
-        {
+        foreach ($files as $file) {
             $this->fileRepo->store($file, $ticket->id, Ticket::class);
         }
         return $ticket;
@@ -179,8 +179,7 @@ class TicketRepository
         $ticketAnswer->answer = $request->answer;
         $ticketAnswer->save();
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
-        foreach ($files as $file)
-        {
+        foreach ($files as $file) {
             $this->fileRepo->store($file, $ticketAnswer->id, TicketAnswer::class);
         }
         $this->addHistoryItem($ticketAnswer->ticket_id, 'Answer added');
@@ -205,6 +204,26 @@ class TicketRepository
         $ticketHistory->description = $description;
         $ticketHistory->save();
         return true;
+    }
+
+    public function emailEmployees($companyUsers, Ticket $ticket)
+    {
+        foreach ($companyUsers as $companyUser) {
+            $user = $companyUser->userData;
+            $user->notify(new NewTicket($user->name, $ticket->name, $ticket->id));
+        }
+    }
+
+    public function filterEmployeesByRoles($employees, $roles)
+    {
+        return $employees->filter(function ($item) use ($roles) {
+            foreach ($item->roles as $role) {
+                if (in_array($role->id, $roles, true)) {
+                    return $item;
+                }
+            }
+        });
+
     }
 
 }

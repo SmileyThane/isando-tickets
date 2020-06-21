@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Repository\TicketRepository;
+use App\Role;
+use App\Team;
+use App\Ticket;
 use App\TicketPriority;
 use Illuminate\Http\Request;
 
@@ -40,6 +43,8 @@ class TicketController extends Controller
         $result = $this->ticketRepo->validate($request);
         if ($result === true) {
             $result = $this->ticketRepo->create($request);
+            $employees = $this->ticketRepo->filterEmployeesByRoles($result->to->employees, [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER]);
+            $this->ticketRepo->emailEmployees($employees, $result);
             $success = true;
         }
         return self::showResponse($success, $result);
@@ -65,6 +70,9 @@ class TicketController extends Controller
     public function attachTeam(Request $request, $id)
     {
         $result = $this->ticketRepo->attachTeam($request, $id);
+        $employees = Team::find($request->team_id)->employees;
+        $ticket = Ticket::find($id);
+        $this->ticketRepo->emailEmployees($employees, $ticket);
         return self::showResponse($result);
     }
 
