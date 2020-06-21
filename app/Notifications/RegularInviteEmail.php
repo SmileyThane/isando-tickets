@@ -6,6 +6,7 @@ use App\Role;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class RegularInviteEmail extends Notification
 {
@@ -52,6 +53,7 @@ class RegularInviteEmail extends Notification
      */
     public function toMail($notifiable): MailMessage
     {
+        Log::info('email sending was started!');
         return (new MailMessage)
             ->line('Hello, ' . $this->name)
             ->line('You has been attached to ticketing system as ' . Role::find($this->role)->name)

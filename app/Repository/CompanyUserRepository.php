@@ -7,7 +7,6 @@ namespace App\Repository;
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
-use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -73,12 +72,13 @@ class CompanyUserRepository
         }
         $request['user_id'] = $user->id;
         $isValid = $this->validate($request);
-        if ($isValid === true) {
+        $isExists = CompanyUser::where(['company_id' => $request['company_id'], 'user_id' => $request['user_id']])->exists();
+        if ($isValid === true && $isExists === false) {
             $companyUser = $this->create($request['company_id'], $request['user_id']);
             $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
+            $isNew === true ? $user->notify(new RegularInviteEmail($request['name'], $request['role_id'], $request['email'], $request['password'])) : null;
             return Controller::showResponse(true, $companyUser);
         }
-        $isNew === true ? $user->notify(new RegularInviteEmail($request['name'], $request['role_id'], $request['email'], $request['password'])) : null;
         return Controller::showResponse(false, $isValid);
     }
 
