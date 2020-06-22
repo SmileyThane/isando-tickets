@@ -59,7 +59,7 @@ class TicketRepository
                     $tickets->orWhereIn('to_product_id', $productsIds);
                 }
             }
-            $tickets->orWhere(['to_entity_type' => Company::class, 'to_entity_id' => $companyUser->company_id]);
+            $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
         }
         if ($companyUser->hasRole(Role::MANAGER)) {
             $teams = TeamCompanyUser::where('company_user_id', $companyUser->id)->get();
