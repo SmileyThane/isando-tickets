@@ -4520,6 +4520,7 @@ __webpack_require__.r(__webpack_exports__);
         priority: {
           name: ''
         },
+        can_be_edited: '',
         contact: {
           user_data: {
             name: '',
@@ -4616,6 +4617,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     selectTeam: function selectTeam() {
       var _this2 = this;
+
+      if (this.ticket.can_be_edited === false) {
+        this.selectionDisabled = true;
+      }
 
       if (this.ticket.to_team_id !== null) {
         if (this.ticket.to_company_user_id) {

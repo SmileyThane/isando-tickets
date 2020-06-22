@@ -5,13 +5,14 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Ticket extends Model
 {
     use SoftDeletes;
 
     protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id'];
-    protected $appends = ['from', 'to', 'last_update'];
+    protected $appends = ['from', 'to', 'last_update', 'can_be_edited', 'can_be_answered'];
 
     public function getFromAttribute()
     {
@@ -20,7 +21,18 @@ class Ticket extends Model
 
     public function getToAttribute()
     {
-        return $this->attributes['to_entity_type']::where('id',$this->attributes['to_entity_id'])->with('teams', 'employees')->first();
+        return $this->attributes['to_entity_type']::where('id', $this->attributes['to_entity_id'])->with('teams', 'employees')->first();
+    }
+
+    public function getCanBeEditedAttribute()
+    {
+        $roles = Auth::user()->employee->roles->pluck('id')->toArray();
+        return count(array_intersect($roles, Role::HIGH_PRIVIGIES)) > 0;
+    }
+
+    public function getCanBeAnsweredAttribute()
+    {
+        return true;
     }
 
     public function getLastUpdateAttribute(): string

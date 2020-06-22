@@ -464,6 +464,7 @@
                     priority: {
                         name: ''
                     },
+                    can_be_edited:'',
                     contact: {
                         user_data:{
                             name: '',
@@ -563,6 +564,9 @@
             },
             selectTeam()
             {
+                if (this.ticket.can_be_edited === false){
+                    this.selectionDisabled = true
+                }
                 if (this.ticket.to_team_id !== null) {
                     if (this.ticket.to_company_user_id){
                         this.selectionDisabled = true
