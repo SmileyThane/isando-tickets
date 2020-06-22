@@ -39,9 +39,11 @@
                                     type="text"
                                     v-model="email"
                                     required
+                                    autocomplete="new-email"
                                 ></v-text-field>
 
                                 <v-text-field
+                                    autocomplete="new-password"
                                     color="green"
                                     id="password"
                                     label="Password"
