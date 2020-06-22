@@ -41,7 +41,7 @@ class ProductRepository
         $companyId = $employee->company_id;
         $products = null;
         if (!$employee->hasRole(Role::COMPANY_CLIENT)) {
-            $products = CompanyProduct::where('company_id', $companyId)->with('productData')->paginate();
+            $products = CompanyProduct::where('company_id', $companyId)->with('productData')->paginate(1000);
         }
         return $products;
     }

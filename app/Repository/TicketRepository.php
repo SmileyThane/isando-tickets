@@ -4,6 +4,7 @@
 namespace App\Repository;
 
 
+use App\Company;
 use App\Notifications\NewTicket;
 use App\ProductCompanyUser;
 use App\Role;
@@ -58,6 +59,7 @@ class TicketRepository
                     $tickets->orWhereIn('to_product_id', $productsIds);
                 }
             }
+            $tickets->orWhere(['to_entity_type' => Company::class, 'to_entity_id' => $companyUser->company_id]);
         }
         if ($companyUser->hasRole(Role::MANAGER)) {
             $teams = TeamCompanyUser::where('company_user_id', $companyUser->id)->get();
@@ -68,7 +70,7 @@ class TicketRepository
                 }
             }
         }
-        return $tickets->with('creator', 'contact.userData', 'product', 'team', 'priority', 'status')->orderBy('created_at', 'desc')->paginate();
+        return $tickets->with('creator', 'contact.userData', 'product', 'team', 'priority', 'status')->orderBy('created_at', 'desc')->paginate(1000);
     }
 
 

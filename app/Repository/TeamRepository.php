@@ -34,7 +34,7 @@ class TeamRepository
     public function all(Request $request)
     {
         $companyId = Auth::user()->employee->company_id;
-        return Company::find($companyId)->teams()->paginate();
+        return Company::find($companyId)->teams()->paginate(1000);
     }
 
 
