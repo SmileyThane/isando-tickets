@@ -69,7 +69,12 @@
         },
         methods: {
             getUsername(){
-                this.username = localStorage.getItem('name')
+                axios.get('/api/user').then(response => {
+                    response = response.data;
+                    if (response.success === true){
+                        this.username = response.data.name;
+                    }
+                });
             },
             logout(e) {
                 e.preventDefault()

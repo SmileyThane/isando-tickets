@@ -2007,7 +2007,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     getUsername: function getUsername() {
-      this.username = localStorage.getItem('name');
+      var _this = this;
+
+      axios.get('/api/user').then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this.username = response.data.name;
+        }
+      });
     },
     logout: function logout(e) {
       e.preventDefault();
