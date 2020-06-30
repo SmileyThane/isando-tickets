@@ -5,6 +5,7 @@ namespace App\Repository;
 
 
 use App\Company;
+use App\MailCache;
 use App\Ticket;
 use App\User;
 use Carbon\Carbon;
@@ -23,7 +24,6 @@ class EmailReceiverRepository
             $mailCache = MailCache::latest()->first();
             $since = $mailCache ? $mailCache->created_at : Carbon::now()->subDays(2);
             $messages = $aFolder->query()->since($since)->get();
-//            dd($messages);
             $this->handleEmailMessages($messages, $type);
             return $this->success();
         } catch (\Throwable $th) {
@@ -42,7 +42,6 @@ class EmailReceiverRepository
             Log::info('_________body_start' . $message->getTextBody() . '_________body_end');
             $senderObj = $res[$key]['sender'][0];
             $senderEmail = $senderObj->mail;
-            CustomDbConnection::reset();
             $userGlobal = User::where('email', $senderEmail)->first();
             if ($userGlobal) {
                 try {
@@ -50,9 +49,8 @@ class EmailReceiverRepository
                     $ticketAttributes['Domain'] = $userGlobal->domain_hash;
                     $cachedCount = MailCache::where('message_key', $key)->count();
                     if ($cachedCount === 0) {
-                        EmailLogRepository::addEmailCache($key, $res[$key]['subject']);
+                        $this->addMailCache($key, $res[$key]['subject']);
                     }
-                    CustomDbConnection::connect($ticketAttributes['Domain']);
                     $ticket = Ticket::where('subject', 'like', $ticketAttributes['Subject'])->first();
 
                     if ($ticket !== null && $cachedCount === 0) {
@@ -106,13 +104,13 @@ class EmailReceiverRepository
         if (!$userFrom) {
             Log::info($senderEmail . ' not found');
         }
-        $token = $user->createToken();
-        $companyFrom = Company::find($userFrom->userCompany()->company_id);
-        $companyTo = Company::find($userTo->userCompany()->company_id);
+        $token = $userFrom->createToken();
+        $companyFrom = Company::find($userFrom->employee()->company_id);
+        $companyTo = Company::find($userTo->employee()->company_id);
         Log::info($companyFrom->name . '  === ' . $companyTo->name);
         $params = [
             'company_id' => $companyFrom->id,
-            'created_by_company_user_id' => $userFrom->userCompany()->id,
+            'created_by_company_user_id' => $userFrom->employee()->id,
             'message_subject' => $ticketSubject,
             'project_description' => $message->getTextBody(),
             'assigned_to_company_id' => $companyTo->id,
@@ -127,6 +125,15 @@ class EmailReceiverRepository
         $request->headers->set('Accept', 'application/json');
         $response = app()->handle($request);
         return $response->getContent();
+    }
+
+    public function addMailCache($key, $subject): MailCache
+    {
+        $mailCache = new MailCache();
+        $mailCache->message_key = $key;
+        $mailCache->subject = $subject;
+        $mailCache->save();
+        return $mailCache;
     }
 
 
