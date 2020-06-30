@@ -3,7 +3,6 @@
 
 namespace App\Repository;
 
-
 use App\Company;
 use App\MailCache;
 use App\Ticket;
