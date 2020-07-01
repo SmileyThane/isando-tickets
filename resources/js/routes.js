@@ -5,6 +5,7 @@ import Customer from './views/customer/index'
 import SingleCustomer from './views/customer/item'
 import Product from './views/product/index'
 import Team from './views/team/index'
+import SingleTeam from './views/team/item'
 import Ticket from './views/ticket/index'
 import CreateTicket from './views/ticket/create'
 import SingleTicket from './views/ticket/item'
@@ -89,6 +90,14 @@ export default [
             requiresAuth: true,
         },
         component: Team
+    },
+    {
+        path: '/team/:id',
+        name: 'Team Data',
+        meta: {
+            requiresAuth: true,
+        },
+        component: SingleTeam
     },
     {
         path: '/tickets',
