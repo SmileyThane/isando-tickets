@@ -203,7 +203,7 @@
                 });
             },
             updateTeam() {
-                axios.patch(`/api/Team/${this.$route.params.id}`, this.team).then(response => {
+                axios.patch(`/api/team/${this.$route.params.id}`, this.team).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.team.team_name = response.data.name
