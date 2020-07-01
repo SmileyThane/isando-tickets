@@ -5,18 +5,24 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Repository\ClientRepository;
+use App\Repository\CompanyUserRepository;
 use App\Repository\UserRepository;
+use App\Role;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
     protected $userRepo;
     protected $clientRepo;
+    protected $companyUserRepo;
 
-    public function __construct(UserRepository $userRepository, ClientRepository $clientRepository)
+    public function __construct(UserRepository $userRepository, ClientRepository $clientRepository, CompanyUserRepository $companyUserRepository)
     {
         $this->userRepo = $userRepository;
         $this->clientRepo = $clientRepository;
+        $this->companyUserRepo = $companyUserRepository;
     }
 
     public function get(Request $request)
@@ -67,6 +73,10 @@ class ClientController extends Controller
 
     public function attach(Request $request)
     {
+        $request['role_id'] = Role::COMPANY_CLIENT;
+        $request['company_id'] = Auth::user()->employee->company_id;
+        $this->companyUserRepo->invite($request);
+        $request['company_user_id'] = User::where('email', $request['email'])->first()->employee->id;
         $result = $this->clientRepo->attach($request);
         return self::showResponse($result);
     }

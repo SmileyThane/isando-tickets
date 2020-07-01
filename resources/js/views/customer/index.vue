@@ -68,7 +68,23 @@
                             :items="customers"
                             :items-per-page="25"
                             class="elevation-1"
-                        ></v-data-table>
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-icon
+                                    small
+                                    class="mr-2"
+                                    @click="showItem(item)"
+                                >
+                                    mdi-eye
+                                </v-icon>
+                                <v-icon
+                                    small
+                                    @click="showItem(item)"
+                                >
+                                    mdi-delete
+                                </v-icon>
+                            </template>
+                        </v-data-table>
                     </div>
                 </div>
             </div>
@@ -91,7 +107,7 @@
                     },
                     {text: 'name', value: 'name'},
                     {text: 'Description', value: 'description'},
-                    {text: 'Actions', value: ''},
+                    {text: 'Actions', value: 'actions', sortable: false},
                 ],
                 customers: [],
                 clientForm: {
@@ -143,6 +159,9 @@
                         console.log('error')
                     }
                 });
+            },
+            showItem(item) {
+                this.$router.push(`/customer/${item.id}`)
             }
         }
     }
