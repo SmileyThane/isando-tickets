@@ -11,6 +11,7 @@ use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ClientRepository
 {
@@ -22,8 +23,14 @@ class ClientRepository
             'client_description' => 'required',
         ];
         if ($new === true) {
-            $params['supplier_id'] = 'required';
             $params['supplier_type'] = 'required';
+            $params['supplier_id'] = [
+                'required',
+                Rule::unique('clients')->where(function ($query) use($request) {
+                    return $query->where('name', $request['client_name'])
+                        ->where('supplier_type', $request['supplier_type']);
+                }),
+            ];
         }
         $validator = Validator::make($request->all(), $params);
         if ($validator->fails()) {
