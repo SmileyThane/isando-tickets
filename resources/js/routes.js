@@ -4,6 +4,7 @@ import SingleCompany from './views/company/item'
 import Customer from './views/customer/index'
 import SingleCustomer from './views/customer/item'
 import Product from './views/product/index'
+import SingleProduct from './views/product/item'
 import Team from './views/team/index'
 import SingleTeam from './views/team/item'
 import Ticket from './views/ticket/index'
@@ -66,6 +67,14 @@ export default [
             requiresAuth: true,
         },
         component: Product
+    },
+    {
+        path: '/product/:id',
+        name: 'Product Data',
+        meta: {
+            requiresAuth: true,
+        },
+        component: SingleProduct
     },
     {
         path: '/customer/:id',
