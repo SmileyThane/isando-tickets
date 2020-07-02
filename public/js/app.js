@@ -4064,15 +4064,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4104,20 +4095,26 @@ __webpack_require__.r(__webpack_exports__);
         }]
       },
       employeeForm: {
-        name: '',
-        email: '',
+        company_user_id: '',
         team_id: ''
       },
-      roles: [{
+      companies: [{
         id: '',
-        name: ''
+        name: '',
+        employees: [{
+          user_data: {
+            email: '',
+            name: ''
+          }
+        }]
       }]
     };
   },
   mounted: function mounted() {
     this.getTeam();
-    this.getRoles();
+    this.getCompanies();
     this.employeeForm.team_id = this.$route.params.id;
+    console.log(this.employeeForm.team_id);
   },
   methods: {
     getTeam: function getTeam() {
@@ -4135,14 +4132,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    getRoles: function getRoles() {
+    getCompanies: function getCompanies() {
       var _this2 = this;
 
-      axios.get('/api/roles').then(function (response) {
+      axios.get('/api/company').then(function (response) {
         response = response.data;
 
         if (response.success === true) {
-          _this2.roles = response.data;
+          _this2.companies = response.data;
         } else {
           console.log('error');
         }
@@ -4151,6 +4148,7 @@ __webpack_require__.r(__webpack_exports__);
     addEmployee: function addEmployee() {
       var _this3 = this;
 
+      console.log(this.employeeForm);
       axios.post("/api/team/employee", this.employeeForm).then(function (response) {
         response = response.data;
 
@@ -44393,47 +44391,28 @@ var render = function() {
                           { staticClass: "row" },
                           [
                             _c(
-                              "div",
-                              { staticClass: "col-md-6" },
+                              "v-col",
+                              { attrs: { cols: "md-12" } },
                               [
-                                _c("v-text-field", {
+                                _c("v-autocomplete", {
                                   attrs: {
                                     color: "green",
-                                    label: "Name",
-                                    name: "name",
-                                    type: "text",
-                                    required: ""
+                                    "item-color": "green",
+                                    "item-text": "user_data.email",
+                                    "item-value": "id",
+                                    items: _vm.companies.employees,
+                                    label: "To"
                                   },
                                   model: {
-                                    value: _vm.employeeForm.name,
+                                    value: _vm.employeeForm.company_user_id,
                                     callback: function($$v) {
-                                      _vm.$set(_vm.employeeForm, "name", $$v)
+                                      _vm.$set(
+                                        _vm.employeeForm,
+                                        "company_user_id",
+                                        $$v
+                                      )
                                     },
-                                    expression: "employeeForm.name"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "col-md-6" },
-                              [
-                                _c("v-text-field", {
-                                  attrs: {
-                                    color: "green",
-                                    label: "Email",
-                                    name: "email",
-                                    type: "text",
-                                    required: ""
-                                  },
-                                  model: {
-                                    value: _vm.employeeForm.email,
-                                    callback: function($$v) {
-                                      _vm.$set(_vm.employeeForm, "email", $$v)
-                                    },
-                                    expression: "employeeForm.email"
+                                    expression: "employeeForm.company_user_id"
                                   }
                                 })
                               ],

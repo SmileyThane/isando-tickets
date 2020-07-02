@@ -74,26 +74,17 @@
                         <v-expansion-panel-content>
                             <v-form>
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <v-text-field
+                                    <v-col cols="md-12">
+                                        <v-autocomplete
                                             color="green"
-                                            label="Name"
-                                            name="name"
-                                            type="text"
-                                            v-model="employeeForm.name"
-                                            required
-                                        ></v-text-field>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <v-text-field
-                                            color="green"
-                                            label="Email"
-                                            name="email"
-                                            type="text"
-                                            v-model="employeeForm.email"
-                                            required
-                                        ></v-text-field>
-                                    </div>
+                                            item-color="green"
+                                            item-text="user_data.email"
+                                            item-value="id"
+                                            v-model="employeeForm.company_user_id"
+                                            :items="companies.employees"
+                                            label="To"
+                                        ></v-autocomplete>
+                                    </v-col>
                                     <v-btn
                                         dark
                                         fab
@@ -148,14 +139,22 @@
                     ]
                 },
                 employeeForm: {
-                    name: '',
-                    email: '',
+                    company_user_id:'',
                     team_id: ''
                 },
-                roles: [
+                companies: [
                     {
                         id: '',
-                        name: ''
+                        name: '',
+                        employees: [
+                            {
+                                user_data:
+                                    {
+                                        email: '',
+                                        name: ''
+                                    }
+                            }
+                        ]
                     }
                 ]
 
@@ -163,8 +162,9 @@
         },
         mounted() {
             this.getTeam()
-            this.getRoles()
+            this.getCompanies()
             this.employeeForm.team_id = this.$route.params.id
+            console.log(this.employeeForm.team_id);
         },
         methods: {
             getTeam() {
@@ -180,11 +180,11 @@
 
                 });
             },
-            getRoles() {
-                axios.get('/api/roles').then(response => {
+            getCompanies() {
+                axios.get('/api/company').then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.roles = response.data
+                        this.companies = response.data
                     } else {
                         console.log('error')
                     }
@@ -192,6 +192,7 @@
                 });
             },
             addEmployee() {
+                console.log(this.employeeForm);
                 axios.post(`/api/team/employee`, this.employeeForm).then(response => {
                     response = response.data
                     if (response.success === true) {
