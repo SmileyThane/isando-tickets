@@ -1,5 +1,8 @@
 <template>
     <v-container>
+        <v-overlay :value="overlay">
+            <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
         <div>
             <v-row justify="space-around">
                 <v-col cols="12">
@@ -212,6 +215,7 @@
     export default {
         data() {
             return {
+                overlay: false,
                 e1: 1,
                 steps: 3,
                 vertical: false,
@@ -231,12 +235,12 @@
                     description: '',
                     connection_details: '',
                     access_details: '',
-                    files:[]
+                    files: []
                 },
                 suppliers: [],
                 products: [],
                 priorities: [],
-                employees:[],
+                employees: [],
                 onFileChange(form) {
                     this[form].files = null;
                     console.log(event.target.files);
@@ -329,6 +333,7 @@
                 });
             },
             submit() {
+                this.overlay = true;
                 this.ticketFrom.from_entity_type = Object.keys(this.ticketFrom.from.item)[0]
                 this.ticketFrom.from_entity_id = Object.values(this.ticketFrom.from.item)[0]
                 this.ticketFrom.to_entity_type = Object.keys(this.ticketFrom.to.item)[0]
@@ -340,7 +345,7 @@
                     headers: {'content-type': 'multipart/form-data'}
                 }
                 let formData = new FormData();
-                for ( let key in this.ticketFrom ) {
+                for (let key in this.ticketFrom) {
                     if (key !== 'files') {
                         formData.append(key, this.ticketFrom[key]);
                     }
@@ -349,7 +354,7 @@
                 axios.post('/api/ticket', formData, config).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        window.open('/tickets','_self')
+                        window.open('/tickets', '_self')
                     } else {
                         console.log('error')
                     }
