@@ -173,6 +173,7 @@
                         sortable: false,
                         value: 'id',
                     },
+                    {text: 'name', value: 'user_data.name'},
                     {text: 'email', value: 'user_data.email'},
                     {text: 'roles', value: 'role_names'},
                     {text: 'Actions', value: ''},

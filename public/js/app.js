@@ -3011,6 +3011,9 @@ __webpack_require__.r(__webpack_exports__);
         sortable: false,
         value: 'id'
       }, {
+        text: 'name',
+        value: 'user_data.name'
+      }, {
         text: 'email',
         value: 'user_data.email'
       }, {
@@ -3431,6 +3434,9 @@ __webpack_require__.r(__webpack_exports__);
         align: 'start',
         sortable: false,
         value: 'employee.id'
+      }, {
+        text: 'name',
+        value: 'employee.user_data.name'
       }, {
         text: 'email',
         value: 'employee.user_data.email'
@@ -4072,6 +4078,9 @@ __webpack_require__.r(__webpack_exports__);
         align: 'start',
         sortable: false,
         value: 'employee.id'
+      }, {
+        text: 'name',
+        value: 'employee.user_data.name'
       }, {
         text: 'email',
         value: 'employee.user_data.email'

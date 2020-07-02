@@ -119,6 +119,7 @@
                         sortable: false,
                         value: 'employee.id',
                     },
+                    {text: 'name', value: 'employee.user_data.name'},
                     {text: 'email', value: 'employee.user_data.email'},
                     {text: 'roles', value: 'employee.role_names'},
                     {text: 'Actions', value: ''},
