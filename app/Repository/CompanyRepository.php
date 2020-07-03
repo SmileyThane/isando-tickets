@@ -32,7 +32,10 @@ class CompanyRepository
         if (Auth::user()->employee->hasRole(Role::COMPANY_CLIENT)) {
             $company = null;
         } else {
-            $company = Company::where('id', $id ?? Auth::user()->employee->company_id)->with('employees.userData', 'clients', 'teams')->first();
+            $company = Company::where('id', $id ?? Auth::user()->employee->company_id)
+                ->with(['employees' =>  function($query) {
+                    $query->whereDoesntHave('assignedToClients')->get();
+                },'employees.userData', 'clients', 'teams'])->first();
         }
         return $company;
     }
