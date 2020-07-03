@@ -63,17 +63,6 @@
                                             label="To"
                                         ></v-autocomplete>
                                     </v-col>
-                                    <v-col cols="md-6">
-                                        <v-autocomplete
-                                            color="green"
-                                            item-color="green"
-                                            item-text="user_data.email"
-                                            item-value="id"
-                                            v-model="ticketFrom.contact_company_user_id"
-                                            :items="employees"
-                                            label="Contact"
-                                        ></v-autocomplete>
-                                    </v-col>
                                     <div class="col-md-6">
                                         <v-select
                                             label="Product"
@@ -85,16 +74,34 @@
                                             v-model="ticketFrom.to_product_id"
                                         />
                                     </div>
-                                    <v-col cols="12">
-                                        <v-textarea
-                                            label="Availability"
+                                    <v-col cols="md-6">
+                                        <v-autocomplete
                                             color="green"
                                             item-color="green"
-                                            auto-grow
-                                            outlined
-                                            rows="3"
-                                            row-height="25"
-                                        ></v-textarea>
+                                            item-text="user_data.email"
+                                            item-value="id"
+                                            v-model="ticketFrom.contact_company_user_id"
+                                            :items="employees"
+                                            label="Client contact"
+                                        ></v-autocomplete>
+                                    </v-col>
+                                    <v-col cols="12">
+                                        <v-tooltip v-model="availabilityTooltip" bottom>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-textarea
+                                                    label="Client's availability"
+                                                    color="green"
+                                                    item-color="green"
+                                                    auto-grow
+                                                    outlined
+                                                    rows="3"
+                                                    row-height="25"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-textarea>
+                                            </template>
+                                            <span>Please provide working hours when we can contact you on the submitted issue</span>
+                                        </v-tooltip>
                                     </v-col>
                                 </div>
                             </v-card-text>
@@ -122,30 +129,6 @@
                                             v-model="ticketFrom.priority_id"
                                         />
                                     </div>
-                                    <v-col cols="md-6">
-                                        <v-textarea
-                                            label="IP address(es) of the servers (for remote access)"
-                                            color="green"
-                                            item-color="green"
-                                            auto-grow
-                                            outlined
-                                            rows="3"
-                                            row-height="25"
-                                            v-model="ticketFrom.connection_details"
-                                        ></v-textarea>
-                                    </v-col>
-                                    <v-col cols="md-6">
-                                        <v-textarea
-                                            label="Access details"
-                                            color="green"
-                                            item-color="green"
-                                            auto-grow
-                                            outlined
-                                            rows="3"
-                                            row-height="25"
-                                            v-model="ticketFrom.access_details"
-                                        ></v-textarea>
-                                    </v-col>
                                     <v-col cols="12">
                                         <v-textarea
                                             label="Description"
@@ -157,6 +140,47 @@
                                             row-height="25"
                                             v-model="ticketFrom.description"
                                         ></v-textarea>
+                                    </v-col>
+                                    <v-col cols="12">
+                                    <v-label>Server access details: </v-label>
+                                    </v-col>
+                                    <v-col cols="md-6">
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-textarea
+                                                    label="IP address"
+                                                    color="green"
+                                                    item-color="green"
+                                                    auto-grow
+                                                    outlined
+                                                    rows="3"
+                                                    row-height="25"
+                                                    v-model="ticketFrom.connection_details"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-textarea>
+                                            </template>
+                                            <span>IP addresses of your server for remote access if applicable</span>
+                                        </v-tooltip>
+                                    </v-col>
+                                    <v-col cols="md-6">
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-textarea
+                                                    label="Access details"
+                                                    color="green"
+                                                    item-color="green"
+                                                    auto-grow
+                                                    outlined
+                                                    rows="3"
+                                                    row-height="25"
+                                                    v-model="ticketFrom.access_details"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-textarea>
+                                            </template>
+                                            <span>Please provide login details to your server for Teamviewer access, if applicable</span>
+                                        </v-tooltip>
                                     </v-col>
                                 </div>
                             </v-card-text>
@@ -216,6 +240,7 @@
         data() {
             return {
                 overlay: false,
+                availabilityTooltip:false,
                 e1: 1,
                 steps: 3,
                 vertical: false,

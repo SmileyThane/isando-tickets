@@ -4409,10 +4409,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       overlay: false,
+      availabilityTooltip: false,
       e1: 1,
       steps: 3,
       vertical: false,
@@ -9785,7 +9810,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css?bdb9":
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css":
 /*!***********************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vuetify/dist/vuetify.min.css ***!
   \***********************************************************************************************************************************/
@@ -44625,38 +44650,6 @@ var render = function() {
                                 ),
                                 _vm._v(" "),
                                 _c(
-                                  "v-col",
-                                  { attrs: { cols: "md-6" } },
-                                  [
-                                    _c("v-autocomplete", {
-                                      attrs: {
-                                        color: "green",
-                                        "item-color": "green",
-                                        "item-text": "user_data.email",
-                                        "item-value": "id",
-                                        items: _vm.employees,
-                                        label: "Contact"
-                                      },
-                                      model: {
-                                        value:
-                                          _vm.ticketFrom
-                                            .contact_company_user_id,
-                                        callback: function($$v) {
-                                          _vm.$set(
-                                            _vm.ticketFrom,
-                                            "contact_company_user_id",
-                                            $$v
-                                          )
-                                        },
-                                        expression:
-                                          "ticketFrom.contact_company_user_id"
-                                      }
-                                    })
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
                                   "div",
                                   { staticClass: "col-md-6" },
                                   [
@@ -44687,19 +44680,95 @@ var render = function() {
                                 _vm._v(" "),
                                 _c(
                                   "v-col",
-                                  { attrs: { cols: "12" } },
+                                  { attrs: { cols: "md-6" } },
                                   [
-                                    _c("v-textarea", {
+                                    _c("v-autocomplete", {
                                       attrs: {
-                                        label: "Availability",
                                         color: "green",
                                         "item-color": "green",
-                                        "auto-grow": "",
-                                        outlined: "",
-                                        rows: "3",
-                                        "row-height": "25"
+                                        "item-text": "user_data.email",
+                                        "item-value": "id",
+                                        items: _vm.employees,
+                                        label: "Client contact"
+                                      },
+                                      model: {
+                                        value:
+                                          _vm.ticketFrom
+                                            .contact_company_user_id,
+                                        callback: function($$v) {
+                                          _vm.$set(
+                                            _vm.ticketFrom,
+                                            "contact_company_user_id",
+                                            $$v
+                                          )
+                                        },
+                                        expression:
+                                          "ticketFrom.contact_company_user_id"
                                       }
                                     })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-col",
+                                  { attrs: { cols: "12" } },
+                                  [
+                                    _c(
+                                      "v-tooltip",
+                                      {
+                                        attrs: { bottom: "" },
+                                        scopedSlots: _vm._u([
+                                          {
+                                            key: "activator",
+                                            fn: function(ref) {
+                                              var on = ref.on
+                                              var attrs = ref.attrs
+                                              return [
+                                                _c(
+                                                  "v-textarea",
+                                                  _vm._g(
+                                                    _vm._b(
+                                                      {
+                                                        attrs: {
+                                                          label:
+                                                            "Client's availability",
+                                                          color: "green",
+                                                          "item-color": "green",
+                                                          "auto-grow": "",
+                                                          outlined: "",
+                                                          rows: "3",
+                                                          "row-height": "25"
+                                                        }
+                                                      },
+                                                      "v-textarea",
+                                                      attrs,
+                                                      false
+                                                    ),
+                                                    on
+                                                  )
+                                                )
+                                              ]
+                                            }
+                                          }
+                                        ]),
+                                        model: {
+                                          value: _vm.availabilityTooltip,
+                                          callback: function($$v) {
+                                            _vm.availabilityTooltip = $$v
+                                          },
+                                          expression: "availabilityTooltip"
+                                        }
+                                      },
+                                      [
+                                        _vm._v(" "),
+                                        _c("span", [
+                                          _vm._v(
+                                            "Please provide working hours when we can contact you on the submitted issue"
+                                          )
+                                        ])
+                                      ]
+                                    )
                                   ],
                                   1
                                 )
@@ -44773,69 +44842,6 @@ var render = function() {
                                 _vm._v(" "),
                                 _c(
                                   "v-col",
-                                  { attrs: { cols: "md-6" } },
-                                  [
-                                    _c("v-textarea", {
-                                      attrs: {
-                                        label:
-                                          "IP address(es) of the servers (for remote access)",
-                                        color: "green",
-                                        "item-color": "green",
-                                        "auto-grow": "",
-                                        outlined: "",
-                                        rows: "3",
-                                        "row-height": "25"
-                                      },
-                                      model: {
-                                        value:
-                                          _vm.ticketFrom.connection_details,
-                                        callback: function($$v) {
-                                          _vm.$set(
-                                            _vm.ticketFrom,
-                                            "connection_details",
-                                            $$v
-                                          )
-                                        },
-                                        expression:
-                                          "ticketFrom.connection_details"
-                                      }
-                                    })
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "v-col",
-                                  { attrs: { cols: "md-6" } },
-                                  [
-                                    _c("v-textarea", {
-                                      attrs: {
-                                        label: "Access details",
-                                        color: "green",
-                                        "item-color": "green",
-                                        "auto-grow": "",
-                                        outlined: "",
-                                        rows: "3",
-                                        "row-height": "25"
-                                      },
-                                      model: {
-                                        value: _vm.ticketFrom.access_details,
-                                        callback: function($$v) {
-                                          _vm.$set(
-                                            _vm.ticketFrom,
-                                            "access_details",
-                                            $$v
-                                          )
-                                        },
-                                        expression: "ticketFrom.access_details"
-                                      }
-                                    })
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "v-col",
                                   { attrs: { cols: "12" } },
                                   [
                                     _c("v-textarea", {
@@ -44860,6 +44866,160 @@ var render = function() {
                                         expression: "ticketFrom.description"
                                       }
                                     })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-col",
+                                  { attrs: { cols: "12" } },
+                                  [
+                                    _c("v-label", [
+                                      _vm._v("Server access details: ")
+                                    ])
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-col",
+                                  { attrs: { cols: "md-6" } },
+                                  [
+                                    _c(
+                                      "v-tooltip",
+                                      {
+                                        attrs: { bottom: "" },
+                                        scopedSlots: _vm._u([
+                                          {
+                                            key: "activator",
+                                            fn: function(ref) {
+                                              var on = ref.on
+                                              var attrs = ref.attrs
+                                              return [
+                                                _c(
+                                                  "v-textarea",
+                                                  _vm._g(
+                                                    _vm._b(
+                                                      {
+                                                        attrs: {
+                                                          label: "IP address",
+                                                          color: "green",
+                                                          "item-color": "green",
+                                                          "auto-grow": "",
+                                                          outlined: "",
+                                                          rows: "3",
+                                                          "row-height": "25"
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.ticketFrom
+                                                              .connection_details,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.ticketFrom,
+                                                              "connection_details",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "ticketFrom.connection_details"
+                                                        }
+                                                      },
+                                                      "v-textarea",
+                                                      attrs,
+                                                      false
+                                                    ),
+                                                    on
+                                                  )
+                                                )
+                                              ]
+                                            }
+                                          }
+                                        ])
+                                      },
+                                      [
+                                        _vm._v(" "),
+                                        _c("span", [
+                                          _vm._v(
+                                            "IP addresses of your server for remote access if applicable"
+                                          )
+                                        ])
+                                      ]
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-col",
+                                  { attrs: { cols: "md-6" } },
+                                  [
+                                    _c(
+                                      "v-tooltip",
+                                      {
+                                        attrs: { bottom: "" },
+                                        scopedSlots: _vm._u([
+                                          {
+                                            key: "activator",
+                                            fn: function(ref) {
+                                              var on = ref.on
+                                              var attrs = ref.attrs
+                                              return [
+                                                _c(
+                                                  "v-textarea",
+                                                  _vm._g(
+                                                    _vm._b(
+                                                      {
+                                                        attrs: {
+                                                          label:
+                                                            "Access details",
+                                                          color: "green",
+                                                          "item-color": "green",
+                                                          "auto-grow": "",
+                                                          outlined: "",
+                                                          rows: "3",
+                                                          "row-height": "25"
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.ticketFrom
+                                                              .access_details,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.ticketFrom,
+                                                              "access_details",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "ticketFrom.access_details"
+                                                        }
+                                                      },
+                                                      "v-textarea",
+                                                      attrs,
+                                                      false
+                                                    ),
+                                                    on
+                                                  )
+                                                )
+                                              ]
+                                            }
+                                          }
+                                        ])
+                                      },
+                                      [
+                                        _vm._v(" "),
+                                        _c("span", [
+                                          _vm._v(
+                                            "Please provide login details to your server for Teamviewer access, if applicable"
+                                          )
+                                        ])
+                                      ]
+                                    )
                                   ],
                                   1
                                 )
@@ -103199,7 +103359,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_vue__;
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(/*! !../../css-loader??ref--6-1!../../postcss-loader/src??ref--6-2!./vuetify.min.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css?bdb9");
+var content = __webpack_require__(/*! !../../css-loader??ref--6-1!../../postcss-loader/src??ref--6-2!./vuetify.min.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 
