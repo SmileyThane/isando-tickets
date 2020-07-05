@@ -2811,6 +2811,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      clientId: 6,
       headers: [{
         text: 'ID',
         align: 'start',
@@ -2840,18 +2841,20 @@ __webpack_require__.r(__webpack_exports__);
     getCompanies: function getCompanies() {
       var _this = this;
 
-      axios.get('api/company').then(function (response) {
+      var route = this.$store.state.roles.includes(this.clientId) ? 'api/client' : 'api/company';
+      axios.get(route).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
-          _this.companies = [response.data];
+          _this.companies = response.data.data;
         } else {
           console.log('error');
         }
       });
     },
     showItem: function showItem(item) {
-      this.$router.push("/company/".concat(item.id));
+      var route = this.$store.state.roles.includes(this.clientId) ? '/customer' : '/company';
+      this.$router.push("".concat(route, "/").concat(item.id));
     }
   }
 });

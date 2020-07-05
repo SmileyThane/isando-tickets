@@ -35,7 +35,7 @@ class CompanyRepository
             $company = Company::where('id', $id ?? Auth::user()->employee->company_id)
                 ->with(['employees' =>  function($query) {
                     $query->whereDoesntHave('assignedToClients')->get();
-                },'employees.userData', 'clients', 'teams'])->first();
+                },'employees.userData', 'clients', 'teams'])->paginate(1000);
         }
         return $company;
     }

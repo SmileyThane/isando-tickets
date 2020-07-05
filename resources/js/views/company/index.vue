@@ -40,6 +40,7 @@
 
         data() {
             return {
+                clientId: 6,
                 headers: [
                     {
                         text: 'ID',
@@ -60,10 +61,11 @@
         },
         methods: {
             getCompanies() {
-                axios.get('api/company').then(response => {
+                let route = this.$store.state.roles.includes(this.clientId) ? 'api/client' : 'api/company';
+                axios.get(route).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.companies = [response.data]
+                        this.companies = response.data.data
                     } else {
                         console.log('error')
                     }
@@ -71,7 +73,8 @@
                 });
             },
             showItem(item) {
-                this.$router.push(`/company/${item.id}`)
+                let route = this.$store.state.roles.includes(this.clientId) ? '/customer' : '/company';
+                this.$router.push(`${route}/${item.id}`)
             }
         }
     }
