@@ -43,4 +43,10 @@ class UserController extends Controller
         return self::showResponse(true, Role::all());
     }
 
+    public function authorizedRoleIds()
+    {
+        $companyUser = Auth::user()->employee;
+        return self::showResponse(true, $companyUser->roles->pluck('id')->toArray());
+    }
+
 }

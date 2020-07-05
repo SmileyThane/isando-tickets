@@ -32,7 +32,7 @@
                     <v-list-item-title>Company</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item link to="/customer">
+            <v-list-item link to="/customer" v-if="checkRoleByIds([1,2,3])">
                 <v-list-item-action>
                     <v-icon>mdi-account-network</v-icon>
                 </v-list-item-action>
@@ -48,7 +48,7 @@
                     <v-list-item-title>Product</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item link to="/team">
+            <v-list-item link to="/team" v-if="checkRoleByIds([1,2,3])">
                 <v-list-item-action>
                     <v-icon>mdi-account-box-multiple-outline</v-icon>
                 </v-list-item-action>
@@ -69,7 +69,7 @@
                         <v-list-item-title>Ticket</v-list-item-title>
                     </v-list-item-content>
                 </template>
-                <v-list-item link to="/tickets">
+                <v-list-item link to="/tickets" v-if="checkRoleByIds([6])">
                     <v-list-item-action>
                         <v-icon>mdi-format-list-numbered</v-icon>
                     </v-list-item-action>
@@ -111,6 +111,20 @@
             },
             localDrawer: function () {
                 this.$emit('input', this.localDrawer)
+            }
+        },
+        mounted() {
+
+        },
+        methods: {
+            checkRoleByIds(ids) {
+                let roleExists = false;
+                ids.forEach(id => {
+                    if(roleExists === false) {
+                        roleExists = this.$store.state.roles.includes(id)
+                    }
+                });
+                return roleExists
             }
         }
     }
