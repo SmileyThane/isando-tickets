@@ -19,6 +19,7 @@
             </template>
             <template v-slot:item.actions="{ item }">
                 <v-icon
+                    v-if="!checkRoleByIds([clientId])"
                     small
                     class="mr-2"
                     @click="showItem(item)"
@@ -52,6 +53,7 @@
     export default {
         data() {
             return {
+                clientId: 6,
                 expanded: [],
                 singleExpand: false,
                 headers: [
@@ -89,6 +91,15 @@
             },
             showItem(item) {
                 this.$router.push(`/ticket/${item.id}`)
+            },
+            checkRoleByIds(ids) {
+                let roleExists = false;
+                ids.forEach(id => {
+                    if(roleExists === false) {
+                        roleExists = this.$store.state.roles.includes(id)
+                    }
+                });
+                return roleExists
             }
         }
     }

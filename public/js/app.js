@@ -4695,9 +4695,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      clientId: 6,
       expanded: [],
       singleExpand: false,
       headers: [{
@@ -4750,6 +4752,17 @@ __webpack_require__.r(__webpack_exports__);
     },
     showItem: function showItem(item) {
       this.$router.push("/ticket/".concat(item.id));
+    },
+    checkRoleByIds: function checkRoleByIds(ids) {
+      var _this2 = this;
+
+      var roleExists = false;
+      ids.forEach(function (id) {
+        if (roleExists === false) {
+          roleExists = _this2.$store.state.roles.includes(id);
+        }
+      });
+      return roleExists;
     }
   }
 });
@@ -45263,19 +45276,21 @@ var render = function() {
             fn: function(ref) {
               var item = ref.item
               return [
-                _c(
-                  "v-icon",
-                  {
-                    staticClass: "mr-2",
-                    attrs: { small: "" },
-                    on: {
-                      click: function($event) {
-                        return _vm.showItem(item)
-                      }
-                    }
-                  },
-                  [_vm._v("\n                mdi-eye\n            ")]
-                ),
+                !_vm.checkRoleByIds([_vm.clientId])
+                  ? _c(
+                      "v-icon",
+                      {
+                        staticClass: "mr-2",
+                        attrs: { small: "" },
+                        on: {
+                          click: function($event) {
+                            return _vm.showItem(item)
+                          }
+                        }
+                      },
+                      [_vm._v("\n                mdi-eye\n            ")]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
                 _c(
                   "v-icon",
