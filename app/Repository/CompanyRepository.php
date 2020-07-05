@@ -33,9 +33,9 @@ class CompanyRepository
             $company = null;
         } else {
             $company = Company::where('id', $id ?? Auth::user()->employee->company_id)
-                ->with(['employees' =>  function($query) {
+                ->with(['employees' => function ($query) {
                     $query->whereDoesntHave('assignedToClients')->get();
-                },'employees.userData', 'clients', 'teams'])->paginate(1000);
+                }, 'employees.userData', 'clients', 'teams'])->paginate(1000);
         }
         return $company;
     }
@@ -80,7 +80,7 @@ class CompanyRepository
     {
         CompanyProduct::firstOrCreate(
             ['company_id' => $request->company_id,
-            'product_id' => $request->product_id]
+                'product_id' => $request->product_id]
         );
         return true;
     }

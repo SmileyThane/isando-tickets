@@ -95,7 +95,7 @@
             checkRoleByIds(ids) {
                 let roleExists = false;
                 ids.forEach(id => {
-                    if(roleExists === false) {
+                    if (roleExists === false) {
                         roleExists = this.$store.state.roles.includes(id)
                     }
                 });

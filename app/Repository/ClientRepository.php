@@ -26,7 +26,7 @@ class ClientRepository
             $params['supplier_type'] = 'required';
             $params['supplier_id'] = [
                 'required',
-                Rule::unique('clients')->where(function ($query) use($request) {
+                Rule::unique('clients')->where(function ($query) use ($request) {
                     return $query->where('name', $request['client_name'])
                         ->where('supplier_type', $request['supplier_type']);
                 }),
@@ -60,7 +60,7 @@ class ClientRepository
         if (!$employee->hasRole(Role::COMPANY_CLIENT)) {
             $clients = $company->clients;
             foreach ($clients as $client) {
-                $suppliers[] = ['name' => $client->name, 'item' => [ Client::class => $client->id]];
+                $suppliers[] = ['name' => $client->name, 'item' => [Client::class => $client->id]];
             }
         }
         return $suppliers;
@@ -108,7 +108,7 @@ class ClientRepository
     {
         $clientCompanyUser = ClientCompanyUser::firstOrCreate(
             ['client_id' => $request->client_id,
-            'company_user_id' => $request->company_user_id]
+                'company_user_id' => $request->company_user_id]
         );
         return true;
     }

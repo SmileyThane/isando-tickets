@@ -16,6 +16,7 @@
     import Sidebar from '../components/Sidebar'
     import AppFooter from '../components/AppFooter'
     import Header from '../components/Header'
+
     export default {
         props: {
             source: String,
