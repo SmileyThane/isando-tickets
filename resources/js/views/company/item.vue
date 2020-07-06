@@ -53,7 +53,7 @@
                                     <v-text-field
                                         color="green"
                                         v-model="company.registration_date"
-                                        label="Registration date"
+                                        label="Date of registration"
                                         name="registration_date"
                                         prepend-icon="mdi-calendar"
                                         readonly

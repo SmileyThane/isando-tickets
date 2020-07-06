@@ -42962,7 +42962,7 @@ var render = function() {
                                         {
                                           attrs: {
                                             color: "green",
-                                            label: "Registration date",
+                                            label: "Date of registration",
                                             name: "registration_date",
                                             "prepend-icon": "mdi-calendar",
                                             readonly: ""
