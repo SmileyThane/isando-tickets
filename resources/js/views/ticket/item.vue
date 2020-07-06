@@ -257,10 +257,11 @@
                                     <v-list-item-content>
                                         <h1 class="text-right caption mb-2">{{answer.created_at}}</h1>
                                         <v-list-item-title class="mb-2">{{answer.answer}}</v-list-item-title>
-                                        <v-list-item-subtitle class="mb-3">{{answer.employee.user_data.email}}</v-list-item-subtitle>
+                                        <v-list-item-subtitle class="mb-3">{{answer.employee.user_data.email}}
+                                        </v-list-item-subtitle>
 
                                         <v-col cols="12" v-if="answer.attachments.length > 0 ">
-                                            <h4 >Attachments</h4>
+                                            <h4>Attachments</h4>
                                             <div
                                                 v-for="attachment in answer.attachments"
                                             >
@@ -349,12 +350,12 @@
                                                 ></v-autocomplete>
                                             </v-col>
                                             <v-btn v-if="selectionDisabled === false"
-                                                dark
-                                                fab
-                                                right
-                                                bottom
-                                                color="green"
-                                                @click="updateTicket"
+                                                   dark
+                                                   fab
+                                                   right
+                                                   bottom
+                                                   color="green"
+                                                   @click="updateTicket"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
                                             </v-btn>
@@ -440,14 +441,14 @@
         data() {
             return {
                 selectionDisabled: false,
-                assignPanel : [],
+                assignPanel: [],
                 alert: false,
                 errorType: '',
                 error: [],
-                employees:[],
+                employees: [],
                 ticket: {
-                    status_id:'',
-                    to_company_user_id:'',
+                    status_id: '',
+                    to_company_user_id: '',
                     attachments: [{
                         name: '',
                         link: ''
@@ -464,19 +465,19 @@
                     priority: {
                         name: ''
                     },
-                    can_be_edited:'',
+                    can_be_edited: '',
                     contact: {
-                        user_data:{
+                        user_data: {
                             name: '',
                             email: ''
                         }
                     },
                     status: {
-                        name:''
+                        name: ''
                     },
                     to_entity_type: '',
                     to_entity_id: '',
-                    to_team_id:'',
+                    to_team_id: '',
                     contact_company_user_id: '',
                     to_product_id: '',
                     priority_id: '',
@@ -486,14 +487,14 @@
                     access_details: '',
                     answers: [
                         {
-                            created_at:'',
+                            created_at: '',
                             files: [],
                             attachments: [{
-                                name:'',
-                                link:''
+                                name: '',
+                                link: ''
                             }],
                             employee: {
-                                user_data:{
+                                user_data: {
                                     name: '',
                                     email: ''
                                 }
@@ -503,14 +504,14 @@
                     ],
                     histories: [
                         {
-                            created_at:'',
+                            created_at: '',
                             files: [],
                             attachments: [{
-                                name:'',
-                                link:''
+                                name: '',
+                                link: ''
                             }],
                             employee: {
-                                user_data:{
+                                user_data: {
                                     name: '',
                                     email: ''
                                 }
@@ -520,11 +521,11 @@
                     ],
                     notices: [
                         {
-                            created_at:'',
+                            created_at: '',
                             files: [],
                             attachments: [{
-                                name:'',
-                                link:''
+                                name: '',
+                                link: ''
                             }],
                             employee: {
                                 name: '',
@@ -562,13 +563,12 @@
                     }
                 });
             },
-            selectTeam()
-            {
-                if (this.ticket.can_be_edited === false){
+            selectTeam() {
+                if (this.ticket.can_be_edited === false) {
                     this.selectionDisabled = true
                 }
                 if (this.ticket.to_team_id !== null) {
-                    if (this.ticket.to_company_user_id){
+                    if (this.ticket.to_company_user_id) {
                         this.selectionDisabled = true
                     }
                     this.assignPanel = [0];
@@ -582,8 +582,7 @@
 
                 }
             },
-            updateTicket()
-            {
+            updateTicket() {
                 axios.patch(`/api/ticket/${this.$route.params.id}`, this.ticket).then(response => {
                     response = response.data
                     if (response.success === true) {
@@ -593,8 +592,7 @@
                     }
                 });
             },
-            closeTicket()
-            {
+            closeTicket() {
                 this.ticket.status_id = 5;
                 this.updateTicket();
             },

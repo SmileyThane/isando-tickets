@@ -24,7 +24,7 @@ class FileRepository
             $name = 'null';
         }
 
-        $originalPath = 'files/original/' . Controller::getRandomString() .'/';
+        $originalPath = 'files/original/' . Controller::getRandomString() . '/';
         $file->storeAs('/public/' . $originalPath, $name);
         $newFile = new File();
         $newFile->name = $name;

@@ -45,10 +45,10 @@ class UserRepository
     {
         $user = User::find($id);
         $user->update($request->toArray());
-            if (isset($request->password) && $request->password !== '') {
-                $user->password = bcrypt($request->password);
-                $user->save();
-            }
+        if (isset($request->password) && $request->password !== '') {
+            $user->password = bcrypt($request->password);
+            $user->save();
+        }
         return $user;
     }
 

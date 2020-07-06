@@ -22,6 +22,7 @@ class ProductRepository
     {
         $this->companyRepo = $companyRepository;
     }
+
     public function validate($request)
     {
         $params = [
@@ -92,7 +93,7 @@ class ProductRepository
     {
         ProductCompanyUser::firstOrCreate(
             ['client_id' => $request->product_id,
-            'company_user_id' => $request->company_user_id]
+                'company_user_id' => $request->company_user_id]
         );
         return true;
     }
@@ -112,7 +113,7 @@ class ProductRepository
     {
         ProductClient::firstOrCreate(
             ['client_id' => $request->client_id,
-            'product_id' => $request->product_id]
+                'product_id' => $request->product_id]
         );
         return true;
     }

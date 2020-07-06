@@ -78,7 +78,7 @@ class TeamRepository
     {
         $teamCompanyUser = TeamCompanyUser::firstOrCreate(
             ['team_id' => $request->team_id,
-            'company_user_id' => $request->company_user_id]
+                'company_user_id' => $request->company_user_id]
         );
         return true;
     }

@@ -30,7 +30,7 @@ class CompanyUserRepository
             'company_id' => 'required',
             'user_id' => [
                 'required',
-                Rule::unique('company_users')->where(function ($query) use($request) {
+                Rule::unique('company_users')->where(function ($query) use ($request) {
                     return $query->where('company_id', $request['company_id'])
                         ->where('user_id', $request['user_id']);
                 }),

@@ -31,14 +31,14 @@
             'appFooter': AppFooter,
             'appHeader': Header
         },
-        watch:{
+        watch: {
             currentRoles(value) {
                 this.isLoaded = true;
                 // console.log(`val ${value}`);
             }
         },
         computed: {
-            currentRoles: function() {
+            currentRoles: function () {
                 return this.$store.state.roles
             },
         }

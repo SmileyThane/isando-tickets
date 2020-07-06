@@ -27,7 +27,7 @@ class CompanyController extends Controller
 
     public function update(Request $request, $id)
     {
-        $company = $this->companyRepo->update( $request, $id);
+        $company = $this->companyRepo->update($request, $id);
         return self::showResponse(true, $company);
     }
 
@@ -38,7 +38,7 @@ class CompanyController extends Controller
 
     public function attachProduct(Request $request)
     {
-        $result =  $this->companyRepo->attachProduct($request);
+        $result = $this->companyRepo->attachProduct($request);
         return self::showResponse($result);
     }
 

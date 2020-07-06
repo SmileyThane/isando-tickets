@@ -142,7 +142,7 @@
                                         ></v-textarea>
                                     </v-col>
                                     <v-col cols="12">
-                                    <v-label>Server access details: </v-label>
+                                        <v-label>Server access details:</v-label>
                                     </v-col>
                                     <v-col cols="md-6">
                                         <v-tooltip bottom>
@@ -241,7 +241,7 @@
             return {
                 clientId: 6,
                 overlay: false,
-                availabilityTooltip:false,
+                availabilityTooltip: false,
                 e1: 1,
                 steps: 3,
                 vertical: false,

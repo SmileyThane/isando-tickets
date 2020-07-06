@@ -130,9 +130,9 @@
                     }
                 });
             },
-        showItem(item) {
-            this.$router.push(`/team/${item.id}`)
-        }
+            showItem(item) {
+                this.$router.push(`/team/${item.id}`)
+            }
         }
     }
 </script>

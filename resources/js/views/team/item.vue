@@ -140,7 +140,7 @@
                     ]
                 },
                 employeeForm: {
-                    company_user_id:'',
+                    company_user_id: '',
                     team_id: ''
                 },
                 companies: [
