@@ -44,7 +44,7 @@ class ClientRepository
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
         if ($employee->hasRole(Role::COMPANY_CLIENT)) {
-            $clients = ClientCompanyUser::where('company_user_id', $employee->id)->clients()->paginate(1000);
+            $clients = ClientCompanyUser::where('company_user_id', $employee->id)->first()->clients()->paginate(1000);
         } else {
             $clients = Company::find($companyId)->clients()->paginate(1000);
         }
