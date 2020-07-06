@@ -2841,8 +2841,7 @@ __webpack_require__.r(__webpack_exports__);
     getCompanies: function getCompanies() {
       var _this = this;
 
-      var route = this.$store.state.roles.includes(this.clientId) ? 'api/client' : 'api/company';
-      axios.get(route).then(function (response) {
+      axios.get('api/company').then(function (response) {
         response = response.data;
 
         if (response.success === true) {
@@ -3091,7 +3090,7 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
-          _this.company = response.data;
+          _this.company = response.data.data[0];
         } else {
           console.log('error');
         }
@@ -3664,6 +3663,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      clientId: 6,
       headers: [{
         text: 'ID',
         align: 'start',
@@ -3707,6 +3707,7 @@ __webpack_require__.r(__webpack_exports__);
     addProduct: function addProduct() {
       var _this2 = this;
 
+      console.log(this.productForm);
       axios.post('api/product', this.productForm).then(function (response) {
         response = response.data;
 
@@ -3781,17 +3782,101 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      headers: [{
+        text: 'ID',
+        align: 'start',
+        sortable: false,
+        value: 'client_data.id'
+      }, {
+        text: 'name',
+        value: 'client_data.name'
+      }, {
+        text: 'Description',
+        value: 'client_data.description'
+      }, {
+        text: 'Actions',
+        value: 'actions',
+        sortable: false
+      }],
       product: {
+        id: '',
         product_name: '',
-        product_description: ''
+        product_description: '',
+        clients: []
+      },
+      suppliers: [],
+      supplierForm: {
+        client_id: null,
+        product_id: null
       }
     };
   },
   mounted: function mounted() {
     this.getProduct();
+    this.getSuppliers();
   },
   methods: {
     getProduct: function getProduct() {
@@ -3801,6 +3886,8 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
+          _this.product = response.data;
+          _this.supplierForm.product_id = _this.product.id = response.data.id;
           _this.product.product_name = response.data.name;
           _this.product.product_description = response.data.description;
         } else {
@@ -3817,6 +3904,32 @@ __webpack_require__.r(__webpack_exports__);
         if (response.success === true) {
           _this2.product.product_name = response.data.name;
           _this2.product.product_description = response.data.description;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    getSuppliers: function getSuppliers() {
+      var _this3 = this;
+
+      axios.get('/api/client').then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this3.suppliers = response.data.data;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    addProductClient: function addProductClient() {
+      var _this4 = this;
+
+      axios.post("/api/product/client", this.supplierForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this4.getProduct();
         } else {
           console.log('error');
         }
@@ -4179,7 +4292,8 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
-          _this2.companies = response.data;
+          _this2.companies = response.data.data[0];
+          console.log(_this2.companies);
         } else {
           console.log('error');
         }
@@ -4188,7 +4302,7 @@ __webpack_require__.r(__webpack_exports__);
     addEmployee: function addEmployee() {
       var _this3 = this;
 
-      console.log(this.employeeForm);
+      // console.log(this.employeeForm);
       axios.post("/api/team/employee", this.employeeForm).then(function (response) {
         response = response.data;
 
@@ -4467,6 +4581,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      clientId: 6,
       overlay: false,
       availabilityTooltip: false,
       e1: 1,
@@ -4543,12 +4658,12 @@ __webpack_require__.r(__webpack_exports__);
     getSuppliers: function getSuppliers() {
       var _this2 = this;
 
-      axios.get('api/supplier').then(function (response) {
+      axios.get('/api/supplier').then(function (response) {
         response = response.data;
 
         if (response.success === true) {
           _this2.suppliers = response.data;
-          _this2.ticketFrom.from = _this2.suppliers[0];
+          _this2.ticketFrom.from = _this2.$store.state.roles.includes(_this2.clientId) ? _this2.suppliers[1] : _this2.suppliers[0];
           _this2.ticketFrom.to = _this2.suppliers[0];
         } else {
           console.log('error');
@@ -4558,12 +4673,12 @@ __webpack_require__.r(__webpack_exports__);
     getProducts: function getProducts() {
       var _this3 = this;
 
-      axios.get('api/product').then(function (response) {
+      axios.get('/api/product').then(function (response) {
         response = response.data;
 
         if (response.success === true) {
           _this3.products = response.data.data;
-          _this3.ticketFrom.to_product_id = _this3.products[0].id;
+          _this3.ticketFrom.to_product_id = _this3.products[0].product_data.id;
         } else {
           console.log('error');
         }
@@ -4572,12 +4687,12 @@ __webpack_require__.r(__webpack_exports__);
     getPriorities: function getPriorities() {
       var _this4 = this;
 
-      axios.get('api/ticket_priorities').then(function (response) {
+      axios.get('/api/ticket_priorities').then(function (response) {
         response = response.data;
 
         if (response.success === true) {
           _this4.priorities = response.data;
-          _this4.ticketFrom.priority_id = _this4.priorities[0].id;
+          _this4.ticketFrom.priority_id = _this4.priorities[1].id;
         } else {
           console.log('error');
         }
@@ -4586,11 +4701,23 @@ __webpack_require__.r(__webpack_exports__);
     getCompany: function getCompany() {
       var _this5 = this;
 
-      axios.get('api/company').then(function (response) {
+      axios.get('/api/company').then(function (response) {
         response = response.data;
 
         if (response.success === true) {
-          _this5.employees = response.data.employees; // this.ticketFrom.contact_company_user_id = this.employees[0].id
+          response = response.data.data[0];
+          console.log(response);
+
+          if (!response.hasOwnProperty('company_number')) {
+            response.employees.forEach(function (employeeItem) {
+              return _this5.employees.push(employeeItem.employee);
+            });
+            console.log('client');
+          } else {
+            _this5.employees = response.employees;
+            console.log('company');
+          } // this.ticketFrom.contact_company_user_id = this.employees[0].id
+
         } else {
           console.log('error');
         }
@@ -43780,124 +43907,135 @@ var render = function() {
               _c(
                 "v-expansion-panels",
                 [
-                  _c(
-                    "v-expansion-panel",
-                    [
-                      _c(
-                        "v-expansion-panel-header",
-                        {
-                          scopedSlots: _vm._u([
+                  !this.$store.state.roles.includes(this.clientId)
+                    ? _c(
+                        "v-expansion-panel",
+                        [
+                          _c(
+                            "v-expansion-panel-header",
                             {
-                              key: "actions",
-                              fn: function() {
-                                return [
-                                  _c("v-icon", { attrs: { color: "submit" } }, [
-                                    _vm._v("mdi-plus")
-                                  ])
-                                ]
-                              },
-                              proxy: true
-                            }
-                          ])
-                        },
-                        [
-                          _vm._v(
-                            "\n                                Add New Product\n                                "
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-expansion-panel-content",
-                        [
-                          _c("v-form", [
-                            _c(
-                              "div",
-                              { staticClass: "row" },
-                              [
-                                _c(
-                                  "div",
-                                  { staticClass: "col-md-6" },
-                                  [
-                                    _c("v-text-field", {
-                                      attrs: {
-                                        color: "green",
-                                        label: "Name",
-                                        name: "product_name",
-                                        type: "text",
-                                        required: ""
-                                      },
-                                      model: {
-                                        value: _vm.productForm.product_name,
-                                        callback: function($$v) {
-                                          _vm.$set(
-                                            _vm.productForm,
-                                            "product_name",
-                                            $$v
-                                          )
-                                        },
-                                        expression: "productForm.product_name"
-                                      }
-                                    })
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  { staticClass: "col-md-6" },
-                                  [
-                                    _c("v-text-field", {
-                                      attrs: {
-                                        color: "green",
-                                        label: "Description",
-                                        name: "product_name",
-                                        type: "text",
-                                        required: ""
-                                      },
-                                      model: {
-                                        value:
-                                          _vm.productForm.product_description,
-                                        callback: function($$v) {
-                                          _vm.$set(
-                                            _vm.productForm,
-                                            "product_description",
-                                            $$v
-                                          )
-                                        },
-                                        expression:
-                                          "productForm.product_description"
-                                      }
-                                    })
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "v-btn",
+                              scopedSlots: _vm._u(
+                                [
                                   {
-                                    attrs: {
-                                      dark: "",
-                                      fab: "",
-                                      right: "",
-                                      bottom: "",
-                                      color: "green"
+                                    key: "actions",
+                                    fn: function() {
+                                      return [
+                                        _c(
+                                          "v-icon",
+                                          { attrs: { color: "submit" } },
+                                          [_vm._v("mdi-plus")]
+                                        )
+                                      ]
                                     },
-                                    on: { click: _vm.addProduct }
-                                  },
-                                  [_c("v-icon", [_vm._v("mdi-plus")])],
+                                    proxy: true
+                                  }
+                                ],
+                                null,
+                                false,
+                                3612843941
+                              )
+                            },
+                            [
+                              _vm._v(
+                                "\n                                Add New Product\n                                "
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel-content",
+                            [
+                              _c("v-form", [
+                                _c(
+                                  "div",
+                                  { staticClass: "row" },
+                                  [
+                                    _c(
+                                      "div",
+                                      { staticClass: "col-md-6" },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            color: "green",
+                                            label: "Name",
+                                            name: "product_name",
+                                            type: "text",
+                                            required: ""
+                                          },
+                                          model: {
+                                            value: _vm.productForm.product_name,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.productForm,
+                                                "product_name",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "productForm.product_name"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "col-md-6" },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            color: "green",
+                                            label: "Description",
+                                            name: "product_name",
+                                            type: "text",
+                                            required: ""
+                                          },
+                                          model: {
+                                            value:
+                                              _vm.productForm
+                                                .product_description,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.productForm,
+                                                "product_description",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "productForm.product_description"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: {
+                                          dark: "",
+                                          fab: "",
+                                          right: "",
+                                          bottom: "",
+                                          color: "green"
+                                        },
+                                        on: { click: _vm.addProduct }
+                                      },
+                                      [_c("v-icon", [_vm._v("mdi-plus")])],
+                                      1
+                                    )
+                                  ],
                                   1
                                 )
-                              ],
-                              1
-                            )
-                          ])
+                              ])
+                            ],
+                            1
+                          )
                         ],
                         1
                       )
-                    ],
-                    1
-                  )
+                    : _vm._e()
                 ],
                 1
               ),
@@ -44066,6 +44204,145 @@ var render = function() {
                       on: { click: _vm.updateProduct }
                     },
                     [_vm._v("Save")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-md-6" },
+        [
+          _c(
+            "v-card",
+            { staticClass: "elevation-12" },
+            [
+              _c(
+                "v-toolbar",
+                { attrs: { color: "green", dark: "", flat: "" } },
+                [
+                  _c("v-toolbar-title", [_vm._v("Product clients")]),
+                  _vm._v(" "),
+                  _c("v-spacer")
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "card-text" },
+                [
+                  _c("v-data-table", {
+                    staticClass: "elevation-1",
+                    attrs: {
+                      headers: _vm.headers,
+                      items: _vm.product.clients,
+                      "items-per-page": 25
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("v-spacer", [_vm._v("\n                 \n            ")]),
+          _vm._v(" "),
+          _c(
+            "v-expansion-panels",
+            [
+              _c(
+                "v-expansion-panel",
+                [
+                  _c(
+                    "v-expansion-panel-header",
+                    {
+                      scopedSlots: _vm._u([
+                        {
+                          key: "actions",
+                          fn: function() {
+                            return [
+                              _c("v-icon", { attrs: { color: "submit" } }, [
+                                _vm._v("mdi-plus")
+                              ])
+                            ]
+                          },
+                          proxy: true
+                        }
+                      ])
+                    },
+                    [
+                      _vm._v(
+                        "\n                        Add New Product Client\n                        "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-expansion-panel-content",
+                    [
+                      _c("v-form", [
+                        _c(
+                          "div",
+                          { staticClass: "row" },
+                          [
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "md-12" } },
+                              [
+                                _c("v-autocomplete", {
+                                  attrs: {
+                                    color: "green",
+                                    "item-color": "green",
+                                    "item-text": "name",
+                                    "item-value": "id",
+                                    items: _vm.suppliers,
+                                    label: "Client"
+                                  },
+                                  model: {
+                                    value: _vm.supplierForm.client_id,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.supplierForm,
+                                        "client_id",
+                                        $$v
+                                      )
+                                    },
+                                    expression: "supplierForm.client_id"
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: {
+                                  dark: "",
+                                  fab: "",
+                                  right: "",
+                                  bottom: "",
+                                  color: "green"
+                                },
+                                on: { click: _vm.addProductClient }
+                              },
+                              [_c("v-icon", [_vm._v("mdi-plus")])],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ])
+                    ],
+                    1
                   )
                 ],
                 1

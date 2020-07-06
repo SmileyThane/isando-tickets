@@ -7,7 +7,7 @@
 
                     <div class="card-body">
                         <v-expansion-panels>
-                            <v-expansion-panel>
+                            <v-expansion-panel v-if="!this.$store.state.roles.includes(this.clientId)">
                                 <v-expansion-panel-header>
                                     Add New Product
                                     <template v-slot:actions>
@@ -88,6 +88,7 @@
 
         data() {
             return {
+                clientId: 6,
                 headers: [
                     {
                         text: 'ID',
@@ -122,6 +123,7 @@
                 });
             },
             addProduct() {
+                console.log(this.productForm)
                 axios.post('api/product', this.productForm).then(response => {
                     response = response.data
                     if (response.success === true) {

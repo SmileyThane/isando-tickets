@@ -61,8 +61,7 @@
         },
         methods: {
             getCompanies() {
-                let route = this.$store.state.roles.includes(this.clientId) ? 'api/client' : 'api/company';
-                axios.get(route).then(response => {
+                axios.get('api/company').then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.companies = response.data.data

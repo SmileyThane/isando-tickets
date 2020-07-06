@@ -57,11 +57,14 @@ class ClientRepository
         $companyId = $employee->company_id;
         $company = Company::find($companyId);
         $suppliers[] = ['name' => $company->name, 'item' => [Company::class => $companyId]];
+        $clients = [];
         if (!$employee->hasRole(Role::COMPANY_CLIENT)) {
             $clients = $company->clients;
-            foreach ($clients as $client) {
-                $suppliers[] = ['name' => $client->name, 'item' => [Client::class => $client->id]];
-            }
+        } else {
+            $clients = ClientCompanyUser::where('company_user_id', $employee->id)->first()->clients()->paginate(1000);
+        }
+        foreach ($clients as $client) {
+            $suppliers[] = ['name' => $client->name, 'item' => [Client::class => $client->id]];
         }
         return $suppliers;
     }

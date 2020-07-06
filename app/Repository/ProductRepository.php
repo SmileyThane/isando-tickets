@@ -37,18 +37,21 @@ class ProductRepository
 
     public function all()
     {
-        $employee = Auth::user()->employee;
+        $employee = Auth::user()->employee()->with('assignedToClients')->first();
         $companyId = $employee->company_id;
         $products = null;
         if (!$employee->hasRole(Role::COMPANY_CLIENT)) {
             $products = CompanyProduct::where('company_id', $companyId)->with('productData')->paginate(1000);
+        } else {
+            $clientIds = $employee->assignedToClients->pluck('client_id')->toArray();
+            $products = ProductClient::where('client_id', $clientIds)->with('productData')->paginate(1000);
         }
         return $products;
     }
 
     public function find($id)
     {
-        return Product::where('id', $id)->with('employees', 'clients')->first();
+        return Product::where('id', $id)->with('employees', 'clients.clientData')->first();
     }
 
     public function create(Request $request)

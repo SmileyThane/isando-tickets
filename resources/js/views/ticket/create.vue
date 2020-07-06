@@ -239,6 +239,7 @@
     export default {
         data() {
             return {
+                clientId: 6,
                 overlay: false,
                 availabilityTooltip:false,
                 e1: 1,
@@ -309,11 +310,11 @@
                 }
             },
             getSuppliers() {
-                axios.get('api/supplier').then(response => {
+                axios.get('/api/supplier').then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.suppliers = response.data
-                        this.ticketFrom.from = this.suppliers[0]
+                        this.ticketFrom.from = this.$store.state.roles.includes(this.clientId) ? this.suppliers[1] : this.suppliers[0];
                         this.ticketFrom.to = this.suppliers[0]
                     } else {
                         console.log('error')
@@ -321,12 +322,11 @@
                 });
             },
             getProducts() {
-                axios.get('api/product').then(response => {
+                axios.get('/api/product').then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.products = response.data.data
-                        this.ticketFrom.to_product_id = this.products[0].id
-
+                        this.ticketFrom.to_product_id = this.products[0].product_data.id
                     } else {
                         console.log('error')
                     }
@@ -334,11 +334,11 @@
                 });
             },
             getPriorities() {
-                axios.get('api/ticket_priorities').then(response => {
+                axios.get('/api/ticket_priorities').then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.priorities = response.data
-                        this.ticketFrom.priority_id = this.priorities[0].id
+                        this.ticketFrom.priority_id = this.priorities[1].id
                     } else {
                         console.log('error')
                     }
@@ -346,10 +346,18 @@
                 });
             },
             getCompany() {
-                axios.get('api/company').then(response => {
+                axios.get('/api/company').then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.employees = response.data.employees
+                        response = response.data.data[0]
+                        console.log(response);
+                        if (!response.hasOwnProperty('company_number')) {
+                            response.employees.forEach(employeeItem => this.employees.push(employeeItem.employee))
+                            console.log('client');
+                        } else {
+                            this.employees = response.employees
+                            console.log('company');
+                        }
                         // this.ticketFrom.contact_company_user_id = this.employees[0].id
                     } else {
                         console.log('error')

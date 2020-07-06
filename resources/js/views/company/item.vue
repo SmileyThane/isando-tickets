@@ -217,7 +217,7 @@
                 axios.get(`/api/company/${this.$route.params.id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.company = response.data
+                        this.company = response.data.data[0]
                     } else {
                         console.log('error')
                     }

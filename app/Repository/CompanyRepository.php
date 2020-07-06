@@ -4,6 +4,8 @@
 namespace App\Repository;
 
 
+use App\Client;
+use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
 use App\Role;
@@ -29,10 +31,12 @@ class CompanyRepository
 
     public function find($id)
     {
-        if (Auth::user()->employee->hasRole(Role::COMPANY_CLIENT)) {
-            $company = null;
+        $employee = Auth::user()->employee;
+        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
+            $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
+            $company = $clientCompanyUser->clients()->with('employees.employee.userData')->paginate(1000);
         } else {
-            $company = Company::where('id', $id ?? Auth::user()->employee->company_id)
+            $company = Company::where('id', $id ?? $employee->company_id)
                 ->with(['employees' => function ($query) {
                     $query->whereDoesntHave('assignedToClients')->get();
                 }, 'employees.userData', 'clients', 'teams'])->paginate(1000);

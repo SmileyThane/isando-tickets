@@ -185,7 +185,8 @@
                 axios.get('/api/company').then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.companies = response.data
+                        this.companies = response.data.data[0]
+                        console.log(this.companies);
                     } else {
                         console.log('error')
                     }
@@ -193,7 +194,7 @@
                 });
             },
             addEmployee() {
-                console.log(this.employeeForm);
+                // console.log(this.employeeForm);
                 axios.post(`/api/team/employee`, this.employeeForm).then(response => {
                     response = response.data
                     if (response.success === true) {
