@@ -69,7 +69,7 @@
                         <v-list-item-title>Ticket</v-list-item-title>
                     </v-list-item-content>
                 </template>
-                <v-list-item link to="/tickets" v-if="checkRoleByIds([6])">
+                <v-list-item link to="/tickets">
                     <v-list-item-action>
                         <v-icon>mdi-format-list-numbered</v-icon>
                     </v-list-item-action>

@@ -42024,26 +42024,24 @@ var render = function() {
             },
             [
               _vm._v(" "),
-              _vm.checkRoleByIds([6])
-                ? _c(
-                    "v-list-item",
-                    { attrs: { link: "", to: "/tickets" } },
-                    [
-                      _c(
-                        "v-list-item-action",
-                        [_c("v-icon", [_vm._v("mdi-format-list-numbered")])],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-list-item-content",
-                        [_c("v-list-item-title", [_vm._v("Tickets List")])],
-                        1
-                      )
-                    ],
+              _c(
+                "v-list-item",
+                { attrs: { link: "", to: "/tickets" } },
+                [
+                  _c(
+                    "v-list-item-action",
+                    [_c("v-icon", [_vm._v("mdi-format-list-numbered")])],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-list-item-content",
+                    [_c("v-list-item-title", [_vm._v("Tickets List")])],
                     1
                   )
-                : _vm._e(),
+                ],
+                1
+              ),
               _vm._v(" "),
               _c(
                 "v-list-item",
