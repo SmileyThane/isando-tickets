@@ -94,7 +94,7 @@
                         text: 'ID',
                         align: 'start',
                         sortable: false,
-                        value: 'id',
+                        value: 'product_data.id',
                     },
                     {text: 'name', value: 'product_data.name'},
                     {text: 'Description', value: 'product_data.description'},
@@ -134,7 +134,7 @@
                 });
             },
             showItem(item) {
-                this.$router.push(`/product/${item.id}`)
+                this.$router.push(`/product/${item.product_data.id}`)
             }
         }
     }

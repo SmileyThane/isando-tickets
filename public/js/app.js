@@ -3668,7 +3668,7 @@ __webpack_require__.r(__webpack_exports__);
         text: 'ID',
         align: 'start',
         sortable: false,
-        value: 'id'
+        value: 'product_data.id'
       }, {
         text: 'name',
         value: 'product_data.name'
@@ -3719,7 +3719,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     showItem: function showItem(item) {
-      this.$router.push("/product/".concat(item.id));
+      this.$router.push("/product/".concat(item.product_data.id));
     }
   }
 });
@@ -4905,6 +4905,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -45215,7 +45216,7 @@ var render = function() {
                                   { attrs: { cols: "12" } },
                                   [
                                     _c("v-label", [
-                                      _vm._v("Server access details: ")
+                                      _vm._v("Server access details:")
                                     ])
                                   ],
                                   1
@@ -46225,7 +46226,8 @@ var render = function() {
                                           _vm._v(
                                             _vm._s(
                                               answer.employee.user_data.email
-                                            )
+                                            ) +
+                                              "\n                                    "
                                           )
                                         ]
                                       ),
