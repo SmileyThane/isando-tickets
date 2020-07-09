@@ -115,14 +115,7 @@
                                 <v-label>
                                     <strong>Description</strong>
                                 </v-label>
-                                <v-textarea
-                                    auto-grow
-                                    rows="3"
-                                    row-height="25"
-                                    shaped
-                                    disabled
-                                    :value="ticket.description"
-                                ></v-textarea>
+                                <div v-html="ticket.description"></div>
                             </v-col>
                             <v-col cols="12" sm="6">
                                 <v-label>
@@ -256,7 +249,7 @@
                                 <v-list-item three-line>
                                     <v-list-item-content>
                                         <h1 class="text-right caption mb-2">{{answer.created_at}}</h1>
-                                        <v-list-item-title class="mb-2">{{answer.answer}}</v-list-item-title>
+                                        <v-list-item-title class="mb-2" v-html="answer.answer"></v-list-item-title>
                                         <v-list-item-subtitle class="mb-3">{{answer.employee.user_data.email}}
                                         </v-list-item-subtitle>
 

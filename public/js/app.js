@@ -5336,13 +5336,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -45899,14 +45892,9 @@ var render = function() {
                                 _c("strong", [_vm._v("Description")])
                               ]),
                               _vm._v(" "),
-                              _c("v-textarea", {
-                                attrs: {
-                                  "auto-grow": "",
-                                  rows: "3",
-                                  "row-height": "25",
-                                  shaped: "",
-                                  disabled: "",
-                                  value: _vm.ticket.description
+                              _c("div", {
+                                domProps: {
+                                  innerHTML: _vm._s(_vm.ticket.description)
                                 }
                               })
                             ],
@@ -46211,11 +46199,12 @@ var render = function() {
                                         [_vm._v(_vm._s(answer.created_at))]
                                       ),
                                       _vm._v(" "),
-                                      _c(
-                                        "v-list-item-title",
-                                        { staticClass: "mb-2" },
-                                        [_vm._v(_vm._s(answer.answer))]
-                                      ),
+                                      _c("v-list-item-title", {
+                                        staticClass: "mb-2",
+                                        domProps: {
+                                          innerHTML: _vm._s(answer.answer)
+                                        }
+                                      }),
                                       _vm._v(" "),
                                       _c(
                                         "v-list-item-subtitle",
