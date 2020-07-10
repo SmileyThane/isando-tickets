@@ -4822,7 +4822,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -45545,21 +45544,19 @@ var render = function() {
             fn: function(ref) {
               var item = ref.item
               return [
-                !_vm.checkRoleByIds([_vm.clientId])
-                  ? _c(
-                      "v-icon",
-                      {
-                        staticClass: "mr-2",
-                        attrs: { small: "" },
-                        on: {
-                          click: function($event) {
-                            return _vm.showItem(item)
-                          }
-                        }
-                      },
-                      [_vm._v("\n                mdi-eye\n            ")]
-                    )
-                  : _vm._e(),
+                _c(
+                  "v-icon",
+                  {
+                    staticClass: "mr-2",
+                    attrs: { small: "" },
+                    on: {
+                      click: function($event) {
+                        return _vm.showItem(item)
+                      }
+                    }
+                  },
+                  [_vm._v("\n                    mdi-eye\n                ")]
+                ),
                 _vm._v(" "),
                 _c(
                   "v-icon",
@@ -45571,7 +45568,7 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("\n                mdi-delete\n            ")]
+                  [_vm._v("\n                    mdi-delete\n                ")]
                 )
               ]
             }
@@ -45593,11 +45590,6 @@ var render = function() {
                   _c("p", [
                     _c("strong", [_vm._v("To:")]),
                     _vm._v(" " + _vm._s(item.to.name))
-                  ]),
-                  _vm._v(" "),
-                  _c("p", [
-                    _c("strong", [_vm._v("Description:")]),
-                    _vm._v(" " + _vm._s(item.description))
                   ]),
                   _vm._v(" "),
                   _c("p", [

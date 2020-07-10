@@ -19,7 +19,6 @@
             </template>
             <template v-slot:item.actions="{ item }">
                 <v-icon
-                    v-if="!checkRoleByIds([clientId])"
                     small
                     class="mr-2"
                     @click="showItem(item)"
@@ -38,7 +37,7 @@
                     <p></p>
                     <p><strong>From:</strong> {{ item.from.name }}</p>
                     <p><strong>To:</strong> {{ item.to.name }}</p>
-                    <p><strong>Description:</strong> {{ item.description }}</p>
+<!--                    <p><strong>Description:</strong> {{ item.description }}</p>-->
                     <p><strong>Contact name:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
                     <p><strong>Contact email:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
                     <p><strong>Due date:</strong> {{ item.due_date }}</p>

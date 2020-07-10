@@ -46,7 +46,7 @@ class EmailReceiverRepository
         $responseBody = null;
         $i = 1;
         foreach ($messages as $key => $message) {
-            Log::info($i++ . ') ');
+//            Log::info($i++ . ') ');
             $res[$key]['sender'] = $message->getSender();
             $res[$key]['subject'] = $message->getSubject();
 //            Log::info('_________body_start' . $message->getTextBody() . '_________body_end');
@@ -54,9 +54,9 @@ class EmailReceiverRepository
             $senderEmail = $senderObj->mail;
             $userGlobal = User::where('email', $senderEmail)->first();
             if ($userGlobal) {
+                Log::info('email from ' . $userGlobal->name);
                 try {
                     $ticketAttributes['Subject'] = trim(str_replace("Re:", "", $res[$key]['subject']));
-                    $ticketAttributes['Domain'] = $userGlobal->domain_hash;
                     $cachedCount = MailCache::where('message_key', $key)->count();
                     if ($cachedCount === 0) {
                         $this->addMailCache($key, $res[$key]['subject']);
@@ -68,8 +68,10 @@ class EmailReceiverRepository
                         })->first();
 
                     if ($ticket !== null && $cachedCount === 0) {
+                        Log::info('system starts creating answer for ticket ' . $ticket->id);
                         $responseBody = $this->ticketAnswerFromEmail($senderEmail, $ticket, $message);
                     } elseif ($ticket === null && $cachedCount === 0) {
+                        Log::info('system starts creating new ticket');
                         $responseBody = $this->createTicketFromEmail($senderEmail, $message, $ticketAttributes['Subject']);
                     }
                 } catch (\Throwable $th) {
@@ -110,7 +112,8 @@ class EmailReceiverRepository
                 $fromEntityType = Client::class;
                 $toEntityId = $userFrom->employee->company_id;
                 $toEntityType = Company::class;
-                $productClient = CompanyProduct::where('company_id', $fromEntityId)->first();
+                $productClient = ProductClient::where('client_id', $fromEntityId)->first();
+//                Log::alert($productClient);
                 $productId = $productClient ? $productClient->product_id : null;
             }
         } else {
@@ -141,8 +144,8 @@ class EmailReceiverRepository
 //            Log::alert($message->getHTMLBody(true));
             return $this->makeSystemRequest($uri, $token, $params);
         }
-
-
+        Log::alert("check incorrect params fromEntityId=$fromEntityId  fromEntityType=$fromEntityType toEntityId=$toEntityId toEntityType=$toEntityType productId=$productId");
+        return null;
     }
 
     private function makeSystemRequest($uri, $token, $params)
