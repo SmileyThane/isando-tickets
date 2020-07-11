@@ -45785,9 +45785,11 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12", md: "6" } },
                             [
-                              _c("v-label", [
-                                _c("strong", [_vm._v("Due date:")])
-                              ]),
+                              _vm.ticket.due_date
+                                ? _c("v-label", [
+                                    _c("strong", [_vm._v("Due date:")])
+                                  ])
+                                : _vm._e(),
                               _vm._v(" "),
                               _c("v-textarea", {
                                 attrs: {
@@ -45800,7 +45802,7 @@ var render = function() {
                                 },
                                 domProps: {
                                   textContent: _vm._s(
-                                    _vm.ticket.due_date || "No due date"
+                                    _vm.ticket.due_date || null
                                   )
                                 }
                               })
@@ -45880,9 +45882,11 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12" } },
                             [
-                              _c("v-label", [
-                                _c("strong", [_vm._v("Description")])
-                              ]),
+                              _vm.ticket.description
+                                ? _c("v-label", [
+                                    _c("strong", [_vm._v("Description")])
+                                  ])
+                                : _vm._e(),
                               _vm._v(" "),
                               _c("div", {
                                 domProps: {
@@ -45897,13 +45901,15 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12", sm: "6" } },
                             [
-                              _c("v-label", [
-                                _c("strong", [
-                                  _vm._v(
-                                    "IP address(es) of the servers (for remote access)"
-                                  )
-                                ])
-                              ]),
+                              _vm.ticket.connection_details
+                                ? _c("v-label", [
+                                    _c("strong", [
+                                      _vm._v(
+                                        "IP address(es) of the servers (for remote access)"
+                                      )
+                                    ])
+                                  ])
+                                : _vm._e(),
                               _vm._v(" "),
                               _c("v-textarea", {
                                 attrs: {
@@ -45923,9 +45929,11 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12", sm: "6" } },
                             [
-                              _c("v-label", [
-                                _c("strong", [_vm._v("Access details:")])
-                              ]),
+                              _vm.ticket.access_details
+                                ? _c("v-label", [
+                                    _c("strong", [_vm._v("Access details:")])
+                                  ])
+                                : _vm._e(),
                               _vm._v(" "),
                               _c("v-textarea", {
                                 attrs: {

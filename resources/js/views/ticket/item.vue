@@ -68,7 +68,7 @@
                                 ></v-textarea>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-label>
+                                <v-label v-if="ticket.due_date">
                                     <strong>Due date:</strong>
                                 </v-label>
                                 <v-textarea
@@ -78,7 +78,7 @@
                                     row-height="25"
                                     shaped
                                     disabled
-                                    v-text="ticket.due_date || 'No due date'"
+                                    v-text="ticket.due_date || null"
                                 ></v-textarea>
                             </v-col>
                             <div v-if="ticket.contact">
@@ -112,13 +112,13 @@
                                 </v-col>
                             </div>
                             <v-col cols="12">
-                                <v-label>
+                                <v-label v-if="ticket.description">
                                     <strong>Description</strong>
                                 </v-label>
                                 <div v-html="ticket.description"></div>
                             </v-col>
                             <v-col cols="12" sm="6">
-                                <v-label>
+                                <v-label v-if="ticket.connection_details">
                                     <strong>IP address(es) of the servers (for remote access)</strong>
                                 </v-label>
                                 <v-textarea
@@ -131,7 +131,7 @@
                                 ></v-textarea>
                             </v-col>
                             <v-col cols="12" sm="6">
-                                <v-label>
+                                <v-label v-if="ticket.access_details">
                                     <strong>Access details:</strong>
                                 </v-label>
                                 <v-textarea
