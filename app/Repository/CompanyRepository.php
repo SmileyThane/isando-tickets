@@ -33,14 +33,15 @@ class CompanyRepository
         $employee = Auth::user()->employee;
         if ($employee->hasRole(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
-            $company = $clientCompanyUser->clients()->with('employees.employee.userData')->paginate(1000);
+            $company = $clientCompanyUser->clients()->with('employees.employee.userData');
         } else {
             $company = Company::where('id', $id ?? $employee->company_id)
                 ->with(['employees' => function ($query) {
                     $query->whereDoesntHave('assignedToClients')->get();
-                }, 'employees.userData', 'clients', 'teams'])->paginate(1000);
+                }, 'employees.userData', 'clients', 'teams']);
         }
-        return $company;
+
+        return $id ? $company->first() : $company->paginate(1000);
     }
 
     public function create(Request $request)

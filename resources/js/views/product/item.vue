@@ -2,6 +2,16 @@
     <v-container>
 
         <div class="row">
+            <v-snackbar
+                :bottom="true"
+                :right="true"
+                v-model="alert"
+                :color="errorType"
+                v-for="(item, key) in error"
+                v-bind:key="key"
+            >
+                {{ item }}
+            </v-snackbar>
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar
@@ -110,6 +120,9 @@
 
         data() {
             return {
+                alert: false,
+                errorType: '',
+                error: [],
                 headers: [
                     {
                         text: 'ID',
@@ -156,11 +169,17 @@
             updateProduct() {
                 axios.patch(`/api/product/${this.$route.params.id}`, this.product).then(response => {
                     response = response.data
+                    this.error = []
                     if (response.success === true) {
                         this.product.product_name = response.data.name
                         this.product.product_description = response.data.description
+                        this.error.push('Update successful')
+                        this.errorType = 'success'
+                        this.alert = true;
                     } else {
-                        console.log('error')
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
                     }
 
                 });
@@ -185,6 +204,14 @@
                     }
 
                 });
+            },
+            parseErrors(errorTypes) {
+                for (let typeIndex in errorTypes) {
+                    let errorType = errorTypes[typeIndex]
+                    for (let errorIndex in errorType) {
+                        this.error.push(errorType[errorIndex])
+                    }
+                }
             }
         }
     }

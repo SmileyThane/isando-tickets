@@ -50,6 +50,7 @@
                                             item-value="item"
                                             :items="suppliers"
                                             v-model="ticketFrom.from"
+                                            @input="getContacts"
                                         />
                                     </div>
                                     <v-col cols="md-6">
@@ -289,7 +290,7 @@
             this.getSuppliers()
             this.getProducts()
             this.getPriorities()
-            this.getCompany()
+            // this.getCompany()
         },
         methods: {
             onInput(val) {
@@ -316,6 +317,7 @@
                         this.suppliers = response.data
                         this.ticketFrom.from = this.$store.state.roles.includes(this.clientId) ? this.suppliers[1] : this.suppliers[0];
                         this.ticketFrom.to = this.suppliers[0]
+                        this.getContacts(this.ticketFrom.from.item)
                     } else {
                         console.log('error')
                     }
@@ -345,18 +347,26 @@
 
                 });
             },
-            getCompany() {
-                axios.get('/api/company').then(response => {
+            getContacts(entityItem) {
+                this.employees = []
+                let route = '';
+                if (Object.keys(entityItem)[0] === 'App\\Company') {
+                    route = `/api/company/${Object.values(entityItem)[0]}`
+                } else {
+                    route = `/api/client/${Object.values(entityItem)[0]}`
+                }
+                // console.log(entityItem);
+                axios.get(route).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        response = response.data.data[0]
-                        console.log(response);
+                        response = response.data
+                        // console.log(response);
                         if (!response.hasOwnProperty('company_number')) {
                             response.employees.forEach(employeeItem => this.employees.push(employeeItem.employee))
-                            console.log('client');
+                            // console.log('client');
                         } else {
                             this.employees = response.employees
-                            console.log('company');
+                            // console.log('company');
                         }
                         // this.ticketFrom.contact_company_user_id = this.employees[0].id
                     } else {

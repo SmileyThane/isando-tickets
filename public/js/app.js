@@ -3090,7 +3090,7 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
-          _this.company = response.data.data[0];
+          _this.company = response.data;
         } else {
           console.log('error');
         }
@@ -3842,9 +3842,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      alert: false,
+      errorType: '',
+      error: [],
       headers: [{
         text: 'ID',
         align: 'start',
@@ -3900,12 +3913,21 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.patch("/api/product/".concat(this.$route.params.id), this.product).then(function (response) {
         response = response.data;
+        _this2.error = [];
 
         if (response.success === true) {
           _this2.product.product_name = response.data.name;
           _this2.product.product_description = response.data.description;
+
+          _this2.error.push('Update successful');
+
+          _this2.errorType = 'success';
+          _this2.alert = true;
         } else {
-          console.log('error');
+          _this2.parseErrors(response.error);
+
+          _this2.errorType = 'error';
+          _this2.alert = true;
         }
       });
     },
@@ -3934,6 +3956,15 @@ __webpack_require__.r(__webpack_exports__);
           console.log('error');
         }
       });
+    },
+    parseErrors: function parseErrors(errorTypes) {
+      for (var typeIndex in errorTypes) {
+        var errorType = errorTypes[typeIndex];
+
+        for (var errorIndex in errorType) {
+          this.error.push(errorType[errorIndex]);
+        }
+      }
     }
   }
 });
@@ -4578,6 +4609,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4634,8 +4666,7 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.getSuppliers();
     this.getProducts();
-    this.getPriorities();
-    this.getCompany();
+    this.getPriorities(); // this.getCompany()
   },
   methods: {
     onInput: function onInput(val) {
@@ -4665,6 +4696,8 @@ __webpack_require__.r(__webpack_exports__);
           _this2.suppliers = response.data;
           _this2.ticketFrom.from = _this2.$store.state.roles.includes(_this2.clientId) ? _this2.suppliers[1] : _this2.suppliers[0];
           _this2.ticketFrom.to = _this2.suppliers[0];
+
+          _this2.getContacts(_this2.ticketFrom.from.item);
         } else {
           console.log('error');
         }
@@ -4698,24 +4731,31 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    getCompany: function getCompany() {
+    getContacts: function getContacts(entityItem) {
       var _this5 = this;
 
-      axios.get('/api/company').then(function (response) {
+      this.employees = [];
+      var route = '';
+
+      if (Object.keys(entityItem)[0] === 'App\\Company') {
+        route = "/api/company/".concat(Object.values(entityItem)[0]);
+      } else {
+        route = "/api/client/".concat(Object.values(entityItem)[0]);
+      } // console.log(entityItem);
+
+
+      axios.get(route).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
-          response = response.data.data[0];
-          console.log(response);
+          response = response.data; // console.log(response);
 
           if (!response.hasOwnProperty('company_number')) {
             response.employees.forEach(function (employeeItem) {
               return _this5.employees.push(employeeItem.employee);
-            });
-            console.log('client');
+            }); // console.log('client');
           } else {
-            _this5.employees = response.employees;
-            console.log('company');
+            _this5.employees = response.employees; // console.log('company');
           } // this.ticketFrom.contact_company_user_id = this.employees[0].id
 
         } else {
@@ -44114,237 +44154,260 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("v-container", [
-    _c("div", { staticClass: "row" }, [
-      _c(
-        "div",
-        { staticClass: "col-md-6" },
-        [
-          _c(
-            "v-card",
-            { staticClass: "elevation-12" },
-            [
-              _c(
-                "v-toolbar",
-                { attrs: { color: "green", dark: "", flat: "" } },
-                [
-                  _c("v-toolbar-title", [_vm._v("Product information")]),
-                  _vm._v(" "),
-                  _c("v-spacer")
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-card-text",
-                [
-                  _c(
-                    "v-form",
-                    [
-                      _c("v-text-field", {
-                        attrs: {
-                          color: "green",
-                          label: "Name",
-                          name: "name",
-                          "prepend-icon": "mdi-rename-box",
-                          type: "text",
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.product.product_name,
-                          callback: function($$v) {
-                            _vm.$set(_vm.product, "product_name", $$v)
-                          },
-                          expression: "product.product_name"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          color: "green",
-                          label: "Description",
-                          name: "description",
-                          "prepend-icon": "mdi-comment-text",
-                          type: "text",
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.product.product_description,
-                          callback: function($$v) {
-                            _vm.$set(_vm.product, "product_description", $$v)
-                          },
-                          expression: "product.product_description"
-                        }
-                      })
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-card-actions",
-                [
-                  _c("v-spacer"),
-                  _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    {
-                      staticStyle: { color: "white" },
-                      attrs: { color: "green" },
-                      on: { click: _vm.updateProduct }
-                    },
-                    [_vm._v("Save")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
+    _c(
+      "div",
+      { staticClass: "row" },
+      [
+        _vm._l(_vm.error, function(item, key) {
+          return _c(
+            "v-snackbar",
+            {
+              key: key,
+              attrs: { bottom: true, right: true, color: _vm.errorType },
+              model: {
+                value: _vm.alert,
+                callback: function($$v) {
+                  _vm.alert = $$v
+                },
+                expression: "alert"
+              }
+            },
+            [_vm._v("\n            " + _vm._s(item) + "\n        ")]
           )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "col-md-6" },
-        [
-          _c(
-            "v-card",
-            { staticClass: "elevation-12" },
-            [
-              _c(
-                "v-toolbar",
-                { attrs: { color: "green", dark: "", flat: "" } },
-                [
-                  _c("v-toolbar-title", [_vm._v("Product clients")]),
-                  _vm._v(" "),
-                  _c("v-spacer")
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "card-text" },
-                [
-                  _c("v-data-table", {
-                    staticClass: "elevation-1",
-                    attrs: {
-                      headers: _vm.headers,
-                      items: _vm.product.clients,
-                      "items-per-page": 25
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("v-spacer", [_vm._v("\n                 \n            ")]),
-          _vm._v(" "),
-          _c(
-            "v-expansion-panels",
-            [
-              _c(
-                "v-expansion-panel",
-                [
-                  _c(
-                    "v-expansion-panel-header",
-                    {
-                      scopedSlots: _vm._u([
-                        {
-                          key: "actions",
-                          fn: function() {
-                            return [
-                              _c("v-icon", { attrs: { color: "submit" } }, [
-                                _vm._v("mdi-plus")
-                              ])
-                            ]
+        }),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-md-6" },
+          [
+            _c(
+              "v-card",
+              { staticClass: "elevation-12" },
+              [
+                _c(
+                  "v-toolbar",
+                  { attrs: { color: "green", dark: "", flat: "" } },
+                  [
+                    _c("v-toolbar-title", [_vm._v("Product information")]),
+                    _vm._v(" "),
+                    _c("v-spacer")
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-card-text",
+                  [
+                    _c(
+                      "v-form",
+                      [
+                        _c("v-text-field", {
+                          attrs: {
+                            color: "green",
+                            label: "Name",
+                            name: "name",
+                            "prepend-icon": "mdi-rename-box",
+                            type: "text",
+                            required: ""
                           },
-                          proxy: true
-                        }
-                      ])
-                    },
-                    [
-                      _vm._v(
-                        "\n                        Add New Product Client\n                        "
-                      )
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-expansion-panel-content",
-                    [
-                      _c("v-form", [
-                        _c(
-                          "div",
-                          { staticClass: "row" },
-                          [
-                            _c(
-                              "v-col",
-                              { attrs: { cols: "md-12" } },
-                              [
-                                _c("v-autocomplete", {
-                                  attrs: {
-                                    color: "green",
-                                    "item-color": "green",
-                                    "item-text": "name",
-                                    "item-value": "id",
-                                    items: _vm.suppliers,
-                                    label: "Client"
-                                  },
-                                  model: {
-                                    value: _vm.supplierForm.client_id,
-                                    callback: function($$v) {
-                                      _vm.$set(
-                                        _vm.supplierForm,
-                                        "client_id",
-                                        $$v
-                                      )
-                                    },
-                                    expression: "supplierForm.client_id"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-btn",
-                              {
-                                attrs: {
-                                  dark: "",
-                                  fab: "",
-                                  right: "",
-                                  bottom: "",
-                                  color: "green"
-                                },
-                                on: { click: _vm.addProductClient }
-                              },
-                              [_c("v-icon", [_vm._v("mdi-plus")])],
-                              1
-                            )
-                          ],
-                          1
+                          model: {
+                            value: _vm.product.product_name,
+                            callback: function($$v) {
+                              _vm.$set(_vm.product, "product_name", $$v)
+                            },
+                            expression: "product.product_name"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("v-text-field", {
+                          attrs: {
+                            color: "green",
+                            label: "Description",
+                            name: "description",
+                            "prepend-icon": "mdi-comment-text",
+                            type: "text",
+                            required: ""
+                          },
+                          model: {
+                            value: _vm.product.product_description,
+                            callback: function($$v) {
+                              _vm.$set(_vm.product, "product_description", $$v)
+                            },
+                            expression: "product.product_description"
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-card-actions",
+                  [
+                    _c("v-spacer"),
+                    _vm._v(" "),
+                    _c(
+                      "v-btn",
+                      {
+                        staticStyle: { color: "white" },
+                        attrs: { color: "green" },
+                        on: { click: _vm.updateProduct }
+                      },
+                      [_vm._v("Save")]
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-md-6" },
+          [
+            _c(
+              "v-card",
+              { staticClass: "elevation-12" },
+              [
+                _c(
+                  "v-toolbar",
+                  { attrs: { color: "green", dark: "", flat: "" } },
+                  [
+                    _c("v-toolbar-title", [_vm._v("Product clients")]),
+                    _vm._v(" "),
+                    _c("v-spacer")
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "card-text" },
+                  [
+                    _c("v-data-table", {
+                      staticClass: "elevation-1",
+                      attrs: {
+                        headers: _vm.headers,
+                        items: _vm.product.clients,
+                        "items-per-page": 25
+                      }
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("v-spacer", [_vm._v("\n                 \n            ")]),
+            _vm._v(" "),
+            _c(
+              "v-expansion-panels",
+              [
+                _c(
+                  "v-expansion-panel",
+                  [
+                    _c(
+                      "v-expansion-panel-header",
+                      {
+                        scopedSlots: _vm._u([
+                          {
+                            key: "actions",
+                            fn: function() {
+                              return [
+                                _c("v-icon", { attrs: { color: "submit" } }, [
+                                  _vm._v("mdi-plus")
+                                ])
+                              ]
+                            },
+                            proxy: true
+                          }
+                        ])
+                      },
+                      [
+                        _vm._v(
+                          "\n                        Add New Product Client\n                        "
                         )
-                      ])
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      )
-    ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "v-expansion-panel-content",
+                      [
+                        _c("v-form", [
+                          _c(
+                            "div",
+                            { staticClass: "row" },
+                            [
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "md-12" } },
+                                [
+                                  _c("v-autocomplete", {
+                                    attrs: {
+                                      color: "green",
+                                      "item-color": "green",
+                                      "item-text": "name",
+                                      "item-value": "id",
+                                      items: _vm.suppliers,
+                                      label: "Client"
+                                    },
+                                    model: {
+                                      value: _vm.supplierForm.client_id,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.supplierForm,
+                                          "client_id",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "supplierForm.client_id"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: {
+                                    dark: "",
+                                    fab: "",
+                                    right: "",
+                                    bottom: "",
+                                    color: "green"
+                                  },
+                                  on: { click: _vm.addProductClient }
+                                },
+                                [_c("v-icon", [_vm._v("mdi-plus")])],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ])
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      2
+    )
   ])
 }
 var staticRenderFns = []
@@ -44943,6 +45006,7 @@ var render = function() {
                                         "item-value": "item",
                                         items: _vm.suppliers
                                       },
+                                      on: { input: _vm.getContacts },
                                       model: {
                                         value: _vm.ticketFrom.from,
                                         callback: function($$v) {
