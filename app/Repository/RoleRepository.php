@@ -5,6 +5,7 @@ namespace App\Repository;
 
 
 use App\ModelHasRole;
+use Illuminate\Http\Request;
 
 class RoleRepository
 {
@@ -26,6 +27,21 @@ class RoleRepository
             'role_id' => $roleId
         ])->first();
         $attachedRole->delete();
+        return true;
+    }
+
+
+    public function updateRoles(Request $request)
+    {
+        ModelHasRole::where(['model_id' => $request->company_user_id,
+            'model_type' => $request->model_type])->delete();
+        foreach ($request->role_ids as $roleId) {
+            ModelHasRole::firstOrCreate(
+                ['model_id' => $request->company_user_id,
+                    'model_type' => $request->model_type,
+                    'role_id' => $roleId]
+            );
+        }
         return true;
     }
 

@@ -91,7 +91,19 @@
                             :items="company.employees"
                             :items-per-page="25"
                             class="elevation-1"
-                        ></v-data-table>
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-icon
+                                    small
+                                    class="mr-2"
+                                    @click="showRolesModal(item)"
+                                >
+                                    mdi-account-settings-outline
+                                </v-icon>
+
+                            </template>
+
+                        </v-data-table>
                     </div>
                 </v-card>
                 <v-spacer>
@@ -157,6 +169,35 @@
 
             </div>
         </div>
+        <v-row justify="center">
+            <v-dialog v-model="rolesDialog" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">Update role for {{newRoleForm.name}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-select
+                                label="Role"
+                                color="green"
+                                item-color="green"
+                                item-text="name"
+                                item-value="id"
+                                :items="roles"
+                                v-model="newRoleForm.role_ids"
+                                multiple
+                            />
+                        </v-container>
+<!--                        <small>*indicates required field</small>-->
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red" text @click="rolesDialog = false">Close</v-btn>
+                        <v-btn color="green" text @click="updateRole">Save</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-row>
     </v-container>
 </template>
 
@@ -176,7 +217,7 @@
                     {text: 'name', value: 'user_data.name'},
                     {text: 'email', value: 'user_data.email'},
                     {text: 'roles', value: 'role_names'},
-                    {text: 'Actions', value: ''},
+                    {text: 'Actions', value: 'actions', sortable: false},
                 ],
                 company: {
                     name: '',
@@ -203,7 +244,13 @@
                         id: '',
                         name: ''
                     }
-                ]
+                ],
+                rolesDialog: false,
+                newRoleForm:{
+                    name:'',
+                    role_ids: [],
+                    company_user_id:''
+                }
 
             }
         },
@@ -251,6 +298,28 @@
                     response = response.data
                     if (response.success === true) {
                         this.company = response.data
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            showRolesModal(item) {
+                this.rolesDialog = true
+                this.newRoleForm.name = item.user_data.name
+                this.newRoleForm.role_ids = []
+                this.newRoleForm.company_user_id = item.id
+                item.roles.forEach(role => {
+                    this.newRoleForm.role_ids.push(role.id)
+                })
+                // console.log(item);
+            },
+            updateRole() {
+                axios.patch(`/api/roles`, this.newRoleForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.rolesDialog = false
                     } else {
                         console.log('error')
                     }

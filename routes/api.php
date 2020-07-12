@@ -25,6 +25,7 @@ Route::get('/mail/receive/{type?}', 'HomeController@receiveMail')->name('receive
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('logout', 'API\AuthController@logout');
     Route::get('roles', 'API\UserController@roles');
+    Route::patch('roles', 'API\UserController@updateRoles');
     //user management
     Route::get('user', 'API\UserController@find');
     Route::post('user', 'API\UserController@update');

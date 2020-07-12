@@ -3032,6 +3032,47 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3051,7 +3092,8 @@ __webpack_require__.r(__webpack_exports__);
         value: 'role_names'
       }, {
         text: 'Actions',
-        value: ''
+        value: 'actions',
+        sortable: false
       }],
       company: {
         name: '',
@@ -3074,7 +3116,13 @@ __webpack_require__.r(__webpack_exports__);
       roles: [{
         id: '',
         name: ''
-      }]
+      }],
+      rolesDialog: false,
+      newRoleForm: {
+        name: '',
+        role_ids: [],
+        company_user_id: ''
+      }
     };
   },
   mounted: function mounted() {
@@ -3130,6 +3178,32 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this4.company = response.data;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    showRolesModal: function showRolesModal(item) {
+      var _this5 = this;
+
+      this.rolesDialog = true;
+      this.newRoleForm.name = item.user_data.name;
+      this.newRoleForm.role_ids = [];
+      this.newRoleForm.company_user_id = item.id;
+      item.roles.forEach(function (role) {
+        _this5.newRoleForm.role_ids.push(role.id);
+      }); // console.log(item);
+    },
+    updateRole: function updateRole() {
+      var _this6 = this;
+
+      axios.patch("/api/roles", this.newRoleForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this6.getCompany();
+
+          _this6.rolesDialog = false;
         } else {
           console.log('error');
         }
@@ -4372,6 +4446,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -43015,152 +43090,459 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("v-container", [
-    _c("div", { staticClass: "row" }, [
-      _c(
-        "div",
-        { staticClass: "col-md-6" },
-        [
-          _c(
-            "v-card",
-            { staticClass: "elevation-12" },
-            [
-              _c(
-                "v-toolbar",
-                { attrs: { color: "green", dark: "", flat: "" } },
-                [
-                  _c("v-toolbar-title", [_vm._v("Company information")]),
-                  _vm._v(" "),
-                  _c("v-spacer")
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-card-text",
-                [
-                  _c(
-                    "v-form",
-                    [
-                      _c("v-text-field", {
-                        attrs: {
-                          color: "green",
-                          label: "Name",
-                          name: "name",
-                          "prepend-icon": "mdi-rename-box",
-                          type: "text",
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.company.name,
-                          callback: function($$v) {
-                            _vm.$set(_vm.company, "name", $$v)
-                          },
-                          expression: "company.name"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          color: "green",
-                          label: "Description",
-                          name: "description",
-                          "prepend-icon": "mdi-comment-text",
-                          type: "text",
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.company.description,
-                          callback: function($$v) {
-                            _vm.$set(_vm.company, "description", $$v)
-                          },
-                          expression: "company.description"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          color: "green",
-                          label: "Company number",
-                          name: "company_number",
-                          "prepend-icon": "mdi-message-alert",
-                          type: "text",
-                          required: ""
-                        },
-                        model: {
-                          value: _vm.company.company_number,
-                          callback: function($$v) {
-                            _vm.$set(_vm.company, "company_number", $$v)
-                          },
-                          expression: "company.company_number"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c(
-                        "v-menu",
-                        {
+  return _c(
+    "v-container",
+    [
+      _c("div", { staticClass: "row" }, [
+        _c(
+          "div",
+          { staticClass: "col-md-6" },
+          [
+            _c(
+              "v-card",
+              { staticClass: "elevation-12" },
+              [
+                _c(
+                  "v-toolbar",
+                  { attrs: { color: "green", dark: "", flat: "" } },
+                  [
+                    _c("v-toolbar-title", [_vm._v("Company information")]),
+                    _vm._v(" "),
+                    _c("v-spacer")
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-card-text",
+                  [
+                    _c(
+                      "v-form",
+                      [
+                        _c("v-text-field", {
                           attrs: {
-                            "close-on-content-click": false,
-                            "nudge-right": 40,
-                            transition: "scale-transition",
-                            "offset-y": "",
-                            "min-width": "290px"
+                            color: "green",
+                            label: "Name",
+                            name: "name",
+                            "prepend-icon": "mdi-rename-box",
+                            type: "text",
+                            required: ""
                           },
-                          scopedSlots: _vm._u([
-                            {
-                              key: "activator",
-                              fn: function(ref) {
-                                var on = ref.on
-                                var attrs = ref.attrs
-                                return [
-                                  _c(
-                                    "v-text-field",
-                                    _vm._g(
-                                      _vm._b(
-                                        {
-                                          attrs: {
-                                            color: "green",
-                                            label: "Date of registration",
-                                            name: "registration_date",
-                                            "prepend-icon": "mdi-calendar",
-                                            readonly: ""
-                                          },
-                                          model: {
-                                            value:
-                                              _vm.company.registration_date,
-                                            callback: function($$v) {
-                                              _vm.$set(
-                                                _vm.company,
-                                                "registration_date",
-                                                $$v
-                                              )
+                          model: {
+                            value: _vm.company.name,
+                            callback: function($$v) {
+                              _vm.$set(_vm.company, "name", $$v)
+                            },
+                            expression: "company.name"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("v-text-field", {
+                          attrs: {
+                            color: "green",
+                            label: "Description",
+                            name: "description",
+                            "prepend-icon": "mdi-comment-text",
+                            type: "text",
+                            required: ""
+                          },
+                          model: {
+                            value: _vm.company.description,
+                            callback: function($$v) {
+                              _vm.$set(_vm.company, "description", $$v)
+                            },
+                            expression: "company.description"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("v-text-field", {
+                          attrs: {
+                            color: "green",
+                            label: "Company number",
+                            name: "company_number",
+                            "prepend-icon": "mdi-message-alert",
+                            type: "text",
+                            required: ""
+                          },
+                          model: {
+                            value: _vm.company.company_number,
+                            callback: function($$v) {
+                              _vm.$set(_vm.company, "company_number", $$v)
+                            },
+                            expression: "company.company_number"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "v-menu",
+                          {
+                            attrs: {
+                              "close-on-content-click": false,
+                              "nudge-right": 40,
+                              transition: "scale-transition",
+                              "offset-y": "",
+                              "min-width": "290px"
+                            },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  var attrs = ref.attrs
+                                  return [
+                                    _c(
+                                      "v-text-field",
+                                      _vm._g(
+                                        _vm._b(
+                                          {
+                                            attrs: {
+                                              color: "green",
+                                              label: "Date of registration",
+                                              name: "registration_date",
+                                              "prepend-icon": "mdi-calendar",
+                                              readonly: ""
                                             },
-                                            expression:
-                                              "company.registration_date"
-                                          }
-                                        },
-                                        "v-text-field",
-                                        attrs,
-                                        false
-                                      ),
-                                      on
+                                            model: {
+                                              value:
+                                                _vm.company.registration_date,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.company,
+                                                  "registration_date",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "company.registration_date"
+                                            }
+                                          },
+                                          "v-text-field",
+                                          attrs,
+                                          false
+                                        ),
+                                        on
+                                      )
                                     )
+                                  ]
+                                }
+                              }
+                            ])
+                          },
+                          [
+                            _vm._v(" "),
+                            _c("v-date-picker", {
+                              attrs: { color: "green" },
+                              model: {
+                                value: _vm.company.registration_date,
+                                callback: function($$v) {
+                                  _vm.$set(
+                                    _vm.company,
+                                    "registration_date",
+                                    $$v
+                                  )
+                                },
+                                expression: "company.registration_date"
+                              }
+                            })
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-card-actions",
+                  [
+                    _c("v-spacer"),
+                    _vm._v(" "),
+                    _c(
+                      "v-btn",
+                      {
+                        staticStyle: { color: "white" },
+                        attrs: { color: "green" },
+                        on: { click: _vm.updateCompany }
+                      },
+                      [_vm._v("Save")]
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-md-6" },
+          [
+            _c(
+              "v-card",
+              { staticClass: "elevation-12" },
+              [
+                _c(
+                  "v-toolbar",
+                  { attrs: { color: "green", dark: "", flat: "" } },
+                  [
+                    _c("v-toolbar-title", [_vm._v("Company contacts")]),
+                    _vm._v(" "),
+                    _c("v-spacer")
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "card-text" },
+                  [
+                    _c("v-data-table", {
+                      staticClass: "elevation-1",
+                      attrs: {
+                        headers: _vm.headers,
+                        items: _vm.company.employees,
+                        "items-per-page": 25
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "item.actions",
+                          fn: function(ref) {
+                            var item = ref.item
+                            return [
+                              _c(
+                                "v-icon",
+                                {
+                                  staticClass: "mr-2",
+                                  attrs: { small: "" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.showRolesModal(item)
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                    mdi-account-settings-outline\n                                "
                                   )
                                 ]
-                              }
-                            }
-                          ])
-                        },
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("v-spacer", [
+              _vm._v("\n                     \n                ")
+            ]),
+            _vm._v(" "),
+            _c(
+              "v-expansion-panels",
+              [
+                _c(
+                  "v-expansion-panel",
+                  [
+                    _c(
+                      "v-expansion-panel-header",
+                      {
+                        scopedSlots: _vm._u([
+                          {
+                            key: "actions",
+                            fn: function() {
+                              return [
+                                _c("v-icon", { attrs: { color: "submit" } }, [
+                                  _vm._v("mdi-plus")
+                                ])
+                              ]
+                            },
+                            proxy: true
+                          }
+                        ])
+                      },
+                      [
+                        _vm._v(
+                          "\n                            Add New Contact\n                            "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "v-expansion-panel-content",
+                      [
+                        _c("v-form", [
+                          _c(
+                            "div",
+                            { staticClass: "row" },
+                            [
+                              _c(
+                                "div",
+                                { staticClass: "col-md-4" },
+                                [
+                                  _c("v-text-field", {
+                                    attrs: {
+                                      color: "green",
+                                      label: "Name",
+                                      name: "name",
+                                      type: "text",
+                                      required: ""
+                                    },
+                                    model: {
+                                      value: _vm.employeeForm.name,
+                                      callback: function($$v) {
+                                        _vm.$set(_vm.employeeForm, "name", $$v)
+                                      },
+                                      expression: "employeeForm.name"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "col-md-4" },
+                                [
+                                  _c("v-text-field", {
+                                    attrs: {
+                                      color: "green",
+                                      label: "Email",
+                                      name: "email",
+                                      type: "text",
+                                      required: ""
+                                    },
+                                    model: {
+                                      value: _vm.employeeForm.email,
+                                      callback: function($$v) {
+                                        _vm.$set(_vm.employeeForm, "email", $$v)
+                                      },
+                                      expression: "employeeForm.email"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                { staticClass: "col-md-4" },
+                                [
+                                  _c("v-select", {
+                                    attrs: {
+                                      label: "Role",
+                                      color: "green",
+                                      "item-color": "green",
+                                      "item-text": "name",
+                                      "item-value": "id",
+                                      items: _vm.roles
+                                    },
+                                    model: {
+                                      value: _vm.employeeForm.role_id,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.employeeForm,
+                                          "role_id",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "employeeForm.role_id"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: {
+                                    dark: "",
+                                    fab: "",
+                                    right: "",
+                                    bottom: "",
+                                    color: "green"
+                                  },
+                                  on: { click: _vm.addEmployee }
+                                },
+                                [_c("v-icon", [_vm._v("mdi-plus")])],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ])
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "v-row",
+        { attrs: { justify: "center" } },
+        [
+          _c(
+            "v-dialog",
+            {
+              attrs: { persistent: "", "max-width": "600px" },
+              model: {
+                value: _vm.rolesDialog,
+                callback: function($$v) {
+                  _vm.rolesDialog = $$v
+                },
+                expression: "rolesDialog"
+              }
+            },
+            [
+              _c(
+                "v-card",
+                [
+                  _c("v-card-title", [
+                    _c("span", { staticClass: "headline" }, [
+                      _vm._v("Update role for " + _vm._s(_vm.newRoleForm.name))
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "v-card-text",
+                    [
+                      _c(
+                        "v-container",
                         [
-                          _vm._v(" "),
-                          _c("v-date-picker", {
-                            attrs: { color: "green" },
+                          _c("v-select", {
+                            attrs: {
+                              label: "Role",
+                              color: "green",
+                              "item-color": "green",
+                              "item-text": "name",
+                              "item-value": "id",
+                              items: _vm.roles,
+                              multiple: ""
+                            },
                             model: {
-                              value: _vm.company.registration_date,
+                              value: _vm.newRoleForm.role_ids,
                               callback: function($$v) {
-                                _vm.$set(_vm.company, "registration_date", $$v)
+                                _vm.$set(_vm.newRoleForm, "role_ids", $$v)
                               },
-                              expression: "company.registration_date"
+                              expression: "newRoleForm.role_ids"
                             }
                           })
                         ],
@@ -43168,205 +43550,34 @@ var render = function() {
                       )
                     ],
                     1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-card-actions",
-                [
-                  _c("v-spacer"),
-                  _vm._v(" "),
-                  _c(
-                    "v-btn",
-                    {
-                      staticStyle: { color: "white" },
-                      attrs: { color: "green" },
-                      on: { click: _vm.updateCompany }
-                    },
-                    [_vm._v("Save")]
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "col-md-6" },
-        [
-          _c(
-            "v-card",
-            { staticClass: "elevation-12" },
-            [
-              _c(
-                "v-toolbar",
-                { attrs: { color: "green", dark: "", flat: "" } },
-                [
-                  _c("v-toolbar-title", [_vm._v("Company contacts")]),
-                  _vm._v(" "),
-                  _c("v-spacer")
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "card-text" },
-                [
-                  _c("v-data-table", {
-                    staticClass: "elevation-1",
-                    attrs: {
-                      headers: _vm.headers,
-                      items: _vm.company.employees,
-                      "items-per-page": 25
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("v-spacer", [_vm._v("\n                 \n            ")]),
-          _vm._v(" "),
-          _c(
-            "v-expansion-panels",
-            [
-              _c(
-                "v-expansion-panel",
-                [
-                  _c(
-                    "v-expansion-panel-header",
-                    {
-                      scopedSlots: _vm._u([
-                        {
-                          key: "actions",
-                          fn: function() {
-                            return [
-                              _c("v-icon", { attrs: { color: "submit" } }, [
-                                _vm._v("mdi-plus")
-                              ])
-                            ]
-                          },
-                          proxy: true
-                        }
-                      ])
-                    },
-                    [
-                      _vm._v(
-                        "\n                        Add New Contact\n                        "
-                      )
-                    ]
                   ),
                   _vm._v(" "),
                   _c(
-                    "v-expansion-panel-content",
+                    "v-card-actions",
                     [
-                      _c("v-form", [
-                        _c(
-                          "div",
-                          { staticClass: "row" },
-                          [
-                            _c(
-                              "div",
-                              { staticClass: "col-md-4" },
-                              [
-                                _c("v-text-field", {
-                                  attrs: {
-                                    color: "green",
-                                    label: "Name",
-                                    name: "name",
-                                    type: "text",
-                                    required: ""
-                                  },
-                                  model: {
-                                    value: _vm.employeeForm.name,
-                                    callback: function($$v) {
-                                      _vm.$set(_vm.employeeForm, "name", $$v)
-                                    },
-                                    expression: "employeeForm.name"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "col-md-4" },
-                              [
-                                _c("v-text-field", {
-                                  attrs: {
-                                    color: "green",
-                                    label: "Email",
-                                    name: "email",
-                                    type: "text",
-                                    required: ""
-                                  },
-                                  model: {
-                                    value: _vm.employeeForm.email,
-                                    callback: function($$v) {
-                                      _vm.$set(_vm.employeeForm, "email", $$v)
-                                    },
-                                    expression: "employeeForm.email"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "col-md-4" },
-                              [
-                                _c("v-select", {
-                                  attrs: {
-                                    label: "Role",
-                                    color: "green",
-                                    "item-color": "green",
-                                    "item-text": "name",
-                                    "item-value": "id",
-                                    items: _vm.roles
-                                  },
-                                  model: {
-                                    value: _vm.employeeForm.role_id,
-                                    callback: function($$v) {
-                                      _vm.$set(_vm.employeeForm, "role_id", $$v)
-                                    },
-                                    expression: "employeeForm.role_id"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-btn",
-                              {
-                                attrs: {
-                                  dark: "",
-                                  fab: "",
-                                  right: "",
-                                  bottom: "",
-                                  color: "green"
-                                },
-                                on: { click: _vm.addEmployee }
-                              },
-                              [_c("v-icon", [_vm._v("mdi-plus")])],
-                              1
-                            )
-                          ],
-                          1
-                        )
-                      ])
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "red", text: "" },
+                          on: {
+                            click: function($event) {
+                              _vm.rolesDialog = false
+                            }
+                          }
+                        },
+                        [_vm._v("Close")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "green", text: "" },
+                          on: { click: _vm.updateRole }
+                        },
+                        [_vm._v("Save")]
+                      )
                     ],
                     1
                   )
@@ -43379,8 +43590,9 @@ var render = function() {
         ],
         1
       )
-    ])
-  ])
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

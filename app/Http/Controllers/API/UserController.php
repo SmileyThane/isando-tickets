@@ -3,7 +3,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\CompanyUser;
 use App\Http\Controllers\Controller;
+use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Role;
 use Illuminate\Http\Request;
@@ -12,10 +14,12 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     protected $userRepo;
+    protected $roleRepo;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, RoleRepository $roleRepository)
     {
         $this->userRepo = $userRepository;
+        $this->roleRepo = $roleRepository;
     }
 
     public function find($id = null)
@@ -47,6 +51,13 @@ class UserController extends Controller
     {
         $companyUser = Auth::user()->employee;
         return self::showResponse(true, $companyUser->roles->pluck('id')->toArray());
+    }
+
+    public function updateRoles(Request $request)
+    {
+        $request->model_type = CompanyUser::class;
+        $result = $this->roleRepo->updateRoles($request);
+        return self::showResponse($result);
     }
 
 }
