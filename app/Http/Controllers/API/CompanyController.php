@@ -36,6 +36,13 @@ class CompanyController extends Controller
         return $this->companyUserRepo->invite($request);
     }
 
+    public function removeEmployee($id)
+    {
+        $result = $this->companyUserRepo->delete($id);
+        return self::showResponse($result);
+
+    }
+
     public function attachProduct(Request $request)
     {
         $result = $this->companyRepo->attachProduct($request);

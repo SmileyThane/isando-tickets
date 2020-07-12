@@ -100,6 +100,12 @@
                                 >
                                     mdi-account-settings-outline
                                 </v-icon>
+                                <v-icon
+                                    small
+                                    @click="removeEmployee(item)"
+                                >
+                                    mdi-delete
+                                </v-icon>
 
                             </template>
 
@@ -316,6 +322,18 @@
             },
             updateRole() {
                 axios.patch(`/api/roles`, this.newRoleForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.rolesDialog = false
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            removeEmployee(item) {
+                axios.delete(`/api/company/employee/${item.id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()

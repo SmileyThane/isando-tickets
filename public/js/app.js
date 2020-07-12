@@ -3073,6 +3073,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3204,6 +3210,21 @@ __webpack_require__.r(__webpack_exports__);
           _this6.getCompany();
 
           _this6.rolesDialog = false;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    removeEmployee: function removeEmployee(item) {
+      var _this7 = this;
+
+      axios["delete"]("/api/company/employee/".concat(item.id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this7.getCompany();
+
+          _this7.rolesDialog = false;
         } else {
           console.log('error');
         }
@@ -43328,6 +43349,23 @@ var render = function() {
                                 [
                                   _vm._v(
                                     "\n                                    mdi-account-settings-outline\n                                "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-icon",
+                                {
+                                  attrs: { small: "" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.removeEmployee(item)
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                    mdi-delete\n                                "
                                   )
                                 ]
                               )

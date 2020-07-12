@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('company/{id?}', 'API\CompanyController@find');
     Route::post('company/{id}', 'API\CompanyController@update');
     Route::post('company/{id}/employee', 'API\CompanyController@invite');
+    Route::delete('company/employee/{id}', 'API\CompanyController@removeEmployee');
     Route::post('company/product', 'API\CompanyController@attachProduct');
 
     //client management
