@@ -561,9 +561,9 @@
                     this.selectionDisabled = true
                 }
                 if (this.ticket.to_team_id !== null) {
-                    if (this.ticket.to_company_user_id) {
-                        this.selectionDisabled = true
-                    }
+                    // if (this.ticket.to_company_user_id) {
+                    //     this.selectionDisabled = true
+                    // }
                     this.assignPanel = [0];
                     axios.get(`/api/team/${this.ticket.to_team_id}`).then(response => {
                         response = response.data
