@@ -4979,6 +4979,9 @@ __webpack_require__.r(__webpack_exports__);
         text: 'Priority',
         value: 'priority.name'
       }, {
+        text: 'Company from',
+        value: 'from.name'
+      }, {
         text: 'Product',
         value: 'product.name'
       }, {
@@ -10109,7 +10112,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css?bdb9":
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css":
 /*!***********************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vuetify/dist/vuetify.min.css ***!
   \***********************************************************************************************************************************/
@@ -45894,11 +45897,6 @@ var render = function() {
               return [
                 _c("td", { attrs: { colspan: headers.length } }, [
                   _c("p"),
-                  _vm._v(" "),
-                  _c("p", [
-                    _c("strong", [_vm._v("From:")]),
-                    _vm._v(" " + _vm._s(item.from.name))
-                  ]),
                   _vm._v(" "),
                   _c("p", [
                     _c("strong", [_vm._v("To:")]),
@@ -104003,7 +104001,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_vue__;
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(/*! !../../css-loader??ref--6-1!../../postcss-loader/src??ref--6-2!./vuetify.min.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css?bdb9");
+var content = __webpack_require__(/*! !../../css-loader??ref--6-1!../../postcss-loader/src??ref--6-2!./vuetify.min.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 

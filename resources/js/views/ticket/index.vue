@@ -35,7 +35,7 @@
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
                     <p></p>
-                    <p><strong>From:</strong> {{ item.from.name }}</p>
+<!--                    <p><strong>From:</strong> {{ item.from.name }}</p>-->
                     <p><strong>To:</strong> {{ item.to.name }}</p>
 <!--                    <p><strong>Description:</strong> {{ item.description }}</p>-->
                     <p><strong>Contact name:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
@@ -65,6 +65,7 @@
                     },
                     {text: 'Status', value: 'status.name'},
                     {text: 'Priority', value: 'priority.name'},
+                    {text: 'Company from', value: 'from.name'},
                     {text: 'Product', value: 'product.name'},
                     {text: 'Title', value: 'name'},
                     {text: 'Last update', value: 'last_update'},
