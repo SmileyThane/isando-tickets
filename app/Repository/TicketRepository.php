@@ -120,6 +120,8 @@ class TicketRepository
             $ticket->to_team_id = $request->to_team_id;
             $ticket->due_date = $request->due_date;
             $ticket->save();
+            $request->status_id = 2;
+            $this->updateStatus($request, $id);
             $this->addHistoryItem($ticket->id, 'Ticket updated');
         }
         return $ticket;
@@ -184,6 +186,13 @@ class TicketRepository
         foreach ($files as $file) {
             $this->fileRepo->store($file, $ticketAnswer->id, TicketAnswer::class);
         }
+        $ticket = Ticket::find($ticketAnswer->ticket_id);
+        if ($ticket->to_entity_type === Company::class && $ticket->to_entity_id = Auth::user()->employee->company_id) {
+            $request->status_id = 4;
+        } else {
+            $request->status_id = 3;
+        }
+        $this->updateStatus($request, $ticketAnswer->ticket_id);
         $this->addHistoryItem($ticketAnswer->ticket_id, 'Answer added');
         return true;
     }
