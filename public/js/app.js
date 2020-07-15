@@ -4958,6 +4958,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -45854,6 +45858,19 @@ var render = function() {
               ]
             },
             proxy: true
+          },
+          {
+            key: "item.status.name",
+            fn: function(ref) {
+              var item = ref.item
+              return [
+                _c(
+                  "v-chip",
+                  { attrs: { color: item.status.color, dark: "" } },
+                  [_vm._v(_vm._s(item.status.name))]
+                )
+              ]
+            }
           },
           {
             key: "item.actions",

@@ -10,12 +10,16 @@
             show-expand
             class="elevation-1"
         >
+
             <template v-slot:top>
                 <v-toolbar flat>
                     <v-toolbar-title></v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-switch v-model="singleExpand" label="Single expand" color="green" class="mt-2"></v-switch>
                 </v-toolbar>
+            </template>
+            <template v-slot:item.status.name="{ item }">
+                <v-chip :color="item.status.color" dark>{{ item.status.name }}</v-chip>
             </template>
             <template v-slot:item.actions="{ item }">
                 <v-icon
