@@ -187,10 +187,11 @@ class TicketRepository
             $this->fileRepo->store($file, $ticketAnswer->id, TicketAnswer::class);
         }
         $ticket = Ticket::find($ticketAnswer->ticket_id);
-        if ($ticket->to_entity_type === Company::class && $ticket->to_entity_id = Auth::user()->employee->company_id) {
-            $request->status_id = 4;
-        } else {
+
+        if (Auth::user()->employee->hasRole(Role::COMPANY_CLIENT)) {
             $request->status_id = 3;
+        } else {
+            $request->status_id = 4;
         }
         $this->updateStatus($request, $ticketAnswer->ticket_id);
         $this->addHistoryItem($ticketAnswer->ticket_id, 'Answer added');
