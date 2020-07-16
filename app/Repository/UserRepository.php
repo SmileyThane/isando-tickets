@@ -28,7 +28,7 @@ class UserRepository
 
     public function find($id)
     {
-        return User::find($id);
+        return User::where('id', $id)->with('phones.type', 'addresses.type')->first();
     }
 
     public function create(Request $request)

@@ -16,9 +16,9 @@ class CreateAddressesTable extends Migration
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('entity_id');
-            $table->bigInteger('entity_type');
+            $table->string('entity_type');
             $table->string('address');
-            $table->string('address_type');
+            $table->bigInteger('address_type');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -2478,16 +2478,128 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      phoneHeaders: [{
+        text: 'Phone',
+        sortable: false,
+        value: 'phone'
+      }, {
+        text: 'Type',
+        value: 'type.name'
+      }],
+      addressHeaders: [{
+        text: 'Address',
+        value: 'address'
+      }, {
+        text: 'Type',
+        value: 'type.name'
+      }],
       alert: false,
       errorType: '',
       error: [],
       userData: {
+        title: '',
+        title_before_name: '',
+        surname: '',
+        country: '',
+        anredeform: '',
+        lang: '',
         name: "",
         email: "",
-        password: ""
+        password: "",
+        phones: [],
+        addresses: []
       }
     };
   },
@@ -42442,145 +42554,82 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "v-content",
+    "v-container",
+    { attrs: { fluid: "" } },
     [
       _c(
-        "v-container",
-        { staticClass: "fill-height", attrs: { fluid: "" } },
+        "v-row",
         [
           _c(
-            "v-row",
-            { attrs: { align: "center", justify: "center" } },
+            "v-col",
+            { staticClass: "col-md-6" },
             [
               _c(
-                "v-col",
-                { attrs: { cols: "12", sm: "12", md: "8" } },
+                "v-card",
+                { staticClass: "elevation-6" },
                 [
-                  _vm._l(_vm.error, function(item, key) {
-                    return _c(
-                      "v-alert",
-                      {
-                        key: key,
-                        attrs: { type: _vm.errorType, value: _vm.alert }
-                      },
-                      [
-                        _vm._v(
-                          "\n                    " +
-                            _vm._s(item) +
-                            "\n                "
-                        )
-                      ]
-                    )
-                  }),
+                  _c(
+                    "v-toolbar",
+                    { attrs: { color: "green", dark: "", flat: "" } },
+                    [
+                      _c("v-toolbar-title", [_vm._v("Profile info")]),
+                      _vm._v(" "),
+                      _c("v-spacer")
+                    ],
+                    1
+                  ),
                   _vm._v(" "),
                   _c(
-                    "v-card",
-                    { staticClass: "elevation-12" },
+                    "v-card-text",
                     [
                       _c(
-                        "v-toolbar",
-                        { attrs: { color: "green", dark: "", flat: "" } },
-                        [
-                          _c("v-toolbar-title", [_vm._v("Profile info")]),
-                          _vm._v(" "),
-                          _c("v-spacer")
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-container",
+                        "v-form",
                         [
                           _c(
                             "v-row",
-                            { attrs: { align: "center", justify: "center" } },
-                            [
-                              _c(
-                                "v-col",
-                                { attrs: { cols: "auto" } },
-                                [
-                                  _c("v-img", {
-                                    attrs: {
-                                      height: "200",
-                                      width: "200",
-                                      src:
-                                        "https://cdn.vuetifyjs.com/images/cards/store.jpg"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-col",
-                                {
-                                  staticClass: "text-center pl-0",
-                                  attrs: { cols: "auto" }
-                                },
-                                [
-                                  _c(
-                                    "v-row",
-                                    {
-                                      staticClass:
-                                        "flex-column ma-0 fill-height",
-                                      attrs: { justify: "center" }
-                                    },
-                                    [
-                                      _c(
-                                        "v-col",
-                                        { staticClass: "px-0" },
-                                        [
-                                          _c(
-                                            "v-btn",
-                                            { attrs: { icon: "" } },
-                                            [
-                                              _c("v-icon", [
-                                                _vm._v("mdi-upload")
-                                              ])
-                                            ],
-                                            1
-                                          )
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-col",
-                                        { staticClass: "px-0" },
-                                        [
-                                          _c(
-                                            "v-btn",
-                                            { attrs: { icon: "" } },
-                                            [
-                                              _c("v-icon", [
-                                                _vm._v("mdi-delete")
-                                              ])
-                                            ],
-                                            1
-                                          )
-                                        ],
-                                        1
-                                      )
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              )
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-card-text",
-                        [
-                          _c(
-                            "v-form",
                             [
                               _c("v-text-field", {
+                                staticClass: "col-md-6",
+                                attrs: {
+                                  color: "green",
+                                  label: "Title before name",
+                                  name: "title_before_name",
+                                  "prepend-icon": "mdi-book-account-outline",
+                                  type: "text"
+                                },
+                                model: {
+                                  value: _vm.userData.title_before_name,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.userData,
+                                      "title_before_name",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "userData.title_before_name"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                staticClass: "col-md-6",
+                                attrs: {
+                                  color: "green",
+                                  label: "Title",
+                                  name: "title",
+                                  "prepend-icon": "mdi-book-account-outline",
+                                  type: "text"
+                                },
+                                model: {
+                                  value: _vm.userData.title,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.userData, "title", $$v)
+                                  },
+                                  expression: "userData.title"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                staticClass: "col-md-6",
                                 attrs: {
                                   color: "green",
                                   label: "Name",
@@ -42599,9 +42648,28 @@ var render = function() {
                               }),
                               _vm._v(" "),
                               _c("v-text-field", {
+                                staticClass: "col-md-6",
                                 attrs: {
                                   color: "green",
-                                  label: "Login",
+                                  label: "Surname",
+                                  name: "surname",
+                                  "prepend-icon": "mdi-book-account-outline",
+                                  type: "text"
+                                },
+                                model: {
+                                  value: _vm.userData.surname,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.userData, "surname", $$v)
+                                  },
+                                  expression: "userData.surname"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                staticClass: "col-md-6",
+                                attrs: {
+                                  color: "green",
+                                  label: "Email",
                                   name: "email",
                                   "prepend-icon": "mdi-mail",
                                   type: "text",
@@ -42617,6 +42685,7 @@ var render = function() {
                               }),
                               _vm._v(" "),
                               _c("v-text-field", {
+                                staticClass: "col-md-6",
                                 attrs: {
                                   color: "green",
                                   id: "password",
@@ -42633,27 +42702,161 @@ var render = function() {
                                   },
                                   expression: "userData.password"
                                 }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                staticClass: "col-md-4",
+                                attrs: {
+                                  color: "green",
+                                  label: "Country",
+                                  name: "country",
+                                  "prepend-icon": "mdi-mail",
+                                  type: "text",
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.userData.country,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.userData, "country", $$v)
+                                  },
+                                  expression: "userData.country"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                staticClass: "col-md-4",
+                                attrs: {
+                                  color: "green",
+                                  label: "Anredeform",
+                                  name: "anredeform",
+                                  "prepend-icon": "mdi-mail",
+                                  type: "text",
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.userData.anredeform,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.userData, "anredeform", $$v)
+                                  },
+                                  expression: "userData.anredeform"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                staticClass: "col-md-4",
+                                attrs: {
+                                  color: "green",
+                                  label: "Language",
+                                  name: "lang",
+                                  "prepend-icon": "mdi-mail",
+                                  type: "text",
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.userData.lang,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.userData, "lang", $$v)
+                                  },
+                                  expression: "userData.lang"
+                                }
                               })
                             ],
                             1
                           )
                         ],
                         1
-                      ),
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-card-actions",
+                    [
+                      _c("v-spacer"),
                       _vm._v(" "),
                       _c(
-                        "v-card-actions",
+                        "v-btn",
+                        {
+                          staticStyle: { color: "white" },
+                          attrs: { color: "green" },
+                          on: { click: _vm.updateUser }
+                        },
+                        [_vm._v("Update")]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-col",
+            { staticClass: "col-md-6" },
+            [
+              _c(
+                "v-card",
+                { staticClass: "elevation-6" },
+                [
+                  _c(
+                    "v-toolbar",
+                    { attrs: { color: "green", dark: "", flat: "" } },
+                    [
+                      _c("v-toolbar-title", [_vm._v("Additional info")]),
+                      _vm._v(" "),
+                      _c("v-spacer")
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-card-text",
+                    [
+                      _c(
+                        "v-form",
                         [
-                          _c("v-spacer"),
-                          _vm._v(" "),
                           _c(
-                            "v-btn",
-                            {
-                              staticStyle: { color: "white" },
-                              attrs: { color: "green" },
-                              on: { click: _vm.updateUser }
-                            },
-                            [_vm._v("Update")]
+                            "v-row",
+                            [
+                              _c(
+                                "v-col",
+                                { staticClass: "col-md-6" },
+                                [
+                                  _c("v-data-table", {
+                                    staticClass: "elevation-1",
+                                    attrs: {
+                                      headers: _vm.phoneHeaders,
+                                      items: _vm.userData.phones,
+                                      "hide-default-footer": "",
+                                      dense: ""
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { staticClass: "col-md-6" },
+                                [
+                                  _c("v-data-table", {
+                                    staticClass: "elevation-1",
+                                    attrs: {
+                                      headers: _vm.addressHeaders,
+                                      items: _vm.userData.addresses,
+                                      "hide-default-footer": "",
+                                      dense: ""
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
                           )
                         ],
                         1
@@ -42662,7 +42865,7 @@ var render = function() {
                     1
                   )
                 ],
-                2
+                1
               )
             ],
             1

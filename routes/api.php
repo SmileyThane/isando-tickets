@@ -29,6 +29,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     //user management
     Route::get('user', 'API\UserController@find');
     Route::post('user', 'API\UserController@update');
+    Route::post('user/phone', 'API\UserController@addPhone');
+    Route::patch('user/phone/{id}', 'API\UserController@updatePhone');
+    Route::delete('user/phone/{id}', 'API\UserController@deletePhone');
     Route::get('user/roles/id', 'API\UserController@authorizedRoleIds');
     //company management
     Route::get('company/{id?}', 'API\CompanyController@find');

@@ -16,9 +16,9 @@ class CreatePhonesTable extends Migration
         Schema::create('phones', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('entity_id');
-            $table->bigInteger('entity_type');
+            $table->string('entity_type');
             $table->string('phone');
-            $table->string('phone_type');
+            $table->bigInteger('phone_type');
             $table->timestamps();
             $table->softDeletes();
         });

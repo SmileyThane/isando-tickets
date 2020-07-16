@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email'
+        'name', 'email','surname','title_before_name','title','country', 'anredeform', 'lang'
     ];
 
     /**
@@ -40,6 +40,16 @@ class User extends Authenticatable
     public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(CompanyUser::class, 'user_id', 'id');
+    }
+
+    public function phones(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Phone::class, 'entity');
+    }
+
+    public function addresses()
+    {
+        return $this->morphMany(Address::class, 'entity');
     }
 
 

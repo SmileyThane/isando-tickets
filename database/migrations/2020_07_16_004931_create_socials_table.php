@@ -18,7 +18,7 @@ class CreateSocialsTable extends Migration
             $table->bigInteger('entity_id');
             $table->bigInteger('entity_type');
             $table->string('social_link');
-            $table->string('social_type');
+            $table->bigInteger('social_type');
             $table->timestamps();
             $table->softDeletes();
         });
