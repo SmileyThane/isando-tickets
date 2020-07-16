@@ -19,6 +19,7 @@ class CreateTicketHistoriesTable extends Migration
             $table->bigInteger('company_user_id');
             $table->text('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

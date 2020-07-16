@@ -19,6 +19,7 @@ class CreateTicketAnswersTable extends Migration
             $table->bigInteger('company_user_id');
             $table->text('answer')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -20,6 +20,7 @@ class CreateFilesTable extends Migration
             $table->bigInteger('model_id');
             $table->string('model_type');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

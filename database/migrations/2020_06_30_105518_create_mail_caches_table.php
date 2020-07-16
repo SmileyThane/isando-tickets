@@ -18,6 +18,7 @@ class CreateMailCachesTable extends Migration
             $table->string('message_key', 512);
             $table->string('subject', 512);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

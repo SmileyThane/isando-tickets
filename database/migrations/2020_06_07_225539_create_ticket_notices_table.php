@@ -19,6 +19,7 @@ class CreateTicketNoticesTable extends Migration
             $table->bigInteger('company_user_id');
             $table->text('notice')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
