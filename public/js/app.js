@@ -2567,6 +2567,117 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2577,6 +2688,10 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: 'Type',
         value: 'type.name'
+      }, {
+        text: '',
+        value: 'actions',
+        sortable: false
       }],
       addressHeaders: [{
         text: 'Address',
@@ -2584,6 +2699,10 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: 'Type',
         value: 'type.name'
+      }, {
+        text: '',
+        value: 'actions',
+        sortable: false
       }],
       alert: false,
       errorType: '',
@@ -2600,11 +2719,27 @@ __webpack_require__.r(__webpack_exports__);
         password: "",
         phones: [],
         addresses: []
-      }
+      },
+      phoneForm: {
+        entity_id: '',
+        entity_type: "App\\User",
+        phone: '',
+        phone_type: ''
+      },
+      addressForm: {
+        entity_id: '',
+        entity_type: "App\\User",
+        address: '',
+        address_type: ''
+      },
+      phoneTypes: [],
+      addressTypes: []
     };
   },
   mounted: function mounted() {
-    this.getUser(); // if (localStorage.getItem('auth_token')) {
+    this.getUser();
+    this.getPhoneTypes();
+    this.getAddressTypes(); // if (localStorage.getItem('auth_token')) {
     //     this.$router.push('tickets')
     // }
   },
@@ -2612,7 +2747,7 @@ __webpack_require__.r(__webpack_exports__);
     getUser: function getUser() {
       var _this = this;
 
-      axios.get('api/user').then(function (response) {
+      axios.get('/api/user').then(function (response) {
         response = response.data;
 
         if (response.success === true) {
@@ -2626,7 +2761,7 @@ __webpack_require__.r(__webpack_exports__);
       e.preventDefault();
       this.alert = false;
       this.error = [];
-      axios.post('api/user', this.userData).then(function (response) {
+      axios.post('/api/user', this.userData).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
@@ -2646,15 +2781,142 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
+    getPhoneTypes: function getPhoneTypes() {
+      var _this3 = this;
+
+      axios.get("/api/phone_types").then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this3.phoneTypes = response.data;
+        } else {
+          _this3.parseErrors(response.error);
+
+          _this3.errorType = 'error';
+          _this3.alert = true;
+        }
+      });
+    },
+    getAddressTypes: function getAddressTypes() {
+      var _this4 = this;
+
+      axios.get("/api/address_types").then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this4.addressTypes = response.data;
+        } else {
+          _this4.parseErrors(response.error);
+
+          _this4.errorType = 'error';
+          _this4.alert = true;
+        }
+      });
+    },
+    addPhone: function addPhone() {
+      var _this5 = this;
+
+      this.phoneForm.entity_id = this.userData.id;
+      axios.post('/api/phone', this.phoneForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this5.getUser();
+
+          _this5.error.push('Update successful');
+
+          _this5.errorType = 'success';
+          _this5.alert = true;
+        } else {
+          _this5.parseErrors(response.error);
+
+          _this5.errorType = 'error';
+          _this5.alert = true;
+        }
+      });
+    },
+    deletePhone: function deletePhone(id) {
+      var _this6 = this;
+
+      axios["delete"]("/api/phone/".concat(id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this6.getUser();
+
+          _this6.phoneForm.phone = '';
+
+          _this6.error.push('Delete successful');
+
+          _this6.errorType = 'success';
+          _this6.alert = true;
+        } else {
+          _this6.parseErrors(response.error);
+
+          _this6.errorType = 'error';
+          _this6.alert = true;
+        }
+      });
+    },
+    addAddress: function addAddress() {
+      var _this7 = this;
+
+      this.addressForm.entity_id = this.userData.id;
+      axios.post('/api/address', this.addressForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this7.getUser();
+
+          _this7.addressForm.address = '';
+
+          _this7.error.push('Update successful');
+
+          _this7.errorType = 'success';
+          _this7.alert = true;
+        } else {
+          _this7.parseErrors(response.error);
+
+          _this7.errorType = 'error';
+          _this7.alert = true;
+        }
+      });
+    },
+    deleteAddress: function deleteAddress(id) {
+      var _this8 = this;
+
+      axios["delete"]("/api/address/".concat(id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this8.getUser();
+
+          _this8.error.push('Delete successful');
+
+          _this8.errorType = 'success';
+          _this8.alert = true;
+        } else {
+          _this8.parseErrors(response.error);
+
+          _this8.errorType = 'error';
+          _this8.alert = true;
+        }
+      });
+    },
     parseErrors: function parseErrors(errorTypes) {
       for (var typeIndex in errorTypes) {
-        var errorType = errorTypes[typeIndex];
+        var errorType = [];
+
+        if (errorTypes.hasOwnProperty(typeIndex)) {
+          errorType = errorTypes[typeIndex];
+        }
 
         for (var errorIndex in errorType) {
-          this.error.push(errorType[errorIndex]);
+          if (errorType.hasOwnProperty(errorIndex)) {
+            this.error.push(errorType[errorIndex]);
+          }
         }
-      } // console.log(this.error)
-
+      }
     }
   }
 });
@@ -3191,9 +3453,184 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      phoneHeaders: [{
+        text: 'Phone',
+        sortable: false,
+        value: 'phone'
+      }, {
+        text: 'Type',
+        value: 'type.name'
+      }, {
+        text: '',
+        value: 'actions',
+        sortable: false
+      }],
+      addressHeaders: [{
+        text: 'Address',
+        value: 'address'
+      }, {
+        text: 'Type',
+        value: 'type.name'
+      }, {
+        text: '',
+        value: 'actions',
+        sortable: false
+      }],
       headers: [{
         text: 'ID',
         align: 'start',
@@ -3218,6 +3655,8 @@ __webpack_require__.r(__webpack_exports__);
         company_number: '',
         description: '',
         registration_date: '',
+        phones: [],
+        addresses: [],
         employees: [{
           user_id: '',
           company_id: '',
@@ -3240,12 +3679,28 @@ __webpack_require__.r(__webpack_exports__);
         name: '',
         role_ids: [],
         company_user_id: ''
-      }
+      },
+      phoneForm: {
+        entity_id: '',
+        entity_type: 'App\\Company',
+        phone: '',
+        phone_type: ''
+      },
+      addressForm: {
+        entity_id: '',
+        entity_type: 'App\\Company',
+        address: '',
+        address_type: ''
+      },
+      phoneTypes: [],
+      addressTypes: []
     };
   },
   mounted: function mounted() {
     this.getCompany();
     this.getRoles();
+    this.getPhoneTypes();
+    this.getAddressTypes();
     this.employeeForm.company_id = this.$route.params.id;
   },
   methods: {
@@ -3339,6 +3794,128 @@ __webpack_require__.r(__webpack_exports__);
           _this7.rolesDialog = false;
         } else {
           console.log('error');
+        }
+      });
+    },
+    getPhoneTypes: function getPhoneTypes() {
+      var _this8 = this;
+
+      axios.get("/api/phone_types").then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this8.phoneTypes = response.data;
+        } else {
+          _this8.parseErrors(response.error);
+
+          _this8.errorType = 'error';
+          _this8.alert = true;
+        }
+      });
+    },
+    getAddressTypes: function getAddressTypes() {
+      var _this9 = this;
+
+      axios.get("/api/address_types").then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this9.addressTypes = response.data;
+        } else {
+          _this9.parseErrors(response.error);
+
+          _this9.errorType = 'error';
+          _this9.alert = true;
+        }
+      });
+    },
+    addPhone: function addPhone() {
+      var _this10 = this;
+
+      this.phoneForm.entity_id = this.company.id;
+      axios.post('/api/phone', this.phoneForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this10.getCompany();
+
+          _this10.error.push('Update successful');
+
+          _this10.errorType = 'success';
+          _this10.alert = true;
+        } else {
+          _this10.parseErrors(response.error);
+
+          _this10.errorType = 'error';
+          _this10.alert = true;
+        }
+      });
+    },
+    deletePhone: function deletePhone(id) {
+      var _this11 = this;
+
+      axios["delete"]("/api/phone/".concat(id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this11.getCompany();
+
+          _this11.phoneForm.phone = '';
+
+          _this11.error.push('Delete successful');
+
+          _this11.errorType = 'success';
+          _this11.alert = true;
+        } else {
+          _this11.parseErrors(response.error);
+
+          _this11.errorType = 'error';
+          _this11.alert = true;
+        }
+      });
+    },
+    addAddress: function addAddress() {
+      var _this12 = this;
+
+      this.addressForm.entity_id = this.company.id;
+      axios.post('/api/address', this.addressForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this12.getCompany();
+
+          _this12.addressForm.address = '';
+
+          _this12.error.push('Update successful');
+
+          _this12.errorType = 'success';
+          _this12.alert = true;
+        } else {
+          _this12.parseErrors(response.error);
+
+          _this12.errorType = 'error';
+          _this12.alert = true;
+        }
+      });
+    },
+    deleteAddress: function deleteAddress(id) {
+      var _this13 = this;
+
+      axios["delete"]("/api/address/".concat(id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this13.getCompany();
+
+          _this13.error.push('Delete successful');
+
+          _this13.errorType = 'success';
+          _this13.alert = true;
+        } else {
+          _this13.parseErrors(response.error);
+
+          _this13.errorType = 'error';
+          _this13.alert = true;
         }
       });
     }
@@ -42831,9 +43408,36 @@ var render = function() {
                                     attrs: {
                                       headers: _vm.phoneHeaders,
                                       items: _vm.userData.phones,
-                                      "hide-default-footer": "",
-                                      dense: ""
-                                    }
+                                      "hide-default-footer": ""
+                                    },
+                                    scopedSlots: _vm._u([
+                                      {
+                                        key: "item.actions",
+                                        fn: function(ref) {
+                                          var item = ref.item
+                                          return [
+                                            _c(
+                                              "v-icon",
+                                              {
+                                                attrs: { small: "" },
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.deletePhone(
+                                                      item.id
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "\n                                            mdi-delete\n                                        "
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ])
                                   })
                                 ],
                                 1
@@ -42848,10 +43452,351 @@ var render = function() {
                                     attrs: {
                                       headers: _vm.addressHeaders,
                                       items: _vm.userData.addresses,
-                                      "hide-default-footer": "",
-                                      dense: ""
-                                    }
+                                      "hide-default-footer": ""
+                                    },
+                                    scopedSlots: _vm._u([
+                                      {
+                                        key: "item.actions",
+                                        fn: function(ref) {
+                                          var item = ref.item
+                                          return [
+                                            _c(
+                                              "v-icon",
+                                              {
+                                                attrs: { small: "" },
+                                                on: {
+                                                  click: function($event) {
+                                                    return _vm.deleteAddress(
+                                                      item.id
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "\n                                            mdi-delete\n                                        "
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ])
                                   })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { staticClass: "col-md-6" },
+                                [
+                                  _c(
+                                    "v-expansion-panels",
+                                    [
+                                      _c(
+                                        "v-expansion-panel",
+                                        [
+                                          _c(
+                                            "v-expansion-panel-header",
+                                            {
+                                              scopedSlots: _vm._u([
+                                                {
+                                                  key: "actions",
+                                                  fn: function() {
+                                                    return [
+                                                      _c(
+                                                        "v-icon",
+                                                        {
+                                                          attrs: {
+                                                            color: "submit"
+                                                          }
+                                                        },
+                                                        [_vm._v("mdi-plus")]
+                                                      )
+                                                    ]
+                                                  },
+                                                  proxy: true
+                                                }
+                                              ])
+                                            },
+                                            [
+                                              _vm._v(
+                                                "\n                                            New phone\n                                            "
+                                              )
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-expansion-panel-content",
+                                            [
+                                              _c("v-form", [
+                                                _c(
+                                                  "div",
+                                                  { staticClass: "row" },
+                                                  [
+                                                    _c(
+                                                      "v-col",
+                                                      {
+                                                        attrs: { cols: "md-12" }
+                                                      },
+                                                      [
+                                                        _c("v-text-field", {
+                                                          attrs: {
+                                                            color: "green",
+                                                            "item-color":
+                                                              "green",
+                                                            label: "Phone"
+                                                          },
+                                                          model: {
+                                                            value:
+                                                              _vm.phoneForm
+                                                                .phone,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.$set(
+                                                                _vm.phoneForm,
+                                                                "phone",
+                                                                $$v
+                                                              )
+                                                            },
+                                                            expression:
+                                                              "phoneForm.phone"
+                                                          }
+                                                        })
+                                                      ],
+                                                      1
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "v-col",
+                                                      { attrs: { cols: "12" } },
+                                                      [
+                                                        _c("v-select", {
+                                                          attrs: {
+                                                            color: "green",
+                                                            "item-color":
+                                                              "green",
+                                                            "item-text": "name",
+                                                            "item-value": "id",
+                                                            items:
+                                                              _vm.phoneTypes,
+                                                            label: "Type"
+                                                          },
+                                                          model: {
+                                                            value:
+                                                              _vm.phoneForm
+                                                                .phone_type,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.$set(
+                                                                _vm.phoneForm,
+                                                                "phone_type",
+                                                                $$v
+                                                              )
+                                                            },
+                                                            expression:
+                                                              "phoneForm.phone_type"
+                                                          }
+                                                        })
+                                                      ],
+                                                      1
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "v-btn",
+                                                      {
+                                                        attrs: {
+                                                          dark: "",
+                                                          fab: "",
+                                                          right: "",
+                                                          bottom: "",
+                                                          small: "",
+                                                          color: "green"
+                                                        },
+                                                        on: {
+                                                          click: _vm.addPhone
+                                                        }
+                                                      },
+                                                      [
+                                                        _c("v-icon", [
+                                                          _vm._v("mdi-plus")
+                                                        ])
+                                                      ],
+                                                      1
+                                                    )
+                                                  ],
+                                                  1
+                                                )
+                                              ])
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { staticClass: "col-md-6" },
+                                [
+                                  _c(
+                                    "v-expansion-panels",
+                                    [
+                                      _c(
+                                        "v-expansion-panel",
+                                        [
+                                          _c(
+                                            "v-expansion-panel-header",
+                                            {
+                                              scopedSlots: _vm._u([
+                                                {
+                                                  key: "actions",
+                                                  fn: function() {
+                                                    return [
+                                                      _c(
+                                                        "v-icon",
+                                                        {
+                                                          attrs: {
+                                                            color: "submit"
+                                                          }
+                                                        },
+                                                        [_vm._v("mdi-plus")]
+                                                      )
+                                                    ]
+                                                  },
+                                                  proxy: true
+                                                }
+                                              ])
+                                            },
+                                            [
+                                              _vm._v(
+                                                "\n                                            New address\n                                            "
+                                              )
+                                            ]
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-expansion-panel-content",
+                                            [
+                                              _c("v-form", [
+                                                _c(
+                                                  "div",
+                                                  { staticClass: "row" },
+                                                  [
+                                                    _c(
+                                                      "v-col",
+                                                      {
+                                                        attrs: { cols: "md-12" }
+                                                      },
+                                                      [
+                                                        _c("v-text-field", {
+                                                          attrs: {
+                                                            color: "green",
+                                                            "item-color":
+                                                              "green",
+                                                            label: "Address"
+                                                          },
+                                                          model: {
+                                                            value:
+                                                              _vm.addressForm
+                                                                .address,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.$set(
+                                                                _vm.addressForm,
+                                                                "address",
+                                                                $$v
+                                                              )
+                                                            },
+                                                            expression:
+                                                              "addressForm.address"
+                                                          }
+                                                        })
+                                                      ],
+                                                      1
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "v-col",
+                                                      { attrs: { cols: "12" } },
+                                                      [
+                                                        _c("v-select", {
+                                                          attrs: {
+                                                            color: "green",
+                                                            "item-color":
+                                                              "green",
+                                                            "item-text": "name",
+                                                            "item-value": "id",
+                                                            items:
+                                                              _vm.addressTypes,
+                                                            label: "Type"
+                                                          },
+                                                          model: {
+                                                            value:
+                                                              _vm.addressForm
+                                                                .address_type,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.$set(
+                                                                _vm.addressForm,
+                                                                "address_type",
+                                                                $$v
+                                                              )
+                                                            },
+                                                            expression:
+                                                              "addressForm.address_type"
+                                                          }
+                                                        })
+                                                      ],
+                                                      1
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "v-btn",
+                                                      {
+                                                        attrs: {
+                                                          dark: "",
+                                                          fab: "",
+                                                          right: "",
+                                                          bottom: "",
+                                                          small: "",
+                                                          color: "green"
+                                                        },
+                                                        on: {
+                                                          click: _vm.addAddress
+                                                        }
+                                                      },
+                                                      [
+                                                        _c("v-icon", [
+                                                          _vm._v("mdi-plus")
+                                                        ])
+                                                      ],
+                                                      1
+                                                    )
+                                                  ],
+                                                  1
+                                                )
+                                              ])
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
                                 ],
                                 1
                               )
@@ -43503,6 +44448,404 @@ var render = function() {
                 )
               ],
               1
+            ),
+            _vm._v(" "),
+            _c("v-spacer", [_vm._v("\n                 \n            ")]),
+            _vm._v(" "),
+            _c(
+              "v-card",
+              { staticClass: "elevation-12" },
+              [
+                _c(
+                  "v-toolbar",
+                  { attrs: { color: "green", dark: "", flat: "" } },
+                  [
+                    _c("v-toolbar-title", [_vm._v("Additional info")]),
+                    _vm._v(" "),
+                    _c("v-spacer")
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-card-text",
+                  [
+                    _c(
+                      "v-form",
+                      [
+                        _c(
+                          "v-row",
+                          [
+                            _c(
+                              "v-col",
+                              { staticClass: "col-md-6" },
+                              [
+                                _c("v-data-table", {
+                                  staticClass: "elevation-1",
+                                  attrs: {
+                                    headers: _vm.phoneHeaders,
+                                    items: _vm.company.phones,
+                                    "hide-default-footer": ""
+                                  },
+                                  scopedSlots: _vm._u([
+                                    {
+                                      key: "item.actions",
+                                      fn: function(ref) {
+                                        var item = ref.item
+                                        return [
+                                          _c(
+                                            "v-icon",
+                                            {
+                                              attrs: { small: "" },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.deletePhone(
+                                                    item.id
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [
+                                              _vm._v(
+                                                "\n                                            mdi-delete\n                                        "
+                                              )
+                                            ]
+                                          )
+                                        ]
+                                      }
+                                    }
+                                  ])
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { staticClass: "col-md-6" },
+                              [
+                                _c("v-data-table", {
+                                  staticClass: "elevation-1",
+                                  attrs: {
+                                    headers: _vm.addressHeaders,
+                                    items: _vm.company.addresses,
+                                    "hide-default-footer": ""
+                                  },
+                                  scopedSlots: _vm._u([
+                                    {
+                                      key: "item.actions",
+                                      fn: function(ref) {
+                                        var item = ref.item
+                                        return [
+                                          _c(
+                                            "v-icon",
+                                            {
+                                              attrs: { small: "" },
+                                              on: {
+                                                click: function($event) {
+                                                  return _vm.deleteAddress(
+                                                    item.id
+                                                  )
+                                                }
+                                              }
+                                            },
+                                            [
+                                              _vm._v(
+                                                "\n                                            mdi-delete\n                                        "
+                                              )
+                                            ]
+                                          )
+                                        ]
+                                      }
+                                    }
+                                  ])
+                                })
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "v-row",
+              [
+                _c(
+                  "v-col",
+                  { staticClass: "col-md-6" },
+                  [
+                    _c(
+                      "v-expansion-panels",
+                      [
+                        _c(
+                          "v-expansion-panel",
+                          [
+                            _c(
+                              "v-expansion-panel-header",
+                              {
+                                scopedSlots: _vm._u([
+                                  {
+                                    key: "actions",
+                                    fn: function() {
+                                      return [
+                                        _c(
+                                          "v-icon",
+                                          { attrs: { color: "submit" } },
+                                          [_vm._v("mdi-plus")]
+                                        )
+                                      ]
+                                    },
+                                    proxy: true
+                                  }
+                                ])
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                New phone\n                                "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-expansion-panel-content",
+                              [
+                                _c("v-form", [
+                                  _c(
+                                    "div",
+                                    { staticClass: "row" },
+                                    [
+                                      _c(
+                                        "v-col",
+                                        { attrs: { cols: "md-12" } },
+                                        [
+                                          _c("v-text-field", {
+                                            attrs: {
+                                              color: "green",
+                                              "item-color": "green",
+                                              label: "Phone"
+                                            },
+                                            model: {
+                                              value: _vm.phoneForm.phone,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.phoneForm,
+                                                  "phone",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "phoneForm.phone"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-col",
+                                        { attrs: { cols: "12" } },
+                                        [
+                                          _c("v-select", {
+                                            attrs: {
+                                              color: "green",
+                                              "item-color": "green",
+                                              "item-text": "name",
+                                              "item-value": "id",
+                                              items: _vm.phoneTypes,
+                                              label: "Type"
+                                            },
+                                            model: {
+                                              value: _vm.phoneForm.phone_type,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.phoneForm,
+                                                  "phone_type",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "phoneForm.phone_type"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            dark: "",
+                                            fab: "",
+                                            right: "",
+                                            bottom: "",
+                                            small: "",
+                                            color: "green"
+                                          },
+                                          on: { click: _vm.addPhone }
+                                        },
+                                        [_c("v-icon", [_vm._v("mdi-plus")])],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ])
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-col",
+                  { staticClass: "col-md-6" },
+                  [
+                    _c(
+                      "v-expansion-panels",
+                      [
+                        _c(
+                          "v-expansion-panel",
+                          [
+                            _c(
+                              "v-expansion-panel-header",
+                              {
+                                scopedSlots: _vm._u([
+                                  {
+                                    key: "actions",
+                                    fn: function() {
+                                      return [
+                                        _c(
+                                          "v-icon",
+                                          { attrs: { color: "submit" } },
+                                          [_vm._v("mdi-plus")]
+                                        )
+                                      ]
+                                    },
+                                    proxy: true
+                                  }
+                                ])
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                New address\n                                "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-expansion-panel-content",
+                              [
+                                _c("v-form", [
+                                  _c(
+                                    "div",
+                                    { staticClass: "row" },
+                                    [
+                                      _c(
+                                        "v-col",
+                                        { attrs: { cols: "md-12" } },
+                                        [
+                                          _c("v-text-field", {
+                                            attrs: {
+                                              color: "green",
+                                              "item-color": "green",
+                                              label: "Address"
+                                            },
+                                            model: {
+                                              value: _vm.addressForm.address,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.addressForm,
+                                                  "address",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "addressForm.address"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-col",
+                                        { attrs: { cols: "12" } },
+                                        [
+                                          _c("v-select", {
+                                            attrs: {
+                                              color: "green",
+                                              "item-color": "green",
+                                              "item-text": "name",
+                                              "item-value": "id",
+                                              items: _vm.addressTypes,
+                                              label: "Type"
+                                            },
+                                            model: {
+                                              value:
+                                                _vm.addressForm.address_type,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.addressForm,
+                                                  "address_type",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "addressForm.address_type"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            dark: "",
+                                            fab: "",
+                                            right: "",
+                                            bottom: "",
+                                            small: "",
+                                            color: "green"
+                                          },
+                                          on: { click: _vm.addAddress }
+                                        },
+                                        [_c("v-icon", [_vm._v("mdi-plus")])],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ])
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
             )
           ],
           1
@@ -43557,7 +44900,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    mdi-account-settings-outline\n                                "
+                                    "\n                                mdi-account-settings-outline\n                            "
                                   )
                                 ]
                               ),
@@ -43574,7 +44917,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    mdi-delete\n                                "
+                                    "\n                                mdi-delete\n                            "
                                   )
                                 ]
                               )
@@ -43590,9 +44933,7 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("v-spacer", [
-              _vm._v("\n                     \n                ")
-            ]),
+            _c("v-spacer", [_vm._v("\n                 \n            ")]),
             _vm._v(" "),
             _c(
               "v-expansion-panels",
@@ -43619,7 +44960,7 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\n                            Add New Contact\n                            "
+                          "\n                        Add New Contact\n                        "
                         )
                       ]
                     ),

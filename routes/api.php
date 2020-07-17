@@ -29,9 +29,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     //user management
     Route::get('user', 'API\UserController@find');
     Route::post('user', 'API\UserController@update');
-    Route::post('user/phone', 'API\UserController@addPhone');
-    Route::patch('user/phone/{id}', 'API\UserController@updatePhone');
-    Route::delete('user/phone/{id}', 'API\UserController@deletePhone');
     Route::get('user/roles/id', 'API\UserController@authorizedRoleIds');
     //company management
     Route::get('company/{id?}', 'API\CompanyController@find');
@@ -39,6 +36,18 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('company/{id}/employee', 'API\CompanyController@invite');
     Route::delete('company/employee/{id}', 'API\CompanyController@removeEmployee');
     Route::post('company/product', 'API\CompanyController@attachProduct');
+
+    //phone management
+    Route::get('phone_types', 'API\PhoneController@getTypes');
+    Route::post('phone', 'API\PhoneController@add');
+    Route::patch('phone/{id}', 'API\PhoneController@update');
+    Route::delete('phone/{id}', 'API\PhoneController@delete');
+
+    //address management
+    Route::get('address_types', 'API\AddressController@getTypes');
+    Route::post('address', 'API\AddressController@add');
+    Route::patch('address/{id}', 'API\AddressController@update');
+    Route::delete('address/{id}', 'API\AddressController@delete');
 
     //client management
     Route::get('client', 'API\ClientController@get');

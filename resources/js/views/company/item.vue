@@ -73,6 +73,158 @@
                         <v-btn color="green" style="color: white;" @click="updateCompany">Save</v-btn>
                     </v-card-actions>
                 </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        color="green"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>Additional info</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-6">
+                                    <v-data-table
+                                        :headers="phoneHeaders"
+                                        :items="company.phones"
+                                        hide-default-footer
+                                        class="elevation-1"
+                                    >
+                                        <template v-slot:item.actions="{ item }">
+                                            <v-icon
+                                                small
+                                                @click="deletePhone(item.id)"
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </template>
+                                    </v-data-table>
+                                </v-col>
+                                <v-col class="col-md-6">
+                                    <v-data-table
+                                        :headers="addressHeaders"
+                                        :items="company.addresses"
+                                        hide-default-footer
+                                        class="elevation-1"
+                                    >
+                                        <template v-slot:item.actions="{ item }">
+                                            <v-icon
+                                                small
+                                                @click="deleteAddress(item.id)"
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </template>
+                                    </v-data-table>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+                <v-row>
+                    <v-col class="col-md-6">
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    New phone
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12">
+                                                <v-text-field
+                                                    color="green"
+                                                    item-color="green"
+                                                    v-model="phoneForm.phone"
+                                                    label="Phone"
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-select
+                                                    color="green"
+                                                    item-color="green"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="phoneForm.phone_type"
+                                                    :items="phoneTypes"
+                                                    label="Type"
+                                                ></v-select>
+                                            </v-col>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                small
+                                                color="green"
+                                                @click="addPhone"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-col>
+                    <v-col class="col-md-6">
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    New address
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12">
+                                                <v-text-field
+                                                    color="green"
+                                                    item-color="green"
+                                                    v-model="addressForm.address"
+                                                    label="Address"
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-select
+                                                    color="green"
+                                                    item-color="green"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="addressForm.address_type"
+                                                    :items="addressTypes"
+                                                    label="Type"
+                                                ></v-select>
+                                            </v-col>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                small
+                                                color="green"
+                                                @click="addAddress"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-col>
+                </v-row>
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -194,7 +346,7 @@
                                 multiple
                             />
                         </v-container>
-<!--                        <small>*indicates required field</small>-->
+                        <!--                        <small>*indicates required field</small>-->
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -213,6 +365,18 @@
 
         data() {
             return {
+                phoneHeaders: [
+                    {text: 'Phone', sortable: false, value: 'phone'},
+                    {text: 'Type', value: 'type.name'},
+                    {text: '', value: 'actions', sortable: false},
+
+                ],
+                addressHeaders: [
+                    {text: 'Address', value: 'address'},
+                    {text: 'Type', value: 'type.name'},
+                    {text: '', value: 'actions', sortable: false},
+
+                ],
                 headers: [
                     {
                         text: 'ID',
@@ -230,6 +394,8 @@
                     company_number: '',
                     description: '',
                     registration_date: '',
+                    phones: [],
+                    addresses: [],
                     employees: [
                         {
                             user_id: '',
@@ -252,17 +418,33 @@
                     }
                 ],
                 rolesDialog: false,
-                newRoleForm:{
-                    name:'',
+                newRoleForm: {
+                    name: '',
                     role_ids: [],
-                    company_user_id:''
-                }
+                    company_user_id: ''
+                },
+                phoneForm: {
+                    entity_id: '',
+                    entity_type: 'App\\Company',
+                    phone: '',
+                    phone_type: ''
+                },
+                addressForm: {
+                    entity_id: '',
+                    entity_type: 'App\\Company',
+                    address: '',
+                    address_type: ''
+                },
+                phoneTypes: [],
+                addressTypes: []
 
             }
         },
         mounted() {
-            this.getCompany()
-            this.getRoles()
+            this.getCompany();
+            this.getRoles();
+            this.getPhoneTypes();
+            this.getAddressTypes();
             this.employeeForm.company_id = this.$route.params.id
         },
         methods: {
@@ -343,7 +525,99 @@
                     }
 
                 });
-            }
+            },
+            getPhoneTypes() {
+                axios.get(`/api/phone_types`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.phoneTypes = response.data
+                    } else {
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
+                    }
+                });
+            },
+            getAddressTypes() {
+                axios.get(`/api/address_types`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.addressTypes = response.data
+                    } else {
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
+                    }
+                });
+            },
+            addPhone() {
+                this.phoneForm.entity_id = this.company.id
+                axios.post('/api/phone', this.phoneForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.error.push('Update successful')
+                        this.errorType = 'success'
+                        this.alert = true;
+                    } else {
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
+
+                    }
+                });
+            },
+            deletePhone(id) {
+                axios.delete(`/api/phone/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.phoneForm.phone = ''
+                        this.error.push('Delete successful')
+                        this.errorType = 'success'
+                        this.alert = true;
+                    } else {
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
+
+                    }
+                });
+            },
+            addAddress() {
+                this.addressForm.entity_id = this.company.id
+                axios.post('/api/address', this.addressForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.addressForm.address = ''
+                        this.error.push('Update successful')
+                        this.errorType = 'success'
+                        this.alert = true;
+                    } else {
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
+
+                    }
+                });
+            },
+            deleteAddress(id) {
+                axios.delete(`/api/address/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.error.push('Delete successful')
+                        this.errorType = 'success'
+                        this.alert = true;
+                    } else {
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
+
+                    }
+                });
+            },
         }
     }
 </script>

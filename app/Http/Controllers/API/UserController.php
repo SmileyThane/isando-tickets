@@ -5,11 +5,9 @@ namespace App\Http\Controllers\API;
 
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
-use App\Repository\PhoneRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Role;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,13 +15,11 @@ class UserController extends Controller
 {
     protected $userRepo;
     protected $roleRepo;
-    protected $phoneRepo;
 
-    public function __construct(UserRepository $userRepository, RoleRepository $roleRepository, PhoneRepository $phoneRepository)
+    public function __construct(UserRepository $userRepository, RoleRepository $roleRepository)
     {
         $this->userRepo = $userRepository;
         $this->roleRepo = $roleRepository;
-        $this->phoneRepo = $phoneRepository;
     }
 
     public function find($id = null)
@@ -63,22 +59,4 @@ class UserController extends Controller
         $result = $this->roleRepo->updateRoles($request);
         return self::showResponse($result);
     }
-
-    public function addPhone(Request $request)
-    {
-        $phone = $this->phoneRepo->create($request['user_id'], User::class, $request['phone'], $request['phone_type']);
-        return self::showResponse(true, $phone);
-    }
-
-    public function editPhone(Request $request, $id)
-    {
-        $phone = $this->phoneRepo->update($id, $request['phone'], $request['phone_type']);
-        return self::showResponse(true, $phone);
-    }
-
-    public function deletePhone($id)
-    {
-        return self::showResponse($this->phoneRepo->delete($id));
-    }
-
 }

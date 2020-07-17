@@ -35,4 +35,14 @@ class Company extends Model
         return $this->morphMany(Team::class, 'team_owner');
     }
 
+    public function phones(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Phone::class, 'entity');
+    }
+
+    public function addresses()
+    {
+        return $this->morphMany(Address::class, 'entity');
+    }
+
 }
