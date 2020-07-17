@@ -20,7 +20,6 @@ class AddInfoFieldsAtUsersTable extends Migration
             $table->string('country', 100)->nullable();
             $table->string('anredeform', 10)->nullable();
             $table->string('lang', 100)->nullable();
-            $table->softDeletes();
         });
     }
 
