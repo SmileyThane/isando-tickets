@@ -4,6 +4,8 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Company extends Model
@@ -15,34 +17,38 @@ class Company extends Model
         return $this->attributes['registration_date'] ? Carbon::parse($this->attributes['registration_date'])->format('Y-m-d') : null;
     }
 
-    public function employees(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function employees(): HasMany
     {
         return $this->hasMany(CompanyUser::class, 'company_id', 'id');
     }
 
-    public function products(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function products(): HasMany
     {
         return $this->hasMany(CompanyProduct::class, 'company_id', 'id');
     }
 
-    public function clients()
+    public function clients(): MorphMany
     {
         return $this->morphMany(Client::class, 'supplier');
     }
 
-    public function teams()
+    public function teams(): MorphMany
     {
         return $this->morphMany(Team::class, 'team_owner');
     }
 
-    public function phones(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function phones(): MorphMany
     {
         return $this->morphMany(Phone::class, 'entity');
     }
 
-    public function addresses()
+    public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'entity');
     }
 
+    public function socials(): MorphMany
+    {
+        return $this->morphMany(Social::class, 'entity');
+    }
 }

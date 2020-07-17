@@ -16,7 +16,7 @@ class CreateSocialsTable extends Migration
         Schema::create('socials', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('entity_id');
-            $table->bigInteger('entity_type');
+            $table->string('entity_type');
             $table->string('social_link');
             $table->bigInteger('social_type');
             $table->timestamps();

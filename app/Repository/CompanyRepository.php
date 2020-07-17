@@ -38,7 +38,7 @@ class CompanyRepository
             $company = Company::where('id', $id ?? $employee->company_id)
                 ->with(['employees' => function ($query) {
                     $query->whereDoesntHave('assignedToClients')->get();
-                }, 'employees.userData', 'clients', 'teams', 'phones.type', 'addresses.type']);
+                }, 'employees.userData', 'clients', 'teams', 'phones.type', 'addresses.type', 'socials.type']);
         }
 
         return $id ? $company->first() : $company->paginate(1000);
@@ -52,6 +52,8 @@ class CompanyRepository
         $company->domain_hash = random_int(0, 99999999);
         $company->photo = $request->photo;
         $company->description = $request->description;
+        $company->city = $request->city;
+        $company->country = $request->country;
         $company->registration_date = $request->registration_date ?? now();
         $company->is_validated = $request->is_validated;
         $company->save();
@@ -64,6 +66,8 @@ class CompanyRepository
         $company->name = $request->name;
         $company->company_number = $request->company_number;
         $company->description = $request->description;
+        $company->city = $request->city;
+        $company->country = $request->country;
         $company->registration_date = $request->registration_date ?? now();
         $company->save();
         return $company;

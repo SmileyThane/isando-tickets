@@ -39,7 +39,7 @@ class ClientRepository
         return true;
     }
 
-    public function all(Request $request)
+    public function all()
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
@@ -51,13 +51,12 @@ class ClientRepository
         return $clients;
     }
 
-    public function suppliers(Request $request)
+    public function suppliers()
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
         $company = Company::find($companyId);
         $suppliers[] = ['name' => $company->name, 'item' => [Company::class => $companyId]];
-        $clients = [];
         if (!$employee->hasRole(Role::COMPANY_CLIENT)) {
             $clients = $company->clients;
         } else {
@@ -71,7 +70,7 @@ class ClientRepository
 
     public function find($id)
     {
-        return Client::where('id', $id)->with('teams', 'employees.employee.userData', 'clients')->first();
+        return Client::where('id', $id)->with('teams', 'employees.employee.userData', 'clients', 'phones.type', 'addresses.type', 'socials.type')->first();
     }
 
     public function create(Request $request)
@@ -80,6 +79,8 @@ class ClientRepository
         $client->name = $request->client_name;
         $client->description = $request->client_description;
         $client->photo = $request->photo;
+        $client->city = $request->city;
+        $client->country = $request->country;
         $client->supplier_id = $request->supplier_id;
         $client->supplier_type = $request->supplier_type;
         $client->save();
@@ -92,6 +93,8 @@ class ClientRepository
         $client->name = $request->client_name;
         $client->description = $request->client_description;
         $client->photo = $request->photo;
+        $client->city = $request->city;
+        $client->country = $request->country;
         $client->save();
         return $client;
     }
@@ -109,14 +112,14 @@ class ClientRepository
 
     public function attach(Request $request)
     {
-        $clientCompanyUser = ClientCompanyUser::firstOrCreate(
+        ClientCompanyUser::firstOrCreate(
             ['client_id' => $request->client_id,
                 'company_user_id' => $request->company_user_id]
         );
         return true;
     }
 
-    public function detach(Request $request, $id)
+    public function detach($id)
     {
         $result = false;
         $client = ClientCompanyUser::find($id);

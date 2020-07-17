@@ -3605,6 +3605,107 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3615,6 +3716,18 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: 'Type',
         value: 'type.name'
+      }, {
+        text: '',
+        value: 'actions',
+        sortable: false
+      }],
+      socialHeaders: [{
+        text: 'Type',
+        value: 'type.name'
+      }, {
+        text: 'Link',
+        sortable: false,
+        value: 'social_link'
       }, {
         text: '',
         value: 'actions',
@@ -3655,8 +3768,11 @@ __webpack_require__.r(__webpack_exports__);
         company_number: '',
         description: '',
         registration_date: '',
+        city: '',
+        country: '',
         phones: [],
         addresses: [],
+        socials: [],
         employees: [{
           user_id: '',
           company_id: '',
@@ -3692,8 +3808,15 @@ __webpack_require__.r(__webpack_exports__);
         address: '',
         address_type: ''
       },
+      socialForm: {
+        entity_id: '',
+        entity_type: 'App\\Company',
+        social_link: '',
+        social_type: ''
+      },
       phoneTypes: [],
-      addressTypes: []
+      addressTypes: [],
+      socialTypes: []
     };
   },
   mounted: function mounted() {
@@ -3701,6 +3824,7 @@ __webpack_require__.r(__webpack_exports__);
     this.getRoles();
     this.getPhoneTypes();
     this.getAddressTypes();
+    this.getSocialTypes();
     this.employeeForm.company_id = this.$route.params.id;
   },
   methods: {
@@ -3746,6 +3870,12 @@ __webpack_require__.r(__webpack_exports__);
     updateCompany: function updateCompany() {
       var _this4 = this;
 
+      this.company.phones = null;
+      this.company.addresses = null;
+      this.company.socials = null;
+      this.company.employees = null;
+      this.company.clients = null;
+      this.company.teams = null;
       axios.post("/api/company/".concat(this.$route.params.id), this.company).then(function (response) {
         response = response.data;
 
@@ -3813,14 +3943,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    getAddressTypes: function getAddressTypes() {
+    getSocialTypes: function getSocialTypes() {
       var _this9 = this;
 
-      axios.get("/api/address_types").then(function (response) {
+      axios.get("/api/social_types").then(function (response) {
         response = response.data;
 
         if (response.success === true) {
-          _this9.addressTypes = response.data;
+          _this9.socialTypes = response.data;
         } else {
           _this9.parseErrors(response.error);
 
@@ -3829,20 +3959,14 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    addPhone: function addPhone() {
+    getAddressTypes: function getAddressTypes() {
       var _this10 = this;
 
-      this.phoneForm.entity_id = this.company.id;
-      axios.post('/api/phone', this.phoneForm).then(function (response) {
+      axios.get("/api/address_types").then(function (response) {
         response = response.data;
 
         if (response.success === true) {
-          _this10.getCompany();
-
-          _this10.error.push('Update successful');
-
-          _this10.errorType = 'success';
-          _this10.alert = true;
+          _this10.addressTypes = response.data;
         } else {
           _this10.parseErrors(response.error);
 
@@ -3851,18 +3975,17 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    deletePhone: function deletePhone(id) {
+    addPhone: function addPhone() {
       var _this11 = this;
 
-      axios["delete"]("/api/phone/".concat(id)).then(function (response) {
+      this.phoneForm.entity_id = this.company.id;
+      axios.post('/api/phone', this.phoneForm).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
           _this11.getCompany();
 
-          _this11.phoneForm.phone = '';
-
-          _this11.error.push('Delete successful');
+          _this11.error.push('Update successful');
 
           _this11.errorType = 'success';
           _this11.alert = true;
@@ -3874,19 +3997,18 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    addAddress: function addAddress() {
+    deletePhone: function deletePhone(id) {
       var _this12 = this;
 
-      this.addressForm.entity_id = this.company.id;
-      axios.post('/api/address', this.addressForm).then(function (response) {
+      axios["delete"]("/api/phone/".concat(id)).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
           _this12.getCompany();
 
-          _this12.addressForm.address = '';
+          _this12.phoneForm.phone = '';
 
-          _this12.error.push('Update successful');
+          _this12.error.push('Delete successful');
 
           _this12.errorType = 'success';
           _this12.alert = true;
@@ -3898,16 +4020,17 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    deleteAddress: function deleteAddress(id) {
+    addSocial: function addSocial() {
       var _this13 = this;
 
-      axios["delete"]("/api/address/".concat(id)).then(function (response) {
+      this.socialForm.entity_id = this.company.id;
+      axios.post('/api/social', this.socialForm).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
           _this13.getCompany();
 
-          _this13.error.push('Delete successful');
+          _this13.error.push('Update successful');
 
           _this13.errorType = 'success';
           _this13.alert = true;
@@ -3916,6 +4039,74 @@ __webpack_require__.r(__webpack_exports__);
 
           _this13.errorType = 'error';
           _this13.alert = true;
+        }
+      });
+    },
+    deleteSocial: function deleteSocial(id) {
+      var _this14 = this;
+
+      axios["delete"]("/api/social/".concat(id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this14.getCompany();
+
+          _this14.socialForm.phone = '';
+
+          _this14.error.push('Delete successful');
+
+          _this14.errorType = 'success';
+          _this14.alert = true;
+        } else {
+          _this14.parseErrors(response.error);
+
+          _this14.errorType = 'error';
+          _this14.alert = true;
+        }
+      });
+    },
+    addAddress: function addAddress() {
+      var _this15 = this;
+
+      this.addressForm.entity_id = this.company.id;
+      axios.post('/api/address', this.addressForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this15.getCompany();
+
+          _this15.addressForm.address = '';
+
+          _this15.error.push('Update successful');
+
+          _this15.errorType = 'success';
+          _this15.alert = true;
+        } else {
+          _this15.parseErrors(response.error);
+
+          _this15.errorType = 'error';
+          _this15.alert = true;
+        }
+      });
+    },
+    deleteAddress: function deleteAddress(id) {
+      var _this16 = this;
+
+      axios["delete"]("/api/address/".concat(id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this16.getCompany();
+
+          _this16.error.push('Delete successful');
+
+          _this16.errorType = 'success';
+          _this16.alert = true;
+        } else {
+          _this16.parseErrors(response.error);
+
+          _this16.errorType = 'error';
+          _this16.alert = true;
         }
       });
     }
@@ -4240,9 +4431,296 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      phoneHeaders: [{
+        text: 'Phone',
+        sortable: false,
+        value: 'phone'
+      }, {
+        text: 'Type',
+        value: 'type.name'
+      }, {
+        text: '',
+        value: 'actions',
+        sortable: false
+      }],
+      socialHeaders: [{
+        text: 'Type',
+        value: 'type.name'
+      }, {
+        text: 'Link',
+        sortable: false,
+        value: 'social_link'
+      }, {
+        text: '',
+        value: 'actions',
+        sortable: false
+      }],
+      addressHeaders: [{
+        text: 'Address',
+        value: 'address'
+      }, {
+        text: 'Type',
+        value: 'type.name'
+      }, {
+        text: '',
+        value: 'actions',
+        sortable: false
+      }],
       headers: [{
         text: 'ID',
         align: 'start',
@@ -4264,6 +4742,11 @@ __webpack_require__.r(__webpack_exports__);
       client: {
         client_name: '',
         client_description: '',
+        city: '',
+        country: '',
+        phones: [],
+        addresses: [],
+        socials: [],
         employees: [{
           employee: {
             user_id: '',
@@ -4281,12 +4764,36 @@ __webpack_require__.r(__webpack_exports__);
       roles: [{
         id: '',
         name: ''
-      }]
+      }],
+      phoneForm: {
+        entity_id: '',
+        entity_type: 'App\\Client',
+        phone: '',
+        phone_type: ''
+      },
+      addressForm: {
+        entity_id: '',
+        entity_type: 'App\\Client',
+        address: '',
+        address_type: ''
+      },
+      socialForm: {
+        entity_id: '',
+        entity_type: 'App\\Client',
+        social_link: '',
+        social_type: ''
+      },
+      phoneTypes: [],
+      addressTypes: [],
+      socialTypes: []
     };
   },
   mounted: function mounted() {
     this.getClient();
     this.getRoles();
+    this.getPhoneTypes();
+    this.getAddressTypes();
+    this.getSocialTypes();
     this.employeeForm.client_id = this.$route.params.id;
   },
   methods: {
@@ -4342,6 +4849,189 @@ __webpack_require__.r(__webpack_exports__);
           _this4.client.client_description = response.data.description;
         } else {
           console.log('error');
+        }
+      });
+    },
+    getPhoneTypes: function getPhoneTypes() {
+      var _this5 = this;
+
+      axios.get("/api/phone_types").then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this5.phoneTypes = response.data;
+        } else {
+          _this5.parseErrors(response.error);
+
+          _this5.errorType = 'error';
+          _this5.alert = true;
+        }
+      });
+    },
+    getSocialTypes: function getSocialTypes() {
+      var _this6 = this;
+
+      axios.get("/api/social_types").then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this6.socialTypes = response.data;
+        } else {
+          _this6.parseErrors(response.error);
+
+          _this6.errorType = 'error';
+          _this6.alert = true;
+        }
+      });
+    },
+    getAddressTypes: function getAddressTypes() {
+      var _this7 = this;
+
+      axios.get("/api/address_types").then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this7.addressTypes = response.data;
+        } else {
+          _this7.parseErrors(response.error);
+
+          _this7.errorType = 'error';
+          _this7.alert = true;
+        }
+      });
+    },
+    addPhone: function addPhone() {
+      var _this8 = this;
+
+      this.phoneForm.entity_id = this.client.id;
+      axios.post('/api/phone', this.phoneForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this8.getClient();
+
+          _this8.error.push('Update successful');
+
+          _this8.errorType = 'success';
+          _this8.alert = true;
+        } else {
+          _this8.parseErrors(response.error);
+
+          _this8.errorType = 'error';
+          _this8.alert = true;
+        }
+      });
+    },
+    deletePhone: function deletePhone(id) {
+      var _this9 = this;
+
+      axios["delete"]("/api/phone/".concat(id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this9.getClient();
+
+          _this9.phoneForm.phone = '';
+
+          _this9.error.push('Delete successful');
+
+          _this9.errorType = 'success';
+          _this9.alert = true;
+        } else {
+          _this9.parseErrors(response.error);
+
+          _this9.errorType = 'error';
+          _this9.alert = true;
+        }
+      });
+    },
+    addSocial: function addSocial() {
+      var _this10 = this;
+
+      this.socialForm.entity_id = this.client.id;
+      axios.post('/api/social', this.socialForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this10.getClient();
+
+          _this10.error.push('Update successful');
+
+          _this10.errorType = 'success';
+          _this10.alert = true;
+        } else {
+          _this10.parseErrors(response.error);
+
+          _this10.errorType = 'error';
+          _this10.alert = true;
+        }
+      });
+    },
+    deleteSocial: function deleteSocial(id) {
+      var _this11 = this;
+
+      axios["delete"]("/api/social/".concat(id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this11.getClient();
+
+          _this11.socialForm.phone = '';
+
+          _this11.error.push('Delete successful');
+
+          _this11.errorType = 'success';
+          _this11.alert = true;
+        } else {
+          _this11.parseErrors(response.error);
+
+          _this11.errorType = 'error';
+          _this11.alert = true;
+        }
+      });
+    },
+    addAddress: function addAddress() {
+      var _this12 = this;
+
+      this.addressForm.entity_id = this.client.id;
+      axios.post('/api/address', this.addressForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this12.getClient();
+
+          _this12.addressForm.address = '';
+
+          _this12.error.push('Update successful');
+
+          _this12.errorType = 'success';
+          _this12.alert = true;
+        } else {
+          _this12.parseErrors(response.error);
+
+          _this12.errorType = 'error';
+          _this12.alert = true;
+        }
+      });
+    },
+    deleteAddress: function deleteAddress(id) {
+      var _this13 = this;
+
+      axios["delete"]("/api/address/".concat(id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this13.getClient();
+
+          _this13.error.push('Delete successful');
+
+          _this13.errorType = 'success';
+          _this13.alert = true;
+        } else {
+          _this13.parseErrors(response.error);
+
+          _this13.errorType = 'error';
+          _this13.alert = true;
         }
       });
     }
@@ -44351,6 +45041,40 @@ var render = function() {
                           }
                         }),
                         _vm._v(" "),
+                        _c("v-text-field", {
+                          attrs: {
+                            color: "green",
+                            label: "City",
+                            name: "city",
+                            "prepend-icon": "mdi-message-alert",
+                            type: "text"
+                          },
+                          model: {
+                            value: _vm.company.city,
+                            callback: function($$v) {
+                              _vm.$set(_vm.company, "city", $$v)
+                            },
+                            expression: "company.city"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("v-text-field", {
+                          attrs: {
+                            color: "green",
+                            label: "Country",
+                            name: "country",
+                            "prepend-icon": "mdi-message-alert",
+                            type: "text"
+                          },
+                          model: {
+                            value: _vm.company.country,
+                            callback: function($$v) {
+                              _vm.$set(_vm.company, "country", $$v)
+                            },
+                            expression: "company.country"
+                          }
+                        }),
+                        _vm._v(" "),
                         _c(
                           "v-menu",
                           {
@@ -44858,6 +45582,207 @@ var render = function() {
           "div",
           { staticClass: "col-md-6" },
           [
+            _c(
+              "v-card",
+              { staticClass: "elevation-12" },
+              [
+                _c(
+                  "v-toolbar",
+                  { attrs: { color: "green", dark: "", flat: "" } },
+                  [
+                    _c("v-toolbar-title", [_vm._v("Social info")]),
+                    _vm._v(" "),
+                    _c("v-spacer")
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "card-text" },
+                  [
+                    _c("v-data-table", {
+                      staticClass: "elevation-1",
+                      attrs: {
+                        headers: _vm.socialHeaders,
+                        items: _vm.company.socials,
+                        "hide-default-footer": "",
+                        "hide-default-header": ""
+                      },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "item.social_link",
+                          fn: function(ref) {
+                            var item = ref.item
+                            return [
+                              _c(
+                                "v-list-item",
+                                { attrs: { link: "", href: item.social_link } },
+                                [_vm._v(_vm._s(item.social_link))]
+                              )
+                            ]
+                          }
+                        },
+                        {
+                          key: "item.actions",
+                          fn: function(ref) {
+                            var item = ref.item
+                            return [
+                              _c(
+                                "v-icon",
+                                {
+                                  attrs: { small: "" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.deleteSocial(item.id)
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                mdi-delete\n                            "
+                                  )
+                                ]
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("v-spacer", [_vm._v("\n                 \n            ")]),
+            _vm._v(" "),
+            _c(
+              "v-expansion-panels",
+              [
+                _c(
+                  "v-expansion-panel",
+                  [
+                    _c(
+                      "v-expansion-panel-header",
+                      {
+                        scopedSlots: _vm._u([
+                          {
+                            key: "actions",
+                            fn: function() {
+                              return [
+                                _c("v-icon", { attrs: { color: "submit" } }, [
+                                  _vm._v("mdi-plus")
+                                ])
+                              ]
+                            },
+                            proxy: true
+                          }
+                        ])
+                      },
+                      [
+                        _vm._v(
+                          "\n                        New social item\n                        "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "v-expansion-panel-content",
+                      [
+                        _c("v-form", [
+                          _c(
+                            "div",
+                            { staticClass: "row" },
+                            [
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "md-12" } },
+                                [
+                                  _c("v-text-field", {
+                                    attrs: {
+                                      color: "green",
+                                      "item-color": "green",
+                                      label: "Social link"
+                                    },
+                                    model: {
+                                      value: _vm.socialForm.social_link,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.socialForm,
+                                          "social_link",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "socialForm.social_link"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "12" } },
+                                [
+                                  _c("v-select", {
+                                    attrs: {
+                                      color: "green",
+                                      "item-color": "green",
+                                      "item-text": "name",
+                                      "item-value": "id",
+                                      items: _vm.socialTypes,
+                                      label: "Type"
+                                    },
+                                    model: {
+                                      value: _vm.socialForm.social_type,
+                                      callback: function($$v) {
+                                        _vm.$set(
+                                          _vm.socialForm,
+                                          "social_type",
+                                          $$v
+                                        )
+                                      },
+                                      expression: "socialForm.social_type"
+                                    }
+                                  })
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: {
+                                    dark: "",
+                                    fab: "",
+                                    right: "",
+                                    bottom: "",
+                                    small: "",
+                                    color: "green"
+                                  },
+                                  on: { click: _vm.addSocial }
+                                },
+                                [_c("v-icon", [_vm._v("mdi-plus")])],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ])
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c("v-spacer", [_vm._v("\n                 \n            ")]),
+            _vm._v(" "),
             _c(
               "v-card",
               { staticClass: "elevation-12" },
@@ -45514,6 +46439,40 @@ var render = function() {
                           },
                           expression: "client.client_description"
                         }
+                      }),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          color: "green",
+                          label: "City",
+                          name: "city",
+                          "prepend-icon": "mdi-message-alert",
+                          type: "text"
+                        },
+                        model: {
+                          value: _vm.client.city,
+                          callback: function($$v) {
+                            _vm.$set(_vm.client, "city", $$v)
+                          },
+                          expression: "client.city"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("v-text-field", {
+                        attrs: {
+                          color: "green",
+                          label: "Country",
+                          name: "country",
+                          "prepend-icon": "mdi-message-alert",
+                          type: "text"
+                        },
+                        model: {
+                          value: _vm.client.country,
+                          callback: function($$v) {
+                            _vm.$set(_vm.client, "country", $$v)
+                          },
+                          expression: "client.country"
+                        }
                       })
                     ],
                     1
@@ -45541,6 +46500,401 @@ var render = function() {
               )
             ],
             1
+          ),
+          _vm._v(" "),
+          _c("v-spacer", [_vm._v("\n                 \n            ")]),
+          _vm._v(" "),
+          _c(
+            "v-card",
+            { staticClass: "elevation-12" },
+            [
+              _c(
+                "v-toolbar",
+                { attrs: { color: "green", dark: "", flat: "" } },
+                [
+                  _c("v-toolbar-title", [_vm._v("Additional info")]),
+                  _vm._v(" "),
+                  _c("v-spacer")
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-text",
+                [
+                  _c(
+                    "v-form",
+                    [
+                      _c(
+                        "v-row",
+                        [
+                          _c(
+                            "v-col",
+                            { staticClass: "col-md-6" },
+                            [
+                              _c("v-data-table", {
+                                staticClass: "elevation-1",
+                                attrs: {
+                                  headers: _vm.phoneHeaders,
+                                  items: _vm.client.phones,
+                                  "hide-default-footer": ""
+                                },
+                                scopedSlots: _vm._u([
+                                  {
+                                    key: "item.actions",
+                                    fn: function(ref) {
+                                      var item = ref.item
+                                      return [
+                                        _c(
+                                          "v-icon",
+                                          {
+                                            attrs: { small: "" },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.deletePhone(item.id)
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                            mdi-delete\n                                        "
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    }
+                                  }
+                                ])
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            { staticClass: "col-md-6" },
+                            [
+                              _c("v-data-table", {
+                                staticClass: "elevation-1",
+                                attrs: {
+                                  headers: _vm.addressHeaders,
+                                  items: _vm.client.addresses,
+                                  "hide-default-footer": ""
+                                },
+                                scopedSlots: _vm._u([
+                                  {
+                                    key: "item.actions",
+                                    fn: function(ref) {
+                                      var item = ref.item
+                                      return [
+                                        _c(
+                                          "v-icon",
+                                          {
+                                            attrs: { small: "" },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.deleteAddress(
+                                                  item.id
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                            mdi-delete\n                                        "
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    }
+                                  }
+                                ])
+                              })
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-row",
+            [
+              _c(
+                "v-col",
+                { staticClass: "col-md-6" },
+                [
+                  _c(
+                    "v-expansion-panels",
+                    [
+                      _c(
+                        "v-expansion-panel",
+                        [
+                          _c(
+                            "v-expansion-panel-header",
+                            {
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "actions",
+                                  fn: function() {
+                                    return [
+                                      _c(
+                                        "v-icon",
+                                        { attrs: { color: "submit" } },
+                                        [_vm._v("mdi-plus")]
+                                      )
+                                    ]
+                                  },
+                                  proxy: true
+                                }
+                              ])
+                            },
+                            [
+                              _vm._v(
+                                "\n                                New phone\n                                "
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel-content",
+                            [
+                              _c("v-form", [
+                                _c(
+                                  "div",
+                                  { staticClass: "row" },
+                                  [
+                                    _c(
+                                      "v-col",
+                                      { attrs: { cols: "md-12" } },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            color: "green",
+                                            "item-color": "green",
+                                            label: "Phone"
+                                          },
+                                          model: {
+                                            value: _vm.phoneForm.phone,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.phoneForm,
+                                                "phone",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "phoneForm.phone"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      { attrs: { cols: "12" } },
+                                      [
+                                        _c("v-select", {
+                                          attrs: {
+                                            color: "green",
+                                            "item-color": "green",
+                                            "item-text": "name",
+                                            "item-value": "id",
+                                            items: _vm.phoneTypes,
+                                            label: "Type"
+                                          },
+                                          model: {
+                                            value: _vm.phoneForm.phone_type,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.phoneForm,
+                                                "phone_type",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "phoneForm.phone_type"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: {
+                                          dark: "",
+                                          fab: "",
+                                          right: "",
+                                          bottom: "",
+                                          small: "",
+                                          color: "green"
+                                        },
+                                        on: { click: _vm.addPhone }
+                                      },
+                                      [_c("v-icon", [_vm._v("mdi-plus")])],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ])
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-col",
+                { staticClass: "col-md-6" },
+                [
+                  _c(
+                    "v-expansion-panels",
+                    [
+                      _c(
+                        "v-expansion-panel",
+                        [
+                          _c(
+                            "v-expansion-panel-header",
+                            {
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "actions",
+                                  fn: function() {
+                                    return [
+                                      _c(
+                                        "v-icon",
+                                        { attrs: { color: "submit" } },
+                                        [_vm._v("mdi-plus")]
+                                      )
+                                    ]
+                                  },
+                                  proxy: true
+                                }
+                              ])
+                            },
+                            [
+                              _vm._v(
+                                "\n                                New address\n                                "
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel-content",
+                            [
+                              _c("v-form", [
+                                _c(
+                                  "div",
+                                  { staticClass: "row" },
+                                  [
+                                    _c(
+                                      "v-col",
+                                      { attrs: { cols: "md-12" } },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            color: "green",
+                                            "item-color": "green",
+                                            label: "Address"
+                                          },
+                                          model: {
+                                            value: _vm.addressForm.address,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.addressForm,
+                                                "address",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "addressForm.address"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      { attrs: { cols: "12" } },
+                                      [
+                                        _c("v-select", {
+                                          attrs: {
+                                            color: "green",
+                                            "item-color": "green",
+                                            "item-text": "name",
+                                            "item-value": "id",
+                                            items: _vm.addressTypes,
+                                            label: "Type"
+                                          },
+                                          model: {
+                                            value: _vm.addressForm.address_type,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.addressForm,
+                                                "address_type",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "addressForm.address_type"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: {
+                                          dark: "",
+                                          fab: "",
+                                          right: "",
+                                          bottom: "",
+                                          small: "",
+                                          color: "green"
+                                        },
+                                        on: { click: _vm.addAddress }
+                                      },
+                                      [_c("v-icon", [_vm._v("mdi-plus")])],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ])
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
           )
         ],
         1
@@ -45550,6 +46904,207 @@ var render = function() {
         "div",
         { staticClass: "col-md-6" },
         [
+          _c(
+            "v-card",
+            { staticClass: "elevation-12" },
+            [
+              _c(
+                "v-toolbar",
+                { attrs: { color: "green", dark: "", flat: "" } },
+                [
+                  _c("v-toolbar-title", [_vm._v("Social info")]),
+                  _vm._v(" "),
+                  _c("v-spacer")
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "card-text" },
+                [
+                  _c("v-data-table", {
+                    staticClass: "elevation-1",
+                    attrs: {
+                      headers: _vm.socialHeaders,
+                      items: _vm.client.socials,
+                      "hide-default-footer": "",
+                      "hide-default-header": ""
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "item.social_link",
+                        fn: function(ref) {
+                          var item = ref.item
+                          return [
+                            _c(
+                              "v-list-item",
+                              { attrs: { link: "", href: item.social_link } },
+                              [_vm._v(_vm._s(item.social_link))]
+                            )
+                          ]
+                        }
+                      },
+                      {
+                        key: "item.actions",
+                        fn: function(ref) {
+                          var item = ref.item
+                          return [
+                            _c(
+                              "v-icon",
+                              {
+                                attrs: { small: "" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteSocial(item.id)
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                mdi-delete\n                            "
+                                )
+                              ]
+                            )
+                          ]
+                        }
+                      }
+                    ])
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("v-spacer", [_vm._v("\n                 \n            ")]),
+          _vm._v(" "),
+          _c(
+            "v-expansion-panels",
+            [
+              _c(
+                "v-expansion-panel",
+                [
+                  _c(
+                    "v-expansion-panel-header",
+                    {
+                      scopedSlots: _vm._u([
+                        {
+                          key: "actions",
+                          fn: function() {
+                            return [
+                              _c("v-icon", { attrs: { color: "submit" } }, [
+                                _vm._v("mdi-plus")
+                              ])
+                            ]
+                          },
+                          proxy: true
+                        }
+                      ])
+                    },
+                    [
+                      _vm._v(
+                        "\n                        New social item\n                        "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-expansion-panel-content",
+                    [
+                      _c("v-form", [
+                        _c(
+                          "div",
+                          { staticClass: "row" },
+                          [
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "md-12" } },
+                              [
+                                _c("v-text-field", {
+                                  attrs: {
+                                    color: "green",
+                                    "item-color": "green",
+                                    label: "Social link"
+                                  },
+                                  model: {
+                                    value: _vm.socialForm.social_link,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.socialForm,
+                                        "social_link",
+                                        $$v
+                                      )
+                                    },
+                                    expression: "socialForm.social_link"
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { cols: "12" } },
+                              [
+                                _c("v-select", {
+                                  attrs: {
+                                    color: "green",
+                                    "item-color": "green",
+                                    "item-text": "name",
+                                    "item-value": "id",
+                                    items: _vm.socialTypes,
+                                    label: "Type"
+                                  },
+                                  model: {
+                                    value: _vm.socialForm.social_type,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.socialForm,
+                                        "social_type",
+                                        $$v
+                                      )
+                                    },
+                                    expression: "socialForm.social_type"
+                                  }
+                                })
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: {
+                                  dark: "",
+                                  fab: "",
+                                  right: "",
+                                  bottom: "",
+                                  small: "",
+                                  color: "green"
+                                },
+                                on: { click: _vm.addSocial }
+                              },
+                              [_c("v-icon", [_vm._v("mdi-plus")])],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ])
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("v-spacer", [_vm._v("\n                 \n            ")]),
+          _vm._v(" "),
           _c(
             "v-card",
             { staticClass: "elevation-12" },

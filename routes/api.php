@@ -43,6 +43,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::patch('phone/{id}', 'API\PhoneController@update');
     Route::delete('phone/{id}', 'API\PhoneController@delete');
 
+    //social management
+    Route::get('social_types', 'API\SocialController@getTypes');
+    Route::post('social', 'API\SocialController@add');
+    Route::patch('social/{id}', 'API\SocialController@update');
+    Route::delete('social/{id}', 'API\SocialController@delete');
+
     //address management
     Route::get('address_types', 'API\AddressController@getTypes');
     Route::post('address', 'API\AddressController@add');
