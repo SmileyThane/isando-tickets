@@ -70,6 +70,7 @@
                     {text: 'Status', value: 'status.name'},
                     {text: 'Priority', value: 'priority.name'},
                     {text: 'Company from', value: 'from.name'},
+                    {text: 'Assigned to', value: 'assigned_person.user_data.email'},
                     {text: 'Product', value: 'product.name'},
                     {text: 'Title', value: 'name'},
                     {text: 'Last update', value: 'last_update'},

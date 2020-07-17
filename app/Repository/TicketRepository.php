@@ -70,14 +70,14 @@ class TicketRepository
                 }
             }
         }
-        return $tickets->with('creator', 'contact.userData', 'product', 'team', 'priority', 'status')->orderBy('created_at', 'desc')->paginate(1000);
+        return $tickets->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'priority', 'status')->orderBy('created_at', 'desc')->paginate(1000);
     }
 
 
     public function find($id)
     {
         return Ticket::where('id', $id)
-            ->with('creator', 'contact.userData', 'product', 'team',
+            ->with('creator', 'assignedPerson.userData', 'contact.userData', 'product', 'team',
                 'priority', 'status', 'answers.employee.userData', 'answers.attachments',
                 'histories.employee.userData', 'notices.employee.userData', 'attachments')->first();
     }

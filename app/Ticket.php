@@ -45,6 +45,11 @@ class Ticket extends Model
         return $this->hasOne(CompanyUser::class, 'id', 'from_company_user_id');
     }
 
+    public function assignedPerson(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(CompanyUser::class, 'id', 'to_company_user_id');
+    }
+
     public function contact(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(CompanyUser::class, 'id', 'contact_company_user_id');

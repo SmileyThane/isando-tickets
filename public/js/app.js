@@ -5675,6 +5675,9 @@ __webpack_require__.r(__webpack_exports__);
         text: 'Company from',
         value: 'from.name'
       }, {
+        text: 'Assigned to',
+        value: 'assigned_person.user_data.email'
+      }, {
         text: 'Product',
         value: 'product.name'
       }, {
