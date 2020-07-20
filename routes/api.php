@@ -26,10 +26,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('logout', 'API\AuthController@logout');
     Route::get('roles', 'API\UserController@roles');
     Route::patch('roles', 'API\UserController@updateRoles');
+
     //user management
     Route::get('user', 'API\UserController@find');
     Route::post('user', 'API\UserController@update');
     Route::get('user/roles/id', 'API\UserController@authorizedRoleIds');
+
     //company management
     Route::get('company/{id?}', 'API\CompanyController@find');
     Route::post('company/{id}', 'API\CompanyController@update');

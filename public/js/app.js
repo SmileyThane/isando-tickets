@@ -5329,9 +5329,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      alert: false,
-      errorType: '',
-      error: [],
+      snackbar: false,
+      actionColor: '',
+      snackbarMessage: '',
+      errors: [],
       headers: [{
         text: 'ID',
         align: 'start',
@@ -5387,21 +5388,15 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.patch("/api/product/".concat(this.$route.params.id), this.product).then(function (response) {
         response = response.data;
-        _this2.error = [];
 
         if (response.success === true) {
           _this2.product.product_name = response.data.name;
           _this2.product.product_description = response.data.description;
-
-          _this2.error.push('Update successful');
-
-          _this2.errorType = 'success';
-          _this2.alert = true;
+          _this2.snackbarMessage = 'Update successful';
+          _this2.actionColor = 'success';
+          _this2.snackbar = true;
         } else {
-          _this2.parseErrors(response.error);
-
-          _this2.errorType = 'error';
-          _this2.alert = true;
+          _this2.errors = response.error;
         }
       });
     },
@@ -5430,15 +5425,6 @@ __webpack_require__.r(__webpack_exports__);
           console.log('error');
         }
       });
-    },
-    parseErrors: function parseErrors(errorTypes) {
-      for (var typeIndex in errorTypes) {
-        var errorType = errorTypes[typeIndex];
-
-        for (var errorIndex in errorType) {
-          this.error.push(errorType[errorIndex]);
-        }
-      }
     }
   }
 });
@@ -11498,7 +11484,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css?bdb9":
+/***/ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css":
 /*!***********************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vuetify/dist/vuetify.min.css ***!
   \***********************************************************************************************************************************/
@@ -47516,23 +47502,24 @@ var render = function() {
       "div",
       { staticClass: "row" },
       [
-        _vm._l(_vm.error, function(item, key) {
-          return _c(
-            "v-snackbar",
-            {
-              key: key,
-              attrs: { bottom: true, right: true, color: _vm.errorType },
-              model: {
-                value: _vm.alert,
-                callback: function($$v) {
-                  _vm.alert = $$v
-                },
-                expression: "alert"
-              }
-            },
-            [_vm._v("\n            " + _vm._s(item) + "\n        ")]
-          )
-        }),
+        _c(
+          "v-snackbar",
+          {
+            attrs: { bottom: true, right: true, color: _vm.actionColor },
+            model: {
+              value: _vm.snackbar,
+              callback: function($$v) {
+                _vm.snackbar = $$v
+              },
+              expression: "snackbar"
+            }
+          },
+          [
+            _vm._v(
+              "\n            " + _vm._s(_vm.snackbarMessage) + "\n        "
+            )
+          ]
+        ),
         _vm._v(" "),
         _c(
           "div",
@@ -47566,7 +47553,8 @@ var render = function() {
                             name: "name",
                             "prepend-icon": "mdi-rename-box",
                             type: "text",
-                            required: ""
+                            "error-messages": _vm.errors.product_name,
+                            "lazy-validation": ""
                           },
                           model: {
                             value: _vm.product.product_name,
@@ -47584,7 +47572,8 @@ var render = function() {
                             name: "description",
                             "prepend-icon": "mdi-comment-text",
                             type: "text",
-                            required: ""
+                            "error-messages": _vm.errors.product_description,
+                            "lazy-validation": ""
                           },
                           model: {
                             value: _vm.product.product_description,
@@ -47764,7 +47753,7 @@ var render = function() {
           1
         )
       ],
-      2
+      1
     )
   ])
 }
@@ -107120,7 +107109,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_vue__;
 /***/ (function(module, exports, __webpack_require__) {
 
 
-var content = __webpack_require__(/*! !../../css-loader??ref--6-1!../../postcss-loader/src??ref--6-2!./vuetify.min.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css?bdb9");
+var content = __webpack_require__(/*! !../../css-loader??ref--6-1!../../postcss-loader/src??ref--6-2!./vuetify.min.css */ "./node_modules/css-loader/index.js?!./node_modules/postcss-loader/src/index.js?!./node_modules/vuetify/dist/vuetify.min.css");
 
 if(typeof content === 'string') content = [[module.i, content, '']];
 

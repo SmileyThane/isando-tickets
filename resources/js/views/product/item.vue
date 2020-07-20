@@ -5,12 +5,10 @@
             <v-snackbar
                 :bottom="true"
                 :right="true"
-                v-model="alert"
-                :color="errorType"
-                v-for="(item, key) in error"
-                v-bind:key="key"
+                v-model="snackbar"
+                :color="actionColor"
             >
-                {{ item }}
+                {{ snackbarMessage }}
             </v-snackbar>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -31,7 +29,8 @@
                                 prepend-icon="mdi-rename-box"
                                 type="text"
                                 v-model="product.product_name"
-                                required
+                                :error-messages="errors.product_name"
+                                lazy-validation
                             ></v-text-field>
                             <v-text-field
                                 color="green"
@@ -40,7 +39,8 @@
                                 prepend-icon="mdi-comment-text"
                                 type="text"
                                 v-model="product.product_description"
-                                required
+                                :error-messages="errors.product_description"
+                                lazy-validation
                             ></v-text-field>
                         </v-form>
                     </v-card-text>
@@ -120,9 +120,10 @@
 
         data() {
             return {
-                alert: false,
-                errorType: '',
-                error: [],
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
+                errors: [],
                 headers: [
                     {
                         text: 'ID',
@@ -169,17 +170,14 @@
             updateProduct() {
                 axios.patch(`/api/product/${this.$route.params.id}`, this.product).then(response => {
                     response = response.data
-                    this.error = []
                     if (response.success === true) {
                         this.product.product_name = response.data.name
                         this.product.product_description = response.data.description
-                        this.error.push('Update successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
+                        this.errors = response.error
                     }
 
                 });
@@ -205,14 +203,6 @@
 
                 });
             },
-            parseErrors(errorTypes) {
-                for (let typeIndex in errorTypes) {
-                    let errorType = errorTypes[typeIndex]
-                    for (let errorIndex in errorType) {
-                        this.error.push(errorType[errorIndex])
-                    }
-                }
-            }
         }
     }
 </script>
