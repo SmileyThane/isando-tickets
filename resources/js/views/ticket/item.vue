@@ -128,6 +128,7 @@
                                     shaped
                                     disabled
                                     :value="ticket.connection_details"
+                                    v-if="ticket.connection_details"
                                 ></v-textarea>
                             </v-col>
                             <v-col cols="12" sm="6">
@@ -141,10 +142,11 @@
                                     shaped
                                     disabled
                                     :value="ticket.access_details"
+                                    v-if="ticket.connection_details"
                                 ></v-textarea>
                             </v-col>
                         </v-row>
-                        <v-col cols="12" v-if="ticket.attachments">
+                        <v-col cols="12" v-if="ticket.attachments.length > 0 ">
                             <v-label>
                                 <strong>Attachments</strong>
                             </v-label>
@@ -299,7 +301,7 @@
                     <v-card-actions>
                         <v-row align="center"
                                justify="center">
-                            <v-btn color="green" style="color: white;" @click="closeTicket">Close Ticket</v-btn>
+                            <v-btn v-if="ticket.status.id !== 5" color="green" style="color: white;" @click="closeTicket">Close Ticket</v-btn>
                         </v-row>
                     </v-card-actions>
                     <v-card-text>
@@ -611,15 +613,6 @@
                         console.log('error')
                     }
                 });
-            },
-            parseErrors(errorTypes) {
-                for (let typeIndex in errorTypes) {
-                    let errorType = errorTypes[typeIndex]
-                    for (let errorIndex in errorType) {
-                        this.error.push(errorType[errorIndex])
-                    }
-                }
-                // console.log(this.error)
             }
         }
     }

@@ -6846,6 +6846,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -7038,16 +7040,6 @@ __webpack_require__.r(__webpack_exports__);
           console.log('error');
         }
       });
-    },
-    parseErrors: function parseErrors(errorTypes) {
-      for (var typeIndex in errorTypes) {
-        var errorType = errorTypes[typeIndex];
-
-        for (var errorIndex in errorType) {
-          this.error.push(errorType[errorIndex]);
-        }
-      } // console.log(this.error)
-
     }
   }
 });
@@ -49330,16 +49322,18 @@ var render = function() {
                                   ])
                                 : _vm._e(),
                               _vm._v(" "),
-                              _c("v-textarea", {
-                                attrs: {
-                                  "auto-grow": "",
-                                  rows: "3",
-                                  "row-height": "25",
-                                  shaped: "",
-                                  disabled: "",
-                                  value: _vm.ticket.connection_details
-                                }
-                              })
+                              _vm.ticket.connection_details
+                                ? _c("v-textarea", {
+                                    attrs: {
+                                      "auto-grow": "",
+                                      rows: "3",
+                                      "row-height": "25",
+                                      shaped: "",
+                                      disabled: "",
+                                      value: _vm.ticket.connection_details
+                                    }
+                                  })
+                                : _vm._e()
                             ],
                             1
                           ),
@@ -49354,16 +49348,18 @@ var render = function() {
                                   ])
                                 : _vm._e(),
                               _vm._v(" "),
-                              _c("v-textarea", {
-                                attrs: {
-                                  "auto-grow": "",
-                                  rows: "3",
-                                  "row-height": "25",
-                                  shaped: "",
-                                  disabled: "",
-                                  value: _vm.ticket.access_details
-                                }
-                              })
+                              _vm.ticket.connection_details
+                                ? _c("v-textarea", {
+                                    attrs: {
+                                      "auto-grow": "",
+                                      rows: "3",
+                                      "row-height": "25",
+                                      shaped: "",
+                                      disabled: "",
+                                      value: _vm.ticket.access_details
+                                    }
+                                  })
+                                : _vm._e()
                             ],
                             1
                           )
@@ -49371,7 +49367,7 @@ var render = function() {
                         1
                       ),
                       _vm._v(" "),
-                      _vm.ticket.attachments
+                      _vm.ticket.attachments.length > 0
                         ? _c(
                             "v-col",
                             { attrs: { cols: "12" } },
@@ -49744,15 +49740,17 @@ var render = function() {
                         "v-row",
                         { attrs: { align: "center", justify: "center" } },
                         [
-                          _c(
-                            "v-btn",
-                            {
-                              staticStyle: { color: "white" },
-                              attrs: { color: "green" },
-                              on: { click: _vm.closeTicket }
-                            },
-                            [_vm._v("Close Ticket")]
-                          )
+                          _vm.ticket.status.id !== 5
+                            ? _c(
+                                "v-btn",
+                                {
+                                  staticStyle: { color: "white" },
+                                  attrs: { color: "green" },
+                                  on: { click: _vm.closeTicket }
+                                },
+                                [_vm._v("Close Ticket")]
+                              )
+                            : _vm._e()
                         ],
                         1
                       )
