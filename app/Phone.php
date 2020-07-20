@@ -11,6 +11,8 @@ class Phone extends Model
 
     protected $table = 'phones';
 
+    protected $fillable = ['entity_id', 'entity_type', 'phone', 'phone_type'];
+
     public function phoneable()
     {
         return $this->morphTo();

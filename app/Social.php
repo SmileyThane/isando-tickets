@@ -8,6 +8,8 @@ class Social extends Model
 {
     //
 
+    protected $fillable = ['entity_id', 'entity_type', 'social_link', 'social_type'];
+
     public function socialable()
     {
         return $this->morphTo();

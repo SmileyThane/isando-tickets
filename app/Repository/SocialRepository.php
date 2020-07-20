@@ -13,13 +13,14 @@ class SocialRepository
 
     public function create($entityId, $entityType, $socialLink, $socialType): Social
     {
-        $social = new Social();
-        $social->entity_id = $entityId;
-        $social->entity_type = $entityType;
-        $social->social_link = $socialLink;
-        $social->social_type = $socialType;
-        $social->save();
-        return $social;
+        return Social::firstOrCreate(
+            [
+                'entity_id' => $entityId,
+                'entity_type' => $entityType,
+                'social_link' => $socialLink,
+                'social_type' => $socialType
+            ]
+        );
     }
 
     public function update($id, $type, $value): Address

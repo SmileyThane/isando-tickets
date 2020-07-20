@@ -11,13 +11,14 @@ class AddressRepository
 
     public function create($entityId, $entityType, $addressValue, $addressType): Address
     {
-        $address = new Address();
-        $address->entity_id = $entityId;
-        $address->entity_type = $entityType;
-        $address->address = $addressValue;
-        $address->address_type = $addressType;
-        $address->save();
-        return $address;
+        return Address::firstOrCreate(
+            [
+                'entity_id' => $entityId,
+                'entity_type' => $entityType,
+                'address' => $addressValue,
+                'address_type' => $addressType
+            ]
+        );
     }
 
     public function update($id, $type, $value): Address

@@ -11,13 +11,14 @@ class PhoneRepository
 
     public function create($entityId, $entityType, $phoneValue, $phoneType): Phone
     {
-        $phone = new Phone();
-        $phone->entity_id = $entityId;
-        $phone->entity_type = $entityType;
-        $phone->phone = $phoneValue;
-        $phone->phone_type = $phoneType;
-        $phone->save();
-        return $phone;
+        return Phone::firstOrCreate(
+            [
+                'entity_id' => $entityId,
+                'entity_type' => $entityType,
+                'phone' => $phoneValue,
+                'phone_type' => $phoneType
+            ]
+        );
     }
 
     public function update($id, $type, $value): Phone
