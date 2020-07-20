@@ -70,7 +70,7 @@ class TicketRepository
                 }
             }
         }
-        return $tickets->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'priority', 'status')->orderBy('created_at', 'desc')->paginate(1000);
+        return $tickets->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'priority', 'status')->orderBy('updated_at', 'desc')->paginate(1000);
     }
 
 
