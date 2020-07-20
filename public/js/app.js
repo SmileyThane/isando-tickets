@@ -2678,6 +2678,32 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2694,6 +2720,9 @@ __webpack_require__.r(__webpack_exports__);
         sortable: false
       }],
       addressHeaders: [{
+        text: '',
+        value: 'data-table-expand'
+      }, {
         text: 'Address',
         value: 'address'
       }, {
@@ -2729,7 +2758,11 @@ __webpack_require__.r(__webpack_exports__);
       addressForm: {
         entity_id: '',
         entity_type: "App\\User",
-        address: '',
+        address: {
+          address: '',
+          address_line_2: '',
+          address_line_3: ''
+        },
         address_type: ''
       },
       phoneTypes: [],
@@ -2867,8 +2900,6 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this7.getUser();
-
-          _this7.addressForm.address = '';
 
           _this7.error.push('Update successful');
 
@@ -3706,6 +3737,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3734,6 +3775,9 @@ __webpack_require__.r(__webpack_exports__);
         sortable: false
       }],
       addressHeaders: [{
+        text: '',
+        value: 'data-table-expand'
+      }, {
         text: 'Address',
         value: 'address'
       }, {
@@ -3768,8 +3812,6 @@ __webpack_require__.r(__webpack_exports__);
         company_number: '',
         description: '',
         registration_date: '',
-        city: '',
-        country: '',
         phones: [],
         addresses: [],
         socials: [],
@@ -3805,7 +3847,11 @@ __webpack_require__.r(__webpack_exports__);
       addressForm: {
         entity_id: '',
         entity_type: 'App\\Company',
-        address: '',
+        address: {
+          address: '',
+          address_line_2: '',
+          address_line_3: ''
+        },
         address_type: ''
       },
       socialForm: {
@@ -4074,8 +4120,6 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this15.getCompany();
-
-          _this15.addressForm.address = '';
 
           _this15.error.push('Update successful');
 
@@ -4683,6 +4727,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4711,6 +4765,9 @@ __webpack_require__.r(__webpack_exports__);
         sortable: false
       }],
       addressHeaders: [{
+        text: '',
+        value: 'data-table-expand'
+      }, {
         text: 'Address',
         value: 'address'
       }, {
@@ -4742,8 +4799,6 @@ __webpack_require__.r(__webpack_exports__);
       client: {
         client_name: '',
         client_description: '',
-        city: '',
-        country: '',
         phones: [],
         addresses: [],
         socials: [],
@@ -4774,7 +4829,11 @@ __webpack_require__.r(__webpack_exports__);
       addressForm: {
         entity_id: '',
         entity_type: 'App\\Client',
-        address: '',
+        address: {
+          address: '',
+          address_line_2: '',
+          address_line_3: ''
+        },
         address_type: ''
       },
       socialForm: {
@@ -4999,8 +5058,6 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this12.getClient();
-
-          _this12.addressForm.address = '';
 
           _this12.error.push('Update successful');
 
@@ -44123,9 +44180,56 @@ var render = function() {
                                     attrs: {
                                       headers: _vm.addressHeaders,
                                       items: _vm.userData.addresses,
-                                      "hide-default-footer": ""
+                                      "hide-default-footer": "",
+                                      "show-expand": ""
                                     },
                                     scopedSlots: _vm._u([
+                                      {
+                                        key: "expanded-item",
+                                        fn: function(ref) {
+                                          var headers = ref.headers
+                                          var item = ref.item
+                                          return [
+                                            _c(
+                                              "td",
+                                              {
+                                                attrs: {
+                                                  colspan: headers.length
+                                                }
+                                              },
+                                              [
+                                                _c("p"),
+                                                _vm._v(" "),
+                                                _c("p", [
+                                                  _c("strong", [
+                                                    _vm._v("Address line 2:")
+                                                  ]),
+                                                  _vm._v(
+                                                    " " +
+                                                      _vm._s(
+                                                        item.address_line_2
+                                                      ) +
+                                                      "\n                                            "
+                                                  )
+                                                ]),
+                                                _vm._v(" "),
+                                                _c("p", [
+                                                  _c("strong", [
+                                                    _vm._v("Address line 3:")
+                                                  ]),
+                                                  _vm._v(
+                                                    " " +
+                                                      _vm._s(
+                                                        item.address_line_3
+                                                      ) +
+                                                      "\n                                            "
+                                                  )
+                                                ])
+                                              ]
+                                            )
+                                          ]
+                                        }
+                                      },
                                       {
                                         key: "item.actions",
                                         fn: function(ref) {
@@ -44379,18 +44483,94 @@ var render = function() {
                                                           model: {
                                                             value:
                                                               _vm.addressForm
+                                                                .address
                                                                 .address,
                                                             callback: function(
                                                               $$v
                                                             ) {
                                                               _vm.$set(
-                                                                _vm.addressForm,
+                                                                _vm.addressForm
+                                                                  .address,
                                                                 "address",
                                                                 $$v
                                                               )
                                                             },
                                                             expression:
-                                                              "addressForm.address"
+                                                              "addressForm.address.address"
+                                                          }
+                                                        })
+                                                      ],
+                                                      1
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "v-col",
+                                                      {
+                                                        attrs: { cols: "md-12" }
+                                                      },
+                                                      [
+                                                        _c("v-text-field", {
+                                                          attrs: {
+                                                            color: "green",
+                                                            "item-color":
+                                                              "green",
+                                                            label:
+                                                              "Address line 2"
+                                                          },
+                                                          model: {
+                                                            value:
+                                                              _vm.addressForm
+                                                                .address
+                                                                .address_line_2,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.$set(
+                                                                _vm.addressForm
+                                                                  .address,
+                                                                "address_line_2",
+                                                                $$v
+                                                              )
+                                                            },
+                                                            expression:
+                                                              "addressForm.address.address_line_2"
+                                                          }
+                                                        })
+                                                      ],
+                                                      1
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "v-col",
+                                                      {
+                                                        attrs: { cols: "md-12" }
+                                                      },
+                                                      [
+                                                        _c("v-text-field", {
+                                                          attrs: {
+                                                            color: "green",
+                                                            "item-color":
+                                                              "green",
+                                                            label:
+                                                              "Address line 3"
+                                                          },
+                                                          model: {
+                                                            value:
+                                                              _vm.addressForm
+                                                                .address
+                                                                .address_line_3,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.$set(
+                                                                _vm.addressForm
+                                                                  .address,
+                                                                "address_line_3",
+                                                                $$v
+                                                              )
+                                                            },
+                                                            expression:
+                                                              "addressForm.address.address_line_3"
                                                           }
                                                         })
                                                       ],
@@ -45019,40 +45199,6 @@ var render = function() {
                           }
                         }),
                         _vm._v(" "),
-                        _c("v-text-field", {
-                          attrs: {
-                            color: "green",
-                            label: "City",
-                            name: "city",
-                            "prepend-icon": "mdi-message-alert",
-                            type: "text"
-                          },
-                          model: {
-                            value: _vm.company.city,
-                            callback: function($$v) {
-                              _vm.$set(_vm.company, "city", $$v)
-                            },
-                            expression: "company.city"
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c("v-text-field", {
-                          attrs: {
-                            color: "green",
-                            label: "Country",
-                            name: "country",
-                            "prepend-icon": "mdi-message-alert",
-                            type: "text"
-                          },
-                          model: {
-                            value: _vm.company.country,
-                            callback: function($$v) {
-                              _vm.$set(_vm.company, "country", $$v)
-                            },
-                            expression: "company.country"
-                          }
-                        }),
-                        _vm._v(" "),
                         _c(
                           "v-menu",
                           {
@@ -45234,9 +45380,54 @@ var render = function() {
                                   attrs: {
                                     headers: _vm.addressHeaders,
                                     items: _vm.company.addresses,
-                                    "hide-default-footer": ""
+                                    "hide-default-footer": "",
+                                    "show-expand": ""
                                   },
                                   scopedSlots: _vm._u([
+                                    {
+                                      key: "expanded-item",
+                                      fn: function(ref) {
+                                        var headers = ref.headers
+                                        var item = ref.item
+                                        return [
+                                          _c(
+                                            "td",
+                                            {
+                                              attrs: { colspan: headers.length }
+                                            },
+                                            [
+                                              _c("p"),
+                                              _vm._v(" "),
+                                              _c("p", [
+                                                _c("strong", [
+                                                  _vm._v("Address line 2:")
+                                                ]),
+                                                _vm._v(
+                                                  " " +
+                                                    _vm._s(
+                                                      item.address_line_2
+                                                    ) +
+                                                    "\n                                            "
+                                                )
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("p", [
+                                                _c("strong", [
+                                                  _vm._v("Address line 3:")
+                                                ]),
+                                                _vm._v(
+                                                  " " +
+                                                    _vm._s(
+                                                      item.address_line_3
+                                                    ) +
+                                                    "\n                                            "
+                                                )
+                                              ])
+                                            ]
+                                          )
+                                        ]
+                                      }
+                                    },
                                     {
                                       key: "item.actions",
                                       fn: function(ref) {
@@ -45471,15 +45662,75 @@ var render = function() {
                                               label: "Address"
                                             },
                                             model: {
-                                              value: _vm.addressForm.address,
+                                              value:
+                                                _vm.addressForm.address.address,
                                               callback: function($$v) {
                                                 _vm.$set(
-                                                  _vm.addressForm,
+                                                  _vm.addressForm.address,
                                                   "address",
                                                   $$v
                                                 )
                                               },
-                                              expression: "addressForm.address"
+                                              expression:
+                                                "addressForm.address.address"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-col",
+                                        { attrs: { cols: "md-12" } },
+                                        [
+                                          _c("v-text-field", {
+                                            attrs: {
+                                              color: "green",
+                                              "item-color": "green",
+                                              label: "Address line 2"
+                                            },
+                                            model: {
+                                              value:
+                                                _vm.addressForm.address
+                                                  .address_line_2,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.addressForm.address,
+                                                  "address_line_2",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "addressForm.address.address_line_2"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-col",
+                                        { attrs: { cols: "md-12" } },
+                                        [
+                                          _c("v-text-field", {
+                                            attrs: {
+                                              color: "green",
+                                              "item-color": "green",
+                                              label: "Address line 3"
+                                            },
+                                            model: {
+                                              value:
+                                                _vm.addressForm.address
+                                                  .address_line_3,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.addressForm.address,
+                                                  "address_line_3",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "addressForm.address.address_line_3"
                                             }
                                           })
                                         ],
@@ -46417,40 +46668,6 @@ var render = function() {
                           },
                           expression: "client.client_description"
                         }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          color: "green",
-                          label: "City",
-                          name: "city",
-                          "prepend-icon": "mdi-message-alert",
-                          type: "text"
-                        },
-                        model: {
-                          value: _vm.client.city,
-                          callback: function($$v) {
-                            _vm.$set(_vm.client, "city", $$v)
-                          },
-                          expression: "client.city"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("v-text-field", {
-                        attrs: {
-                          color: "green",
-                          label: "Country",
-                          name: "country",
-                          "prepend-icon": "mdi-message-alert",
-                          type: "text"
-                        },
-                        model: {
-                          value: _vm.client.country,
-                          callback: function($$v) {
-                            _vm.$set(_vm.client, "country", $$v)
-                          },
-                          expression: "client.country"
-                        }
                       })
                     ],
                     1
@@ -46557,9 +46774,50 @@ var render = function() {
                                 attrs: {
                                   headers: _vm.addressHeaders,
                                   items: _vm.client.addresses,
-                                  "hide-default-footer": ""
+                                  "hide-default-footer": "",
+                                  "show-expand": ""
                                 },
                                 scopedSlots: _vm._u([
+                                  {
+                                    key: "expanded-item",
+                                    fn: function(ref) {
+                                      var headers = ref.headers
+                                      var item = ref.item
+                                      return [
+                                        _c(
+                                          "td",
+                                          {
+                                            attrs: { colspan: headers.length }
+                                          },
+                                          [
+                                            _c("p"),
+                                            _vm._v(" "),
+                                            _c("p", [
+                                              _c("strong", [
+                                                _vm._v("Address line 2:")
+                                              ]),
+                                              _vm._v(
+                                                " " +
+                                                  _vm._s(item.address_line_2) +
+                                                  "\n                                            "
+                                              )
+                                            ]),
+                                            _vm._v(" "),
+                                            _c("p", [
+                                              _c("strong", [
+                                                _vm._v("Address line 3:")
+                                              ]),
+                                              _vm._v(
+                                                " " +
+                                                  _vm._s(item.address_line_3) +
+                                                  "\n                                            "
+                                              )
+                                            ])
+                                          ]
+                                        )
+                                      ]
+                                    }
+                                  },
                                   {
                                     key: "item.actions",
                                     fn: function(ref) {
@@ -46794,15 +47052,75 @@ var render = function() {
                                             label: "Address"
                                           },
                                           model: {
-                                            value: _vm.addressForm.address,
+                                            value:
+                                              _vm.addressForm.address.address,
                                             callback: function($$v) {
                                               _vm.$set(
-                                                _vm.addressForm,
+                                                _vm.addressForm.address,
                                                 "address",
                                                 $$v
                                               )
                                             },
-                                            expression: "addressForm.address"
+                                            expression:
+                                              "addressForm.address.address"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      { attrs: { cols: "md-12" } },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            color: "green",
+                                            "item-color": "green",
+                                            label: "Address line 2"
+                                          },
+                                          model: {
+                                            value:
+                                              _vm.addressForm.address
+                                                .address_line_2,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.addressForm.address,
+                                                "address_line_2",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "addressForm.address.address_line_2"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      { attrs: { cols: "md-12" } },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            color: "green",
+                                            "item-color": "green",
+                                            label: "Address line 3"
+                                          },
+                                          model: {
+                                            value:
+                                              _vm.addressForm.address
+                                                .address_line_3,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.addressForm.address,
+                                                "address_line_3",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "addressForm.address.address_line_3"
                                           }
                                         })
                                       ],

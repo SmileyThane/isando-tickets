@@ -42,22 +42,6 @@
                                 v-model="company.company_number"
                                 required
                             ></v-text-field>
-                            <v-text-field
-                                color="green"
-                                label="City"
-                                name="city"
-                                prepend-icon="mdi-message-alert"
-                                type="text"
-                                v-model="company.city"
-                            ></v-text-field>
-                            <v-text-field
-                                color="green"
-                                label="Country"
-                                name="country"
-                                prepend-icon="mdi-message-alert"
-                                type="text"
-                                v-model="company.country"
-                            ></v-text-field>
                             <v-menu
                                 :close-on-content-click="false"
                                 :nudge-right="40"
@@ -127,8 +111,18 @@
                                         :headers="addressHeaders"
                                         :items="company.addresses"
                                         hide-default-footer
+                                        show-expand
                                         class="elevation-1"
                                     >
+                                        <template v-slot:expanded-item="{ headers, item }">
+                                            <td :colspan="headers.length">
+                                                <p></p>
+                                                <p><strong>Address line 2:</strong> {{ item.address_line_2 }}
+                                                </p>
+                                                <p><strong>Address line 3:</strong> {{ item.address_line_3 }}
+                                                </p>
+                                            </td>
+                                        </template>
                                         <template v-slot:item.actions="{ item }">
                                             <v-icon
                                                 small
@@ -208,8 +202,24 @@
                                                 <v-text-field
                                                     color="green"
                                                     item-color="green"
-                                                    v-model="addressForm.address"
+                                                    v-model="addressForm.address.address"
                                                     label="Address"
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="md-12">
+                                                <v-text-field
+                                                    color="green"
+                                                    item-color="green"
+                                                    v-model="addressForm.address.address_line_2"
+                                                    label="Address line 2"
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="md-12">
+                                                <v-text-field
+                                                    color="green"
+                                                    item-color="green"
+                                                    v-model="addressForm.address.address_line_3"
+                                                    label="Address line 3"
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col cols="12">
@@ -479,6 +489,7 @@
 
                 ],
                 addressHeaders: [
+                    {text: '', value: 'data-table-expand'},
                     {text: 'Address', value: 'address'},
                     {text: 'Type', value: 'type.name'},
                     {text: '', value: 'actions', sortable: false},
@@ -501,8 +512,6 @@
                     company_number: '',
                     description: '',
                     registration_date: '',
-                    city:'',
-                    country:'',
                     phones: [],
                     addresses: [],
                     socials: [],
@@ -542,7 +551,11 @@
                 addressForm: {
                     entity_id: '',
                     entity_type: 'App\\Company',
-                    address: '',
+                    address: {
+                        address: '',
+                        address_line_2: '',
+                        address_line_3: ''
+                    },
                     address_type: ''
                 },
                 socialForm: {
@@ -760,7 +773,6 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.addressForm.address = ''
                         this.error.push('Update successful')
                         this.errorType = 'success'
                         this.alert = true;

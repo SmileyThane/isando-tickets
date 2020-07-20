@@ -79,8 +79,6 @@ class ClientRepository
         $client->name = $request->client_name;
         $client->description = $request->client_description;
         $client->photo = $request->photo;
-        $client->city = $request->city;
-        $client->country = $request->country;
         $client->supplier_id = $request->supplier_id;
         $client->supplier_type = $request->supplier_type;
         $client->save();
@@ -93,8 +91,6 @@ class ClientRepository
         $client->name = $request->client_name;
         $client->description = $request->client_description;
         $client->photo = $request->photo;
-        $client->city = $request->city;
-        $client->country = $request->country;
         $client->save();
         return $client;
     }
