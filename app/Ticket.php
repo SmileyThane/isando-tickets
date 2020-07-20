@@ -77,17 +77,17 @@ class Ticket extends Model
 
     public function answers(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(TicketAnswer::class, 'ticket_id', 'id');
+        return $this->hasMany(TicketAnswer::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');
     }
 
     public function histories(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(TicketHistory::class, 'ticket_id', 'id');
+        return $this->hasMany(TicketHistory::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');;
     }
 
     public function notices(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(TicketNotice::class, 'ticket_id', 'id');
+        return $this->hasMany(TicketNotice::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');;
     }
 
     public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
