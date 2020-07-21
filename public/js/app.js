@@ -2700,7 +2700,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3256,10 +3255,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
 //
 //
 //
@@ -4756,12 +4751,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5417,6 +5406,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5687,6 +5677,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -43930,7 +43921,7 @@ var render = function() {
                     "v-toolbar",
                     { attrs: { color: "green", dark: "", flat: "" } },
                     [
-                      _c("v-toolbar-title", [_vm._v("Profile info")]),
+                      _c("v-toolbar-title", [_vm._v("Basic info")]),
                       _vm._v(" "),
                       _c("v-spacer")
                     ],
@@ -44334,9 +44325,15 @@ var render = function() {
                                 1
                               ),
                               _vm._v(" "),
+                              _c("v-spacer", [
+                                _vm._v(
+                                  "\n                                 \n                            "
+                                )
+                              ]),
+                              _vm._v(" "),
                               _c(
                                 "v-col",
-                                { staticClass: "col-md-6" },
+                                { staticClass: "col-md-12" },
                                 [
                                   _c(
                                     "v-expansion-panels",
@@ -44385,7 +44382,8 @@ var render = function() {
                                                     _c(
                                                       "v-col",
                                                       {
-                                                        attrs: { cols: "md-12" }
+                                                        staticClass: "pa-1",
+                                                        attrs: { cols: "md-6" }
                                                       },
                                                       [
                                                         _c("v-text-field", {
@@ -44419,7 +44417,10 @@ var render = function() {
                                                     _vm._v(" "),
                                                     _c(
                                                       "v-col",
-                                                      { attrs: { cols: "12" } },
+                                                      {
+                                                        staticClass: "pa-1",
+                                                        attrs: { cols: "6" }
+                                                      },
                                                       [
                                                         _c("v-select", {
                                                           attrs: {
@@ -44485,21 +44486,8 @@ var render = function() {
                                           )
                                         ],
                                         1
-                                      )
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-col",
-                                { staticClass: "col-md-6" },
-                                [
-                                  _c(
-                                    "v-expansion-panels",
-                                    [
+                                      ),
+                                      _vm._v(" "),
                                       _c(
                                         "v-expansion-panel",
                                         [
@@ -44544,7 +44532,8 @@ var render = function() {
                                                     _c(
                                                       "v-col",
                                                       {
-                                                        attrs: { cols: "md-12" }
+                                                        staticClass: "pa-1",
+                                                        attrs: { cols: "md-6" }
                                                       },
                                                       [
                                                         _c("v-text-field", {
@@ -44581,7 +44570,8 @@ var render = function() {
                                                     _c(
                                                       "v-col",
                                                       {
-                                                        attrs: { cols: "md-12" }
+                                                        staticClass: "pa-1",
+                                                        attrs: { cols: "md-6" }
                                                       },
                                                       [
                                                         _c("v-text-field", {
@@ -44619,7 +44609,8 @@ var render = function() {
                                                     _c(
                                                       "v-col",
                                                       {
-                                                        attrs: { cols: "md-6" }
+                                                        staticClass: "pa-1",
+                                                        attrs: { cols: "md-3" }
                                                       },
                                                       [
                                                         _c("v-text-field", {
@@ -44655,7 +44646,8 @@ var render = function() {
                                                     _c(
                                                       "v-col",
                                                       {
-                                                        attrs: { cols: "md-6" }
+                                                        staticClass: "pa-1",
+                                                        attrs: { cols: "md-3" }
                                                       },
                                                       [
                                                         _c("v-text-field", {
@@ -44691,7 +44683,10 @@ var render = function() {
                                                     _vm._v(" "),
                                                     _c(
                                                       "v-col",
-                                                      { attrs: { cols: "12" } },
+                                                      {
+                                                        staticClass: "pa-1",
+                                                        attrs: { cols: "6" }
+                                                      },
                                                       [
                                                         _c("v-select", {
                                                           attrs: {
@@ -45245,7 +45240,7 @@ var render = function() {
                   "v-toolbar",
                   { attrs: { color: "green", dark: "", flat: "" } },
                   [
-                    _c("v-toolbar-title", [_vm._v("Company information")]),
+                    _c("v-toolbar-title", [_vm._v("Basic info")]),
                     _vm._v(" "),
                     _c("v-spacer")
                   ],
@@ -45571,370 +45566,422 @@ var render = function() {
                                 })
                               ],
                               1
-                            )
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    )
-                  ],
-                  1
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "v-row",
-              [
-                _c(
-                  "v-col",
-                  { staticClass: "col-md-6" },
-                  [
-                    _c(
-                      "v-expansion-panels",
-                      [
-                        _c(
-                          "v-expansion-panel",
-                          [
-                            _c(
-                              "v-expansion-panel-header",
-                              {
-                                scopedSlots: _vm._u([
-                                  {
-                                    key: "actions",
-                                    fn: function() {
-                                      return [
-                                        _c(
-                                          "v-icon",
-                                          { attrs: { color: "submit" } },
-                                          [_vm._v("mdi-plus")]
-                                        )
-                                      ]
-                                    },
-                                    proxy: true
-                                  }
-                                ])
-                              },
-                              [
-                                _vm._v(
-                                  "\n                                New phone\n                                "
-                                )
-                              ]
                             ),
                             _vm._v(" "),
                             _c(
-                              "v-expansion-panel-content",
+                              "v-col",
+                              { staticClass: "col-md-12" },
                               [
-                                _c("v-form", [
-                                  _c(
-                                    "div",
-                                    { staticClass: "row" },
-                                    [
-                                      _c(
-                                        "v-col",
-                                        { attrs: { cols: "md-12" } },
-                                        [
-                                          _c("v-text-field", {
-                                            attrs: {
-                                              color: "green",
-                                              "item-color": "green",
-                                              label: "Phone",
-                                              dense: ""
-                                            },
-                                            model: {
-                                              value: _vm.phoneForm.phone,
-                                              callback: function($$v) {
-                                                _vm.$set(
-                                                  _vm.phoneForm,
-                                                  "phone",
-                                                  $$v
-                                                )
-                                              },
-                                              expression: "phoneForm.phone"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-col",
-                                        { attrs: { cols: "12" } },
-                                        [
-                                          _c("v-select", {
-                                            attrs: {
-                                              color: "green",
-                                              "item-color": "green",
-                                              "item-text": "name",
-                                              "item-value": "id",
-                                              items: _vm.phoneTypes,
-                                              label: "Type",
-                                              dense: ""
-                                            },
-                                            model: {
-                                              value: _vm.phoneForm.phone_type,
-                                              callback: function($$v) {
-                                                _vm.$set(
-                                                  _vm.phoneForm,
-                                                  "phone_type",
-                                                  $$v
-                                                )
-                                              },
-                                              expression: "phoneForm.phone_type"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-btn",
-                                        {
-                                          attrs: {
-                                            dark: "",
-                                            fab: "",
-                                            right: "",
-                                            bottom: "",
-                                            small: "",
-                                            color: "green"
-                                          },
-                                          on: { click: _vm.addPhone }
-                                        },
-                                        [_c("v-icon", [_vm._v("mdi-plus")])],
-                                        1
-                                      )
-                                    ],
-                                    1
-                                  )
-                                ])
-                              ],
-                              1
-                            )
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    )
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "v-col",
-                  { staticClass: "col-md-6" },
-                  [
-                    _c(
-                      "v-expansion-panels",
-                      [
-                        _c(
-                          "v-expansion-panel",
-                          [
-                            _c(
-                              "v-expansion-panel-header",
-                              {
-                                scopedSlots: _vm._u([
-                                  {
-                                    key: "actions",
-                                    fn: function() {
-                                      return [
+                                _c(
+                                  "v-expansion-panels",
+                                  [
+                                    _c(
+                                      "v-expansion-panel",
+                                      [
                                         _c(
-                                          "v-icon",
-                                          { attrs: { color: "submit" } },
-                                          [_vm._v("mdi-plus")]
-                                        )
-                                      ]
-                                    },
-                                    proxy: true
-                                  }
-                                ])
-                              },
-                              [
-                                _vm._v(
-                                  "\n                                New address\n                                "
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-expansion-panel-content",
-                              [
-                                _c("v-form", [
-                                  _c(
-                                    "div",
-                                    { staticClass: "row" },
-                                    [
-                                      _c(
-                                        "v-col",
-                                        { attrs: { cols: "md-12" } },
-                                        [
-                                          _c("v-text-field", {
-                                            attrs: {
-                                              color: "green",
-                                              "item-color": "green",
-                                              label: "Address",
-                                              dense: ""
-                                            },
-                                            model: {
-                                              value:
-                                                _vm.addressForm.address.address,
-                                              callback: function($$v) {
-                                                _vm.$set(
-                                                  _vm.addressForm.address,
-                                                  "address",
-                                                  $$v
-                                                )
-                                              },
-                                              expression:
-                                                "addressForm.address.address"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-col",
-                                        { attrs: { cols: "md-12" } },
-                                        [
-                                          _c("v-text-field", {
-                                            attrs: {
-                                              color: "green",
-                                              "item-color": "green",
-                                              label: "Address line 2",
-                                              dense: ""
-                                            },
-                                            model: {
-                                              value:
-                                                _vm.addressForm.address
-                                                  .address_line_2,
-                                              callback: function($$v) {
-                                                _vm.$set(
-                                                  _vm.addressForm.address,
-                                                  "address_line_2",
-                                                  $$v
-                                                )
-                                              },
-                                              expression:
-                                                "addressForm.address.address_line_2"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-col",
-                                        { attrs: { cols: "md-6" } },
-                                        [
-                                          _c("v-text-field", {
-                                            attrs: {
-                                              color: "green",
-                                              "item-color": "green",
-                                              label: "City",
-                                              dense: ""
-                                            },
-                                            model: {
-                                              value:
-                                                _vm.addressForm.address.city,
-                                              callback: function($$v) {
-                                                _vm.$set(
-                                                  _vm.addressForm.address,
-                                                  "city",
-                                                  $$v
-                                                )
-                                              },
-                                              expression:
-                                                "addressForm.address.city"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-col",
-                                        { attrs: { cols: "md-6" } },
-                                        [
-                                          _c("v-text-field", {
-                                            attrs: {
-                                              color: "green",
-                                              "item-color": "green",
-                                              label: "Country",
-                                              dense: ""
-                                            },
-                                            model: {
-                                              value:
-                                                _vm.addressForm.address.country,
-                                              callback: function($$v) {
-                                                _vm.$set(
-                                                  _vm.addressForm.address,
-                                                  "country",
-                                                  $$v
-                                                )
-                                              },
-                                              expression:
-                                                "addressForm.address.country"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-col",
-                                        { attrs: { cols: "12" } },
-                                        [
-                                          _c("v-select", {
-                                            attrs: {
-                                              color: "green",
-                                              "item-color": "green",
-                                              "item-text": "name",
-                                              "item-value": "id",
-                                              items: _vm.addressTypes,
-                                              label: "Type",
-                                              dense: ""
-                                            },
-                                            model: {
-                                              value:
-                                                _vm.addressForm.address_type,
-                                              callback: function($$v) {
-                                                _vm.$set(
-                                                  _vm.addressForm,
-                                                  "address_type",
-                                                  $$v
-                                                )
-                                              },
-                                              expression:
-                                                "addressForm.address_type"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-btn",
-                                        {
-                                          attrs: {
-                                            dark: "",
-                                            fab: "",
-                                            right: "",
-                                            bottom: "",
-                                            small: "",
-                                            color: "green"
+                                          "v-expansion-panel-header",
+                                          {
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "actions",
+                                                fn: function() {
+                                                  return [
+                                                    _c(
+                                                      "v-icon",
+                                                      {
+                                                        attrs: {
+                                                          color: "submit"
+                                                        }
+                                                      },
+                                                      [_vm._v("mdi-plus")]
+                                                    )
+                                                  ]
+                                                },
+                                                proxy: true
+                                              }
+                                            ])
                                           },
-                                          on: { click: _vm.addAddress }
-                                        },
-                                        [_c("v-icon", [_vm._v("mdi-plus")])],
-                                        1
-                                      )
-                                    ],
-                                    1
-                                  )
-                                ])
+                                          [
+                                            _vm._v(
+                                              "\n                                            New phone\n                                            "
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-expansion-panel-content",
+                                          [
+                                            _c("v-form", [
+                                              _c(
+                                                "div",
+                                                { staticClass: "row" },
+                                                [
+                                                  _c(
+                                                    "v-col",
+                                                    {
+                                                      staticClass: "pa-1",
+                                                      attrs: { cols: "md-6" }
+                                                    },
+                                                    [
+                                                      _c("v-text-field", {
+                                                        attrs: {
+                                                          color: "green",
+                                                          "item-color": "green",
+                                                          label: "Phone",
+                                                          dense: ""
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.phoneForm.phone,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.phoneForm,
+                                                              "phone",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "phoneForm.phone"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-col",
+                                                    {
+                                                      staticClass: "pa-1",
+                                                      attrs: { cols: "6" }
+                                                    },
+                                                    [
+                                                      _c("v-select", {
+                                                        attrs: {
+                                                          color: "green",
+                                                          "item-color": "green",
+                                                          "item-text": "name",
+                                                          "item-value": "id",
+                                                          items: _vm.phoneTypes,
+                                                          label: "Type",
+                                                          dense: ""
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.phoneForm
+                                                              .phone_type,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.phoneForm,
+                                                              "phone_type",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "phoneForm.phone_type"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-btn",
+                                                    {
+                                                      attrs: {
+                                                        dark: "",
+                                                        fab: "",
+                                                        right: "",
+                                                        bottom: "",
+                                                        small: "",
+                                                        color: "green"
+                                                      },
+                                                      on: {
+                                                        click: _vm.addPhone
+                                                      }
+                                                    },
+                                                    [
+                                                      _c("v-icon", [
+                                                        _vm._v("mdi-plus")
+                                                      ])
+                                                    ],
+                                                    1
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ])
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-expansion-panel",
+                                      [
+                                        _c(
+                                          "v-expansion-panel-header",
+                                          {
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "actions",
+                                                fn: function() {
+                                                  return [
+                                                    _c(
+                                                      "v-icon",
+                                                      {
+                                                        attrs: {
+                                                          color: "submit"
+                                                        }
+                                                      },
+                                                      [_vm._v("mdi-plus")]
+                                                    )
+                                                  ]
+                                                },
+                                                proxy: true
+                                              }
+                                            ])
+                                          },
+                                          [
+                                            _vm._v(
+                                              "\n                                            New address\n                                            "
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-expansion-panel-content",
+                                          [
+                                            _c("v-form", [
+                                              _c(
+                                                "div",
+                                                { staticClass: "row" },
+                                                [
+                                                  _c(
+                                                    "v-col",
+                                                    {
+                                                      staticClass: "pa-1",
+                                                      attrs: { cols: "md-6" }
+                                                    },
+                                                    [
+                                                      _c("v-text-field", {
+                                                        attrs: {
+                                                          color: "green",
+                                                          "item-color": "green",
+                                                          label: "Address",
+                                                          dense: ""
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.addressForm
+                                                              .address.address,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.addressForm
+                                                                .address,
+                                                              "address",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "addressForm.address.address"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-col",
+                                                    {
+                                                      staticClass: "pa-1",
+                                                      attrs: { cols: "md-6" }
+                                                    },
+                                                    [
+                                                      _c("v-text-field", {
+                                                        attrs: {
+                                                          color: "green",
+                                                          "item-color": "green",
+                                                          label:
+                                                            "Address line 2",
+                                                          dense: ""
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.addressForm
+                                                              .address
+                                                              .address_line_2,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.addressForm
+                                                                .address,
+                                                              "address_line_2",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "addressForm.address.address_line_2"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-col",
+                                                    {
+                                                      staticClass: "pa-1",
+                                                      attrs: { cols: "md-3" }
+                                                    },
+                                                    [
+                                                      _c("v-text-field", {
+                                                        attrs: {
+                                                          color: "green",
+                                                          "item-color": "green",
+                                                          label: "City",
+                                                          dense: ""
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.addressForm
+                                                              .address.city,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.addressForm
+                                                                .address,
+                                                              "city",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "addressForm.address.city"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-col",
+                                                    {
+                                                      staticClass: "pa-1",
+                                                      attrs: { cols: "md-3" }
+                                                    },
+                                                    [
+                                                      _c("v-text-field", {
+                                                        attrs: {
+                                                          color: "green",
+                                                          "item-color": "green",
+                                                          label: "Country",
+                                                          dense: ""
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.addressForm
+                                                              .address.country,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.addressForm
+                                                                .address,
+                                                              "country",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "addressForm.address.country"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-col",
+                                                    {
+                                                      staticClass: "pa-1",
+                                                      attrs: { cols: "6" }
+                                                    },
+                                                    [
+                                                      _c("v-select", {
+                                                        attrs: {
+                                                          color: "green",
+                                                          "item-color": "green",
+                                                          "item-text": "name",
+                                                          "item-value": "id",
+                                                          items:
+                                                            _vm.addressTypes,
+                                                          label: "Type",
+                                                          dense: ""
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.addressForm
+                                                              .address_type,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.$set(
+                                                              _vm.addressForm,
+                                                              "address_type",
+                                                              $$v
+                                                            )
+                                                          },
+                                                          expression:
+                                                            "addressForm.address_type"
+                                                        }
+                                                      })
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-btn",
+                                                    {
+                                                      attrs: {
+                                                        dark: "",
+                                                        fab: "",
+                                                        right: "",
+                                                        bottom: "",
+                                                        small: "",
+                                                        color: "green"
+                                                      },
+                                                      on: {
+                                                        click: _vm.addAddress
+                                                      }
+                                                    },
+                                                    [
+                                                      _c("v-icon", [
+                                                        _vm._v("mdi-plus")
+                                                      ])
+                                                    ],
+                                                    1
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ])
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
                               ],
                               1
                             )
@@ -45974,8 +46021,7 @@ var render = function() {
                 ),
                 _vm._v(" "),
                 _c(
-                  "div",
-                  { staticClass: "card-text" },
+                  "v-card-text",
                   [
                     _c("v-data-table", {
                       staticClass: "elevation-1",
@@ -46024,131 +46070,145 @@ var render = function() {
                           }
                         }
                       ])
-                    })
-                  ],
-                  1
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c("v-spacer", [_vm._v("\n                 \n            ")]),
-            _vm._v(" "),
-            _c(
-              "v-expansion-panels",
-              [
-                _c(
-                  "v-expansion-panel",
-                  [
-                    _c(
-                      "v-expansion-panel-header",
-                      {
-                        scopedSlots: _vm._u([
-                          {
-                            key: "actions",
-                            fn: function() {
-                              return [
-                                _c("v-icon", { attrs: { color: "submit" } }, [
-                                  _vm._v("mdi-plus")
-                                ])
-                              ]
-                            },
-                            proxy: true
-                          }
-                        ])
-                      },
-                      [
-                        _vm._v(
-                          "\n                        New social item\n                        "
-                        )
-                      ]
-                    ),
+                    }),
+                    _vm._v(" "),
+                    _c("v-spacer", [
+                      _vm._v(
+                        "\n                         \n                    "
+                      )
+                    ]),
                     _vm._v(" "),
                     _c(
-                      "v-expansion-panel-content",
+                      "v-expansion-panels",
                       [
-                        _c("v-form", [
-                          _c(
-                            "div",
-                            { staticClass: "row" },
-                            [
-                              _c(
-                                "v-col",
-                                { attrs: { cols: "md-12" } },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: {
-                                      color: "green",
-                                      "item-color": "green",
-                                      label: "Social link",
-                                      dense: ""
-                                    },
-                                    model: {
-                                      value: _vm.socialForm.social_link,
-                                      callback: function($$v) {
-                                        _vm.$set(
-                                          _vm.socialForm,
-                                          "social_link",
-                                          $$v
+                        _c(
+                          "v-expansion-panel",
+                          [
+                            _c(
+                              "v-expansion-panel-header",
+                              {
+                                scopedSlots: _vm._u([
+                                  {
+                                    key: "actions",
+                                    fn: function() {
+                                      return [
+                                        _c(
+                                          "v-icon",
+                                          { attrs: { color: "submit" } },
+                                          [_vm._v("mdi-plus")]
                                         )
-                                      },
-                                      expression: "socialForm.social_link"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-col",
-                                { attrs: { cols: "12" } },
-                                [
-                                  _c("v-select", {
-                                    attrs: {
-                                      color: "green",
-                                      "item-color": "green",
-                                      "item-text": "name",
-                                      "item-value": "id",
-                                      items: _vm.socialTypes,
-                                      label: "Type",
-                                      dense: ""
+                                      ]
                                     },
-                                    model: {
-                                      value: _vm.socialForm.social_type,
-                                      callback: function($$v) {
-                                        _vm.$set(
-                                          _vm.socialForm,
-                                          "social_type",
-                                          $$v
-                                        )
-                                      },
-                                      expression: "socialForm.social_type"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-btn",
-                                {
-                                  attrs: {
-                                    dark: "",
-                                    fab: "",
-                                    right: "",
-                                    bottom: "",
-                                    small: "",
-                                    color: "green"
-                                  },
-                                  on: { click: _vm.addSocial }
-                                },
-                                [_c("v-icon", [_vm._v("mdi-plus")])],
-                                1
-                              )
-                            ],
-                            1
-                          )
-                        ])
+                                    proxy: true
+                                  }
+                                ])
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                New social item\n                                "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-expansion-panel-content",
+                              [
+                                _c("v-form", [
+                                  _c(
+                                    "div",
+                                    { staticClass: "row" },
+                                    [
+                                      _c(
+                                        "v-col",
+                                        {
+                                          staticClass: "pa-1",
+                                          attrs: { cols: "md-12" }
+                                        },
+                                        [
+                                          _c("v-text-field", {
+                                            attrs: {
+                                              color: "green",
+                                              "item-color": "green",
+                                              label: "Social link",
+                                              dense: ""
+                                            },
+                                            model: {
+                                              value: _vm.socialForm.social_link,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.socialForm,
+                                                  "social_link",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "socialForm.social_link"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-col",
+                                        {
+                                          staticClass: "pa-1",
+                                          attrs: { cols: "12" }
+                                        },
+                                        [
+                                          _c("v-select", {
+                                            attrs: {
+                                              color: "green",
+                                              "item-color": "green",
+                                              "item-text": "name",
+                                              "item-value": "id",
+                                              items: _vm.socialTypes,
+                                              label: "Type",
+                                              dense: ""
+                                            },
+                                            model: {
+                                              value: _vm.socialForm.social_type,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.socialForm,
+                                                  "social_type",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "socialForm.social_type"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            dark: "",
+                                            fab: "",
+                                            right: "",
+                                            bottom: "",
+                                            small: "",
+                                            color: "green"
+                                          },
+                                          on: { click: _vm.addSocial }
+                                        },
+                                        [_c("v-icon", [_vm._v("mdi-plus")])],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ])
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
                       ],
                       1
                     )
@@ -46177,8 +46237,7 @@ var render = function() {
                 ),
                 _vm._v(" "),
                 _c(
-                  "div",
-                  { staticClass: "card-text" },
+                  "v-card-text",
                   [
                     _c("v-data-table", {
                       staticClass: "elevation-1",
@@ -46231,150 +46290,164 @@ var render = function() {
                           }
                         }
                       ])
-                    })
-                  ],
-                  1
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c("v-spacer", [_vm._v("\n                 \n            ")]),
-            _vm._v(" "),
-            _c(
-              "v-expansion-panels",
-              [
-                _c(
-                  "v-expansion-panel",
-                  [
-                    _c(
-                      "v-expansion-panel-header",
-                      {
-                        scopedSlots: _vm._u([
-                          {
-                            key: "actions",
-                            fn: function() {
-                              return [
-                                _c("v-icon", { attrs: { color: "submit" } }, [
-                                  _vm._v("mdi-plus")
-                                ])
-                              ]
-                            },
-                            proxy: true
-                          }
-                        ])
-                      },
-                      [
-                        _vm._v(
-                          "\n                        Add New Contact\n                        "
-                        )
-                      ]
-                    ),
+                    }),
+                    _vm._v(" "),
+                    _c("v-spacer", [
+                      _vm._v(
+                        "\n                         \n                    "
+                      )
+                    ]),
                     _vm._v(" "),
                     _c(
-                      "v-expansion-panel-content",
+                      "v-expansion-panels",
                       [
-                        _c("v-form", [
-                          _c(
-                            "div",
-                            { staticClass: "row" },
-                            [
-                              _c(
-                                "div",
-                                { staticClass: "col-md-4" },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: {
-                                      color: "green",
-                                      label: "Name",
-                                      name: "name",
-                                      type: "text",
-                                      required: ""
-                                    },
-                                    model: {
-                                      value: _vm.employeeForm.name,
-                                      callback: function($$v) {
-                                        _vm.$set(_vm.employeeForm, "name", $$v)
-                                      },
-                                      expression: "employeeForm.name"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "col-md-4" },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: {
-                                      color: "green",
-                                      label: "Email",
-                                      name: "email",
-                                      type: "text",
-                                      required: ""
-                                    },
-                                    model: {
-                                      value: _vm.employeeForm.email,
-                                      callback: function($$v) {
-                                        _vm.$set(_vm.employeeForm, "email", $$v)
-                                      },
-                                      expression: "employeeForm.email"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "col-md-4" },
-                                [
-                                  _c("v-select", {
-                                    attrs: {
-                                      label: "Role",
-                                      color: "green",
-                                      "item-color": "green",
-                                      "item-text": "name",
-                                      "item-value": "id",
-                                      items: _vm.roles
-                                    },
-                                    model: {
-                                      value: _vm.employeeForm.role_id,
-                                      callback: function($$v) {
-                                        _vm.$set(
-                                          _vm.employeeForm,
-                                          "role_id",
-                                          $$v
+                        _c(
+                          "v-expansion-panel",
+                          [
+                            _c(
+                              "v-expansion-panel-header",
+                              {
+                                scopedSlots: _vm._u([
+                                  {
+                                    key: "actions",
+                                    fn: function() {
+                                      return [
+                                        _c(
+                                          "v-icon",
+                                          { attrs: { color: "submit" } },
+                                          [_vm._v("mdi-plus")]
                                         )
-                                      },
-                                      expression: "employeeForm.role_id"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-btn",
-                                {
-                                  attrs: {
-                                    dark: "",
-                                    fab: "",
-                                    right: "",
-                                    bottom: "",
-                                    color: "green"
-                                  },
-                                  on: { click: _vm.addEmployee }
-                                },
-                                [_c("v-icon", [_vm._v("mdi-plus")])],
-                                1
-                              )
-                            ],
-                            1
-                          )
-                        ])
+                                      ]
+                                    },
+                                    proxy: true
+                                  }
+                                ])
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                New Contact\n                                "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-expansion-panel-content",
+                              [
+                                _c("v-form", [
+                                  _c(
+                                    "div",
+                                    { staticClass: "row" },
+                                    [
+                                      _c(
+                                        "div",
+                                        { staticClass: "col-md-4" },
+                                        [
+                                          _c("v-text-field", {
+                                            attrs: {
+                                              color: "green",
+                                              label: "Name",
+                                              name: "name",
+                                              type: "text",
+                                              required: ""
+                                            },
+                                            model: {
+                                              value: _vm.employeeForm.name,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.employeeForm,
+                                                  "name",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "employeeForm.name"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        { staticClass: "col-md-4" },
+                                        [
+                                          _c("v-text-field", {
+                                            attrs: {
+                                              color: "green",
+                                              label: "Email",
+                                              name: "email",
+                                              type: "text",
+                                              required: ""
+                                            },
+                                            model: {
+                                              value: _vm.employeeForm.email,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.employeeForm,
+                                                  "email",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "employeeForm.email"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "div",
+                                        { staticClass: "col-md-4" },
+                                        [
+                                          _c("v-select", {
+                                            attrs: {
+                                              label: "Role",
+                                              color: "green",
+                                              "item-color": "green",
+                                              "item-text": "name",
+                                              "item-value": "id",
+                                              items: _vm.roles
+                                            },
+                                            model: {
+                                              value: _vm.employeeForm.role_id,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.employeeForm,
+                                                  "role_id",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "employeeForm.role_id"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            dark: "",
+                                            fab: "",
+                                            right: "",
+                                            bottom: "",
+                                            color: "green"
+                                          },
+                                          on: { click: _vm.addEmployee }
+                                        },
+                                        [_c("v-icon", [_vm._v("mdi-plus")])],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ])
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
                       ],
                       1
                     )
@@ -46770,7 +46843,7 @@ var render = function() {
                 "v-toolbar",
                 { attrs: { color: "green", dark: "", flat: "" } },
                 [
-                  _c("v-toolbar-title", [_vm._v("Customer information")]),
+                  _c("v-toolbar-title", [_vm._v("Basic info")]),
                   _vm._v(" "),
                   _c("v-spacer")
                 ],
@@ -46997,368 +47070,414 @@ var render = function() {
                               })
                             ],
                             1
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-row",
-            [
-              _c(
-                "v-col",
-                { staticClass: "col-md-6" },
-                [
-                  _c(
-                    "v-expansion-panels",
-                    [
-                      _c(
-                        "v-expansion-panel",
-                        [
-                          _c(
-                            "v-expansion-panel-header",
-                            {
-                              scopedSlots: _vm._u([
-                                {
-                                  key: "actions",
-                                  fn: function() {
-                                    return [
-                                      _c(
-                                        "v-icon",
-                                        { attrs: { color: "submit" } },
-                                        [_vm._v("mdi-plus")]
-                                      )
-                                    ]
-                                  },
-                                  proxy: true
-                                }
-                              ])
-                            },
-                            [
-                              _vm._v(
-                                "\n                                New phone\n                                "
-                              )
-                            ]
                           ),
                           _vm._v(" "),
                           _c(
-                            "v-expansion-panel-content",
+                            "v-col",
+                            { staticClass: "col-md-12" },
                             [
-                              _c("v-form", [
-                                _c(
-                                  "div",
-                                  { staticClass: "row" },
-                                  [
-                                    _c(
-                                      "v-col",
-                                      { attrs: { cols: "md-12" } },
-                                      [
-                                        _c("v-text-field", {
-                                          attrs: {
-                                            color: "green",
-                                            "item-color": "green",
-                                            label: "Phone",
-                                            dense: ""
-                                          },
-                                          model: {
-                                            value: _vm.phoneForm.phone,
-                                            callback: function($$v) {
-                                              _vm.$set(
-                                                _vm.phoneForm,
-                                                "phone",
-                                                $$v
-                                              )
-                                            },
-                                            expression: "phoneForm.phone"
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-col",
-                                      { attrs: { cols: "12" } },
-                                      [
-                                        _c("v-select", {
-                                          attrs: {
-                                            color: "green",
-                                            "item-color": "green",
-                                            "item-text": "name",
-                                            "item-value": "id",
-                                            items: _vm.phoneTypes,
-                                            label: "Type",
-                                            dense: ""
-                                          },
-                                          model: {
-                                            value: _vm.phoneForm.phone_type,
-                                            callback: function($$v) {
-                                              _vm.$set(
-                                                _vm.phoneForm,
-                                                "phone_type",
-                                                $$v
-                                              )
-                                            },
-                                            expression: "phoneForm.phone_type"
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-btn",
-                                      {
-                                        attrs: {
-                                          dark: "",
-                                          fab: "",
-                                          right: "",
-                                          bottom: "",
-                                          small: "",
-                                          color: "green"
-                                        },
-                                        on: { click: _vm.addPhone }
-                                      },
-                                      [_c("v-icon", [_vm._v("mdi-plus")])],
-                                      1
-                                    )
-                                  ],
-                                  1
-                                )
-                              ])
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-col",
-                { staticClass: "col-md-6" },
-                [
-                  _c(
-                    "v-expansion-panels",
-                    [
-                      _c(
-                        "v-expansion-panel",
-                        [
-                          _c(
-                            "v-expansion-panel-header",
-                            {
-                              scopedSlots: _vm._u([
-                                {
-                                  key: "actions",
-                                  fn: function() {
-                                    return [
+                              _c(
+                                "v-expansion-panels",
+                                [
+                                  _c(
+                                    "v-expansion-panel",
+                                    [
                                       _c(
-                                        "v-icon",
-                                        { attrs: { color: "submit" } },
-                                        [_vm._v("mdi-plus")]
-                                      )
-                                    ]
-                                  },
-                                  proxy: true
-                                }
-                              ])
-                            },
-                            [
-                              _vm._v(
-                                "\n                                New address\n                                "
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-expansion-panel-content",
-                            [
-                              _c("v-form", [
-                                _c(
-                                  "div",
-                                  { staticClass: "row" },
-                                  [
-                                    _c(
-                                      "v-col",
-                                      { attrs: { cols: "md-12" } },
-                                      [
-                                        _c("v-text-field", {
-                                          attrs: {
-                                            color: "green",
-                                            "item-color": "green",
-                                            label: "Address",
-                                            dense: ""
-                                          },
-                                          model: {
-                                            value:
-                                              _vm.addressForm.address.address,
-                                            callback: function($$v) {
-                                              _vm.$set(
-                                                _vm.addressForm.address,
-                                                "address",
-                                                $$v
-                                              )
-                                            },
-                                            expression:
-                                              "addressForm.address.address"
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-col",
-                                      { attrs: { cols: "md-12" } },
-                                      [
-                                        _c("v-text-field", {
-                                          attrs: {
-                                            color: "green",
-                                            "item-color": "green",
-                                            label: "Address line 2",
-                                            dense: ""
-                                          },
-                                          model: {
-                                            value:
-                                              _vm.addressForm.address
-                                                .address_line_2,
-                                            callback: function($$v) {
-                                              _vm.$set(
-                                                _vm.addressForm.address,
-                                                "address_line_2",
-                                                $$v
-                                              )
-                                            },
-                                            expression:
-                                              "addressForm.address.address_line_2"
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-col",
-                                      { attrs: { cols: "md-6" } },
-                                      [
-                                        _c("v-text-field", {
-                                          attrs: {
-                                            color: "green",
-                                            "item-color": "green",
-                                            label: "City",
-                                            dense: ""
-                                          },
-                                          model: {
-                                            value: _vm.addressForm.address.city,
-                                            callback: function($$v) {
-                                              _vm.$set(
-                                                _vm.addressForm.address,
-                                                "city",
-                                                $$v
-                                              )
-                                            },
-                                            expression:
-                                              "addressForm.address.city"
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-col",
-                                      { attrs: { cols: "md-6" } },
-                                      [
-                                        _c("v-text-field", {
-                                          attrs: {
-                                            color: "green",
-                                            "item-color": "green",
-                                            label: "Country",
-                                            dense: ""
-                                          },
-                                          model: {
-                                            value:
-                                              _vm.addressForm.address.country,
-                                            callback: function($$v) {
-                                              _vm.$set(
-                                                _vm.addressForm.address,
-                                                "country",
-                                                $$v
-                                              )
-                                            },
-                                            expression:
-                                              "addressForm.address.country"
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-col",
-                                      { attrs: { cols: "12" } },
-                                      [
-                                        _c("v-select", {
-                                          attrs: {
-                                            color: "green",
-                                            "item-color": "green",
-                                            "item-text": "name",
-                                            "item-value": "id",
-                                            items: _vm.addressTypes,
-                                            label: "Type",
-                                            dense: ""
-                                          },
-                                          model: {
-                                            value: _vm.addressForm.address_type,
-                                            callback: function($$v) {
-                                              _vm.$set(
-                                                _vm.addressForm,
-                                                "address_type",
-                                                $$v
-                                              )
-                                            },
-                                            expression:
-                                              "addressForm.address_type"
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-btn",
-                                      {
-                                        attrs: {
-                                          dark: "",
-                                          fab: "",
-                                          right: "",
-                                          bottom: "",
-                                          small: "",
-                                          color: "green"
+                                        "v-expansion-panel-header",
+                                        {
+                                          scopedSlots: _vm._u([
+                                            {
+                                              key: "actions",
+                                              fn: function() {
+                                                return [
+                                                  _c(
+                                                    "v-icon",
+                                                    {
+                                                      attrs: { color: "submit" }
+                                                    },
+                                                    [_vm._v("mdi-plus")]
+                                                  )
+                                                ]
+                                              },
+                                              proxy: true
+                                            }
+                                          ])
                                         },
-                                        on: { click: _vm.addAddress }
-                                      },
-                                      [_c("v-icon", [_vm._v("mdi-plus")])],
-                                      1
-                                    )
-                                  ],
-                                  1
-                                )
-                              ])
+                                        [
+                                          _vm._v(
+                                            "\n                                            New phone\n                                            "
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-expansion-panel-content",
+                                        [
+                                          _c("v-form", [
+                                            _c(
+                                              "div",
+                                              { staticClass: "row" },
+                                              [
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    staticClass: "pa-1",
+                                                    attrs: { cols: "md-6" }
+                                                  },
+                                                  [
+                                                    _c("v-text-field", {
+                                                      attrs: {
+                                                        color: "green",
+                                                        "item-color": "green",
+                                                        label: "Phone",
+                                                        dense: ""
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.phoneForm.phone,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.phoneForm,
+                                                            "phone",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "phoneForm.phone"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    staticClass: "pa-1",
+                                                    attrs: { cols: "6" }
+                                                  },
+                                                  [
+                                                    _c("v-select", {
+                                                      attrs: {
+                                                        color: "green",
+                                                        "item-color": "green",
+                                                        "item-text": "name",
+                                                        "item-value": "id",
+                                                        items: _vm.phoneTypes,
+                                                        label: "Type",
+                                                        dense: ""
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.phoneForm
+                                                            .phone_type,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.phoneForm,
+                                                            "phone_type",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "phoneForm.phone_type"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-btn",
+                                                  {
+                                                    attrs: {
+                                                      dark: "",
+                                                      fab: "",
+                                                      right: "",
+                                                      bottom: "",
+                                                      small: "",
+                                                      color: "green"
+                                                    },
+                                                    on: { click: _vm.addPhone }
+                                                  },
+                                                  [
+                                                    _c("v-icon", [
+                                                      _vm._v("mdi-plus")
+                                                    ])
+                                                  ],
+                                                  1
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-expansion-panel",
+                                    [
+                                      _c(
+                                        "v-expansion-panel-header",
+                                        {
+                                          scopedSlots: _vm._u([
+                                            {
+                                              key: "actions",
+                                              fn: function() {
+                                                return [
+                                                  _c(
+                                                    "v-icon",
+                                                    {
+                                                      attrs: { color: "submit" }
+                                                    },
+                                                    [_vm._v("mdi-plus")]
+                                                  )
+                                                ]
+                                              },
+                                              proxy: true
+                                            }
+                                          ])
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                                            New address\n                                            "
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-expansion-panel-content",
+                                        [
+                                          _c("v-form", [
+                                            _c(
+                                              "div",
+                                              { staticClass: "row" },
+                                              [
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    staticClass: "pa-1",
+                                                    attrs: { cols: "md-6" }
+                                                  },
+                                                  [
+                                                    _c("v-text-field", {
+                                                      attrs: {
+                                                        color: "green",
+                                                        "item-color": "green",
+                                                        label: "Address",
+                                                        dense: ""
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.addressForm
+                                                            .address.address,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.addressForm
+                                                              .address,
+                                                            "address",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "addressForm.address.address"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    staticClass: "pa-1",
+                                                    attrs: { cols: "md-6" }
+                                                  },
+                                                  [
+                                                    _c("v-text-field", {
+                                                      attrs: {
+                                                        color: "green",
+                                                        "item-color": "green",
+                                                        label: "Address line 2",
+                                                        dense: ""
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.addressForm
+                                                            .address
+                                                            .address_line_2,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.addressForm
+                                                              .address,
+                                                            "address_line_2",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "addressForm.address.address_line_2"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    staticClass: "pa-1",
+                                                    attrs: { cols: "md-3" }
+                                                  },
+                                                  [
+                                                    _c("v-text-field", {
+                                                      attrs: {
+                                                        color: "green",
+                                                        "item-color": "green",
+                                                        label: "City",
+                                                        dense: ""
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.addressForm
+                                                            .address.city,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.addressForm
+                                                              .address,
+                                                            "city",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "addressForm.address.city"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    staticClass: "pa-1",
+                                                    attrs: { cols: "md-3" }
+                                                  },
+                                                  [
+                                                    _c("v-text-field", {
+                                                      attrs: {
+                                                        color: "green",
+                                                        "item-color": "green",
+                                                        label: "Country",
+                                                        dense: ""
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.addressForm
+                                                            .address.country,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.addressForm
+                                                              .address,
+                                                            "country",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "addressForm.address.country"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-col",
+                                                  {
+                                                    staticClass: "pa-1",
+                                                    attrs: { cols: "6" }
+                                                  },
+                                                  [
+                                                    _c("v-select", {
+                                                      attrs: {
+                                                        color: "green",
+                                                        "item-color": "green",
+                                                        "item-text": "name",
+                                                        "item-value": "id",
+                                                        items: _vm.addressTypes,
+                                                        label: "Type",
+                                                        dense: ""
+                                                      },
+                                                      model: {
+                                                        value:
+                                                          _vm.addressForm
+                                                            .address_type,
+                                                        callback: function(
+                                                          $$v
+                                                        ) {
+                                                          _vm.$set(
+                                                            _vm.addressForm,
+                                                            "address_type",
+                                                            $$v
+                                                          )
+                                                        },
+                                                        expression:
+                                                          "addressForm.address_type"
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-btn",
+                                                  {
+                                                    attrs: {
+                                                      dark: "",
+                                                      fab: "",
+                                                      right: "",
+                                                      bottom: "",
+                                                      small: "",
+                                                      color: "green"
+                                                    },
+                                                    on: {
+                                                      click: _vm.addAddress
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("v-icon", [
+                                                      _vm._v("mdi-plus")
+                                                    ])
+                                                  ],
+                                                  1
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
                             ],
                             1
                           )
@@ -47398,8 +47517,7 @@ var render = function() {
               ),
               _vm._v(" "),
               _c(
-                "div",
-                { staticClass: "card-text" },
+                "v-card-text",
                 [
                   _c("v-data-table", {
                     staticClass: "elevation-1",
@@ -47448,131 +47566,141 @@ var render = function() {
                         }
                       }
                     ])
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("v-spacer", [_vm._v("\n                 \n            ")]),
-          _vm._v(" "),
-          _c(
-            "v-expansion-panels",
-            [
-              _c(
-                "v-expansion-panel",
-                [
-                  _c(
-                    "v-expansion-panel-header",
-                    {
-                      scopedSlots: _vm._u([
-                        {
-                          key: "actions",
-                          fn: function() {
-                            return [
-                              _c("v-icon", { attrs: { color: "submit" } }, [
-                                _vm._v("mdi-plus")
-                              ])
-                            ]
-                          },
-                          proxy: true
-                        }
-                      ])
-                    },
-                    [
-                      _vm._v(
-                        "\n                        New social item\n                        "
-                      )
-                    ]
-                  ),
+                  }),
+                  _vm._v(" "),
+                  _c("v-spacer", [
+                    _vm._v("\n                         \n                    ")
+                  ]),
                   _vm._v(" "),
                   _c(
-                    "v-expansion-panel-content",
+                    "v-expansion-panels",
                     [
-                      _c("v-form", [
-                        _c(
-                          "div",
-                          { staticClass: "row" },
-                          [
-                            _c(
-                              "v-col",
-                              { attrs: { cols: "md-12" } },
-                              [
-                                _c("v-text-field", {
-                                  attrs: {
-                                    color: "green",
-                                    "item-color": "green",
-                                    label: "Social link",
-                                    dense: ""
-                                  },
-                                  model: {
-                                    value: _vm.socialForm.social_link,
-                                    callback: function($$v) {
-                                      _vm.$set(
-                                        _vm.socialForm,
-                                        "social_link",
-                                        $$v
+                      _c(
+                        "v-expansion-panel",
+                        [
+                          _c(
+                            "v-expansion-panel-header",
+                            {
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "actions",
+                                  fn: function() {
+                                    return [
+                                      _c(
+                                        "v-icon",
+                                        { attrs: { color: "submit" } },
+                                        [_vm._v("mdi-plus")]
                                       )
-                                    },
-                                    expression: "socialForm.social_link"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-col",
-                              { attrs: { cols: "12" } },
-                              [
-                                _c("v-select", {
-                                  attrs: {
-                                    color: "green",
-                                    "item-color": "green",
-                                    "item-text": "name",
-                                    "item-value": "id",
-                                    items: _vm.socialTypes,
-                                    label: "Type",
-                                    dense: ""
+                                    ]
                                   },
-                                  model: {
-                                    value: _vm.socialForm.social_type,
-                                    callback: function($$v) {
-                                      _vm.$set(
-                                        _vm.socialForm,
-                                        "social_type",
-                                        $$v
-                                      )
-                                    },
-                                    expression: "socialForm.social_type"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-btn",
-                              {
-                                attrs: {
-                                  dark: "",
-                                  fab: "",
-                                  right: "",
-                                  bottom: "",
-                                  small: "",
-                                  color: "green"
-                                },
-                                on: { click: _vm.addSocial }
-                              },
-                              [_c("v-icon", [_vm._v("mdi-plus")])],
-                              1
-                            )
-                          ],
-                          1
-                        )
-                      ])
+                                  proxy: true
+                                }
+                              ])
+                            },
+                            [
+                              _vm._v(
+                                "\n                                New social item\n                                "
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel-content",
+                            [
+                              _c("v-form", [
+                                _c(
+                                  "div",
+                                  { staticClass: "row" },
+                                  [
+                                    _c(
+                                      "v-col",
+                                      {
+                                        staticClass: "pa-1",
+                                        attrs: { cols: "md-12" }
+                                      },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            color: "green",
+                                            "item-color": "green",
+                                            label: "Social link",
+                                            dense: ""
+                                          },
+                                          model: {
+                                            value: _vm.socialForm.social_link,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.socialForm,
+                                                "social_link",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "socialForm.social_link"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      {
+                                        staticClass: "pa-1",
+                                        attrs: { cols: "12" }
+                                      },
+                                      [
+                                        _c("v-select", {
+                                          attrs: {
+                                            color: "green",
+                                            "item-color": "green",
+                                            "item-text": "name",
+                                            "item-value": "id",
+                                            items: _vm.socialTypes,
+                                            label: "Type",
+                                            dense: ""
+                                          },
+                                          model: {
+                                            value: _vm.socialForm.social_type,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.socialForm,
+                                                "social_type",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "socialForm.social_type"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: {
+                                          dark: "",
+                                          fab: "",
+                                          right: "",
+                                          bottom: "",
+                                          small: "",
+                                          color: "green"
+                                        },
+                                        on: { click: _vm.addSocial }
+                                      },
+                                      [_c("v-icon", [_vm._v("mdi-plus")])],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ])
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
                     ],
                     1
                   )
@@ -47601,8 +47729,7 @@ var render = function() {
               ),
               _vm._v(" "),
               _c(
-                "div",
-                { staticClass: "card-text" },
+                "v-card-text",
                 [
                   _c("v-data-table", {
                     staticClass: "elevation-1",
@@ -47611,121 +47738,133 @@ var render = function() {
                       items: _vm.client.employees,
                       "items-per-page": 25
                     }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("v-spacer", [_vm._v("\n                 \n            ")]),
-          _vm._v(" "),
-          _c(
-            "v-expansion-panels",
-            [
-              _c(
-                "v-expansion-panel",
-                [
-                  _c(
-                    "v-expansion-panel-header",
-                    {
-                      scopedSlots: _vm._u([
-                        {
-                          key: "actions",
-                          fn: function() {
-                            return [
-                              _c("v-icon", { attrs: { color: "submit" } }, [
-                                _vm._v("mdi-plus")
-                              ])
-                            ]
-                          },
-                          proxy: true
-                        }
-                      ])
-                    },
-                    [
-                      _vm._v(
-                        "\n                        Add New Contact\n                        "
-                      )
-                    ]
-                  ),
+                  }),
+                  _vm._v(" "),
+                  _c("v-spacer", [
+                    _vm._v("\n                         \n                    ")
+                  ]),
                   _vm._v(" "),
                   _c(
-                    "v-expansion-panel-content",
+                    "v-expansion-panels",
                     [
-                      _c("v-form", [
-                        _c(
-                          "div",
-                          { staticClass: "row" },
-                          [
-                            _c(
-                              "div",
-                              { staticClass: "col-md-6" },
-                              [
-                                _c("v-text-field", {
-                                  attrs: {
-                                    color: "green",
-                                    label: "Name",
-                                    name: "name",
-                                    type: "text",
-                                    required: ""
+                      _c(
+                        "v-expansion-panel",
+                        [
+                          _c(
+                            "v-expansion-panel-header",
+                            {
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "actions",
+                                  fn: function() {
+                                    return [
+                                      _c(
+                                        "v-icon",
+                                        { attrs: { color: "submit" } },
+                                        [_vm._v("mdi-plus")]
+                                      )
+                                    ]
                                   },
-                                  model: {
-                                    value: _vm.employeeForm.name,
-                                    callback: function($$v) {
-                                      _vm.$set(_vm.employeeForm, "name", $$v)
-                                    },
-                                    expression: "employeeForm.name"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "col-md-6" },
-                              [
-                                _c("v-text-field", {
-                                  attrs: {
-                                    color: "green",
-                                    label: "Email",
-                                    name: "email",
-                                    type: "text",
-                                    required: ""
-                                  },
-                                  model: {
-                                    value: _vm.employeeForm.email,
-                                    callback: function($$v) {
-                                      _vm.$set(_vm.employeeForm, "email", $$v)
-                                    },
-                                    expression: "employeeForm.email"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-btn",
-                              {
-                                attrs: {
-                                  dark: "",
-                                  fab: "",
-                                  right: "",
-                                  bottom: "",
-                                  color: "green"
-                                },
-                                on: { click: _vm.addEmployee }
-                              },
-                              [_c("v-icon", [_vm._v("mdi-plus")])],
-                              1
-                            )
-                          ],
-                          1
-                        )
-                      ])
+                                  proxy: true
+                                }
+                              ])
+                            },
+                            [
+                              _vm._v(
+                                "\n                                New Contact\n                                "
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel-content",
+                            [
+                              _c("v-form", [
+                                _c(
+                                  "div",
+                                  { staticClass: "row" },
+                                  [
+                                    _c(
+                                      "div",
+                                      { staticClass: "col-md-6" },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            color: "green",
+                                            label: "Name",
+                                            name: "name",
+                                            type: "text",
+                                            required: ""
+                                          },
+                                          model: {
+                                            value: _vm.employeeForm.name,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.employeeForm,
+                                                "name",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "employeeForm.name"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "col-md-6" },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            color: "green",
+                                            label: "Email",
+                                            name: "email",
+                                            type: "text",
+                                            required: ""
+                                          },
+                                          model: {
+                                            value: _vm.employeeForm.email,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.employeeForm,
+                                                "email",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "employeeForm.email"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: {
+                                          dark: "",
+                                          fab: "",
+                                          right: "",
+                                          bottom: "",
+                                          color: "green"
+                                        },
+                                        on: { click: _vm.addEmployee }
+                                      },
+                                      [_c("v-icon", [_vm._v("mdi-plus")])],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ])
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
                     ],
                     1
                   )
@@ -48027,7 +48166,7 @@ var render = function() {
                   "v-toolbar",
                   { attrs: { color: "green", dark: "", flat: "" } },
                   [
-                    _c("v-toolbar-title", [_vm._v("Product information")]),
+                    _c("v-toolbar-title", [_vm._v("Basic info")]),
                     _vm._v(" "),
                     _c("v-spacer")
                   ],
@@ -48128,8 +48267,7 @@ var render = function() {
                 ),
                 _vm._v(" "),
                 _c(
-                  "div",
-                  { staticClass: "card-text" },
+                  "v-card-text",
                   [
                     _c("v-data-table", {
                       staticClass: "elevation-1",
@@ -48138,102 +48276,109 @@ var render = function() {
                         items: _vm.product.clients,
                         "items-per-page": 25
                       }
-                    })
-                  ],
-                  1
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c("v-spacer", [_vm._v("\n                 \n            ")]),
-            _vm._v(" "),
-            _c(
-              "v-expansion-panels",
-              [
-                _c(
-                  "v-expansion-panel",
-                  [
-                    _c(
-                      "v-expansion-panel-header",
-                      {
-                        scopedSlots: _vm._u([
-                          {
-                            key: "actions",
-                            fn: function() {
-                              return [
-                                _c("v-icon", { attrs: { color: "submit" } }, [
-                                  _vm._v("mdi-plus")
-                                ])
-                              ]
-                            },
-                            proxy: true
-                          }
-                        ])
-                      },
-                      [
-                        _vm._v(
-                          "\n                        Add New Product Client\n                        "
-                        )
-                      ]
-                    ),
+                    }),
+                    _vm._v(" "),
+                    _c("v-spacer", [
+                      _vm._v(
+                        "\n                         \n                    "
+                      )
+                    ]),
                     _vm._v(" "),
                     _c(
-                      "v-expansion-panel-content",
+                      "v-expansion-panels",
                       [
-                        _c("v-form", [
-                          _c(
-                            "div",
-                            { staticClass: "row" },
-                            [
-                              _c(
-                                "v-col",
-                                { attrs: { cols: "md-12" } },
-                                [
-                                  _c("v-autocomplete", {
-                                    attrs: {
-                                      color: "green",
-                                      "item-color": "green",
-                                      "item-text": "name",
-                                      "item-value": "id",
-                                      items: _vm.suppliers,
-                                      label: "Client"
-                                    },
-                                    model: {
-                                      value: _vm.supplierForm.client_id,
-                                      callback: function($$v) {
-                                        _vm.$set(
-                                          _vm.supplierForm,
-                                          "client_id",
-                                          $$v
+                        _c(
+                          "v-expansion-panel",
+                          [
+                            _c(
+                              "v-expansion-panel-header",
+                              {
+                                scopedSlots: _vm._u([
+                                  {
+                                    key: "actions",
+                                    fn: function() {
+                                      return [
+                                        _c(
+                                          "v-icon",
+                                          { attrs: { color: "submit" } },
+                                          [_vm._v("mdi-plus")]
                                         )
-                                      },
-                                      expression: "supplierForm.client_id"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-btn",
-                                {
-                                  attrs: {
-                                    dark: "",
-                                    fab: "",
-                                    right: "",
-                                    bottom: "",
-                                    color: "green"
-                                  },
-                                  on: { click: _vm.addProductClient }
-                                },
-                                [_c("v-icon", [_vm._v("mdi-plus")])],
-                                1
-                              )
-                            ],
-                            1
-                          )
-                        ])
+                                      ]
+                                    },
+                                    proxy: true
+                                  }
+                                ])
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                New Product Client\n                                "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-expansion-panel-content",
+                              [
+                                _c("v-form", [
+                                  _c(
+                                    "div",
+                                    { staticClass: "row" },
+                                    [
+                                      _c(
+                                        "v-col",
+                                        { attrs: { cols: "md-12" } },
+                                        [
+                                          _c("v-autocomplete", {
+                                            attrs: {
+                                              color: "green",
+                                              "item-color": "green",
+                                              "item-text": "name",
+                                              "item-value": "id",
+                                              items: _vm.suppliers,
+                                              label: "Client"
+                                            },
+                                            model: {
+                                              value: _vm.supplierForm.client_id,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.supplierForm,
+                                                  "client_id",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "supplierForm.client_id"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: {
+                                            dark: "",
+                                            fab: "",
+                                            right: "",
+                                            bottom: "",
+                                            color: "green"
+                                          },
+                                          on: { click: _vm.addProductClient }
+                                        },
+                                        [_c("v-icon", [_vm._v("mdi-plus")])],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ])
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
                       ],
                       1
                     )
@@ -48502,7 +48647,7 @@ var render = function() {
                 "v-toolbar",
                 { attrs: { color: "green", dark: "", flat: "" } },
                 [
-                  _c("v-toolbar-title", [_vm._v("Team information")]),
+                  _c("v-toolbar-title", [_vm._v("Basic info")]),
                   _vm._v(" "),
                   _c("v-spacer")
                 ],
@@ -48601,8 +48746,7 @@ var render = function() {
               ),
               _vm._v(" "),
               _c(
-                "div",
-                { staticClass: "card-text" },
+                "v-card-text",
                 [
                   _c("v-data-table", {
                     staticClass: "elevation-1",
@@ -48611,102 +48755,108 @@ var render = function() {
                       items: _vm.team.employees,
                       "items-per-page": 25
                     }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("v-spacer", [_vm._v("\n                 \n            ")]),
-          _vm._v(" "),
-          _c(
-            "v-expansion-panels",
-            [
-              _c(
-                "v-expansion-panel",
-                [
-                  _c(
-                    "v-expansion-panel-header",
-                    {
-                      scopedSlots: _vm._u([
-                        {
-                          key: "actions",
-                          fn: function() {
-                            return [
-                              _c("v-icon", { attrs: { color: "submit" } }, [
-                                _vm._v("mdi-plus")
-                              ])
-                            ]
-                          },
-                          proxy: true
-                        }
-                      ])
-                    },
-                    [
-                      _vm._v(
-                        "\n                        Add New Team Member\n                        "
-                      )
-                    ]
-                  ),
+                  }),
+                  _vm._v(" "),
+                  _c("v-spacer", [
+                    _vm._v("\n                         \n                    ")
+                  ]),
                   _vm._v(" "),
                   _c(
-                    "v-expansion-panel-content",
+                    "v-expansion-panels",
                     [
-                      _c("v-form", [
-                        _c(
-                          "div",
-                          { staticClass: "row" },
-                          [
-                            _c(
-                              "v-col",
-                              { attrs: { cols: "md-12" } },
-                              [
-                                _c("v-autocomplete", {
-                                  attrs: {
-                                    color: "green",
-                                    "item-color": "green",
-                                    "item-text": "user_data.email",
-                                    "item-value": "id",
-                                    items: _vm.companies.employees,
-                                    label: "To"
-                                  },
-                                  model: {
-                                    value: _vm.employeeForm.company_user_id,
-                                    callback: function($$v) {
-                                      _vm.$set(
-                                        _vm.employeeForm,
-                                        "company_user_id",
-                                        $$v
+                      _c(
+                        "v-expansion-panel",
+                        [
+                          _c(
+                            "v-expansion-panel-header",
+                            {
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "actions",
+                                  fn: function() {
+                                    return [
+                                      _c(
+                                        "v-icon",
+                                        { attrs: { color: "submit" } },
+                                        [_vm._v("mdi-plus")]
                                       )
-                                    },
-                                    expression: "employeeForm.company_user_id"
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-btn",
-                              {
-                                attrs: {
-                                  dark: "",
-                                  fab: "",
-                                  right: "",
-                                  bottom: "",
-                                  color: "green"
-                                },
-                                on: { click: _vm.addEmployee }
-                              },
-                              [_c("v-icon", [_vm._v("mdi-plus")])],
-                              1
-                            )
-                          ],
-                          1
-                        )
-                      ])
+                                    ]
+                                  },
+                                  proxy: true
+                                }
+                              ])
+                            },
+                            [
+                              _vm._v(
+                                "\n                                New Team Member\n                                "
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel-content",
+                            [
+                              _c("v-form", [
+                                _c(
+                                  "div",
+                                  { staticClass: "row" },
+                                  [
+                                    _c(
+                                      "v-col",
+                                      { attrs: { cols: "md-12" } },
+                                      [
+                                        _c("v-autocomplete", {
+                                          attrs: {
+                                            color: "green",
+                                            "item-color": "green",
+                                            "item-text": "user_data.email",
+                                            "item-value": "id",
+                                            items: _vm.companies.employees,
+                                            label: "To"
+                                          },
+                                          model: {
+                                            value:
+                                              _vm.employeeForm.company_user_id,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.employeeForm,
+                                                "company_user_id",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "employeeForm.company_user_id"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: {
+                                          dark: "",
+                                          fab: "",
+                                          right: "",
+                                          bottom: "",
+                                          color: "green"
+                                        },
+                                        on: { click: _vm.addEmployee }
+                                      },
+                                      [_c("v-icon", [_vm._v("mdi-plus")])],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              ])
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
                     ],
                     1
                   )

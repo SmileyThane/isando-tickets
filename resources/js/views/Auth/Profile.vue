@@ -18,7 +18,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Profile info</v-toolbar-title>
+                        <v-toolbar-title>Basic info</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -199,7 +199,10 @@
                                         </template>
                                     </v-data-table>
                                 </v-col>
-                                <v-col class="col-md-6">
+                                <v-spacer>
+                                    &nbsp;
+                                </v-spacer>
+                                <v-col class="col-md-12">
                                     <v-expansion-panels>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
@@ -211,7 +214,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <div class="row">
-                                                        <v-col cols="md-12">
+                                                        <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
                                                                 color="green"
                                                                 item-color="green"
@@ -220,7 +223,7 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="12">
+                                                        <v-col cols="6" class="pa-1">
                                                             <v-select
                                                                 color="green"
                                                                 item-color="green"
@@ -247,10 +250,6 @@
                                                 </v-form>
                                             </v-expansion-panel-content>
                                         </v-expansion-panel>
-                                    </v-expansion-panels>
-                                </v-col>
-                                <v-col class="col-md-6">
-                                    <v-expansion-panels>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 New address
@@ -261,7 +260,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <div class="row">
-                                                        <v-col cols="md-12">
+                                                        <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
                                                                 color="green"
                                                                 item-color="green"
@@ -270,7 +269,7 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="md-12">
+                                                        <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
                                                                 color="green"
                                                                 item-color="green"
@@ -279,7 +278,7 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="md-6">
+                                                        <v-col cols="md-3" class="pa-1">
                                                             <v-text-field
                                                                 color="green"
                                                                 item-color="green"
@@ -288,7 +287,7 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="md-6">
+                                                        <v-col cols="md-3" class="pa-1">
                                                             <v-text-field
                                                                 color="green"
                                                                 item-color="green"
@@ -297,7 +296,7 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="12">
+                                                        <v-col cols="6" class="pa-1">
                                                             <v-select
                                                                 color="green"
                                                                 item-color="green"
@@ -383,8 +382,8 @@
                         address: '',
                         address_line_2: '',
                         address_line_3: '',
-                        city:'',
-                        country:''
+                        city: '',
+                        country: ''
                     },
                     address_type: ''
                 },
@@ -455,7 +454,8 @@
                     } else {
                         this.snackbarMessage = 'Phone update error'
                         this.actionColor = 'error'
-                        this.snackbar = true;                    }
+                        this.snackbar = true;
+                    }
                 });
             },
             deletePhone(id) {
@@ -476,7 +476,7 @@
             },
             addAddress() {
                 this.addressForm.entity_id = this.userData.id
-                if(this.addressForm.address.city !== '' && this.addressForm.address.country !== '') {
+                if (this.addressForm.address.city !== '' && this.addressForm.address.country !== '') {
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}, ${this.addressForm.address.country}`
                 } else {
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}${this.addressForm.address.country}`

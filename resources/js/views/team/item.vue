@@ -9,7 +9,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Team information</v-toolbar-title>
+                        <v-toolbar-title>Basic info</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -51,55 +51,56 @@
                         <v-toolbar-title>Team members</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
-                    <div class="card-text">
+                    <v-card-text>
                         <v-data-table
                             :headers="headers"
                             :items="team.employees"
                             :items-per-page="25"
                             class="elevation-1"
                         ></v-data-table>
-                    </div>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    New Team Member
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12">
+                                                <v-autocomplete
+                                                    color="green"
+                                                    item-color="green"
+                                                    item-text="user_data.email"
+                                                    item-value="id"
+                                                    v-model="employeeForm.company_user_id"
+                                                    :items="companies.employees"
+                                                    label="To"
+                                                ></v-autocomplete>
+                                            </v-col>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                color="green"
+                                                @click="addEmployee"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-                <v-expansion-panels>
-                    <v-expansion-panel>
-                        <v-expansion-panel-header>
-                            Add New Team Member
-                            <template v-slot:actions>
-                                <v-icon color="submit">mdi-plus</v-icon>
-                            </template>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            <v-form>
-                                <div class="row">
-                                    <v-col cols="md-12">
-                                        <v-autocomplete
-                                            color="green"
-                                            item-color="green"
-                                            item-text="user_data.email"
-                                            item-value="id"
-                                            v-model="employeeForm.company_user_id"
-                                            :items="companies.employees"
-                                            label="To"
-                                        ></v-autocomplete>
-                                    </v-col>
-                                    <v-btn
-                                        dark
-                                        fab
-                                        right
-                                        bottom
-                                        color="green"
-                                        @click="addEmployee"
-                                    >
-                                        <v-icon>mdi-plus</v-icon>
-                                    </v-btn>
-                                </div>
-                            </v-form>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
+
 
             </div>
         </div>

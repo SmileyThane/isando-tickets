@@ -9,7 +9,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Company information</v-toolbar-title>
+                        <v-toolbar-title>Basic info</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -133,139 +133,134 @@
                                         </template>
                                     </v-data-table>
                                 </v-col>
+                                <v-col class="col-md-12">
+                                    <v-expansion-panels>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                New phone
+                                                <template v-slot:actions>
+                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col cols="md-6" class="pa-1">
+                                                            <v-text-field
+                                                                color="green"
+                                                                item-color="green"
+                                                                v-model="phoneForm.phone"
+                                                                label="Phone"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="6" class="pa-1">
+                                                            <v-select
+                                                                color="green"
+                                                                item-color="green"
+                                                                item-text="name"
+                                                                item-value="id"
+                                                                v-model="phoneForm.phone_type"
+                                                                :items="phoneTypes"
+                                                                label="Type"
+                                                                dense
+                                                            ></v-select>
+                                                        </v-col>
+                                                        <v-btn
+                                                            dark
+                                                            fab
+                                                            right
+                                                            bottom
+                                                            small
+                                                            color="green"
+                                                            @click="addPhone"
+                                                        >
+                                                            <v-icon>mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                New address
+                                                <template v-slot:actions>
+                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col cols="md-6" class="pa-1">
+                                                            <v-text-field
+                                                                color="green"
+                                                                item-color="green"
+                                                                v-model="addressForm.address.address"
+                                                                label="Address"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="md-6" class="pa-1">
+                                                            <v-text-field
+                                                                color="green"
+                                                                item-color="green"
+                                                                v-model="addressForm.address.address_line_2"
+                                                                label="Address line 2"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="md-3" class="pa-1">
+                                                            <v-text-field
+                                                                color="green"
+                                                                item-color="green"
+                                                                v-model="addressForm.address.city"
+                                                                label="City"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="md-3" class="pa-1">
+                                                            <v-text-field
+                                                                color="green"
+                                                                item-color="green"
+                                                                v-model="addressForm.address.country"
+                                                                label="Country"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="6" class="pa-1">
+                                                            <v-select
+                                                                color="green"
+                                                                item-color="green"
+                                                                item-text="name"
+                                                                item-value="id"
+                                                                v-model="addressForm.address_type"
+                                                                :items="addressTypes"
+                                                                label="Type"
+                                                                dense
+                                                            ></v-select>
+                                                        </v-col>
+                                                        <v-btn
+                                                            dark
+                                                            fab
+                                                            right
+                                                            bottom
+                                                            small
+                                                            color="green"
+                                                            @click="addAddress"
+                                                        >
+                                                            <v-icon>mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
                             </v-row>
                         </v-form>
                     </v-card-text>
                 </v-card>
-                <v-row>
-                    <v-col class="col-md-6">
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    New phone
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col cols="md-12">
-                                                <v-text-field
-                                                    color="green"
-                                                    item-color="green"
-                                                    v-model="phoneForm.phone"
-                                                    label="Phone"
-                                                    dense
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-select
-                                                    color="green"
-                                                    item-color="green"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="phoneForm.phone_type"
-                                                    :items="phoneTypes"
-                                                    label="Type"
-                                                    dense
-                                                ></v-select>
-                                            </v-col>
-                                            <v-btn
-                                                dark
-                                                fab
-                                                right
-                                                bottom
-                                                small
-                                                color="green"
-                                                @click="addPhone"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-col>
-                    <v-col class="col-md-6">
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    New address
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col cols="md-12">
-                                                <v-text-field
-                                                    color="green"
-                                                    item-color="green"
-                                                    v-model="addressForm.address.address"
-                                                    label="Address"
-                                                    dense
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="md-12">
-                                                <v-text-field
-                                                    color="green"
-                                                    item-color="green"
-                                                    v-model="addressForm.address.address_line_2"
-                                                    label="Address line 2"
-                                                    dense
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="md-6">
-                                                <v-text-field
-                                                    color="green"
-                                                    item-color="green"
-                                                    v-model="addressForm.address.city"
-                                                    label="City"
-                                                    dense
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="md-6">
-                                                <v-text-field
-                                                    color="green"
-                                                    item-color="green"
-                                                    v-model="addressForm.address.country"
-                                                    label="Country"
-                                                    dense
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-select
-                                                    color="green"
-                                                    item-color="green"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="addressForm.address_type"
-                                                    :items="addressTypes"
-                                                    label="Type"
-                                                    dense
-                                                ></v-select>
-                                            </v-col>
-                                            <v-btn
-                                                dark
-                                                fab
-                                                right
-                                                bottom
-                                                small
-                                                color="green"
-                                                @click="addAddress"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-col>
-                </v-row>
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -278,7 +273,7 @@
                         <v-toolbar-title>Social info</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
-                    <div class="card-text">
+                    <v-card-text>
                         <v-data-table
                             :headers="socialHeaders"
                             :items="company.socials"
@@ -298,59 +293,61 @@
                                 </v-icon>
                             </template>
                         </v-data-table>
-                    </div>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    New social item
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12" class="pa-1">
+                                                <v-text-field
+                                                    color="green"
+                                                    item-color="green"
+                                                    v-model="socialForm.social_link"
+                                                    label="Social link"
+                                                    dense
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" class="pa-1">
+                                                <v-select
+                                                    color="green"
+                                                    item-color="green"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="socialForm.social_type"
+                                                    :items="socialTypes"
+                                                    label="Type"
+                                                    dense
+                                                ></v-select>
+                                            </v-col>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                small
+                                                color="green"
+                                                @click="addSocial"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-                <v-expansion-panels>
-                    <v-expansion-panel>
-                        <v-expansion-panel-header>
-                            New social item
-                            <template v-slot:actions>
-                                <v-icon color="submit">mdi-plus</v-icon>
-                            </template>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            <v-form>
-                                <div class="row">
-                                    <v-col cols="md-12">
-                                        <v-text-field
-                                            color="green"
-                                            item-color="green"
-                                            v-model="socialForm.social_link"
-                                            label="Social link"
-                                            dense
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <v-select
-                                            color="green"
-                                            item-color="green"
-                                            item-text="name"
-                                            item-value="id"
-                                            v-model="socialForm.social_type"
-                                            :items="socialTypes"
-                                            label="Type"
-                                            dense
-                                        ></v-select>
-                                    </v-col>
-                                    <v-btn
-                                        dark
-                                        fab
-                                        right
-                                        bottom
-                                        small
-                                        color="green"
-                                        @click="addSocial"
-                                    >
-                                        <v-icon>mdi-plus</v-icon>
-                                    </v-btn>
-                                </div>
-                            </v-form>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
+
+
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
@@ -365,7 +362,7 @@
                         <v-toolbar-title>Company contacts</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
-                    <div class="card-text">
+                    <v-card-text>
                         <v-data-table
                             :headers="headers"
                             :items="company.employees"
@@ -390,69 +387,68 @@
                             </template>
 
                         </v-data-table>
-                    </div>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    New Contact
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Name"
+                                                    name="name"
+                                                    type="text"
+                                                    v-model="employeeForm.name"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Email"
+                                                    name="email"
+                                                    type="text"
+                                                    v-model="employeeForm.email"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <v-select
+                                                    label="Role"
+                                                    color="green"
+                                                    item-color="green"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    :items="roles"
+                                                    v-model="employeeForm.role_id"
+                                                />
+                                            </div>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                color="green"
+                                                @click="addEmployee"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-                <v-expansion-panels>
-                    <v-expansion-panel>
-                        <v-expansion-panel-header>
-                            Add New Contact
-                            <template v-slot:actions>
-                                <v-icon color="submit">mdi-plus</v-icon>
-                            </template>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            <v-form>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <v-text-field
-                                            color="green"
-                                            label="Name"
-                                            name="name"
-                                            type="text"
-                                            v-model="employeeForm.name"
-                                            required
-                                        ></v-text-field>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <v-text-field
-                                            color="green"
-                                            label="Email"
-                                            name="email"
-                                            type="text"
-                                            v-model="employeeForm.email"
-                                            required
-                                        ></v-text-field>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <v-select
-                                            label="Role"
-                                            color="green"
-                                            item-color="green"
-                                            item-text="name"
-                                            item-value="id"
-                                            :items="roles"
-                                            v-model="employeeForm.role_id"
-                                        />
-                                    </div>
-                                    <v-btn
-                                        dark
-                                        fab
-                                        right
-                                        bottom
-                                        color="green"
-                                        @click="addEmployee"
-                                    >
-                                        <v-icon>mdi-plus</v-icon>
-                                    </v-btn>
-                                </div>
-                            </v-form>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
-
             </div>
         </div>
         <v-row justify="center">
@@ -572,8 +568,8 @@
                         address: '',
                         address_line_2: '',
                         address_line_3: '',
-                        city:'',
-                        country:''
+                        city: '',
+                        country: ''
                     },
                     address_type: ''
                 },
@@ -788,7 +784,7 @@
             },
             addAddress() {
                 this.addressForm.entity_id = this.company.id
-                if(this.addressForm.address.city !== '' && this.addressForm.address.country !== '') {
+                if (this.addressForm.address.city !== '' && this.addressForm.address.country !== '') {
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}, ${this.addressForm.address.country}`
                 } else {
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}${this.addressForm.address.country}`
