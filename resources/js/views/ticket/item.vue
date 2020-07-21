@@ -9,7 +9,11 @@
                 md="8"
             >
                 <v-card>
-                    <v-toolbar>
+                    <v-toolbar
+                        color="green"
+                        dark
+                        flat
+                    >
                         <v-toolbar-title>#{{ ticket.id }} {{ ticket.name }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
@@ -115,6 +119,9 @@
                                 <v-label v-if="ticket.description">
                                     <strong>Description</strong>
                                 </v-label>
+                                <v-spacer>
+                                    &nbsp;
+                                </v-spacer>
                                 <div v-html="ticket.description"></div>
                             </v-col>
                             <v-col cols="12" sm="6">
@@ -165,12 +172,16 @@
 
                         </v-col>
                     </v-card-text>
-                    <v-expansion-panels>
+                    <v-expansion-panels
+                        flat
+                        popout
+                        focusable
+                    >
                         <v-expansion-panel>
                             <v-expansion-panel-header>
-                                Create Answer
+                                <h3>Create Answer</h3>
                                 <template v-slot:actions>
-                                    <v-icon color="submit">mdi-plus</v-icon>
+                                    <v-icon color="success">mdi-alert-circle</v-icon>
                                 </template>
                             </v-expansion-panel-header>
                             <v-expansion-panel-content>
@@ -226,11 +237,11 @@
                         </v-expansion-panel>
                     </v-expansion-panels>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
+                <br>
                 <v-card>
                     <v-toolbar
+                        color="green"
+                        dark
                         flat
                     >
                         <v-toolbar-title>Ticket Answers</v-toolbar-title>
@@ -289,7 +300,11 @@
                 md="4"
             >
                 <v-card>
-                    <v-toolbar>
+                    <v-toolbar
+                        color="green"
+                        dark
+                        flat
+                    >
                         <v-toolbar-title>Ticket Actions</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>

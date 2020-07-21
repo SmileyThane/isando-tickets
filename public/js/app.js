@@ -6930,6 +6930,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -49727,6 +49742,7 @@ var render = function() {
                 [
                   _c(
                     "v-toolbar",
+                    { attrs: { color: "green", dark: "", flat: "" } },
                     [
                       _c("v-toolbar-title", [
                         _vm._v(
@@ -49951,6 +49967,12 @@ var render = function() {
                                   ])
                                 : _vm._e(),
                               _vm._v(" "),
+                              _c("v-spacer", [
+                                _vm._v(
+                                  "\n                                 \n                            "
+                                )
+                              ]),
+                              _vm._v(" "),
                               _c("div", {
                                 domProps: {
                                   innerHTML: _vm._s(_vm.ticket.description)
@@ -50066,6 +50088,7 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "v-expansion-panels",
+                    { attrs: { flat: "", popout: "", focusable: "" } },
                     [
                       _c(
                         "v-expansion-panel",
@@ -50080,8 +50103,8 @@ var render = function() {
                                     return [
                                       _c(
                                         "v-icon",
-                                        { attrs: { color: "submit" } },
-                                        [_vm._v("mdi-plus")]
+                                        { attrs: { color: "success" } },
+                                        [_vm._v("mdi-alert-circle")]
                                       )
                                     ]
                                   },
@@ -50089,11 +50112,7 @@ var render = function() {
                                 }
                               ])
                             },
-                            [
-                              _vm._v(
-                                "\n                            Create Answer\n                            "
-                              )
-                            ]
+                            [_c("h3", [_vm._v("Create Answer")])]
                           ),
                           _vm._v(" "),
                           _c(
@@ -50218,14 +50237,14 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _c("v-spacer", [_vm._v("\n                 \n            ")]),
+              _c("br"),
               _vm._v(" "),
               _c(
                 "v-card",
                 [
                   _c(
                     "v-toolbar",
-                    { attrs: { flat: "" } },
+                    { attrs: { color: "green", dark: "", flat: "" } },
                     [_c("v-toolbar-title", [_vm._v("Ticket Answers")])],
                     1
                   ),
@@ -50367,6 +50386,7 @@ var render = function() {
                 [
                   _c(
                     "v-toolbar",
+                    { attrs: { color: "green", dark: "", flat: "" } },
                     [
                       _c("v-toolbar-title", [_vm._v("Ticket Actions")]),
                       _vm._v(" "),
