@@ -156,6 +156,7 @@
                                                     item-color="green"
                                                     v-model="phoneForm.phone"
                                                     label="Phone"
+                                                    dense
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col cols="12">
@@ -167,6 +168,7 @@
                                                     v-model="phoneForm.phone_type"
                                                     :items="phoneTypes"
                                                     label="Type"
+                                                    dense
                                                 ></v-select>
                                             </v-col>
                                             <v-btn
@@ -204,6 +206,7 @@
                                                     item-color="green"
                                                     v-model="addressForm.address.address"
                                                     label="Address"
+                                                    dense
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col cols="md-12">
@@ -212,14 +215,25 @@
                                                     item-color="green"
                                                     v-model="addressForm.address.address_line_2"
                                                     label="Address line 2"
+                                                    dense
                                                 ></v-text-field>
                                             </v-col>
-                                            <v-col cols="md-12">
+                                            <v-col cols="md-6">
                                                 <v-text-field
                                                     color="green"
                                                     item-color="green"
-                                                    v-model="addressForm.address.address_line_3"
-                                                    label="Address line 3"
+                                                    v-model="addressForm.address.city"
+                                                    label="City"
+                                                    dense
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="md-6">
+                                                <v-text-field
+                                                    color="green"
+                                                    item-color="green"
+                                                    v-model="addressForm.address.country"
+                                                    label="Country"
+                                                    dense
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col cols="12">
@@ -231,6 +245,7 @@
                                                     v-model="addressForm.address_type"
                                                     :items="addressTypes"
                                                     label="Type"
+                                                    dense
                                                 ></v-select>
                                             </v-col>
                                             <v-btn
@@ -305,6 +320,7 @@
                                             item-color="green"
                                             v-model="socialForm.social_link"
                                             label="Social link"
+                                            dense
                                         ></v-text-field>
                                     </v-col>
                                     <v-col cols="12">
@@ -316,6 +332,7 @@
                                             v-model="socialForm.social_type"
                                             :items="socialTypes"
                                             label="Type"
+                                            dense
                                         ></v-select>
                                     </v-col>
                                     <v-btn
@@ -554,7 +571,9 @@
                     address: {
                         address: '',
                         address_line_2: '',
-                        address_line_3: ''
+                        address_line_3: '',
+                        city:'',
+                        country:''
                     },
                     address_type: ''
                 },
@@ -769,6 +788,11 @@
             },
             addAddress() {
                 this.addressForm.entity_id = this.company.id
+                if(this.addressForm.address.city !== '' && this.addressForm.address.country !== '') {
+                    this.addressForm.address.address_line_3 = `${this.addressForm.address.city}, ${this.addressForm.address.country}`
+                } else {
+                    this.addressForm.address.address_line_3 = `${this.addressForm.address.city}${this.addressForm.address.country}`
+                }
                 axios.post('/api/address', this.addressForm).then(response => {
                     response = response.data
                     if (response.success === true) {

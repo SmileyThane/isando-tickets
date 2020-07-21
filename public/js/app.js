@@ -2686,6 +2686,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2744,7 +2759,9 @@ __webpack_require__.r(__webpack_exports__);
         address: {
           address: '',
           address_line_2: '',
-          address_line_3: ''
+          address_line_3: '',
+          city: '',
+          country: ''
         },
         address_type: ''
       },
@@ -2858,6 +2875,13 @@ __webpack_require__.r(__webpack_exports__);
       var _this7 = this;
 
       this.addressForm.entity_id = this.userData.id;
+
+      if (this.addressForm.address.city !== '' && this.addressForm.address.country !== '') {
+        this.addressForm.address.address_line_3 = "".concat(this.addressForm.address.city, ", ").concat(this.addressForm.address.country);
+      } else {
+        this.addressForm.address.address_line_3 = "".concat(this.addressForm.address.city).concat(this.addressForm.address.country);
+      }
+
       axios.post('/api/address', this.addressForm).then(function (response) {
         response = response.data;
 
@@ -3705,6 +3729,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3808,7 +3849,9 @@ __webpack_require__.r(__webpack_exports__);
         address: {
           address: '',
           address_line_2: '',
-          address_line_3: ''
+          address_line_3: '',
+          city: '',
+          country: ''
         },
         address_type: ''
       },
@@ -4073,6 +4116,13 @@ __webpack_require__.r(__webpack_exports__);
       var _this15 = this;
 
       this.addressForm.entity_id = this.company.id;
+
+      if (this.addressForm.address.city !== '' && this.addressForm.address.country !== '') {
+        this.addressForm.address.address_line_3 = "".concat(this.addressForm.address.city, ", ").concat(this.addressForm.address.country);
+      } else {
+        this.addressForm.address.address_line_3 = "".concat(this.addressForm.address.city).concat(this.addressForm.address.country);
+      }
+
       axios.post('/api/address', this.addressForm).then(function (response) {
         response = response.data;
 
@@ -4695,6 +4745,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4790,7 +4857,9 @@ __webpack_require__.r(__webpack_exports__);
         address: {
           address: '',
           address_line_2: '',
-          address_line_3: ''
+          address_line_3: '',
+          city: '',
+          country: ''
         },
         address_type: ''
       },
@@ -5011,6 +5080,13 @@ __webpack_require__.r(__webpack_exports__);
       var _this12 = this;
 
       this.addressForm.entity_id = this.client.id;
+
+      if (this.addressForm.address.city !== '' && this.addressForm.address.country !== '') {
+        this.addressForm.address.address_line_3 = "".concat(this.addressForm.address.city, ", ").concat(this.addressForm.address.country);
+      } else {
+        this.addressForm.address.address_line_3 = "".concat(this.addressForm.address.city).concat(this.addressForm.address.country);
+      }
+
       axios.post('/api/address', this.addressForm).then(function (response) {
         response = response.data;
 
@@ -44317,7 +44393,8 @@ var render = function() {
                                                             color: "green",
                                                             "item-color":
                                                               "green",
-                                                            label: "Phone"
+                                                            label: "Phone",
+                                                            dense: ""
                                                           },
                                                           model: {
                                                             value:
@@ -44353,7 +44430,8 @@ var render = function() {
                                                             "item-value": "id",
                                                             items:
                                                               _vm.phoneTypes,
-                                                            label: "Type"
+                                                            label: "Type",
+                                                            dense: ""
                                                           },
                                                           model: {
                                                             value:
@@ -44474,7 +44552,8 @@ var render = function() {
                                                             color: "green",
                                                             "item-color":
                                                               "green",
-                                                            label: "Address"
+                                                            label: "Address",
+                                                            dense: ""
                                                           },
                                                           model: {
                                                             value:
@@ -44511,7 +44590,8 @@ var render = function() {
                                                             "item-color":
                                                               "green",
                                                             label:
-                                                              "Address line 2"
+                                                              "Address line 2",
+                                                            dense: ""
                                                           },
                                                           model: {
                                                             value:
@@ -44539,7 +44619,7 @@ var render = function() {
                                                     _c(
                                                       "v-col",
                                                       {
-                                                        attrs: { cols: "md-12" }
+                                                        attrs: { cols: "md-6" }
                                                       },
                                                       [
                                                         _c("v-text-field", {
@@ -44547,26 +44627,62 @@ var render = function() {
                                                             color: "green",
                                                             "item-color":
                                                               "green",
-                                                            label:
-                                                              "Address line 3"
+                                                            label: "City",
+                                                            dense: ""
                                                           },
                                                           model: {
                                                             value:
                                                               _vm.addressForm
-                                                                .address
-                                                                .address_line_3,
+                                                                .address.city,
                                                             callback: function(
                                                               $$v
                                                             ) {
                                                               _vm.$set(
                                                                 _vm.addressForm
                                                                   .address,
-                                                                "address_line_3",
+                                                                "city",
                                                                 $$v
                                                               )
                                                             },
                                                             expression:
-                                                              "addressForm.address.address_line_3"
+                                                              "addressForm.address.city"
+                                                          }
+                                                        })
+                                                      ],
+                                                      1
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "v-col",
+                                                      {
+                                                        attrs: { cols: "md-6" }
+                                                      },
+                                                      [
+                                                        _c("v-text-field", {
+                                                          attrs: {
+                                                            color: "green",
+                                                            "item-color":
+                                                              "green",
+                                                            label: "Country",
+                                                            dense: ""
+                                                          },
+                                                          model: {
+                                                            value:
+                                                              _vm.addressForm
+                                                                .address
+                                                                .country,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.$set(
+                                                                _vm.addressForm
+                                                                  .address,
+                                                                "country",
+                                                                $$v
+                                                              )
+                                                            },
+                                                            expression:
+                                                              "addressForm.address.country"
                                                           }
                                                         })
                                                       ],
@@ -44586,7 +44702,8 @@ var render = function() {
                                                             "item-value": "id",
                                                             items:
                                                               _vm.addressTypes,
-                                                            label: "Type"
+                                                            label: "Type",
+                                                            dense: ""
                                                           },
                                                           model: {
                                                             value:
@@ -45523,7 +45640,8 @@ var render = function() {
                                             attrs: {
                                               color: "green",
                                               "item-color": "green",
-                                              label: "Phone"
+                                              label: "Phone",
+                                              dense: ""
                                             },
                                             model: {
                                               value: _vm.phoneForm.phone,
@@ -45552,7 +45670,8 @@ var render = function() {
                                               "item-text": "name",
                                               "item-value": "id",
                                               items: _vm.phoneTypes,
-                                              label: "Type"
+                                              label: "Type",
+                                              dense: ""
                                             },
                                             model: {
                                               value: _vm.phoneForm.phone_type,
@@ -45655,7 +45774,8 @@ var render = function() {
                                             attrs: {
                                               color: "green",
                                               "item-color": "green",
-                                              label: "Address"
+                                              label: "Address",
+                                              dense: ""
                                             },
                                             model: {
                                               value:
@@ -45683,7 +45803,8 @@ var render = function() {
                                             attrs: {
                                               color: "green",
                                               "item-color": "green",
-                                              label: "Address line 2"
+                                              label: "Address line 2",
+                                              dense: ""
                                             },
                                             model: {
                                               value:
@@ -45706,27 +45827,56 @@ var render = function() {
                                       _vm._v(" "),
                                       _c(
                                         "v-col",
-                                        { attrs: { cols: "md-12" } },
+                                        { attrs: { cols: "md-6" } },
                                         [
                                           _c("v-text-field", {
                                             attrs: {
                                               color: "green",
                                               "item-color": "green",
-                                              label: "Address line 3"
+                                              label: "City",
+                                              dense: ""
                                             },
                                             model: {
                                               value:
-                                                _vm.addressForm.address
-                                                  .address_line_3,
+                                                _vm.addressForm.address.city,
                                               callback: function($$v) {
                                                 _vm.$set(
                                                   _vm.addressForm.address,
-                                                  "address_line_3",
+                                                  "city",
                                                   $$v
                                                 )
                                               },
                                               expression:
-                                                "addressForm.address.address_line_3"
+                                                "addressForm.address.city"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-col",
+                                        { attrs: { cols: "md-6" } },
+                                        [
+                                          _c("v-text-field", {
+                                            attrs: {
+                                              color: "green",
+                                              "item-color": "green",
+                                              label: "Country",
+                                              dense: ""
+                                            },
+                                            model: {
+                                              value:
+                                                _vm.addressForm.address.country,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.addressForm.address,
+                                                  "country",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "addressForm.address.country"
                                             }
                                           })
                                         ],
@@ -45744,7 +45894,8 @@ var render = function() {
                                               "item-text": "name",
                                               "item-value": "id",
                                               items: _vm.addressTypes,
-                                              label: "Type"
+                                              label: "Type",
+                                              dense: ""
                                             },
                                             model: {
                                               value:
@@ -45929,7 +46080,8 @@ var render = function() {
                                     attrs: {
                                       color: "green",
                                       "item-color": "green",
-                                      label: "Social link"
+                                      label: "Social link",
+                                      dense: ""
                                     },
                                     model: {
                                       value: _vm.socialForm.social_link,
@@ -45958,7 +46110,8 @@ var render = function() {
                                       "item-text": "name",
                                       "item-value": "id",
                                       items: _vm.socialTypes,
-                                      label: "Type"
+                                      label: "Type",
+                                      dense: ""
                                     },
                                     model: {
                                       value: _vm.socialForm.social_type,
@@ -46913,7 +47066,8 @@ var render = function() {
                                           attrs: {
                                             color: "green",
                                             "item-color": "green",
-                                            label: "Phone"
+                                            label: "Phone",
+                                            dense: ""
                                           },
                                           model: {
                                             value: _vm.phoneForm.phone,
@@ -46942,7 +47096,8 @@ var render = function() {
                                             "item-text": "name",
                                             "item-value": "id",
                                             items: _vm.phoneTypes,
-                                            label: "Type"
+                                            label: "Type",
+                                            dense: ""
                                           },
                                           model: {
                                             value: _vm.phoneForm.phone_type,
@@ -47045,7 +47200,8 @@ var render = function() {
                                           attrs: {
                                             color: "green",
                                             "item-color": "green",
-                                            label: "Address"
+                                            label: "Address",
+                                            dense: ""
                                           },
                                           model: {
                                             value:
@@ -47073,7 +47229,8 @@ var render = function() {
                                           attrs: {
                                             color: "green",
                                             "item-color": "green",
-                                            label: "Address line 2"
+                                            label: "Address line 2",
+                                            dense: ""
                                           },
                                           model: {
                                             value:
@@ -47096,27 +47253,55 @@ var render = function() {
                                     _vm._v(" "),
                                     _c(
                                       "v-col",
-                                      { attrs: { cols: "md-12" } },
+                                      { attrs: { cols: "md-6" } },
                                       [
                                         _c("v-text-field", {
                                           attrs: {
                                             color: "green",
                                             "item-color": "green",
-                                            label: "Address line 3"
+                                            label: "City",
+                                            dense: ""
                                           },
                                           model: {
-                                            value:
-                                              _vm.addressForm.address
-                                                .address_line_3,
+                                            value: _vm.addressForm.address.city,
                                             callback: function($$v) {
                                               _vm.$set(
                                                 _vm.addressForm.address,
-                                                "address_line_3",
+                                                "city",
                                                 $$v
                                               )
                                             },
                                             expression:
-                                              "addressForm.address.address_line_3"
+                                              "addressForm.address.city"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      { attrs: { cols: "md-6" } },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            color: "green",
+                                            "item-color": "green",
+                                            label: "Country",
+                                            dense: ""
+                                          },
+                                          model: {
+                                            value:
+                                              _vm.addressForm.address.country,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.addressForm.address,
+                                                "country",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "addressForm.address.country"
                                           }
                                         })
                                       ],
@@ -47134,7 +47319,8 @@ var render = function() {
                                             "item-text": "name",
                                             "item-value": "id",
                                             items: _vm.addressTypes,
-                                            label: "Type"
+                                            label: "Type",
+                                            dense: ""
                                           },
                                           model: {
                                             value: _vm.addressForm.address_type,
@@ -47318,7 +47504,8 @@ var render = function() {
                                   attrs: {
                                     color: "green",
                                     "item-color": "green",
-                                    label: "Social link"
+                                    label: "Social link",
+                                    dense: ""
                                   },
                                   model: {
                                     value: _vm.socialForm.social_link,
@@ -47347,7 +47534,8 @@ var render = function() {
                                     "item-text": "name",
                                     "item-value": "id",
                                     items: _vm.socialTypes,
-                                    label: "Type"
+                                    label: "Type",
+                                    dense: ""
                                   },
                                   model: {
                                     value: _vm.socialForm.social_type,
