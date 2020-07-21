@@ -93,7 +93,7 @@ class EmailReceiverRepository
         $params = [
             'company_user_id' => $user->employee->id,
             'ticket_id' => $ticket->id,
-            'answer' => $message->getHTMLBody(true)
+            'answer' => $this->removeEmptyParagraphs($message->getHTMLBody(true))
         ];
         Log::info('answer created');
         return $this->makeSystemRequest($uri, $token, $params);
@@ -139,7 +139,7 @@ class EmailReceiverRepository
                 'from_company_user_id' => $userFrom->employee->id,
                 'priority_id' => 2,
                 'name' => $ticketSubject,
-                'description' => $message->getHTMLBody(true),
+                'description' => $this->removeEmptyParagraphs($message->getHTMLBody(true)),
             ];
 //            Log::alert($message->getHTMLBody(true));
             return $this->makeSystemRequest($uri, $token, $params);
@@ -164,6 +164,12 @@ class EmailReceiverRepository
         $mailCache->subject = $subject;
         $mailCache->save();
         return $mailCache;
+    }
+
+    private function removeEmptyParagraphs($content)
+    {
+        $emptyLinesArray = ["<p><br /></p>", "<p><br/></p>", "<p></p>"];
+        return str_replace($emptyLinesArray, "", $content);
     }
 
 
