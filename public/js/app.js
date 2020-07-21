@@ -2686,24 +2686,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2733,9 +2715,10 @@ __webpack_require__.r(__webpack_exports__);
         value: 'actions',
         sortable: false
       }],
-      alert: false,
-      errorType: '',
-      error: [],
+      snackbar: false,
+      actionColor: '',
+      snackbarMessage: '',
+      errors: [],
       userData: {
         title: '',
         title_before_name: '',
@@ -2792,8 +2775,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       e.preventDefault();
-      this.alert = false;
-      this.error = [];
+      this.snackbar = false;
       axios.post('/api/user', this.userData).then(function (response) {
         response = response.data;
 
@@ -2802,15 +2784,11 @@ __webpack_require__.r(__webpack_exports__);
 
           _this2.getUser();
 
-          _this2.error.push('Update successful');
-
-          _this2.errorType = 'success';
-          _this2.alert = true;
+          _this2.snackbarMessage = 'Update successful';
+          _this2.actionColor = 'success';
+          _this2.snackbar = true;
         } else {
-          _this2.parseErrors(response.error);
-
-          _this2.errorType = 'error';
-          _this2.alert = true;
+          _this2.errors = response.error;
         }
       });
     },
@@ -2822,11 +2800,6 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this3.phoneTypes = response.data;
-        } else {
-          _this3.parseErrors(response.error);
-
-          _this3.errorType = 'error';
-          _this3.alert = true;
         }
       });
     },
@@ -2838,11 +2811,6 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this4.addressTypes = response.data;
-        } else {
-          _this4.parseErrors(response.error);
-
-          _this4.errorType = 'error';
-          _this4.alert = true;
         }
       });
     },
@@ -2856,15 +2824,13 @@ __webpack_require__.r(__webpack_exports__);
         if (response.success === true) {
           _this5.getUser();
 
-          _this5.error.push('Update successful');
-
-          _this5.errorType = 'success';
-          _this5.alert = true;
+          _this5.snackbarMessage = 'Phone update successful';
+          _this5.actionColor = 'success';
+          _this5.snackbar = true;
         } else {
-          _this5.parseErrors(response.error);
-
-          _this5.errorType = 'error';
-          _this5.alert = true;
+          _this5.snackbarMessage = 'Phone update error';
+          _this5.actionColor = 'error';
+          _this5.snackbar = true;
         }
       });
     },
@@ -2878,16 +2844,13 @@ __webpack_require__.r(__webpack_exports__);
           _this6.getUser();
 
           _this6.phoneForm.phone = '';
-
-          _this6.error.push('Delete successful');
-
-          _this6.errorType = 'success';
-          _this6.alert = true;
+          _this6.snackbarMessage = 'Phone delete successful';
+          _this6.actionColor = 'success';
+          _this6.snackbar = true;
         } else {
-          _this6.parseErrors(response.error);
-
-          _this6.errorType = 'error';
-          _this6.alert = true;
+          _this6.snackbarMessage = 'Phone delete error';
+          _this6.actionColor = 'error';
+          _this6.snackbar = true;
         }
       });
     },
@@ -2901,15 +2864,13 @@ __webpack_require__.r(__webpack_exports__);
         if (response.success === true) {
           _this7.getUser();
 
-          _this7.error.push('Update successful');
-
-          _this7.errorType = 'success';
-          _this7.alert = true;
+          _this7.snackbarMessage = 'Address update successful';
+          _this7.actionColor = 'success';
+          _this7.snackbar = true;
         } else {
-          _this7.parseErrors(response.error);
-
-          _this7.errorType = 'error';
-          _this7.alert = true;
+          _this7.snackbarMessage = 'Address update error';
+          _this7.actionColor = 'error';
+          _this7.snackbar = true;
         }
       });
     },
@@ -2927,28 +2888,25 @@ __webpack_require__.r(__webpack_exports__);
           _this8.errorType = 'success';
           _this8.alert = true;
         } else {
-          _this8.parseErrors(response.error);
-
-          _this8.errorType = 'error';
-          _this8.alert = true;
+          _this8.snackbarMessage = 'Address delete error';
+          _this8.actionColor = 'error';
+          _this8.snackbar = true;
         }
       });
-    },
-    parseErrors: function parseErrors(errorTypes) {
-      for (var typeIndex in errorTypes) {
-        var errorType = [];
+    } // parseErrors(errorTypes) {
+    //     for (let typeIndex in errorTypes) {
+    //         let errorType = [];
+    //         if (errorTypes.hasOwnProperty(typeIndex)){
+    //             errorType = errorTypes[typeIndex]
+    //         }
+    //         for (let errorIndex in errorType) {
+    //             if (errorType.hasOwnProperty(errorIndex)){
+    //                 this.error.push(errorType[errorIndex])
+    //             }
+    //         }
+    //     }
+    // }
 
-        if (errorTypes.hasOwnProperty(typeIndex)) {
-          errorType = errorTypes[typeIndex];
-        }
-
-        for (var errorIndex in errorType) {
-          if (errorType.hasOwnProperty(errorIndex)) {
-            this.error.push(errorType[errorIndex]);
-          }
-        }
-      }
-    }
   }
 });
 
@@ -43866,6 +43824,25 @@ var render = function() {
         "v-row",
         [
           _c(
+            "v-snackbar",
+            {
+              attrs: { bottom: true, right: true, color: _vm.actionColor },
+              model: {
+                value: _vm.snackbar,
+                callback: function($$v) {
+                  _vm.snackbar = $$v
+                },
+                expression: "snackbar"
+              }
+            },
+            [
+              _vm._v(
+                "\n            " + _vm._s(_vm.snackbarMessage) + "\n        "
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
             "v-col",
             { staticClass: "col-md-6" },
             [
@@ -43900,7 +43877,10 @@ var render = function() {
                                   label: "Title before name",
                                   name: "title_before_name",
                                   "prepend-icon": "mdi-book-account-outline",
-                                  type: "text"
+                                  type: "text",
+                                  "error-messages":
+                                    _vm.errors.title_before_name,
+                                  "lazy-validation": ""
                                 },
                                 model: {
                                   value: _vm.userData.title_before_name,
@@ -43922,7 +43902,9 @@ var render = function() {
                                   label: "Title",
                                   name: "title",
                                   "prepend-icon": "mdi-book-account-outline",
-                                  type: "text"
+                                  type: "text",
+                                  "error-messages": _vm.errors.title,
+                                  "lazy-validation": ""
                                 },
                                 model: {
                                   value: _vm.userData.title,
@@ -43941,6 +43923,8 @@ var render = function() {
                                   name: "name",
                                   "prepend-icon": "mdi-book-account-outline",
                                   type: "text",
+                                  "error-messages": _vm.errors.name,
+                                  "lazy-validation": "",
                                   required: ""
                                 },
                                 model: {
@@ -43959,7 +43943,9 @@ var render = function() {
                                   label: "Surname",
                                   name: "surname",
                                   "prepend-icon": "mdi-book-account-outline",
-                                  type: "text"
+                                  type: "text",
+                                  "error-messages": _vm.errors.surname,
+                                  "lazy-validation": ""
                                 },
                                 model: {
                                   value: _vm.userData.surname,
@@ -43978,7 +43964,9 @@ var render = function() {
                                   name: "email",
                                   "prepend-icon": "mdi-mail",
                                   type: "text",
-                                  required: ""
+                                  required: "",
+                                  "error-messages": _vm.errors.email,
+                                  "lazy-validation": ""
                                 },
                                 model: {
                                   value: _vm.userData.email,
@@ -43998,6 +43986,8 @@ var render = function() {
                                   name: "password",
                                   "prepend-icon": "mdi-lock",
                                   type: "password",
+                                  "error-messages": _vm.errors.password,
+                                  "lazy-validation": "",
                                   required: ""
                                 },
                                 model: {
@@ -44017,6 +44007,8 @@ var render = function() {
                                   name: "country",
                                   "prepend-icon": "mdi-mail",
                                   type: "text",
+                                  "error-messages": _vm.errors.country,
+                                  "lazy-validation": "",
                                   required: ""
                                 },
                                 model: {
@@ -44036,6 +44028,8 @@ var render = function() {
                                   name: "anredeform",
                                   "prepend-icon": "mdi-mail",
                                   type: "text",
+                                  "error-messages": _vm.errors.anredeform,
+                                  "lazy-validation": "",
                                   required: ""
                                 },
                                 model: {
@@ -44055,6 +44049,8 @@ var render = function() {
                                   name: "lang",
                                   "prepend-icon": "mdi-mail",
                                   type: "text",
+                                  "error-messages": _vm.errors.lang,
+                                  "lazy-validation": "",
                                   required: ""
                                 },
                                 model: {

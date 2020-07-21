@@ -3,15 +3,15 @@
 
     <v-container fluid>
         <v-row>
+            <v-snackbar
+                :bottom="true"
+                :right="true"
+                v-model="snackbar"
+                :color="actionColor"
+            >
+                {{ snackbarMessage }}
+            </v-snackbar>
             <v-col class="col-md-6">
-                <!--                    <v-alert-->
-                <!--                        :type="errorType"-->
-                <!--                        :value="alert"-->
-                <!--                        v-for="(item, key) in error"-->
-                <!--                        v-bind:key="key"-->
-                <!--                    >-->
-                <!--                        {{item}}-->
-                <!--                    </v-alert>-->
                 <v-card class="elevation-6">
                     <v-toolbar
                         color="green"
@@ -21,42 +21,6 @@
                         <v-toolbar-title>Profile info</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
-                    <!--                        <v-container>-->
-                    <!--                            <v-row align="center"-->
-                    <!--                                   justify="center">-->
-                    <!--                                <v-col cols="auto">-->
-                    <!--                                    <v-img-->
-                    <!--                                        height="200"-->
-                    <!--                                        width="200"-->
-                    <!--                                        src="https://cdn.vuetifyjs.com/images/cards/store.jpg"-->
-                    <!--                                    ></v-img>-->
-                    <!--                                </v-col>-->
-
-                    <!--                                <v-col-->
-                    <!--                                    cols="auto"-->
-                    <!--                                    class="text-center pl-0"-->
-                    <!--                                >-->
-                    <!--                                    <v-row-->
-                    <!--                                        class="flex-column ma-0 fill-height"-->
-                    <!--                                        justify="center"-->
-                    <!--                                    >-->
-                    <!--                                        <v-col class="px-0">-->
-                    <!--                                            <v-btn icon>-->
-                    <!--                                                <v-icon>mdi-upload</v-icon>-->
-                    <!--                                            </v-btn>-->
-                    <!--                                        </v-col>-->
-
-                    <!--                                        <v-col class="px-0">-->
-                    <!--                                            <v-btn icon>-->
-                    <!--                                                <v-icon>mdi-delete</v-icon>-->
-                    <!--                                            </v-btn>-->
-                    <!--                                        </v-col>-->
-
-                    <!--                                    </v-row>-->
-                    <!--                                </v-col>-->
-                    <!--                            </v-row>-->
-                    <!--                        </v-container>-->
-
                     <v-card-text>
                         <v-form>
                             <v-row>
@@ -67,6 +31,8 @@
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
                                     v-model="userData.title_before_name"
+                                    :error-messages="errors.title_before_name"
+                                    lazy-validation
                                     class="col-md-6"
                                 ></v-text-field>
                                 <v-text-field
@@ -76,6 +42,8 @@
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
                                     v-model="userData.title"
+                                    :error-messages="errors.title"
+                                    lazy-validation
                                     class="col-md-6"
                                 ></v-text-field>
                                 <v-text-field
@@ -85,6 +53,8 @@
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
                                     v-model="userData.name"
+                                    :error-messages="errors.name"
+                                    lazy-validation
                                     required
                                     class="col-md-6"
                                 ></v-text-field>
@@ -95,6 +65,8 @@
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
                                     v-model="userData.surname"
+                                    :error-messages="errors.surname"
+                                    lazy-validation
                                     class="col-md-6"
 
                                 ></v-text-field>
@@ -106,6 +78,8 @@
                                     type="text"
                                     v-model="userData.email"
                                     required
+                                    :error-messages="errors.email"
+                                    lazy-validation
                                     class="col-md-6"
                                 ></v-text-field>
                                 <v-text-field
@@ -116,6 +90,8 @@
                                     prepend-icon="mdi-lock"
                                     type="password"
                                     v-model="userData.password"
+                                    :error-messages="errors.password"
+                                    lazy-validation
                                     class="col-md-6"
                                     required
                                 ></v-text-field>
@@ -126,6 +102,8 @@
                                     prepend-icon="mdi-mail"
                                     type="text"
                                     v-model="userData.country"
+                                    :error-messages="errors.country"
+                                    lazy-validation
                                     class="col-md-4"
                                     required
                                 ></v-text-field>
@@ -136,6 +114,8 @@
                                     prepend-icon="mdi-mail"
                                     type="text"
                                     v-model="userData.anredeform"
+                                    :error-messages="errors.anredeform"
+                                    lazy-validation
                                     class="col-md-4"
                                     required
                                 ></v-text-field>
@@ -146,6 +126,8 @@
                                     prepend-icon="mdi-mail"
                                     type="text"
                                     v-model="userData.lang"
+                                    :error-messages="errors.lang"
+                                    lazy-validation
                                     class="col-md-4"
                                     required
                                 ></v-text-field>
@@ -356,9 +338,10 @@
                     {text: '', value: 'actions', sortable: false},
 
                 ],
-                alert: false,
-                errorType: '',
-                error: [],
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
+                errors: [],
                 userData: {
                     title: '',
                     title_before_name: '',
@@ -413,21 +396,17 @@
 
             updateUser(e) {
                 e.preventDefault()
-                this.alert = false;
-                this.error = []
+                this.snackbar = false;
                 axios.post('/api/user', this.userData).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.userData.password = ''
                         this.getUser()
-                        this.error.push('Update successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.errors = response.error
                     }
                 });
             },
@@ -436,10 +415,6 @@
                     response = response.data
                     if (response.success === true) {
                         this.phoneTypes = response.data
-                    } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
                     }
                 });
             },
@@ -448,10 +423,6 @@
                     response = response.data
                     if (response.success === true) {
                         this.addressTypes = response.data
-                    } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
                     }
                 });
             },
@@ -461,15 +432,13 @@
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.error.push('Update successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Phone update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
-                    }
+                        this.snackbarMessage = 'Phone update error'
+                        this.actionColor = 'error'
+                        this.snackbar = true;                    }
                 });
             },
             deletePhone(id) {
@@ -478,14 +447,13 @@
                     if (response.success === true) {
                         this.getUser()
                         this.phoneForm.phone = ''
-                        this.error.push('Delete successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Phone delete successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = 'Phone delete error'
+                        this.actionColor = 'error'
+                        this.snackbar = true;
                     }
                 });
             },
@@ -495,13 +463,13 @@
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.error.push('Update successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Address update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
+                        this.snackbarMessage = 'Address update error'
+                        this.actionColor = 'error'
+                        this.snackbar = true;
 
                     }
                 });
@@ -515,26 +483,26 @@
                         this.errorType = 'success'
                         this.alert = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
+                        this.snackbarMessage = 'Address delete error'
+                        this.actionColor = 'error'
+                        this.snackbar = true;
 
                     }
                 });
             },
-            parseErrors(errorTypes) {
-                for (let typeIndex in errorTypes) {
-                    let errorType = [];
-                    if (errorTypes.hasOwnProperty(typeIndex)){
-                        errorType = errorTypes[typeIndex]
-                    }
-                    for (let errorIndex in errorType) {
-                        if (errorType.hasOwnProperty(errorIndex)){
-                            this.error.push(errorType[errorIndex])
-                        }
-                    }
-                }
-            }
+            // parseErrors(errorTypes) {
+            //     for (let typeIndex in errorTypes) {
+            //         let errorType = [];
+            //         if (errorTypes.hasOwnProperty(typeIndex)){
+            //             errorType = errorTypes[typeIndex]
+            //         }
+            //         for (let errorIndex in errorType) {
+            //             if (errorType.hasOwnProperty(errorIndex)){
+            //                 this.error.push(errorType[errorIndex])
+            //             }
+            //         }
+            //     }
+            // }
         }
     }
 </script>
