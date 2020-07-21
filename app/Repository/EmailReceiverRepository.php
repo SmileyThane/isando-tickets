@@ -82,6 +82,15 @@ class EmailReceiverRepository
         return $responseBody;
     }
 
+    public function addMailCache($key, $subject): MailCache
+    {
+        $mailCache = new MailCache();
+        $mailCache->message_key = $key;
+        $mailCache->subject = $subject;
+        $mailCache->save();
+        return $mailCache;
+    }
+
     private function ticketAnswerFromEmail($senderEmail, $ticket, $message)
     {
         $user = User::where('email', $senderEmail)->first();
@@ -97,6 +106,21 @@ class EmailReceiverRepository
         ];
         Log::info('answer created');
         return $this->makeSystemRequest($uri, $token, $params);
+    }
+
+    private function removeEmptyParagraphs($content)
+    {
+        $emptyLinesArray = ["<p><br /></p>", "<p><br/></p>", "<p></p>"];
+        return str_replace($emptyLinesArray, "", $content);
+    }
+
+    private function makeSystemRequest($uri, $token, $params)
+    {
+        $request = Request::create($uri, 'POST', $params);
+        $request->headers->set('Authorization', 'Bearer ' . $token->accessToken);
+        $request->headers->set('Accept', 'application/json');
+        $response = app()->handle($request);
+        return $response->getContent();
     }
 
     private function createTicketFromEmail($senderEmail, $message, $ticketSubject)
@@ -146,30 +170,6 @@ class EmailReceiverRepository
         }
         Log::alert("check incorrect params fromEntityId=$fromEntityId  fromEntityType=$fromEntityType toEntityId=$toEntityId toEntityType=$toEntityType productId=$productId");
         return null;
-    }
-
-    private function makeSystemRequest($uri, $token, $params)
-    {
-        $request = Request::create($uri, 'POST', $params);
-        $request->headers->set('Authorization', 'Bearer ' . $token->accessToken);
-        $request->headers->set('Accept', 'application/json');
-        $response = app()->handle($request);
-        return $response->getContent();
-    }
-
-    public function addMailCache($key, $subject): MailCache
-    {
-        $mailCache = new MailCache();
-        $mailCache->message_key = $key;
-        $mailCache->subject = $subject;
-        $mailCache->save();
-        return $mailCache;
-    }
-
-    private function removeEmptyParagraphs($content)
-    {
-        $emptyLinesArray = ["<p><br /></p>", "<p><br/></p>", "<p></p>"];
-        return str_replace($emptyLinesArray, "", $content);
     }
 
 
