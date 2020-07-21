@@ -6409,6 +6409,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -6434,7 +6437,7 @@ __webpack_require__.r(__webpack_exports__);
         value: 'from.name'
       }, {
         text: 'Assigned to',
-        value: 'assigned_person.user_data.email'
+        value: 'assigned_person'
       }, {
         text: 'Product',
         value: 'product.name'
@@ -49619,6 +49622,23 @@ var render = function() {
                   { attrs: { color: item.status.color, dark: "" } },
                   [_vm._v(_vm._s(item.status.name))]
                 )
+              ]
+            }
+          },
+          {
+            key: "item.assigned_person",
+            fn: function(ref) {
+              var item = ref.item
+              return [
+                item.assigned_person
+                  ? _c("p", [
+                      _vm._v(
+                        _vm._s(item.assigned_person.user_data.name) +
+                          " " +
+                          _vm._s(item.assigned_person.user_data.surname)
+                      )
+                    ])
+                  : _vm._e()
               ]
             }
           },

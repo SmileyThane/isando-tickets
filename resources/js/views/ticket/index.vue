@@ -21,6 +21,9 @@
             <template v-slot:item.status.name="{ item }">
                 <v-chip :color="item.status.color" dark>{{ item.status.name }}</v-chip>
             </template>
+            <template v-slot:item.assigned_person="{ item }">
+                <p v-if="item.assigned_person">{{ item.assigned_person.user_data.name }} {{ item.assigned_person.user_data.surname }}</p>
+            </template>
             <template v-slot:item.actions="{ item }">
                 <v-icon
                     small
@@ -70,7 +73,7 @@
                     {text: 'Status', value: 'status.name'},
                     {text: 'Priority', value: 'priority.name'},
                     {text: 'Company from', value: 'from.name'},
-                    {text: 'Assigned to', value: 'assigned_person.user_data.email'},
+                    {text: 'Assigned to', value: 'assigned_person'},
                     {text: 'Product', value: 'product.name'},
                     {text: 'Title', value: 'name'},
                     {text: 'Last update', value: 'last_update'},
