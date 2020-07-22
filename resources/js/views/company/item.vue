@@ -270,95 +270,6 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Social info</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-                    <v-card-text>
-                        <v-data-table
-                            :headers="socialHeaders"
-                            :items="company.socials"
-                            hide-default-footer
-                            hide-default-header
-                            class="elevation-1"
-                        >
-                            <template v-slot:item.social_link="{ item }">
-                                <v-list-item link :href="item.social_link">{{ item.social_link }}</v-list-item>
-                            </template>
-                            <template v-slot:item.actions="{ item }">
-                                <v-icon
-                                    small
-                                    @click="deleteSocial(item.id)"
-                                >
-                                    mdi-delete
-                                </v-icon>
-                            </template>
-                        </v-data-table>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    New social item
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col cols="md-12" class="pa-1">
-                                                <v-text-field
-                                                    color="green"
-                                                    item-color="green"
-                                                    v-model="socialForm.social_link"
-                                                    label="Social link"
-                                                    dense
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="12" class="pa-1">
-                                                <v-select
-                                                    color="green"
-                                                    item-color="green"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="socialForm.social_type"
-                                                    :items="socialTypes"
-                                                    label="Type"
-                                                    dense
-                                                ></v-select>
-                                            </v-col>
-                                            <v-btn
-                                                dark
-                                                fab
-                                                right
-                                                bottom
-                                                small
-                                                color="green"
-                                                @click="addSocial"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
-
-
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-
-                <v-card class="elevation-12">
-
-                    <v-toolbar
-                        color="green"
-                        dark
-                        flat
-                    >
                         <v-toolbar-title>Company contacts</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
@@ -439,6 +350,92 @@
                                                 bottom
                                                 color="green"
                                                 @click="addEmployee"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card class="elevation-12">
+
+                    <v-toolbar
+                        color="green"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>Social info</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-data-table
+                            :headers="socialHeaders"
+                            :items="company.socials"
+                            hide-default-footer
+                            hide-default-header
+                            class="elevation-1"
+                        >
+                            <template v-slot:item.social_link="{ item }">
+                                <v-list-item link :href="item.social_link">{{ item.social_link }}</v-list-item>
+                            </template>
+                            <template v-slot:item.actions="{ item }">
+                                <v-icon
+                                    small
+                                    @click="deleteSocial(item.id)"
+                                >
+                                    mdi-delete
+                                </v-icon>
+                            </template>
+                        </v-data-table>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    New social item
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12" class="pa-1">
+                                                <v-text-field
+                                                    color="green"
+                                                    item-color="green"
+                                                    v-model="socialForm.social_link"
+                                                    label="Social link"
+                                                    dense
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" class="pa-1">
+                                                <v-select
+                                                    color="green"
+                                                    item-color="green"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="socialForm.social_type"
+                                                    :items="socialTypes"
+                                                    label="Type"
+                                                    dense
+                                                ></v-select>
+                                            </v-col>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                small
+                                                color="green"
+                                                @click="addSocial"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
                                             </v-btn>

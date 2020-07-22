@@ -234,6 +234,76 @@
                         dark
                         flat
                     >
+                        <v-toolbar-title>Customer contacts</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-data-table
+                            :headers="headers"
+                            :items="client.employees"
+                            :items-per-page="25"
+                            class="elevation-1"
+                        ></v-data-table>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    New Contact
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Name"
+                                                    name="name"
+                                                    type="text"
+                                                    v-model="employeeForm.name"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Email"
+                                                    name="email"
+                                                    type="text"
+                                                    v-model="employeeForm.email"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                color="green"
+                                                @click="addEmployee"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        color="green"
+                        dark
+                        flat
+                    >
                         <v-toolbar-title>Social info</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
@@ -310,79 +380,6 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-                <v-card class="elevation-12">
-
-                    <v-toolbar
-                        color="green"
-                        dark
-                        flat
-                    >
-                        <v-toolbar-title>Customer contacts</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-                    <v-card-text>
-                        <v-data-table
-                            :headers="headers"
-                            :items="client.employees"
-                            :items-per-page="25"
-                            class="elevation-1"
-                        ></v-data-table>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    New Contact
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <v-text-field
-                                                    color="green"
-                                                    label="Name"
-                                                    name="name"
-                                                    type="text"
-                                                    v-model="employeeForm.name"
-                                                    required
-                                                ></v-text-field>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <v-text-field
-                                                    color="green"
-                                                    label="Email"
-                                                    name="email"
-                                                    type="text"
-                                                    v-model="employeeForm.email"
-                                                    required
-                                                ></v-text-field>
-                                            </div>
-                                            <v-btn
-                                                dark
-                                                fab
-                                                right
-                                                bottom
-                                                color="green"
-                                                @click="addEmployee"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-
-                    </v-card-text>
-                </v-card>
-
             </div>
         </div>
     </v-container>

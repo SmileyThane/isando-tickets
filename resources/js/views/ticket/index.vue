@@ -10,7 +10,6 @@
             show-expand
             class="elevation-1"
         >
-
             <template v-slot:top>
                 <v-toolbar flat>
                     <v-toolbar-title></v-toolbar-title>
