@@ -288,11 +288,14 @@
                                     <p><strong>E-mail:</strong></p>
                                     <p>{{ item.user_data.email }}</p>
                                     <p><strong>Phone(s):</strong></p>
-                                    <p v-for="phoneItem in item.user_data.phones">{{ phoneItem.phone }} ({{ phoneItem.type.name }})</p>
+                                    <p v-for="phoneItem in item.user_data.phones">{{ phoneItem.phone }} ({{
+                                        phoneItem.type.name }})</p>
                                     <p><strong>Lang:</strong></p>
                                     <p>{{ item.user_data.lang }}</p>
                                     <p><strong>Address(es):</strong></p>
-                                    <p v-for="addressItem in item.user_data.addresses">{{ addressItem.address }} {{ addressItem.address_line_2 }} {{ addressItem.address_line_3 }} ({{ addressItem.type.name }})</p>
+                                    <p v-for="addressItem in item.user_data.addresses">{{ addressItem.address }} {{
+                                        addressItem.address_line_2 }} {{ addressItem.address_line_3 }} ({{
+                                        addressItem.type.name }})</p>
                                 </td>
                             </template>
                             <template v-slot:item.user_data="{ item }">
