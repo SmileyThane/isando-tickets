@@ -3738,6 +3738,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3780,17 +3798,19 @@ __webpack_require__.r(__webpack_exports__);
         sortable: false
       }],
       headers: [{
-        text: 'ID',
-        align: 'start',
-        sortable: false,
-        value: 'id'
-      }, {
+        text: '',
+        value: 'data-table-expand'
+      }, // {
+      //     text: 'ID',
+      //     align: 'start',
+      //     sortable: false,
+      //     value: 'id',
+      // },
+      {
         text: 'name',
-        value: 'user_data.name'
-      }, {
-        text: 'email',
-        value: 'user_data.email'
-      }, {
+        value: 'user_data'
+      }, // {text: 'email', value: 'user_data.email'},
+      {
         text: 'roles',
         value: 'role_names'
       }, {
@@ -4745,6 +4765,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4787,17 +4826,19 @@ __webpack_require__.r(__webpack_exports__);
         sortable: false
       }],
       headers: [{
-        text: 'ID',
-        align: 'start',
-        sortable: false,
-        value: 'employee.id'
-      }, {
+        text: '',
+        value: 'data-table-expand'
+      }, // {
+      //     text: 'ID',
+      //     align: 'start',
+      //     sortable: false,
+      //     value: 'id',
+      // },
+      {
         text: 'name',
-        value: 'employee.user_data.name'
-      }, {
-        text: 'email',
-        value: 'employee.user_data.email'
-      }, {
+        value: 'user_data'
+      }, // {text: 'email', value: 'user_data.email'},
+      {
         text: 'roles',
         value: 'employee.role_names'
       }, {
@@ -46039,9 +46080,91 @@ var render = function() {
                       attrs: {
                         headers: _vm.headers,
                         items: _vm.company.employees,
-                        "items-per-page": 25
+                        "items-per-page": 25,
+                        "item-key": "id",
+                        "show-expand": ""
                       },
                       scopedSlots: _vm._u([
+                        {
+                          key: "expanded-item",
+                          fn: function(ref) {
+                            var headers = ref.headers
+                            var item = ref.item
+                            return [
+                              _c(
+                                "td",
+                                { attrs: { colspan: headers.length } },
+                                [
+                                  _c("p"),
+                                  _vm._v(" "),
+                                  _c("p", [_c("strong", [_vm._v("E-mail:")])]),
+                                  _vm._v(" "),
+                                  _c("p", [
+                                    _vm._v(_vm._s(item.user_data.email))
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("p", [
+                                    _c("strong", [_vm._v("Phone(s):")])
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm._l(item.user_data.phones, function(
+                                    phoneItem
+                                  ) {
+                                    return _c("p", [
+                                      _vm._v(
+                                        _vm._s(phoneItem.phone) +
+                                          " (" +
+                                          _vm._s(phoneItem.type.name) +
+                                          ")"
+                                      )
+                                    ])
+                                  }),
+                                  _vm._v(" "),
+                                  _c("p", [_c("strong", [_vm._v("Lang:")])]),
+                                  _vm._v(" "),
+                                  _c("p", [
+                                    _vm._v(_vm._s(item.user_data.lang))
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("p", [
+                                    _c("strong", [_vm._v("Address(es):")])
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm._l(item.user_data.addresses, function(
+                                    addressItem
+                                  ) {
+                                    return _c("p", [
+                                      _vm._v(
+                                        _vm._s(addressItem.address) +
+                                          " (" +
+                                          _vm._s(addressItem.type.name) +
+                                          ")"
+                                      )
+                                    ])
+                                  })
+                                ],
+                                2
+                              )
+                            ]
+                          }
+                        },
+                        {
+                          key: "item.user_data",
+                          fn: function(ref) {
+                            var item = ref.item
+                            return [
+                              item.user_data
+                                ? _c("p", [
+                                    _vm._v(
+                                      _vm._s(item.user_data.name) +
+                                        " " +
+                                        _vm._s(item.user_data.surname)
+                                    )
+                                  ])
+                                : _vm._e()
+                            ]
+                          }
+                        },
                         {
                           key: "item.actions",
                           fn: function(ref) {
@@ -47535,8 +47658,91 @@ var render = function() {
                     attrs: {
                       headers: _vm.headers,
                       items: _vm.client.employees,
-                      "items-per-page": 25
-                    }
+                      "items-per-page": 25,
+                      "item-key": "id",
+                      "show-expand": ""
+                    },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "expanded-item",
+                        fn: function(ref) {
+                          var headers = ref.headers
+                          var item = ref.item
+                          return [
+                            _c(
+                              "td",
+                              { attrs: { colspan: headers.length } },
+                              [
+                                _c("p"),
+                                _vm._v(" "),
+                                _c("p", [_c("strong", [_vm._v("E-mail:")])]),
+                                _vm._v(" "),
+                                _c("p", [
+                                  _vm._v(_vm._s(item.employee.user_data.email))
+                                ]),
+                                _vm._v(" "),
+                                _c("p", [_c("strong", [_vm._v("Phone(s):")])]),
+                                _vm._v(" "),
+                                _vm._l(item.employee.user_data.phones, function(
+                                  phoneItem
+                                ) {
+                                  return _c("p", [
+                                    _vm._v(
+                                      _vm._s(phoneItem.phone) +
+                                        " (" +
+                                        _vm._s(phoneItem.type.name) +
+                                        ")"
+                                    )
+                                  ])
+                                }),
+                                _vm._v(" "),
+                                _c("p", [_c("strong", [_vm._v("Lang:")])]),
+                                _vm._v(" "),
+                                _c("p", [
+                                  _vm._v(_vm._s(item.employee.user_data.lang))
+                                ]),
+                                _vm._v(" "),
+                                _c("p", [
+                                  _c("strong", [_vm._v("Address(es):")])
+                                ]),
+                                _vm._v(" "),
+                                _vm._l(
+                                  item.employee.user_data.addresses,
+                                  function(addressItem) {
+                                    return _c("p", [
+                                      _vm._v(
+                                        _vm._s(addressItem.address) +
+                                          " (" +
+                                          _vm._s(addressItem.type.name) +
+                                          ")"
+                                      )
+                                    ])
+                                  }
+                                )
+                              ],
+                              2
+                            )
+                          ]
+                        }
+                      },
+                      {
+                        key: "item.user_data",
+                        fn: function(ref) {
+                          var item = ref.item
+                          return [
+                            item.employee.user_data
+                              ? _c("p", [
+                                  _vm._v(
+                                    _vm._s(item.employee.user_data.name) +
+                                      " " +
+                                      _vm._s(item.employee.user_data.surname)
+                                  )
+                                ])
+                              : _vm._e()
+                          ]
+                        }
+                      }
+                    ])
                   }),
                   _vm._v(" "),
                   _c("v-spacer", [
@@ -110123,7 +110329,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!****************************************************************************!*\
   !*** ./resources/js/views/company/item.vue?vue&type=template&id=63eb8138& ***!
   \****************************************************************************/
-/*! exports provided: render, staticRenderFns */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
