@@ -41,7 +41,9 @@ class CompanyRepository
         return $id ? $company->with(['employees' => function ($query) {
             $query->whereDoesntHave('assignedToClients')->get();
         }, 'employees.userData.phones.type', 'employees.userData.addresses.type', 'clients', 'teams', 'phones.type', 'addresses.type', 'socials.type'])
-            ->first() : $company->paginate(1000);
+            ->first() : $company->with(['employees' => function ($query) {
+            $query->whereDoesntHave('assignedToClients')->get();
+        }, 'employees.userData'])->paginate(1000);
     }
 
     public function create(Request $request)
