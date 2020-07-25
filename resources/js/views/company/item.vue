@@ -299,7 +299,7 @@
                                 </td>
                             </template>
                             <template v-slot:item.user_data="{ item }">
-                                <p v-if="item.user_data">{{ item.user_data.name }} {{ item.user_data.surname }}</p>
+                                <div class="justify-center" v-if="item.user_data">{{ item.user_data.name }} {{ item.user_data.surname }}</div>
                             </template>
                             <template v-slot:item.actions="{ item }">
                                 <v-icon

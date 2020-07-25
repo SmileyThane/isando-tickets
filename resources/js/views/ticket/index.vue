@@ -21,7 +21,7 @@
                 <v-chip :color="item.status.color" dark>{{ item.status.name }}</v-chip>
             </template>
             <template v-slot:item.assigned_person="{ item }">
-                <p v-if="item.assigned_person">{{ item.assigned_person.user_data.name }} {{ item.assigned_person.user_data.surname }}</p>
+                <div class="justify-center" v-if="item.assigned_person">{{ item.assigned_person.user_data.name }} {{ item.assigned_person.user_data.surname }}</div>
             </template>
             <template v-slot:item.actions="{ item }">
                 <v-icon

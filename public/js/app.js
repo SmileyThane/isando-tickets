@@ -46167,7 +46167,7 @@ var render = function() {
                             var item = ref.item
                             return [
                               item.user_data
-                                ? _c("p", [
+                                ? _c("div", { staticClass: "justify-center" }, [
                                     _vm._v(
                                       _vm._s(item.user_data.name) +
                                         " " +
@@ -47748,7 +47748,7 @@ var render = function() {
                           var item = ref.item
                           return [
                             item.employee.user_data
-                              ? _c("p", [
+                              ? _c("div", { staticClass: "justify-center" }, [
                                   _vm._v(
                                     _vm._s(item.employee.user_data.name) +
                                       " " +
@@ -49847,7 +49847,7 @@ var render = function() {
               var item = ref.item
               return [
                 item.assigned_person
-                  ? _c("p", [
+                  ? _c("div", { staticClass: "justify-center" }, [
                       _vm._v(
                         _vm._s(item.assigned_person.user_data.name) +
                           " " +
@@ -110346,7 +110346,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!****************************************************************************!*\
   !*** ./resources/js/views/company/item.vue?vue&type=template&id=63eb8138& ***!
   \****************************************************************************/
-/*! no static exports found */
+/*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
