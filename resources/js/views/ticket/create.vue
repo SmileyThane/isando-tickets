@@ -49,7 +49,7 @@
                                             item-text="name"
                                             item-value="item"
                                             :items="suppliers"
-                                            v-model="ticketFrom.from"
+                                            v-model="ticketForm.from"
                                             @input="getContacts"
                                         />
                                     </div>
@@ -59,7 +59,7 @@
                                             item-color="green"
                                             item-text="name"
                                             item-value="item"
-                                            v-model="ticketFrom.to"
+                                            v-model="ticketForm.to"
                                             :items="suppliers"
                                             label="To"
                                         ></v-autocomplete>
@@ -73,7 +73,7 @@
                                             item-text="product_data.name"
                                             item-value="product_data.id"
                                             :items="products"
-                                            v-model="ticketFrom.to_product_id"
+                                            v-model="ticketForm.to_product_id"
                                         />
                                     </div>
                                     <v-col cols="md-6">
@@ -82,7 +82,7 @@
                                             item-color="green"
                                             item-text="user_data.email"
                                             item-value="id"
-                                            v-model="ticketFrom.contact_company_user_id"
+                                            v-model="ticketForm.contact_company_user_id"
                                             :items="employees"
                                             label="Client contact"
                                         ></v-autocomplete>
@@ -117,7 +117,7 @@
                                             color="green"
                                             item-color="green"
                                             label="Title"
-                                            v-model="ticketFrom.name"
+                                            v-model="ticketForm.name"
                                         ></v-text-field>
                                     </v-col>
                                     <div class="col-md-6">
@@ -128,7 +128,7 @@
                                             item-text="name"
                                             item-value="id"
                                             :items="priorities"
-                                            v-model="ticketFrom.priority_id"
+                                            v-model="ticketForm.priority_id"
                                         />
                                     </div>
                                     <v-col cols="12">
@@ -140,7 +140,7 @@
                                             outlined
                                             rows="3"
                                             row-height="25"
-                                            v-model="ticketFrom.description"
+                                            v-model="ticketForm.description"
                                         ></v-textarea>
                                     </v-col>
                                     <v-col cols="12">
@@ -157,7 +157,7 @@
                                                     outlined
                                                     rows="3"
                                                     row-height="25"
-                                                    v-model="ticketFrom.connection_details"
+                                                    v-model="ticketForm.connection_details"
                                                     v-bind="attrs"
                                                     v-on="on"
                                                 ></v-textarea>
@@ -176,7 +176,7 @@
                                                     outlined
                                                     rows="3"
                                                     row-height="25"
-                                                    v-model="ticketFrom.access_details"
+                                                    v-model="ticketForm.access_details"
                                                     v-bind="attrs"
                                                     v-on="on"
                                                 ></v-textarea>
@@ -198,7 +198,7 @@
                                     item-color="green"
                                     prepend-icon="mdi-paperclip"
                                     :show-size="1000"
-                                    v-on:change="onFileChange('ticketFrom')"
+                                    v-on:change="onFileChange('ticketForm')"
                                 >
                                     <template v-slot:selection="{ index, text }">
                                         <v-chip
@@ -249,7 +249,7 @@
                 vertical: false,
                 altLabels: true,
                 editable: true,
-                ticketFrom: {
+                ticketForm: {
                     from: '',
                     from_entity_type: '',
                     from_entity_id: '',
@@ -271,7 +271,7 @@
                 employees: [],
                 onFileChange(form) {
                     this[form].files = null;
-                    console.log(event.target.files);
+                    // console.log(event.target.files);
                     this[form].files = event.target.files;
                 },
             }
@@ -316,9 +316,10 @@
                     response = response.data
                     if (response.success === true) {
                         this.suppliers = response.data
-                        this.ticketFrom.from = this.$store.state.roles.includes(this.clientId) ? this.suppliers[1] : this.suppliers[0];
-                        this.ticketFrom.to = this.suppliers[0]
-                        this.getContacts(this.ticketFrom.from.item)
+                        this.ticketForm.from = this.$store.state.roles.includes(this.clientId) ? this.suppliers[1].item : this.suppliers[0].item;
+                        this.ticketForm.to = this.suppliers[0].item
+                        this.getContacts(this.ticketForm.from)
+                        // console.log(this.ticketForm.from);
                     } else {
                         console.log('error')
                     }
@@ -329,7 +330,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.products = response.data.data
-                        this.ticketFrom.to_product_id = this.products[0].product_data.id
+                        this.ticketForm.to_product_id = this.products[0].product_data.id
                     } else {
                         console.log('error')
                     }
@@ -341,7 +342,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.priorities = response.data
-                        this.ticketFrom.priority_id = this.priorities[1].id
+                        this.ticketForm.priority_id = this.priorities[1].id
                     } else {
                         console.log('error')
                     }
@@ -369,7 +370,7 @@
                             this.employees = response.employees
                             // console.log('company');
                         }
-                        // this.ticketFrom.contact_company_user_id = this.employees[0].id
+                        // this.ticketForm.contact_company_user_id = this.employees[0].id
                     } else {
                         console.log('error')
                     }
@@ -377,24 +378,25 @@
                 });
             },
             submit() {
+                // console.log(this.ticketForm.from);
                 this.overlay = true;
-                this.ticketFrom.from_entity_type = Object.keys(this.ticketFrom.from.item)[0]
-                this.ticketFrom.from_entity_id = Object.values(this.ticketFrom.from.item)[0]
-                this.ticketFrom.to_entity_type = Object.keys(this.ticketFrom.to.item)[0]
-                this.ticketFrom.to_entity_id = Object.values(this.ticketFrom.to.item)[0]
-                this.addTicket()
+                this.ticketForm.from_entity_type = Object.keys(this.ticketForm.from)[0]
+                this.ticketForm.from_entity_id = Object.values(this.ticketForm.from)[0]
+                this.ticketForm.to_entity_type = Object.keys(this.ticketForm.to)[0]
+                this.ticketForm.to_entity_id = Object.values(this.ticketForm.to)[0]
+               this.addTicket()
             },
             addTicket() {
                 const config = {
                     headers: {'content-type': 'multipart/form-data'}
                 }
                 let formData = new FormData();
-                for (let key in this.ticketFrom) {
+                for (let key in this.ticketForm) {
                     if (key !== 'files') {
-                        formData.append(key, this.ticketFrom[key]);
+                        formData.append(key, this.ticketForm[key]);
                     }
                 }
-                Array.from(this.ticketFrom.files).forEach(file => formData.append('files[]', file));
+                Array.from(this.ticketForm.files).forEach(file => formData.append('files[]', file));
                 axios.post('/api/ticket', formData, config).then(response => {
                     response = response.data
                     if (response.success === true) {

@@ -6206,7 +6206,7 @@ __webpack_require__.r(__webpack_exports__);
       vertical: false,
       altLabels: true,
       editable: true,
-      ticketFrom: {
+      ticketForm: {
         from: '',
         from_entity_type: '',
         from_entity_id: '',
@@ -6227,8 +6227,8 @@ __webpack_require__.r(__webpack_exports__);
       priorities: [],
       employees: [],
       onFileChange: function onFileChange(form) {
-        this[form].files = null;
-        console.log(event.target.files);
+        this[form].files = null; // console.log(event.target.files);
+
         this[form].files = event.target.files;
       }
     };
@@ -6279,10 +6279,11 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this2.suppliers = response.data;
-          _this2.ticketFrom.from = _this2.$store.state.roles.includes(_this2.clientId) ? _this2.suppliers[1] : _this2.suppliers[0];
-          _this2.ticketFrom.to = _this2.suppliers[0];
+          _this2.ticketForm.from = _this2.$store.state.roles.includes(_this2.clientId) ? _this2.suppliers[1].item : _this2.suppliers[0].item;
+          _this2.ticketForm.to = _this2.suppliers[0].item;
 
-          _this2.getContacts(_this2.ticketFrom.from.item);
+          _this2.getContacts(_this2.ticketForm.from); // console.log(this.ticketForm.from);
+
         } else {
           console.log('error');
         }
@@ -6296,7 +6297,7 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this3.products = response.data.data;
-          _this3.ticketFrom.to_product_id = _this3.products[0].product_data.id;
+          _this3.ticketForm.to_product_id = _this3.products[0].product_data.id;
         } else {
           console.log('error');
         }
@@ -6310,7 +6311,7 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this4.priorities = response.data;
-          _this4.ticketFrom.priority_id = _this4.priorities[1].id;
+          _this4.ticketForm.priority_id = _this4.priorities[1].id;
         } else {
           console.log('error');
         }
@@ -6341,7 +6342,7 @@ __webpack_require__.r(__webpack_exports__);
             }); // console.log('client');
           } else {
             _this5.employees = response.employees; // console.log('company');
-          } // this.ticketFrom.contact_company_user_id = this.employees[0].id
+          } // this.ticketForm.contact_company_user_id = this.employees[0].id
 
         } else {
           console.log('error');
@@ -6349,11 +6350,12 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     submit: function submit() {
+      // console.log(this.ticketForm.from);
       this.overlay = true;
-      this.ticketFrom.from_entity_type = Object.keys(this.ticketFrom.from.item)[0];
-      this.ticketFrom.from_entity_id = Object.values(this.ticketFrom.from.item)[0];
-      this.ticketFrom.to_entity_type = Object.keys(this.ticketFrom.to.item)[0];
-      this.ticketFrom.to_entity_id = Object.values(this.ticketFrom.to.item)[0];
+      this.ticketForm.from_entity_type = Object.keys(this.ticketForm.from)[0];
+      this.ticketForm.from_entity_id = Object.values(this.ticketForm.from)[0];
+      this.ticketForm.to_entity_type = Object.keys(this.ticketForm.to)[0];
+      this.ticketForm.to_entity_id = Object.values(this.ticketForm.to)[0];
       this.addTicket();
     },
     addTicket: function addTicket() {
@@ -6364,13 +6366,13 @@ __webpack_require__.r(__webpack_exports__);
       };
       var formData = new FormData();
 
-      for (var key in this.ticketFrom) {
+      for (var key in this.ticketForm) {
         if (key !== 'files') {
-          formData.append(key, this.ticketFrom[key]);
+          formData.append(key, this.ticketForm[key]);
         }
       }
 
-      Array.from(this.ticketFrom.files).forEach(function (file) {
+      Array.from(this.ticketForm.files).forEach(function (file) {
         return formData.append('files[]', file);
       });
       axios.post('/api/ticket', formData, config).then(function (response) {
@@ -49231,11 +49233,11 @@ var render = function() {
                                       },
                                       on: { input: _vm.getContacts },
                                       model: {
-                                        value: _vm.ticketFrom.from,
+                                        value: _vm.ticketForm.from,
                                         callback: function($$v) {
-                                          _vm.$set(_vm.ticketFrom, "from", $$v)
+                                          _vm.$set(_vm.ticketForm, "from", $$v)
                                         },
-                                        expression: "ticketFrom.from"
+                                        expression: "ticketForm.from"
                                       }
                                     })
                                   ],
@@ -49256,11 +49258,11 @@ var render = function() {
                                         label: "To"
                                       },
                                       model: {
-                                        value: _vm.ticketFrom.to,
+                                        value: _vm.ticketForm.to,
                                         callback: function($$v) {
-                                          _vm.$set(_vm.ticketFrom, "to", $$v)
+                                          _vm.$set(_vm.ticketForm, "to", $$v)
                                         },
-                                        expression: "ticketFrom.to"
+                                        expression: "ticketForm.to"
                                       }
                                     })
                                   ],
@@ -49281,15 +49283,15 @@ var render = function() {
                                         items: _vm.products
                                       },
                                       model: {
-                                        value: _vm.ticketFrom.to_product_id,
+                                        value: _vm.ticketForm.to_product_id,
                                         callback: function($$v) {
                                           _vm.$set(
-                                            _vm.ticketFrom,
+                                            _vm.ticketForm,
                                             "to_product_id",
                                             $$v
                                           )
                                         },
-                                        expression: "ticketFrom.to_product_id"
+                                        expression: "ticketForm.to_product_id"
                                       }
                                     })
                                   ],
@@ -49311,17 +49313,17 @@ var render = function() {
                                       },
                                       model: {
                                         value:
-                                          _vm.ticketFrom
+                                          _vm.ticketForm
                                             .contact_company_user_id,
                                         callback: function($$v) {
                                           _vm.$set(
-                                            _vm.ticketFrom,
+                                            _vm.ticketForm,
                                             "contact_company_user_id",
                                             $$v
                                           )
                                         },
                                         expression:
-                                          "ticketFrom.contact_company_user_id"
+                                          "ticketForm.contact_company_user_id"
                                       }
                                     })
                                   ],
@@ -49418,11 +49420,11 @@ var render = function() {
                                         label: "Title"
                                       },
                                       model: {
-                                        value: _vm.ticketFrom.name,
+                                        value: _vm.ticketForm.name,
                                         callback: function($$v) {
-                                          _vm.$set(_vm.ticketFrom, "name", $$v)
+                                          _vm.$set(_vm.ticketForm, "name", $$v)
                                         },
-                                        expression: "ticketFrom.name"
+                                        expression: "ticketForm.name"
                                       }
                                     })
                                   ],
@@ -49443,15 +49445,15 @@ var render = function() {
                                         items: _vm.priorities
                                       },
                                       model: {
-                                        value: _vm.ticketFrom.priority_id,
+                                        value: _vm.ticketForm.priority_id,
                                         callback: function($$v) {
                                           _vm.$set(
-                                            _vm.ticketFrom,
+                                            _vm.ticketForm,
                                             "priority_id",
                                             $$v
                                           )
                                         },
-                                        expression: "ticketFrom.priority_id"
+                                        expression: "ticketForm.priority_id"
                                       }
                                     })
                                   ],
@@ -49473,15 +49475,15 @@ var render = function() {
                                         "row-height": "25"
                                       },
                                       model: {
-                                        value: _vm.ticketFrom.description,
+                                        value: _vm.ticketForm.description,
                                         callback: function($$v) {
                                           _vm.$set(
-                                            _vm.ticketFrom,
+                                            _vm.ticketForm,
                                             "description",
                                             $$v
                                           )
                                         },
-                                        expression: "ticketFrom.description"
+                                        expression: "ticketForm.description"
                                       }
                                     })
                                   ],
@@ -49530,19 +49532,19 @@ var render = function() {
                                                         },
                                                         model: {
                                                           value:
-                                                            _vm.ticketFrom
+                                                            _vm.ticketForm
                                                               .connection_details,
                                                           callback: function(
                                                             $$v
                                                           ) {
                                                             _vm.$set(
-                                                              _vm.ticketFrom,
+                                                              _vm.ticketForm,
                                                               "connection_details",
                                                               $$v
                                                             )
                                                           },
                                                           expression:
-                                                            "ticketFrom.connection_details"
+                                                            "ticketForm.connection_details"
                                                         }
                                                       },
                                                       "v-textarea",
@@ -49602,19 +49604,19 @@ var render = function() {
                                                         },
                                                         model: {
                                                           value:
-                                                            _vm.ticketFrom
+                                                            _vm.ticketForm
                                                               .access_details,
                                                           callback: function(
                                                             $$v
                                                           ) {
                                                             _vm.$set(
-                                                              _vm.ticketFrom,
+                                                              _vm.ticketForm,
                                                               "access_details",
                                                               $$v
                                                             )
                                                           },
                                                           expression:
-                                                            "ticketFrom.access_details"
+                                                            "ticketForm.access_details"
                                                         }
                                                       },
                                                       "v-textarea",
@@ -49666,7 +49668,7 @@ var render = function() {
                               },
                               on: {
                                 change: function($event) {
-                                  return _vm.onFileChange("ticketFrom")
+                                  return _vm.onFileChange("ticketForm")
                                 }
                               },
                               scopedSlots: _vm._u([
