@@ -262,7 +262,7 @@
                                 <v-list-item three-line>
                                     <v-list-item-content>
                                         <h1 class="text-right caption mb-2">{{answer.created_at}}</h1>
-                                        <v-list-item-title class="mb-2" v-html="answer.answer"></v-list-item-title>
+                                        <v-list class="mb-2" v-html="answer.answer"></v-list>
                                         <v-list-item-subtitle class="mb-3">{{answer.employee.user_data.email}}
                                         </v-list-item-subtitle>
 

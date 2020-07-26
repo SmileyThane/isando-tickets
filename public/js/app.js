@@ -50521,7 +50521,7 @@ var render = function() {
                                         [_vm._v(_vm._s(answer.created_at))]
                                       ),
                                       _vm._v(" "),
-                                      _c("v-list-item-title", {
+                                      _c("v-list", {
                                         staticClass: "mb-2",
                                         domProps: {
                                           innerHTML: _vm._s(answer.answer)
