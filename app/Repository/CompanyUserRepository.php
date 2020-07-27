@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
+use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -61,7 +62,7 @@ class CompanyUserRepository
     {
         $result = false;
         $companyUser = CompanyUser::find($id);
-        if ($companyUser) {
+        if ($companyUser && !$companyUser->hasRole(Role::LICENSE_OWNER)) {
             $companyUser->delete();
             $result = true;
         }
