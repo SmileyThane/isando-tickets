@@ -17,7 +17,12 @@ class UserRepository
             'password' => 'sometimes|min:8',
         ];
         if ($new === true) {
-            $params['email'] = 'required|unique:users';
+            $params['email'] = [
+                'required',
+                Rule::unique('users')->ignore(
+                    User::where('individual_id', '!=', null)->where('email', $params['email'])->first()
+                ),
+            ];
         }
         $validator = Validator::make($request->all(), $params);
         if ($validator->fails()) {

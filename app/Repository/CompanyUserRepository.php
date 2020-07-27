@@ -73,7 +73,7 @@ class CompanyUserRepository
     {
         $isNew = false;
         $request['password'] = Controller::getRandomString();
-        $user = User::where('email', $request['email'])->first();
+        $user = User::where(['email' => $request['email'], 'individual_id' => null])->first();
         if (!$user) {
             $user = $this->userRepo->create($request);
             $isNew = true;

@@ -52,7 +52,7 @@ class EmailReceiverRepository
 //            Log::info('_________body_start' . $message->getTextBody() . '_________body_end');
             $senderObj = $res[$key]['sender'][0];
             $senderEmail = $senderObj->mail;
-            $userGlobal = User::where('email', $senderEmail)->first();
+            $userGlobal = User::where(['individual_id' => null,'email' => $senderEmail])->first();
             if ($userGlobal) {
                 Log::info('email from ' . $userGlobal->name);
                 try {
@@ -93,7 +93,7 @@ class EmailReceiverRepository
 
     private function ticketAnswerFromEmail($senderEmail, $ticket, $message)
     {
-        $user = User::where('email', $senderEmail)->first();
+        $user = User::where(['individual_id' => null,'email' => $senderEmail])->first();
         if (!$user) {
             Log::info($senderEmail . ' not found');
         }
@@ -128,7 +128,7 @@ class EmailReceiverRepository
         $fromEntityId = $fromEntityType = $toEntityId = $toEntityType = $productId = null;
         $type = 'create';
         $uri = '/api/ticket';
-        $userFrom = User::where('email', $senderEmail)->first();
+        $userFrom = User::where(['individual_id' => null,'email' => $senderEmail])->first();
         if ($userFrom->employee->hasRole(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $userFrom->employee->id)->first();
             if ($clientCompanyUser) {

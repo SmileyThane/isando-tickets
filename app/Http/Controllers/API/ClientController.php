@@ -75,10 +75,14 @@ class ClientController extends Controller
     {
         $request['role_id'] = Role::COMPANY_CLIENT;
         $request['company_id'] = Auth::user()->employee->company_id;
-        $this->companyUserRepo->invite($request);
-        $request['company_user_id'] = User::where('email', $request['email'])->first()->employee->id;
-        $result = $this->clientRepo->attach($request);
-        return self::showResponse($result);
+        $inviteResponse = $this->companyUserRepo->invite($request);
+        $inviteResult = $inviteResponse->getOriginalContent();
+        if ($inviteResult['success'] === true) {
+            $request['company_user_id'] = $inviteResult['data']['id'];
+            $result = $this->clientRepo->attach($request);
+            return self::showResponse($result);
+        }
+        return $inviteResponse;
     }
 
     public function detach(Request $request, $id)
