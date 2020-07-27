@@ -14,21 +14,21 @@ class CompanyUser extends Model
 
     protected $appends = ['roles', 'role_names'];
 
-    public function getRolesAttribute()
-    {
-        $roleIds = ModelHasRole::where(['model_id' => $this->attributes['id'], 'model_type' => self::class])->get()->pluck('role_id')->toArray();
-        return Role::whereIn('id', $roleIds)->get();
-    }
-
     public function getRoleNamesAttribute()
     {
         $result = null;
         $roles = $this->getRolesAttribute();
         foreach ($roles as $key => $role) {
             $result .= $role->name;
-            $result .= $key !== count($roles)-1 ? ', ' : '';
+            $result .= $key !== count($roles) - 1 ? ', ' : '';
         }
         return $result ?? 'contact';
+    }
+
+    public function getRolesAttribute()
+    {
+        $roleIds = ModelHasRole::where(['model_id' => $this->attributes['id'], 'model_type' => self::class])->get()->pluck('role_id')->toArray();
+        return Role::whereIn('id', $roleIds)->get();
     }
 
     public function assignedToTeams(): \Illuminate\Database\Eloquent\Relations\HasMany
