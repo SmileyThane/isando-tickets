@@ -22,13 +22,13 @@ class CompanyUser extends Model
 
     public function getRoleNamesAttribute()
     {
-        $result = '';
+        $result = null;
         $roles = $this->getRolesAttribute();
         foreach ($roles as $key => $role) {
             $result .= $role->name;
             $result .= $key !== count($roles)-1 ? ', ' : '';
         }
-        return $result;
+        return $result ?? 'contact';
     }
 
     public function assignedToTeams(): \Illuminate\Database\Eloquent\Relations\HasMany
