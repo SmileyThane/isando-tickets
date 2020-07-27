@@ -42,7 +42,7 @@
                 <td :colspan="headers.length">
                     <p></p>
 <!--                    <p><strong>From:</strong> {{ item.from.name }}</p>-->
-                    <p><strong>To:</strong> {{ item.to.name }}</p>
+<!--                    <p><strong>To:</strong> {{ item.to.name }}</p>-->
 <!--                    <p><strong>Description:</strong> {{ item.description }}</p>-->
                     <p><strong>Contact name:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
                     <p><strong>Contact email:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>

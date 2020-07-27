@@ -76,7 +76,7 @@ class TicketRepository
 
     public function find($id)
     {
-        return Ticket::where('id', $id)
+        return Ticket::where('id', $id)->makeVisible(['to'])
             ->with('creator', 'assignedPerson.userData', 'contact.userData', 'product', 'team',
                 'priority', 'status', 'answers.employee.userData', 'answers.attachments',
                 'histories.employee.userData', 'notices.employee.userData', 'attachments')->first();

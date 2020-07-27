@@ -49902,11 +49902,6 @@ var render = function() {
                   _c("p"),
                   _vm._v(" "),
                   _c("p", [
-                    _c("strong", [_vm._v("To:")]),
-                    _vm._v(" " + _vm._s(item.to.name))
-                  ]),
-                  _vm._v(" "),
-                  _c("p", [
                     _c("strong", [_vm._v("Contact name:")]),
                     _vm._v(
                       " " +

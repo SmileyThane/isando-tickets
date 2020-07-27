@@ -13,6 +13,7 @@ class Ticket extends Model
 
     protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id'];
     protected $appends = ['from', 'to', 'last_update', 'can_be_edited', 'can_be_answered'];
+    protected $hidden = ['to'];
 
     public function getFromAttribute()
     {
