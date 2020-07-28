@@ -6543,8 +6543,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -6999,7 +6999,12 @@ __webpack_require__.r(__webpack_exports__);
       alert: false,
       errorType: '',
       error: [],
+      suppliers: [],
+      products: [],
+      priorities: [],
       employees: [],
+      contacts: [],
+      from: [],
       ticket: {
         status_id: '',
         to_company_user_id: '',
@@ -7094,7 +7099,10 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.getTicket(); // if (localStorage.getticket('auth_token')) {
+    this.getSuppliers();
+    this.getTicket();
+    this.getProducts();
+    this.getPriorities(); // if (localStorage.getticket('auth_token')) {
     //     this.$router.push('tickets')
     // }
   },
@@ -7107,14 +7115,87 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this.ticket = response.data;
+          _this.from = _defineProperty({}, _this.ticket.from_entity_type, _this.ticket.from_entity_id);
 
-          _this.selectTeam(); // console.log(this.userData);
+          _this.selectTeam();
 
+          _this.getContacts(_this.from);
+        }
+      });
+    },
+    getSuppliers: function getSuppliers() {
+      var _this2 = this;
+
+      axios.get('/api/supplier').then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this2.suppliers = response.data;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    getProducts: function getProducts() {
+      var _this3 = this;
+
+      axios.get('/api/product').then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this3.products = response.data.data;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    getPriorities: function getPriorities() {
+      var _this4 = this;
+
+      axios.get('/api/ticket_priorities').then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this4.priorities = response.data;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    getContacts: function getContacts(entityItem) {
+      var _this5 = this;
+
+      this.contacts = [];
+      var route = '';
+
+      if (Object.keys(entityItem)[0] === 'App\\Company') {
+        route = "/api/company/".concat(Object.values(entityItem)[0]);
+      } else {
+        route = "/api/client/".concat(Object.values(entityItem)[0]);
+      } // console.log(entityItem);
+
+
+      axios.get(route).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          response = response.data; // console.log(response);
+
+          if (!response.hasOwnProperty('company_number')) {
+            response.employees.forEach(function (employeeItem) {
+              return _this5.contacts.push(employeeItem.employee);
+            }); // console.log('client');
+          } else {
+            _this5.contacts = response.employees; // console.log('company');
+          } // this.ticketForm.contact_company_user_id = this.employees[0].id
+
+        } else {
+          console.log('error');
         }
       });
     },
     selectTeam: function selectTeam() {
-      var _this2 = this;
+      var _this6 = this;
 
       if (this.ticket.can_be_edited === false) {
         this.selectionDisabled = true;
@@ -7129,19 +7210,19 @@ __webpack_require__.r(__webpack_exports__);
           response = response.data;
 
           if (response.success === true) {
-            _this2.employees = response.data.employees; // console.log(this.employees);
+            _this6.employees = response.data.employees; // console.log(this.employees);
           }
         });
       }
     },
     updateTicket: function updateTicket() {
-      var _this3 = this;
+      var _this7 = this;
 
       axios.patch("/api/ticket/".concat(this.$route.params.id), this.ticket).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
-          _this3.getTicket();
+          _this7.getTicket();
         } else {
           console.log('error');
         }
@@ -7152,7 +7233,7 @@ __webpack_require__.r(__webpack_exports__);
       this.updateTicket();
     },
     addTicketAnswer: function addTicketAnswer() {
-      var _this4 = this;
+      var _this8 = this;
 
       var config = {
         headers: {
@@ -7175,10 +7256,10 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
-          _this4.ticketAnswer.answer = '';
-          _this4.ticketAnswer.files = [];
+          _this8.ticketAnswer.answer = '';
+          _this8.ticketAnswer.files = [];
 
-          _this4.getTicket();
+          _this8.getTicket();
         } else {
           console.log('error');
         }
@@ -50026,17 +50107,22 @@ var render = function() {
                             [
                               _c("v-label", [_c("strong", [_vm._v("From:")])]),
                               _vm._v(" "),
-                              _c("v-textarea", {
+                              _c("v-select", {
                                 attrs: {
-                                  label: "From",
-                                  "auto-grow": "",
-                                  rows: "3",
-                                  "row-height": "25",
-                                  shaped: "",
-                                  disabled: ""
+                                  color: "green",
+                                  "item-color": "green",
+                                  "item-text": "name",
+                                  "item-value": "item",
+                                  items: _vm.suppliers,
+                                  disabled: !_vm.ticket.can_be_edited
                                 },
-                                domProps: {
-                                  textContent: _vm._s(_vm.ticket.from.name)
+                                on: { input: _vm.getContacts },
+                                model: {
+                                  value: _vm.from,
+                                  callback: function($$v) {
+                                    _vm.from = $$v
+                                  },
+                                  expression: "from"
                                 }
                               })
                             ],
@@ -50074,17 +50160,53 @@ var render = function() {
                                 _c("strong", [_vm._v("Priority:")])
                               ]),
                               _vm._v(" "),
-                              _c("v-textarea", {
+                              _c("v-select", {
                                 attrs: {
-                                  label: "Priority",
-                                  "auto-grow": "",
-                                  rows: "3",
-                                  "row-height": "25",
-                                  shaped: "",
-                                  disabled: ""
+                                  color: "green",
+                                  "item-color": "green",
+                                  "item-text": "name",
+                                  "item-value": "id",
+                                  items: _vm.priorities,
+                                  disabled: !_vm.ticket.can_be_edited
                                 },
-                                domProps: {
-                                  textContent: _vm._s(_vm.ticket.priority.name)
+                                model: {
+                                  value: _vm.ticket.priority_id,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.ticket, "priority_id", $$v)
+                                  },
+                                  expression: "ticket.priority_id"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "12", md: "6" } },
+                            [
+                              _c("v-label", [
+                                _c("strong", [_vm._v("Contact email:")])
+                              ]),
+                              _vm._v(" "),
+                              _c("v-autocomplete", {
+                                attrs: {
+                                  color: "green",
+                                  "item-color": "green",
+                                  "item-text": "user_data.email",
+                                  "item-value": "id",
+                                  items: _vm.contacts
+                                },
+                                model: {
+                                  value: _vm.ticket.contact_company_user_id,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.ticket,
+                                      "contact_company_user_id",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "ticket.contact_company_user_id"
                                 }
                               })
                             ],
@@ -50120,73 +50242,36 @@ var render = function() {
                             1
                           ),
                           _vm._v(" "),
-                          _vm.ticket.contact
-                            ? _c(
-                                "div",
-                                [
-                                  _c(
-                                    "v-col",
-                                    { attrs: { cols: "12", md: "6" } },
-                                    [
-                                      _c("v-label", [
-                                        _c("strong", [_vm._v("Contact name:")])
-                                      ]),
-                                      _vm._v(" "),
-                                      _c("v-textarea", {
-                                        attrs: {
-                                          label: "Priority",
-                                          "auto-grow": "",
-                                          rows: "3",
-                                          "row-height": "25",
-                                          shaped: "",
-                                          disabled: ""
-                                        },
-                                        domProps: {
-                                          textContent: _vm._s(
-                                            _vm.ticket.contact
-                                              ? _vm.ticket.contact.user_data
-                                                  .name
-                                              : ""
-                                          )
-                                        }
-                                      })
-                                    ],
-                                    1
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-col",
-                                    { attrs: { cols: "12", md: "6" } },
-                                    [
-                                      _c("v-label", [
-                                        _c("strong", [_vm._v("Contact email:")])
-                                      ]),
-                                      _vm._v(" "),
-                                      _c("v-textarea", {
-                                        attrs: {
-                                          label: "Priority",
-                                          "auto-grow": "",
-                                          rows: "3",
-                                          "row-height": "25",
-                                          shaped: "",
-                                          disabled: ""
-                                        },
-                                        domProps: {
-                                          textContent: _vm._s(
-                                            _vm.ticket.contact
-                                              ? _vm.ticket.contact.user_data
-                                                  .email
-                                              : ""
-                                          )
-                                        }
-                                      })
-                                    ],
-                                    1
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "12", md: "6" } },
+                            [
+                              _vm.ticket.contact
+                                ? _c("v-label", [
+                                    _c("strong", [_vm._v("Contact name:")])
+                                  ])
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _c("v-textarea", {
+                                attrs: {
+                                  label: "Priority",
+                                  "auto-grow": "",
+                                  rows: "3",
+                                  "row-height": "25",
+                                  shaped: "",
+                                  disabled: ""
+                                },
+                                domProps: {
+                                  textContent: _vm._s(
+                                    _vm.ticket.contact
+                                      ? _vm.ticket.contact.user_data.name
+                                      : ""
                                   )
-                                ],
-                                1
-                              )
-                            : _vm._e(),
+                                }
+                              })
+                            ],
+                            1
+                          ),
                           _vm._v(" "),
                           _c(
                             "v-col",
@@ -50217,28 +50302,24 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12", sm: "6" } },
                             [
-                              _vm.ticket.connection_details
-                                ? _c("v-label", [
-                                    _c("strong", [
-                                      _vm._v(
-                                        "IP address(es) of the servers (for remote access)"
-                                      )
-                                    ])
-                                  ])
-                                : _vm._e(),
+                              _c("v-label", [
+                                _c("strong", [
+                                  _vm._v(
+                                    "IP address(es) of the servers (for remote access)"
+                                  )
+                                ])
+                              ]),
                               _vm._v(" "),
-                              _vm.ticket.connection_details
-                                ? _c("v-textarea", {
-                                    attrs: {
-                                      "auto-grow": "",
-                                      rows: "3",
-                                      "row-height": "25",
-                                      shaped: "",
-                                      disabled: "",
-                                      value: _vm.ticket.connection_details
-                                    }
-                                  })
-                                : _vm._e()
+                              _c("v-textarea", {
+                                attrs: {
+                                  "auto-grow": "",
+                                  rows: "3",
+                                  "row-height": "25",
+                                  shaped: "",
+                                  disabled: !_vm.ticket.can_be_edited,
+                                  value: _vm.ticket.connection_details
+                                }
+                              })
                             ],
                             1
                           ),
@@ -50247,24 +50328,20 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12", sm: "6" } },
                             [
-                              _vm.ticket.access_details
-                                ? _c("v-label", [
-                                    _c("strong", [_vm._v("Access details:")])
-                                  ])
-                                : _vm._e(),
+                              _c("v-label", [
+                                _c("strong", [_vm._v("Access details:")])
+                              ]),
                               _vm._v(" "),
-                              _vm.ticket.connection_details
-                                ? _c("v-textarea", {
-                                    attrs: {
-                                      "auto-grow": "",
-                                      rows: "3",
-                                      "row-height": "25",
-                                      shaped: "",
-                                      disabled: "",
-                                      value: _vm.ticket.access_details
-                                    }
-                                  })
-                                : _vm._e()
+                              _c("v-textarea", {
+                                attrs: {
+                                  "auto-grow": "",
+                                  rows: "3",
+                                  "row-height": "25",
+                                  shaped: "",
+                                  disabled: !_vm.ticket.can_be_edited,
+                                  value: _vm.ticket.access_details
+                                }
+                              })
                             ],
                             1
                           )
@@ -50651,7 +50728,11 @@ var render = function() {
                                   attrs: { color: "green" },
                                   on: { click: _vm.closeTicket }
                                 },
-                                [_vm._v("Close Ticket")]
+                                [
+                                  _vm._v(
+                                    "Close Ticket\n                        "
+                                  )
+                                ]
                               )
                             : _vm._e()
                         ],

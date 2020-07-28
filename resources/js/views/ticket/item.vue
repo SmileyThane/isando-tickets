@@ -33,15 +33,16 @@
                                 <v-label>
                                     <strong>From:</strong>
                                 </v-label>
-                                <v-textarea
-                                    label="From"
-                                    auto-grow
-                                    rows="3"
-                                    row-height="25"
-                                    shaped
-                                    disabled
-                                    v-text="ticket.from.name"
-                                ></v-textarea>
+                                <v-select
+                                    color="green"
+                                    item-color="green"
+                                    item-text="name"
+                                    item-value="item"
+                                    :items="suppliers"
+                                    v-model="from"
+                                    :disabled="!ticket.can_be_edited"
+                                    @input="getContacts"
+                                />
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-label>
@@ -61,15 +62,28 @@
                                 <v-label>
                                     <strong>Priority:</strong>
                                 </v-label>
-                                <v-textarea
-                                    label="Priority"
-                                    auto-grow
-                                    rows="3"
-                                    row-height="25"
-                                    shaped
-                                    disabled
-                                    v-text="ticket.priority.name"
-                                ></v-textarea>
+                                <v-select
+                                    color="green"
+                                    item-color="green"
+                                    item-text="name"
+                                    item-value="id"
+                                    :items="priorities"
+                                    :disabled="!ticket.can_be_edited"
+                                    v-model="ticket.priority_id"
+                                />
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-label>
+                                    <strong>Contact email:</strong>
+                                </v-label>
+                                <v-autocomplete
+                                    color="green"
+                                    item-color="green"
+                                    item-text="user_data.email"
+                                    item-value="id"
+                                    v-model="ticket.contact_company_user_id"
+                                    :items="contacts"
+                                ></v-autocomplete>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-label v-if="ticket.due_date">
@@ -85,36 +99,20 @@
                                     v-text="ticket.due_date || null"
                                 ></v-textarea>
                             </v-col>
-                            <div v-if="ticket.contact">
-                                <v-col cols="12" md="6">
-                                    <v-label>
-                                        <strong>Contact name:</strong>
-                                    </v-label>
-                                    <v-textarea
-                                        label="Priority"
-                                        auto-grow
-                                        rows="3"
-                                        row-height="25"
-                                        shaped
-                                        disabled
-                                        v-text="ticket.contact ? ticket.contact.user_data.name : ''"
-                                    ></v-textarea>
-                                </v-col>
-                                <v-col cols="12" md="6">
-                                    <v-label>
-                                        <strong>Contact email:</strong>
-                                    </v-label>
-                                    <v-textarea
-                                        label="Priority"
-                                        auto-grow
-                                        rows="3"
-                                        row-height="25"
-                                        shaped
-                                        disabled
-                                        v-text="ticket.contact ? ticket.contact.user_data.email : ''"
-                                    ></v-textarea>
-                                </v-col>
-                            </div>
+                            <v-col cols="12" md="6">
+                                <v-label v-if="ticket.contact">
+                                    <strong>Contact name:</strong>
+                                </v-label>
+                                <v-textarea
+                                    label="Priority"
+                                    auto-grow
+                                    rows="3"
+                                    row-height="25"
+                                    shaped
+                                    disabled
+                                    v-text="ticket.contact ? ticket.contact.user_data.name : ''"
+                                ></v-textarea>
+                            </v-col>
                             <v-col cols="12">
                                 <v-label v-if="ticket.description">
                                     <strong>Description</strong>
@@ -125,7 +123,7 @@
                                 <div v-html="ticket.description"></div>
                             </v-col>
                             <v-col cols="12" sm="6">
-                                <v-label v-if="ticket.connection_details">
+                                <v-label>
                                     <strong>IP address(es) of the servers (for remote access)</strong>
                                 </v-label>
                                 <v-textarea
@@ -133,13 +131,12 @@
                                     rows="3"
                                     row-height="25"
                                     shaped
-                                    disabled
+                                    :disabled="!ticket.can_be_edited"
                                     :value="ticket.connection_details"
-                                    v-if="ticket.connection_details"
                                 ></v-textarea>
                             </v-col>
                             <v-col cols="12" sm="6">
-                                <v-label v-if="ticket.access_details">
+                                <v-label>
                                     <strong>Access details:</strong>
                                 </v-label>
                                 <v-textarea
@@ -147,9 +144,8 @@
                                     rows="3"
                                     row-height="25"
                                     shaped
-                                    disabled
+                                    :disabled="!ticket.can_be_edited"
                                     :value="ticket.access_details"
-                                    v-if="ticket.connection_details"
                                 ></v-textarea>
                             </v-col>
                         </v-row>
@@ -316,7 +312,9 @@
                     <v-card-actions>
                         <v-row align="center"
                                justify="center">
-                            <v-btn v-if="ticket.status.id !== 5" color="green" style="color: white;" @click="closeTicket">Close Ticket</v-btn>
+                            <v-btn v-if="ticket.status.id !== 5" color="green" style="color: white;"
+                                   @click="closeTicket">Close Ticket
+                            </v-btn>
                         </v-row>
                     </v-card-actions>
                     <v-card-text>
@@ -455,7 +453,12 @@
                 alert: false,
                 errorType: '',
                 error: [],
+                suppliers: [],
+                products: [],
+                priorities: [],
                 employees: [],
+                contacts: [],
+                from: [],
                 ticket: {
                     status_id: '',
                     to_company_user_id: '',
@@ -557,7 +560,10 @@
             }
         },
         mounted() {
+            this.getSuppliers()
             this.getTicket();
+            this.getProducts()
+            this.getPriorities()
             // if (localStorage.getticket('auth_token')) {
             //     this.$router.push('tickets')
             // }
@@ -568,9 +574,70 @@
                     response = response.data
                     if (response.success === true) {
                         this.ticket = response.data
+                        this.from = {[this.ticket.from_entity_type]: this.ticket.from_entity_id}
                         this.selectTeam();
-                        // console.log(this.userData);
+                        this.getContacts(this.from)
                     }
+                });
+            },
+            getSuppliers() {
+                axios.get('/api/supplier').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.suppliers = response.data
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
+            getProducts() {
+                axios.get('/api/product').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.products = response.data.data
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            getPriorities() {
+                axios.get('/api/ticket_priorities').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.priorities = response.data
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            getContacts(entityItem) {
+                this.contacts = []
+                let route = '';
+                if (Object.keys(entityItem)[0] === 'App\\Company') {
+                    route = `/api/company/${Object.values(entityItem)[0]}`
+                } else {
+                    route = `/api/client/${Object.values(entityItem)[0]}`
+                }
+                // console.log(entityItem);
+                axios.get(route).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        response = response.data
+                        // console.log(response);
+                        if (!response.hasOwnProperty('company_number')) {
+                            response.employees.forEach(employeeItem => this.contacts.push(employeeItem.employee))
+                            // console.log('client');
+                        } else {
+                            this.contacts = response.employees
+                            // console.log('company');
+                        }
+                        // this.ticketForm.contact_company_user_id = this.employees[0].id
+                    } else {
+                        console.log('error')
+                    }
+
                 });
             },
             selectTeam() {
