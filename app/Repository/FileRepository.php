@@ -17,15 +17,14 @@ class FileRepository
 
     public function store($file, $model_id, $model_type)
     {
-
-        try {
+        if(is_string($file)){
+            $name = basename('/public/' . $file);
+            $originalPath = str_replace($name, '', $file);
+        } else {
             $name = $file->getClientOriginalName();
-        } catch (\Throwable $th) {
-            $name = 'null';
+            $originalPath = 'files/original/' . Controller::getRandomString() . '/';
+            $file->storeAs('/public/' . $originalPath, $name);
         }
-
-        $originalPath = 'files/original/' . Controller::getRandomString() . '/';
-        $file->storeAs('/public/' . $originalPath, $name);
         $newFile = new File();
         $newFile->name = $name;
         $newFile->filepath = $originalPath;

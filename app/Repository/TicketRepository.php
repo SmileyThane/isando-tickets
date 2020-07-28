@@ -5,6 +5,7 @@ namespace App\Repository;
 
 
 use App\Company;
+use App\CompanyUser;
 use App\Notifications\NewTicket;
 use App\ProductCompanyUser;
 use App\Role;
@@ -82,7 +83,7 @@ class TicketRepository
                 'histories.employee.userData', 'notices.employee.userData', 'attachments')->first()->makeVisible(['to']);
     }
 
-    public function create(Request $request)
+    public function create(Request $request, $employeeId = null)
     {
         $ticket = new Ticket();
         $ticket->name = $request->name;
@@ -91,7 +92,7 @@ class TicketRepository
         $ticket->from_entity_type = $request->from_entity_type;
         $ticket->to_entity_id = $request->to_entity_id;
         $ticket->to_entity_type = $request->to_entity_type;
-        $ticket->from_company_user_id = Auth::user()->employee->id;
+        $ticket->from_company_user_id = $employeeId ?? Auth::user()->employee->id;
         $ticket->contact_company_user_id = $request->contact_company_user_id;
         $ticket->to_company_user_id = $request->to_company_user_id;
         $ticket->to_team_id = $request->to_team_id;
@@ -101,7 +102,7 @@ class TicketRepository
         $ticket->connection_details = $request->connection_details;
         $ticket->access_details = $request->access_details;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, 'Ticket created');
+        $this->addHistoryItem($ticket->id, $employeeId, 'Ticket created');
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
         foreach ($files as $file) {
             $this->fileRepo->store($file, $ticket->id, Ticket::class);
@@ -122,20 +123,19 @@ class TicketRepository
             $ticket->save();
             $request->status_id = 2;
             $this->updateStatus($request, $id);
-            $this->addHistoryItem($ticket->id, 'Ticket updated');
+            $this->addHistoryItem($ticket->id, null, 'Ticket updated');
         }
         return $ticket;
     }
 
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $id, $employeeId = null): bool
     {
         $ticket = Ticket::find($id);
         $ticket->status_id = $request->status_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, 'Status updated');
+        $this->addHistoryItem($ticket->id, $employeeId,'Status updated');
         return true;
     }
-
 
     public function delete($id)
     {
@@ -153,7 +153,7 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->team_id = $request->team_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, 'Team attached');
+        $this->addHistoryItem($ticket->id, null, 'Team attached');
         return true;
     }
 
@@ -162,7 +162,7 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->to_company_user_id = $request->to_company_user_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, 'Employee attached');
+        $this->addHistoryItem($ticket->id, null, 'Employee attached');
         return true;
     }
 
@@ -171,15 +171,15 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->contact_company_user_id = $request->contact_company_user_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, 'Contact person updated');
+        $this->addHistoryItem($ticket->id, null,'Contact person updated');
         return true;
     }
 
-    public function addAnswer(Request $request, $id)
+    public function addAnswer(Request $request, $id, $employeeId = null)
     {
         $ticketAnswer = new TicketAnswer();
         $ticketAnswer->ticket_id = $id;
-        $ticketAnswer->company_user_id = Auth::user()->employee->id;
+        $ticketAnswer->company_user_id = $employeeId ?? Auth::user()->employee->id;
         $ticketAnswer->answer = $request->answer;
         $ticketAnswer->save();
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
@@ -188,13 +188,16 @@ class TicketRepository
         }
         $ticket = Ticket::find($ticketAnswer->ticket_id);
 
-        if (Auth::user()->employee->hasRole(Role::COMPANY_CLIENT)) {
+
+        $employee = $employeeId !== null ? CompanyUser::find($employeeId) : Auth::user()->employee;
+
+        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
             $request->status_id = 3;
         } else {
             $request->status_id = 4;
         }
-        $this->updateStatus($request, $ticketAnswer->ticket_id);
-        $this->addHistoryItem($ticketAnswer->ticket_id, 'Answer added');
+        $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId);
+        $this->addHistoryItem($ticketAnswer->ticket_id, $employeeId, 'Answer added');
         return true;
     }
 
@@ -203,15 +206,14 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->contact_company_user_id = $request->contact_company_user_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, 'Notice added');
+        $this->addHistoryItem($ticket->id, null,'Notice added');
         return true;
     }
 
-    public function addHistoryItem($ticketId, $description = null)
+    private function addHistoryItem($ticketId, $companyUserId = null, $description = null)
     {
-        $companyUser = Auth::user()->employee;
         $ticketHistory = new TicketHistory();
-        $ticketHistory->company_user_id = $companyUser->id;
+        $ticketHistory->company_user_id = $companyUserId ?? Auth::user()->employee->id;
         $ticketHistory->ticket_id = $ticketId;
         $ticketHistory->description = $description;
         $ticketHistory->save();

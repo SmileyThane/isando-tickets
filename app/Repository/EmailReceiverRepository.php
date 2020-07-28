@@ -7,6 +7,7 @@ use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
+use App\Http\Controllers\Controller;
 use App\MailCache;
 use App\ProductClient;
 use App\Role;
@@ -15,10 +16,18 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Webklex\IMAP\Client as IMAPClient;
 
 class EmailReceiverRepository
 {
+    protected $ticketRepo;
+
+    public function __construct(TicketRepository $ticketRepository)
+    {
+        $this->ticketRepo = $ticketRepository;
+    }
+
     public function receiveMail($type = 'answer')
     {
         Log::info('mail receiving process was started.');
@@ -52,7 +61,7 @@ class EmailReceiverRepository
 //            Log::info('_________body_start' . $message->getTextBody() . '_________body_end');
             $senderObj = $res[$key]['sender'][0];
             $senderEmail = $senderObj->mail;
-            $userGlobal = User::where(['individual_id' => null,'email' => $senderEmail])->first();
+            $userGlobal = User::where(['individual_id' => null, 'email' => $senderEmail])->first();
             if ($userGlobal) {
                 Log::info('email from ' . $userGlobal->name);
                 try {
@@ -66,13 +75,15 @@ class EmailReceiverRepository
                             return $query->where('from_company_user_id', $userGlobal->employee->id)
                                 ->orWhere('to_company_user_id', $userGlobal->employee->id);
                         })->first();
+                    $attachments = $this->handleEmailAttachments($message->getAttachments());
 
                     if ($ticket !== null && $cachedCount === 0) {
                         Log::info('system starts creating answer for ticket ' . $ticket->id);
-                        $responseBody = $this->ticketAnswerFromEmail($senderEmail, $ticket, $message);
+                        $responseBody = $this->ticketAnswerFromEmail($senderEmail, $ticket, $message, $attachments);
+
                     } elseif ($ticket === null && $cachedCount === 0) {
                         Log::info('system starts creating new ticket');
-                        $responseBody = $this->createTicketFromEmail($senderEmail, $message, $ticketAttributes['Subject']);
+                        $responseBody = $this->createTicketFromEmail($senderEmail, $message, $ticketAttributes['Subject'], $attachments);
                     }
                 } catch (\Throwable $th) {
                     Log::info('connection was broken' . $th);
@@ -91,21 +102,17 @@ class EmailReceiverRepository
         return $mailCache;
     }
 
-    private function ticketAnswerFromEmail($senderEmail, $ticket, $message)
+    private function ticketAnswerFromEmail($senderEmail, $ticket, $message, $files = [])
     {
-        $user = User::where(['individual_id' => null,'email' => $senderEmail])->first();
+        $user = User::where(['individual_id' => null, 'email' => $senderEmail])->first();
         if (!$user) {
             Log::info($senderEmail . ' not found');
         }
-        $token = $user->createToken('web');
-        $uri = '/api/ticket/' . $ticket->id . '/answer';
-        $params = [
-            'company_user_id' => $user->employee->id,
-            'ticket_id' => $ticket->id,
-            'answer' => $this->removeEmptyParagraphs($message->getHTMLBody(true))
-        ];
+        $params = new Request();
+        $params['answer'] = $this->removeEmptyParagraphs($message->getHTMLBody(true));
+        $params['files'] = $files;
         Log::info('answer created');
-        return $this->makeSystemRequest($uri, $token, $params);
+        return $this->ticketRepo->addAnswer($params, $ticket->id, $user->employee->id);
     }
 
     private function removeEmptyParagraphs($content)
@@ -114,21 +121,10 @@ class EmailReceiverRepository
         return str_replace($emptyLinesArray, "", $content);
     }
 
-    private function makeSystemRequest($uri, $token, $params)
-    {
-        $request = Request::create($uri, 'POST', $params);
-        $request->headers->set('Authorization', 'Bearer ' . $token->accessToken);
-        $request->headers->set('Accept', 'application/json');
-        $response = app()->handle($request);
-        return $response->getContent();
-    }
-
-    private function createTicketFromEmail($senderEmail, $message, $ticketSubject)
+    private function createTicketFromEmail($senderEmail, $message, $ticketSubject, $files = []): ?Ticket
     {
         $fromEntityId = $fromEntityType = $toEntityId = $toEntityType = $productId = null;
-        $type = 'create';
-        $uri = '/api/ticket';
-        $userFrom = User::where(['individual_id' => null,'email' => $senderEmail])->first();
+        $userFrom = User::where(['individual_id' => null, 'email' => $senderEmail])->first();
         if ($userFrom->employee->hasRole(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $userFrom->employee->id)->first();
             if ($clientCompanyUser) {
@@ -137,7 +133,6 @@ class EmailReceiverRepository
                 $toEntityId = $userFrom->employee->company_id;
                 $toEntityType = Company::class;
                 $productClient = ProductClient::where('client_id', $fromEntityId)->first();
-//                Log::alert($productClient);
                 $productId = $productClient ? $productClient->product_id : null;
             }
         } else {
@@ -152,25 +147,42 @@ class EmailReceiverRepository
             Log::info($senderEmail . ' not found');
         }
         if ($fromEntityId && $fromEntityType && $toEntityId && $toEntityType && $productId) {
-            $token = $userFrom->createToken('web');
-//            Log::alert(json_encode($token));
-            $params = [
-                'from_entity_id' => $fromEntityId,
-                'from_entity_type' => $fromEntityType,
-                'to_entity_id' => $toEntityId,
-                'to_entity_type' => $toEntityType,
-                'to_product_id' => $productId,
-                'from_company_user_id' => $userFrom->employee->id,
-                'priority_id' => 2,
-                'name' => $ticketSubject,
-                'description' => $this->removeEmptyParagraphs($message->getHTMLBody(true)),
-            ];
-//            Log::alert($message->getHTMLBody(true));
-            return $this->makeSystemRequest($uri, $token, $params);
+            $params = new Request();
+            $params['from_entity_id'] = $fromEntityId;
+            $params['from_entity_type'] = $fromEntityType;
+            $params['to_entity_id'] = $toEntityId;
+            $params['to_entity_type'] = $toEntityType;
+            $params['to_product_id'] = $productId;
+            $params['priority_id'] = 2;
+            $params['name'] = $ticketSubject;
+            $params['description'] = $this->removeEmptyParagraphs($message->getHTMLBody(true));
+            $params['files'] = $files;
+            return $this->ticketRepo->create($params, $userFrom->employee->id);
         }
         Log::alert("check incorrect params fromEntityId=$fromEntityId  fromEntityType=$fromEntityType toEntityId=$toEntityId toEntityType=$toEntityType productId=$productId");
         return null;
     }
 
+    private function makeSystemRequest($uri, $token, $params)
+    {
+        $request = Request::create($uri, 'POST', $params);
+        $request->headers->set('Authorization', 'Bearer ' . $token->accessToken);
+        $request->headers->set('Accept', 'application/json');
+        $response = app()->handle($request);
+        return $response->getContent();
+    }
+
+    private function handleEmailAttachments($attachments)
+    {
+        $result = [];
+        foreach ($attachments as $attachment) {
+            $rand = Controller::getRandomString();
+            $name = $attachment->getName();
+            $path = "files/original/$rand/$name";
+            Storage::put("/public/$path", $attachment->getContent());
+            $result[] = $path;
+        }
+        return $result;
+    }
 
 }
