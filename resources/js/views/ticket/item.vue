@@ -625,12 +625,11 @@
         methods: {
             toggleEdit(edit) {
                 this[edit] = !this[edit]
-                // console.log('fromEdit'+this.fromEdit);
                 this.submitEdit = this.fromEdit ||
-                this.contactEdit ||
-                this.priorityEdit ||
-                this.ipEdit ||
-                this.detailsEdit ? true : false
+                    this.contactEdit ||
+                    this.priorityEdit ||
+                    this.ipEdit ||
+                    this.detailsEdit
             },
             getTicket() {
                 axios.get(`/api/ticket/${this.$route.params.id}`).then(response => {
