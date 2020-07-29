@@ -6996,12 +6996,61 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       selectionDisabled: false,
       assignPanel: [],
       alert: false,
+      fromEdit: false,
+      contactEdit: false,
+      ipEdit: false,
+      detailsEdit: false,
+      priorityEdit: false,
+      submitEdit: false,
       errorType: '',
       error: [],
       suppliers: [],
@@ -7112,6 +7161,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     // }
   },
   methods: {
+    toggleEdit: function toggleEdit(edit) {
+      this[edit] = !this[edit]; // console.log('fromEdit'+this.fromEdit);
+
+      this.submitEdit = this.fromEdit || this.contactEdit || this.priorityEdit || this.ipEdit || this.detailsEdit ? true : false;
+    },
     getTicket: function getTicket() {
       var _this = this;
 
@@ -50116,15 +50170,23 @@ var render = function() {
                               _c(
                                 "v-btn",
                                 {
+                                  directives: [
+                                    {
+                                      name: "show",
+                                      rawName: "v-show",
+                                      value: _vm.ticket.can_be_edited,
+                                      expression: "ticket.can_be_edited"
+                                    }
+                                  ],
                                   staticClass: "float-md-right",
                                   staticStyle: { color: "white" },
                                   attrs: {
-                                    disabled: !_vm.ticket.can_be_edited,
+                                    disabled: !_vm.submitEdit,
                                     color: "green"
                                   },
                                   on: { click: _vm.updateTicket }
                                 },
-                                [_vm._v("Save")]
+                                [_vm._v("Save\n                            ")]
                               )
                             ],
                             1
@@ -50134,7 +50196,45 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12", md: "6" } },
                             [
-                              _c("v-label", [_c("strong", [_vm._v("From:")])]),
+                              _c(
+                                "v-label",
+                                [
+                                  _c("strong", [_vm._v("From:")]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value: _vm.ticket.can_be_edited,
+                                          expression: "ticket.can_be_edited"
+                                        }
+                                      ],
+                                      attrs: { text: "", small: "" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.toggleEdit("fromEdit")
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("v-icon", [
+                                        _vm._v(
+                                          _vm._s(
+                                            !_vm.fromEdit
+                                              ? "mdi-pencil"
+                                              : "mdi-cancel"
+                                          )
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
                               _vm._v(" "),
                               _c("v-select", {
                                 attrs: {
@@ -50143,7 +50243,7 @@ var render = function() {
                                   "item-text": "name",
                                   "item-value": "item",
                                   items: _vm.suppliers,
-                                  disabled: !_vm.ticket.can_be_edited
+                                  disabled: !_vm.fromEdit
                                 },
                                 on: { input: _vm.getContacts },
                                 model: {
@@ -50185,9 +50285,45 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12", md: "6" } },
                             [
-                              _c("v-label", [
-                                _c("strong", [_vm._v("Priority:")])
-                              ]),
+                              _c(
+                                "v-label",
+                                [
+                                  _c("strong", [_vm._v("Priority:")]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value: _vm.ticket.can_be_edited,
+                                          expression: "ticket.can_be_edited"
+                                        }
+                                      ],
+                                      attrs: { text: "", small: "" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.toggleEdit("priorityEdit")
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("v-icon", [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.priorityEdit
+                                              ? "mdi-cancel"
+                                              : "mdi-pencil"
+                                          )
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
                               _vm._v(" "),
                               _c("v-select", {
                                 attrs: {
@@ -50196,7 +50332,7 @@ var render = function() {
                                   "item-text": "name",
                                   "item-value": "id",
                                   items: _vm.priorities,
-                                  disabled: !_vm.ticket.can_be_edited
+                                  disabled: !_vm.priorityEdit
                                 },
                                 model: {
                                   value: _vm.ticket.priority_id,
@@ -50214,9 +50350,45 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12", md: "6" } },
                             [
-                              _c("v-label", [
-                                _c("strong", [_vm._v("Contact email:")])
-                              ]),
+                              _c(
+                                "v-label",
+                                [
+                                  _c("strong", [_vm._v("Contact email:")]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value: _vm.ticket.can_be_edited,
+                                          expression: "ticket.can_be_edited"
+                                        }
+                                      ],
+                                      attrs: { text: "", small: "" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.toggleEdit("contactEdit")
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("v-icon", [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.contactEdit
+                                              ? "mdi-cancel"
+                                              : "mdi-pencil"
+                                          )
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
                               _vm._v(" "),
                               _c("v-autocomplete", {
                                 attrs: {
@@ -50224,7 +50396,8 @@ var render = function() {
                                   "item-color": "green",
                                   "item-text": "user_data.email",
                                   "item-value": "id",
-                                  items: _vm.contacts
+                                  items: _vm.contacts,
+                                  disabled: !_vm.contactEdit
                                 },
                                 model: {
                                   value: _vm.ticket.contact_company_user_id,
@@ -50331,13 +50504,49 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12", sm: "6" } },
                             [
-                              _c("v-label", [
-                                _c("strong", [
-                                  _vm._v(
-                                    "IP address(es) of the servers (for remote access)"
+                              _c(
+                                "v-label",
+                                [
+                                  _c("strong", [
+                                    _vm._v(
+                                      "IP address(es) of the servers (for remote access)"
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value: _vm.ticket.can_be_edited,
+                                          expression: "ticket.can_be_edited"
+                                        }
+                                      ],
+                                      attrs: { text: "", small: "" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.toggleEdit("ipEdit")
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("v-icon", [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.ipEdit
+                                              ? "mdi-cancel"
+                                              : "mdi-pencil"
+                                          )
+                                        )
+                                      ])
+                                    ],
+                                    1
                                   )
-                                ])
-                              ]),
+                                ],
+                                1
+                              ),
                               _vm._v(" "),
                               _c("v-textarea", {
                                 attrs: {
@@ -50346,7 +50555,7 @@ var render = function() {
                                   "row-height": "25",
                                   shaped: "",
                                   color: "green",
-                                  disabled: !_vm.ticket.can_be_edited
+                                  disabled: !_vm.ipEdit
                                 },
                                 model: {
                                   value: _vm.ticket.connection_details,
@@ -50368,9 +50577,45 @@ var render = function() {
                             "v-col",
                             { attrs: { cols: "12", sm: "6" } },
                             [
-                              _c("v-label", [
-                                _c("strong", [_vm._v("Access details:")])
-                              ]),
+                              _c(
+                                "v-label",
+                                [
+                                  _c("strong", [_vm._v("Access details:")]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-btn",
+                                    {
+                                      directives: [
+                                        {
+                                          name: "show",
+                                          rawName: "v-show",
+                                          value: _vm.ticket.can_be_edited,
+                                          expression: "ticket.can_be_edited"
+                                        }
+                                      ],
+                                      attrs: { text: "", small: "" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.toggleEdit("detailsEdit")
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("v-icon", [
+                                        _vm._v(
+                                          _vm._s(
+                                            _vm.detailsEdit
+                                              ? "mdi-cancel"
+                                              : "mdi-pencil"
+                                          )
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
                               _vm._v(" "),
                               _c("v-textarea", {
                                 attrs: {
@@ -50379,7 +50624,7 @@ var render = function() {
                                   "row-height": "25",
                                   shaped: "",
                                   color: "green",
-                                  disabled: !_vm.ticket.can_be_edited
+                                  disabled: !_vm.detailsEdit
                                 },
                                 model: {
                                   value: _vm.ticket.access_details,

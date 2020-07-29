@@ -30,11 +30,21 @@
                                 </v-label>
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-btn :disabled="!ticket.can_be_edited" class="float-md-right" color="green" style="color: white;" @click="updateTicket">Save</v-btn>
+                                <v-btn v-show="ticket.can_be_edited" :disabled="!submitEdit" class="float-md-right"
+                                       color="green" style="color: white;" @click="updateTicket">Save
+                                </v-btn>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-label>
                                     <strong>From:</strong>
+                                    <v-btn
+                                        text
+                                        small
+                                        v-show="ticket.can_be_edited"
+                                        @click="toggleEdit('fromEdit')"
+                                    >
+                                        <v-icon>{{!fromEdit ? 'mdi-pencil' : 'mdi-cancel'}}</v-icon>
+                                    </v-btn>
                                 </v-label>
                                 <v-select
                                     color="green"
@@ -43,7 +53,7 @@
                                     item-value="item"
                                     :items="suppliers"
                                     v-model="from"
-                                    :disabled="!ticket.can_be_edited"
+                                    :disabled="!fromEdit"
                                     @input="getContacts"
                                 />
                             </v-col>
@@ -64,6 +74,14 @@
                             <v-col cols="12" md="6">
                                 <v-label>
                                     <strong>Priority:</strong>
+                                    <v-btn
+                                        text
+                                        small
+                                        v-show="ticket.can_be_edited"
+                                        @click="toggleEdit('priorityEdit')"
+                                    >
+                                        <v-icon>{{priorityEdit ? 'mdi-cancel' : 'mdi-pencil'}}</v-icon>
+                                    </v-btn>
                                 </v-label>
                                 <v-select
                                     color="green"
@@ -71,13 +89,21 @@
                                     item-text="name"
                                     item-value="id"
                                     :items="priorities"
-                                    :disabled="!ticket.can_be_edited"
+                                    :disabled="!priorityEdit"
                                     v-model="ticket.priority_id"
                                 />
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-label>
                                     <strong>Contact email:</strong>
+                                    <v-btn
+                                        text
+                                        small
+                                        v-show="ticket.can_be_edited"
+                                        @click="toggleEdit('contactEdit')"
+                                    >
+                                        <v-icon>{{contactEdit ? 'mdi-cancel' : 'mdi-pencil'}}</v-icon>
+                                    </v-btn>
                                 </v-label>
                                 <v-autocomplete
                                     color="green"
@@ -86,6 +112,7 @@
                                     item-value="id"
                                     v-model="ticket.contact_company_user_id"
                                     :items="contacts"
+                                    :disabled="!contactEdit"
                                 ></v-autocomplete>
                             </v-col>
                             <v-col cols="12" md="6">
@@ -128,6 +155,14 @@
                             <v-col cols="12" sm="6">
                                 <v-label>
                                     <strong>IP address(es) of the servers (for remote access)</strong>
+                                    <v-btn
+                                        text
+                                        small
+                                        v-show="ticket.can_be_edited"
+                                        @click="toggleEdit('ipEdit')"
+                                    >
+                                        <v-icon>{{ipEdit ? 'mdi-cancel' : 'mdi-pencil'}}</v-icon>
+                                    </v-btn>
                                 </v-label>
                                 <v-textarea
                                     auto-grow
@@ -135,13 +170,21 @@
                                     row-height="25"
                                     shaped
                                     color="green"
-                                    :disabled="!ticket.can_be_edited"
+                                    :disabled="!ipEdit"
                                     v-model="ticket.connection_details"
                                 ></v-textarea>
                             </v-col>
                             <v-col cols="12" sm="6">
                                 <v-label>
                                     <strong>Access details:</strong>
+                                    <v-btn
+                                        text
+                                        small
+                                        v-show="ticket.can_be_edited"
+                                        @click="toggleEdit('detailsEdit')"
+                                    >
+                                        <v-icon>{{detailsEdit ? 'mdi-cancel' : 'mdi-pencil'}}</v-icon>
+                                    </v-btn>
                                 </v-label>
                                 <v-textarea
                                     auto-grow
@@ -149,7 +192,7 @@
                                     row-height="25"
                                     shaped
                                     color="green"
-                                    :disabled="!ticket.can_be_edited"
+                                    :disabled="!detailsEdit"
                                     v-model="ticket.access_details"
                                 ></v-textarea>
                             </v-col>
@@ -456,6 +499,12 @@
                 selectionDisabled: false,
                 assignPanel: [],
                 alert: false,
+                fromEdit: false,
+                contactEdit: false,
+                ipEdit: false,
+                detailsEdit: false,
+                priorityEdit: false,
+                submitEdit: false,
                 errorType: '',
                 error: [],
                 suppliers: [],
@@ -574,6 +623,15 @@
             // }
         },
         methods: {
+            toggleEdit(edit) {
+                this[edit] = !this[edit]
+                // console.log('fromEdit'+this.fromEdit);
+                this.submitEdit = this.fromEdit ||
+                this.contactEdit ||
+                this.priorityEdit ||
+                this.ipEdit ||
+                this.detailsEdit ? true : false
+            },
             getTicket() {
                 axios.get(`/api/ticket/${this.$route.params.id}`).then(response => {
                     response = response.data
