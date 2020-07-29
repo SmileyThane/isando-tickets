@@ -263,8 +263,10 @@
                                 </td>
                             </template>
                             <template v-slot:item.user_data="{ item }">
-                                <div class="justify-center" v-if="item.employee.user_data">{{ item.employee.user_data.name }} {{
-                                    item.employee.user_data.surname }}</div>
+                                <div class="justify-center" v-if="item.employee.user_data">{{
+                                    item.employee.user_data.name }} {{
+                                    item.employee.user_data.surname }}
+                                </div>
                             </template>
                         </v-data-table>
                         <v-spacer>
@@ -300,6 +302,12 @@
                                                     v-model="employeeForm.email"
                                                     required
                                                 ></v-text-field>
+                                                <v-checkbox
+                                                    label="Give access to the system"
+                                                    color="success"
+                                                    v-model="employeeForm.giveAccess"
+                                                    hide-details
+                                                ></v-checkbox>
                                             </div>
                                             <v-btn
                                                 dark
@@ -467,7 +475,8 @@
                 employeeForm: {
                     name: '',
                     email: '',
-                    client_id: ''
+                    client_id: '',
+                    giveAccess: true
                 },
                 roles: [
                     {

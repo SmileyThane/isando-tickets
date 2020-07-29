@@ -299,7 +299,9 @@
                                 </td>
                             </template>
                             <template v-slot:item.user_data="{ item }">
-                                <div class="justify-center" v-if="item.user_data">{{ item.user_data.name }} {{ item.user_data.surname }}</div>
+                                <div class="justify-center" v-if="item.user_data">{{ item.user_data.name }} {{
+                                    item.user_data.surname }}
+                                </div>
                             </template>
                             <template v-slot:item.actions="{ item }">
                                 <v-icon
@@ -363,6 +365,12 @@
                                                     :items="roles"
                                                     v-model="employeeForm.role_id"
                                                 />
+                                                <v-checkbox
+                                                    label="Give access to the system"
+                                                    color="success"
+                                                    v-model="employeeForm.giveAccess"
+                                                    hide-details
+                                                ></v-checkbox>
                                             </div>
                                             <v-btn
                                                 dark
@@ -560,7 +568,8 @@
                     name: '',
                     email: '',
                     role_id: '',
-                    company_id: ''
+                    company_id: '',
+                    giveAccess: true
                 },
                 roles: [
                     {
@@ -601,7 +610,6 @@
                 phoneTypes: [],
                 addressTypes: [],
                 socialTypes: []
-
             }
         },
         mounted() {

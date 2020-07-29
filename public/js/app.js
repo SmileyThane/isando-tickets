@@ -3759,6 +3759,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3840,7 +3848,8 @@ __webpack_require__.r(__webpack_exports__);
         name: '',
         email: '',
         role_id: '',
-        company_id: ''
+        company_id: '',
+        giveAccess: true
       },
       roles: [{
         id: '',
@@ -4791,6 +4800,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4870,7 +4887,8 @@ __webpack_require__.r(__webpack_exports__);
       employeeForm: {
         name: '',
         email: '',
-        client_id: ''
+        client_id: '',
+        giveAccess: true
       },
       roles: [{
         id: '',
@@ -7162,9 +7180,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     toggleEdit: function toggleEdit(edit) {
-      this[edit] = !this[edit]; // console.log('fromEdit'+this.fromEdit);
-
-      this.submitEdit = this.fromEdit || this.contactEdit || this.priorityEdit || this.ipEdit || this.detailsEdit ? true : false;
+      this[edit] = !this[edit];
+      this.submitEdit = this.fromEdit || this.contactEdit || this.priorityEdit || this.ipEdit || this.detailsEdit;
     },
     getTicket: function getTicket() {
       var _this = this;
@@ -46314,7 +46331,8 @@ var render = function() {
                                     _vm._v(
                                       _vm._s(item.user_data.name) +
                                         " " +
-                                        _vm._s(item.user_data.surname)
+                                        _vm._s(item.user_data.surname) +
+                                        "\n                            "
                                     )
                                   ])
                                 : _vm._e()
@@ -46491,6 +46509,28 @@ var render = function() {
                                                 )
                                               },
                                               expression: "employeeForm.role_id"
+                                            }
+                                          }),
+                                          _vm._v(" "),
+                                          _c("v-checkbox", {
+                                            attrs: {
+                                              label:
+                                                "Give access to the system",
+                                              color: "success",
+                                              "hide-details": ""
+                                            },
+                                            model: {
+                                              value:
+                                                _vm.employeeForm.giveAccess,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.employeeForm,
+                                                  "giveAccess",
+                                                  $$v
+                                                )
+                                              },
+                                              expression:
+                                                "employeeForm.giveAccess"
                                             }
                                           })
                                         ],
@@ -47895,7 +47935,8 @@ var render = function() {
                                   _vm._v(
                                     _vm._s(item.employee.user_data.name) +
                                       " " +
-                                      _vm._s(item.employee.user_data.surname)
+                                      _vm._s(item.employee.user_data.surname) +
+                                      "\n                            "
                                   )
                                 ])
                               : _vm._e()
@@ -47999,6 +48040,26 @@ var render = function() {
                                               )
                                             },
                                             expression: "employeeForm.email"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("v-checkbox", {
+                                          attrs: {
+                                            label: "Give access to the system",
+                                            color: "success",
+                                            "hide-details": ""
+                                          },
+                                          model: {
+                                            value: _vm.employeeForm.giveAccess,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.employeeForm,
+                                                "giveAccess",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "employeeForm.giveAccess"
                                           }
                                         })
                                       ],
