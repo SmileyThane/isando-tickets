@@ -24,10 +24,13 @@
                     </v-container>
                     <v-card-text>
                         <v-row>
-                            <v-col cols="12">
+                            <v-col cols="12" md="6">
                                 <v-label>
                                     <strong>Status: {{ticket.status.name}}</strong>
                                 </v-label>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-btn :disabled="!ticket.can_be_edited" class="float-md-right" color="green" style="color: white;" @click="updateTicket">Save</v-btn>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-label>
@@ -131,8 +134,9 @@
                                     rows="3"
                                     row-height="25"
                                     shaped
+                                    color="green"
                                     :disabled="!ticket.can_be_edited"
-                                    :value="ticket.connection_details"
+                                    v-model="ticket.connection_details"
                                 ></v-textarea>
                             </v-col>
                             <v-col cols="12" sm="6">
@@ -144,8 +148,9 @@
                                     rows="3"
                                     row-height="25"
                                     shaped
+                                    color="green"
                                     :disabled="!ticket.can_be_edited"
-                                    :value="ticket.access_details"
+                                    v-model="ticket.access_details"
                                 ></v-textarea>
                             </v-col>
                         </v-row>
@@ -614,6 +619,7 @@
             },
             getContacts(entityItem) {
                 this.contacts = []
+                // this.ticket.contact_company_user_id = null;
                 let route = '';
                 if (Object.keys(entityItem)[0] === 'App\\Company') {
                     route = `/api/company/${Object.values(entityItem)[0]}`
@@ -660,6 +666,8 @@
                 }
             },
             updateTicket() {
+                this.ticket.from_entity_id = Object.values(this.from)[0]
+                this.ticket.from_entity_type = Object.keys(this.from)[0]
                 axios.patch(`/api/ticket/${this.$route.params.id}`, this.ticket).then(response => {
                     response = response.data
                     if (response.success === true) {

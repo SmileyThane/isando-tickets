@@ -6991,6 +6991,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -7165,7 +7170,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getContacts: function getContacts(entityItem) {
       var _this5 = this;
 
-      this.contacts = [];
+      this.contacts = []; // this.ticket.contact_company_user_id = null;
+
       var route = '';
 
       if (Object.keys(entityItem)[0] === 'App\\Company') {
@@ -7218,6 +7224,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     updateTicket: function updateTicket() {
       var _this7 = this;
 
+      this.ticket.from_entity_id = Object.values(this.from)[0];
+      this.ticket.from_entity_type = Object.keys(this.from)[0];
       axios.patch("/api/ticket/".concat(this.$route.params.id), this.ticket).then(function (response) {
         response = response.data;
 
@@ -50088,7 +50096,7 @@ var render = function() {
                         [
                           _c(
                             "v-col",
-                            { attrs: { cols: "12" } },
+                            { attrs: { cols: "12", md: "6" } },
                             [
                               _c("v-label", [
                                 _c("strong", [
@@ -50097,6 +50105,27 @@ var render = function() {
                                   )
                                 ])
                               ])
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "12", md: "6" } },
+                            [
+                              _c(
+                                "v-btn",
+                                {
+                                  staticClass: "float-md-right",
+                                  staticStyle: { color: "white" },
+                                  attrs: {
+                                    disabled: !_vm.ticket.can_be_edited,
+                                    color: "green"
+                                  },
+                                  on: { click: _vm.updateTicket }
+                                },
+                                [_vm._v("Save")]
+                              )
                             ],
                             1
                           ),
@@ -50316,8 +50345,19 @@ var render = function() {
                                   rows: "3",
                                   "row-height": "25",
                                   shaped: "",
-                                  disabled: !_vm.ticket.can_be_edited,
-                                  value: _vm.ticket.connection_details
+                                  color: "green",
+                                  disabled: !_vm.ticket.can_be_edited
+                                },
+                                model: {
+                                  value: _vm.ticket.connection_details,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.ticket,
+                                      "connection_details",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "ticket.connection_details"
                                 }
                               })
                             ],
@@ -50338,8 +50378,15 @@ var render = function() {
                                   rows: "3",
                                   "row-height": "25",
                                   shaped: "",
-                                  disabled: !_vm.ticket.can_be_edited,
-                                  value: _vm.ticket.access_details
+                                  color: "green",
+                                  disabled: !_vm.ticket.can_be_edited
+                                },
+                                model: {
+                                  value: _vm.ticket.access_details,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.ticket, "access_details", $$v)
+                                  },
+                                  expression: "ticket.access_details"
                                 }
                               })
                             ],
