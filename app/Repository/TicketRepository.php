@@ -120,6 +120,11 @@ class TicketRepository
             $ticket->to_company_user_id = $request->to_company_user_id;
             $ticket->to_team_id = $request->to_team_id;
             $ticket->due_date = $request->due_date;
+            $ticket->priority_id = $request->priority_id;
+            $ticket->from_entity_id = $request->from_entity_id;
+            $ticket->from_entity_type = $request->from_entity_type;
+            $ticket->access_details = $request->access_details;
+            $ticket->connection_details = $request->connection_details;
             $ticket->save();
             $request->status_id = 2;
             $this->updateStatus($request, $id);
