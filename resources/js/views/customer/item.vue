@@ -305,6 +305,7 @@
                                                 <v-checkbox
                                                     label="Give access to the system"
                                                     color="success"
+                                                    :disabled="!checkRoleByIds([1,2,3])"
                                                     v-model="employeeForm.is_active"
                                                     hide-details
                                                 ></v-checkbox>
@@ -712,6 +713,15 @@
                     }
                 });
             },
+            checkRoleByIds(ids) {
+                let roleExists = false;
+                ids.forEach(id => {
+                    if (roleExists === false) {
+                        roleExists = this.$store.state.roles.includes(id)
+                    }
+                });
+                return roleExists
+            }
         }
     }
 </script>

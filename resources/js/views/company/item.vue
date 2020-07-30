@@ -368,7 +368,8 @@
                                                 <v-checkbox
                                                     label="Give access to the system"
                                                     color="success"
-                                                    v-model="employeeForm.giveAccess"
+                                                    :disabled="!checkRoleByIds([1,2,3])"
+                                                    v-model="employeeForm.is_active"
                                                     hide-details
                                                 ></v-checkbox>
                                             </div>
@@ -569,7 +570,7 @@
                     email: '',
                     role_id: '',
                     company_id: '',
-                    giveAccess: true
+                    is_active: false
                 },
                 roles: [
                     {
@@ -847,6 +848,15 @@
                     }
                 });
             },
+            checkRoleByIds(ids) {
+                let roleExists = false;
+                ids.forEach(id => {
+                    if (roleExists === false) {
+                        roleExists = this.$store.state.roles.includes(id)
+                    }
+                });
+                return roleExists
+            }
         }
     }
 </script>

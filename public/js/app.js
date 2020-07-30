@@ -3767,6 +3767,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3849,7 +3850,7 @@ __webpack_require__.r(__webpack_exports__);
         email: '',
         role_id: '',
         company_id: '',
-        giveAccess: true
+        is_active: false
       },
       roles: [{
         id: '',
@@ -4185,6 +4186,17 @@ __webpack_require__.r(__webpack_exports__);
           _this16.alert = true;
         }
       });
+    },
+    checkRoleByIds: function checkRoleByIds(ids) {
+      var _this17 = this;
+
+      var roleExists = false;
+      ids.forEach(function (id) {
+        if (roleExists === false) {
+          roleExists = _this17.$store.state.roles.includes(id);
+        }
+      });
+      return roleExists;
     }
   }
 });
@@ -4389,6 +4401,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -5174,6 +5187,17 @@ __webpack_require__.r(__webpack_exports__);
           _this13.alert = true;
         }
       });
+    },
+    checkRoleByIds: function checkRoleByIds(ids) {
+      var _this14 = this;
+
+      var roleExists = false;
+      ids.forEach(function (id) {
+        if (roleExists === false) {
+          roleExists = _this14.$store.state.roles.includes(id);
+        }
+      });
+      return roleExists;
     }
   }
 });
@@ -46517,20 +46541,24 @@ var render = function() {
                                               label:
                                                 "Give access to the system",
                                               color: "success",
+                                              disabled: !_vm.checkRoleByIds([
+                                                1,
+                                                2,
+                                                3
+                                              ]),
                                               "hide-details": ""
                                             },
                                             model: {
-                                              value:
-                                                _vm.employeeForm.giveAccess,
+                                              value: _vm.employeeForm.is_active,
                                               callback: function($$v) {
                                                 _vm.$set(
                                                   _vm.employeeForm,
-                                                  "giveAccess",
+                                                  "is_active",
                                                   $$v
                                                 )
                                               },
                                               expression:
-                                                "employeeForm.giveAccess"
+                                                "employeeForm.is_active"
                                             }
                                           })
                                         ],
@@ -48047,6 +48075,11 @@ var render = function() {
                                           attrs: {
                                             label: "Give access to the system",
                                             color: "success",
+                                            disabled: !_vm.checkRoleByIds([
+                                              1,
+                                              2,
+                                              3
+                                            ]),
                                             "hide-details": ""
                                           },
                                           model: {
