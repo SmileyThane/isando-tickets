@@ -4888,7 +4888,7 @@ __webpack_require__.r(__webpack_exports__);
         name: '',
         email: '',
         client_id: '',
-        giveAccess: true
+        is_active: false
       },
       roles: [{
         id: '',
@@ -48050,16 +48050,15 @@ var render = function() {
                                             "hide-details": ""
                                           },
                                           model: {
-                                            value: _vm.employeeForm.giveAccess,
+                                            value: _vm.employeeForm.is_active,
                                             callback: function($$v) {
                                               _vm.$set(
                                                 _vm.employeeForm,
-                                                "giveAccess",
+                                                "is_active",
                                                 $$v
                                               )
                                             },
-                                            expression:
-                                              "employeeForm.giveAccess"
+                                            expression: "employeeForm.is_active"
                                           }
                                         })
                                       ],

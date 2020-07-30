@@ -73,7 +73,7 @@ class CompanyUserRepository
     {
         $isNew = false;
         $request['password'] = Controller::getRandomString();
-        $user = User::where(['email' => $request['email'], 'individual_id' => null])->first();
+        $user = User::where(['is_active' => true, 'email' => $request['email']])->first();
         if (!$user) {
             $user = $this->userRepo->create($request);
             $isNew = true;
@@ -82,8 +82,10 @@ class CompanyUserRepository
         $isValid = $this->validate($request);
         if ($isValid === true) {
             $companyUser = $this->create($request['company_id'], $request['user_id']);
-            $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
-            $isNew === true ? $user->notify(new RegularInviteEmail($request['name'], $request['role_id'], $request['email'], $request['password'])) : null;
+            if ($user->is_active){
+                $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
+                $isNew === true ? $user->notify(new RegularInviteEmail($request['name'], $request['role_id'], $request['email'], $request['password'])) : null;
+            }
             return Controller::showResponse(true, $companyUser);
         }
         return Controller::showResponse(false, $isValid);

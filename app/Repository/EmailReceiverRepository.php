@@ -61,7 +61,7 @@ class EmailReceiverRepository
 //            Log::info('_________body_start' . $message->getTextBody() . '_________body_end');
             $senderObj = $res[$key]['sender'][0];
             $senderEmail = $senderObj->mail;
-            $userGlobal = User::where(['individual_id' => null, 'email' => $senderEmail])->first();
+            $userGlobal = User::where(['is_active' => true, 'email' => $senderEmail])->first();
             if ($userGlobal) {
                 Log::info('email from ' . $userGlobal->name);
                 try {
@@ -102,9 +102,22 @@ class EmailReceiverRepository
         return $mailCache;
     }
 
+    private function handleEmailAttachments($attachments)
+    {
+        $result = [];
+        foreach ($attachments as $attachment) {
+            $rand = Controller::getRandomString();
+            $name = $attachment->getName();
+            $path = "files/original/$rand/$name";
+            Storage::put("/public/$path", $attachment->getContent());
+            $result[] = $path;
+        }
+        return $result;
+    }
+
     private function ticketAnswerFromEmail($senderEmail, $ticket, $message, $files = [])
     {
-        $user = User::where(['individual_id' => null, 'email' => $senderEmail])->first();
+        $user = User::where(['is_active' => true, 'email' => $senderEmail])->first();
         if (!$user) {
             Log::info($senderEmail . ' not found');
         }
@@ -124,7 +137,7 @@ class EmailReceiverRepository
     private function createTicketFromEmail($senderEmail, $message, $ticketSubject, $files = []): ?Ticket
     {
         $fromEntityId = $fromEntityType = $toEntityId = $toEntityType = $productId = null;
-        $userFrom = User::where(['individual_id' => null, 'email' => $senderEmail])->first();
+        $userFrom = User::where(['is_active' => true, 'email' => $senderEmail])->first();
         if ($userFrom->employee->hasRole(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $userFrom->employee->id)->first();
             if ($clientCompanyUser) {
@@ -170,19 +183,6 @@ class EmailReceiverRepository
         $request->headers->set('Accept', 'application/json');
         $response = app()->handle($request);
         return $response->getContent();
-    }
-
-    private function handleEmailAttachments($attachments)
-    {
-        $result = [];
-        foreach ($attachments as $attachment) {
-            $rand = Controller::getRandomString();
-            $name = $attachment->getName();
-            $path = "files/original/$rand/$name";
-            Storage::put("/public/$path", $attachment->getContent());
-            $result[] = $path;
-        }
-        return $result;
     }
 
 }

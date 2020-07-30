@@ -20,7 +20,7 @@ class UserRepository
             $params['email'] = [
                 'required',
                 Rule::unique('users')->ignore(
-                    User::where('individual_id', '!=', null)->where('email', $params['email'])->first()
+                    User::where('is_active', false)->where('email', $params['email'])->first()
                 ),
             ];
         }
@@ -42,6 +42,7 @@ class UserRepository
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
+        $user->is_active = $request->is_active;
         $user->save();
         return $user;
     }

@@ -229,7 +229,9 @@ class TicketRepository
     {
         foreach ($companyUsers as $companyUser) {
             $user = $companyUser->userData;
-            $user->notify(new NewTicket($user->name, $ticket->name, $ticket->id));
+            if ($user->is_active) {
+                $user->notify(new NewTicket($user->name, $ticket->name, $ticket->id));
+            }
         }
     }
 
