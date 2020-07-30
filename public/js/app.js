@@ -7081,6 +7081,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -7329,6 +7339,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         } else {
           console.log('error');
         }
+
+        _this7.submitEdit = _this7.fromEdit = _this7.contactEdit = _this7.priorityEdit = _this7.ipEdit = _this7.detailsEdit = false;
       });
     },
     closeTicket: function closeTicket() {
@@ -50305,7 +50317,11 @@ var render = function() {
                                           expression: "ticket.can_be_edited"
                                         }
                                       ],
-                                      attrs: { text: "", small: "" },
+                                      attrs: {
+                                        text: "",
+                                        small: "",
+                                        disabled: _vm.fromEdit
+                                      },
                                       on: {
                                         click: function($event) {
                                           return _vm.toggleEdit("fromEdit")
@@ -50316,9 +50332,7 @@ var render = function() {
                                       _c("v-icon", [
                                         _vm._v(
                                           _vm._s(
-                                            !_vm.fromEdit
-                                              ? "mdi-pencil"
-                                              : "mdi-cancel"
+                                            !_vm.fromEdit ? "mdi-pencil" : ""
                                           )
                                         )
                                       ])
@@ -50336,6 +50350,7 @@ var render = function() {
                                   "item-text": "name",
                                   "item-value": "item",
                                   items: _vm.suppliers,
+                                  filled: _vm.fromEdit,
                                   disabled: !_vm.fromEdit
                                 },
                                 on: { input: _vm.getContacts },
@@ -50394,7 +50409,11 @@ var render = function() {
                                           expression: "ticket.can_be_edited"
                                         }
                                       ],
-                                      attrs: { text: "", small: "" },
+                                      attrs: {
+                                        text: "",
+                                        small: "",
+                                        disabled: _vm.priorityEdit
+                                      },
                                       on: {
                                         click: function($event) {
                                           return _vm.toggleEdit("priorityEdit")
@@ -50405,9 +50424,7 @@ var render = function() {
                                       _c("v-icon", [
                                         _vm._v(
                                           _vm._s(
-                                            _vm.priorityEdit
-                                              ? "mdi-cancel"
-                                              : "mdi-pencil"
+                                            _vm.priorityEdit ? "" : "mdi-pencil"
                                           )
                                         )
                                       ])
@@ -50425,6 +50442,7 @@ var render = function() {
                                   "item-text": "name",
                                   "item-value": "id",
                                   items: _vm.priorities,
+                                  filled: _vm.priorityEdit,
                                   disabled: !_vm.priorityEdit
                                 },
                                 model: {
@@ -50459,7 +50477,11 @@ var render = function() {
                                           expression: "ticket.can_be_edited"
                                         }
                                       ],
-                                      attrs: { text: "", small: "" },
+                                      attrs: {
+                                        text: "",
+                                        small: "",
+                                        disabled: _vm.contactEdit
+                                      },
                                       on: {
                                         click: function($event) {
                                           return _vm.toggleEdit("contactEdit")
@@ -50470,9 +50492,7 @@ var render = function() {
                                       _c("v-icon", [
                                         _vm._v(
                                           _vm._s(
-                                            _vm.contactEdit
-                                              ? "mdi-cancel"
-                                              : "mdi-pencil"
+                                            _vm.contactEdit ? "" : "mdi-pencil"
                                           )
                                         )
                                       ])
@@ -50490,6 +50510,7 @@ var render = function() {
                                   "item-text": "user_data.email",
                                   "item-value": "id",
                                   items: _vm.contacts,
+                                  filled: _vm.contactEdit,
                                   disabled: !_vm.contactEdit
                                 },
                                 model: {
@@ -50617,7 +50638,11 @@ var render = function() {
                                           expression: "ticket.can_be_edited"
                                         }
                                       ],
-                                      attrs: { text: "", small: "" },
+                                      attrs: {
+                                        text: "",
+                                        small: "",
+                                        disabled: _vm.ipEdit
+                                      },
                                       on: {
                                         click: function($event) {
                                           return _vm.toggleEdit("ipEdit")
@@ -50627,11 +50652,7 @@ var render = function() {
                                     [
                                       _c("v-icon", [
                                         _vm._v(
-                                          _vm._s(
-                                            _vm.ipEdit
-                                              ? "mdi-cancel"
-                                              : "mdi-pencil"
-                                          )
+                                          _vm._s(_vm.ipEdit ? "" : "mdi-pencil")
                                         )
                                       ])
                                     ],
@@ -50648,6 +50669,7 @@ var render = function() {
                                   "row-height": "25",
                                   shaped: "",
                                   color: "green",
+                                  filled: _vm.ipEdit,
                                   disabled: !_vm.ipEdit
                                 },
                                 model: {
@@ -50686,7 +50708,11 @@ var render = function() {
                                           expression: "ticket.can_be_edited"
                                         }
                                       ],
-                                      attrs: { text: "", small: "" },
+                                      attrs: {
+                                        text: "",
+                                        small: "",
+                                        disabled: _vm.detailsEdit
+                                      },
                                       on: {
                                         click: function($event) {
                                           return _vm.toggleEdit("detailsEdit")
@@ -50697,9 +50723,7 @@ var render = function() {
                                       _c("v-icon", [
                                         _vm._v(
                                           _vm._s(
-                                            _vm.detailsEdit
-                                              ? "mdi-cancel"
-                                              : "mdi-pencil"
+                                            _vm.detailsEdit ? "" : "mdi-pencil"
                                           )
                                         )
                                       ])
@@ -50717,6 +50741,7 @@ var render = function() {
                                   "row-height": "25",
                                   shaped: "",
                                   color: "green",
+                                  filled: _vm.detailsEdit,
                                   disabled: !_vm.detailsEdit
                                 },
                                 model: {

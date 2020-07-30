@@ -41,9 +41,10 @@
                                         text
                                         small
                                         v-show="ticket.can_be_edited"
+                                        :disabled="fromEdit"
                                         @click="toggleEdit('fromEdit')"
                                     >
-                                        <v-icon>{{!fromEdit ? 'mdi-pencil' : 'mdi-cancel'}}</v-icon>
+                                        <v-icon>{{!fromEdit ? 'mdi-pencil' : ''}}</v-icon>
                                     </v-btn>
                                 </v-label>
                                 <v-select
@@ -52,6 +53,7 @@
                                     item-text="name"
                                     item-value="item"
                                     :items="suppliers"
+                                    :filled="fromEdit"
                                     v-model="from"
                                     :disabled="!fromEdit"
                                     @input="getContacts"
@@ -78,9 +80,10 @@
                                         text
                                         small
                                         v-show="ticket.can_be_edited"
+                                        :disabled="priorityEdit"
                                         @click="toggleEdit('priorityEdit')"
                                     >
-                                        <v-icon>{{priorityEdit ? 'mdi-cancel' : 'mdi-pencil'}}</v-icon>
+                                        <v-icon>{{priorityEdit ? '' : 'mdi-pencil'}}</v-icon>
                                     </v-btn>
                                 </v-label>
                                 <v-select
@@ -89,6 +92,7 @@
                                     item-text="name"
                                     item-value="id"
                                     :items="priorities"
+                                    :filled="priorityEdit"
                                     :disabled="!priorityEdit"
                                     v-model="ticket.priority_id"
                                 />
@@ -100,9 +104,10 @@
                                         text
                                         small
                                         v-show="ticket.can_be_edited"
+                                        :disabled="contactEdit"
                                         @click="toggleEdit('contactEdit')"
                                     >
-                                        <v-icon>{{contactEdit ? 'mdi-cancel' : 'mdi-pencil'}}</v-icon>
+                                        <v-icon>{{contactEdit ? '' : 'mdi-pencil'}}</v-icon>
                                     </v-btn>
                                 </v-label>
                                 <v-autocomplete
@@ -112,6 +117,7 @@
                                     item-value="id"
                                     v-model="ticket.contact_company_user_id"
                                     :items="contacts"
+                                    :filled="contactEdit"
                                     :disabled="!contactEdit"
                                 ></v-autocomplete>
                             </v-col>
@@ -159,9 +165,10 @@
                                         text
                                         small
                                         v-show="ticket.can_be_edited"
+                                        :disabled="ipEdit"
                                         @click="toggleEdit('ipEdit')"
                                     >
-                                        <v-icon>{{ipEdit ? 'mdi-cancel' : 'mdi-pencil'}}</v-icon>
+                                        <v-icon>{{ipEdit ? '' : 'mdi-pencil'}}</v-icon>
                                     </v-btn>
                                 </v-label>
                                 <v-textarea
@@ -170,6 +177,7 @@
                                     row-height="25"
                                     shaped
                                     color="green"
+                                    :filled="ipEdit"
                                     :disabled="!ipEdit"
                                     v-model="ticket.connection_details"
                                 ></v-textarea>
@@ -181,9 +189,10 @@
                                         text
                                         small
                                         v-show="ticket.can_be_edited"
+                                        :disabled="detailsEdit"
                                         @click="toggleEdit('detailsEdit')"
                                     >
-                                        <v-icon>{{detailsEdit ? 'mdi-cancel' : 'mdi-pencil'}}</v-icon>
+                                        <v-icon>{{detailsEdit ? '' : 'mdi-pencil'}}</v-icon>
                                     </v-btn>
                                 </v-label>
                                 <v-textarea
@@ -192,6 +201,7 @@
                                     row-height="25"
                                     shaped
                                     color="green"
+                                    :filled="detailsEdit"
                                     :disabled="!detailsEdit"
                                     v-model="ticket.access_details"
                                 ></v-textarea>
@@ -732,6 +742,7 @@
                     } else {
                         console.log('error')
                     }
+                    this.submitEdit = this.fromEdit = this.contactEdit = this.priorityEdit = this.ipEdit = this.detailsEdit = false
                 });
             },
             closeTicket() {
