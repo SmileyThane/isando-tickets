@@ -305,7 +305,7 @@
                                                 <v-checkbox
                                                     label="Give access to the system"
                                                     color="success"
-                                                    v-model="employeeForm.giveAccess"
+                                                    v-model="employeeForm.is_active"
                                                     hide-details
                                                 ></v-checkbox>
                                             </div>
@@ -476,7 +476,7 @@
                     name: '',
                     email: '',
                     client_id: '',
-                    giveAccess: true
+                    is_active: false
                 },
                 roles: [
                     {
