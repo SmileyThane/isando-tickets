@@ -48,7 +48,7 @@ class AuthController extends Controller
     {
         $result = false;
         $tokenData = null;
-        if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password, 'is_active' => true])) {
             $user = Auth::guard('web')->user();
             if ($user) {
                 $tokenResult = $user->createToken('web');
