@@ -3768,6 +3768,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3858,7 +3867,7 @@ __webpack_require__.r(__webpack_exports__);
       }],
       rolesDialog: false,
       newRoleForm: {
-        name: '',
+        user: '',
         role_ids: [],
         company_user_id: ''
       },
@@ -3962,7 +3971,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this5 = this;
 
       this.rolesDialog = true;
-      this.newRoleForm.name = item.user_data.name;
+      this.newRoleForm.user = item.user_data;
       this.newRoleForm.role_ids = [];
       this.newRoleForm.company_user_id = item.id;
       item.roles.forEach(function (role) {
@@ -4187,13 +4196,32 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    checkRoleByIds: function checkRoleByIds(ids) {
+    changeIsActive: function changeIsActive(item) {
       var _this17 = this;
+
+      var request = {};
+      request.user_id = item.user_data.id;
+      request.is_active = item.user_data.is_active;
+      axios.post("/api/user/is_active", request).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this17.getCompany();
+
+          _this17.error.push('Updated successful');
+
+          _this17.errorType = 'success';
+          _this17.alert = true;
+        } else {}
+      });
+    },
+    checkRoleByIds: function checkRoleByIds(ids) {
+      var _this18 = this;
 
       var roleExists = false;
       ids.forEach(function (id) {
         if (roleExists === false) {
-          roleExists = _this17.$store.state.roles.includes(id);
+          roleExists = _this18.$store.state.roles.includes(id);
         }
       });
       return roleExists;
@@ -46854,7 +46882,9 @@ var render = function() {
                 [
                   _c("v-card-title", [
                     _c("span", { staticClass: "headline" }, [
-                      _vm._v("Update role for " + _vm._s(_vm.newRoleForm.name))
+                      _vm._v(
+                        "Update role for " + _vm._s(_vm.newRoleForm.user.name)
+                      )
                     ])
                   ]),
                   _vm._v(" "),
@@ -46872,6 +46902,7 @@ var render = function() {
                               "item-text": "name",
                               "item-value": "id",
                               items: _vm.roles,
+                              disabled: !_vm.checkRoleByIds([1, 2, 3]),
                               multiple: ""
                             },
                             model: {
@@ -46880,6 +46911,27 @@ var render = function() {
                                 _vm.$set(_vm.newRoleForm, "role_ids", $$v)
                               },
                               expression: "newRoleForm.role_ids"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-checkbox", {
+                            attrs: {
+                              label: "Give access to the system",
+                              color: "success",
+                              disabled: !_vm.checkRoleByIds([1, 2, 3]),
+                              "hide-details": ""
+                            },
+                            on: {
+                              change: function($event) {
+                                return _vm.changeIsActive(_vm.newRoleForm.user)
+                              }
+                            },
+                            model: {
+                              value: _vm.newRoleForm.user.is_active,
+                              callback: function($$v) {
+                                _vm.$set(_vm.newRoleForm.user, "is_active", $$v)
+                              },
+                              expression: "newRoleForm.user.is_active"
                             }
                           })
                         ],

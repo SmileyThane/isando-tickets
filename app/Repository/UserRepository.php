@@ -69,4 +69,17 @@ class UserRepository
         return $result;
     }
 
+    public function changeIsActive(Request $request)
+    {
+        try {
+            $user = User::find($request->user_id);
+            $user->is_active = $request->is_active;
+            $user->save();
+            $result = true;
+        } catch (\Throwable $th) {
+            $result = false;
+        }
+        return $result;
+    }
+
 }

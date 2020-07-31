@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Role;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -58,6 +59,11 @@ class UserController extends Controller
         $request->model_type = CompanyUser::class;
         $result = $this->roleRepo->updateRoles($request);
         return self::showResponse($result);
+    }
+
+    public function changeIsActive(Request $request)
+    {
+        return self::showResponse($this->userRepo->changeIsActive($request));
     }
 }
 

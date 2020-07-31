@@ -482,7 +482,7 @@
             <v-dialog v-model="rolesDialog" persistent max-width="600px">
                 <v-card>
                     <v-card-title>
-                        <span class="headline">Update role for {{newRoleForm.name}}</span>
+                        <span class="headline">Update role for {{newRoleForm.user.name}}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -493,9 +493,18 @@
                                 item-text="name"
                                 item-value="id"
                                 :items="roles"
+                                :disabled="!checkRoleByIds([1,2,3])"
                                 v-model="newRoleForm.role_ids"
                                 multiple
                             />
+                            <v-checkbox
+                                label="Give access to the system"
+                                color="success"
+                                :disabled="!checkRoleByIds([1,2,3])"
+                                v-model="newRoleForm.user.is_active"
+                                @change="changeIsActive(newRoleForm.user)"
+                                hide-details
+                            ></v-checkbox>
                         </v-container>
                         <!--                        <small>*indicates required field</small>-->
                     </v-card-text>
@@ -580,7 +589,7 @@
                 ],
                 rolesDialog: false,
                 newRoleForm: {
-                    name: '',
+                    user: '',
                     role_ids: [],
                     company_user_id: ''
                 },
@@ -674,7 +683,7 @@
             },
             showRolesModal(item) {
                 this.rolesDialog = true
-                this.newRoleForm.name = item.user_data.name
+                this.newRoleForm.user = item.user_data
                 this.newRoleForm.role_ids = []
                 this.newRoleForm.company_user_id = item.id
                 item.roles.forEach(role => {
@@ -845,6 +854,21 @@
                         this.errorType = 'error'
                         this.alert = true;
 
+                    }
+                });
+            },
+            changeIsActive(item) {
+                let request = {}
+                request.user_id = item.user_data.id
+                request.is_active = item.user_data.is_active
+                axios.post(`/api/user/is_active`, request).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.error.push('Updated successful')
+                        this.errorType = 'success'
+                        this.alert = true;
+                    } else {
                     }
                 });
             },
