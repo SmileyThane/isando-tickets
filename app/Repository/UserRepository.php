@@ -4,6 +4,8 @@
 namespace App\Repository;
 
 
+use App\Http\Controllers\Controller;
+use App\Notifications\RegularInviteEmail;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -58,7 +60,7 @@ class UserRepository
         return $user;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $result = false;
         $user = User::find($id);
@@ -69,7 +71,7 @@ class UserRepository
         return $result;
     }
 
-    public function changeIsActive(Request $request)
+    public function changeIsActive(Request $request): bool
     {
         try {
             $user = User::find($request->user_id);
@@ -82,4 +84,14 @@ class UserRepository
         return $result;
     }
 
+    public function sendInvite($user, $role, $password = null): bool
+    {
+        if ($password === null) {
+            $password = Controller::getRandomString();
+            $user->password = bcrypt($password);
+            $user->save();
+        }
+        $user->notify(new RegularInviteEmail($user->name, $role, $user->email, $password));
+        return true;
+    }
 }

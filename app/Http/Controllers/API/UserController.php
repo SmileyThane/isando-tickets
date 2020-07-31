@@ -65,6 +65,17 @@ class UserController extends Controller
     {
         return self::showResponse($this->userRepo->changeIsActive($request));
     }
+
+    public function sendInvite(Request $request)
+    {
+        $success = false;
+        $user = User::find($request->user_id);
+        if ($user->is_active) {
+            $success = $this->userRepo->sendInvite($user, $request->role_id);
+        }
+        return self::showResponse($success);
+    }
+
 }
 
 

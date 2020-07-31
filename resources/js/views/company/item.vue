@@ -1,6 +1,13 @@
 <template>
     <v-container>
-
+        <v-snackbar
+            :bottom="true"
+            :right="true"
+            v-model="snackbar"
+            :color="actionColor"
+        >
+            {{ snackbarMessage }}
+        </v-snackbar>
         <div class="row">
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -304,15 +311,33 @@
                                 </div>
                             </template>
                             <template v-slot:item.actions="{ item }">
+                                <!--                                <v-icon-->
+                                <!--                                    small-->
+                                <!--                                    class="mr-2"-->
+                                <!--                                    hint="Account status"-->
+                                <!--                                >-->
+                                <!--                                    {{item.user_data.is_active ? 'mdi-account' : 'mdi-account-off'}}-->
+                                <!--                                </v-icon>-->
+                                <v-icon
+                                    :disabled="!item.user_data.is_active"
+                                    small
+                                    class="mr-2"
+                                    @click="sendInvite(item)"
+                                >
+                                    mdi-account-alert
+                                </v-icon>
+
                                 <v-icon
                                     small
                                     class="mr-2"
+                                    hint="Edit contact"
                                     @click="showRolesModal(item)"
                                 >
-                                    mdi-account-settings-outline
+                                    mdi-account-edit
                                 </v-icon>
                                 <v-icon
                                     small
+                                    hint="Delete contact"
                                     @click="removeEmployee(item)"
                                 >
                                     mdi-delete
@@ -525,6 +550,10 @@
 
         data() {
             return {
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
+                tooltip:false,
                 phoneHeaders: [
                     {text: 'Phone', sortable: false, value: 'phone'},
                     {text: 'Type', value: 'type.name'},
@@ -658,6 +687,9 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
+                        this.snackbarMessage = 'Contact was added successfully'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         console.log('error')
                     }
@@ -675,6 +707,9 @@
                     response = response.data
                     if (response.success === true) {
                         this.company = response.data
+                        this.snackbarMessage = 'Delete successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         console.log('error')
                     }
@@ -697,6 +732,9 @@
                     if (response.success === true) {
                         this.getCompany()
                         this.rolesDialog = false
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         console.log('error')
                     }
@@ -709,6 +747,9 @@
                     if (response.success === true) {
                         this.getCompany()
                         this.rolesDialog = false
+                        this.snackbarMessage = 'Contact was removed'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         console.log('error')
                     }
@@ -757,9 +798,9 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.error.push('Update successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         this.parseErrors(response.error)
                         this.errorType = 'error'
@@ -774,9 +815,9 @@
                     if (response.success === true) {
                         this.getCompany()
                         this.phoneForm.phone = ''
-                        this.error.push('Delete successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Delete successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         this.parseErrors(response.error)
                         this.errorType = 'error'
@@ -791,9 +832,9 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.error.push('Update successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         this.parseErrors(response.error)
                         this.errorType = 'error'
@@ -808,9 +849,9 @@
                     if (response.success === true) {
                         this.getCompany()
                         this.socialForm.phone = ''
-                        this.error.push('Delete successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Delete successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         this.parseErrors(response.error)
                         this.errorType = 'error'
@@ -830,9 +871,9 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.error.push('Update successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         this.parseErrors(response.error)
                         this.errorType = 'error'
@@ -846,9 +887,9 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.error.push('Delete successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = 'Delete successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         this.parseErrors(response.error)
                         this.errorType = 'error'
@@ -859,15 +900,30 @@
             },
             changeIsActive(item) {
                 let request = {}
-                request.user_id = item.user_data.id
-                request.is_active = item.user_data.is_active
+                request.user_id = item.id
+                request.is_active = item.is_active
                 axios.post(`/api/user/is_active`, request).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.error.push('Updated successful')
-                        this.errorType = 'success'
-                        this.alert = true;
+                        this.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                    }
+                });
+            },
+            sendInvite(item) {
+                let request = {}
+                request.user_id = item.user_data.id
+                request.role_id = item.roles[0].id
+                axios.post(`/api/user/invite`, request).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.snackbarMessage = 'Invite sent'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                     }
                 });

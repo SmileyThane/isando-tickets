@@ -3777,9 +3777,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      snackbar: false,
+      actionColor: '',
+      snackbarMessage: '',
+      tooltip: false,
       phoneHeaders: [{
         text: 'Phone',
         sortable: false,
@@ -3943,6 +3972,10 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this3.getCompany();
+
+          _this3.snackbarMessage = 'Contact was added successfully';
+          _this3.actionColor = 'success';
+          _this3.snackbar = true;
         } else {
           console.log('error');
         }
@@ -3962,6 +3995,9 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this4.company = response.data;
+          _this4.snackbarMessage = 'Delete successful';
+          _this4.actionColor = 'success';
+          _this4.snackbar = true;
         } else {
           console.log('error');
         }
@@ -3988,6 +4024,9 @@ __webpack_require__.r(__webpack_exports__);
           _this6.getCompany();
 
           _this6.rolesDialog = false;
+          _this6.snackbarMessage = 'Update successful';
+          _this6.actionColor = 'success';
+          _this6.snackbar = true;
         } else {
           console.log('error');
         }
@@ -4003,6 +4042,9 @@ __webpack_require__.r(__webpack_exports__);
           _this7.getCompany();
 
           _this7.rolesDialog = false;
+          _this7.snackbarMessage = 'Contact was removed';
+          _this7.actionColor = 'success';
+          _this7.snackbar = true;
         } else {
           console.log('error');
         }
@@ -4066,10 +4108,9 @@ __webpack_require__.r(__webpack_exports__);
         if (response.success === true) {
           _this11.getCompany();
 
-          _this11.error.push('Update successful');
-
-          _this11.errorType = 'success';
-          _this11.alert = true;
+          _this11.snackbarMessage = 'Update successful';
+          _this11.actionColor = 'success';
+          _this11.snackbar = true;
         } else {
           _this11.parseErrors(response.error);
 
@@ -4088,11 +4129,9 @@ __webpack_require__.r(__webpack_exports__);
           _this12.getCompany();
 
           _this12.phoneForm.phone = '';
-
-          _this12.error.push('Delete successful');
-
-          _this12.errorType = 'success';
-          _this12.alert = true;
+          _this12.snackbarMessage = 'Delete successful';
+          _this12.actionColor = 'success';
+          _this12.snackbar = true;
         } else {
           _this12.parseErrors(response.error);
 
@@ -4111,10 +4150,9 @@ __webpack_require__.r(__webpack_exports__);
         if (response.success === true) {
           _this13.getCompany();
 
-          _this13.error.push('Update successful');
-
-          _this13.errorType = 'success';
-          _this13.alert = true;
+          _this13.snackbarMessage = 'Update successful';
+          _this13.actionColor = 'success';
+          _this13.snackbar = true;
         } else {
           _this13.parseErrors(response.error);
 
@@ -4133,11 +4171,9 @@ __webpack_require__.r(__webpack_exports__);
           _this14.getCompany();
 
           _this14.socialForm.phone = '';
-
-          _this14.error.push('Delete successful');
-
-          _this14.errorType = 'success';
-          _this14.alert = true;
+          _this14.snackbarMessage = 'Delete successful';
+          _this14.actionColor = 'success';
+          _this14.snackbar = true;
         } else {
           _this14.parseErrors(response.error);
 
@@ -4163,10 +4199,9 @@ __webpack_require__.r(__webpack_exports__);
         if (response.success === true) {
           _this15.getCompany();
 
-          _this15.error.push('Update successful');
-
-          _this15.errorType = 'success';
-          _this15.alert = true;
+          _this15.snackbarMessage = 'Update successful';
+          _this15.actionColor = 'success';
+          _this15.snackbar = true;
         } else {
           _this15.parseErrors(response.error);
 
@@ -4184,10 +4219,9 @@ __webpack_require__.r(__webpack_exports__);
         if (response.success === true) {
           _this16.getCompany();
 
-          _this16.error.push('Delete successful');
-
-          _this16.errorType = 'success';
-          _this16.alert = true;
+          _this16.snackbarMessage = 'Delete successful';
+          _this16.actionColor = 'success';
+          _this16.snackbar = true;
         } else {
           _this16.parseErrors(response.error);
 
@@ -4200,28 +4234,45 @@ __webpack_require__.r(__webpack_exports__);
       var _this17 = this;
 
       var request = {};
-      request.user_id = item.user_data.id;
-      request.is_active = item.user_data.is_active;
+      request.user_id = item.id;
+      request.is_active = item.is_active;
       axios.post("/api/user/is_active", request).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
           _this17.getCompany();
 
-          _this17.error.push('Updated successful');
+          _this17.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated';
+          _this17.actionColor = 'success';
+          _this17.snackbar = true;
+        } else {}
+      });
+    },
+    sendInvite: function sendInvite(item) {
+      var _this18 = this;
 
-          _this17.errorType = 'success';
-          _this17.alert = true;
+      var request = {};
+      request.user_id = item.user_data.id;
+      request.role_id = item.roles[0].id;
+      axios.post("/api/user/invite", request).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this18.getCompany();
+
+          _this18.snackbarMessage = 'Invite sent';
+          _this18.actionColor = 'success';
+          _this18.snackbar = true;
         } else {}
       });
     },
     checkRoleByIds: function checkRoleByIds(ids) {
-      var _this18 = this;
+      var _this19 = this;
 
       var roleExists = false;
       ids.forEach(function (id) {
         if (roleExists === false) {
-          roleExists = _this18.$store.state.roles.includes(id);
+          roleExists = _this19.$store.state.roles.includes(id);
         }
       });
       return roleExists;
@@ -45512,6 +45563,21 @@ var render = function() {
   return _c(
     "v-container",
     [
+      _c(
+        "v-snackbar",
+        {
+          attrs: { bottom: true, right: true, color: _vm.actionColor },
+          model: {
+            value: _vm.snackbar,
+            callback: function($$v) {
+              _vm.snackbar = $$v
+            },
+            expression: "snackbar"
+          }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.snackbarMessage) + "\n    ")]
+      ),
+      _vm._v(" "),
       _c("div", { staticClass: "row" }, [
         _c(
           "div",
@@ -46412,7 +46478,28 @@ var render = function() {
                                 "v-icon",
                                 {
                                   staticClass: "mr-2",
-                                  attrs: { small: "" },
+                                  attrs: {
+                                    disabled: !item.user_data.is_active,
+                                    small: ""
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.sendInvite(item)
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                mdi-account-alert\n                            "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-icon",
+                                {
+                                  staticClass: "mr-2",
+                                  attrs: { small: "", hint: "Edit contact" },
                                   on: {
                                     click: function($event) {
                                       return _vm.showRolesModal(item)
@@ -46421,7 +46508,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                mdi-account-settings-outline\n                            "
+                                    "\n                                mdi-account-edit\n                            "
                                   )
                                 ]
                               ),
@@ -46429,7 +46516,7 @@ var render = function() {
                               _c(
                                 "v-icon",
                                 {
-                                  attrs: { small: "" },
+                                  attrs: { small: "", hint: "Delete contact" },
                                   on: {
                                     click: function($event) {
                                       return _vm.removeEmployee(item)

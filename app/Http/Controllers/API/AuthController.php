@@ -93,7 +93,7 @@ class AuthController extends Controller
             $user = $this->userRepo->create($request);
             $companyUser = $this->companyUserRepo->create($company->id, $user->id);
             $this->roleRepo->attach($companyUser->id, CompanyUser::class, Role::LICENSE_OWNER);
-            $user->notify(new RegularInviteEmail($user->name, Role::LICENSE_OWNER, $user->email, $request->password));
+            $this->userRepo->sendInvite($user, Role::LICENSE_OWNER, $request->password);
             return self::showResponse(true);
         }
         return self::showResponse(false, $errors);
