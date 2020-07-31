@@ -53,37 +53,31 @@ class EmailReceiverRepository
     private function handleEmailMessages($messages, $type)
     {
         $responseBody = null;
-        $i = 1;
         foreach ($messages as $key => $message) {
-//            Log::info($i++ . ') ');
-            $res[$key]['sender'] = $message->getSender();
-            $res[$key]['subject'] = $message->getSubject();
-//            Log::info('_________body_start' . $message->getTextBody() . '_________body_end');
-            $senderObj = $res[$key]['sender'][0];
-            $senderEmail = $senderObj->mail;
+            $senderObject = $message->getSender()[0];
+            $rawSubject = $message->getSubject();
+            $senderEmail = $senderObject->mail;
             $userGlobal = User::where(['is_active' => true, 'email' => $senderEmail])->first();
             if ($userGlobal) {
                 Log::info('email from ' . $userGlobal->name);
                 try {
-                    $ticketAttributes['Subject'] = trim(str_replace("Re:", "", $res[$key]['subject']));
+                    $ticketSubject = trim(str_replace(["Re:", "Fwd:"], "", $rawSubject));
                     $cachedCount = MailCache::where('message_key', $key)->count();
                     if ($cachedCount === 0) {
-                        $this->addMailCache($key, $res[$key]['subject']);
+                        $this->addMailCache($key, $rawSubject);
                     }
-                    $ticket = Ticket::where('name', 'like', $ticketAttributes['Subject'])
+                    $ticket = Ticket::where('name', 'like', $ticketSubject)
                         ->where(static function ($query) use ($userGlobal) {
                             return $query->where('from_company_user_id', $userGlobal->employee->id)
                                 ->orWhere('to_company_user_id', $userGlobal->employee->id);
                         })->first();
                     $attachments = $this->handleEmailAttachments($message->getAttachments());
-
                     if ($ticket !== null && $cachedCount === 0) {
                         Log::info('system starts creating answer for ticket ' . $ticket->id);
                         $responseBody = $this->ticketAnswerFromEmail($senderEmail, $ticket, $message, $attachments);
-
                     } elseif ($ticket === null && $cachedCount === 0) {
                         Log::info('system starts creating new ticket');
-                        $responseBody = $this->createTicketFromEmail($senderEmail, $message, $ticketAttributes['Subject'], $attachments);
+                        $responseBody = $this->createTicketFromEmail($senderEmail, $message, $ticketSubject, $attachments);
                     }
                 } catch (\Throwable $th) {
                     Log::info('connection was broken' . $th);
@@ -102,7 +96,7 @@ class EmailReceiverRepository
         return $mailCache;
     }
 
-    private function handleEmailAttachments($attachments)
+    private function handleEmailAttachments($attachments): array
     {
         $result = [];
         foreach ($attachments as $attachment) {
@@ -115,14 +109,14 @@ class EmailReceiverRepository
         return $result;
     }
 
-    private function ticketAnswerFromEmail($senderEmail, $ticket, $message, $files = [])
+    private function ticketAnswerFromEmail($senderEmail, $ticket, $message, $files = []): bool
     {
         $user = User::where(['is_active' => true, 'email' => $senderEmail])->first();
         if (!$user) {
             Log::info($senderEmail . ' not found');
         }
         $params = new Request();
-        $params['answer'] = $this->removeEmptyParagraphs($message->getHTMLBody(true));
+        $params['answer'] = $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
         $params['files'] = $files;
         Log::info('answer created');
         return $this->ticketRepo->addAnswer($params, $ticket->id, $user->employee->id);
@@ -168,8 +162,8 @@ class EmailReceiverRepository
             $params['to_product_id'] = $productId;
             $params['priority_id'] = 2;
             $params['name'] = $ticketSubject;
-            $params['description'] = $this->removeEmptyParagraphs($message->getHTMLBody(true));
-            Log::info(json_encode($message));
+            $params['description'] = $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
+//            Log::info(json_encode($message));
             $params['files'] = $files;
             return $this->ticketRepo->create($params, $userFrom->employee->id);
         }
