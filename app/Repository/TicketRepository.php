@@ -13,6 +13,7 @@ use App\TeamCompanyUser;
 use App\Ticket;
 use App\TicketAnswer;
 use App\TicketHistory;
+use App\TicketNotice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -110,6 +111,16 @@ class TicketRepository
         return $ticket;
     }
 
+    private function addHistoryItem($ticketId, $companyUserId = null, $description = null)
+    {
+        $ticketHistory = new TicketHistory();
+        $ticketHistory->company_user_id = $companyUserId ?? Auth::user()->employee->id;
+        $ticketHistory->ticket_id = $ticketId;
+        $ticketHistory->description = $description;
+        $ticketHistory->save();
+        return true;
+    }
+
     public function update(Request $request, $id)
     {
         $ticket = Ticket::find($id);
@@ -138,7 +149,7 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->status_id = $request->status_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, $employeeId,'Status updated');
+        $this->addHistoryItem($ticket->id, $employeeId, 'Status updated');
         return true;
     }
 
@@ -176,7 +187,7 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->contact_company_user_id = $request->contact_company_user_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, null,'Contact person updated');
+        $this->addHistoryItem($ticket->id, null, 'Contact person updated');
         return true;
     }
 
@@ -191,11 +202,7 @@ class TicketRepository
         foreach ($files as $file) {
             $this->fileRepo->store($file, $ticketAnswer->id, TicketAnswer::class);
         }
-        $ticket = Ticket::find($ticketAnswer->ticket_id);
-
-
         $employee = $employeeId !== null ? CompanyUser::find($employeeId) : Auth::user()->employee;
-
         if ($employee->hasRole(Role::COMPANY_CLIENT)) {
             $request->status_id = 3;
         } else {
@@ -208,20 +215,12 @@ class TicketRepository
 
     public function addNotice(Request $request, $id)
     {
-        $ticket = Ticket::find($id);
-        $ticket->contact_company_user_id = $request->contact_company_user_id;
-        $ticket->save();
-        $this->addHistoryItem($ticket->id, null,'Notice added');
-        return true;
-    }
-
-    private function addHistoryItem($ticketId, $companyUserId = null, $description = null)
-    {
-        $ticketHistory = new TicketHistory();
-        $ticketHistory->company_user_id = $companyUserId ?? Auth::user()->employee->id;
-        $ticketHistory->ticket_id = $ticketId;
-        $ticketHistory->description = $description;
-        $ticketHistory->save();
+        $ticketNotice = new TicketNotice;
+        $ticketNotice->company_user_id = Auth::user()->employee->id;
+        $ticketNotice->notice = $request->notice;
+        $ticketNotice->ticket_id = $id;
+        $ticketNotice->save();
+        $this->addHistoryItem($ticketNotice->id, null, 'Notice added');
         return true;
     }
 
@@ -243,8 +242,8 @@ class TicketRepository
                     return $item;
                 }
             }
+            return null;
         });
-
     }
 
 }

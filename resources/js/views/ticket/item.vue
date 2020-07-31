@@ -437,8 +437,8 @@
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
-                                    <div v-for="historyItem in ticket.history"
-                                         :key="historyItem.id"
+                                    <div v-for="noticeItem in ticket.notices"
+                                         :key="noticeItem.id"
                                     >
                                         <v-card
                                             class="mx-auto"
@@ -446,10 +446,10 @@
                                         >
                                             <v-list-item three-line>
                                                 <v-list-item-content>
-                                                    <h1 class="text-right caption mb-2">{{historyItem.created_at}}</h1>
-                                                    <v-list-item-title class="mb-2">{{historyItem.description}}
+                                                    <h1 class="text-right caption mb-2">{{noticeItem.created_at}}</h1>
+                                                    <v-list-item-title class="mb-2">{{noticeItem.notice}}
                                                     </v-list-item-title>
-                                                    <v-list-item-subtitle>{{historyItem.employee.user_data.email}}
+                                                    <v-list-item-subtitle>{{noticeItem.employee.user_data.email}}
                                                     </v-list-item-subtitle>
                                                 </v-list-item-content>
                                             </v-list-item>
@@ -458,7 +458,31 @@
                                         <v-spacer>
                                             &nbsp;
                                         </v-spacer>
+
+
                                     </div>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="12">
+                                                <v-textarea
+                                                    color="green"
+                                                    item-color="green"
+                                                    v-model="ticketNotice.notice"
+                                                    label="Notice"
+                                                ></v-textarea>
+                                            </v-col>
+                                            <v-btn v-if="selectionDisabled === false"
+                                                   dark
+                                                   fab
+                                                   right
+                                                   bottom
+                                                   color="green"
+                                                   @click="addTicketNotice"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                             <v-expansion-panel>
@@ -616,6 +640,9 @@
                     files: [],
                     answer: ''
                 },
+                ticketNotice:{
+                  notice:'',
+                },
                 onFileChange(form) {
                     this[form].files = null;
                     console.log(event.target.files);
@@ -649,6 +676,9 @@
                         this.from = {[this.ticket.from_entity_type]: this.ticket.from_entity_id}
                         this.selectTeam();
                         this.getContacts(this.from)
+                        if (this.ticket.notices.length > 0) {
+                            this.assignPanel.push(1);
+                        }
                     }
                 });
             },
@@ -766,6 +796,18 @@
                     if (response.success === true) {
                         this.ticketAnswer.answer = ''
                         this.ticketAnswer.files = []
+                        this.getTicket()
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
+            addTicketNotice()
+            {
+                axios.post(`/api/ticket/${this.$route.params.id}/notice`, this.ticketNotice).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.ticketNotice.notice = ''
                         this.getTicket()
                     } else {
                         console.log('error')

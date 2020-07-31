@@ -7170,6 +7170,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -7276,6 +7300,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         files: [],
         answer: ''
       },
+      ticketNotice: {
+        notice: ''
+      },
       onFileChange: function onFileChange(form) {
         this[form].files = null;
         console.log(event.target.files);
@@ -7309,6 +7336,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this.selectTeam();
 
           _this.getContacts(_this.from);
+
+          if (_this.ticket.notices.length > 0) {
+            _this.assignPanel.push(1);
+          }
         }
       });
     },
@@ -7454,6 +7485,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this8.ticketAnswer.files = [];
 
           _this8.getTicket();
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    addTicketNotice: function addTicketNotice() {
+      var _this9 = this;
+
+      axios.post("/api/ticket/".concat(this.$route.params.id, "/notice"), this.ticketNotice).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this9.ticketNotice.notice = '';
+
+          _this9.getTicket();
         } else {
           console.log('error');
         }
@@ -51471,84 +51517,146 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "v-expansion-panel-content",
-                                _vm._l(_vm.ticket.history, function(
-                                  historyItem
-                                ) {
-                                  return _c(
-                                    "div",
-                                    { key: historyItem.id },
-                                    [
-                                      _c(
-                                        "v-card",
-                                        {
-                                          staticClass: "mx-auto",
-                                          attrs: { outlined: "" }
-                                        },
-                                        [
-                                          _c(
-                                            "v-list-item",
-                                            { attrs: { "three-line": "" } },
-                                            [
-                                              _c(
-                                                "v-list-item-content",
-                                                [
-                                                  _c(
-                                                    "h1",
-                                                    {
-                                                      staticClass:
-                                                        "text-right caption mb-2"
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        _vm._s(
-                                                          historyItem.created_at
+                                [
+                                  _vm._l(_vm.ticket.notices, function(
+                                    noticeItem
+                                  ) {
+                                    return _c(
+                                      "div",
+                                      { key: noticeItem.id },
+                                      [
+                                        _c(
+                                          "v-card",
+                                          {
+                                            staticClass: "mx-auto",
+                                            attrs: { outlined: "" }
+                                          },
+                                          [
+                                            _c(
+                                              "v-list-item",
+                                              { attrs: { "three-line": "" } },
+                                              [
+                                                _c(
+                                                  "v-list-item-content",
+                                                  [
+                                                    _c(
+                                                      "h1",
+                                                      {
+                                                        staticClass:
+                                                          "text-right caption mb-2"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            noticeItem.created_at
+                                                          )
                                                         )
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "v-list-item-title",
-                                                    { staticClass: "mb-2" },
-                                                    [
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "v-list-item-title",
+                                                      { staticClass: "mb-2" },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(
+                                                            noticeItem.notice
+                                                          ) +
+                                                            "\n                                                "
+                                                        )
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c("v-list-item-subtitle", [
                                                       _vm._v(
                                                         _vm._s(
-                                                          historyItem.description
+                                                          noticeItem.employee
+                                                            .user_data.email
                                                         ) +
                                                           "\n                                                "
                                                       )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c("v-list-item-subtitle", [
-                                                    _vm._v(
-                                                      _vm._s(
-                                                        historyItem.employee
-                                                          .user_data.email
-                                                      ) +
-                                                        "\n                                                "
-                                                    )
-                                                  ])
-                                                ],
-                                                1
-                                              )
-                                            ],
-                                            1
+                                                    ])
+                                                  ],
+                                                  1
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c("v-spacer", [
+                                          _vm._v(
+                                            "\n                                         \n                                    "
                                           )
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c("v-spacer", [
-                                        _vm._v(
-                                          "\n                                         \n                                    "
-                                        )
-                                      ])
-                                    ],
-                                    1
-                                  )
-                                }),
-                                0
+                                        ])
+                                      ],
+                                      1
+                                    )
+                                  }),
+                                  _vm._v(" "),
+                                  _c("v-form", [
+                                    _c(
+                                      "div",
+                                      { staticClass: "row" },
+                                      [
+                                        _c(
+                                          "v-col",
+                                          { attrs: { cols: "12" } },
+                                          [
+                                            _c("v-textarea", {
+                                              attrs: {
+                                                color: "green",
+                                                "item-color": "green",
+                                                label: "Notice"
+                                              },
+                                              model: {
+                                                value: _vm.ticketNotice.notice,
+                                                callback: function($$v) {
+                                                  _vm.$set(
+                                                    _vm.ticketNotice,
+                                                    "notice",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression:
+                                                  "ticketNotice.notice"
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _vm.selectionDisabled === false
+                                          ? _c(
+                                              "v-btn",
+                                              {
+                                                attrs: {
+                                                  dark: "",
+                                                  fab: "",
+                                                  right: "",
+                                                  bottom: "",
+                                                  color: "green"
+                                                },
+                                                on: {
+                                                  click: _vm.addTicketNotice
+                                                }
+                                              },
+                                              [
+                                                _c("v-icon", [
+                                                  _vm._v("mdi-plus")
+                                                ])
+                                              ],
+                                              1
+                                            )
+                                          : _vm._e()
+                                      ],
+                                      1
+                                    )
+                                  ])
+                                ],
+                                2
                               )
                             ],
                             1
