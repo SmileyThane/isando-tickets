@@ -8,7 +8,6 @@ use App\Repository\ClientRepository;
 use App\Repository\CompanyUserRepository;
 use App\Repository\UserRepository;
 use App\Role;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
-use App\Notifications\RegularInviteEmail;
 use App\Plan;
 use App\Repository\CompanyRepository;
 use App\Repository\CompanyUserRepository;
