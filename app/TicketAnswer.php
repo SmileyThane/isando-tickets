@@ -9,11 +9,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TicketAnswer extends Model
 {
 //    use SoftDeletes;
+    protected $appends = ['created_at_time'];
 
     public function getCreatedAtAttribute()
     {
         return Carbon::parse($this->attributes['created_at'])->calendar();
+    }
 
+    public function getCreatedAtTimeAttribute()
+    {
+        $createdAt = Carbon::parse($this->attributes['created_at']);
+        return $createdAt->diffInDays(now()) <= 1 ? $createdAt->diffForHumans() : '';
     }
 
     public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne

@@ -7194,6 +7194,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -7262,7 +7269,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           employee: {
             user_data: {
               name: '',
-              email: ''
+              email: '',
+              surname: ''
             }
           },
           answer: ''
@@ -50476,7 +50484,11 @@ var render = function() {
                                   },
                                   on: { click: _vm.updateTicket }
                                 },
-                                [_vm._v("Save\n                            ")]
+                                [
+                                  _vm._v(
+                                    "Save\n                                "
+                                  )
+                                ]
                               )
                             ],
                             1
@@ -50786,7 +50798,7 @@ var render = function() {
                               _vm._v(" "),
                               _c("v-spacer", [
                                 _vm._v(
-                                  "\n                                 \n                            "
+                                  "\n                                     \n                                "
                                 )
                               ]),
                               _vm._v(" "),
@@ -50971,9 +50983,9 @@ var render = function() {
                                       },
                                       [
                                         _vm._v(
-                                          "\n                                " +
+                                          "\n                                    " +
                                             _vm._s(attachment.name) +
-                                            "\n                            "
+                                            "\n                                "
                                         )
                                       ]
                                     )
@@ -51093,9 +51105,9 @@ var render = function() {
                                                     },
                                                     [
                                                       _vm._v(
-                                                        "\n                                                    " +
+                                                        "\n                                                        " +
                                                           _vm._s(text) +
-                                                          "\n                                                "
+                                                          "\n                                                    "
                                                       )
                                                     ]
                                                   )
@@ -51181,11 +51193,49 @@ var render = function() {
                                     "v-list-item-content",
                                     [
                                       _c(
-                                        "h1",
-                                        {
-                                          staticClass: "text-right caption mb-2"
-                                        },
-                                        [_vm._v(_vm._s(answer.created_at))]
+                                        "v-row",
+                                        [
+                                          _c("v-col", { attrs: { md: "6" } }, [
+                                            _c(
+                                              "p",
+                                              { staticClass: "text-left mb-3" },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    answer.employee.user_data
+                                                      .name
+                                                  ) +
+                                                    " " +
+                                                    _vm._s(
+                                                      answer.employee.user_data
+                                                        .surname
+                                                    ) +
+                                                    " responded " +
+                                                    _vm._s(
+                                                      answer.created_at_time
+                                                    ) +
+                                                    ":"
+                                                )
+                                              ]
+                                            )
+                                          ]),
+                                          _vm._v(" "),
+                                          _c("v-col", { attrs: { md: "6" } }, [
+                                            _c(
+                                              "p",
+                                              {
+                                                staticClass:
+                                                  "text-right caption mb-2"
+                                              },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(answer.created_at)
+                                                )
+                                              ]
+                                            )
+                                          ])
+                                        ],
+                                        1
                                       ),
                                       _vm._v(" "),
                                       _c("v-list", {
@@ -51194,19 +51244,6 @@ var render = function() {
                                           innerHTML: _vm._s(answer.answer)
                                         }
                                       }),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-list-item-subtitle",
-                                        { staticClass: "mb-3" },
-                                        [
-                                          _vm._v(
-                                            _vm._s(
-                                              answer.employee.user_data.email
-                                            ) +
-                                              "\n                                    "
-                                          )
-                                        ]
-                                      ),
                                       _vm._v(" "),
                                       answer.attachments.length > 0
                                         ? _c(
@@ -51235,11 +51272,11 @@ var render = function() {
                                                         },
                                                         [
                                                           _vm._v(
-                                                            "\n                                                " +
+                                                            "\n                                                    " +
                                                               _vm._s(
                                                                 attachment.name
                                                               ) +
-                                                              "\n                                            "
+                                                              "\n                                                "
                                                           )
                                                         ]
                                                       )
@@ -51264,7 +51301,7 @@ var render = function() {
                           _vm._v(" "),
                           _c("v-spacer", [
                             _vm._v(
-                              "\n                             \n                        "
+                              "\n                                 \n                            "
                             )
                           ])
                         ],
@@ -51325,7 +51362,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "Close Ticket\n                        "
+                                    "Close Ticket\n                            "
                                   )
                                 ]
                               )
@@ -51377,7 +51414,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                Assign to:\n                                "
+                                    "\n                                    Assign to:\n                                    "
                                   )
                                 ]
                               ),
@@ -51510,7 +51547,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                Ticket notices\n                                "
+                                    "\n                                    Ticket notices\n                                    "
                                   )
                                 ]
                               ),
@@ -51562,7 +51599,7 @@ var render = function() {
                                                           _vm._s(
                                                             noticeItem.notice
                                                           ) +
-                                                            "\n                                                "
+                                                            "\n                                                    "
                                                         )
                                                       ]
                                                     ),
@@ -51573,7 +51610,7 @@ var render = function() {
                                                           noticeItem.employee
                                                             .user_data.email
                                                         ) +
-                                                          "\n                                                "
+                                                          "\n                                                    "
                                                       )
                                                     ])
                                                   ],
@@ -51588,7 +51625,7 @@ var render = function() {
                                         _vm._v(" "),
                                         _c("v-spacer", [
                                           _vm._v(
-                                            "\n                                         \n                                    "
+                                            "\n                                             \n                                        "
                                           )
                                         ])
                                       ],
@@ -51686,7 +51723,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                Ticket history\n                                "
+                                    "\n                                    Ticket history\n                                    "
                                   )
                                 ]
                               ),
@@ -51735,7 +51772,7 @@ var render = function() {
                                                         _vm._s(
                                                           history.description
                                                         ) +
-                                                          "\n                                                "
+                                                          "\n                                                    "
                                                       )
                                                     ]
                                                   ),
@@ -51746,7 +51783,7 @@ var render = function() {
                                                         history.employee
                                                           .user_data.email
                                                       ) +
-                                                        "\n                                                "
+                                                        "\n                                                    "
                                                     )
                                                   ])
                                                 ],
@@ -51761,7 +51798,7 @@ var render = function() {
                                       _vm._v(" "),
                                       _c("v-spacer", [
                                         _vm._v(
-                                          "\n                                         \n                                    "
+                                          "\n                                             \n                                        "
                                         )
                                       ])
                                     ],

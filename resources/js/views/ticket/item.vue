@@ -315,10 +315,17 @@
                             >
                                 <v-list-item three-line>
                                     <v-list-item-content>
-                                        <h1 class="text-right caption mb-2">{{answer.created_at}}</h1>
+                                        <v-row>
+                                            <v-col md="6">
+                                                <p class="text-left mb-3">{{answer.employee.user_data.name}} {{answer.employee.user_data.surname}} responded {{answer.created_at_time}}:</p>
+                                            </v-col>
+                                            <v-col md="6">
+                                                <p class="text-right caption mb-2">{{answer.created_at}}</p>
+                                            </v-col>
+                                        </v-row>
+<!--                                        <v-list-item-subtitle class="mb-3">{{answer.employee.user_data.email}}-->
+<!--                                        </v-list-item-subtitle>-->
                                         <v-list class="mb-2" v-html="answer.answer"></v-list>
-                                        <v-list-item-subtitle class="mb-3">{{answer.employee.user_data.email}}
-                                        </v-list-item-subtitle>
 
                                         <v-col cols="12" v-if="answer.attachments.length > 0 ">
                                             <h4>Attachments</h4>
@@ -597,7 +604,8 @@
                             employee: {
                                 user_data: {
                                     name: '',
-                                    email: ''
+                                    email: '',
+                                    surname:''
                                 }
                             },
                             answer: ''
