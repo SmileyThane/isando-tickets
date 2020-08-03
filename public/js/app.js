@@ -7210,6 +7210,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -50425,16 +50431,42 @@ var render = function() {
                     "v-toolbar",
                     { attrs: { color: "green", dark: "", flat: "" } },
                     [
-                      _c("v-toolbar-title", [
-                        _vm._v(
-                          "#" +
-                            _vm._s(_vm.ticket.id) +
-                            " " +
-                            _vm._s(_vm.ticket.name)
-                        )
-                      ]),
+                      _c(
+                        "v-toolbar-title",
+                        {
+                          staticClass: "text-truncate",
+                          staticStyle: { "max-width": "60%" }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            #" +
+                              _vm._s(_vm.ticket.id) +
+                              "\n                    "
+                          )
+                        ]
+                      ),
                       _vm._v(" "),
-                      _c("v-spacer")
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c(
+                        "v-chip",
+                        {
+                          staticClass: "float-md-right",
+                          attrs: {
+                            color: _vm.ticket.status.color,
+                            dark: "",
+                            large: "",
+                            label: ""
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(_vm.ticket.status.name) +
+                              "\n                    "
+                          )
+                        ]
+                      )
                     ],
                     1
                   ),
@@ -50455,20 +50487,7 @@ var render = function() {
                       _c(
                         "v-row",
                         [
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", md: "6" } },
-                            [
-                              _c("v-label", [
-                                _c("strong", [
-                                  _vm._v(
-                                    "Status: " + _vm._s(_vm.ticket.status.name)
-                                  )
-                                ])
-                              ])
-                            ],
-                            1
-                          ),
+                          _c("v-col", { attrs: { cols: "12", md: "6" } }),
                           _vm._v(" "),
                           _c(
                             "v-col",
@@ -50501,7 +50520,7 @@ var render = function() {
                           _vm._v(" "),
                           _c(
                             "v-col",
-                            { attrs: { cols: "12", md: "6" } },
+                            { attrs: { cols: "12" } },
                             [
                               _c(
                                 "v-label",
@@ -50562,29 +50581,6 @@ var render = function() {
                                     _vm.from = $$v
                                   },
                                   expression: "from"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", md: "6" } },
-                            [
-                              _c("v-label", [_c("strong", [_vm._v("To:")])]),
-                              _vm._v(" "),
-                              _c("v-textarea", {
-                                attrs: {
-                                  label: "To",
-                                  "auto-grow": "",
-                                  rows: "3",
-                                  "row-height": "25",
-                                  shaped: "",
-                                  disabled: ""
-                                },
-                                domProps: {
-                                  textContent: _vm._s(_vm.ticket.to.name)
                                 }
                               })
                             ],
@@ -51007,7 +51003,8 @@ var render = function() {
                                             "Attachments: " +
                                               _vm._s(
                                                 _vm.ticket.attachments.length
-                                              )
+                                              ) +
+                                              "\n                                    "
                                           ),
                                           _c("v-icon", [
                                             _vm._v("mdi-paperclip")

@@ -14,8 +14,14 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>#{{ ticket.id }} {{ ticket.name }}</v-toolbar-title>
+                        <v-toolbar-title class="text-truncate" style="max-width: 60%">
+                                #{{ ticket.id }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
+                        <v-chip
+                            :color="ticket.status.color" dark large label class="float-md-right">
+                            {{ ticket.status.name }}
+                        </v-chip>
                     </v-toolbar>
                     <v-container>
                         <v-row align="center"
@@ -25,16 +31,14 @@
                     <v-card-text>
                         <v-row>
                             <v-col cols="12" md="6">
-                                <v-label>
-                                    <strong>Status: {{ticket.status.name}}</strong>
-                                </v-label>
+
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-btn v-show="ticket.can_be_edited" :disabled="!submitEdit" class="float-md-right"
                                        color="green" style="color: white;" @click="updateTicket">Save
                                 </v-btn>
                             </v-col>
-                            <v-col cols="12" md="6">
+                            <v-col cols="12">
                                 <v-label>
                                     <strong>From:</strong>
                                     <v-btn
@@ -59,20 +63,20 @@
                                     @input="getContacts"
                                 />
                             </v-col>
-                            <v-col cols="12" md="6">
-                                <v-label>
-                                    <strong>To:</strong>
-                                </v-label>
-                                <v-textarea
-                                    label="To"
-                                    auto-grow
-                                    rows="3"
-                                    row-height="25"
-                                    shaped
-                                    disabled
-                                    v-text="ticket.to.name"
-                                ></v-textarea>
-                            </v-col>
+                            <!--                            <v-col cols="12" md="6">-->
+                            <!--                                <v-label>-->
+                            <!--                                    <strong>To:</strong>-->
+                            <!--                                </v-label>-->
+                            <!--                                <v-textarea-->
+                            <!--                                    label="To"-->
+                            <!--                                    auto-grow-->
+                            <!--                                    rows="3"-->
+                            <!--                                    row-height="25"-->
+                            <!--                                    shaped-->
+                            <!--                                    disabled-->
+                            <!--                                    v-text="ticket.to.name"-->
+                            <!--                                ></v-textarea>-->
+                            <!--                            </v-col>-->
                             <v-col cols="12" md="6">
                                 <v-label>
                                     <strong>Priority:</strong>
@@ -212,9 +216,11 @@
                             <v-expansion-panel v-if="ticket.attachments.length > 0 ">
                                 <v-expansion-panel-header>
                                     <template v-slot:actions>
-                                        <v-icon >$expand</v-icon>
+                                        <v-icon>$expand</v-icon>
                                     </template>
-                                    <strong>Attachments: {{ticket.attachments.length}}<v-icon>mdi-paperclip</v-icon> </strong>
+                                    <strong>Attachments: {{ticket.attachments.length}}
+                                        <v-icon>mdi-paperclip</v-icon>
+                                    </strong>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <div
