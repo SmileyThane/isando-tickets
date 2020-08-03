@@ -7216,6 +7216,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -50441,6 +50442,8 @@ var render = function() {
                           _vm._v(
                             "\n                            #" +
                               _vm._s(_vm.ticket.id) +
+                              " " +
+                              _vm._s(_vm.ticket.name) +
                               "\n                    "
                           )
                         ]
@@ -50802,6 +50805,8 @@ var render = function() {
                                   "\n                                 \n                            "
                                 )
                               ]),
+                              _vm._v(" "),
+                              _c("strong", [_vm._v(_vm._s(_vm.ticket.name))]),
                               _vm._v(" "),
                               _c("div", {
                                 domProps: {

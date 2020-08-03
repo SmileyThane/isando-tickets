@@ -15,7 +15,7 @@
                         flat
                     >
                         <v-toolbar-title class="text-truncate" style="max-width: 60%">
-                                #{{ ticket.id }}
+                                #{{ ticket.id }} {{ ticket.name }}
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-chip
@@ -160,6 +160,7 @@
                                 <v-spacer>
                                     &nbsp;
                                 </v-spacer>
+                                <strong>{{ ticket.name }}</strong>
                                 <div v-html="ticket.description"></div>
                             </v-col>
                             <v-col cols="12" sm="6">
