@@ -7201,6 +7201,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -50484,11 +50493,7 @@ var render = function() {
                                   },
                                   on: { click: _vm.updateTicket }
                                 },
-                                [
-                                  _vm._v(
-                                    "Save\n                                "
-                                  )
-                                ]
+                                [_vm._v("Save\n                            ")]
                               )
                             ],
                             1
@@ -50798,7 +50803,7 @@ var render = function() {
                               _vm._v(" "),
                               _c("v-spacer", [
                                 _vm._v(
-                                  "\n                                     \n                                "
+                                  "\n                                 \n                            "
                                 )
                               ]),
                               _vm._v(" "),
@@ -50956,189 +50961,243 @@ var render = function() {
                         1
                       ),
                       _vm._v(" "),
-                      _vm.ticket.attachments.length > 0
-                        ? _c(
-                            "v-col",
-                            { attrs: { cols: "12" } },
-                            [
-                              _c("v-label", [
-                                _c("strong", [_vm._v("Attachments")])
-                              ]),
-                              _vm._v(" "),
-                              _vm._l(_vm.ticket.attachments, function(
-                                attachment
-                              ) {
-                                return _c(
-                                  "div",
-                                  [
-                                    _c(
-                                      "v-chip",
-                                      {
-                                        staticClass: "ma-2",
-                                        attrs: {
-                                          color: "green",
-                                          "text-color": "white",
-                                          href: attachment.link
-                                        }
-                                      },
-                                      [
-                                        _vm._v(
-                                          "\n                                    " +
-                                            _vm._s(attachment.name) +
-                                            "\n                                "
-                                        )
-                                      ]
-                                    )
-                                  ],
-                                  1
-                                )
-                              })
-                            ],
-                            2
-                          )
-                        : _vm._e()
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-expansion-panels",
-                    { attrs: { flat: "", popout: "", focusable: "" } },
-                    [
                       _c(
-                        "v-expansion-panel",
+                        "v-expansion-panels",
+                        {
+                          attrs: {
+                            focusable: "",
+                            dense: "",
+                            multiple: "",
+                            inset: ""
+                          }
+                        },
                         [
-                          _c(
-                            "v-expansion-panel-header",
-                            {
-                              scopedSlots: _vm._u([
-                                {
-                                  key: "actions",
-                                  fn: function() {
-                                    return [
+                          _vm.ticket.attachments.length > 0
+                            ? _c(
+                                "v-expansion-panel",
+                                [
+                                  _c(
+                                    "v-expansion-panel-header",
+                                    {
+                                      scopedSlots: _vm._u(
+                                        [
+                                          {
+                                            key: "actions",
+                                            fn: function() {
+                                              return [
+                                                _c("v-icon", [
+                                                  _vm._v("$expand")
+                                                ])
+                                              ]
+                                            },
+                                            proxy: true
+                                          }
+                                        ],
+                                        null,
+                                        false,
+                                        2072193525
+                                      )
+                                    },
+                                    [
+                                      _vm._v(" "),
                                       _c(
-                                        "v-icon",
-                                        { attrs: { color: "success" } },
-                                        [_vm._v("mdi-alert-circle")]
+                                        "strong",
+                                        [
+                                          _vm._v(
+                                            "Attachments: " +
+                                              _vm._s(
+                                                _vm.ticket.attachments.length
+                                              )
+                                          ),
+                                          _c("v-icon", [
+                                            _vm._v("mdi-paperclip")
+                                          ])
+                                        ],
+                                        1
                                       )
                                     ]
-                                  },
-                                  proxy: true
-                                }
-                              ])
-                            },
-                            [_c("h3", [_vm._v("Create Answer")])]
-                          ),
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-expansion-panel-content",
+                                    _vm._l(_vm.ticket.attachments, function(
+                                      attachment
+                                    ) {
+                                      return _c(
+                                        "div",
+                                        [
+                                          _c(
+                                            "v-chip",
+                                            {
+                                              staticClass: "ma-2",
+                                              attrs: {
+                                                color: "green",
+                                                "text-color": "white",
+                                                href: attachment.link
+                                              }
+                                            },
+                                            [
+                                              _vm._v(
+                                                "\n                                        " +
+                                                  _vm._s(attachment.name) +
+                                                  "\n                                    "
+                                              )
+                                            ]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    }),
+                                    0
+                                  )
+                                ],
+                                1
+                              )
+                            : _vm._e(),
                           _vm._v(" "),
                           _c(
-                            "v-expansion-panel-content",
+                            "v-expansion-panel",
                             [
-                              _c("v-form", [
-                                _c(
-                                  "div",
-                                  { staticClass: "row" },
-                                  [
+                              _c(
+                                "v-expansion-panel-header",
+                                {
+                                  scopedSlots: _vm._u([
+                                    {
+                                      key: "actions",
+                                      fn: function() {
+                                        return [
+                                          _c(
+                                            "v-icon",
+                                            { attrs: { color: "success" } },
+                                            [_vm._v("mdi-plus")]
+                                          )
+                                        ]
+                                      },
+                                      proxy: true
+                                    }
+                                  ])
+                                },
+                                [_c("h3", [_vm._v("Create Answer")])]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-expansion-panel-content",
+                                [
+                                  _c("v-form", [
                                     _c(
                                       "div",
-                                      { staticClass: "col-md-12" },
+                                      { staticClass: "row" },
                                       [
-                                        _c("v-textarea", {
-                                          attrs: {
-                                            label: "Description",
-                                            "prepend-icon": "mdi-text",
-                                            color: "green",
-                                            "item-color": "green",
-                                            "auto-grow": "",
-                                            rows: "3",
-                                            "row-height": "25",
-                                            shaped: ""
-                                          },
-                                          model: {
-                                            value: _vm.ticketAnswer.answer,
-                                            callback: function($$v) {
-                                              _vm.$set(
-                                                _vm.ticketAnswer,
-                                                "answer",
-                                                $$v
-                                              )
-                                            },
-                                            expression: "ticketAnswer.answer"
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      { staticClass: "col-md-12" },
-                                      [
-                                        _c("v-file-input", {
-                                          attrs: {
-                                            chips: "",
-                                            "chips-color": "green",
-                                            multiple: "",
-                                            label: "Attach a Document(s)",
-                                            color: "green",
-                                            "item-color": "green",
-                                            "prepend-icon": "mdi-paperclip",
-                                            "show-size": 1000
-                                          },
-                                          on: {
-                                            change: function($event) {
-                                              return _vm.onFileChange(
-                                                "ticketAnswer"
-                                              )
-                                            }
-                                          },
-                                          scopedSlots: _vm._u([
-                                            {
-                                              key: "selection",
-                                              fn: function(ref) {
-                                                var index = ref.index
-                                                var text = ref.text
-                                                return [
-                                                  _c(
-                                                    "v-chip",
-                                                    {
-                                                      attrs: { color: "green" }
-                                                    },
-                                                    [
-                                                      _vm._v(
-                                                        "\n                                                        " +
-                                                          _vm._s(text) +
-                                                          "\n                                                    "
+                                        _c(
+                                          "div",
+                                          { staticClass: "col-md-12" },
+                                          [
+                                            _c("v-textarea", {
+                                              attrs: {
+                                                label: "Description",
+                                                "prepend-icon": "mdi-text",
+                                                color: "green",
+                                                "item-color": "green",
+                                                "auto-grow": "",
+                                                rows: "1",
+                                                "row-height": "25",
+                                                shaped: "",
+                                                dense: ""
+                                              },
+                                              model: {
+                                                value: _vm.ticketAnswer.answer,
+                                                callback: function($$v) {
+                                                  _vm.$set(
+                                                    _vm.ticketAnswer,
+                                                    "answer",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression:
+                                                  "ticketAnswer.answer"
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          { staticClass: "col-md-12" },
+                                          [
+                                            _c("v-file-input", {
+                                              attrs: {
+                                                chips: "",
+                                                "chips-color": "green",
+                                                multiple: "",
+                                                label: "Attach a Document(s)",
+                                                color: "green",
+                                                "item-color": "green",
+                                                "prepend-icon": "mdi-paperclip",
+                                                "show-size": 1000,
+                                                dense: ""
+                                              },
+                                              on: {
+                                                change: function($event) {
+                                                  return _vm.onFileChange(
+                                                    "ticketAnswer"
+                                                  )
+                                                }
+                                              },
+                                              scopedSlots: _vm._u([
+                                                {
+                                                  key: "selection",
+                                                  fn: function(ref) {
+                                                    var index = ref.index
+                                                    var text = ref.text
+                                                    return [
+                                                      _c(
+                                                        "v-chip",
+                                                        {
+                                                          attrs: {
+                                                            color: "green"
+                                                          }
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            "\n                                                        " +
+                                                              _vm._s(text) +
+                                                              "\n                                                    "
+                                                          )
+                                                        ]
                                                       )
                                                     ]
-                                                  )
-                                                ]
-                                              }
-                                            }
-                                          ])
-                                        })
+                                                  }
+                                                }
+                                              ])
+                                            })
+                                          ],
+                                          1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-btn",
+                                          {
+                                            attrs: {
+                                              dark: "",
+                                              fab: "",
+                                              right: "",
+                                              bottom: "",
+                                              color: "green",
+                                              small: ""
+                                            },
+                                            on: { click: _vm.addTicketAnswer }
+                                          },
+                                          [_c("v-icon", [_vm._v("mdi-plus")])],
+                                          1
+                                        )
                                       ],
                                       1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "v-btn",
-                                      {
-                                        attrs: {
-                                          dark: "",
-                                          fab: "",
-                                          right: "",
-                                          bottom: "",
-                                          color: "green"
-                                        },
-                                        on: { click: _vm.addTicketAnswer }
-                                      },
-                                      [_c("v-icon", [_vm._v("mdi-plus")])],
-                                      1
                                     )
-                                  ],
-                                  1
-                                )
-                              ])
+                                  ])
+                                ],
+                                1
+                              )
                             ],
                             1
                           )
@@ -51205,12 +51264,12 @@ var render = function() {
                                                     answer.employee.user_data
                                                       .name
                                                   ) +
-                                                    " " +
+                                                    "\n                                                " +
                                                     _vm._s(
                                                       answer.employee.user_data
                                                         .surname
                                                     ) +
-                                                    " responded " +
+                                                    " responded\n                                                " +
                                                     _vm._s(
                                                       answer.created_at_time
                                                     ) +
@@ -51272,11 +51331,11 @@ var render = function() {
                                                         },
                                                         [
                                                           _vm._v(
-                                                            "\n                                                    " +
+                                                            "\n                                                " +
                                                               _vm._s(
                                                                 attachment.name
                                                               ) +
-                                                              "\n                                                "
+                                                              "\n                                            "
                                                           )
                                                         ]
                                                       )
@@ -51301,7 +51360,7 @@ var render = function() {
                           _vm._v(" "),
                           _c("v-spacer", [
                             _vm._v(
-                              "\n                                 \n                            "
+                              "\n                             \n                        "
                             )
                           ])
                         ],
@@ -51362,7 +51421,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "Close Ticket\n                            "
+                                    "Close Ticket\n                        "
                                   )
                                 ]
                               )
@@ -51414,7 +51473,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    Assign to:\n                                    "
+                                    "\n                                Assign to:\n                                "
                                   )
                                 ]
                               ),
@@ -51547,7 +51606,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    Ticket notices\n                                    "
+                                    "\n                                Ticket notices\n                                "
                                   )
                                 ]
                               ),
@@ -51599,7 +51658,7 @@ var render = function() {
                                                           _vm._s(
                                                             noticeItem.notice
                                                           ) +
-                                                            "\n                                                    "
+                                                            "\n                                                "
                                                         )
                                                       ]
                                                     ),
@@ -51610,7 +51669,7 @@ var render = function() {
                                                           noticeItem.employee
                                                             .user_data.email
                                                         ) +
-                                                          "\n                                                    "
+                                                          "\n                                                "
                                                       )
                                                     ])
                                                   ],
@@ -51625,7 +51684,7 @@ var render = function() {
                                         _vm._v(" "),
                                         _c("v-spacer", [
                                           _vm._v(
-                                            "\n                                             \n                                        "
+                                            "\n                                         \n                                    "
                                           )
                                         ])
                                       ],
@@ -51723,7 +51782,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    Ticket history\n                                    "
+                                    "\n                                Ticket history\n                                "
                                   )
                                 ]
                               ),
@@ -51772,7 +51831,7 @@ var render = function() {
                                                         _vm._s(
                                                           history.description
                                                         ) +
-                                                          "\n                                                    "
+                                                          "\n                                                "
                                                       )
                                                     ]
                                                   ),
@@ -51783,7 +51842,7 @@ var render = function() {
                                                         history.employee
                                                           .user_data.email
                                                       ) +
-                                                        "\n                                                    "
+                                                        "\n                                                "
                                                     )
                                                   ])
                                                 ],
@@ -51798,7 +51857,7 @@ var render = function() {
                                       _vm._v(" "),
                                       _c("v-spacer", [
                                         _vm._v(
-                                          "\n                                             \n                                        "
+                                          "\n                                         \n                                    "
                                         )
                                       ])
                                     ],

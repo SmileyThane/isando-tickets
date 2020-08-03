@@ -207,89 +207,96 @@
                                 ></v-textarea>
                             </v-col>
                         </v-row>
-                        <v-col cols="12" v-if="ticket.attachments.length > 0 ">
-                            <v-label>
-                                <strong>Attachments</strong>
-                            </v-label>
-                            <div
-                                v-for="attachment in ticket.attachments"
-                            >
-                                <v-chip
-                                    class="ma-2"
-                                    color="green"
-                                    text-color="white"
-                                    :href="attachment.link"
-                                >
-                                    {{attachment.name}}
-                                </v-chip>
-                            </div>
 
-                        </v-col>
-                    </v-card-text>
-                    <v-expansion-panels
-                        flat
-                        popout
-                        focusable
-                    >
-                        <v-expansion-panel>
-                            <v-expansion-panel-header>
-                                <h3>Create Answer</h3>
-                                <template v-slot:actions>
-                                    <v-icon color="success">mdi-alert-circle</v-icon>
-                                </template>
-                            </v-expansion-panel-header>
-                            <v-expansion-panel-content>
-                                <v-form>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <v-textarea
-                                                label="Description"
-                                                prepend-icon="mdi-text"
-                                                color="green"
-                                                item-color="green"
-                                                auto-grow
-                                                rows="3"
-                                                row-height="25"
-                                                shaped
-                                                v-model="ticketAnswer.answer"
-                                            ></v-textarea>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <v-file-input
-                                                chips
-                                                chips-color="green"
-                                                multiple
-                                                label="Attach a Document(s)"
-                                                color="green"
-                                                item-color="green"
-                                                prepend-icon="mdi-paperclip"
-                                                :show-size="1000"
-                                                v-on:change="onFileChange('ticketAnswer')"
-                                            >
-                                                <template v-slot:selection="{ index, text }">
-                                                    <v-chip
-                                                        color="green"
-                                                    >
-                                                        {{ text }}
-                                                    </v-chip>
-                                                </template>
-                                            </v-file-input>
-                                        </div>
-                                        <v-btn
-                                            dark
-                                            fab
-                                            right
-                                            bottom
+                        <v-expansion-panels focusable dense multiple inset>
+                            <v-expansion-panel v-if="ticket.attachments.length > 0 ">
+                                <v-expansion-panel-header>
+                                    <template v-slot:actions>
+                                        <v-icon >$expand</v-icon>
+                                    </template>
+                                    <strong>Attachments: {{ticket.attachments.length}}<v-icon>mdi-paperclip</v-icon> </strong>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <div
+                                        v-for="attachment in ticket.attachments"
+                                    >
+                                        <v-chip
+                                            class="ma-2"
                                             color="green"
-                                            @click="addTicketAnswer"
+                                            text-color="white"
+                                            :href="attachment.link"
                                         >
-                                            <v-icon>mdi-plus</v-icon>
-                                        </v-btn>
+                                            {{attachment.name}}
+                                        </v-chip>
                                     </div>
-                                </v-form>
-                            </v-expansion-panel-content>
-                        </v-expansion-panel>
-                    </v-expansion-panels>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                            <v-expansion-panel
+
+
+                            >
+                                <v-expansion-panel-header>
+                                    <h3>Create Answer</h3>
+                                    <template v-slot:actions>
+                                        <v-icon color="success">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <v-textarea
+                                                    label="Description"
+                                                    prepend-icon="mdi-text"
+                                                    color="green"
+                                                    item-color="green"
+                                                    auto-grow
+                                                    rows="1"
+                                                    row-height="25"
+                                                    shaped
+                                                    v-model="ticketAnswer.answer"
+                                                    dense
+                                                ></v-textarea>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <v-file-input
+                                                    chips
+                                                    chips-color="green"
+                                                    multiple
+                                                    label="Attach a Document(s)"
+                                                    color="green"
+                                                    item-color="green"
+                                                    prepend-icon="mdi-paperclip"
+                                                    :show-size="1000"
+                                                    dense
+                                                    v-on:change="onFileChange('ticketAnswer')"
+                                                >
+                                                    <template v-slot:selection="{ index, text }">
+                                                        <v-chip
+                                                            color="green"
+                                                        >
+                                                            {{ text }}
+                                                        </v-chip>
+                                                    </template>
+                                                </v-file-input>
+                                            </div>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                color="green"
+                                                small
+                                                @click="addTicketAnswer"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
                 </v-card>
                 <br>
                 <v-card>
@@ -317,14 +324,16 @@
                                     <v-list-item-content>
                                         <v-row>
                                             <v-col md="6">
-                                                <p class="text-left mb-3">{{answer.employee.user_data.name}} {{answer.employee.user_data.surname}} responded {{answer.created_at_time}}:</p>
+                                                <p class="text-left mb-3">{{answer.employee.user_data.name}}
+                                                    {{answer.employee.user_data.surname}} responded
+                                                    {{answer.created_at_time}}:</p>
                                             </v-col>
                                             <v-col md="6">
                                                 <p class="text-right caption mb-2">{{answer.created_at}}</p>
                                             </v-col>
                                         </v-row>
-<!--                                        <v-list-item-subtitle class="mb-3">{{answer.employee.user_data.email}}-->
-<!--                                        </v-list-item-subtitle>-->
+                                        <!--                                        <v-list-item-subtitle class="mb-3">{{answer.employee.user_data.email}}-->
+                                        <!--                                        </v-list-item-subtitle>-->
                                         <v-list class="mb-2" v-html="answer.answer"></v-list>
 
                                         <v-col cols="12" v-if="answer.attachments.length > 0 ">
@@ -605,7 +614,7 @@
                                 user_data: {
                                     name: '',
                                     email: '',
-                                    surname:''
+                                    surname: ''
                                 }
                             },
                             answer: ''
@@ -648,8 +657,8 @@
                     files: [],
                     answer: ''
                 },
-                ticketNotice:{
-                  notice:'',
+                ticketNotice: {
+                    notice: '',
                 },
                 onFileChange(form) {
                     this[form].files = null;
@@ -810,8 +819,7 @@
                     }
                 });
             },
-            addTicketNotice()
-            {
+            addTicketNotice() {
                 axios.post(`/api/ticket/${this.$route.params.id}/notice`, this.ticketNotice).then(response => {
                     response = response.data
                     if (response.success === true) {
