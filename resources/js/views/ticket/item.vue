@@ -15,7 +15,7 @@
                         flat
                     >
                         <v-toolbar-title class="text-truncate" style="max-width: 60%">
-                                #{{ ticket.id }} {{ ticket.name }}
+                            #{{ ticket.id }} {{ ticket.name }}
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-chip

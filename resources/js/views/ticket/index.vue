@@ -21,7 +21,9 @@
                 <v-chip :color="item.status.color" dark>{{ item.status.name }}</v-chip>
             </template>
             <template v-slot:item.assigned_person="{ item }">
-                <div class="justify-center" v-if="item.assigned_person">{{ item.assigned_person.user_data.name }} {{ item.assigned_person.user_data.surname }}</div>
+                <div class="justify-center" v-if="item.assigned_person">{{ item.assigned_person.user_data.name }} {{
+                    item.assigned_person.user_data.surname }}
+                </div>
             </template>
             <template v-slot:item.actions="{ item }">
                 <v-icon
@@ -41,9 +43,9 @@
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
                     <p></p>
-<!--                    <p><strong>From:</strong> {{ item.from.name }}</p>-->
-<!--                    <p><strong>To:</strong> {{ item.to.name }}</p>-->
-<!--                    <p><strong>Description:</strong> {{ item.description }}</p>-->
+                    <!--                    <p><strong>From:</strong> {{ item.from.name }}</p>-->
+                    <!--                    <p><strong>To:</strong> {{ item.to.name }}</p>-->
+                    <!--                    <p><strong>Description:</strong> {{ item.description }}</p>-->
                     <p><strong>Contact name:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
                     <p><strong>Contact email:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
                     <p><strong>Due date:</strong> {{ item.due_date }}</p>
