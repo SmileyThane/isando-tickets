@@ -3840,6 +3840,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4485,6 +4497,25 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -46845,58 +46876,188 @@ var render = function() {
                             var item = ref.item
                             return [
                               _c(
-                                "v-icon",
+                                "v-tooltip",
                                 {
-                                  staticClass: "mr-2",
-                                  attrs: {
-                                    disabled: !item.user_data.is_active,
-                                    small: ""
-                                  },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.sendInvite(item)
-                                    }
-                                  }
+                                  attrs: { top: "" },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                _vm._b(
+                                                  {
+                                                    attrs: {
+                                                      disabled: !item.user_data
+                                                        .is_active,
+                                                      icon: ""
+                                                    },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.sendInvite(
+                                                          item
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  "v-btn",
+                                                  attrs,
+                                                  false
+                                                ),
+                                                on
+                                              ),
+                                              [
+                                                _c(
+                                                  "v-icon",
+                                                  { attrs: { small: "" } },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                                mdi-email-alert\n                                            "
+                                                    )
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    true
+                                  )
                                 },
                                 [
-                                  _vm._v(
-                                    "\n                                    mdi-account-alert\n                                "
-                                  )
+                                  _vm._v(" "),
+                                  _c("span", [_vm._v("Resend invite")])
                                 ]
                               ),
                               _vm._v(" "),
                               _c(
-                                "v-icon",
+                                "v-tooltip",
                                 {
-                                  staticClass: "mr-2",
-                                  attrs: { small: "", hint: "Edit contact" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.showRolesModal(item)
-                                    }
-                                  }
+                                  attrs: { top: "" },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                _vm._b(
+                                                  {
+                                                    attrs: { icon: "" },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.showRolesModal(
+                                                          item
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  "v-btn",
+                                                  attrs,
+                                                  false
+                                                ),
+                                                on
+                                              ),
+                                              [
+                                                _c(
+                                                  "v-icon",
+                                                  { attrs: { small: "" } },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                                mdi-pencil\n                                            "
+                                                    )
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    true
+                                  )
                                 },
                                 [
-                                  _vm._v(
-                                    "\n                                    mdi-account-edit\n                                "
-                                  )
+                                  _vm._v(" "),
+                                  _c("span", [_vm._v("Edit contact")])
                                 ]
                               ),
                               _vm._v(" "),
                               _c(
-                                "v-icon",
+                                "v-tooltip",
                                 {
-                                  attrs: { small: "", hint: "Delete contact" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.removeEmployee(item)
-                                    }
-                                  }
+                                  attrs: { top: "" },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                _vm._b(
+                                                  {
+                                                    attrs: { icon: "" },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.removeEmployee(
+                                                          item
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  "v-btn",
+                                                  attrs,
+                                                  false
+                                                ),
+                                                on
+                                              ),
+                                              [
+                                                _c(
+                                                  "v-icon",
+                                                  {
+                                                    attrs: {
+                                                      small: "",
+                                                      hint: "Delete contact"
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                                mdi-delete\n                                            "
+                                                    )
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    true
+                                  )
                                 },
                                 [
-                                  _vm._v(
-                                    "\n                                    mdi-delete\n                                "
-                                  )
+                                  _vm._v(" "),
+                                  _c("span", [_vm._v("Delete contact")])
                                 ]
                               )
                             ]
@@ -47732,7 +47893,7 @@ var render = function() {
             expression: "snackbar"
           }
         },
-        [_vm._v("\n            " + _vm._s(_vm.snackbarMessage) + "\n        ")]
+        [_vm._v("\n        " + _vm._s(_vm.snackbarMessage) + "\n    ")]
       ),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
@@ -47774,7 +47935,7 @@ var render = function() {
                             attrs: { color: "white" },
                             on: { click: _vm.updateClient }
                           },
-                          [_vm._v("Save\n                        ")]
+                          [_vm._v("Save\n                    ")]
                         )
                       : _vm._e()
                   ],
@@ -47836,9 +47997,7 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("v-spacer", [
-              _vm._v("\n                     \n                ")
-            ]),
+            _c("v-spacer", [_vm._v("\n                 \n            ")]),
             _vm._v(" "),
             _c(
               "v-card",
@@ -47925,7 +48084,7 @@ var render = function() {
                                                     },
                                                     [
                                                       _vm._v(
-                                                        "\n                                                        mdi-delete\n                                                    "
+                                                        "\n                                                    mdi-delete\n                                                "
                                                       )
                                                     ]
                                                   )
@@ -47951,14 +48110,15 @@ var render = function() {
                                                   _c("v-list-item-title", {}, [
                                                     _vm._v(
                                                       _vm._s(item.address) +
-                                                        " " +
+                                                        "\n                                                    " +
                                                         _vm._s(
                                                           item.address_line_2
                                                         ) +
                                                         " " +
                                                         _vm._s(
                                                           item.address_line_3
-                                                        )
+                                                        ) +
+                                                        "\n                                                "
                                                     )
                                                   ]),
                                                   _vm._v(" "),
@@ -47992,7 +48152,7 @@ var render = function() {
                                                     },
                                                     [
                                                       _vm._v(
-                                                        "\n                                                        mdi-delete\n                                                    "
+                                                        "\n                                                    mdi-delete\n                                                "
                                                       )
                                                     ]
                                                   )
@@ -48041,7 +48201,7 @@ var render = function() {
                                           },
                                           [
                                             _vm._v(
-                                              "\n                                                New phone\n                                                "
+                                              "\n                                            New phone\n                                            "
                                             )
                                           ]
                                         ),
@@ -48187,7 +48347,7 @@ var render = function() {
                                           },
                                           [
                                             _vm._v(
-                                              "\n                                                New address\n                                                "
+                                              "\n                                            New address\n                                            "
                                             )
                                           ]
                                         ),
@@ -48478,59 +48638,188 @@ var render = function() {
                             var item = ref.item
                             return [
                               _c(
-                                "v-icon",
+                                "v-tooltip",
                                 {
-                                  staticClass: "mr-2",
-                                  attrs: {
-                                    disabled: !item.employee.user_data
-                                      .is_active,
-                                    small: ""
-                                  },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.sendInvite(item.employee)
-                                    }
-                                  }
+                                  attrs: { top: "" },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                _vm._b(
+                                                  {
+                                                    attrs: {
+                                                      disabled: !item.employee
+                                                        .user_data.is_active,
+                                                      icon: ""
+                                                    },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.sendInvite(
+                                                          item.employee
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  "v-btn",
+                                                  attrs,
+                                                  false
+                                                ),
+                                                on
+                                              ),
+                                              [
+                                                _c(
+                                                  "v-icon",
+                                                  { attrs: { small: "" } },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                            mdi-email-alert\n                                        "
+                                                    )
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    true
+                                  )
                                 },
                                 [
-                                  _vm._v(
-                                    "\n                                    mdi-account-alert\n                                "
-                                  )
+                                  _vm._v(" "),
+                                  _c("span", [_vm._v("Resend invite")])
                                 ]
                               ),
                               _vm._v(" "),
                               _c(
-                                "v-icon",
+                                "v-tooltip",
                                 {
-                                  staticClass: "mr-2",
-                                  attrs: { small: "", hint: "Edit contact" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.showRolesModal(item.employee)
-                                    }
-                                  }
+                                  attrs: { top: "" },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                _vm._b(
+                                                  {
+                                                    attrs: { icon: "" },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.showRolesModal(
+                                                          item.employee
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  "v-btn",
+                                                  attrs,
+                                                  false
+                                                ),
+                                                on
+                                              ),
+                                              [
+                                                _c(
+                                                  "v-icon",
+                                                  { attrs: { small: "" } },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                            mdi-pencil\n                                        "
+                                                    )
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    true
+                                  )
                                 },
                                 [
-                                  _vm._v(
-                                    "\n                                    mdi-account-edit\n                                "
-                                  )
+                                  _vm._v(" "),
+                                  _c("span", [_vm._v("Edit contact")])
                                 ]
                               ),
                               _vm._v(" "),
                               _c(
-                                "v-icon",
+                                "v-tooltip",
                                 {
-                                  attrs: { small: "", hint: "Delete contact" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.removeEmployee(item)
-                                    }
-                                  }
+                                  attrs: { top: "" },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "v-btn",
+                                              _vm._g(
+                                                _vm._b(
+                                                  {
+                                                    attrs: { icon: "" },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.removeEmployee(
+                                                          item
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  "v-btn",
+                                                  attrs,
+                                                  false
+                                                ),
+                                                on
+                                              ),
+                                              [
+                                                _c(
+                                                  "v-icon",
+                                                  {
+                                                    attrs: {
+                                                      small: "",
+                                                      hint: "Delete contact"
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                            mdi-delete\n                                        "
+                                                    )
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    true
+                                  )
                                 },
                                 [
-                                  _vm._v(
-                                    "\n                                    mdi-delete\n                                "
-                                  )
+                                  _vm._v(" "),
+                                  _c("span", [_vm._v("Delete contact")])
                                 ]
                               )
                             ]
@@ -48624,7 +48913,7 @@ var render = function() {
                                         _vm._s(
                                           item.employee.user_data.surname
                                         ) +
-                                        "\n                                "
+                                        "\n                            "
                                     )
                                   ])
                                 : _vm._e()
@@ -48636,7 +48925,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("v-spacer", [
                       _vm._v(
-                        "\n                             \n                        "
+                        "\n                         \n                    "
                       )
                     ]),
                     _vm._v(" "),
@@ -48667,7 +48956,7 @@ var render = function() {
                               },
                               [
                                 _vm._v(
-                                  "\n                                    New Contact\n                                    "
+                                  "\n                                New Contact\n                                "
                                 )
                               ]
                             ),
@@ -48797,9 +49086,7 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("v-spacer", [
-              _vm._v("\n                     \n                ")
-            ]),
+            _c("v-spacer", [_vm._v("\n                 \n            ")]),
             _vm._v(" "),
             _c(
               "v-card",
@@ -48864,7 +49151,7 @@ var render = function() {
                                       },
                                       [
                                         _vm._v(
-                                          "\n                                            mdi-delete\n                                        "
+                                          "\n                                        mdi-delete\n                                    "
                                         )
                                       ]
                                     )
@@ -48908,7 +49195,7 @@ var render = function() {
                               },
                               [
                                 _vm._v(
-                                  "\n                                    New social item\n                                    "
+                                  "\n                                New social item\n                                "
                                 )
                               ]
                             ),

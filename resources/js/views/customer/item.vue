@@ -84,7 +84,8 @@
                                             >
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle
+                                                        v-text="item.type.name"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -100,8 +101,11 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="">{{item.address}} {{item.address_line_2}} {{item.address_line_3}}</v-list-item-title>
-                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                    <v-list-item-title v-text="">{{item.address}}
+                                                        {{item.address_line_2}} {{item.address_line_3}}
+                                                    </v-list-item-title>
+                                                    <v-list-item-subtitle
+                                                        v-text="item.type.name"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -263,30 +267,44 @@
                             dense
                         >
                             <template v-slot:item.actions="{ item }">
-                                <v-icon
-                                    :disabled="!item.employee.user_data.is_active"
-                                    small
-                                    class="mr-2"
-                                    @click="sendInvite(item.employee)"
-                                >
-                                    mdi-account-alert
-                                </v-icon>
-                                <v-icon
-                                    small
-                                    class="mr-2"
-                                    hint="Edit contact"
-                                    @click="showRolesModal(item.employee)"
-                                >
-                                    mdi-account-edit
-                                </v-icon>
-                                <v-icon
-                                    small
-                                    hint="Delete contact"
-                                    @click="removeEmployee(item)"
-                                >
-                                    mdi-delete
-                                </v-icon>
-
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn :disabled="!item.employee.user_data.is_active" @click="sendInvite(item.employee)"
+                                               icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-email-alert
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Resend invite</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click="showRolesModal(item.employee)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-pencil
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Edit contact</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                                hint="Delete contact"
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Delete contact</span>
+                                </v-tooltip>
                             </template>
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
@@ -296,9 +314,10 @@
                                     <p v-if="item.employee.user_data.phones.length > 0"><strong>Phone(s):</strong></p>
                                     <p v-for="phoneItem in item.employee.user_data.phones">{{ phoneItem.phone }} ({{
                                         phoneItem.type.name }})</p>
-<!--                                    <p><strong>Lang:</strong></p>-->
-<!--                                    <p>{{ item.employee.user_data.lang }}</p>-->
-                                    <p v-if="item.employee.user_data.addresses.length > 0"><strong>Address(es):</strong></p>
+                                    <!--                                    <p><strong>Lang:</strong></p>-->
+                                    <!--                                    <p>{{ item.employee.user_data.lang }}</p>-->
+                                    <p v-if="item.employee.user_data.addresses.length > 0"><strong>Address(es):</strong>
+                                    </p>
                                     <p v-for="addressItem in item.employee.user_data.addresses">{{ addressItem.address
                                         }} {{ addressItem.address_line_2 }} {{ addressItem.address_line_3 }} ({{
                                         addressItem.type.name }})</p>
@@ -621,7 +640,7 @@
                 axios.get('/api/roles').then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.roles.push(response.data[response.data.length -1])
+                        this.roles.push(response.data[response.data.length - 1])
                     } else {
                         console.log('error')
                     }

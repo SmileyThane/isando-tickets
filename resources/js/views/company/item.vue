@@ -331,31 +331,43 @@
                                 <!--                                >-->
                                 <!--                                    {{item.user_data.is_active ? 'mdi-account' : 'mdi-account-off'}}-->
                                 <!--                                </v-icon>-->
-                                <v-icon
-                                    :disabled="!item.user_data.is_active"
-                                    small
-                                    class="mr-2"
-                                    @click="sendInvite(item)"
-                                >
-                                    mdi-account-alert
-                                </v-icon>
-
-                                <v-icon
-                                    small
-                                    class="mr-2"
-                                    hint="Edit contact"
-                                    @click="showRolesModal(item)"
-                                >
-                                    mdi-account-edit
-                                </v-icon>
-                                <v-icon
-                                    small
-                                    hint="Delete contact"
-                                    @click="removeEmployee(item)"
-                                >
-                                    mdi-delete
-                                </v-icon>
-
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn :disabled="!item.user_data.is_active" @click="sendInvite(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-email-alert
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Resend invite</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click="showRolesModal(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-pencil
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Edit contact</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                                hint="Delete contact"
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Delete contact</span>
+                                </v-tooltip>
                             </template>
 
                         </v-data-table>
