@@ -72,51 +72,48 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col class="col-md-6">
-                                    <v-data-table
-                                        :headers="phoneHeaders"
-                                        :items="client.phones"
-                                        hide-default-footer
-                                        class="elevation-1"
+                                <v-col md="12">
+                                    <v-list
+                                        dense
+                                        subheader
                                     >
-                                        <template v-slot:item.actions="{ item }">
-                                            <v-icon
-                                                small
-                                                @click="deletePhone(item.id)"
+                                        <v-list-item-group color="green">
+                                            <v-list-item
+                                                v-for="(item, i) in client.phones"
+                                                :key="item.id"
                                             >
-                                                mdi-delete
-                                            </v-icon>
-                                        </template>
-                                    </v-data-table>
-                                </v-col>
-                                <v-col class="col-md-6">
-                                    <v-data-table
-                                        :headers="addressHeaders"
-                                        :items="client.addresses"
-                                        hide-default-footer
-                                        show-expand
-                                        class="elevation-1"
-                                    >
-                                        <template v-slot:expanded-item="{ headers, item }">
-                                            <td :colspan="headers.length">
-                                                <p></p>
-                                                <p><strong>Address line 2:</strong> {{ item.address_line_2 }}
-                                                </p>
-                                                <p><strong>Address line 3:</strong> {{ item.address_line_3 }}
-                                                </p>
-                                            </td>
-                                        </template>
-                                        <template v-slot:item.actions="{ item }">
-                                            <v-icon
-                                                small
-                                                @click="deleteAddress(item.id)"
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="item.phone"></v-list-item-title>
+                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="deletePhone(item.id)"
+                                                    >
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                            <v-list-item
+                                                v-for="(item, i) in client.addresses"
+                                                :key="item.id"
                                             >
-                                                mdi-delete
-                                            </v-icon>
-                                        </template>
-                                    </v-data-table>
-                                </v-col>
-                                <v-col class="col-md-12">
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="">{{item.address}} {{item.address_line_2}} {{item.address_line_3}}</v-list-item-title>
+                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="deleteAddress(item.id)"
+                                                    >
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
                                     <v-expansion-panels>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
@@ -263,18 +260,45 @@
                             class="elevation-1"
                             item-key="id"
                             show-expand
+                            dense
                         >
+                            <template v-slot:item.actions="{ item }">
+                                <v-icon
+                                    :disabled="!item.employee.user_data.is_active"
+                                    small
+                                    class="mr-2"
+                                    @click="sendInvite(item.employee)"
+                                >
+                                    mdi-account-alert
+                                </v-icon>
+                                <v-icon
+                                    small
+                                    class="mr-2"
+                                    hint="Edit contact"
+                                    @click="showRolesModal(item.employee)"
+                                >
+                                    mdi-account-edit
+                                </v-icon>
+                                <v-icon
+                                    small
+                                    hint="Delete contact"
+                                    @click="removeEmployee(item)"
+                                >
+                                    mdi-delete
+                                </v-icon>
+
+                            </template>
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <p></p>
-                                    <p><strong>E-mail:</strong></p>
-                                    <p>{{ item.employee.user_data.email }}</p>
-                                    <p><strong>Phone(s):</strong></p>
+                                    <p v-if="item.employee.user_data.email"><strong>E-mail:</strong></p>
+                                    <p v-if="item.employee.user_data.email">{{ item.employee.user_data.email }}</p>
+                                    <p v-if="item.employee.user_data.phones.length > 0"><strong>Phone(s):</strong></p>
                                     <p v-for="phoneItem in item.employee.user_data.phones">{{ phoneItem.phone }} ({{
                                         phoneItem.type.name }})</p>
 <!--                                    <p><strong>Lang:</strong></p>-->
 <!--                                    <p>{{ item.employee.user_data.lang }}</p>-->
-                                    <p><strong>Address(es):</strong></p>
+                                    <p v-if="item.employee.user_data.addresses.length > 0"><strong>Address(es):</strong></p>
                                     <p v-for="addressItem in item.employee.user_data.addresses">{{ addressItem.address
                                         }} {{ addressItem.address_line_2 }} {{ addressItem.address_line_3 }} ({{
                                         addressItem.type.name }})</p>
@@ -286,6 +310,7 @@
                                     item.employee.user_data.surname }}
                                 </div>
                             </template>
+
                         </v-data-table>
                         <v-spacer>
                             &nbsp;
@@ -359,28 +384,31 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
-                        <v-data-table
-                            :headers="socialHeaders"
-                            :items="client.socials"
-                            hide-default-footer
-                            hide-default-header
-                            class="elevation-1"
+                        <v-list
+                            dense
+                            subheader
                         >
-                            <template v-slot:item.social_link="{ item }">
-                                <v-list-item link :href="item.social_link">{{ item.social_link }}</v-list-item>
-                            </template>
-                            <template v-slot:item.actions="{ item }">
-                                <v-icon
-                                    small
-                                    @click="deleteSocial(item.id)"
+                            <v-list-item-group color="green">
+                                <v-list-item
+                                    v-for="(item) in client.socials"
+                                    :key="item.id"
                                 >
-                                    mdi-delete
-                                </v-icon>
-                            </template>
-                        </v-data-table>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="item.social_link"></v-list-item-title>
+                                        <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-icon
+                                            small
+                                            @click="deleteSocial(item.id)"
+                                        >
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+
+                            </v-list-item-group>
+                        </v-list>
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
@@ -433,6 +461,44 @@
                 </v-card>
             </div>
         </div>
+        <v-row justify="center">
+            <v-dialog v-model="rolesDialog" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">Update role for {{newRoleForm.user.name}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-select
+                                label="Role"
+                                color="green"
+                                item-color="green"
+                                item-text="name"
+                                item-value="id"
+                                :items="roles"
+                                :disabled="!checkRoleByIds([1,2,3])"
+                                v-model="newRoleForm.role_ids"
+                                multiple
+                            />
+                            <v-checkbox
+                                label="Give access to the system"
+                                color="success"
+                                :disabled="!checkRoleByIds([1,2,3])"
+                                v-model="newRoleForm.user.is_active"
+                                @change="changeIsActive(newRoleForm.user)"
+                                hide-details
+                            ></v-checkbox>
+                        </v-container>
+                        <!--                        <small>*indicates required field</small>-->
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red" text @click="rolesDialog = false">Close</v-btn>
+                        <v-btn color="green" text @click="updateRole">Save</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-row>
     </v-container>
 </template>
 
@@ -442,25 +508,6 @@
 
         data() {
             return {
-                phoneHeaders: [
-                    {text: 'Phone', sortable: false, value: 'phone'},
-                    {text: 'Type', value: 'type.name'},
-                    {text: '', value: 'actions', sortable: false},
-
-                ],
-                socialHeaders: [
-                    {text: 'Type', value: 'type.name'},
-                    {text: 'Link', sortable: false, value: 'social_link'},
-                    {text: '', value: 'actions', sortable: false},
-
-                ],
-                addressHeaders: [
-                    {text: '', value: 'data-table-expand'},
-                    {text: 'Address', value: 'address'},
-                    {text: 'Type', value: 'type.name'},
-                    {text: '', value: 'actions', sortable: false},
-
-                ],
                 headers: [
                     {text: '', value: 'data-table-expand'},
                     // {
@@ -472,12 +519,18 @@
                     {text: 'name', value: 'user_data'},
                     // {text: 'email', value: 'user_data.email'},
                     {text: 'roles', value: 'employee.role_names'},
-                    {text: 'Actions', value: ''},
+                    {text: 'Actions', value: 'actions', sortable: false},
                 ],
                 snackbar: false,
                 actionColor: '',
                 snackbarMessage: '',
                 enableToEdit: false,
+                rolesDialog: false,
+                newRoleForm: {
+                    user: '',
+                    role_ids: [],
+                    company_user_id: ''
+                },
                 client: {
                     client_name: '',
                     client_description: '',
@@ -490,7 +543,10 @@
                                 user_id: '',
                                 company_id: '',
                                 roles: [],
-                                user_data: ''
+                                user_data: {
+                                    phones: [],
+                                    addresses: [],
+                                }
 
                             }
                         }
@@ -561,10 +617,11 @@
                 });
             },
             getRoles() {
+                this.roles = []
                 axios.get('/api/roles').then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.roles = response.data
+                        this.roles.push(response.data[response.data.length -1])
                     } else {
                         console.log('error')
                     }
@@ -576,6 +633,9 @@
                     response = response.data
                     if (response.success === true) {
                         this.getClient()
+                        this.snackbarMessage = 'Contact was added successfully'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
                         console.log('error')
                     }
@@ -737,6 +797,76 @@
                         this.errorType = 'error'
                         this.alert = true;
 
+                    }
+                });
+            },
+            removeEmployee(item) {
+                axios.delete(`/api/client/employee/${item.id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient()
+                        this.rolesDialog = false
+                        this.snackbarMessage = 'Contact was removed'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            showRolesModal(item) {
+                this.rolesDialog = true
+                this.newRoleForm.user = item.user_data
+                this.newRoleForm.role_ids = []
+                this.newRoleForm.company_user_id = item.id
+                item.roles.forEach(role => {
+                    this.newRoleForm.role_ids.push(role.id)
+                })
+                // console.log(item);
+            },
+            updateRole() {
+                axios.patch(`/api/roles`, this.newRoleForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient()
+                        this.rolesDialog = false
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            changeIsActive(item) {
+                let request = {}
+                request.user_id = item.id
+                request.is_active = item.is_active
+                axios.post(`/api/user/is_active`, request).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient()
+                        this.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                    }
+                });
+            },
+            sendInvite(item) {
+                let request = {}
+                request.user_id = item.user_data.id
+                request.role_id = item.roles[0].id
+                axios.post(`/api/user/invite`, request).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient()
+                        this.snackbarMessage = 'Invite sent'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
                     }
                 });
             },

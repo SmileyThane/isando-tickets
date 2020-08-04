@@ -176,53 +176,49 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col class="col-md-6">
-                                    <v-data-table
-                                        :headers="phoneHeaders"
-                                        :items="userData.phones"
-                                        hide-default-footer
-                                        class="elevation-1"
+                                <v-col class="col-md-12">
+                                    <v-list
+                                        dense
+                                        subheader
                                     >
-                                        <template v-slot:item.actions="{ item }">
-                                            <v-icon
-                                                small
-                                                @click="deletePhone(item.id)"
+                                        <v-list-item-group color="green">
+                                            <v-list-item
+                                                v-for="(item, i) in userData.phones"
+                                                :key="item.id"
                                             >
-                                                mdi-delete
-                                            </v-icon>
-                                        </template>
-                                    </v-data-table>
-                                </v-col>
-                                <v-col class="col-md-6">
-                                    <v-data-table
-                                        :headers="addressHeaders"
-                                        :items="userData.addresses"
-                                        hide-default-footer
-                                        show-expand
-                                        class="elevation-1"
-                                    >
-                                        <template v-slot:expanded-item="{ headers, item }">
-                                            <td :colspan="headers.length">
-                                                <p></p>
-                                                <p><strong>Address line 2:</strong> {{ item.address_line_2 }}
-                                                </p>
-                                                <p><strong>Address line 3:</strong> {{ item.address_line_3 }}
-                                                </p>
-                                            </td>
-                                        </template>
-                                        <template v-slot:item.actions="{ item }">
-                                            <v-icon
-                                                small
-                                                @click="deleteAddress(item.id)"
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="item.phone"></v-list-item-title>
+                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="deletePhone(item.id)"
+                                                    >
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                            <v-list-item
+                                                v-for="(item, i) in userData.addresses"
+                                                :key="item.id"
                                             >
-                                                mdi-delete
-                                            </v-icon>
-                                        </template>
-                                    </v-data-table>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="">{{item.address}} {{item.address_line_2}} {{item.address_line_3}}</v-list-item-title>
+                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="deleteAddress(item.id)"
+                                                    >
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
                                 </v-col>
-                                <v-spacer>
-                                    &nbsp;
-                                </v-spacer>
                                 <v-col class="col-md-12">
                                     <v-expansion-panels>
                                         <v-expansion-panel>

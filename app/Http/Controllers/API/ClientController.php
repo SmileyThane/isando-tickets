@@ -86,7 +86,7 @@ class ClientController extends Controller
 
     public function detach(Request $request, $id)
     {
-        $result = $this->clientRepo->detach($request, $id);
+        $result = $this->clientRepo->detach($id);
         return self::showResponse($result);
     }
 }

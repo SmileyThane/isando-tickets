@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
+use App\CompanyUser;
 use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +76,7 @@ class ClientRepository
             ->first();
     }
 
-    public function create(Request $request)
+    public function create(Request $request): Client
     {
         $client = new Client();
         $client->name = $request->client_name;
@@ -97,7 +98,7 @@ class ClientRepository
         return $client;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $result = false;
         $client = Client::find($id);
@@ -108,7 +109,7 @@ class ClientRepository
         return $result;
     }
 
-    public function attach(Request $request)
+    public function attach(Request $request): bool
     {
         ClientCompanyUser::firstOrCreate(
             ['client_id' => $request->client_id,
@@ -117,11 +118,14 @@ class ClientRepository
         return true;
     }
 
-    public function detach($id)
+    public function detach($id): bool
     {
         $result = false;
         $client = ClientCompanyUser::find($id);
         if ($client) {
+            if (ClientCompanyUser::where('company_user_id', $client->company_user_id)->count() === 1){
+                CompanyUser::where('id', $client->company_user_id)->delete();
+            }
             $client->delete();
             $result = true;
         }

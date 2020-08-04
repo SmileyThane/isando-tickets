@@ -2718,10 +2718,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3842,6 +3838,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3850,44 +3848,6 @@ __webpack_require__.r(__webpack_exports__);
       snackbarMessage: '',
       tooltip: false,
       enableToEdit: false,
-      phoneHeaders: [{
-        text: 'Phone',
-        sortable: false,
-        value: 'phone'
-      }, {
-        text: 'Type',
-        value: 'type.name'
-      }, {
-        text: '',
-        value: 'actions',
-        sortable: false
-      }],
-      socialHeaders: [{
-        text: 'Type',
-        value: 'type.name'
-      }, {
-        text: 'Link',
-        sortable: false,
-        value: 'social_link'
-      }, {
-        text: '',
-        value: 'actions',
-        sortable: false
-      }],
-      addressHeaders: [{
-        text: '',
-        value: 'data-table-expand'
-      }, {
-        text: 'Address',
-        value: 'address'
-      }, {
-        text: 'Type',
-        value: 'type.name'
-      }, {
-        text: '',
-        value: 'actions',
-        sortable: false
-      }],
       headers: [{
         text: '',
         value: 'data-table-expand'
@@ -3921,7 +3881,10 @@ __webpack_require__.r(__webpack_exports__);
           user_id: '',
           company_id: '',
           roles: [],
-          user_data: ''
+          user_data: {
+            phones: [],
+            addresses: []
+          }
         }]
       },
       employeeForm: {
@@ -4961,47 +4924,75 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      phoneHeaders: [{
-        text: 'Phone',
-        sortable: false,
-        value: 'phone'
-      }, {
-        text: 'Type',
-        value: 'type.name'
-      }, {
-        text: '',
-        value: 'actions',
-        sortable: false
-      }],
-      socialHeaders: [{
-        text: 'Type',
-        value: 'type.name'
-      }, {
-        text: 'Link',
-        sortable: false,
-        value: 'social_link'
-      }, {
-        text: '',
-        value: 'actions',
-        sortable: false
-      }],
-      addressHeaders: [{
-        text: '',
-        value: 'data-table-expand'
-      }, {
-        text: 'Address',
-        value: 'address'
-      }, {
-        text: 'Type',
-        value: 'type.name'
-      }, {
-        text: '',
-        value: 'actions',
-        sortable: false
-      }],
       headers: [{
         text: '',
         value: 'data-table-expand'
@@ -5020,12 +5011,19 @@ __webpack_require__.r(__webpack_exports__);
         value: 'employee.role_names'
       }, {
         text: 'Actions',
-        value: ''
+        value: 'actions',
+        sortable: false
       }],
       snackbar: false,
       actionColor: '',
       snackbarMessage: '',
       enableToEdit: false,
+      rolesDialog: false,
+      newRoleForm: {
+        user: '',
+        role_ids: [],
+        company_user_id: ''
+      },
       client: {
         client_name: '',
         client_description: '',
@@ -5037,7 +5035,10 @@ __webpack_require__.r(__webpack_exports__);
             user_id: '',
             company_id: '',
             roles: [],
-            user_data: ''
+            user_data: {
+              phones: [],
+              addresses: []
+            }
           }
         }]
       },
@@ -5107,11 +5108,12 @@ __webpack_require__.r(__webpack_exports__);
     getRoles: function getRoles() {
       var _this2 = this;
 
+      this.roles = [];
       axios.get('/api/roles').then(function (response) {
         response = response.data;
 
         if (response.success === true) {
-          _this2.roles = response.data;
+          _this2.roles.push(response.data[response.data.length - 1]);
         } else {
           console.log('error');
         }
@@ -5125,6 +5127,10 @@ __webpack_require__.r(__webpack_exports__);
 
         if (response.success === true) {
           _this3.getClient();
+
+          _this3.snackbarMessage = 'Contact was added successfully';
+          _this3.actionColor = 'success';
+          _this3.snackbar = true;
         } else {
           console.log('error');
         }
@@ -5336,13 +5342,96 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
-    checkRoleByIds: function checkRoleByIds(ids) {
+    removeEmployee: function removeEmployee(item) {
       var _this14 = this;
+
+      axios["delete"]("/api/client/employee/".concat(item.id)).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this14.getClient();
+
+          _this14.rolesDialog = false;
+          _this14.snackbarMessage = 'Contact was removed';
+          _this14.actionColor = 'success';
+          _this14.snackbar = true;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    showRolesModal: function showRolesModal(item) {
+      var _this15 = this;
+
+      this.rolesDialog = true;
+      this.newRoleForm.user = item.user_data;
+      this.newRoleForm.role_ids = [];
+      this.newRoleForm.company_user_id = item.id;
+      item.roles.forEach(function (role) {
+        _this15.newRoleForm.role_ids.push(role.id);
+      }); // console.log(item);
+    },
+    updateRole: function updateRole() {
+      var _this16 = this;
+
+      axios.patch("/api/roles", this.newRoleForm).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this16.getClient();
+
+          _this16.rolesDialog = false;
+          _this16.snackbarMessage = 'Update successful';
+          _this16.actionColor = 'success';
+          _this16.snackbar = true;
+        } else {
+          console.log('error');
+        }
+      });
+    },
+    changeIsActive: function changeIsActive(item) {
+      var _this17 = this;
+
+      var request = {};
+      request.user_id = item.id;
+      request.is_active = item.is_active;
+      axios.post("/api/user/is_active", request).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this17.getClient();
+
+          _this17.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated';
+          _this17.actionColor = 'success';
+          _this17.snackbar = true;
+        } else {}
+      });
+    },
+    sendInvite: function sendInvite(item) {
+      var _this18 = this;
+
+      var request = {};
+      request.user_id = item.user_data.id;
+      request.role_id = item.roles[0].id;
+      axios.post("/api/user/invite", request).then(function (response) {
+        response = response.data;
+
+        if (response.success === true) {
+          _this18.getClient();
+
+          _this18.snackbarMessage = 'Invite sent';
+          _this18.actionColor = 'success';
+          _this18.snackbar = true;
+        } else {}
+      });
+    },
+    checkRoleByIds: function checkRoleByIds(ids) {
+      var _this19 = this;
 
       var roleExists = false;
       ids.forEach(function (id) {
         if (roleExists === false) {
-          roleExists = _this14.$store.state.roles.includes(id);
+          roleExists = _this19.$store.state.roles.includes(id);
         }
       });
       return roleExists;
@@ -44748,144 +44837,161 @@ var render = function() {
                             [
                               _c(
                                 "v-col",
-                                { staticClass: "col-md-6" },
+                                { staticClass: "col-md-12" },
                                 [
-                                  _c("v-data-table", {
-                                    staticClass: "elevation-1",
-                                    attrs: {
-                                      headers: _vm.phoneHeaders,
-                                      items: _vm.userData.phones,
-                                      "hide-default-footer": ""
-                                    },
-                                    scopedSlots: _vm._u([
-                                      {
-                                        key: "item.actions",
-                                        fn: function(ref) {
-                                          var item = ref.item
-                                          return [
-                                            _c(
-                                              "v-icon",
-                                              {
-                                                attrs: { small: "" },
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.deletePhone(
-                                                      item.id
-                                                    )
-                                                  }
-                                                }
-                                              },
+                                  _c(
+                                    "v-list",
+                                    { attrs: { dense: "", subheader: "" } },
+                                    [
+                                      _c(
+                                        "v-list-item-group",
+                                        { attrs: { color: "green" } },
+                                        [
+                                          _vm._l(_vm.userData.phones, function(
+                                            item,
+                                            i
+                                          ) {
+                                            return _c(
+                                              "v-list-item",
+                                              { key: item.id },
                                               [
-                                                _vm._v(
-                                                  "\n                                                mdi-delete\n                                            "
+                                                _c(
+                                                  "v-list-item-content",
+                                                  [
+                                                    _c("v-list-item-title", {
+                                                      domProps: {
+                                                        textContent: _vm._s(
+                                                          item.phone
+                                                        )
+                                                      }
+                                                    }),
+                                                    _vm._v(" "),
+                                                    _c("v-list-item-subtitle", {
+                                                      domProps: {
+                                                        textContent: _vm._s(
+                                                          item.type.name
+                                                        )
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-list-item-action",
+                                                  [
+                                                    _c(
+                                                      "v-icon",
+                                                      {
+                                                        attrs: { small: "" },
+                                                        on: {
+                                                          click: function(
+                                                            $event
+                                                          ) {
+                                                            return _vm.deletePhone(
+                                                              item.id
+                                                            )
+                                                          }
+                                                        }
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "\n                                                        mdi-delete\n                                                    "
+                                                        )
+                                                      ]
+                                                    )
+                                                  ],
+                                                  1
                                                 )
-                                              ]
+                                              ],
+                                              1
                                             )
-                                          ]
-                                        }
-                                      }
-                                    ])
-                                  })
+                                          }),
+                                          _vm._v(" "),
+                                          _vm._l(
+                                            _vm.userData.addresses,
+                                            function(item, i) {
+                                              return _c(
+                                                "v-list-item",
+                                                { key: item.id },
+                                                [
+                                                  _c(
+                                                    "v-list-item-content",
+                                                    [
+                                                      _c(
+                                                        "v-list-item-title",
+                                                        {},
+                                                        [
+                                                          _vm._v(
+                                                            _vm._s(
+                                                              item.address
+                                                            ) +
+                                                              " " +
+                                                              _vm._s(
+                                                                item.address_line_2
+                                                              ) +
+                                                              " " +
+                                                              _vm._s(
+                                                                item.address_line_3
+                                                              )
+                                                          )
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "v-list-item-subtitle",
+                                                        {
+                                                          domProps: {
+                                                            textContent: _vm._s(
+                                                              item.type.name
+                                                            )
+                                                          }
+                                                        }
+                                                      )
+                                                    ],
+                                                    1
+                                                  ),
+                                                  _vm._v(" "),
+                                                  _c(
+                                                    "v-list-item-action",
+                                                    [
+                                                      _c(
+                                                        "v-icon",
+                                                        {
+                                                          attrs: { small: "" },
+                                                          on: {
+                                                            click: function(
+                                                              $event
+                                                            ) {
+                                                              return _vm.deleteAddress(
+                                                                item.id
+                                                              )
+                                                            }
+                                                          }
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            "\n                                                        mdi-delete\n                                                    "
+                                                          )
+                                                        ]
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            }
+                                          )
+                                        ],
+                                        2
+                                      )
+                                    ],
+                                    1
+                                  )
                                 ],
                                 1
                               ),
-                              _vm._v(" "),
-                              _c(
-                                "v-col",
-                                { staticClass: "col-md-6" },
-                                [
-                                  _c("v-data-table", {
-                                    staticClass: "elevation-1",
-                                    attrs: {
-                                      headers: _vm.addressHeaders,
-                                      items: _vm.userData.addresses,
-                                      "hide-default-footer": "",
-                                      "show-expand": ""
-                                    },
-                                    scopedSlots: _vm._u([
-                                      {
-                                        key: "expanded-item",
-                                        fn: function(ref) {
-                                          var headers = ref.headers
-                                          var item = ref.item
-                                          return [
-                                            _c(
-                                              "td",
-                                              {
-                                                attrs: {
-                                                  colspan: headers.length
-                                                }
-                                              },
-                                              [
-                                                _c("p"),
-                                                _vm._v(" "),
-                                                _c("p", [
-                                                  _c("strong", [
-                                                    _vm._v("Address line 2:")
-                                                  ]),
-                                                  _vm._v(
-                                                    " " +
-                                                      _vm._s(
-                                                        item.address_line_2
-                                                      ) +
-                                                      "\n                                                "
-                                                  )
-                                                ]),
-                                                _vm._v(" "),
-                                                _c("p", [
-                                                  _c("strong", [
-                                                    _vm._v("Address line 3:")
-                                                  ]),
-                                                  _vm._v(
-                                                    " " +
-                                                      _vm._s(
-                                                        item.address_line_3
-                                                      ) +
-                                                      "\n                                                "
-                                                  )
-                                                ])
-                                              ]
-                                            )
-                                          ]
-                                        }
-                                      },
-                                      {
-                                        key: "item.actions",
-                                        fn: function(ref) {
-                                          var item = ref.item
-                                          return [
-                                            _c(
-                                              "v-icon",
-                                              {
-                                                attrs: { small: "" },
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.deleteAddress(
-                                                      item.id
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "\n                                                mdi-delete\n                                            "
-                                                )
-                                              ]
-                                            )
-                                          ]
-                                        }
-                                      }
-                                    ])
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c("v-spacer", [
-                                _vm._v(
-                                  "\n                                     \n                                "
-                                )
-                              ]),
                               _vm._v(" "),
                               _c(
                                 "v-col",
@@ -46032,143 +46138,153 @@ var render = function() {
                           [
                             _c(
                               "v-col",
-                              { staticClass: "col-md-6" },
-                              [
-                                _c("v-data-table", {
-                                  staticClass: "elevation-1",
-                                  attrs: {
-                                    headers: _vm.phoneHeaders,
-                                    items: _vm.company.phones,
-                                    "hide-default-footer": ""
-                                  },
-                                  scopedSlots: _vm._u([
-                                    {
-                                      key: "item.actions",
-                                      fn: function(ref) {
-                                        var item = ref.item
-                                        return [
-                                          _c(
-                                            "v-icon",
-                                            {
-                                              attrs: { small: "" },
-                                              on: {
-                                                click: function($event) {
-                                                  return _vm.deletePhone(
-                                                    item.id
-                                                  )
-                                                }
-                                              }
-                                            },
-                                            [
-                                              _vm._v(
-                                                "\n                                                mdi-delete\n                                            "
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                      }
-                                    }
-                                  ])
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-col",
-                              { staticClass: "col-md-6" },
-                              [
-                                _c("v-data-table", {
-                                  staticClass: "elevation-1",
-                                  attrs: {
-                                    headers: _vm.addressHeaders,
-                                    items: _vm.company.addresses,
-                                    "hide-default-footer": "",
-                                    "show-expand": ""
-                                  },
-                                  scopedSlots: _vm._u([
-                                    {
-                                      key: "expanded-item",
-                                      fn: function(ref) {
-                                        var headers = ref.headers
-                                        var item = ref.item
-                                        return [
-                                          _c(
-                                            "td",
-                                            {
-                                              attrs: { colspan: headers.length }
-                                            },
-                                            [
-                                              _c("p"),
-                                              _vm._v(" "),
-                                              _c("p", [
-                                                _c("strong", [
-                                                  _vm._v("Address line 2:")
-                                                ]),
-                                                _vm._v(
-                                                  " " +
-                                                    _vm._s(
-                                                      item.address_line_2
-                                                    ) +
-                                                    "\n                                                "
-                                                )
-                                              ]),
-                                              _vm._v(" "),
-                                              _c("p", [
-                                                _c("strong", [
-                                                  _vm._v("Address line 3:")
-                                                ]),
-                                                _vm._v(
-                                                  " " +
-                                                    _vm._s(
-                                                      item.address_line_3
-                                                    ) +
-                                                    "\n                                                "
-                                                )
-                                              ])
-                                            ]
-                                          )
-                                        ]
-                                      }
-                                    },
-                                    {
-                                      key: "item.actions",
-                                      fn: function(ref) {
-                                        var item = ref.item
-                                        return [
-                                          _c(
-                                            "v-icon",
-                                            {
-                                              attrs: { small: "" },
-                                              on: {
-                                                click: function($event) {
-                                                  return _vm.deleteAddress(
-                                                    item.id
-                                                  )
-                                                }
-                                              }
-                                            },
-                                            [
-                                              _vm._v(
-                                                "\n                                                mdi-delete\n                                            "
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                      }
-                                    }
-                                  ])
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-col",
                               { staticClass: "col-md-12" },
                               [
                                 _c(
+                                  "v-list",
+                                  { attrs: { dense: "", subheader: "" } },
+                                  [
+                                    _c(
+                                      "v-list-item-group",
+                                      { attrs: { color: "green" } },
+                                      [
+                                        _vm._l(_vm.company.phones, function(
+                                          item,
+                                          i
+                                        ) {
+                                          return _c(
+                                            "v-list-item",
+                                            { key: item.id },
+                                            [
+                                              _c(
+                                                "v-list-item-content",
+                                                [
+                                                  _c("v-list-item-title", {
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        item.phone
+                                                      )
+                                                    }
+                                                  }),
+                                                  _vm._v(" "),
+                                                  _c("v-list-item-subtitle", {
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        item.type.name
+                                                      )
+                                                    }
+                                                  })
+                                                ],
+                                                1
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-list-item-action",
+                                                [
+                                                  _c(
+                                                    "v-icon",
+                                                    {
+                                                      attrs: { small: "" },
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.deletePhone(
+                                                            item.id
+                                                          )
+                                                        }
+                                                      }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                                                        mdi-delete\n                                                    "
+                                                      )
+                                                    ]
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        }),
+                                        _vm._v(" "),
+                                        _vm._l(_vm.company.addresses, function(
+                                          item,
+                                          i
+                                        ) {
+                                          return _c(
+                                            "v-list-item",
+                                            { key: item.id },
+                                            [
+                                              _c(
+                                                "v-list-item-content",
+                                                [
+                                                  _c("v-list-item-title", {}, [
+                                                    _vm._v(
+                                                      _vm._s(item.address) +
+                                                        " " +
+                                                        _vm._s(
+                                                          item.address_line_2
+                                                        ) +
+                                                        " " +
+                                                        _vm._s(
+                                                          item.address_line_3
+                                                        )
+                                                    )
+                                                  ]),
+                                                  _vm._v(" "),
+                                                  _c("v-list-item-subtitle", {
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        item.type.name
+                                                      )
+                                                    }
+                                                  })
+                                                ],
+                                                1
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-list-item-action",
+                                                [
+                                                  _c(
+                                                    "v-icon",
+                                                    {
+                                                      attrs: { small: "" },
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.deleteAddress(
+                                                            item.id
+                                                          )
+                                                        }
+                                                      }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                                                        mdi-delete\n                                                    "
+                                                      )
+                                                    ]
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        })
+                                      ],
+                                      2
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
                                   "v-expansion-panels",
+                                  { attrs: { multiple: "" } },
                                   [
                                     _c(
                                       "v-expansion-panel",
@@ -46625,7 +46741,8 @@ var render = function() {
                         items: _vm.company.employees,
                         "items-per-page": 25,
                         "item-key": "id",
-                        "show-expand": ""
+                        "show-expand": "",
+                        dense: ""
                       },
                       scopedSlots: _vm._u([
                         {
@@ -46640,48 +46757,63 @@ var render = function() {
                                 [
                                   _c("p"),
                                   _vm._v(" "),
-                                  _c("p", [_c("strong", [_vm._v("E-mail:")])]),
+                                  item.user_data.email
+                                    ? _c("p", [
+                                        _c("strong", [_vm._v("E-mail:")]),
+                                        _vm._v(
+                                          " " + _vm._s(item.user_data.email)
+                                        )
+                                      ])
+                                    : _vm._e(),
                                   _vm._v(" "),
-                                  _c("p", [
-                                    _vm._v(_vm._s(item.user_data.email))
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("p", [
-                                    _c("strong", [_vm._v("Phone(s):")])
-                                  ]),
+                                  item.user_data.phones.length > 0
+                                    ? _c("p", [
+                                        _c("strong", [_vm._v("Phone(s):")])
+                                      ])
+                                    : _vm._e(),
                                   _vm._v(" "),
                                   _vm._l(item.user_data.phones, function(
                                     phoneItem
                                   ) {
-                                    return _c("p", [
-                                      _vm._v(
-                                        _vm._s(phoneItem.phone) +
-                                          " (" +
-                                          _vm._s(phoneItem.type.name) +
-                                          ")"
-                                      )
-                                    ])
+                                    return item.user_data.phones.length > 0
+                                      ? _c("p", [
+                                          _vm._v(
+                                            _vm._s(phoneItem.phone) +
+                                              " (" +
+                                              _vm._s(phoneItem.type.name) +
+                                              ")"
+                                          )
+                                        ])
+                                      : _vm._e()
                                   }),
                                   _vm._v(" "),
-                                  _c("p", [
-                                    _c("strong", [_vm._v("Address(es):")])
-                                  ]),
+                                  item.user_data.addresses.length > 0
+                                    ? _c("p", [
+                                        _c("strong", [_vm._v("Address(es):")])
+                                      ])
+                                    : _vm._e(),
                                   _vm._v(" "),
                                   _vm._l(item.user_data.addresses, function(
                                     addressItem
                                   ) {
-                                    return _c("p", [
-                                      _vm._v(
-                                        _vm._s(addressItem.address) +
-                                          " " +
-                                          _vm._s(addressItem.address_line_2) +
-                                          " " +
-                                          _vm._s(addressItem.address_line_3) +
-                                          " (" +
-                                          _vm._s(addressItem.type.name) +
-                                          ")"
-                                      )
-                                    ])
+                                    return item.user_data.addresses.length > 0
+                                      ? _c("p", [
+                                          _vm._v(
+                                            _vm._s(addressItem.address) +
+                                              " " +
+                                              _vm._s(
+                                                addressItem.address_line_2
+                                              ) +
+                                              " " +
+                                              _vm._s(
+                                                addressItem.address_line_3
+                                              ) +
+                                              " (" +
+                                              _vm._s(addressItem.type.name) +
+                                              ")"
+                                          )
+                                        ])
+                                      : _vm._e()
                                   })
                                 ],
                                 2
@@ -46987,60 +47119,67 @@ var render = function() {
                 _c(
                   "v-card-text",
                   [
-                    _c("v-data-table", {
-                      staticClass: "elevation-1",
-                      attrs: {
-                        headers: _vm.socialHeaders,
-                        items: _vm.company.socials,
-                        "hide-default-footer": "",
-                        "hide-default-header": ""
-                      },
-                      scopedSlots: _vm._u([
-                        {
-                          key: "item.social_link",
-                          fn: function(ref) {
-                            var item = ref.item
-                            return [
-                              _c(
-                                "v-list-item",
-                                { attrs: { link: "", href: item.social_link } },
-                                [_vm._v(_vm._s(item.social_link))]
-                              )
-                            ]
-                          }
-                        },
-                        {
-                          key: "item.actions",
-                          fn: function(ref) {
-                            var item = ref.item
-                            return [
-                              _c(
-                                "v-icon",
-                                {
-                                  attrs: { small: "" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.deleteSocial(item.id)
-                                    }
-                                  }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n                                    mdi-delete\n                                "
-                                  )
-                                ]
-                              )
-                            ]
-                          }
-                        }
-                      ])
-                    }),
-                    _vm._v(" "),
-                    _c("v-spacer", [
-                      _vm._v(
-                        "\n                             \n                        "
-                      )
-                    ]),
+                    _c(
+                      "v-list",
+                      { attrs: { dense: "", subheader: "" } },
+                      [
+                        _c(
+                          "v-list-item-group",
+                          { attrs: { color: "green" } },
+                          _vm._l(_vm.company.socials, function(item) {
+                            return _c(
+                              "v-list-item",
+                              { key: item.id },
+                              [
+                                _c(
+                                  "v-list-item-content",
+                                  [
+                                    _c("v-list-item-title", {
+                                      domProps: {
+                                        textContent: _vm._s(item.social_link)
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("v-list-item-subtitle", {
+                                      domProps: {
+                                        textContent: _vm._s(item.type.name)
+                                      }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-list-item-action",
+                                  [
+                                    _c(
+                                      "v-icon",
+                                      {
+                                        attrs: { small: "" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.deleteSocial(item.id)
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                                            mdi-delete\n                                        "
+                                        )
+                                      ]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          }),
+                          1
+                        )
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
                     _c(
                       "v-expansion-panels",
@@ -47727,141 +47866,150 @@ var render = function() {
                           [
                             _c(
                               "v-col",
-                              { staticClass: "col-md-6" },
+                              { attrs: { md: "12" } },
                               [
-                                _c("v-data-table", {
-                                  staticClass: "elevation-1",
-                                  attrs: {
-                                    headers: _vm.phoneHeaders,
-                                    items: _vm.client.phones,
-                                    "hide-default-footer": ""
-                                  },
-                                  scopedSlots: _vm._u([
-                                    {
-                                      key: "item.actions",
-                                      fn: function(ref) {
-                                        var item = ref.item
-                                        return [
-                                          _c(
-                                            "v-icon",
-                                            {
-                                              attrs: { small: "" },
-                                              on: {
-                                                click: function($event) {
-                                                  return _vm.deletePhone(
-                                                    item.id
-                                                  )
-                                                }
-                                              }
-                                            },
+                                _c(
+                                  "v-list",
+                                  { attrs: { dense: "", subheader: "" } },
+                                  [
+                                    _c(
+                                      "v-list-item-group",
+                                      { attrs: { color: "green" } },
+                                      [
+                                        _vm._l(_vm.client.phones, function(
+                                          item,
+                                          i
+                                        ) {
+                                          return _c(
+                                            "v-list-item",
+                                            { key: item.id },
                                             [
-                                              _vm._v(
-                                                "\n                                                mdi-delete\n                                            "
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                      }
-                                    }
-                                  ])
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-col",
-                              { staticClass: "col-md-6" },
-                              [
-                                _c("v-data-table", {
-                                  staticClass: "elevation-1",
-                                  attrs: {
-                                    headers: _vm.addressHeaders,
-                                    items: _vm.client.addresses,
-                                    "hide-default-footer": "",
-                                    "show-expand": ""
-                                  },
-                                  scopedSlots: _vm._u([
-                                    {
-                                      key: "expanded-item",
-                                      fn: function(ref) {
-                                        var headers = ref.headers
-                                        var item = ref.item
-                                        return [
-                                          _c(
-                                            "td",
-                                            {
-                                              attrs: { colspan: headers.length }
-                                            },
-                                            [
-                                              _c("p"),
+                                              _c(
+                                                "v-list-item-content",
+                                                [
+                                                  _c("v-list-item-title", {
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        item.phone
+                                                      )
+                                                    }
+                                                  }),
+                                                  _vm._v(" "),
+                                                  _c("v-list-item-subtitle", {
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        item.type.name
+                                                      )
+                                                    }
+                                                  })
+                                                ],
+                                                1
+                                              ),
                                               _vm._v(" "),
-                                              _c("p", [
-                                                _c("strong", [
-                                                  _vm._v("Address line 2:")
-                                                ]),
-                                                _vm._v(
-                                                  " " +
-                                                    _vm._s(
-                                                      item.address_line_2
-                                                    ) +
-                                                    "\n                                                "
-                                                )
-                                              ]),
-                                              _vm._v(" "),
-                                              _c("p", [
-                                                _c("strong", [
-                                                  _vm._v("Address line 3:")
-                                                ]),
-                                                _vm._v(
-                                                  " " +
-                                                    _vm._s(
-                                                      item.address_line_3
-                                                    ) +
-                                                    "\n                                                "
-                                                )
-                                              ])
-                                            ]
-                                          )
-                                        ]
-                                      }
-                                    },
-                                    {
-                                      key: "item.actions",
-                                      fn: function(ref) {
-                                        var item = ref.item
-                                        return [
-                                          _c(
-                                            "v-icon",
-                                            {
-                                              attrs: { small: "" },
-                                              on: {
-                                                click: function($event) {
-                                                  return _vm.deleteAddress(
-                                                    item.id
+                                              _c(
+                                                "v-list-item-action",
+                                                [
+                                                  _c(
+                                                    "v-icon",
+                                                    {
+                                                      attrs: { small: "" },
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.deletePhone(
+                                                            item.id
+                                                          )
+                                                        }
+                                                      }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                                                        mdi-delete\n                                                    "
+                                                      )
+                                                    ]
                                                   )
-                                                }
-                                              }
-                                            },
-                                            [
-                                              _vm._v(
-                                                "\n                                                mdi-delete\n                                            "
+                                                ],
+                                                1
                                               )
-                                            ]
+                                            ],
+                                            1
                                           )
-                                        ]
-                                      }
-                                    }
-                                  ])
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-col",
-                              { staticClass: "col-md-12" },
-                              [
+                                        }),
+                                        _vm._v(" "),
+                                        _vm._l(_vm.client.addresses, function(
+                                          item,
+                                          i
+                                        ) {
+                                          return _c(
+                                            "v-list-item",
+                                            { key: item.id },
+                                            [
+                                              _c(
+                                                "v-list-item-content",
+                                                [
+                                                  _c("v-list-item-title", {}, [
+                                                    _vm._v(
+                                                      _vm._s(item.address) +
+                                                        " " +
+                                                        _vm._s(
+                                                          item.address_line_2
+                                                        ) +
+                                                        " " +
+                                                        _vm._s(
+                                                          item.address_line_3
+                                                        )
+                                                    )
+                                                  ]),
+                                                  _vm._v(" "),
+                                                  _c("v-list-item-subtitle", {
+                                                    domProps: {
+                                                      textContent: _vm._s(
+                                                        item.type.name
+                                                      )
+                                                    }
+                                                  })
+                                                ],
+                                                1
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-list-item-action",
+                                                [
+                                                  _c(
+                                                    "v-icon",
+                                                    {
+                                                      attrs: { small: "" },
+                                                      on: {
+                                                        click: function(
+                                                          $event
+                                                        ) {
+                                                          return _vm.deleteAddress(
+                                                            item.id
+                                                          )
+                                                        }
+                                                      }
+                                                    },
+                                                    [
+                                                      _vm._v(
+                                                        "\n                                                        mdi-delete\n                                                    "
+                                                      )
+                                                    ]
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        })
+                                      ],
+                                      2
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
                                 _c(
                                   "v-expansion-panels",
                                   [
@@ -48320,9 +48468,74 @@ var render = function() {
                         items: _vm.client.employees,
                         "items-per-page": 25,
                         "item-key": "id",
-                        "show-expand": ""
+                        "show-expand": "",
+                        dense: ""
                       },
                       scopedSlots: _vm._u([
+                        {
+                          key: "item.actions",
+                          fn: function(ref) {
+                            var item = ref.item
+                            return [
+                              _c(
+                                "v-icon",
+                                {
+                                  staticClass: "mr-2",
+                                  attrs: {
+                                    disabled: !item.employee.user_data
+                                      .is_active,
+                                    small: ""
+                                  },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.sendInvite(item.employee)
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                    mdi-account-alert\n                                "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-icon",
+                                {
+                                  staticClass: "mr-2",
+                                  attrs: { small: "", hint: "Edit contact" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.showRolesModal(item.employee)
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                    mdi-account-edit\n                                "
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-icon",
+                                {
+                                  attrs: { small: "", hint: "Delete contact" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.removeEmployee(item)
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                                    mdi-delete\n                                "
+                                  )
+                                ]
+                              )
+                            ]
+                          }
+                        },
                         {
                           key: "expanded-item",
                           fn: function(ref) {
@@ -48335,17 +48548,25 @@ var render = function() {
                                 [
                                   _c("p"),
                                   _vm._v(" "),
-                                  _c("p", [_c("strong", [_vm._v("E-mail:")])]),
+                                  item.employee.user_data.email
+                                    ? _c("p", [
+                                        _c("strong", [_vm._v("E-mail:")])
+                                      ])
+                                    : _vm._e(),
                                   _vm._v(" "),
-                                  _c("p", [
-                                    _vm._v(
-                                      _vm._s(item.employee.user_data.email)
-                                    )
-                                  ]),
+                                  item.employee.user_data.email
+                                    ? _c("p", [
+                                        _vm._v(
+                                          _vm._s(item.employee.user_data.email)
+                                        )
+                                      ])
+                                    : _vm._e(),
                                   _vm._v(" "),
-                                  _c("p", [
-                                    _c("strong", [_vm._v("Phone(s):")])
-                                  ]),
+                                  item.employee.user_data.phones.length > 0
+                                    ? _c("p", [
+                                        _c("strong", [_vm._v("Phone(s):")])
+                                      ])
+                                    : _vm._e(),
                                   _vm._v(" "),
                                   _vm._l(
                                     item.employee.user_data.phones,
@@ -48361,9 +48582,11 @@ var render = function() {
                                     }
                                   ),
                                   _vm._v(" "),
-                                  _c("p", [
-                                    _c("strong", [_vm._v("Address(es):")])
-                                  ]),
+                                  item.employee.user_data.addresses.length > 0
+                                    ? _c("p", [
+                                        _c("strong", [_vm._v("Address(es):")])
+                                      ])
+                                    : _vm._e(),
                                   _vm._v(" "),
                                   _vm._l(
                                     item.employee.user_data.addresses,
@@ -48596,60 +48819,67 @@ var render = function() {
                 _c(
                   "v-card-text",
                   [
-                    _c("v-data-table", {
-                      staticClass: "elevation-1",
-                      attrs: {
-                        headers: _vm.socialHeaders,
-                        items: _vm.client.socials,
-                        "hide-default-footer": "",
-                        "hide-default-header": ""
-                      },
-                      scopedSlots: _vm._u([
-                        {
-                          key: "item.social_link",
-                          fn: function(ref) {
-                            var item = ref.item
-                            return [
-                              _c(
-                                "v-list-item",
-                                { attrs: { link: "", href: item.social_link } },
-                                [_vm._v(_vm._s(item.social_link))]
-                              )
-                            ]
-                          }
-                        },
-                        {
-                          key: "item.actions",
-                          fn: function(ref) {
-                            var item = ref.item
-                            return [
-                              _c(
-                                "v-icon",
-                                {
-                                  attrs: { small: "" },
-                                  on: {
-                                    click: function($event) {
-                                      return _vm.deleteSocial(item.id)
-                                    }
-                                  }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n                                    mdi-delete\n                                "
-                                  )
-                                ]
-                              )
-                            ]
-                          }
-                        }
-                      ])
-                    }),
-                    _vm._v(" "),
-                    _c("v-spacer", [
-                      _vm._v(
-                        "\n                             \n                        "
-                      )
-                    ]),
+                    _c(
+                      "v-list",
+                      { attrs: { dense: "", subheader: "" } },
+                      [
+                        _c(
+                          "v-list-item-group",
+                          { attrs: { color: "green" } },
+                          _vm._l(_vm.client.socials, function(item) {
+                            return _c(
+                              "v-list-item",
+                              { key: item.id },
+                              [
+                                _c(
+                                  "v-list-item-content",
+                                  [
+                                    _c("v-list-item-title", {
+                                      domProps: {
+                                        textContent: _vm._s(item.social_link)
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("v-list-item-subtitle", {
+                                      domProps: {
+                                        textContent: _vm._s(item.type.name)
+                                      }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-list-item-action",
+                                  [
+                                    _c(
+                                      "v-icon",
+                                      {
+                                        attrs: { small: "" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.deleteSocial(item.id)
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                                            mdi-delete\n                                        "
+                                        )
+                                      ]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          }),
+                          1
+                        )
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
                     _c(
                       "v-expansion-panels",
@@ -48794,7 +49024,127 @@ var render = function() {
           ],
           1
         )
-      ])
+      ]),
+      _vm._v(" "),
+      _c(
+        "v-row",
+        { attrs: { justify: "center" } },
+        [
+          _c(
+            "v-dialog",
+            {
+              attrs: { persistent: "", "max-width": "600px" },
+              model: {
+                value: _vm.rolesDialog,
+                callback: function($$v) {
+                  _vm.rolesDialog = $$v
+                },
+                expression: "rolesDialog"
+              }
+            },
+            [
+              _c(
+                "v-card",
+                [
+                  _c("v-card-title", [
+                    _c("span", { staticClass: "headline" }, [
+                      _vm._v(
+                        "Update role for " + _vm._s(_vm.newRoleForm.user.name)
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "v-card-text",
+                    [
+                      _c(
+                        "v-container",
+                        [
+                          _c("v-select", {
+                            attrs: {
+                              label: "Role",
+                              color: "green",
+                              "item-color": "green",
+                              "item-text": "name",
+                              "item-value": "id",
+                              items: _vm.roles,
+                              disabled: !_vm.checkRoleByIds([1, 2, 3]),
+                              multiple: ""
+                            },
+                            model: {
+                              value: _vm.newRoleForm.role_ids,
+                              callback: function($$v) {
+                                _vm.$set(_vm.newRoleForm, "role_ids", $$v)
+                              },
+                              expression: "newRoleForm.role_ids"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c("v-checkbox", {
+                            attrs: {
+                              label: "Give access to the system",
+                              color: "success",
+                              disabled: !_vm.checkRoleByIds([1, 2, 3]),
+                              "hide-details": ""
+                            },
+                            on: {
+                              change: function($event) {
+                                return _vm.changeIsActive(_vm.newRoleForm.user)
+                              }
+                            },
+                            model: {
+                              value: _vm.newRoleForm.user.is_active,
+                              callback: function($$v) {
+                                _vm.$set(_vm.newRoleForm.user, "is_active", $$v)
+                              },
+                              expression: "newRoleForm.user.is_active"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-card-actions",
+                    [
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "red", text: "" },
+                          on: {
+                            click: function($event) {
+                              _vm.rolesDialog = false
+                            }
+                          }
+                        },
+                        [_vm._v("Close")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "green", text: "" },
+                          on: { click: _vm.updateRole }
+                        },
+                        [_vm._v("Save")]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
     ],
     1
   )

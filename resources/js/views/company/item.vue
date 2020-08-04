@@ -109,52 +109,51 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col class="col-md-6">
-                                    <v-data-table
-                                        :headers="phoneHeaders"
-                                        :items="company.phones"
-                                        hide-default-footer
-                                        class="elevation-1"
-                                    >
-                                        <template v-slot:item.actions="{ item }">
-                                            <v-icon
-                                                small
-                                                @click="deletePhone(item.id)"
-                                            >
-                                                mdi-delete
-                                            </v-icon>
-                                        </template>
-                                    </v-data-table>
-                                </v-col>
-                                <v-col class="col-md-6">
-                                    <v-data-table
-                                        :headers="addressHeaders"
-                                        :items="company.addresses"
-                                        hide-default-footer
-                                        show-expand
-                                        class="elevation-1"
-                                    >
-                                        <template v-slot:expanded-item="{ headers, item }">
-                                            <td :colspan="headers.length">
-                                                <p></p>
-                                                <p><strong>Address line 2:</strong> {{ item.address_line_2 }}
-                                                </p>
-                                                <p><strong>Address line 3:</strong> {{ item.address_line_3 }}
-                                                </p>
-                                            </td>
-                                        </template>
-                                        <template v-slot:item.actions="{ item }">
-                                            <v-icon
-                                                small
-                                                @click="deleteAddress(item.id)"
-                                            >
-                                                mdi-delete
-                                            </v-icon>
-                                        </template>
-                                    </v-data-table>
-                                </v-col>
                                 <v-col class="col-md-12">
-                                    <v-expansion-panels>
+                                    <v-list
+                                        dense
+                                        subheader
+                                    >
+                                        <v-list-item-group color="green">
+                                            <v-list-item
+                                                v-for="(item, i) in company.phones"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="item.phone"></v-list-item-title>
+                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="deletePhone(item.id)"
+                                                    >
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                            <v-list-item
+                                                v-for="(item, i) in company.addresses"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="">{{item.address}} {{item.address_line_2}} {{item.address_line_3}}</v-list-item-title>
+                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="deleteAddress(item.id)"
+                                                    >
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                    <v-expansion-panels
+                                    multiple
+                                    >
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 New phone
@@ -302,19 +301,19 @@
                             class="elevation-1"
                             item-key="id"
                             show-expand
+                            dense
                         >
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <p></p>
-                                    <p><strong>E-mail:</strong></p>
-                                    <p>{{ item.user_data.email }}</p>
-                                    <p><strong>Phone(s):</strong></p>
-                                    <p v-for="phoneItem in item.user_data.phones">{{ phoneItem.phone }} ({{
+                                    <p v-if="item.user_data.email"><strong>E-mail:</strong> {{ item.user_data.email }}</p>
+                                    <p v-if="item.user_data.phones.length > 0"><strong>Phone(s):</strong></p>
+                                    <p v-if="item.user_data.phones.length > 0" v-for="phoneItem in item.user_data.phones">{{ phoneItem.phone }} ({{
                                         phoneItem.type.name }})</p>
 <!--                                    <p><strong>Lang:</strong></p>-->
 <!--                                    <p>{{ item.user_data.lang }}</p>-->
-                                    <p><strong>Address(es):</strong></p>
-                                    <p v-for="addressItem in item.user_data.addresses">{{ addressItem.address }} {{
+                                    <p v-if="item.user_data.addresses.length > 0"><strong>Address(es):</strong></p>
+                                    <p v-if="item.user_data.addresses.length > 0" v-for="addressItem in item.user_data.addresses">{{ addressItem.address }} {{
                                         addressItem.address_line_2 }} {{ addressItem.address_line_3 }} ({{
                                         addressItem.type.name }})</p>
                                 </td>
@@ -444,28 +443,31 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
-                        <v-data-table
-                            :headers="socialHeaders"
-                            :items="company.socials"
-                            hide-default-footer
-                            hide-default-header
-                            class="elevation-1"
+                        <v-list
+                            dense
+                            subheader
                         >
-                            <template v-slot:item.social_link="{ item }">
-                                <v-list-item link :href="item.social_link">{{ item.social_link }}</v-list-item>
-                            </template>
-                            <template v-slot:item.actions="{ item }">
-                                <v-icon
-                                    small
-                                    @click="deleteSocial(item.id)"
+                            <v-list-item-group color="green">
+                                <v-list-item
+                                    v-for="(item) in company.socials"
+                                    :key="item.id"
                                 >
-                                    mdi-delete
-                                </v-icon>
-                            </template>
-                        </v-data-table>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="item.social_link"></v-list-item-title>
+                                        <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-icon
+                                            small
+                                            @click="deleteSocial(item.id)"
+                                        >
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+
+                            </v-list-item-group>
+                        </v-list>
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
@@ -570,25 +572,6 @@
                 snackbarMessage: '',
                 tooltip: false,
                 enableToEdit: false,
-                phoneHeaders: [
-                    {text: 'Phone', sortable: false, value: 'phone'},
-                    {text: 'Type', value: 'type.name'},
-                    {text: '', value: 'actions', sortable: false},
-
-                ],
-                socialHeaders: [
-                    {text: 'Type', value: 'type.name'},
-                    {text: 'Link', sortable: false, value: 'social_link'},
-                    {text: '', value: 'actions', sortable: false},
-
-                ],
-                addressHeaders: [
-                    {text: '', value: 'data-table-expand'},
-                    {text: 'Address', value: 'address'},
-                    {text: 'Type', value: 'type.name'},
-                    {text: '', value: 'actions', sortable: false},
-
-                ],
                 headers: [
                     {text: '', value: 'data-table-expand'},
                     // {
@@ -615,7 +598,10 @@
                             user_id: '',
                             company_id: '',
                             roles: [],
-                            user_data: ''
+                            user_data: {
+                                phones: [],
+                                addresses: [],
+                            }
                         }
                     ]
                 },
