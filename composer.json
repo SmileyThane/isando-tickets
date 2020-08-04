@@ -19,8 +19,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "spatie/laravel-permission": "^3.13",
-        "webklex/laravel-imap": "^1.4",
-        "ybr-nx/laravel-mariadb": "^1.0"
+        "webklex/laravel-imap": "^1.4"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

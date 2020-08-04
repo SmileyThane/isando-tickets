@@ -17,7 +17,7 @@ class CreateLanguagesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('short_code',10);
-            $table->json('lang_map')->nullable();
+            $table->longText('lang_map')->nullable();
             $table->timestamps();
         });
     }
