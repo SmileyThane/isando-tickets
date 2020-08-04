@@ -6214,6 +6214,7 @@ __webpack_require__.r(__webpack_exports__);
       team: {
         team_name: '',
         team_description: '',
+        team_owner_id: '',
         employees: [{
           employee: {
             user_id: '',
@@ -6241,9 +6242,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.getTeam();
-    this.getCompanies();
     this.employeeForm.team_id = this.$route.params.id;
-    console.log(this.employeeForm.team_id);
   },
   methods: {
     getTeam: function getTeam() {
@@ -6256,6 +6255,8 @@ __webpack_require__.r(__webpack_exports__);
           _this.team = response.data;
           _this.team.team_name = response.data.name;
           _this.team.team_description = response.data.description;
+
+          _this.getCompanies();
         } else {
           console.log('error');
         }
@@ -6264,11 +6265,12 @@ __webpack_require__.r(__webpack_exports__);
     getCompanies: function getCompanies() {
       var _this2 = this;
 
-      axios.get('/api/company').then(function (response) {
+      console.log(this.team);
+      axios.get("/api/company/".concat(this.team.team_owner_id)).then(function (response) {
         response = response.data;
 
         if (response.success === true) {
-          _this2.companies = response.data.data[0];
+          _this2.companies = response.data;
           console.log(_this2.companies);
         } else {
           console.log('error');
@@ -50246,7 +50248,7 @@ var render = function() {
             expression: "snackbar"
           }
         },
-        [_vm._v("\n            " + _vm._s(_vm.snackbarMessage) + "\n        ")]
+        [_vm._v("\n        " + _vm._s(_vm.snackbarMessage) + "\n    ")]
       ),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
@@ -50386,7 +50388,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("v-spacer", [
                       _vm._v(
-                        "\n                             \n                        "
+                        "\n                         \n                    "
                       )
                     ]),
                     _vm._v(" "),
@@ -50417,7 +50419,7 @@ var render = function() {
                               },
                               [
                                 _vm._v(
-                                  "\n                                    New Team Member\n                                    "
+                                  "\n                                New Team Member\n                                "
                                 )
                               ]
                             ),

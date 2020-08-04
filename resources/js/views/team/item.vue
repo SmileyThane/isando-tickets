@@ -49,10 +49,10 @@
                             ></v-text-field>
                         </v-form>
                     </v-card-text>
-<!--                    <v-card-actions>-->
-<!--                        <v-spacer></v-spacer>-->
-<!--                        <v-btn color="green" style="color: white;" @click="updateTeam">Save</v-btn>-->
-<!--                    </v-card-actions>-->
+                    <!--                    <v-card-actions>-->
+                    <!--                        <v-spacer></v-spacer>-->
+                    <!--                        <v-btn color="green" style="color: white;" @click="updateTeam">Save</v-btn>-->
+                    <!--                    </v-card-actions>-->
                 </v-card>
             </div>
             <div class="col-md-6">
@@ -147,6 +147,7 @@
                 team: {
                     team_name: '',
                     team_description: '',
+                    team_owner_id: '',
                     employees: [
                         {
                             employee: {
@@ -183,9 +184,7 @@
         },
         mounted() {
             this.getTeam()
-            this.getCompanies()
             this.employeeForm.team_id = this.$route.params.id
-            console.log(this.employeeForm.team_id);
         },
         methods: {
             getTeam() {
@@ -195,6 +194,7 @@
                         this.team = response.data
                         this.team.team_name = response.data.name
                         this.team.team_description = response.data.description
+                        this.getCompanies()
                     } else {
                         console.log('error')
                     }
@@ -202,10 +202,11 @@
                 });
             },
             getCompanies() {
-                axios.get('/api/company').then(response => {
+                console.log(this.team);
+                axios.get(`/api/company/${this.team.team_owner_id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.companies = response.data.data[0]
+                        this.companies = response.data
                         console.log(this.companies);
                     } else {
                         console.log('error')
