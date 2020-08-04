@@ -35,6 +35,7 @@
                                 v-model="client.client_name"
                                 required
                                 :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
                             <v-text-field
                                 color="green"
@@ -45,6 +46,7 @@
                                 v-model="client.client_description"
                                 required
                                 :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
                         </v-form>
                     </v-card-text>

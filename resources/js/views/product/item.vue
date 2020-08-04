@@ -35,6 +35,7 @@
                                 :error-messages="errors.product_name"
                                 lazy-validation
                                 :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
                             <v-text-field
                                 color="green"
@@ -46,6 +47,7 @@
                                 :error-messages="errors.product_description"
                                 lazy-validation
                                 :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
                         </v-form>
                     </v-card-text>

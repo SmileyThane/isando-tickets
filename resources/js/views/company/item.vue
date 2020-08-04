@@ -20,7 +20,8 @@
                         <v-toolbar-title>Basic info</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit"  color="white" style="color: black;" @click="updateCompany">Save</v-btn>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompany">Save
+                        </v-btn>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
@@ -33,6 +34,7 @@
                                 v-model="company.name"
                                 required
                                 :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
                             <v-text-field
                                 color="green"
@@ -43,6 +45,7 @@
                                 v-model="company.description"
                                 required
                                 :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
 
                             <v-text-field
@@ -54,6 +57,7 @@
                                 v-model="company.company_number"
                                 required
                                 :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
                             <v-menu
                                 :close-on-content-click="false"
@@ -83,10 +87,10 @@
                             </v-menu>
                         </v-form>
                     </v-card-text>
-<!--                    <v-card-actions>-->
-<!--                        <v-spacer></v-spacer>-->
-<!--                        <v-btn color="green" style="color: white;" @click="updateCompany">Save</v-btn>-->
-<!--                    </v-card-actions>-->
+                    <!--                    <v-card-actions>-->
+                    <!--                        <v-spacer></v-spacer>-->
+                    <!--                        <v-btn color="green" style="color: white;" @click="updateCompany">Save</v-btn>-->
+                    <!--                    </v-card-actions>-->
                 </v-card>
                 <v-spacer>
                     &nbsp;
@@ -564,8 +568,8 @@
                 snackbar: false,
                 actionColor: '',
                 snackbarMessage: '',
-                tooltip:false,
-                enableToEdit:false,
+                tooltip: false,
+                enableToEdit: false,
                 phoneHeaders: [
                     {text: 'Phone', sortable: false, value: 'phone'},
                     {text: 'Type', value: 'type.name'},

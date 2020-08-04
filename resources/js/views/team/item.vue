@@ -34,6 +34,7 @@
                                 v-model="team.team_name"
                                 required
                                 :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
                             <v-text-field
                                 color="green"
@@ -44,6 +45,7 @@
                                 v-model="team.team_description"
                                 required
                                 :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
                         </v-form>
                     </v-card-text>

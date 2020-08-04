@@ -38,6 +38,7 @@
                                     lazy-validation
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
+                                dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -50,6 +51,7 @@
                                     lazy-validation
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
+                                dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -63,6 +65,7 @@
                                     required
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
+                                dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -75,6 +78,7 @@
                                     lazy-validation
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
+                                dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -88,6 +92,7 @@
                                     lazy-validation
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
+                                dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -102,6 +107,7 @@
                                     class="col-md-6"
                                     required
                                     :readonly="!enableToEdit"
+                                dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -115,6 +121,7 @@
                                     class="col-md-4"
                                     required
                                     :readonly="!enableToEdit"
+                                dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -128,6 +135,7 @@
                                     class="col-md-4"
                                     required
                                     :readonly="!enableToEdit"
+                                dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -141,6 +149,7 @@
                                     class="col-md-4"
                                     required
                                     :readonly="!enableToEdit"
+                                dense
                                 ></v-text-field>
 
                             </v-row>

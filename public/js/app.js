@@ -2713,6 +2713,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3271,6 +3280,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
 //
 //
 //
@@ -4946,6 +4959,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5630,6 +5645,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5902,6 +5919,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
 //
 //
 //
@@ -44483,7 +44502,8 @@ var render = function() {
                                   "error-messages":
                                     _vm.errors.title_before_name,
                                   "lazy-validation": "",
-                                  readonly: !_vm.enableToEdit
+                                  readonly: !_vm.enableToEdit,
+                                  dense: ""
                                 },
                                 model: {
                                   value: _vm.userData.title_before_name,
@@ -44508,7 +44528,8 @@ var render = function() {
                                   type: "text",
                                   "error-messages": _vm.errors.title,
                                   "lazy-validation": "",
-                                  readonly: !_vm.enableToEdit
+                                  readonly: !_vm.enableToEdit,
+                                  dense: ""
                                 },
                                 model: {
                                   value: _vm.userData.title,
@@ -44530,7 +44551,8 @@ var render = function() {
                                   "error-messages": _vm.errors.name,
                                   "lazy-validation": "",
                                   required: "",
-                                  readonly: !_vm.enableToEdit
+                                  readonly: !_vm.enableToEdit,
+                                  dense: ""
                                 },
                                 model: {
                                   value: _vm.userData.name,
@@ -44551,7 +44573,8 @@ var render = function() {
                                   type: "text",
                                   "error-messages": _vm.errors.surname,
                                   "lazy-validation": "",
-                                  readonly: !_vm.enableToEdit
+                                  readonly: !_vm.enableToEdit,
+                                  dense: ""
                                 },
                                 model: {
                                   value: _vm.userData.surname,
@@ -44573,7 +44596,8 @@ var render = function() {
                                   required: "",
                                   "error-messages": _vm.errors.email,
                                   "lazy-validation": "",
-                                  readonly: !_vm.enableToEdit
+                                  readonly: !_vm.enableToEdit,
+                                  dense: ""
                                 },
                                 model: {
                                   value: _vm.userData.email,
@@ -44596,7 +44620,8 @@ var render = function() {
                                   "error-messages": _vm.errors.password,
                                   "lazy-validation": "",
                                   required: "",
-                                  readonly: !_vm.enableToEdit
+                                  readonly: !_vm.enableToEdit,
+                                  dense: ""
                                 },
                                 model: {
                                   value: _vm.userData.password,
@@ -44618,7 +44643,8 @@ var render = function() {
                                   "error-messages": _vm.errors.country,
                                   "lazy-validation": "",
                                   required: "",
-                                  readonly: !_vm.enableToEdit
+                                  readonly: !_vm.enableToEdit,
+                                  dense: ""
                                 },
                                 model: {
                                   value: _vm.userData.country,
@@ -44640,7 +44666,8 @@ var render = function() {
                                   "error-messages": _vm.errors.anredeform,
                                   "lazy-validation": "",
                                   required: "",
-                                  readonly: !_vm.enableToEdit
+                                  readonly: !_vm.enableToEdit,
+                                  dense: ""
                                 },
                                 model: {
                                   value: _vm.userData.anredeform,
@@ -44662,7 +44689,8 @@ var render = function() {
                                   "error-messages": _vm.errors.lang,
                                   "lazy-validation": "",
                                   required: "",
-                                  readonly: !_vm.enableToEdit
+                                  readonly: !_vm.enableToEdit,
+                                  dense: ""
                                 },
                                 model: {
                                   value: _vm.userData.lang,
@@ -45774,7 +45802,7 @@ var render = function() {
             expression: "snackbar"
           }
         },
-        [_vm._v("\n            " + _vm._s(_vm.snackbarMessage) + "\n        ")]
+        [_vm._v("\n        " + _vm._s(_vm.snackbarMessage) + "\n    ")]
       ),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
@@ -45816,7 +45844,7 @@ var render = function() {
                             attrs: { color: "white" },
                             on: { click: _vm.updateCompany }
                           },
-                          [_vm._v("Save")]
+                          [_vm._v("Save\n                    ")]
                         )
                       : _vm._e()
                   ],
@@ -45837,7 +45865,8 @@ var render = function() {
                             "prepend-icon": "mdi-rename-box",
                             type: "text",
                             required: "",
-                            readonly: !_vm.enableToEdit
+                            readonly: !_vm.enableToEdit,
+                            dense: ""
                           },
                           model: {
                             value: _vm.company.name,
@@ -45856,7 +45885,8 @@ var render = function() {
                             "prepend-icon": "mdi-comment-text",
                             type: "text",
                             required: "",
-                            readonly: !_vm.enableToEdit
+                            readonly: !_vm.enableToEdit,
+                            dense: ""
                           },
                           model: {
                             value: _vm.company.description,
@@ -45875,7 +45905,8 @@ var render = function() {
                             "prepend-icon": "mdi-message-alert",
                             type: "text",
                             required: "",
-                            readonly: !_vm.enableToEdit
+                            readonly: !_vm.enableToEdit,
+                            dense: ""
                           },
                           model: {
                             value: _vm.company.company_number,
@@ -45971,9 +46002,7 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("v-spacer", [
-              _vm._v("\n                     \n                ")
-            ]),
+            _c("v-spacer", [_vm._v("\n                 \n            ")]),
             _vm._v(" "),
             _c(
               "v-card",
@@ -46030,7 +46059,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "\n                                                mdi-delete\n                                            "
+                                                "\n                                            mdi-delete\n                                        "
                                               )
                                             ]
                                           )
@@ -46079,7 +46108,7 @@ var render = function() {
                                                     _vm._s(
                                                       item.address_line_2
                                                     ) +
-                                                    "\n                                                "
+                                                    "\n                                            "
                                                 )
                                               ]),
                                               _vm._v(" "),
@@ -46092,7 +46121,7 @@ var render = function() {
                                                     _vm._s(
                                                       item.address_line_3
                                                     ) +
-                                                    "\n                                                "
+                                                    "\n                                            "
                                                 )
                                               ])
                                             ]
@@ -46119,7 +46148,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "\n                                                mdi-delete\n                                            "
+                                                "\n                                            mdi-delete\n                                        "
                                               )
                                             ]
                                           )
@@ -46167,7 +46196,7 @@ var render = function() {
                                           },
                                           [
                                             _vm._v(
-                                              "\n                                                New phone\n                                                "
+                                              "\n                                            New phone\n                                            "
                                             )
                                           ]
                                         ),
@@ -46313,7 +46342,7 @@ var render = function() {
                                           },
                                           [
                                             _vm._v(
-                                              "\n                                                New address\n                                                "
+                                              "\n                                            New address\n                                            "
                                             )
                                           ]
                                         ),
@@ -46675,7 +46704,7 @@ var render = function() {
                                       _vm._s(item.user_data.name) +
                                         " " +
                                         _vm._s(item.user_data.surname) +
-                                        "\n                                "
+                                        "\n                            "
                                     )
                                   ])
                                 : _vm._e()
@@ -46703,7 +46732,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    mdi-account-alert\n                                "
+                                    "\n                                mdi-account-alert\n                            "
                                   )
                                 ]
                               ),
@@ -46721,7 +46750,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    mdi-account-edit\n                                "
+                                    "\n                                mdi-account-edit\n                            "
                                   )
                                 ]
                               ),
@@ -46738,7 +46767,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    mdi-delete\n                                "
+                                    "\n                                mdi-delete\n                            "
                                   )
                                 ]
                               )
@@ -46750,7 +46779,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("v-spacer", [
                       _vm._v(
-                        "\n                             \n                        "
+                        "\n                         \n                    "
                       )
                     ]),
                     _vm._v(" "),
@@ -46781,7 +46810,7 @@ var render = function() {
                               },
                               [
                                 _vm._v(
-                                  "\n                                    New Contact\n                                    "
+                                  "\n                                New Contact\n                                "
                                 )
                               ]
                             ),
@@ -46940,9 +46969,7 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("v-spacer", [
-              _vm._v("\n                     \n                ")
-            ]),
+            _c("v-spacer", [_vm._v("\n                 \n            ")]),
             _vm._v(" "),
             _c(
               "v-card",
@@ -47001,7 +47028,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                    mdi-delete\n                                "
+                                    "\n                                mdi-delete\n                            "
                                   )
                                 ]
                               )
@@ -47013,7 +47040,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("v-spacer", [
                       _vm._v(
-                        "\n                             \n                        "
+                        "\n                         \n                    "
                       )
                     ]),
                     _vm._v(" "),
@@ -47044,7 +47071,7 @@ var render = function() {
                               },
                               [
                                 _vm._v(
-                                  "\n                                    New social item\n                                    "
+                                  "\n                                New social item\n                                "
                                 )
                               ]
                             ),
@@ -47631,7 +47658,8 @@ var render = function() {
                             "prepend-icon": "mdi-rename-box",
                             type: "text",
                             required: "",
-                            readonly: !_vm.enableToEdit
+                            readonly: !_vm.enableToEdit,
+                            dense: ""
                           },
                           model: {
                             value: _vm.client.client_name,
@@ -47650,7 +47678,8 @@ var render = function() {
                             "prepend-icon": "mdi-comment-text",
                             type: "text",
                             required: "",
-                            readonly: !_vm.enableToEdit
+                            readonly: !_vm.enableToEdit,
+                            dense: ""
                           },
                           model: {
                             value: _vm.client.client_description,
@@ -49110,7 +49139,8 @@ var render = function() {
                             type: "text",
                             "error-messages": _vm.errors.product_name,
                             "lazy-validation": "",
-                            readonly: !_vm.enableToEdit
+                            readonly: !_vm.enableToEdit,
+                            dense: ""
                           },
                           model: {
                             value: _vm.product.product_name,
@@ -49130,7 +49160,8 @@ var render = function() {
                             type: "text",
                             "error-messages": _vm.errors.product_description,
                             "lazy-validation": "",
-                            readonly: !_vm.enableToEdit
+                            readonly: !_vm.enableToEdit,
+                            dense: ""
                           },
                           model: {
                             value: _vm.product.product_description,
@@ -49617,7 +49648,8 @@ var render = function() {
                             "prepend-icon": "mdi-rename-box",
                             type: "text",
                             required: "",
-                            readonly: !_vm.enableToEdit
+                            readonly: !_vm.enableToEdit,
+                            dense: ""
                           },
                           model: {
                             value: _vm.team.team_name,
@@ -49636,7 +49668,8 @@ var render = function() {
                             "prepend-icon": "mdi-comment-text",
                             type: "text",
                             required: "",
-                            readonly: !_vm.enableToEdit
+                            readonly: !_vm.enableToEdit,
+                            dense: ""
                           },
                           model: {
                             value: _vm.team.team_description,
