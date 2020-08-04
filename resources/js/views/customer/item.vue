@@ -897,7 +897,7 @@
                     }
                 });
                 return roleExists
-            }
+            },
         }
     }
 </script>

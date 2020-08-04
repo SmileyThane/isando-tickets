@@ -121,7 +121,8 @@
                                             >
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle
+                                                        v-text="item.type.name"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -137,8 +138,11 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="">{{item.address}} {{item.address_line_2}} {{item.address_line_3}}</v-list-item-title>
-                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                    <v-list-item-title v-text="">{{item.address}}
+                                                        {{item.address_line_2}} {{item.address_line_3}}
+                                                    </v-list-item-title>
+                                                    <v-list-item-subtitle
+                                                        v-text="item.type.name"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -152,7 +156,7 @@
                                         </v-list-item-group>
                                     </v-list>
                                     <v-expansion-panels
-                                    multiple
+                                        multiple
                                     >
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
@@ -306,14 +310,17 @@
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <p></p>
-                                    <p v-if="item.user_data.email"><strong>E-mail:</strong> {{ item.user_data.email }}</p>
+                                    <p v-if="item.user_data.email"><strong>E-mail:</strong> {{ item.user_data.email }}
+                                    </p>
                                     <p v-if="item.user_data.phones.length > 0"><strong>Phone(s):</strong></p>
-                                    <p v-if="item.user_data.phones.length > 0" v-for="phoneItem in item.user_data.phones">{{ phoneItem.phone }} ({{
+                                    <p v-if="item.user_data.phones.length > 0"
+                                       v-for="phoneItem in item.user_data.phones">{{ phoneItem.phone }} ({{
                                         phoneItem.type.name }})</p>
-<!--                                    <p><strong>Lang:</strong></p>-->
-<!--                                    <p>{{ item.user_data.lang }}</p>-->
+                                    <!--                                    <p><strong>Lang:</strong></p>-->
+                                    <!--                                    <p>{{ item.user_data.lang }}</p>-->
                                     <p v-if="item.user_data.addresses.length > 0"><strong>Address(es):</strong></p>
-                                    <p v-if="item.user_data.addresses.length > 0" v-for="addressItem in item.user_data.addresses">{{ addressItem.address }} {{
+                                    <p v-if="item.user_data.addresses.length > 0"
+                                       v-for="addressItem in item.user_data.addresses">{{ addressItem.address }} {{
                                         addressItem.address_line_2 }} {{ addressItem.address_line_3 }} ({{
                                         addressItem.type.name }})</p>
                                 </td>
@@ -333,7 +340,8 @@
                                 <!--                                </v-icon>-->
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn :disabled="!item.user_data.is_active" @click="sendInvite(item)" icon v-bind="attrs" v-on="on">
+                                        <v-btn :disabled="!item.user_data.is_active" @click="sendInvite(item)" icon
+                                               v-bind="attrs" v-on="on">
                                             <v-icon
                                                 small
                                             >
@@ -357,7 +365,8 @@
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
+                                        <v-btn :disabled="checkEmployeeRoleByIds(item, [2])"
+                                               @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
                                             <v-icon
                                                 small
                                                 hint="Delete contact"
@@ -948,6 +957,19 @@
                 ids.forEach(id => {
                     if (roleExists === false) {
                         roleExists = this.$store.state.roles.includes(id)
+                    }
+                });
+                return roleExists
+            },
+            checkEmployeeRoleByIds(employee, ids) {
+                let roleExists = false;
+                ids.forEach(id => {
+                    if (roleExists === false) {
+                        employee.roles.forEach(role => {
+                            if (roleExists === false) {
+                                roleExists = role.id === id
+                            }
+                        })
                     }
                 });
                 return roleExists
