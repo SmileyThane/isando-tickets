@@ -45802,7 +45802,7 @@ var render = function() {
             expression: "snackbar"
           }
         },
-        [_vm._v("\n        " + _vm._s(_vm.snackbarMessage) + "\n    ")]
+        [_vm._v("\n            " + _vm._s(_vm.snackbarMessage) + "\n        ")]
       ),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
@@ -45844,7 +45844,7 @@ var render = function() {
                             attrs: { color: "white" },
                             on: { click: _vm.updateCompany }
                           },
-                          [_vm._v("Save\n                    ")]
+                          [_vm._v("Save\n                        ")]
                         )
                       : _vm._e()
                   ],
@@ -46002,7 +46002,9 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("v-spacer", [_vm._v("\n                 \n            ")]),
+            _c("v-spacer", [
+              _vm._v("\n                     \n                ")
+            ]),
             _vm._v(" "),
             _c(
               "v-card",
@@ -46059,7 +46061,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "\n                                            mdi-delete\n                                        "
+                                                "\n                                                mdi-delete\n                                            "
                                               )
                                             ]
                                           )
@@ -46108,7 +46110,7 @@ var render = function() {
                                                     _vm._s(
                                                       item.address_line_2
                                                     ) +
-                                                    "\n                                            "
+                                                    "\n                                                "
                                                 )
                                               ]),
                                               _vm._v(" "),
@@ -46121,7 +46123,7 @@ var render = function() {
                                                     _vm._s(
                                                       item.address_line_3
                                                     ) +
-                                                    "\n                                            "
+                                                    "\n                                                "
                                                 )
                                               ])
                                             ]
@@ -46148,7 +46150,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "\n                                            mdi-delete\n                                        "
+                                                "\n                                                mdi-delete\n                                            "
                                               )
                                             ]
                                           )
@@ -46196,7 +46198,7 @@ var render = function() {
                                           },
                                           [
                                             _vm._v(
-                                              "\n                                            New phone\n                                            "
+                                              "\n                                                New phone\n                                                "
                                             )
                                           ]
                                         ),
@@ -46342,7 +46344,7 @@ var render = function() {
                                           },
                                           [
                                             _vm._v(
-                                              "\n                                            New address\n                                            "
+                                              "\n                                                New address\n                                                "
                                             )
                                           ]
                                         ),
@@ -46661,12 +46663,6 @@ var render = function() {
                                     ])
                                   }),
                                   _vm._v(" "),
-                                  _c("p", [_c("strong", [_vm._v("Lang:")])]),
-                                  _vm._v(" "),
-                                  _c("p", [
-                                    _vm._v(_vm._s(item.user_data.lang))
-                                  ]),
-                                  _vm._v(" "),
                                   _c("p", [
                                     _c("strong", [_vm._v("Address(es):")])
                                   ]),
@@ -46704,7 +46700,7 @@ var render = function() {
                                       _vm._s(item.user_data.name) +
                                         " " +
                                         _vm._s(item.user_data.surname) +
-                                        "\n                            "
+                                        "\n                                "
                                     )
                                   ])
                                 : _vm._e()
@@ -46732,7 +46728,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                mdi-account-alert\n                            "
+                                    "\n                                    mdi-account-alert\n                                "
                                   )
                                 ]
                               ),
@@ -46750,7 +46746,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                mdi-account-edit\n                            "
+                                    "\n                                    mdi-account-edit\n                                "
                                   )
                                 ]
                               ),
@@ -46767,7 +46763,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                mdi-delete\n                            "
+                                    "\n                                    mdi-delete\n                                "
                                   )
                                 ]
                               )
@@ -46779,7 +46775,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("v-spacer", [
                       _vm._v(
-                        "\n                         \n                    "
+                        "\n                             \n                        "
                       )
                     ]),
                     _vm._v(" "),
@@ -46810,7 +46806,7 @@ var render = function() {
                               },
                               [
                                 _vm._v(
-                                  "\n                                New Contact\n                                "
+                                  "\n                                    New Contact\n                                    "
                                 )
                               ]
                             ),
@@ -46969,7 +46965,9 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("v-spacer", [_vm._v("\n                 \n            ")]),
+            _c("v-spacer", [
+              _vm._v("\n                     \n                ")
+            ]),
             _vm._v(" "),
             _c(
               "v-card",
@@ -47028,7 +47026,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                mdi-delete\n                            "
+                                    "\n                                    mdi-delete\n                                "
                                   )
                                 ]
                               )
@@ -47040,7 +47038,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("v-spacer", [
                       _vm._v(
-                        "\n                         \n                    "
+                        "\n                             \n                        "
                       )
                     ]),
                     _vm._v(" "),
@@ -47071,7 +47069,7 @@ var render = function() {
                               },
                               [
                                 _vm._v(
-                                  "\n                                New social item\n                                "
+                                  "\n                                    New social item\n                                    "
                                 )
                               ]
                             ),
@@ -47595,7 +47593,7 @@ var render = function() {
             expression: "snackbar"
           }
         },
-        [_vm._v("\n        " + _vm._s(_vm.snackbarMessage) + "\n    ")]
+        [_vm._v("\n            " + _vm._s(_vm.snackbarMessage) + "\n        ")]
       ),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
@@ -47637,7 +47635,7 @@ var render = function() {
                             attrs: { color: "white" },
                             on: { click: _vm.updateClient }
                           },
-                          [_vm._v("Save\n                    ")]
+                          [_vm._v("Save\n                        ")]
                         )
                       : _vm._e()
                   ],
@@ -47699,7 +47697,9 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("v-spacer", [_vm._v("\n                 \n            ")]),
+            _c("v-spacer", [
+              _vm._v("\n                     \n                ")
+            ]),
             _vm._v(" "),
             _c(
               "v-card",
@@ -47756,7 +47756,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "\n                                            mdi-delete\n                                        "
+                                                "\n                                                mdi-delete\n                                            "
                                               )
                                             ]
                                           )
@@ -47805,7 +47805,7 @@ var render = function() {
                                                     _vm._s(
                                                       item.address_line_2
                                                     ) +
-                                                    "\n                                            "
+                                                    "\n                                                "
                                                 )
                                               ]),
                                               _vm._v(" "),
@@ -47818,7 +47818,7 @@ var render = function() {
                                                     _vm._s(
                                                       item.address_line_3
                                                     ) +
-                                                    "\n                                            "
+                                                    "\n                                                "
                                                 )
                                               ])
                                             ]
@@ -47845,7 +47845,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "\n                                            mdi-delete\n                                        "
+                                                "\n                                                mdi-delete\n                                            "
                                               )
                                             ]
                                           )
@@ -47893,7 +47893,7 @@ var render = function() {
                                           },
                                           [
                                             _vm._v(
-                                              "\n                                            New phone\n                                            "
+                                              "\n                                                New phone\n                                                "
                                             )
                                           ]
                                         ),
@@ -48039,7 +48039,7 @@ var render = function() {
                                           },
                                           [
                                             _vm._v(
-                                              "\n                                            New address\n                                            "
+                                              "\n                                                New address\n                                                "
                                             )
                                           ]
                                         ),
@@ -48361,12 +48361,6 @@ var render = function() {
                                     }
                                   ),
                                   _vm._v(" "),
-                                  _c("p", [_c("strong", [_vm._v("Lang:")])]),
-                                  _vm._v(" "),
-                                  _c("p", [
-                                    _vm._v(_vm._s(item.employee.user_data.lang))
-                                  ]),
-                                  _vm._v(" "),
                                   _c("p", [
                                     _c("strong", [_vm._v("Address(es):")])
                                   ]),
@@ -48407,7 +48401,7 @@ var render = function() {
                                         _vm._s(
                                           item.employee.user_data.surname
                                         ) +
-                                        "\n                            "
+                                        "\n                                "
                                     )
                                   ])
                                 : _vm._e()
@@ -48419,7 +48413,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("v-spacer", [
                       _vm._v(
-                        "\n                         \n                    "
+                        "\n                             \n                        "
                       )
                     ]),
                     _vm._v(" "),
@@ -48450,7 +48444,7 @@ var render = function() {
                               },
                               [
                                 _vm._v(
-                                  "\n                                New Contact\n                                "
+                                  "\n                                    New Contact\n                                    "
                                 )
                               ]
                             ),
@@ -48580,7 +48574,9 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c("v-spacer", [_vm._v("\n                 \n            ")]),
+            _c("v-spacer", [
+              _vm._v("\n                     \n                ")
+            ]),
             _vm._v(" "),
             _c(
               "v-card",
@@ -48639,7 +48635,7 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                                mdi-delete\n                            "
+                                    "\n                                    mdi-delete\n                                "
                                   )
                                 ]
                               )
@@ -48651,7 +48647,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("v-spacer", [
                       _vm._v(
-                        "\n                         \n                    "
+                        "\n                             \n                        "
                       )
                     ]),
                     _vm._v(" "),
@@ -48682,7 +48678,7 @@ var render = function() {
                               },
                               [
                                 _vm._v(
-                                  "\n                                New social item\n                                "
+                                  "\n                                    New social item\n                                    "
                                 )
                               ]
                             ),
