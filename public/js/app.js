@@ -7567,8 +7567,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             link: ''
           }],
           employee: {
-            name: '',
-            email: ''
+            user_data: {
+              name: '',
+              email: ''
+            }
           },
           description: ''
         }]
@@ -52524,6 +52526,17 @@ var render = function() {
                           _vm._v(" "),
                           _c(
                             "v-expansion-panel",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: !this.$store.state.roles.includes(6),
+                                  expression:
+                                    "!this.$store.state.roles.includes(6)"
+                                }
+                              ]
+                            },
                             [
                               _c(
                                 "v-expansion-panel-header",

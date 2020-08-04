@@ -456,7 +456,7 @@
                                     </v-form>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
-                            <v-expansion-panel>
+                            <v-expansion-panel v-show="!this.$store.state.roles.includes(6)">
                                 <v-expansion-panel-header>
                                     Ticket notices
                                     <template v-slot:actions>
@@ -657,8 +657,10 @@
                                 link: ''
                             }],
                             employee: {
-                                name: '',
-                                email: ''
+                                user_data:{
+                                    name: '',
+                                    email: ''
+                                }
                             },
                             description: ''
                         }
