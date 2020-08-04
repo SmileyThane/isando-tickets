@@ -6827,6 +6827,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -7429,49 +7430,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -7514,6 +7472,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         contact: {
           user_data: {
             name: '',
+            surname: '',
             email: ''
           }
         },
@@ -51185,6 +51144,7 @@ var render = function() {
       _c("v-data-table", {
         staticClass: "elevation-1",
         attrs: {
+          dense: "",
           headers: _vm.headers,
           items: _vm.tickets,
           "single-expand": _vm.singleExpand,
@@ -51408,14 +51368,29 @@ var render = function() {
                           }
                         },
                         [
-                          _vm._v(
-                            "\n                        " +
-                              _vm._s(_vm.ticket.status.name) +
-                              "\n                    "
-                          )
+                          _vm._v("\n                        Status: "),
+                          _c("strong", [_vm._v(_vm._s(_vm.ticket.status.name))])
                         ]
                       ),
-                      _vm._v(" "),
+                      _vm._v("\n                     \n                    "),
+                      _c(
+                        "v-chip",
+                        {
+                          staticClass: "float-md-right",
+                          attrs: {
+                            color: _vm.ticket.priority.color,
+                            dark: "",
+                            label: ""
+                          }
+                        },
+                        [
+                          _vm._v("\n                        Priority: "),
+                          _c("strong", [
+                            _vm._v(_vm._s(_vm.ticket.priority.name))
+                          ])
+                        ]
+                      ),
+                      _vm._v("\n                     \n                    "),
                       _c(
                         "v-btn",
                         {
@@ -51428,8 +51403,8 @@ var render = function() {
                             }
                           ],
                           staticClass: "float-md-right",
-                          staticStyle: { color: "white" },
-                          attrs: { color: "green" },
+                          staticStyle: { color: "black" },
+                          attrs: { small: "", color: "white" },
                           on: { click: _vm.updateTicket }
                         },
                         [_vm._v("Save\n                    ")]
@@ -51453,274 +51428,198 @@ var render = function() {
                     [
                       _c(
                         "v-row",
+                        { attrs: { dense: "" } },
                         [
-                          _c("v-col", { attrs: { cols: "12", md: "6" } }),
-                          _vm._v(" "),
-                          _c("v-col", { attrs: { cols: "12", md: "6" } }),
-                          _vm._v(" "),
                           _c(
                             "v-col",
-                            { attrs: { cols: "12" } },
+                            { attrs: { cols: "6" } },
                             [
                               _c(
-                                "v-label",
-                                [
-                                  _c("strong", [_vm._v("From:")]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-btn",
-                                    {
-                                      directives: [
-                                        {
-                                          name: "show",
-                                          rawName: "v-show",
-                                          value: _vm.ticket.can_be_edited,
-                                          expression: "ticket.can_be_edited"
-                                        }
-                                      ],
-                                      attrs: {
-                                        text: "",
-                                        small: "",
-                                        disabled: _vm.fromEdit
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.toggleEdit("fromEdit")
-                                        }
-                                      }
+                                "v-select",
+                                {
+                                  attrs: {
+                                    dense: "",
+                                    label: "From",
+                                    color: "green",
+                                    "item-color": "green",
+                                    "item-text": "name",
+                                    "item-value": "item",
+                                    items: _vm.suppliers,
+                                    filled: _vm.fromEdit,
+                                    readonly: !_vm.fromEdit
+                                  },
+                                  on: { input: _vm.getContacts },
+                                  model: {
+                                    value: _vm.from,
+                                    callback: function($$v) {
+                                      _vm.from = $$v
                                     },
+                                    expression: "from"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "template",
+                                    { slot: "append" },
                                     [
-                                      _c("v-icon", [
-                                        _vm._v(
-                                          _vm._s(
-                                            !_vm.fromEdit ? "mdi-pencil" : ""
-                                          )
-                                        )
-                                      ])
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.ticket.can_be_edited,
+                                              expression: "ticket.can_be_edited"
+                                            }
+                                          ],
+                                          attrs: {
+                                            text: "",
+                                            small: "",
+                                            disabled: _vm.fromEdit
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.toggleEdit("fromEdit")
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              _vm._s(
+                                                !_vm.fromEdit
+                                                  ? "mdi-pencil"
+                                                  : "$expand"
+                                              )
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      )
                                     ],
                                     1
                                   )
                                 ],
-                                1
+                                2
                               ),
                               _vm._v(" "),
+                              _c(
+                                "v-autocomplete",
+                                {
+                                  attrs: {
+                                    label: "Contact email",
+                                    dense: "",
+                                    color: "green",
+                                    "item-color": "green",
+                                    "item-text": "user_data.email",
+                                    "item-value": "id",
+                                    items: _vm.contacts,
+                                    filled: _vm.contactEdit,
+                                    readonly: !_vm.contactEdit
+                                  },
+                                  model: {
+                                    value: _vm.ticket.contact_company_user_id,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.ticket,
+                                        "contact_company_user_id",
+                                        $$v
+                                      )
+                                    },
+                                    expression: "ticket.contact_company_user_id"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "template",
+                                    { slot: "append" },
+                                    [
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.ticket.can_be_edited,
+                                              expression: "ticket.can_be_edited"
+                                            }
+                                          ],
+                                          attrs: {
+                                            text: "",
+                                            small: "",
+                                            disabled: _vm.contactEdit
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.toggleEdit(
+                                                "contactEdit"
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.contactEdit
+                                                  ? "$expand"
+                                                  : "mdi-pencil"
+                                              )
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                2
+                              ),
+                              _vm._v(" "),
+                              _vm.ticket.contact
+                                ? _c("p", [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(
+                                          _vm.ticket.contact.user_data.name
+                                        ) +
+                                        " " +
+                                        _vm._s(
+                                          _vm.ticket.contact.user_data.surname
+                                        ) +
+                                        "\n                            "
+                                    )
+                                  ])
+                                : _vm._e()
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "6" } },
+                            [
                               _c("v-select", {
                                 attrs: {
+                                  dense: "",
+                                  label: "Product",
                                   color: "green",
                                   "item-color": "green",
-                                  "item-text": "name",
-                                  "item-value": "item",
-                                  items: _vm.suppliers,
-                                  filled: _vm.fromEdit,
+                                  "item-text": "product_data.name",
+                                  "item-value": "product_data.id",
+                                  items: _vm.products,
                                   disabled: !_vm.fromEdit
                                 },
-                                on: { input: _vm.getContacts },
+                                on: { input: _vm.getProducts },
                                 model: {
-                                  value: _vm.from,
+                                  value: _vm.ticket.to_product_id,
                                   callback: function($$v) {
-                                    _vm.from = $$v
+                                    _vm.$set(_vm.ticket, "to_product_id", $$v)
                                   },
-                                  expression: "from"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", md: "6" } },
-                            [
-                              _c(
-                                "v-label",
-                                [
-                                  _c("strong", [_vm._v("Priority:")]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-btn",
-                                    {
-                                      directives: [
-                                        {
-                                          name: "show",
-                                          rawName: "v-show",
-                                          value: _vm.ticket.can_be_edited,
-                                          expression: "ticket.can_be_edited"
-                                        }
-                                      ],
-                                      attrs: {
-                                        text: "",
-                                        small: "",
-                                        disabled: _vm.priorityEdit
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.toggleEdit("priorityEdit")
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c("v-icon", [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.priorityEdit ? "" : "mdi-pencil"
-                                          )
-                                        )
-                                      ])
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c("v-select", {
-                                attrs: {
-                                  color: "green",
-                                  "item-color": "green",
-                                  "item-text": "name",
-                                  "item-value": "id",
-                                  items: _vm.priorities,
-                                  filled: _vm.priorityEdit,
-                                  disabled: !_vm.priorityEdit
-                                },
-                                model: {
-                                  value: _vm.ticket.priority_id,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.ticket, "priority_id", $$v)
-                                  },
-                                  expression: "ticket.priority_id"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", md: "6" } },
-                            [
-                              _c(
-                                "v-label",
-                                [
-                                  _c("strong", [_vm._v("Contact email:")]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-btn",
-                                    {
-                                      directives: [
-                                        {
-                                          name: "show",
-                                          rawName: "v-show",
-                                          value: _vm.ticket.can_be_edited,
-                                          expression: "ticket.can_be_edited"
-                                        }
-                                      ],
-                                      attrs: {
-                                        text: "",
-                                        small: "",
-                                        disabled: _vm.contactEdit
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.toggleEdit("contactEdit")
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _c("v-icon", [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.contactEdit ? "" : "mdi-pencil"
-                                          )
-                                        )
-                                      ])
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c("v-autocomplete", {
-                                attrs: {
-                                  color: "green",
-                                  "item-color": "green",
-                                  "item-text": "user_data.email",
-                                  "item-value": "id",
-                                  items: _vm.contacts,
-                                  filled: _vm.contactEdit,
-                                  disabled: !_vm.contactEdit
-                                },
-                                model: {
-                                  value: _vm.ticket.contact_company_user_id,
-                                  callback: function($$v) {
-                                    _vm.$set(
-                                      _vm.ticket,
-                                      "contact_company_user_id",
-                                      $$v
-                                    )
-                                  },
-                                  expression: "ticket.contact_company_user_id"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", md: "6" } },
-                            [
-                              _vm.ticket.due_date
-                                ? _c("v-label", [
-                                    _c("strong", [_vm._v("Due date:")])
-                                  ])
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _c("v-textarea", {
-                                attrs: {
-                                  label: "Priority",
-                                  "auto-grow": "",
-                                  rows: "3",
-                                  "row-height": "25",
-                                  shaped: "",
-                                  disabled: ""
-                                },
-                                domProps: {
-                                  textContent: _vm._s(
-                                    _vm.ticket.due_date || null
-                                  )
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-col",
-                            { attrs: { cols: "12", md: "6" } },
-                            [
-                              _vm.ticket.contact
-                                ? _c("v-label", [
-                                    _c("strong", [_vm._v("Contact name:")])
-                                  ])
-                                : _vm._e(),
-                              _vm._v(" "),
-                              _c("v-textarea", {
-                                attrs: {
-                                  label: "Priority",
-                                  "auto-grow": "",
-                                  rows: "3",
-                                  "row-height": "25",
-                                  shaped: "",
-                                  disabled: ""
-                                },
-                                domProps: {
-                                  textContent: _vm._s(
-                                    _vm.ticket.contact
-                                      ? _vm.ticket.contact.user_data.name
-                                      : ""
-                                  )
+                                  expression: "ticket.to_product_id"
                                 }
                               })
                             ],
@@ -51737,19 +51636,19 @@ var render = function() {
                                   ])
                                 : _vm._e(),
                               _vm._v(" "),
-                              _c("v-spacer", [
-                                _vm._v(
-                                  "\n                                 \n                            "
-                                )
-                              ]),
-                              _vm._v(" "),
                               _c("strong", [_vm._v(_vm._s(_vm.ticket.name))]),
                               _vm._v(" "),
                               _c("div", {
                                 domProps: {
                                   innerHTML: _vm._s(_vm.ticket.description)
                                 }
-                              })
+                              }),
+                              _vm._v(" "),
+                              _c("v-spacer", [
+                                _vm._v(
+                                  "\n                                 \n\n                            "
+                                )
+                              ])
                             ],
                             1
                           ),
@@ -51759,71 +51658,76 @@ var render = function() {
                             { attrs: { cols: "12", sm: "6" } },
                             [
                               _c(
-                                "v-label",
-                                [
-                                  _c("strong", [
-                                    _vm._v(
-                                      "IP address(es) of the servers (for remote access)"
-                                    )
-                                  ]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-btn",
-                                    {
-                                      directives: [
-                                        {
-                                          name: "show",
-                                          rawName: "v-show",
-                                          value: _vm.ticket.can_be_edited,
-                                          expression: "ticket.can_be_edited"
-                                        }
-                                      ],
-                                      attrs: {
-                                        text: "",
-                                        small: "",
-                                        disabled: _vm.ipEdit
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.toggleEdit("ipEdit")
-                                        }
-                                      }
+                                "v-textarea",
+                                {
+                                  attrs: {
+                                    label:
+                                      "IP address(es) of the servers (for remote access)",
+                                    dense: "",
+                                    "auto-grow": "",
+                                    rows: "2",
+                                    "row-height": "25",
+                                    shaped: "",
+                                    color: "green",
+                                    filled: _vm.ipEdit,
+                                    readonly: !_vm.ipEdit
+                                  },
+                                  model: {
+                                    value: _vm.ticket.connection_details,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.ticket,
+                                        "connection_details",
+                                        $$v
+                                      )
                                     },
+                                    expression: "ticket.connection_details"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "template",
+                                    { slot: "append" },
                                     [
-                                      _c("v-icon", [
-                                        _vm._v(
-                                          _vm._s(_vm.ipEdit ? "" : "mdi-pencil")
-                                        )
-                                      ])
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.ticket.can_be_edited,
+                                              expression: "ticket.can_be_edited"
+                                            }
+                                          ],
+                                          attrs: {
+                                            text: "",
+                                            small: "",
+                                            disabled: _vm.ipEdit
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.toggleEdit("ipEdit")
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.ipEdit ? "" : "mdi-pencil"
+                                              )
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      )
                                     ],
                                     1
                                   )
                                 ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c("v-textarea", {
-                                attrs: {
-                                  "auto-grow": "",
-                                  rows: "3",
-                                  "row-height": "25",
-                                  shaped: "",
-                                  color: "green",
-                                  filled: _vm.ipEdit,
-                                  disabled: !_vm.ipEdit
-                                },
-                                model: {
-                                  value: _vm.ticket.connection_details,
-                                  callback: function($$v) {
-                                    _vm.$set(
-                                      _vm.ticket,
-                                      "connection_details",
-                                      $$v
-                                    )
-                                  },
-                                  expression: "ticket.connection_details"
-                                }
-                              })
+                                2
+                              )
                             ],
                             1
                           ),
@@ -51833,65 +51737,78 @@ var render = function() {
                             { attrs: { cols: "12", sm: "6" } },
                             [
                               _c(
-                                "v-label",
-                                [
-                                  _c("strong", [_vm._v("Access details:")]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-btn",
-                                    {
-                                      directives: [
-                                        {
-                                          name: "show",
-                                          rawName: "v-show",
-                                          value: _vm.ticket.can_be_edited,
-                                          expression: "ticket.can_be_edited"
-                                        }
-                                      ],
-                                      attrs: {
-                                        text: "",
-                                        small: "",
-                                        disabled: _vm.detailsEdit
-                                      },
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.toggleEdit("detailsEdit")
-                                        }
-                                      }
+                                "v-textarea",
+                                {
+                                  attrs: {
+                                    dense: "",
+                                    "auto-grow": "",
+                                    rows: "2",
+                                    "row-height": "25",
+                                    shaped: "",
+                                    color: "green",
+                                    filled: _vm.detailsEdit,
+                                    readonly: !_vm.detailsEdit
+                                  },
+                                  model: {
+                                    value: _vm.ticket.access_details,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.ticket,
+                                        "access_details",
+                                        $$v
+                                      )
                                     },
+                                    expression: "ticket.access_details"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "template",
+                                    { slot: "append" },
                                     [
-                                      _c("v-icon", [
-                                        _vm._v(
-                                          _vm._s(
-                                            _vm.detailsEdit ? "" : "mdi-pencil"
-                                          )
-                                        )
-                                      ])
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: _vm.ticket.can_be_edited,
+                                              expression: "ticket.can_be_edited"
+                                            }
+                                          ],
+                                          attrs: {
+                                            text: "",
+                                            small: "",
+                                            disabled: _vm.detailsEdit
+                                          },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.toggleEdit(
+                                                "detailsEdit"
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.detailsEdit
+                                                  ? ""
+                                                  : "mdi-pencil"
+                                              )
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      )
                                     ],
                                     1
                                   )
                                 ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c("v-textarea", {
-                                attrs: {
-                                  "auto-grow": "",
-                                  rows: "3",
-                                  "row-height": "25",
-                                  shaped: "",
-                                  color: "green",
-                                  filled: _vm.detailsEdit,
-                                  disabled: !_vm.detailsEdit
-                                },
-                                model: {
-                                  value: _vm.ticket.access_details,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.ticket, "access_details", $$v)
-                                  },
-                                  expression: "ticket.access_details"
-                                }
-                              })
+                                2
+                              )
                             ],
                             1
                           )

@@ -2,6 +2,7 @@
     <v-container>
 
         <v-data-table
+            dense
             :headers="headers"
             :items="tickets"
             :single-expand="singleExpand"

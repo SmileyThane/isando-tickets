@@ -21,10 +21,16 @@
                         <v-spacer></v-spacer>
                         <v-chip
                             :color="ticket.status.color" dark label class="float-md-right">
-                            {{ ticket.status.name }}
+                            Status: <strong>{{ ticket.status.name }}</strong>
                         </v-chip>
+                        &nbsp;
+                        <v-chip
+                            :color="ticket.priority.color" dark label class="float-md-right">
+                            Priority: <strong>{{ ticket.priority.name }}</strong>
+                        </v-chip>
+                        &nbsp;
                         <v-btn v-show="ticket.can_be_edited && submitEdit" class="float-md-right"
-                               color="green" style="color: white;" @click="updateTicket">Save
+                               small color="white" style="color: black;" @click="updateTicket">Save
                         </v-btn>
                     </v-toolbar>
                     <v-container>
@@ -33,27 +39,11 @@
                         </v-row>
                     </v-container>
                     <v-card-text>
-                        <v-row>
-                            <v-col cols="12" md="6">
-
-                            </v-col>
-                            <v-col cols="12" md="6">
-
-                            </v-col>
-                            <v-col cols="12">
-                                <v-label>
-                                    <strong>From:</strong>
-                                    <v-btn
-                                        text
-                                        small
-                                        v-show="ticket.can_be_edited"
-                                        :disabled="fromEdit"
-                                        @click="toggleEdit('fromEdit')"
-                                    >
-                                        <v-icon>{{!fromEdit ? 'mdi-pencil' : ''}}</v-icon>
-                                    </v-btn>
-                                </v-label>
+                        <v-row dense>
+                            <v-col cols="6">
                                 <v-select
+                                    dense
+                                    label="From"
                                     color="green"
                                     item-color="green"
                                     item-text="name"
@@ -61,62 +51,24 @@
                                     :items="suppliers"
                                     :filled="fromEdit"
                                     v-model="from"
-                                    :disabled="!fromEdit"
+                                    :readonly="!fromEdit"
                                     @input="getContacts"
-                                />
-                            </v-col>
-                            <!--                            <v-col cols="12" md="6">-->
-                            <!--                                <v-label>-->
-                            <!--                                    <strong>To:</strong>-->
-                            <!--                                </v-label>-->
-                            <!--                                <v-textarea-->
-                            <!--                                    label="To"-->
-                            <!--                                    auto-grow-->
-                            <!--                                    rows="3"-->
-                            <!--                                    row-height="25"-->
-                            <!--                                    shaped-->
-                            <!--                                    disabled-->
-                            <!--                                    v-text="ticket.to.name"-->
-                            <!--                                ></v-textarea>-->
-                            <!--                            </v-col>-->
-                            <v-col cols="12" md="6">
-                                <v-label>
-                                    <strong>Priority:</strong>
-                                    <v-btn
-                                        text
-                                        small
-                                        v-show="ticket.can_be_edited"
-                                        :disabled="priorityEdit"
-                                        @click="toggleEdit('priorityEdit')"
-                                    >
-                                        <v-icon>{{priorityEdit ? '' : 'mdi-pencil'}}</v-icon>
-                                    </v-btn>
-                                </v-label>
-                                <v-select
-                                    color="green"
-                                    item-color="green"
-                                    item-text="name"
-                                    item-value="id"
-                                    :items="priorities"
-                                    :filled="priorityEdit"
-                                    :disabled="!priorityEdit"
-                                    v-model="ticket.priority_id"
-                                />
-                            </v-col>
-                            <v-col cols="12" md="6">
-                                <v-label>
-                                    <strong>Contact email:</strong>
-                                    <v-btn
-                                        text
-                                        small
-                                        v-show="ticket.can_be_edited"
-                                        :disabled="contactEdit"
-                                        @click="toggleEdit('contactEdit')"
-                                    >
-                                        <v-icon>{{contactEdit ? '' : 'mdi-pencil'}}</v-icon>
-                                    </v-btn>
-                                </v-label>
+                                >
+                                    <template slot="append">
+                                        <v-btn
+                                            text
+                                            small
+                                            v-show="ticket.can_be_edited"
+                                            :disabled="fromEdit"
+                                            @click="toggleEdit('fromEdit')"
+                                        >
+                                            <v-icon>{{!fromEdit ? 'mdi-pencil' : '$expand'}}</v-icon>
+                                        </v-btn>
+                                    </template>
+                                </v-select>
                                 <v-autocomplete
+                                    label="Contact email"
+                                    dense
                                     color="green"
                                     item-color="green"
                                     item-text="user_data.email"
@@ -124,94 +76,99 @@
                                     v-model="ticket.contact_company_user_id"
                                     :items="contacts"
                                     :filled="contactEdit"
-                                    :disabled="!contactEdit"
-                                ></v-autocomplete>
+                                    :readonly="!contactEdit"
+                                >
+                                    <template slot="append">
+                                        <v-btn
+                                            text
+                                            small
+                                            v-show="ticket.can_be_edited"
+                                            :disabled="contactEdit"
+                                            @click="toggleEdit('contactEdit')"
+                                        >
+                                            <v-icon>{{contactEdit ? '$expand' : 'mdi-pencil'}}</v-icon>
+                                        </v-btn>
+                                    </template>
+                                </v-autocomplete>
+                                <p v-if="ticket.contact ">
+                                    {{ticket.contact.user_data.name}} {{ticket.contact.user_data.surname}}
+                                </p>
                             </v-col>
-                            <v-col cols="12" md="6">
-                                <v-label v-if="ticket.due_date">
-                                    <strong>Due date:</strong>
-                                </v-label>
-                                <v-textarea
-                                    label="Priority"
-                                    auto-grow
-                                    rows="3"
-                                    row-height="25"
-                                    shaped
-                                    disabled
-                                    v-text="ticket.due_date || null"
-                                ></v-textarea>
-                            </v-col>
-                            <v-col cols="12" md="6">
-                                <v-label v-if="ticket.contact">
-                                    <strong>Contact name:</strong>
-                                </v-label>
-                                <v-textarea
-                                    label="Priority"
-                                    auto-grow
-                                    rows="3"
-                                    row-height="25"
-                                    shaped
-                                    disabled
-                                    v-text="ticket.contact ? ticket.contact.user_data.name : ''"
-                                ></v-textarea>
+                            <v-col cols="6">
+                                <v-select
+                                    dense
+                                    label="Product"
+                                    color="green"
+                                    item-color="green"
+                                    item-text="product_data.name"
+                                    item-value="product_data.id"
+                                    :items="products"
+                                    v-model="ticket.to_product_id"
+                                    :disabled="!fromEdit"
+                                    @input="getProducts"
+                                />
                             </v-col>
                             <v-col cols="12">
                                 <v-label v-if="ticket.description">
                                     <strong>Description</strong>
                                 </v-label>
-                                <v-spacer>
-                                    &nbsp;
-                                </v-spacer>
                                 <strong>{{ ticket.name }}</strong>
                                 <div v-html="ticket.description"></div>
+                                <v-spacer>
+                                    &nbsp;
+
+                                </v-spacer>
                             </v-col>
                             <v-col cols="12" sm="6">
-                                <v-label>
-                                    <strong>IP address(es) of the servers (for remote access)</strong>
-                                    <v-btn
-                                        text
-                                        small
-                                        v-show="ticket.can_be_edited"
-                                        :disabled="ipEdit"
-                                        @click="toggleEdit('ipEdit')"
-                                    >
-                                        <v-icon>{{ipEdit ? '' : 'mdi-pencil'}}</v-icon>
-                                    </v-btn>
-                                </v-label>
                                 <v-textarea
+                                    label="IP address(es) of the servers (for remote access)"
+                                    dense
                                     auto-grow
-                                    rows="3"
+                                    rows="2"
                                     row-height="25"
                                     shaped
                                     color="green"
                                     :filled="ipEdit"
-                                    :disabled="!ipEdit"
+                                    :readonly="!ipEdit"
                                     v-model="ticket.connection_details"
-                                ></v-textarea>
+                                >
+                                    <template slot="append">
+                                        <v-btn
+                                            text
+                                            small
+                                            v-show="ticket.can_be_edited"
+                                            :disabled="ipEdit"
+                                            @click="toggleEdit('ipEdit')"
+                                        >
+                                            <v-icon>{{ipEdit ? '' : 'mdi-pencil'}}</v-icon>
+                                        </v-btn>
+                                    </template>
+                                </v-textarea>
                             </v-col>
                             <v-col cols="12" sm="6">
-                                <v-label>
-                                    <strong>Access details:</strong>
-                                    <v-btn
-                                        text
-                                        small
-                                        v-show="ticket.can_be_edited"
-                                        :disabled="detailsEdit"
-                                        @click="toggleEdit('detailsEdit')"
-                                    >
-                                        <v-icon>{{detailsEdit ? '' : 'mdi-pencil'}}</v-icon>
-                                    </v-btn>
-                                </v-label>
                                 <v-textarea
+                                    dense
                                     auto-grow
-                                    rows="3"
+                                    rows="2"
                                     row-height="25"
                                     shaped
                                     color="green"
                                     :filled="detailsEdit"
-                                    :disabled="!detailsEdit"
+                                    :readonly="!detailsEdit"
                                     v-model="ticket.access_details"
-                                ></v-textarea>
+                                >
+                                    <template slot="append">
+                                        <v-btn
+                                            text
+                                            small
+                                            v-show="ticket.can_be_edited"
+                                            :disabled="detailsEdit"
+                                            @click="toggleEdit('detailsEdit')"
+                                        >
+                                            <v-icon>{{detailsEdit ? '' : 'mdi-pencil'}}</v-icon>
+                                        </v-btn>
+                                    </template>
+                                </v-textarea>
                             </v-col>
                         </v-row>
 
@@ -597,6 +554,7 @@
                     contact: {
                         user_data: {
                             name: '',
+                            surname: '',
                             email: ''
                         }
                     },
@@ -657,7 +615,7 @@
                                 link: ''
                             }],
                             employee: {
-                                user_data:{
+                                user_data: {
                                     name: '',
                                     email: ''
                                 }
