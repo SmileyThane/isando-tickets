@@ -3860,7 +3860,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4019,7 +4018,8 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
-          _this4.company = response.data;
+          _this4.getCompany();
+
           _this4.snackbarMessage = 'Update successful';
           _this4.actionColor = 'success';
           _this4.snackbar = true;
@@ -5196,8 +5196,8 @@ __webpack_require__.r(__webpack_exports__);
         response = response.data;
 
         if (response.success === true) {
-          _this4.client.client_name = response.data.name;
-          _this4.client.client_description = response.data.description;
+          _this4.getClient();
+
           _this4.snackbarMessage = 'Update successful';
           _this4.actionColor = 'success';
           _this4.snackbar = true;
@@ -46793,7 +46793,6 @@ var render = function() {
                       attrs: {
                         headers: _vm.headers,
                         items: _vm.company.employees,
-                        "items-per-page": 25,
                         "item-key": "id",
                         "show-expand": "",
                         dense: ""

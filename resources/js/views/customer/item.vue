@@ -665,8 +665,7 @@
                 axios.patch(`/api/client/${this.$route.params.id}`, this.client).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.client.client_name = response.data.name
-                        this.client.client_description = response.data.description
+                        this.getClient()
                         this.snackbarMessage = 'Update successful'
                         this.actionColor = 'success'
                         this.snackbar = true;

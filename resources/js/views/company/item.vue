@@ -301,7 +301,6 @@
                         <v-data-table
                             :headers="headers"
                             :items="company.employees"
-                            :items-per-page="25"
                             class="elevation-1"
                             item-key="id"
                             show-expand
@@ -729,7 +728,7 @@
                 axios.post(`/api/company/${this.$route.params.id}`, this.company).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.company = response.data
+                        this.getCompany()
                         this.snackbarMessage = 'Update successful'
                         this.actionColor = 'success'
                         this.snackbar = true;
