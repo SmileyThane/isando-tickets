@@ -20,13 +20,19 @@
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-chip
-                            :color="ticket.status.color" dark label class="float-md-right">
-                            Status: <strong>{{ ticket.status.name }}</strong>
+                            :color="ticket.status.color" outlined label class="float-md-right">
+                            <strong>{{ ticket.status.name }}</strong>
                         </v-chip>
                         &nbsp;
                         <v-chip
-                            :color="ticket.priority.color" dark label class="float-md-right">
-                            Priority: <strong>{{ ticket.priority.name }}</strong>
+                            color="white" light label class="float-md-right">
+                            <v-badge
+                                :color="ticket.priority.color"
+                                inline
+                                dot
+                            >
+                                <strong>{{ ticket.priority.name }}</strong>
+                            </v-badge>
                         </v-chip>
                         &nbsp;
                         <v-btn v-show="ticket.can_be_edited && submitEdit" class="float-md-right"

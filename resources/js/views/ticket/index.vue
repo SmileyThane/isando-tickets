@@ -24,6 +24,9 @@
             <template v-slot:item.status.name="{ item }">
                 <v-chip :color="item.status.color" dark>{{ item.status.name }}</v-chip>
             </template>
+            <template v-slot:item.priority.name="{ item }">
+                <v-badge inline dot :color="item.priority.color">{{ item.priority.name }}</v-badge>
+            </template>
             <template v-slot:item.assigned_person="{ item }">
                 <div class="justify-center" v-if="item.assigned_person">{{ item.assigned_person.user_data.name }} {{
                     item.assigned_person.user_data.surname }}

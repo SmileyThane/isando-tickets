@@ -6828,6 +6828,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -6918,6 +6921,12 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -51202,6 +51211,21 @@ var render = function() {
             }
           },
           {
+            key: "item.priority.name",
+            fn: function(ref) {
+              var item = ref.item
+              return [
+                _c(
+                  "v-badge",
+                  {
+                    attrs: { inline: "", dot: "", color: item.priority.color }
+                  },
+                  [_vm._v(_vm._s(item.priority.name))]
+                )
+              ]
+            }
+          },
+          {
             key: "item.assigned_person",
             fn: function(ref) {
               var item = ref.item
@@ -51363,32 +51387,37 @@ var render = function() {
                           staticClass: "float-md-right",
                           attrs: {
                             color: _vm.ticket.status.color,
-                            dark: "",
+                            outlined: "",
                             label: ""
                           }
                         },
-                        [
-                          _vm._v("\n                        Status: "),
-                          _c("strong", [_vm._v(_vm._s(_vm.ticket.status.name))])
-                        ]
+                        [_c("strong", [_vm._v(_vm._s(_vm.ticket.status.name))])]
                       ),
                       _vm._v("\n                     \n                    "),
                       _c(
                         "v-chip",
                         {
                           staticClass: "float-md-right",
-                          attrs: {
-                            color: _vm.ticket.priority.color,
-                            dark: "",
-                            label: ""
-                          }
+                          attrs: { color: "white", light: "", label: "" }
                         },
                         [
-                          _vm._v("\n                        Priority: "),
-                          _c("strong", [
-                            _vm._v(_vm._s(_vm.ticket.priority.name))
-                          ])
-                        ]
+                          _c(
+                            "v-badge",
+                            {
+                              attrs: {
+                                color: _vm.ticket.priority.color,
+                                inline: "",
+                                dot: ""
+                              }
+                            },
+                            [
+                              _c("strong", [
+                                _vm._v(_vm._s(_vm.ticket.priority.name))
+                              ])
+                            ]
+                          )
+                        ],
+                        1
                       ),
                       _vm._v("\n                     \n                    "),
                       _c(
