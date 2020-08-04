@@ -22,6 +22,7 @@
                     </v-alert>
                     <v-card class="elevation-12">
                         <v-toolbar
+                            dense
                             color="green"
                             dark
                             flat

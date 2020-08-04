@@ -1,16 +1,28 @@
 <template>
     <v-container>
-
+        <v-snackbar
+            :bottom="true"
+            :right="true"
+            v-model="snackbar"
+            :color="actionColor"
+        >
+            {{ snackbarMessage }}
+        </v-snackbar>
         <div class="row">
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar
                         color="green"
+                        dense
                         dark
                         flat
                     >
                         <v-toolbar-title>Basic info</v-toolbar-title>
                         <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateClient">Save
+                        </v-btn>
+
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
@@ -22,6 +34,7 @@
                                 type="text"
                                 v-model="client.client_name"
                                 required
+                                :readonly="!enableToEdit"
                             ></v-text-field>
                             <v-text-field
                                 color="green"
@@ -31,19 +44,21 @@
                                 type="text"
                                 v-model="client.client_description"
                                 required
+                                :readonly="!enableToEdit"
                             ></v-text-field>
                         </v-form>
                     </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="green" style="color: white;" @click="updateClient">Save</v-btn>
-                    </v-card-actions>
+                    <!--                    <v-card-actions>-->
+                    <!--                        <v-spacer></v-spacer>-->
+                    <!--                        <v-btn color="green" style="color: white;" @click="updateClient">Save</v-btn>-->
+                    <!--                    </v-card-actions>-->
                 </v-card>
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
                 <v-card class="elevation-12">
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat
@@ -230,6 +245,7 @@
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat
@@ -332,6 +348,7 @@
                 </v-spacer>
                 <v-card class="elevation-12">
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat
@@ -455,6 +472,10 @@
                     {text: 'roles', value: 'employee.role_names'},
                     {text: 'Actions', value: ''},
                 ],
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
+                enableToEdit: false,
                 client: {
                     client_name: '',
                     client_description: '',
@@ -565,6 +586,10 @@
                     if (response.success === true) {
                         this.client.client_name = response.data.name
                         this.client.client_description = response.data.description
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.enableToEdit = false
                     } else {
                         console.log('error')
                     }

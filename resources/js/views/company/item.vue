@@ -14,10 +14,13 @@
                     <v-toolbar
                         color="green"
                         dark
+                        dense
                         flat
                     >
                         <v-toolbar-title>Basic info</v-toolbar-title>
                         <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit"  color="white" style="color: black;" @click="updateCompany">Save</v-btn>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
@@ -29,6 +32,7 @@
                                 type="text"
                                 v-model="company.name"
                                 required
+                                :readonly="!enableToEdit"
                             ></v-text-field>
                             <v-text-field
                                 color="green"
@@ -38,6 +42,7 @@
                                 type="text"
                                 v-model="company.description"
                                 required
+                                :readonly="!enableToEdit"
                             ></v-text-field>
 
                             <v-text-field
@@ -48,6 +53,7 @@
                                 type="text"
                                 v-model="company.company_number"
                                 required
+                                :readonly="!enableToEdit"
                             ></v-text-field>
                             <v-menu
                                 :close-on-content-click="false"
@@ -55,6 +61,8 @@
                                 transition="scale-transition"
                                 offset-y
                                 min-width="290px"
+                                :disabled="!enableToEdit"
+
                             >
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
@@ -75,16 +83,17 @@
                             </v-menu>
                         </v-form>
                     </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="green" style="color: white;" @click="updateCompany">Save</v-btn>
-                    </v-card-actions>
+<!--                    <v-card-actions>-->
+<!--                        <v-spacer></v-spacer>-->
+<!--                        <v-btn color="green" style="color: white;" @click="updateCompany">Save</v-btn>-->
+<!--                    </v-card-actions>-->
                 </v-card>
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
                 <v-card class="elevation-12">
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat
@@ -273,6 +282,7 @@
                 <v-card class="elevation-12">
 
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat
@@ -421,6 +431,7 @@
                 <v-card class="elevation-12">
 
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat
@@ -554,6 +565,7 @@
                 actionColor: '',
                 snackbarMessage: '',
                 tooltip:false,
+                enableToEdit:false,
                 phoneHeaders: [
                     {text: 'Phone', sortable: false, value: 'phone'},
                     {text: 'Type', value: 'type.name'},
@@ -707,9 +719,10 @@
                     response = response.data
                     if (response.success === true) {
                         this.company = response.data
-                        this.snackbarMessage = 'Delete successful'
+                        this.snackbarMessage = 'Update successful'
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.enableToEdit = false
                     } else {
                         console.log('error')
                     }

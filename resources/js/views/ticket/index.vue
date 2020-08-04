@@ -11,7 +11,10 @@
             class="elevation-1"
         >
             <template v-slot:top>
-                <v-toolbar flat>
+                <v-toolbar
+                    flat
+                    dense
+                >
                     <v-toolbar-title></v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-switch v-model="singleExpand" label="Single expand" color="green" class="mt-2"></v-switch>

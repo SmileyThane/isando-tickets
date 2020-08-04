@@ -21,6 +21,7 @@
                     </v-alert>
                     <v-card>
                         <v-toolbar
+                            dense
                             color="green"
                             dark
                             flat

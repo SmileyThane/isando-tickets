@@ -10,6 +10,7 @@
             >
                 <v-card>
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat
@@ -19,9 +20,12 @@
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-chip
-                            :color="ticket.status.color" dark large label class="float-md-right">
+                            :color="ticket.status.color" dark label class="float-md-right">
                             {{ ticket.status.name }}
                         </v-chip>
+                        <v-btn v-show="ticket.can_be_edited && submitEdit" class="float-md-right"
+                               color="green" style="color: white;" @click="updateTicket">Save
+                        </v-btn>
                     </v-toolbar>
                     <v-container>
                         <v-row align="center"
@@ -34,9 +38,7 @@
 
                             </v-col>
                             <v-col cols="12" md="6">
-                                <v-btn v-show="ticket.can_be_edited" :disabled="!submitEdit" class="float-md-right"
-                                       color="green" style="color: white;" @click="updateTicket">Save
-                                </v-btn>
+
                             </v-col>
                             <v-col cols="12">
                                 <v-label>
@@ -308,6 +310,7 @@
                 <br>
                 <v-card>
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat
@@ -378,6 +381,7 @@
             >
                 <v-card>
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat

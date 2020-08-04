@@ -14,12 +14,15 @@
             <v-col class="col-md-6">
                 <v-card class="elevation-6">
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat
                     >
                         <v-toolbar-title>Basic info</v-toolbar-title>
                         <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">Update</v-btn>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
@@ -34,6 +37,7 @@
                                     :error-messages="errors.title_before_name"
                                     lazy-validation
                                     class="col-md-6"
+                                    :readonly="!enableToEdit"
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -45,6 +49,7 @@
                                     :error-messages="errors.title"
                                     lazy-validation
                                     class="col-md-6"
+                                    :readonly="!enableToEdit"
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -57,6 +62,7 @@
                                     lazy-validation
                                     required
                                     class="col-md-6"
+                                    :readonly="!enableToEdit"
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -68,7 +74,7 @@
                                     :error-messages="errors.surname"
                                     lazy-validation
                                     class="col-md-6"
-
+                                    :readonly="!enableToEdit"
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -81,6 +87,7 @@
                                     :error-messages="errors.email"
                                     lazy-validation
                                     class="col-md-6"
+                                    :readonly="!enableToEdit"
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -94,6 +101,7 @@
                                     lazy-validation
                                     class="col-md-6"
                                     required
+                                    :readonly="!enableToEdit"
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -106,6 +114,7 @@
                                     lazy-validation
                                     class="col-md-4"
                                     required
+                                    :readonly="!enableToEdit"
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -118,6 +127,7 @@
                                     lazy-validation
                                     class="col-md-4"
                                     required
+                                    :readonly="!enableToEdit"
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -130,20 +140,22 @@
                                     lazy-validation
                                     class="col-md-4"
                                     required
+                                    :readonly="!enableToEdit"
                                 ></v-text-field>
 
                             </v-row>
                         </v-form>
                     </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="green" style="color: white;" @click="updateUser">Update</v-btn>
-                    </v-card-actions>
+<!--                    <v-card-actions>-->
+<!--                        <v-spacer></v-spacer>-->
+<!--                        <v-btn color="green" style="color: white;" @click="updateUser">Update</v-btn>-->
+<!--                    </v-card-actions>-->
                 </v-card>
             </v-col>
             <v-col class="col-md-6">
                 <v-card class="elevation-6">
                     <v-toolbar
+                        dense
                         color="green"
                         dark
                         flat
@@ -356,6 +368,7 @@
                 actionColor: '',
                 snackbarMessage: '',
                 errors: [],
+                enableToEdit:false,
                 userData: {
                     title: '',
                     title_before_name: '',
@@ -420,7 +433,8 @@
                         this.getUser()
                         this.snackbarMessage = 'Update successful'
                         this.actionColor = 'success'
-                        this.snackbar = true;
+                        this.snackbar = true
+                        this.enableToEdit = false
                     } else {
                         this.errors = response.error
                     }
