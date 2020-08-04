@@ -126,6 +126,7 @@
       <path value="$PROJECT_DIR$/vendor/lcobucci/jwt" />
       <path value="$PROJECT_DIR$/vendor/psr/http-factory" />
       <path value="$PROJECT_DIR$/vendor/webklex/laravel-imap" />
+      <path value="$PROJECT_DIR$/vendor/ybr-nx/laravel-mariadb" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
