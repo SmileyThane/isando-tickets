@@ -196,7 +196,7 @@
                                                             bottom
                                                             small
                                                             color="green"
-                                                            @click="addPhone"
+                                                            @click="submitNewData(company.id, phoneForm, 'addPhone')"
                                                         >
                                                             <v-icon>mdi-plus</v-icon>
                                                         </v-btn>
@@ -270,7 +270,7 @@
                                                             bottom
                                                             small
                                                             color="green"
-                                                            @click="addAddress"
+                                                            @click="submitNewData(company.id, addressForm, 'addAddress')"
                                                         >
                                                             <v-icon>mdi-plus</v-icon>
                                                         </v-btn>
@@ -527,7 +527,7 @@
                                                 bottom
                                                 small
                                                 color="green"
-                                                @click="addSocial"
+                                                @click="submitNewData(company.id, socialForm, 'addSocial')"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
                                             </v-btn>
@@ -544,7 +544,7 @@
             <v-dialog v-model="rolesDialog" persistent max-width="600px">
                 <v-card>
                     <v-card-title>
-                        <span class="headline">Update role for {{newRoleForm.user.name}}</span>
+                        <span class="headline">Update info for {{newRoleForm.user.name}}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -559,6 +559,288 @@
                                 v-model="newRoleForm.role_ids"
                                 multiple
                             />
+                            <v-expansion-panels
+                                :disabled="!checkRoleByIds([1,2,3])"
+                            >
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>
+                                        User information
+                                        <template v-slot:actions>
+                                            <v-icon color="submit">mdi-plus</v-icon>
+                                        </template>
+                                    </v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-form>
+                                            <v-row>
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Title before name"
+                                                    name="title_before_name"
+                                                    prepend-icon="mdi-book-account-outline"
+                                                    type="text"
+                                                    v-model="newRoleForm.user.title_before_name"
+                                                    :error-messages="errors.title_before_name"
+                                                    lazy-validation
+                                                    class="col-md-6"
+                                                    :readonly="!enableToEdit"
+                                                    dense
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Title"
+                                                    name="title"
+                                                    prepend-icon="mdi-book-account-outline"
+                                                    type="text"
+                                                    v-model="newRoleForm.user.title"
+                                                    :error-messages="errors.title"
+                                                    lazy-validation
+                                                    class="col-md-6"
+                                                    :readonly="!enableToEdit"
+                                                    dense
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Name"
+                                                    name="name"
+                                                    prepend-icon="mdi-book-account-outline"
+                                                    type="text"
+                                                    v-model="newRoleForm.user.name"
+                                                    :error-messages="errors.name"
+                                                    lazy-validation
+                                                    required
+                                                    class="col-md-6"
+                                                    :readonly="!enableToEdit"
+                                                    dense
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Surname"
+                                                    name="surname"
+                                                    prepend-icon="mdi-book-account-outline"
+                                                    type="text"
+                                                    v-model="newRoleForm.user.surname"
+                                                    :error-messages="errors.surname"
+                                                    lazy-validation
+                                                    class="col-md-6"
+                                                    :readonly="!enableToEdit"
+                                                    dense
+                                                ></v-text-field>
+                                                <v-text-field
+                                                    color="green"
+                                                    label="Email"
+                                                    name="email"
+                                                    prepend-icon="mdi-mail"
+                                                    type="text"
+                                                    v-model="newRoleForm.user.email"
+                                                    required
+                                                    :error-messages="errors.email"
+                                                    lazy-validation
+                                                    class="col-md-6"
+                                                    :readonly="!enableToEdit"
+                                                    dense
+                                                ></v-text-field>
+                                                <v-btn
+                                                    dark
+                                                    fab
+                                                    right
+                                                    bottom
+                                                    small
+                                                    color="green"
+                                                    @click="submitNewData(newRoleForm.user.id, userPhoneForm, 'addPhone')"
+                                                >
+                                                    <v-icon>mdi-plus</v-icon>
+                                                </v-btn>
+                                            </v-row>
+                                        </v-form>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>
+                                        Contact phones and addresses
+                                        <template v-slot:actions>
+                                            <v-icon color="submit">mdi-plus</v-icon>
+                                        </template>
+                                    </v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-form>
+                                            <v-row>
+                                                <v-col class="col-md-12">
+                                                    <v-list
+                                                        dense
+                                                        subheader
+                                                    >
+                                                        <v-list-item-group color="green">
+                                                            <v-list-item
+                                                                v-for="(item, i) in newRoleForm.user.phones"
+                                                                :key="item.id"
+                                                            >
+                                                                <v-list-item-content>
+                                                                    <v-list-item-title
+                                                                        v-text="item.phone"></v-list-item-title>
+                                                                    <v-list-item-subtitle
+                                                                        v-text="item.type.name"></v-list-item-subtitle>
+                                                                </v-list-item-content>
+                                                                <v-list-item-action>
+                                                                    <v-icon
+                                                                        small
+                                                                        @click="deletePhone(item.id)"
+                                                                    >
+                                                                        mdi-delete
+                                                                    </v-icon>
+                                                                </v-list-item-action>
+                                                            </v-list-item>
+                                                            <v-list-item
+                                                                v-for="(item, i) in newRoleForm.user.addresses"
+                                                                :key="item.id"
+                                                            >
+                                                                <v-list-item-content>
+                                                                    <v-list-item-title v-text="">{{item.address}}
+                                                                        {{item.address_line_2}} {{item.address_line_3}}
+                                                                    </v-list-item-title>
+                                                                    <v-list-item-subtitle
+                                                                        v-text="item.type.name"></v-list-item-subtitle>
+                                                                </v-list-item-content>
+                                                                <v-list-item-action>
+                                                                    <v-icon
+                                                                        small
+                                                                        @click="deleteAddress(item.id)"
+                                                                    >
+                                                                        mdi-delete
+                                                                    </v-icon>
+                                                                </v-list-item-action>
+                                                            </v-list-item>
+                                                        </v-list-item-group>
+                                                    </v-list>
+                                                </v-col>
+                                                <v-col class="col-md-12">
+                                                    <v-expansion-panels>
+                                                        <v-expansion-panel>
+                                                            <v-expansion-panel-header>
+                                                                New phone
+                                                                <template v-slot:actions>
+                                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                                </template>
+                                                            </v-expansion-panel-header>
+                                                            <v-expansion-panel-content>
+                                                                <v-form>
+                                                                    <div class="row">
+                                                                        <v-col cols="md-6" class="pa-1">
+                                                                            <v-text-field
+                                                                                color="green"
+                                                                                item-color="green"
+                                                                                v-model="userPhoneForm.phone"
+                                                                                label="Phone"
+                                                                                dense
+                                                                            ></v-text-field>
+                                                                        </v-col>
+                                                                        <v-col cols="6" class="pa-1">
+                                                                            <v-select
+                                                                                color="green"
+                                                                                item-color="green"
+                                                                                item-text="name"
+                                                                                item-value="id"
+                                                                                v-model="userPhoneForm.phone_type"
+                                                                                :items="phoneTypes"
+                                                                                label="Type"
+                                                                                dense
+                                                                            ></v-select>
+                                                                        </v-col>
+                                                                        <v-btn
+                                                                            dark
+                                                                            fab
+                                                                            right
+                                                                            bottom
+                                                                            small
+                                                                            color="green"
+                                                                            @click="submitNewData(newRoleForm.user.id, userPhoneForm, 'addPhone')"
+                                                                        >
+                                                                            <v-icon>mdi-plus</v-icon>
+                                                                        </v-btn>
+                                                                    </div>
+                                                                </v-form>
+                                                            </v-expansion-panel-content>
+                                                        </v-expansion-panel>
+                                                        <v-expansion-panel>
+                                                            <v-expansion-panel-header>
+                                                                New address
+                                                                <template v-slot:actions>
+                                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                                </template>
+                                                            </v-expansion-panel-header>
+                                                            <v-expansion-panel-content>
+                                                                <v-form>
+                                                                    <div class="row">
+                                                                        <v-col cols="md-6" class="pa-1">
+                                                                            <v-text-field
+                                                                                color="green"
+                                                                                item-color="green"
+                                                                                v-model="userAddressForm.address.address"
+                                                                                label="Address"
+                                                                                dense
+                                                                            ></v-text-field>
+                                                                        </v-col>
+                                                                        <v-col cols="md-6" class="pa-1">
+                                                                            <v-text-field
+                                                                                color="green"
+                                                                                item-color="green"
+                                                                                v-model="userAddressForm.address.address_line_2"
+                                                                                label="Address line 2"
+                                                                                dense
+                                                                            ></v-text-field>
+                                                                        </v-col>
+                                                                        <v-col cols="md-3" class="pa-1">
+                                                                            <v-text-field
+                                                                                color="green"
+                                                                                item-color="green"
+                                                                                v-model="userAddressForm.address.city"
+                                                                                label="City"
+                                                                                dense
+                                                                            ></v-text-field>
+                                                                        </v-col>
+                                                                        <v-col cols="md-3" class="pa-1">
+                                                                            <v-text-field
+                                                                                color="green"
+                                                                                item-color="green"
+                                                                                v-model="userAddressForm.address.country"
+                                                                                label="Country"
+                                                                                dense
+                                                                            ></v-text-field>
+                                                                        </v-col>
+                                                                        <v-col cols="6" class="pa-1">
+                                                                            <v-select
+                                                                                color="green"
+                                                                                item-color="green"
+                                                                                item-text="name"
+                                                                                item-value="id"
+                                                                                v-model="userAddressForm.address_type"
+                                                                                :items="addressTypes"
+                                                                                label="Type"
+                                                                                dense
+                                                                            ></v-select>
+                                                                        </v-col>
+                                                                        <v-btn
+                                                                            dark
+                                                                            fab
+                                                                            right
+                                                                            bottom
+                                                                            small
+                                                                            color="green"
+                                                                            @click="submitNewData(newRoleForm.user.id, userAddressForm, 'addAddress')"
+                                                                        >
+                                                                            <v-icon>mdi-plus</v-icon>
+                                                                        </v-btn>
+                                                                    </div>
+                                                                </v-form>
+                                                            </v-expansion-panel-content>
+                                                        </v-expansion-panel>
+                                                    </v-expansion-panels>
+                                                </v-col>
+                                            </v-row>
+                                        </v-form>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+
                             <v-checkbox
                                 label="Give access to the system"
                                 color="success"
@@ -592,6 +874,7 @@
                 snackbarMessage: '',
                 tooltip: false,
                 enableToEdit: false,
+                errors: [],
                 headers: [
                     {text: '', value: 'data-table-expand'},
                     // {
@@ -668,6 +951,30 @@
                     social_link: '',
                     social_type: ''
                 },
+                userPhoneForm: {
+                    entity_id: '',
+                    entity_type: 'App\\User',
+                    phone: '',
+                    phone_type: ''
+                },
+                userAddressForm: {
+                    entity_id: '',
+                    entity_type: 'App\\User',
+                    address: {
+                        address: '',
+                        address_line_2: '',
+                        address_line_3: '',
+                        city: '',
+                        country: ''
+                    },
+                    address_type: ''
+                },
+                userSocialForm: {
+                    entity_id: '',
+                    entity_type: 'App\\User',
+                    social_link: '',
+                    social_type: ''
+                },
                 phoneTypes: [],
                 addressTypes: [],
                 socialTypes: []
@@ -682,11 +989,14 @@
             this.employeeForm.company_id = this.$route.params.id
         },
         methods: {
-            getCompany() {
+            getCompany(userId = null) {
                 axios.get(`/api/company/${this.$route.params.id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.company = response.data
+                        if (userId) {
+                            this.newRoleForm.user = this.company.employees.find(x => x.user_id === userId).user_data;
+                        }
                     } else {
                         console.log('error')
                     }
@@ -815,12 +1125,16 @@
                     }
                 });
             },
-            addPhone() {
-                this.phoneForm.entity_id = this.company.id
-                axios.post('/api/phone', this.phoneForm).then(response => {
+            submitNewData(id, data, method){
+                data.entity_id = id
+                this[method](data)
+            },
+            addPhone(form) {
+                axios.post('/api/phone', form).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.getCompany()
+
+                        this.getCompany(form.entity_type === 'App\\User' ? form.entity_id: null)
                         this.snackbarMessage = 'Update successful'
                         this.actionColor = 'success'
                         this.snackbar = true;
@@ -830,6 +1144,7 @@
                         this.alert = true;
 
                     }
+                    return true
                 });
             },
             deletePhone(id) {
@@ -837,7 +1152,6 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.phoneForm.phone = ''
                         this.snackbarMessage = 'Delete successful'
                         this.actionColor = 'success'
                         this.snackbar = true;
@@ -849,9 +1163,8 @@
                     }
                 });
             },
-            addSocial() {
-                this.socialForm.entity_id = this.company.id
-                axios.post('/api/social', this.socialForm).then(response => {
+            addSocial(form) {
+                axios.post('/api/social', form).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
@@ -871,7 +1184,6 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.socialForm.phone = ''
                         this.snackbarMessage = 'Delete successful'
                         this.actionColor = 'success'
                         this.snackbar = true;
@@ -883,14 +1195,13 @@
                     }
                 });
             },
-            addAddress() {
-                this.addressForm.entity_id = this.company.id
-                if (this.addressForm.address.city !== '' && this.addressForm.address.country !== '') {
-                    this.addressForm.address.address_line_3 = `${this.addressForm.address.city}, ${this.addressForm.address.country}`
+            addAddress(form) {
+                if (form.address.city !== '' && form.address.country !== '') {
+                    form.address.address_line_3 = `${form.address.city}, ${form.address.country}`
                 } else {
-                    this.addressForm.address.address_line_3 = `${this.addressForm.address.city}${this.addressForm.address.country}`
+                    form.address_line_3 = `${form.address.city}${form.address.country}`
                 }
-                axios.post('/api/address', this.addressForm).then(response => {
+                axios.post('/api/address', form).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()

@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     //user management
     Route::get('user', 'API\UserController@find');
+    Route::get('user/find/{id}', 'API\UserController@find');
     Route::post('user', 'API\UserController@update');
     Route::post('user/invite', 'API\UserController@sendInvite');
     Route::post('user/is_active', 'API\UserController@changeIsActive');
