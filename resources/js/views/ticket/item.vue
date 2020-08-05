@@ -433,6 +433,8 @@
                                                 <v-textarea
                                                     color="green"
                                                     item-color="green"
+                                                    auto-grow
+                                                    rows="1"
                                                     v-model="ticketNotice.notice"
                                                     label="Notice"
                                                 ></v-textarea>

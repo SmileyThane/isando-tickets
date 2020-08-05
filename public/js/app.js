@@ -7443,6 +7443,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -52531,6 +52533,8 @@ var render = function() {
                                               attrs: {
                                                 color: "green",
                                                 "item-color": "green",
+                                                "auto-grow": "",
+                                                rows: "1",
                                                 label: "Notice"
                                               },
                                               model: {
