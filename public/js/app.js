@@ -7439,6 +7439,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -52514,84 +52518,6 @@ var render = function() {
                               _c(
                                 "v-expansion-panel-content",
                                 [
-                                  _vm._l(_vm.ticket.notices, function(
-                                    noticeItem
-                                  ) {
-                                    return _c(
-                                      "div",
-                                      { key: noticeItem.id },
-                                      [
-                                        _c(
-                                          "v-card",
-                                          {
-                                            staticClass: "mx-auto",
-                                            attrs: { outlined: "" }
-                                          },
-                                          [
-                                            _c(
-                                              "v-list-item",
-                                              { attrs: { "three-line": "" } },
-                                              [
-                                                _c(
-                                                  "v-list-item-content",
-                                                  [
-                                                    _c(
-                                                      "h1",
-                                                      {
-                                                        staticClass:
-                                                          "text-right caption mb-2"
-                                                      },
-                                                      [
-                                                        _vm._v(
-                                                          _vm._s(
-                                                            noticeItem.created_at
-                                                          )
-                                                        )
-                                                      ]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c(
-                                                      "v-list-item-title",
-                                                      { staticClass: "mb-2" },
-                                                      [
-                                                        _vm._v(
-                                                          _vm._s(
-                                                            noticeItem.notice
-                                                          ) +
-                                                            "\n                                                "
-                                                        )
-                                                      ]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c("v-list-item-subtitle", [
-                                                      _vm._v(
-                                                        _vm._s(
-                                                          noticeItem.employee
-                                                            .user_data.email
-                                                        ) +
-                                                          "\n                                                "
-                                                      )
-                                                    ])
-                                                  ],
-                                                  1
-                                                )
-                                              ],
-                                              1
-                                            )
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c("v-spacer", [
-                                          _vm._v(
-                                            "\n                                         \n                                    "
-                                          )
-                                        ])
-                                      ],
-                                      1
-                                    )
-                                  }),
-                                  _vm._v(" "),
                                   _c("v-form", [
                                     _c(
                                       "div",
@@ -52650,7 +52576,121 @@ var render = function() {
                                       ],
                                       1
                                     )
-                                  ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("v-spacer", [
+                                    _vm._v(
+                                      "\n                                     \n                                "
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.ticket.notices, function(
+                                    noticeItem
+                                  ) {
+                                    return _c(
+                                      "div",
+                                      { key: noticeItem.id },
+                                      [
+                                        _c(
+                                          "v-card",
+                                          {
+                                            staticClass: "mx-auto",
+                                            attrs: { outlined: "" }
+                                          },
+                                          [
+                                            _c(
+                                              "v-list-item",
+                                              { attrs: { "three-line": "" } },
+                                              [
+                                                _c(
+                                                  "v-list-item-content",
+                                                  [
+                                                    _c(
+                                                      "v-row",
+                                                      [
+                                                        _c(
+                                                          "v-col",
+                                                          {
+                                                            attrs: { md: "6" }
+                                                          },
+                                                          [
+                                                            _c(
+                                                              "p",
+                                                              {
+                                                                staticClass:
+                                                                  "text-left mb-3"
+                                                              },
+                                                              [
+                                                                _vm._v(
+                                                                  "\n                                                            " +
+                                                                    _vm._s(
+                                                                      noticeItem
+                                                                        .employee
+                                                                        .user_data
+                                                                        .name
+                                                                    ) +
+                                                                    "\n                                                            " +
+                                                                    _vm._s(
+                                                                      noticeItem
+                                                                        .employee
+                                                                        .user_data
+                                                                        .surname
+                                                                    ) +
+                                                                    " responded "
+                                                                )
+                                                              ]
+                                                            )
+                                                          ]
+                                                        ),
+                                                        _vm._v(" "),
+                                                        _c(
+                                                          "v-col",
+                                                          {
+                                                            attrs: { md: "6" }
+                                                          },
+                                                          [
+                                                            _c(
+                                                              "p",
+                                                              {
+                                                                staticClass:
+                                                                  "text-right caption mb-2"
+                                                              },
+                                                              [
+                                                                _vm._v(
+                                                                  "\n                                                            " +
+                                                                    _vm._s(
+                                                                      noticeItem.created_at
+                                                                    )
+                                                                )
+                                                              ]
+                                                            )
+                                                          ]
+                                                        )
+                                                      ],
+                                                      1
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c("v-list", {
+                                                      staticClass: "mb-2",
+                                                      domProps: {
+                                                        innerHTML: _vm._s(
+                                                          noticeItem.notice
+                                                        )
+                                                      }
+                                                    })
+                                                  ],
+                                                  1
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  })
                                 ],
                                 2
                               )
