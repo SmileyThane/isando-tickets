@@ -544,7 +544,7 @@
             <v-dialog v-model="rolesDialog" persistent max-width="600px">
                 <v-card>
                     <v-card-title>
-                        <span class="headline">Update info for {{newRoleForm.user.name}}</span>
+                        <span class="headline">Update info for {{singleUserForm.user.name}}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -556,7 +556,7 @@
                                 item-value="id"
                                 :items="roles"
                                 :disabled="!checkRoleByIds([1,2,3])"
-                                v-model="newRoleForm.role_ids"
+                                v-model="singleUserForm.role_ids"
                                 multiple
                             />
                             <v-expansion-panels
@@ -578,11 +578,10 @@
                                                     name="title_before_name"
                                                     prepend-icon="mdi-book-account-outline"
                                                     type="text"
-                                                    v-model="newRoleForm.user.title_before_name"
+                                                    v-model="singleUserForm.user.title_before_name"
                                                     :error-messages="errors.title_before_name"
                                                     lazy-validation
                                                     class="col-md-6"
-                                                    :readonly="!enableToEdit"
                                                     dense
                                                 ></v-text-field>
                                                 <v-text-field
@@ -591,11 +590,10 @@
                                                     name="title"
                                                     prepend-icon="mdi-book-account-outline"
                                                     type="text"
-                                                    v-model="newRoleForm.user.title"
+                                                    v-model="singleUserForm.user.title"
                                                     :error-messages="errors.title"
                                                     lazy-validation
                                                     class="col-md-6"
-                                                    :readonly="!enableToEdit"
                                                     dense
                                                 ></v-text-field>
                                                 <v-text-field
@@ -604,12 +602,11 @@
                                                     name="name"
                                                     prepend-icon="mdi-book-account-outline"
                                                     type="text"
-                                                    v-model="newRoleForm.user.name"
+                                                    v-model="singleUserForm.user.name"
                                                     :error-messages="errors.name"
                                                     lazy-validation
                                                     required
                                                     class="col-md-6"
-                                                    :readonly="!enableToEdit"
                                                     dense
                                                 ></v-text-field>
                                                 <v-text-field
@@ -618,11 +615,10 @@
                                                     name="surname"
                                                     prepend-icon="mdi-book-account-outline"
                                                     type="text"
-                                                    v-model="newRoleForm.user.surname"
+                                                    v-model="singleUserForm.user.surname"
                                                     :error-messages="errors.surname"
                                                     lazy-validation
                                                     class="col-md-6"
-                                                    :readonly="!enableToEdit"
                                                     dense
                                                 ></v-text-field>
                                                 <v-text-field
@@ -631,12 +627,11 @@
                                                     name="email"
                                                     prepend-icon="mdi-mail"
                                                     type="text"
-                                                    v-model="newRoleForm.user.email"
+                                                    v-model="singleUserForm.user.email"
                                                     required
                                                     :error-messages="errors.email"
                                                     lazy-validation
-                                                    class="col-md-6"
-                                                    :readonly="!enableToEdit"
+                                                    class="col-md-12"
                                                     dense
                                                 ></v-text-field>
                                                 <v-btn
@@ -646,7 +641,7 @@
                                                     bottom
                                                     small
                                                     color="green"
-                                                    @click="submitNewData(newRoleForm.user.id, userPhoneForm, 'addPhone')"
+                                                    @click="updateUser"
                                                 >
                                                     <v-icon>mdi-plus</v-icon>
                                                 </v-btn>
@@ -671,7 +666,7 @@
                                                     >
                                                         <v-list-item-group color="green">
                                                             <v-list-item
-                                                                v-for="(item, i) in newRoleForm.user.phones"
+                                                                v-for="(item, i) in singleUserForm.user.phones"
                                                                 :key="item.id"
                                                             >
                                                                 <v-list-item-content>
@@ -690,7 +685,7 @@
                                                                 </v-list-item-action>
                                                             </v-list-item>
                                                             <v-list-item
-                                                                v-for="(item, i) in newRoleForm.user.addresses"
+                                                                v-for="(item, i) in singleUserForm.user.addresses"
                                                                 :key="item.id"
                                                             >
                                                                 <v-list-item-content>
@@ -752,7 +747,7 @@
                                                                             bottom
                                                                             small
                                                                             color="green"
-                                                                            @click="submitNewData(newRoleForm.user.id, userPhoneForm, 'addPhone')"
+                                                                            @click="submitNewData(singleUserForm.user.id, userPhoneForm, 'addPhone')"
                                                                         >
                                                                             <v-icon>mdi-plus</v-icon>
                                                                         </v-btn>
@@ -825,7 +820,7 @@
                                                                             bottom
                                                                             small
                                                                             color="green"
-                                                                            @click="submitNewData(newRoleForm.user.id, userAddressForm, 'addAddress')"
+                                                                            @click="submitNewData(singleUserForm.user.id, userAddressForm, 'addAddress')"
                                                                         >
                                                                             <v-icon>mdi-plus</v-icon>
                                                                         </v-btn>
@@ -845,8 +840,8 @@
                                 label="Give access to the system"
                                 color="success"
                                 :disabled="!checkRoleByIds([1,2,3])"
-                                v-model="newRoleForm.user.is_active"
-                                @change="changeIsActive(newRoleForm.user)"
+                                v-model="singleUserForm.user.is_active"
+                                @change="changeIsActive(singleUserForm.user)"
                                 hide-details
                             ></v-checkbox>
                         </v-container>
@@ -924,7 +919,7 @@
                     }
                 ],
                 rolesDialog: false,
-                newRoleForm: {
+                singleUserForm: {
                     user: '',
                     role_ids: [],
                     company_user_id: ''
@@ -1051,16 +1046,16 @@
             },
             showRolesModal(item) {
                 this.rolesDialog = true
-                this.newRoleForm.user = item.user_data
-                this.newRoleForm.role_ids = []
-                this.newRoleForm.company_user_id = item.id
+                this.singleUserForm.user = item.user_data
+                this.singleUserForm.role_ids = []
+                this.singleUserForm.company_user_id = item.id
                 item.roles.forEach(role => {
-                    this.newRoleForm.role_ids.push(role.id)
+                    this.singleUserForm.role_ids.push(role.id)
                 })
                 // console.log(item);
             },
             updateRole() {
-                axios.patch(`/api/roles`, this.newRoleForm).then(response => {
+                axios.patch(`/api/roles`, this.singleUserForm).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
@@ -1129,6 +1124,18 @@
                 data.entity_id = id
                 this[method](data)
             },
+            updateUser() {
+                axios.post('/api/user', this.singleUserForm.user).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true
+                    } else {
+                        this.errors = response.error
+                    }
+                });
+            },
             addPhone(form) {
                 axios.post('/api/phone', form).then(response => {
                     response = response.data
@@ -1138,7 +1145,6 @@
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
                         this.errorType = 'error'
                         this.alert = true;
 
@@ -1287,9 +1293,9 @@
         watch: {
             companyUpdates(value) {
                 this.companyIsLoaded = true;
-                  // console.log(this.newRoleForm.user);
-                if (this.newRoleForm.user){
-                    this.newRoleForm.user = this.company.employees.find(x => x.user_id === this.newRoleForm.user.id).user_data;
+                  // console.log(this.singleUserForm.user);
+                if (this.singleUserForm.user){
+                    this.singleUserForm.user = this.company.employees.find(x => x.user_id === this.singleUserForm.user.id).user_data;
                 }
             }
         },
