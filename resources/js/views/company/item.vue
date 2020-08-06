@@ -875,6 +875,7 @@
                 tooltip: false,
                 enableToEdit: false,
                 errors: [],
+                isCompanyUpdated: false,
                 headers: [
                     {text: '', value: 'data-table-expand'},
                     // {
@@ -888,6 +889,7 @@
                     {text: 'roles', value: 'role_names'},
                     {text: 'Actions', value: 'actions', sortable: false},
                 ],
+                companyIsLoaded:false,
                 company: {
                     name: '',
                     company_number: '',
@@ -989,14 +991,12 @@
             this.employeeForm.company_id = this.$route.params.id
         },
         methods: {
-            getCompany(userId = null) {
+            getCompany() {
+                this.companyIsLoaded = false
                 axios.get(`/api/company/${this.$route.params.id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.company = response.data
-                        if (userId) {
-                            this.newRoleForm.user = this.company.employees.find(x => x.user_id === userId).user_data;
-                        }
                     } else {
                         console.log('error')
                     }
@@ -1125,7 +1125,7 @@
                     }
                 });
             },
-            submitNewData(id, data, method){
+            submitNewData(id, data, method) {
                 data.entity_id = id
                 this[method](data)
             },
@@ -1133,8 +1133,7 @@
                 axios.post('/api/phone', form).then(response => {
                     response = response.data
                     if (response.success === true) {
-
-                        this.getCompany(form.entity_type === 'App\\User' ? form.entity_id: null)
+                        this.getCompany()
                         this.snackbarMessage = 'Update successful'
                         this.actionColor = 'success'
                         this.snackbar = true;
@@ -1284,6 +1283,20 @@
                 });
                 return roleExists
             }
+        },
+        watch: {
+            companyUpdates(value) {
+                this.companyIsLoaded = true;
+                  // console.log(this.newRoleForm.user);
+                if (this.newRoleForm.user){
+                    this.newRoleForm.user = this.company.employees.find(x => x.user_id === this.newRoleForm.user.id).user_data;
+                }
+            }
+        },
+        computed: {
+            companyUpdates: function () {
+                return this.company
+            },
         }
     }
 </script>
