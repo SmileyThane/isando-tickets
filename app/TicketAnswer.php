@@ -24,7 +24,7 @@ class TicketAnswer extends Model
 
     public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(CompanyUser::class, 'id', 'company_user_id');
+        return $this->hasOne(CompanyUser::class, 'id', 'company_user_id')->withTrashed();
     }
 
     public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
