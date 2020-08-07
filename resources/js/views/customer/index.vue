@@ -76,30 +76,33 @@
                             loading-text="Give me a second..."
                         >
                             <template v-slot:top>
-                                <v-text-field @input="getClients" v-model="customersSearch" color="green"
-                                              label="Search..." class="mx-4"></v-text-field>
-                            </template>
-                            <template v-slot:footer>
+
                                 <v-row>
-                                    <v-col offset-md="8" md="1">
+                                    <v-col md="8">
+                                        <v-text-field @input="getClients" v-model="customersSearch" color="green"
+                                                      label="Search..." class="mx-4"></v-text-field>
+                                    </v-col>
+                                    <v-col md="1">
                                         <v-select
                                             color="green"
                                             item-color="green"
                                             :items="footerProps.itemsPerPageOptions"
-                                            label="Items fer page"
+                                            label="Items per page"
                                             v-model="options.itemsPerPage"
                                         ></v-select>
                                     </v-col>
                                     <v-col md="3">
-                                        <v-pagination color="green"
-                                                      v-model="options.page"
-                                                      :length="lastPage"
-                                                      circle
-                                                      :page="options.page"
-                                                      :total-visible="3"
-                                        >
+                                        <div class="text-xs-center pt-2">
+                                            <v-pagination color="green"
+                                                          v-model="options.page"
+                                                          :length="lastPage"
+                                                          circle
+                                                          :page="options.page"
+                                                          :total-visible="5"
+                                            >
+                                            </v-pagination>
+                                        </div>
 
-                                        </v-pagination>
                                     </v-col>
                                 </v-row>
 
@@ -230,7 +233,7 @@
                 this.$router.push(`/customer/${item.id}`)
             },
             updateItemsCount(value) {
-                    // console.log(value)
+                // console.log(value)
             },
         },
         watch: {
