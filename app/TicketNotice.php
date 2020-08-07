@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TicketNotice extends Model
@@ -16,9 +17,9 @@ class TicketNotice extends Model
 
     }
 
-    public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function employee(): HasOne
     {
-        return $this->hasOne(CompanyUser::class, 'id', 'company_user_id');
+        return $this->hasOne(CompanyUser::class, 'id', 'company_user_id')->withTrashed();
     }
 }
 

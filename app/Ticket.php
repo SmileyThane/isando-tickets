@@ -17,12 +17,12 @@ class Ticket extends Model
 
     public function getFromAttribute()
     {
-        return $this->attributes['from_entity_type']::find($this->attributes['from_entity_id']);
+        return $this->attributes['from_entity_type']::find($this->attributes['from_entity_id'])->withTrashed();
     }
 
     public function getToAttribute()
     {
-        return $this->attributes['to_entity_type']::where('id', $this->attributes['to_entity_id'])->with('teams', 'employees')->first();
+        return $this->attributes['to_entity_type']::where('id', $this->attributes['to_entity_id'])->withTrashed()->with('teams', 'employees')->first();
     }
 
     public function getCanBeEditedAttribute()
@@ -43,27 +43,27 @@ class Ticket extends Model
 
     public function creator(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(CompanyUser::class, 'id', 'from_company_user_id');
+        return $this->hasOne(CompanyUser::class, 'id', 'from_company_user_id')->withTrashed();
     }
 
     public function assignedPerson(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(CompanyUser::class, 'id', 'to_company_user_id');
+        return $this->hasOne(CompanyUser::class, 'id', 'to_company_user_id')->withTrashed();
     }
 
     public function contact(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(CompanyUser::class, 'id', 'contact_company_user_id');
+        return $this->hasOne(CompanyUser::class, 'id', 'contact_company_user_id')->withTrashed();
     }
 
     public function product(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(Product::class, 'id', 'to_product_id');
+        return $this->hasOne(Product::class, 'id', 'to_product_id')->withTrashed();
     }
 
     public function team(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(Team::class, 'id', 'to_team_id');
+        return $this->hasOne(Team::class, 'id', 'to_team_id')->withTrashed();
     }
 
     public function priority(): \Illuminate\Database\Eloquent\Relations\HasOne
@@ -83,12 +83,12 @@ class Ticket extends Model
 
     public function histories(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(TicketHistory::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');;
+        return $this->hasMany(TicketHistory::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');
     }
 
     public function notices(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(TicketNotice::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');;
+        return $this->hasMany(TicketNotice::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');
     }
 
     public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
