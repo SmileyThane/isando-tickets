@@ -7,18 +7,6 @@
         <v-app-bar-nav-icon @click.stop="localDrawer = !localDrawer"></v-app-bar-nav-icon>
         <v-toolbar-title>{{ this.$route.name }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-chip
-            class="ma-3"
-            color="white"
-            text-color="black"
-        >
-            <v-avatar left>
-                <v-icon>mdi-account-circle</v-icon>
-            </v-avatar>
-            <v-label >{{username}}</v-label>
-
-        </v-chip>
-
         <v-menu
             left
             bottom
@@ -44,6 +32,17 @@
                 </v-list-item>
             </v-list>
         </v-menu>
+        <v-chip
+            class="ma-3"
+            color="white"
+            text-color="black"
+        >
+            <v-avatar left>
+                <v-icon>mdi-account-circle</v-icon>
+            </v-avatar>
+            <v-label >{{username}}</v-label>
+
+        </v-chip>
     </v-app-bar>
 </template>
 
@@ -68,10 +67,10 @@
             this.getUsername()
         },
         methods: {
-            getUsername(){
+            getUsername() {
                 axios.get('/api/user').then(response => {
                     response = response.data;
-                    if (response.success === true){
+                    if (response.success === true) {
                         this.username = response.data.name;
                     }
                 });
