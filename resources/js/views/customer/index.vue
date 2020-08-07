@@ -81,7 +81,7 @@
                             </template>
                             <template v-slot:footer>
                                 <v-row>
-                                    <v-col offset-md="9" md="1">
+                                    <v-col offset-md="8" md="1">
                                         <v-select
                                             color="green"
                                             item-color="green"
@@ -90,7 +90,7 @@
                                             v-model="options.itemsPerPage"
                                         ></v-select>
                                     </v-col>
-                                    <v-col md="2">
+                                    <v-col md="3">
                                         <v-pagination color="green"
                                                       v-model="options.page"
                                                       :length="lastPage"
