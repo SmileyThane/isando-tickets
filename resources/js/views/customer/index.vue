@@ -88,7 +88,7 @@
                                             item-color="green"
                                             :items="footerProps.itemsPerPageOptions"
                                             label="Items per page"
-                                            v-model="options.itemsPerPage"
+                                            @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
                                     <v-col md="3">
@@ -146,9 +146,9 @@
                     sortBy: ['id']
                 },
                 footerProps: {
-                    itemsPerPage: 5,
+                    itemsPerPage: 10,
                     showFirstLastPage: true,
-                    itemsPerPageOptions: [5, 15, 50, 100],
+                    itemsPerPageOptions: [10, 25, 50, 100],
                 },
                 headers: [
                     {
@@ -233,6 +233,8 @@
                 this.$router.push(`/customer/${item.id}`)
             },
             updateItemsCount(value) {
+                this.options.itemsPerPage = value
+                this.options.page = 1
                 // console.log(value)
             },
         },
