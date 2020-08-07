@@ -32,7 +32,7 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
-        $id = Auth::id();
+        $id = $request->id ?? Auth::id();
         $success = false;
         $result = null;
         $isValid = $this->userRepo->validate($request, false);
