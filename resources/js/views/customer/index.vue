@@ -66,9 +66,44 @@
                         <v-data-table
                             :headers="headers"
                             :items="customers"
-                            :items-per-page="25"
+                            :options.sync="options"
+                            :server-items-length="totalCustomers"
+                            :loading="loading"
+                            :footer-props="footerProps"
                             class="elevation-1"
+                            hide-default-footer
+                            fixed-header
+                            loading-text="Give me a second..."
                         >
+                            <template v-slot:top>
+                                <v-text-field @input="getClients" v-model="customersSearch" color="green"
+                                              label="Search..." class="mx-4"></v-text-field>
+                            </template>
+                            <template v-slot:footer>
+                                <v-row>
+                                    <v-col offset-md="9" md="1">
+                                        <v-select
+                                            color="green"
+                                            item-color="green"
+                                            :items="footerProps.itemsPerPageOptions"
+                                            label="Items fer page"
+                                            v-model="options.itemsPerPage"
+                                        ></v-select>
+                                    </v-col>
+                                    <v-col md="2">
+                                        <v-pagination color="green"
+                                                      v-model="options.page"
+                                                      :length="lastPage"
+                                                      circle
+                                                      :page="options.page"
+                                                      :total-visible="3"
+                                        >
+
+                                        </v-pagination>
+                                    </v-col>
+                                </v-row>
+
+                            </template>
                             <template v-slot:item.actions="{ item }">
                                 <v-icon
                                     small
@@ -98,17 +133,31 @@
 
         data() {
             return {
+                totalCustomers: 0,
+                lastPage: 0,
+                loading: 'green',
+                sortVal: 1,
+                options: {
+                    page: 1,
+                    sortDesc: [false],
+                    sortBy: ['id']
+                },
+                footerProps: {
+                    itemsPerPage: 5,
+                    showFirstLastPage: true,
+                    itemsPerPageOptions: [5, 15, 50, 100],
+                },
                 headers: [
                     {
                         text: 'ID',
                         align: 'start',
-                        sortable: false,
                         value: 'id',
                     },
                     {text: 'name', value: 'name'},
                     {text: 'Description', value: 'description'},
                     {text: 'Actions', value: 'actions', sortable: false},
                 ],
+                customersSearch: '',
                 customers: [],
                 clientForm: {
                     client_name: '',
@@ -126,15 +175,32 @@
         },
         methods: {
             getClients() {
-                axios.get('api/client').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.customers = response.data.data
-                        // console.log(this.customers);
-                    } else {
-                        console.log('error')
-                    }
-                });
+                this.loading = "green"
+                console.log(this.options);
+                if (this.options.sortDesc.length <= 0) {
+                    this.options.sortBy[0] = 'id'
+                    this.options.sortDesc[0] = false
+                }
+                if (this.totalCustomers < this.options.itemsPerPage) {
+                    this.options.page = 1
+                }
+                axios.get(`api/client?
+                    search=${this.customersSearch}&
+                    sort_by=${this.options.sortBy[0]}&
+                    sort_val=${this.options.sortDesc[0]}&
+                    per_page=${this.options.itemsPerPage}&
+                    page=${this.options.page}`)
+                    .then(
+                        response => {
+                            response = response.data
+                            this.customers = response.data.data
+                            console.log(this.customers);
+                            this.totalCustomers = response.data.total
+                            this.lastPage = response.data.last_page
+                            this.loading = false
+                        });
+
+
             },
             addClient() {
                 this.clientForm.supplier_type = Object.keys(this.clientForm.supplier_object.item)[0]
@@ -162,7 +228,18 @@
             },
             showItem(item) {
                 this.$router.push(`/customer/${item.id}`)
-            }
-        }
+            },
+            updateItemsCount(value) {
+                    // console.log(value)
+            },
+        },
+        watch: {
+            options: {
+                handler() {
+                    this.getClients()
+                },
+                deep: true,
+            },
+        },
     }
 </script>

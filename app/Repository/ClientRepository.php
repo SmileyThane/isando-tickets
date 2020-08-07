@@ -40,16 +40,25 @@ class ClientRepository
         return true;
     }
 
-    public function all()
+    public function all($request)
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
         if ($employee->hasRole(Role::COMPANY_CLIENT)) {
-            $clients = ClientCompanyUser::where('company_user_id', $employee->id)->first()->clients()->paginate(1000);
+            $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
+            $clients = Client::where('id', $clientCompanyUser->client_id);
         } else {
-            $clients = Company::find($companyId)->clients()->paginate(1000);
+            $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
         }
-        return $clients;
+        if ($request->search !== '') {
+            $clients->where(
+                function ($query) use ($request) {
+                    $query->where('name', 'like', '%'.$request->search.'%')
+                        ->orWhere('description', 'like', '%'.$request->search.'%');
+                }
+            );
+        }
+        return $clients->orderBy($request->sort_by, $request->sort_val === 'false' ? 'asc' : 'desc')->paginate((int)$request->per_page);
     }
 
     public function suppliers()
