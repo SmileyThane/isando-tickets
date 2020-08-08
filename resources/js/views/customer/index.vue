@@ -77,13 +77,14 @@
                         >
                             <template v-slot:top>
                                 <v-row>
-                                    <v-col md="7">
+                                    <v-col  sm="12" md="7">
                                         <v-text-field @input="getClients" v-model="customersSearch" color="green"
                                                       label="Search..." class="mx-4"></v-text-field>
                                     </v-col>
-                                    <v-col md="3">
+                                    <v-col  sm="12" md="3">
                                         <div class="text-xs-center pt-2">
                                             <v-pagination color="green"
+                                                          item-color="green"
                                                           v-model="options.page"
                                                           :length="lastPage"
                                                           circle
@@ -93,7 +94,7 @@
                                             </v-pagination>
                                         </div>
                                     </v-col>
-                                    <v-col md="2">
+                                    <v-col  sm="12" md="2">
                                         <v-select
                                             color="green"
                                             item-color="green"
