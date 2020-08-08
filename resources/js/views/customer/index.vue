@@ -139,7 +139,6 @@
                 totalCustomers: 0,
                 lastPage: 0,
                 loading: 'green',
-                sortVal: 1,
                 options: {
                     page: 1,
                     sortDesc: [false],
