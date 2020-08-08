@@ -77,34 +77,31 @@
                         >
                             <template v-slot:top>
                                 <v-row>
-                                    <v-col  sm="12" md="7">
+                                    <v-col sm="12" md="10">
                                         <v-text-field @input="getClients" v-model="customersSearch" color="green"
                                                       label="Search..." class="mx-4"></v-text-field>
                                     </v-col>
-                                    <v-col  sm="12" md="3">
-                                        <div class="text-xs-center pt-2">
-                                            <v-pagination color="green"
-                                                          item-color="green"
-                                                          v-model="options.page"
-                                                          :length="lastPage"
-                                                          circle
-                                                          :page="options.page"
-                                                          :total-visible="5"
-                                            >
-                                            </v-pagination>
-                                        </div>
+                                    <v-col sm="12" md="2">
+                                            <v-select
+                                                class="mx-4"
+                                                color="green"
+                                                item-color="green"
+                                                :items="footerProps.itemsPerPageOptions"
+                                                label="Items per page"
+                                                @change="updateItemsCount"
+                                            ></v-select>
                                     </v-col>
-                                    <v-col  sm="12" md="2">
-                                        <v-select
-                                            color="green"
-                                            item-color="green"
-                                            :items="footerProps.itemsPerPageOptions"
-                                            label="Items per page"
-                                            @change="updateItemsCount"
-                                        ></v-select>
-                                    </v-col>
-
                                 </v-row>
+                            </template>
+                            <template v-slot:footer>
+                                <v-pagination color="green"
+                                              v-model="options.page"
+                                              :length="lastPage"
+                                              circle
+                                              :page="options.page"
+                                              :total-visible="5"
+                                >
+                                </v-pagination>
                             </template>
                             <template v-slot:item.actions="{ item }">
                                 <v-icon
