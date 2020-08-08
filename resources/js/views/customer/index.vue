@@ -76,7 +76,6 @@
                             loading-text="Give me a second..."
                         >
                             <template v-slot:top>
-
                                 <v-row>
                                     <v-col md="8">
                                         <v-text-field @input="getClients" v-model="customersSearch" color="green"
@@ -105,7 +104,6 @@
 
                                     </v-col>
                                 </v-row>
-
                             </template>
                             <template v-slot:item.actions="{ item }">
                                 <v-icon
@@ -201,8 +199,6 @@
                             this.lastPage = response.data.last_page
                             this.loading = false
                         });
-
-
             },
             addClient() {
                 this.clientForm.supplier_type = Object.keys(this.clientForm.supplier_object.item)[0]
@@ -234,7 +230,6 @@
             updateItemsCount(value) {
                 this.options.itemsPerPage = value
                 this.options.page = 1
-                // console.log(value)
             },
         },
         watch: {
