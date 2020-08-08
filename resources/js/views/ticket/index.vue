@@ -19,11 +19,11 @@
             <template v-slot:top>
 
                 <v-row>
-                    <v-col md="7">
+                    <v-col sm="12" md="7">
                         <v-text-field @input="getTickets" v-model="ticketsSearch" color="green"
                                       label="Search..." class="mx-4"></v-text-field>
                     </v-col>
-                    <v-col md="3">
+                    <v-col sm="12" md="3">
                         <div class="text-xs-center mt-2">
                             <v-pagination color="green"
                                           v-model="options.page"
@@ -37,7 +37,7 @@
                         </div>
 
                     </v-col>
-                    <v-col md="2">
+                    <v-col sm="12" md="2">
                         <v-select
                             color="green"
                             item-color="green"
