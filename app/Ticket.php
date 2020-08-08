@@ -17,12 +17,12 @@ class Ticket extends Model
 
     public function getFromAttribute()
     {
-        return $this->attributes['from_entity_type']::find($this->attributes['from_entity_id'])->withTrashed();
+        return $this->attributes['from_entity_type']::find($this->attributes['from_entity_id']);
     }
 
     public function getToAttribute()
     {
-        return $this->attributes['to_entity_type']::where('id', $this->attributes['to_entity_id'])->withTrashed()->with('teams', 'employees')->first();
+        return $this->attributes['to_entity_type']::where('id', $this->attributes['to_entity_id'])->with('teams', 'employees')->first();
     }
 
     public function getCanBeEditedAttribute()
