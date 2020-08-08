@@ -72,7 +72,20 @@ class TicketRepository
                 }
             }
         }
-        return $tickets->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'priority', 'status')->orderBy('updated_at', 'desc')->paginate(1000);
+        if ($request->search !== '') {
+            $tickets->where(
+                function ($query) use ($request) {
+                    $query->where('name', 'like', '%'.$request->search.'%')
+                        ->orWhere('description', 'like', '%'.$request->search.'%');
+                }
+            );
+        }
+        return $tickets
+            ->with(
+                'creator.userData', 'assignedPerson.userData',
+                'contact.userData', 'product', 'team',
+                'priority', 'status')
+            ->orderBy($request->sort_by, $request->sort_val === 'false' ? 'asc' : 'desc')->paginate((int)$request->per_page);
     }
 
 

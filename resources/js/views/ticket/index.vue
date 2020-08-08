@@ -1,28 +1,58 @@
 <template>
     <v-container>
-
         <v-data-table
-            dense
+            show-expand
             :headers="headers"
             :items="tickets"
             :single-expand="singleExpand"
             :expanded.sync="expanded"
             item-key="id"
-            show-expand
-            class="elevation-1"
+            :options.sync="options"
+            :server-items-length="totalTickets"
+            :loading="loading"
+            :footer-props="footerProps"
+            class="elevation-4"
+            hide-default-footer
+            fixed-header
+            loading-text="Give me a second..."
         >
             <template v-slot:top>
-                <v-toolbar
-                    flat
-                    dense
-                >
-                    <v-toolbar-title></v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-switch v-model="singleExpand" label="Single expand" color="green" class="mt-2"></v-switch>
-                </v-toolbar>
+
+                <v-row>
+                    <v-col md="7">
+                        <v-text-field @input="getTickets" v-model="ticketsSearch" color="green"
+                                      label="Search..." class="mx-4"></v-text-field>
+                    </v-col>
+                    <v-col md="3">
+                        <div class="text-xs-center mt-2">
+                            <v-pagination color="green"
+                                          v-model="options.page"
+                                          :length="lastPage"
+                                          circle
+                                          :page="options.page"
+                                          :total-visible="5"
+                            >
+                            </v-pagination>
+
+                        </div>
+
+                    </v-col>
+                    <v-col md="2">
+                        <v-select
+                            color="green"
+                            item-color="green"
+                            :items="footerProps.itemsPerPageOptions"
+                            label="Items per page"
+                            @change="updateItemsCount"
+                        ></v-select>
+                        <v-switch v-model="singleExpand" label="Single expand" color="green" class="mt-2"></v-switch>
+                    </v-col>
+
+                </v-row>
             </template>
+
             <template v-slot:item.status.name="{ item }">
-                <v-chip :color="item.status.color" dark>{{ item.status.name }}</v-chip>
+                <v-badge inline dot :color="item.status.color">{{ item.status.name }}</v-badge>
             </template>
             <template v-slot:item.priority.name="{ item }">
                 <v-badge inline dot :color="item.priority.color">{{ item.priority.name }}</v-badge>
@@ -70,6 +100,19 @@
                 clientId: 6,
                 expanded: [],
                 singleExpand: false,
+                totalTickets: 0,
+                lastPage: 0,
+                loading: 'green',
+                options: {
+                    page: 1,
+                    sortDesc: [false],
+                    sortBy: ['id']
+                },
+                footerProps: {
+                    itemsPerPage: 10,
+                    showFirstLastPage: true,
+                    itemsPerPageOptions: [10, 25, 50, 100],
+                },
                 headers: [
                     {text: '', value: 'data-table-expand'},
                     {
@@ -87,6 +130,7 @@
                     {text: 'Last update', value: 'last_update'},
                     {text: 'Actions', value: 'actions', sortable: false},
                 ],
+                ticketsSearch: '',
                 tickets: [],
             }
         },
@@ -95,15 +139,28 @@
         },
         methods: {
             getTickets() {
-                axios.get('api/ticket').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.tickets = response.data.data
-                    } else {
-                        console.log('error')
-                    }
-
-                });
+                this.loading = "green"
+                if (this.options.sortDesc.length <= 0) {
+                    this.options.sortBy[0] = 'last_update'
+                    this.options.sortDesc[0] = true
+                }
+                if (this.totalTickets < this.options.itemsPerPage) {
+                    this.options.page = 1
+                }
+                axios.get(`api/ticket?
+                search=${this.ticketsSearch}&
+                sort_by=${this.manageSortableField(this.options.sortBy[0])}&
+                sort_val=${this.options.sortDesc[0]}&
+                per_page=${this.options.itemsPerPage}&
+                page=${this.options.page}`)
+                    .then(
+                        response => {
+                            response = response.data
+                            this.tickets = response.data.data
+                            this.totalTickets = response.data.total
+                            this.lastPage = response.data.last_page
+                            this.loading = false
+                        });
             },
             showItem(item) {
                 this.$router.push(`/ticket/${item.id}`)
@@ -116,7 +173,31 @@
                     }
                 });
                 return roleExists
+            },
+            updateItemsCount(value) {
+                this.options.itemsPerPage = value
+                this.options.page = 1
+                // console.log(value)
+            },
+            manageSortableField(value) {
+                if (value === 'last_update') return 'updated_at'
+                if (value === 'status.name') return 'status_id'
+                if (value === 'assigned_person') return 'to_company_user_id'
+                if (value === 'product.name') return 'to_product_id'
+                if (value === 'name') return 'name'
+                if (value === 'from.name') return 'from_entity_id'
+                if (value === 'to.name') return 'to_entity_id'
+                if (value === 'priority.name') return 'priority_id'
+                return value
             }
-        }
+        },
+        watch: {
+            options: {
+                handler() {
+                    this.getTickets()
+                },
+                deep: true,
+            },
+        },
     }
 </script>
