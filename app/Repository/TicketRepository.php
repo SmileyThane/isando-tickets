@@ -75,8 +75,8 @@ class TicketRepository
         if ($request->search !== '') {
             $tickets->where(
                 function ($query) use ($request) {
-                    $query->where('name', 'like', '%'.$request->search.'%')
-                        ->orWhere('description', 'like', '%'.$request->search.'%');
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
         }
