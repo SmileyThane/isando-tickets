@@ -19,9 +19,9 @@ class CompanyController extends Controller
         $this->companyUserRepo = $companyUserRepository;
     }
 
-    public function find($id = null)
+    public function find(Request $request, $id = null)
     {
-        $company = $this->companyRepo->find($id);
+        $company = $this->companyRepo->find($request, $id);
         return self::showResponse(true, $company);
     }
 
