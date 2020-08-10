@@ -19,9 +19,9 @@ class ProductController extends Controller
         $this->productRepo = $productRepository;
     }
 
-    public function get()
+    public function get(Request $request)
     {
-        $clients = $this->productRepo->all();
+        $clients = $this->productRepo->all($request);
         return self::showResponse(true, $clients);
     }
 

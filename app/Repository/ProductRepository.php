@@ -36,18 +36,30 @@ class ProductRepository
         return true;
     }
 
-    public function all()
+    public function all($request)
     {
         $employee = Auth::user()->employee()->with('assignedToClients')->first();
         $companyId = $employee->company_id;
         $products = null;
         if (!$employee->hasRole(Role::COMPANY_CLIENT)) {
-            $products = CompanyProduct::where('company_id', $companyId)->with('productData')->paginate(1000);
+            $products = CompanyProduct::where('company_id', $companyId);
         } else {
             $clientIds = $employee->assignedToClients->pluck('client_id')->toArray();
-            $products = ProductClient::where('client_id', $clientIds)->with('productData')->paginate(1000);
+            $products = ProductClient::where('client_id', $clientIds);
         }
-        return $products;
+        if ($request->search !== '') {
+            $products->whereHas(
+                'productData',
+                function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
+                }
+            );
+        }
+        return $products
+            ->with('productData')
+            ->orderBy($request->sort_by, $request->sort_val === 'false' ? 'asc' : 'desc')
+            ->paginate((int)$request->per_page);
     }
 
     public function find($id)
