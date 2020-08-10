@@ -17,7 +17,7 @@ class FileRepository
 
     public function store($file, $model_id, $model_type)
     {
-        if(is_string($file)){
+        if (is_string($file)) {
             $name = basename('/public/' . $file);
             $originalPath = str_replace($name, '', $file);
         } else {

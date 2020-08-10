@@ -82,7 +82,7 @@ class CompanyUserRepository
         $isValid = $this->validate($request);
         if ($isValid === true) {
             $companyUser = $this->create($request['company_id'], $request['user_id']);
-            if ($user->is_active){
+            if ($user->is_active) {
                 $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
                 $isNew === true ? $user->notify(new RegularInviteEmail($request['name'], $request['role_id'], $request['email'], $request['password'])) : null;
             }

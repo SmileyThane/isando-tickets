@@ -53,8 +53,8 @@ class ClientRepository
         if ($request->search !== '') {
             $clients->where(
                 function ($query) use ($request) {
-                    $query->where('name', 'like', '%'.$request->search.'%')
-                        ->orWhere('description', 'like', '%'.$request->search.'%');
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
         }
@@ -132,7 +132,7 @@ class ClientRepository
         $result = false;
         $client = ClientCompanyUser::find($id);
         if ($client) {
-            if (ClientCompanyUser::where('company_user_id', $client->company_user_id)->count() === 1){
+            if (ClientCompanyUser::where('company_user_id', $client->company_user_id)->count() === 1) {
                 CompanyUser::where('id', $client->company_user_id)->delete();
             }
             $client->delete();
