@@ -304,6 +304,7 @@
                             class="elevation-1"
                             item-key="id"
                             show-expand
+                            :footer-props="footerProps"
                             dense
                         >
                             <template v-slot:expanded-item="{ headers, item }">
@@ -870,6 +871,10 @@
                 tooltip: false,
                 enableToEdit: false,
                 errors: [],
+                footerProps: {
+                    itemsPerPage: 10,
+                    disableItemsPerPage: true,
+                },
                 isCompanyUpdated: false,
                 headers: [
                     {text: '', value: 'data-table-expand'},

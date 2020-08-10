@@ -260,9 +260,9 @@
                         <v-data-table
                             :headers="headers"
                             :items="client.employees"
-                            :items-per-page="25"
                             class="elevation-1"
                             item-key="id"
+                            :footer-props="footerProps"
                             show-expand
                             dense
                         >
@@ -821,6 +821,10 @@
                 actionColor: '',
                 snackbarMessage: '',
                 errors:[],
+                footerProps: {
+                    itemsPerPage: 10,
+                    disableItemsPerPage: true,
+                },
                 enableToEdit: false,
                 rolesDialog: false,
                 singleUserForm: {
