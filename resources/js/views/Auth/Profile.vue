@@ -277,7 +277,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <div class="row">
-                                                        <v-col cols="md-6" class="pa-1">
+                                                        <v-col cols="md-12" class="pa-1">
                                                             <v-text-field
                                                                 color="green"
                                                                 item-color="green"
@@ -292,6 +292,15 @@
                                                                 item-color="green"
                                                                 v-model="addressForm.address.address_line_2"
                                                                 label="Address line 2"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="md-6" class="pa-1">
+                                                            <v-text-field
+                                                                color="green"
+                                                                item-color="green"
+                                                                v-model="addressForm.address.postal_code"
+                                                                label="Postal code"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -499,6 +508,9 @@
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}, ${this.addressForm.address.country}`
                 } else {
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}${this.addressForm.address.country}`
+                }
+                if (this.addressForm.address.postal_code){
+                    this.addressForm.address.address += `Postal Code: ${this.addressForm.address.postal_code}`
                 }
                 axios.post('/api/address', this.addressForm).then(response => {
                     response = response.data

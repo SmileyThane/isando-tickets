@@ -175,7 +175,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <div class="row">
-                                                        <v-col cols="md-6" class="pa-1">
+                                                        <v-col cols="md-12" class="pa-1">
                                                             <v-text-field
                                                                 color="green"
                                                                 item-color="green"
@@ -190,6 +190,15 @@
                                                                 item-color="green"
                                                                 v-model="addressForm.address.address_line_2"
                                                                 label="Address line 2"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="md-6" class="pa-1">
+                                                            <v-text-field
+                                                                color="green"
+                                                                item-color="green"
+                                                                v-model="addressForm.address.postal_code"
+                                                                label="Postal code"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -877,6 +886,7 @@
                     entity_type: 'App\\Client',
                     address: {
                         address: '',
+                        postal_code:'',
                         address_line_2: '',
                         address_line_3: '',
                         city: '',
@@ -1095,6 +1105,9 @@
                     form.address.address_line_3 = `${form.address.city}, ${form.address.country}`
                 } else {
                     form.address_line_3 = `${form.address.city}${form.address.country}`
+                }
+                if (form.address.postal_code.length > 0){
+                    form.address.address += ` Postal Code: ${form.address.postal_code}`
                 }
                 axios.post('/api/address', form).then(response => {
                     response = response.data
