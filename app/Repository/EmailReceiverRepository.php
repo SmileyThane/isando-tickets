@@ -83,6 +83,13 @@ class EmailReceiverRepository
                 } catch (\Throwable $th) {
                     Log::info('connection was broken' . $th);
                 }
+            } elseif(in_array($senderEmail, MailCache::CONTACT_FORM_ARRDESSES, true)) {
+                Log::info('system starts creating new ticket');
+                $msg =  $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
+                Log::info("content: " . $msg);
+//                $ticketSubject = trim(str_replace(["Re:", "Fwd:"], "", $rawSubject));
+//            $attachments = $this->handleEmailAttachments($message->getAttachments());
+//                $responseBody = $this->createTicketFromEmail($senderEmail, $message, $ticketSubject, $attachments);
             }
         }
         return $responseBody;
