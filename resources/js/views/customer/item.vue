@@ -714,7 +714,7 @@
                                                             <v-expansion-panel-content>
                                                                 <v-form>
                                                                     <div class="row">
-                                                                        <v-col cols="md-6" class="pa-1">
+                                                                        <v-col cols="md-12" class="pa-1">
                                                                             <v-text-field
                                                                                 color="green"
                                                                                 item-color="green"
@@ -729,6 +729,15 @@
                                                                                 item-color="green"
                                                                                 v-model="userAddressForm.address.address_line_2"
                                                                                 label="Address line 2"
+                                                                                dense
+                                                                            ></v-text-field>
+                                                                        </v-col>
+                                                                        <v-col cols="md-6" class="pa-1">
+                                                                            <v-text-field
+                                                                                color="green"
+                                                                                item-color="green"
+                                                                                v-model="userAddressForm.address.postal_code"
+                                                                                label="Postal code"
                                                                                 dense
                                                                             ></v-text-field>
                                                                         </v-col>
