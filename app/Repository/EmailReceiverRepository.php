@@ -177,7 +177,11 @@ class EmailReceiverRepository
             $params['to_product_id'] = $productId;
             $params['priority_id'] = $priorityId;
             $params['name'] = $ticketSubject;
-            $params['description'] = $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
+            if (is_string($message)) {
+                $params['description'] = $message;
+            } else {
+                $params['description'] = $message->hasHTMLBody() ? $this->removeEmptyParagraphs($message->getHTMLBody(true)) : $message->getTextBody();
+            }
 //            Log::info(json_encode($message));
             $params['files'] = $files;
             return $this->ticketRepo->create($params, $userFrom->employee->id);
