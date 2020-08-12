@@ -104,7 +104,7 @@
                 loading: 'green',
                 options: {
                     page: 1,
-                    sortDesc: [false],
+                    sortDesc: [true],
                     sortBy: ['id']
                 },
                 footerProps: {
