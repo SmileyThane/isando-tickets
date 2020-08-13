@@ -99,7 +99,7 @@ class EmailReceiverRepository
                         $senderEmail = $paramsArray['Email'];
                         $attachments = $this->handleEmailAttachments($message->getAttachments());
                         $priorityId = TicketPriority::where('name', 'like', $paramsArray['Ticket Escalation'])->first()->id;
-                        $responseBody = $this->createTicketFromEmail($senderEmail, $generatedMessage, $ticketSubject, $attachments, $priorityId);
+                        $responseBody = $this->createTicketFromEmail($senderEmail, $generatedMessage['description'], $ticketSubject, $attachments, $priorityId, $generatedMessage['access_details']);
                     }
                 }
             }
@@ -219,13 +219,20 @@ class EmailReceiverRepository
         return $parsedArray;
     }
 
-    private function createDescriptionFromParsedArray($parsedArray): string
+    private function createDescriptionFromParsedArray($parsedArray): array
     {
         $message = [];
         unset($parsedArray['Email'], $parsedArray['Ticket Escalation']);
-        foreach ($parsedArray as $key => $item) {
-            $message[] .= $key . ': ' . $item . "\n";
-        }
+
+        $message['description'] .= 'From / Name: ' .  $parsedArray['From / Name'] . "\n";
+        $message['description'] .= 'Firm / Organisation: ' . $parsedArray['Firm / Organisation'] . "\n";
+        $message['description'] .= 'Briefly describe your problem: '. $parsedArray['Briefly describe your problem'] . "\n";
+
+        $message['access_details'] .= 'Phone: ' .  $parsedArray['Phone'] . "\n";
+        $message['access_details'] .= 'Mobile: ' . $parsedArray['Mobile'] . "\n";
+        $message['access_details'] .= 'Software/Hardware affected: '. $parsedArray['Software/Hardware affected'] . "\n";
+        $message['access_details'] .= 'Which Version: '. $parsedArray['Which Version'] . "\n";
+        $message['access_details'] .= 'Last Update: '. $parsedArray['Last Update'] . "\n";
         return $message;
     }
 
