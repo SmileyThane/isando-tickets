@@ -224,15 +224,15 @@ class EmailReceiverRepository
         $message = [];
         unset($parsedArray['Email'], $parsedArray['Ticket Escalation']);
         $message['description'] = $message['access_details'] = '';
-        $message['description'] .= 'From / Name: ' . $parsedArray['From / Name'] . "\n";
-        $message['description'] .= 'Firm / Organisation: ' . $parsedArray['Firm / Organisation'] . "\n";
-        $message['description'] .= 'Briefly describe your problem: ' . $parsedArray['Briefly describe your problem'] . "\n";
+        $message['description'] .= '<p>From / Name: ' . $parsedArray['From / Name'] . "</p>";
+        $message['description'] .= '<p>Firm / Organisation: ' . $parsedArray['Firm / Organisation'] . "</p>";
+        $message['description'] .= '<p>Briefly describe your problem: ' . $parsedArray['Briefly describe your problem'] . "</p>";
 
-        $message['access_details'] .= 'Phone: ' . $parsedArray['Phone'] . "\n";
-        $message['access_details'] .= 'Mobile: ' . $parsedArray['Mobile'] . "\n";
-        $message['access_details'] .= 'Software/Hardware affected: ' . $parsedArray['Software/Hardware affected'] . "\n";
-        $message['access_details'] .= 'Which Version: ' . $parsedArray['Which Version'] . "\n";
-        $message['access_details'] .= 'Last Update: ' . $parsedArray['Last Update'] . "\n";
+        $message['access_details'] .= '<p>Phone: ' . $parsedArray['Phone'] . "</p>";
+        $message['access_details'] .= '<p>Mobile: ' . $parsedArray['Mobile'] . "</p>";
+        $message['access_details'] .= '<p>Software/Hardware affected: ' . $parsedArray['Software/Hardware affected'] . "</p>";
+        $message['access_details'] .= '<p>Which Version: ' . $parsedArray['Which Version'] . "</p>";
+        $message['access_details'] .= '<p>Last Update: ' . $parsedArray['Last Update'] . "</p>";
         return $message;
     }
 
