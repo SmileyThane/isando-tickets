@@ -148,7 +148,7 @@ class EmailReceiverRepository
         return str_replace($emptyLinesArray, "", $content);
     }
 
-    private function createTicketFromEmail($senderEmail, $message, $ticketSubject, $files = [], $priorityId = 2): ?Ticket
+    private function createTicketFromEmail($senderEmail, $message, $ticketSubject, $files = [], $priorityId = 2, $accessDetails = null, $connectionDetails = null): ?Ticket
     {
         $fromEntityId = $fromEntityType = $toEntityId = $toEntityType = $productId = null;
         $userFrom = User::where(['is_active' => true, 'email' => $senderEmail])->first();
@@ -182,6 +182,9 @@ class EmailReceiverRepository
             $params['to_product_id'] = $productId;
             $params['priority_id'] = $priorityId;
             $params['name'] = $ticketSubject;
+            $params['contact_company_user_id'] = $userFrom->employee->id;
+            $params['access_details'] = $accessDetails;
+            $params['connection_details'] = $connectionDetails;
             if (is_string($message)) {
                 $params['description'] = $message;
             } else {
@@ -218,10 +221,10 @@ class EmailReceiverRepository
 
     private function createDescriptionFromParsedArray($parsedArray): string
     {
-        $message = '';
+        $message = [];
         unset($parsedArray['Email'], $parsedArray['Ticket Escalation']);
         foreach ($parsedArray as $key => $item) {
-            $message .= $key . ': ' . $item . "\n";
+            $message[] .= $key . ': ' . $item . "\n";
         }
         return $message;
     }
