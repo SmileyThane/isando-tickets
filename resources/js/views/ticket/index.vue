@@ -140,7 +140,7 @@
             getTickets() {
                 this.loading = "green"
                 if (this.options.sortDesc.length <= 0) {
-                    this.options.sortBy[0] = 'last_update'
+                    this.options.sortBy[0] = 'id'
                     this.options.sortDesc[0] = true
                 }
                 if (this.totalTickets < this.options.itemsPerPage) {
