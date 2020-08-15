@@ -429,7 +429,7 @@
                             </v-expansion-panel>
                             <v-expansion-panel v-show="!this.$store.state.roles.includes(6)">
                                 <v-expansion-panel-header>
-                                    Ticket notices
+                                    Internal notes
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -466,7 +466,7 @@
                                     <v-expansion-panels v-if="ticket.notices.length > 0">
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                Notices:
+                                                Notes history:
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
