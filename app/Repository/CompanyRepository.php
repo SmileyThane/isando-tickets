@@ -50,7 +50,7 @@ class CompanyRepository
             $query->whereDoesntHave('assignedToClients')->get();
         }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type', 'clients',
             'teams', 'phones.type', 'addresses.type', 'socials.type'])
-            ->first() : $company->orderBy($request->sort_by, $request->sort_val === 'false' ? 'asc' : 'desc')->paginate((int)$request->per_page);
+            ->first() : $company->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $company->count());
     }
 
     public function create(Request $request)
