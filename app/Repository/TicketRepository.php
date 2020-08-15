@@ -113,6 +113,7 @@ class TicketRepository
         $ticket->to_product_id = $request->to_product_id;
         $ticket->priority_id = $request->priority_id;
         $ticket->due_date = $request->due_date;
+        $ticket->availability = $request->availability;
         $ticket->connection_details = $request->connection_details;
         $ticket->access_details = $request->access_details;
         $ticket->save();
