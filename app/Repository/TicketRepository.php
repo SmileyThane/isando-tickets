@@ -85,7 +85,7 @@ class TicketRepository
                 'creator.userData', 'assignedPerson.userData',
                 'contact.userData', 'product', 'team',
                 'priority', 'status')
-            ->orderBy($request->sort_by, $request->sort_val === 'false' ? 'asc' : 'desc')->paginate((int)$request->per_page);
+            ->orderBy($request->sort_by  ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $tickets->count());
     }
 
 
