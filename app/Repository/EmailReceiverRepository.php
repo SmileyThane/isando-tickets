@@ -225,11 +225,11 @@ class EmailReceiverRepository
         unset($parsedArray['Email'], $parsedArray['Ticket Escalation']);
         $message['description'] = $message['access_details'] = '';
         $message['description'] .= '<p><strong>From / Name: </strong>' . $parsedArray['From / Name'] . "</p>";
+        $message['description'] .= '<p><strong>Phone: </strong>' . $parsedArray['Phone'] . "</p>";
+        $message['description'] .= '<p><strong>Mobile: </strong>' . $parsedArray['Mobile'] . "</p>";
         $message['description'] .= '<p><strong>Firm / Organisation: </strong>' . $parsedArray['Firm / Organisation'] . "</p>";
         $message['description'] .= '<p><strong>Briefly describe your problem: </strong>' . $parsedArray['Briefly describe your problem'] . "</p>";
 
-        $message['access_details'] .= 'Phone: ' . $parsedArray['Phone'] . "\n";
-        $message['access_details'] .= 'Mobile: ' . $parsedArray['Mobile'] . "\n";
         $message['access_details'] .= 'Software/Hardware affected: ' . $parsedArray['Software/Hardware affected'] . "\n";
         $message['access_details'] .= 'Which Version: ' . $parsedArray['Which Version'] . "\n";
         $message['access_details'] .= 'Last Update: ' . $parsedArray['Last Update'] . "\n";
