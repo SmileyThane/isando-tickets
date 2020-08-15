@@ -453,6 +453,7 @@
                                                    right
                                                    bottom
                                                    color="green"
+                                                   small
                                                    @click="addTicketNotice"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
@@ -462,8 +463,7 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <v-expansion-panels
-                                    >
+                                    <v-expansion-panels v-if="ticket.notices">
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 Notices:
