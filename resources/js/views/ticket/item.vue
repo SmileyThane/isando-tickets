@@ -462,31 +462,46 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <div v-for="noticeItem in ticket.notices"
-                                         :key="noticeItem.id"
+                                    <v-expansion-panels
                                     >
-                                        <v-card
-                                            class="mx-auto"
-                                            outlined
-                                        >
-                                            <v-list-item three-line>
-                                                <v-list-item-content>
-                                                    <v-row>
-                                                        <v-col md="6">
-                                                            <p class="text-left mb-3">
-                                                                {{noticeItem.employee.user_data.name}}
-                                                                {{noticeItem.employee.user_data.surname}} responded </p>
-                                                        </v-col>
-                                                        <v-col md="6">
-                                                            <p class="text-right caption mb-2">
-                                                                {{noticeItem.created_at}}</p>
-                                                        </v-col>
-                                                    </v-row>
-                                                    <v-list class="mb-2" v-html="noticeItem.notice"></v-list>
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </v-card>
-                                    </div>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                Notices:
+                                                <template v-slot:actions>
+                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <div v-for="noticeItem in ticket.notices"
+                                                     :key="noticeItem.id"
+                                                >
+                                                    <v-card
+                                                        class="mx-auto"
+                                                        outlined
+                                                    >
+                                                        <v-list-item three-line>
+                                                            <v-list-item-content>
+                                                                <v-row>
+                                                                    <v-col md="6">
+                                                                        <p class="text-left mb-3">
+                                                                            {{noticeItem.employee.user_data.name}}
+                                                                            {{noticeItem.employee.user_data.surname}}
+                                                                            responded </p>
+                                                                    </v-col>
+                                                                    <v-col md="6">
+                                                                        <p class="text-right caption mb-2">
+                                                                            {{noticeItem.created_at}}</p>
+                                                                    </v-col>
+                                                                </v-row>
+                                                                <v-list class="mb-2"
+                                                                        v-html="noticeItem.notice"></v-list>
+                                                            </v-list-item-content>
+                                                        </v-list-item>
+                                                    </v-card>
+                                                </div>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                             <v-expansion-panel>
