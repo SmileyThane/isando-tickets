@@ -58,7 +58,7 @@ class ClientRepository
                 }
             );
         }
-        return $clients->orderBy($request->sort_by, $request->sort_val === 'false' ? 'asc' : 'desc')->paginate((int)$request->per_page);
+        return $clients->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $clients->count());
     }
 
     public function suppliers()
