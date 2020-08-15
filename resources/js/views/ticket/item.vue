@@ -122,7 +122,15 @@
                                 <div v-html="ticket.description"></div>
                                 <v-spacer>
                                     &nbsp;
-
+                                </v-spacer>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-label v-if="ticket.availability">
+                                    <strong>Client's availability</strong>
+                                </v-label>
+                                <div v-html="ticket.availability"></div>
+                                <v-spacer>
+                                    &nbsp;
                                 </v-spacer>
                             </v-col>
                             <v-col cols="12" sm="6">
@@ -581,6 +589,7 @@
                     priority_id: '',
                     name: '',
                     description: '',
+                    availability: '',
                     connection_details: '',
                     access_details: '',
                     answers: [

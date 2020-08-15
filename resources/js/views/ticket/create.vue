@@ -96,8 +96,9 @@
                                                     item-color="green"
                                                     auto-grow
                                                     outlined
-                                                    rows="3"
+                                                    rows="1"
                                                     row-height="25"
+                                                    v-model="ticketForm.availability"
                                                     v-bind="attrs"
                                                     v-on="on"
                                                 ></v-textarea>
@@ -261,6 +262,7 @@
                     priority_id: '',
                     name: '',
                     description: '',
+                    availability: '',
                     connection_details: '',
                     access_details: '',
                     files: []
