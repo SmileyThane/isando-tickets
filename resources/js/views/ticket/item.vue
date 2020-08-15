@@ -463,7 +463,7 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <v-expansion-panels v-if="ticket.notices">
+                                    <v-expansion-panels v-if="ticket.notices.length > 0">
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 Notices:
