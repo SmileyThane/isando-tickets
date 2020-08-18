@@ -1,5 +1,13 @@
 <template>
     <v-container>
+        <v-snackbar
+            :bottom="true"
+            :right="true"
+            v-model="snackbar"
+            :color="actionColor"
+        >
+            {{ snackbarMessage }}
+        </v-snackbar>
         <v-data-table
             show-expand
             :headers="headers"
@@ -23,19 +31,19 @@
                         <v-text-field @input="getTickets" v-model="ticketsSearch" color="green"
                                       label="Search..." class="mx-4"></v-text-field>
                     </v-col>
-                     <v-col sm="12" md="2">
-                            <v-select
-                                class="mx-4"
-                                color="green"
-                                item-color="green"
-                                :items="footerProps.itemsPerPageOptions"
-                                label="Items per page"
-                                @change="updateItemsCount"
-                            ></v-select>
+                    <v-col sm="12" md="2">
+                        <v-select
+                            class="mx-4"
+                            color="green"
+                            item-color="green"
+                            :items="footerProps.itemsPerPageOptions"
+                            label="Items per page"
+                            @change="updateItemsCount"
+                        ></v-select>
                     </v-col>
-<!--                                        <v-col sm="12">-->
-<!--                                            <v-switch v-model="singleExpand" label="Single expand" color="green" class="mt-2"></v-switch>-->
-<!--                                        </v-col>-->
+                    <!--                                        <v-col sm="12">-->
+                    <!--                                            <v-switch v-model="singleExpand" label="Single expand" color="green" class="mt-2"></v-switch>-->
+                    <!--                                        </v-col>-->
 
                 </v-row>
             </template>
@@ -62,19 +70,33 @@
                 </div>
             </template>
             <template v-slot:item.actions="{ item }">
-                <v-icon
-                    small
-                    class="mr-2"
+
+                <v-btn
+                    color="grey"
+                    dark
                     @click="showItem(item)"
+                    fab
+                    x-small
                 >
-                    mdi-eye
-                </v-icon>
-                <v-icon
-                    small
-                    @click="showItem(item)"
+                    <v-icon
+                    >
+                        mdi-eye
+                    </v-icon>
+                </v-btn>
+
+                <v-btn
+                    color="error"
+                    dark
+                    @click="ticketDeleteProcess(item)"
+                    fab
+                    x-small
                 >
-                    mdi-delete
-                </v-icon>
+                    <v-icon
+                    >
+                        mdi-delete
+                    </v-icon>
+                </v-btn>
+
             </template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
@@ -89,6 +111,18 @@
                 </td>
             </template>
         </v-data-table>
+        <template>
+            <v-dialog v-model="removeTicketDialog" persistent max-width="290">
+                <v-card>
+                    <v-card-title class="headline">Do you want to delete the ticket?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeTicketDialog = false">Cancel</v-btn>
+                        <v-btn color="red darken-1" text @click="deleteTicket(selectedticketId)">Delete</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
     </v-container>
 </template>
 
@@ -97,6 +131,9 @@
         data() {
             return {
                 clientId: 6,
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
                 expanded: [],
                 singleExpand: false,
                 totalTickets: 0,
@@ -131,6 +168,8 @@
                 ],
                 ticketsSearch: '',
                 tickets: [],
+                removeTicketDialog: false,
+                selectedticketId: null
             }
         },
         mounted() {
@@ -163,6 +202,26 @@
             },
             showItem(item) {
                 this.$router.push(`/ticket/${item.id}`)
+            },
+            ticketDeleteProcess(item) {
+                this.selectedticketId = item.id
+                this.removeTicketDialog = true
+            },
+            deleteTicket(id) {
+                axios.delete(`/api/ticket/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getTickets()
+                        this.snackbarMessage = 'Ticket was deleted '
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.removeTicketDialog = false
+                    } else {
+                        this.snackbarMessage = 'Ticket delete error'
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
             },
             checkRoleByIds(ids) {
                 let roleExists = false;
