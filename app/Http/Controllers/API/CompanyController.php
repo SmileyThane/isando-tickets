@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Repository\CompanyRepository;
 use App\Repository\CompanyUserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
@@ -17,6 +18,11 @@ class CompanyController extends Controller
     {
         $this->companyRepo = $companyRepository;
         $this->companyUserRepo = $companyUserRepository;
+    }
+
+    public function mainCompanyName()
+    {
+        return self::showResponse(true, Auth::user()->employee->companyData->name);
     }
 
     public function find(Request $request, $id = null)

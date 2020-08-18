@@ -58,14 +58,14 @@
                 >
                 </v-pagination>
             </template>
-            <template v-slot:item.status.name="{ item }">
-                <v-badge inline dot :color="item.status.color">{{ item.status.name }}</v-badge>
+            <template  v-slot:item.status.name="{ item }">
+                <v-badge @click="showItem(item)" inline dot :color="item.status.color">{{ item.status.name }}</v-badge>
             </template>
-            <template v-slot:item.priority.name="{ item }">
-                <v-badge inline dot :color="item.priority.color">{{ item.priority.name }}</v-badge>
+            <template  v-slot:item.priority.name="{ item }">
+                <v-badge @click="showItem(item)" inline dot :color="item.priority.color">{{ item.priority.name }}</v-badge>
             </template>
-            <template v-slot:item.assigned_person="{ item }">
-                <div class="justify-center" v-if="item.assigned_person">{{ item.assigned_person.user_data.name }} {{
+            <template  v-slot:item.assigned_person="{ item }">
+                <div @click="showItem(item)" class="justify-center" v-if="item.assigned_person">{{ item.assigned_person.user_data.name }} {{
                     item.assigned_person.user_data.surname }}
                 </div>
             </template>

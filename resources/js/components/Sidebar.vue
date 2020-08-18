@@ -6,10 +6,9 @@
         <v-list-item>
             <v-list-item-content>
                 <v-list-item-title class="title">
-                    Isando
+                    {{ companyName }} | Ticketing
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                    ticketing system
                 </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
@@ -103,6 +102,7 @@
         name: "Sidebar",
         props: {value: {type: Boolean}},
         data: () => ({
+            companyName:'Isando',
             localDrawer: null
         }),
         watch: {
@@ -114,7 +114,7 @@
             }
         },
         mounted() {
-
+            this.getCompanyName()
         },
         methods: {
             checkRoleByIds(ids) {
@@ -125,7 +125,14 @@
                     }
                 });
                 return roleExists
-            }
+            },
+            getCompanyName() {
+                axios.get(`/api/main_company_name`)
+                    .then(
+                        response => {
+                            this.companyName = response.data.data
+                        });
+            },
         }
     }
 </script>

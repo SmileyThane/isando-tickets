@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('company/{id}/employee', 'API\CompanyController@invite');
     Route::delete('company/employee/{id}', 'API\CompanyController@removeEmployee');
     Route::post('company/product', 'API\CompanyController@attachProduct');
+    Route::get('main_company_name', 'API\CompanyController@mainCompanyName');
 
     //phone management
     Route::get('phone_types', 'API\PhoneController@getTypes');
