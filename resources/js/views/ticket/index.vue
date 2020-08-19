@@ -23,6 +23,7 @@
             hide-default-footer
             fixed-header
             loading-text="Give me a second..."
+            @click:row="showItem"
         >
             <template v-slot:top>
 
@@ -58,57 +59,62 @@
                 >
                 </v-pagination>
             </template>
-            <template  v-slot:item.status.name="{ item }">
+            <template v-slot:item.status.name="{ item }">
                 <v-badge @click="showItem(item)" inline dot :color="item.status.color">{{ item.status.name }}</v-badge>
             </template>
-            <template  v-slot:item.priority.name="{ item }">
-                <v-badge @click="showItem(item)" inline dot :color="item.priority.color">{{ item.priority.name }}</v-badge>
+            <template v-slot:item.priority.name="{ item }">
+                <v-badge @click="showItem(item)" inline dot :color="item.priority.color">{{ item.priority.name }}
+                </v-badge>
             </template>
-            <template  v-slot:item.assigned_person="{ item }">
-                <div @click="showItem(item)" class="justify-center" v-if="item.assigned_person">{{ item.assigned_person.user_data.name }} {{
+            <template v-slot:item.assigned_person="{ item }">
+                <div @click="showItem(item)" class="justify-center" v-if="item.assigned_person">{{
+                    item.assigned_person.user_data.name }} {{
                     item.assigned_person.user_data.surname }}
                 </div>
             </template>
             <template v-slot:item.actions="{ item }">
 
-                <v-btn
-                    color="grey"
-                    dark
-                    @click="showItem(item)"
-                    fab
-                    x-small
-                >
-                    <v-icon
-                    >
-                        mdi-eye
-                    </v-icon>
-                </v-btn>
-
-                <v-btn
-                    color="error"
-                    dark
-                    @click="ticketDeleteProcess(item)"
-                    fab
-                    x-small
-                >
-                    <v-icon
-                    >
-                        mdi-delete
-                    </v-icon>
-                </v-btn>
 
             </template>
             <template v-slot:expanded-item="{ headers, item }">
+
                 <td :colspan="headers.length">
-                    <p></p>
-                    <!--                    <p><strong>From:</strong> {{ item.from.name }}</p>-->
-                    <!--                    <p><strong>To:</strong> {{ item.to.name }}</p>-->
-                    <!--                    <p><strong>Description:</strong> {{ item.description }}</p>-->
-                    <p><strong>Contact name:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
-                    <p><strong>Contact email:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
-                    <p><strong>Due date:</strong> {{ item.due_date }}</p>
-                    <p><strong>Access details:</strong> {{ item.access_details }}</p>
+                    <v-spacer>
+                        &nbsp;
+                    </v-spacer>
+                        <p><strong>Contact name:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
+                        <p><strong>Contact email:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
+                        <p><strong>Due date:</strong> {{ item.due_date }}</p>
+                        <p><strong>Access details:</strong> {{ item.access_details }}</p>
+                    <p>
+                                <v-btn
+                                    color="grey"
+                                    dark
+                                    @click="showItem(item)"
+                                    fab
+                                    x-small
+                                >
+                                    <v-icon
+                                    >
+                                        mdi-eye
+                                    </v-icon>
+                                </v-btn>
+
+                                <v-btn
+                                    color="error"
+                                    dark
+                                    @click="ticketDeleteProcess(item)"
+                                    fab
+                                    x-small
+                                >
+                                    <v-icon
+                                    >
+                                        mdi-delete
+                                    </v-icon>
+                                </v-btn>
+                    </p>
                 </td>
+
             </template>
         </v-data-table>
         <template>
@@ -164,7 +170,7 @@
                     {text: 'Product', value: 'product.name'},
                     {text: 'Title', value: 'name'},
                     {text: 'Last update', value: 'last_update'},
-                    {text: 'Actions', value: 'actions', sortable: false},
+                    // {text: 'Actions', value: 'actions', sortable: false},
                 ],
                 ticketsSearch: '',
                 tickets: [],
