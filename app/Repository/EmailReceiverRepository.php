@@ -12,7 +12,6 @@ use App\MailCache;
 use App\ProductClient;
 use App\Role;
 use App\Ticket;
-use App\TicketPriority;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -84,7 +83,7 @@ class EmailReceiverRepository
                 } catch (\Throwable $th) {
                     Log::info('connection was broken' . $th);
                 }
-            } elseif (in_array($senderEmail, MailCache::CONTACT_FORM_ARRDESSES, true)) {
+            } elseif (in_array($senderEmail, MailCache::CONTACT_FORM_ADDRESSES, true)) {
                 $ticketSubject = trim(str_replace(["Re:", "Fwd:"], "", $rawSubject));
                 Log::info("subject is $ticketSubject");
                 $cachedCount = MailCache::where('message_key', $key)->count();
