@@ -233,7 +233,7 @@ class EmailReceiverRepository
         $message['description'] .= '<p><strong>Phone: </strong>' . $parsedArray['Phone'] . "</p>";
         $message['description'] .= '<p><strong>Mobile: </strong>' . $parsedArray['Mobile'] . "</p>";
         $message['description'] .= '<p><strong>Firm / Organisation: </strong>' . $parsedArray['Firm / Organisation'] . "</p>";
-        $message['description'] .= '<p><strong>Briefly describe your problem: </strong>' . $parsedArray['Briefly describe your problem'] . "</p>";
+        $message['description'] .= '<p><strong>Briefly describe your problem: </strong>' . str_replace("\n", '<br/>', $parsedArray['Briefly describe your problem']) . "</p>";
 
         $message['access_details'] .= 'Software/Hardware affected: ' . $parsedArray['Software/Hardware affected'] . "\n";
         $message['access_details'] .= 'Which Version: ' . $parsedArray['Which Version'] . "\n";
