@@ -103,7 +103,8 @@
         props: {value: {type: Boolean}},
         data: () => ({
             companyName:'Isando',
-            localDrawer: null
+            localDrawer: null,
+            show:true
         }),
         watch: {
             value: function () {
@@ -111,6 +112,9 @@
             },
             localDrawer: function () {
                 this.$emit('input', this.localDrawer)
+            },
+            $route (to, from){
+                document.title = this.companyName + ' | ' + this.$route.name
             }
         },
         mounted() {
@@ -131,6 +135,7 @@
                     .then(
                         response => {
                             this.companyName = response.data.data
+                            document.title = this.companyName + ' | ' + this.$route.name
                         });
             },
         }
