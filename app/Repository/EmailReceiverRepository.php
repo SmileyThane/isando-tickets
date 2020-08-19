@@ -98,8 +98,7 @@ class EmailReceiverRepository
                         $generatedMessage = $this->createDescriptionFromParsedArray($paramsArray);
                         $senderEmail = $paramsArray['Email'];
                         $attachments = $this->handleEmailAttachments($message->getAttachments());
-                        $priority = TicketPriority::where('name', 'like', $paramsArray['Ticket Escalation'])->first();
-                        $priorityId = $priority!== null ? $priority->id : 2;
+                        $priorityId =  $this->parsePriorityByName($paramsArray['Ticket Escalation']);
                         $responseBody = $this->createTicketFromEmail($senderEmail, $generatedMessage['description'], $ticketSubject, $attachments, $priorityId, $generatedMessage['access_details']);
                     }
                 }
@@ -248,6 +247,26 @@ class EmailReceiverRepository
         $request->headers->set('Accept', 'application/json');
         $response = app()->handle($request);
         return $response->getContent();
+    }
+
+    private function parsePriorityByName($priorityName = ''): int
+    {
+        $priorityId = 2;
+        $prioritiesArray = [
+            'dringend' => 1,
+            'urgent' => 1,
+            'moderate' => 2,
+            'moderat' => 2,
+            'demnächst' => 3,
+            'someday' => 3
+        ];
+        foreach ($prioritiesArray as $key => $value) {
+            if (strtolower($priorityName) === $key)
+            {
+                $priorityId = $value;
+            }
+        }
+        return $priorityId;
     }
 
 }
