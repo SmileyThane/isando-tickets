@@ -98,7 +98,8 @@ class EmailReceiverRepository
                         $generatedMessage = $this->createDescriptionFromParsedArray($paramsArray);
                         $senderEmail = $paramsArray['Email'];
                         $attachments = $this->handleEmailAttachments($message->getAttachments());
-                        $priorityId = TicketPriority::where('name', 'like', $paramsArray['Ticket Escalation'])->first()->id;
+                        $priority = TicketPriority::where('name', 'like', $paramsArray['Ticket Escalation'])->first();
+                        $priorityId = $priority!== null ? $priority->id : 2;
                         $responseBody = $this->createTicketFromEmail($senderEmail, $generatedMessage['description'], $ticketSubject, $attachments, $priorityId, $generatedMessage['access_details']);
                     }
                 }
