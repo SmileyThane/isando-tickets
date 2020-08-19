@@ -208,13 +208,17 @@ class EmailReceiverRepository
         );
         $rawArray = explode("\n", $prettifiedString);
         $parsedArray = [];
+        $key = 0;
         foreach ($rawArray as $rawItem) {
             $parsedItem = explode(': ', $rawItem);
             if (count($parsedItem) > 1) {
-                if (trim($parsedItem[0]) === 'Email') {
+                $key = trim($parsedItem[0]);
+                if ($key === 'Email') {
                     $parsedItem[1] = str_replace(['<', '>'], '', $parsedItem[1]);
                 }
-                $parsedArray[trim($parsedItem[0])] = trim($parsedItem[1]);
+                $parsedArray[$key] = trim($parsedItem[1]);
+            } else {
+                $parsedArray[$key] .= "\n" . trim($parsedItem[0]);
             }
         }
         return $parsedArray;
