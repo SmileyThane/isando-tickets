@@ -14,7 +14,7 @@ class ClientCompanyUser extends Model
 
     public function clients()
     {
-        return $this->hasMany(Client::class, 'id', 'client_id');
+        return $this->hasOne(Client::class, 'id', 'client_id');
     }
 
     public function employee()

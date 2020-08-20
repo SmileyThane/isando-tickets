@@ -59,7 +59,7 @@ class CompanyUserRepository
         $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds);
         return $clientCompanyUsers
             ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
-            ->with('employee.userData')
+            ->with('employee.userData', 'clients')
             ->paginate($request->per_page ?? $clientCompanyUsers->count());
     }
 

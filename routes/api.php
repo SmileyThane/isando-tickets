@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('main_company_name', 'API\CompanyController@mainCompanyName');
 
     //employee management
-    Route::get('company/{id}/employee', 'API\CompanyController@getIndividuals');
+    Route::get('employee', 'API\CompanyController@getIndividuals');
     Route::post('company/{id}/employee', 'API\CompanyController@invite');
     Route::delete('company/employee/{id}', 'API\CompanyController@removeEmployee');
 
