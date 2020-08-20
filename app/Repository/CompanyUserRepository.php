@@ -4,12 +4,16 @@
 namespace App\Repository;
 
 
+use App\Client;
+use App\ClientCompanyUser;
+use App\Company;
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
 use App\Role;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -42,6 +46,21 @@ class CompanyUserRepository
             return $validator->errors();
         }
         return true;
+    }
+
+    public function all(Request $request)
+    {
+        $employee = Auth::user()->employee;
+        $clientIds = $employee->hasRole(Role::COMPANY_CLIENT) ? null :
+            Client::where([
+                'supplier_type' => Company::class,
+                'supplier_id' => $employee->company_id
+            ])->get()->pluck('id')->toArray();
+        $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds);
+        return $clientCompanyUsers
+            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
+            ->with('employee.userData')
+            ->paginate($request->per_page ?? $clientCompanyUsers->count());
     }
 
     public function find($id)
