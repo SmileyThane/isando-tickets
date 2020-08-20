@@ -1,5 +1,13 @@
 <template>
     <v-container>
+        <v-snackbar
+            :bottom="true"
+            :right="true"
+            v-model="snackbar"
+            :color="actionColor"
+        >
+            {{ snackbarMessage }}
+        </v-snackbar>
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
@@ -93,19 +101,31 @@
                                 </v-pagination>
                             </template>
                             <template v-slot:item.actions="{ item }">
-                                <v-icon
-                                    small
-                                    class="mr-2"
+                                <v-btn
+                                    color="grey"
+                                    dark
                                     @click="showItem(item)"
+                                    fab
+                                    x-small
                                 >
-                                    mdi-eye
-                                </v-icon>
-                                <v-icon
-                                    small
-                                    @click="showItem(item)"
+                                    <v-icon
+                                    >
+                                        mdi-eye
+                                    </v-icon>
+                                </v-btn>
+
+                                <v-btn
+                                    color="error"
+                                    dark
+                                    @click="deleteProcess(item)"
+                                    fab
+                                    x-small
                                 >
-                                    mdi-delete
-                                </v-icon>
+                                    <v-icon
+                                    >
+                                        mdi-delete
+                                    </v-icon>
+                                </v-btn>
                             </template>
 
                         </v-data-table>
@@ -113,6 +133,18 @@
                 </div>
             </div>
         </div>
+        <template>
+            <v-dialog v-model="removeProductDialog" persistent max-width="290">
+                <v-card>
+                    <v-card-title class="headline">Do you want to delete selected product?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeProductDialog = false">Cancel</v-btn>
+                        <v-btn color="red darken-1" disabled text @click="deleteProduct(selectedProductId)">Delete</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
     </v-container>
 </template>
 
@@ -123,6 +155,9 @@
         data() {
             return {
                 clientId: 6,
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
                 totalProducts: 0,
                 lastPage: 0,
                 loading: 'green',
@@ -149,6 +184,8 @@
                 ],
                 productsSearch: '',
                 products: [],
+                removeProductDialog: false,
+                selectedProductId: null,
                 productForm: {
                     product_name: '',
                     product_description: '',
@@ -199,6 +236,26 @@
             },
             showItem(item) {
                 this.$router.push(`/product/${item.product_data.id}`)
+            },
+            deleteProcess(item) {
+                this.selectedProductId = item.id
+                this.removeProductDialog = true
+            },
+            deleteProduct(id) {
+                axios.delete(`/api/product/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getProducts()
+                        this.snackbarMessage = 'Product was deleted '
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.removeProductDialog = false
+                    } else {
+                        this.snackbarMessage = 'Product delete error'
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
             },
             updateItemsCount(value) {
                 this.options.itemsPerPage = value

@@ -1,5 +1,13 @@
 <template>
     <v-container>
+        <v-snackbar
+            :bottom="true"
+            :right="true"
+            v-model="snackbar"
+            :color="actionColor"
+        >
+            {{ snackbarMessage }}
+        </v-snackbar>
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
@@ -104,25 +112,49 @@
                                 </v-pagination>
                             </template>
                             <template v-slot:item.actions="{ item }">
-                                <v-icon
-                                    small
-                                    class="mr-2"
+                                <v-btn
+                                    color="grey"
+                                    dark
                                     @click="showItem(item)"
+                                    fab
+                                    x-small
                                 >
-                                    mdi-eye
-                                </v-icon>
-                                <v-icon
-                                    small
-                                    @click="showItem(item)"
+                                    <v-icon
+                                    >
+                                        mdi-eye
+                                    </v-icon>
+                                </v-btn>
+
+                                <v-btn
+                                    color="error"
+                                    dark
+                                    @click="deleteProcess(item)"
+                                    fab
+                                    x-small
                                 >
-                                    mdi-delete
-                                </v-icon>
+                                    <v-icon
+                                    >
+                                        mdi-delete
+                                    </v-icon>
+                                </v-btn>
                             </template>
                         </v-data-table>
                     </div>
                 </div>
             </div>
         </div>
+        <template>
+            <v-dialog v-model="removeCustomerDialog" persistent max-width="290">
+                <v-card>
+                    <v-card-title class="headline">Do you want to delete selected client?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeCustomerDialog = false">Cancel</v-btn>
+                        <v-btn color="red darken-1" disabled text @click="deleteCustomer(selectedCustomerId)">Delete</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
     </v-container>
 </template>
 
@@ -132,6 +164,9 @@
 
         data() {
             return {
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
                 totalCustomers: 0,
                 lastPage: 0,
                 loading: 'green',
@@ -157,6 +192,8 @@
                 ],
                 customersSearch: '',
                 customers: [],
+                removeCustomerDialog: false,
+                selectedCustomerId: null,
                 clientForm: {
                     client_name: '',
                     client_description: '',
@@ -224,6 +261,26 @@
             },
             showItem(item) {
                 this.$router.push(`/customer/${item.id}`)
+            },
+            deleteProcess(item) {
+                this.selectedCustomerId = item.id
+                this.removeCustomerDialog = true
+            },
+            deleteCustomer(id) {
+                axios.delete(`/api/customer/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClients()
+                        this.snackbarMessage = 'Company was deleted '
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.removeCustomerDialog = false
+                    } else {
+                        this.snackbarMessage = 'Company delete error'
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
             },
             updateItemsCount(value) {
                 this.options.itemsPerPage = value
