@@ -6,6 +6,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Repository\CompanyRepository;
 use App\Repository\CompanyUserRepository;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +15,10 @@ class CompanyController extends Controller
     protected $companyRepo;
     protected $companyUserRepo;
 
-    public function __construct(CompanyRepository $companyRepository, CompanyUserRepository $companyUserRepository)
+    public function __construct(
+        CompanyRepository $companyRepository,
+        CompanyUserRepository $companyUserRepository
+    )
     {
         $this->companyRepo = $companyRepository;
         $this->companyUserRepo = $companyUserRepository;
@@ -44,15 +48,19 @@ class CompanyController extends Controller
 
     public function removeEmployee($id)
     {
-        $result = $this->companyUserRepo->delete($id);
-        return self::showResponse($result);
+        return self::showResponse($this->companyUserRepo->delete($id));
 
     }
 
     public function attachProduct(Request $request)
     {
-        $result = $this->companyRepo->attachProduct($request);
-        return self::showResponse($result);
+        return self::showResponse($this->companyRepo->attachProduct($request));
+    }
+
+
+    public function getIndividuals(Request $request)
+    {
+        return self::showResponse(true, $this->companyUserRepo->all($request));
     }
 
 }

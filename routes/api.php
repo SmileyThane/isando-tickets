@@ -38,10 +38,13 @@ Route::group(['middleware' => 'auth:api'], function () {
     //company management
     Route::get('company/{id?}', 'API\CompanyController@find');
     Route::post('company/{id}', 'API\CompanyController@update');
-    Route::post('company/{id}/employee', 'API\CompanyController@invite');
-    Route::delete('company/employee/{id}', 'API\CompanyController@removeEmployee');
     Route::post('company/product', 'API\CompanyController@attachProduct');
     Route::get('main_company_name', 'API\CompanyController@mainCompanyName');
+
+    //employee management
+    Route::get('company/{id}/employee', 'API\CompanyController@getIndividuals');
+    Route::post('company/{id}/employee', 'API\CompanyController@invite');
+    Route::delete('company/employee/{id}', 'API\CompanyController@removeEmployee');
 
     //phone management
     Route::get('phone_types', 'API\PhoneController@getTypes');
