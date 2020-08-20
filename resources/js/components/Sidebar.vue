@@ -55,6 +55,14 @@
                     <v-list-item-title>Team</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
+            <v-list-item link to="/employee" v-if="checkRoleByIds([1,2,3])">
+                <v-list-item-action>
+                    <v-icon>mdi-account-box-multiple-outline</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>Individuals</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
             <v-list-group
                 prepend-icon="mdi-ticket-account"
                 value="true"

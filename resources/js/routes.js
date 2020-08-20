@@ -7,6 +7,7 @@ import Product from './views/product/index'
 import SingleProduct from './views/product/item'
 import Team from './views/team/index'
 import SingleTeam from './views/team/item'
+import Employee from './views/employee/index'
 import Ticket from './views/ticket/index'
 import CreateTicket from './views/ticket/create'
 import SingleTicket from './views/ticket/item'
@@ -107,6 +108,14 @@ export default [
             requiresAuth: true,
         },
         component: SingleTeam
+    },
+    {
+        path: '/employee',
+        name: 'Individuals',
+        meta: {
+            requiresAuth: true,
+        },
+        component: Employee
     },
     {
         path: '/tickets',
