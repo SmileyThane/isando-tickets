@@ -6,7 +6,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Repository\CompanyRepository;
 use App\Repository\CompanyUserRepository;
-use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
