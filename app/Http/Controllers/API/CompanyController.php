@@ -6,6 +6,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Repository\CompanyRepository;
 use App\Repository\CompanyUserRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,18 +24,18 @@ class CompanyController extends Controller
         $this->companyUserRepo = $companyUserRepository;
     }
 
-    public function mainCompanyName()
+    public function mainCompanyName(): JsonResponse
     {
         return self::showResponse(true, Auth::user()->employee->companyData->name);
     }
 
-    public function find(Request $request, $id = null)
+    public function find(Request $request, $id = null): JsonResponse
     {
         $company = $this->companyRepo->find($request, $id);
         return self::showResponse(true, $company);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): JsonResponse
     {
         $company = $this->companyRepo->update($request, $id);
         return self::showResponse(true, $company);
@@ -45,19 +46,19 @@ class CompanyController extends Controller
         return $this->companyUserRepo->invite($request);
     }
 
-    public function removeEmployee($id)
+    public function removeEmployee($id): JsonResponse
     {
         return self::showResponse($this->companyUserRepo->delete($id));
 
     }
 
-    public function attachProduct(Request $request)
+    public function attachProduct(Request $request): JsonResponse
     {
         return self::showResponse($this->companyRepo->attachProduct($request));
     }
 
 
-    public function getIndividuals(Request $request)
+    public function getIndividuals(Request $request): JsonResponse
     {
         return self::showResponse(true, $this->companyUserRepo->all($request));
     }
