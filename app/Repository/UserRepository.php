@@ -33,9 +33,10 @@ class UserRepository
         return true;
     }
 
-    public function find($id)
+    public function find($id, $with = [])
     {
-        return User::where('id', $id)->with('phones.type', 'addresses.type')->first();
+
+        return User::where('id', $id)->with(array_merge(['phones.type', 'addresses.type'], $with))->first();
     }
 
     public function create(Request $request)
