@@ -46,15 +46,25 @@
                                 >
                                 </v-pagination>
                             </template>
+                            <template v-slot:item.employee="{ item }">
+                                <div @click="showItem(item)" class="justify-center" v-if="item">{{
+                                    item.employee.user_data.name }} {{
+                                    item.employee.user_data.surname }}
+                                </div>
+                            </template>
                             <template v-slot:item.actions="{ item }">
-                                <v-icon
-                                    small
-                                    class="mr-2"
-                                    disabled
+                                <v-btn
+                                    color="grey"
+                                    dark
                                     @click="showItem(item)"
+                                    fab
+                                    x-small
                                 >
-                                    mdi-eye
-                                </v-icon>
+                                    <v-icon
+                                    >
+                                        mdi-eye
+                                    </v-icon>
+                                </v-btn>
                                 <v-icon
                                     small
                                     disabled
@@ -96,7 +106,7 @@
                         align: 'start',
                         value: 'id',
                     },
-                    {text: 'Name', value: 'employee.user_data.name'},
+                    {text: 'Name', value: 'employee'},
                     {text: 'Email', value: 'employee.user_data.email'},
                     {text: 'Client', value: 'clients.name'},
                     {text: 'Actions', value: 'actions', sortable: false},
@@ -144,7 +154,7 @@
                         });
             },
             showItem(item) {
-                // this.$router.push(`/customer/${item.id}`)
+                this.$router.push(`/employee/${item.employee.user_data.id}`)
             },
             updateItemsCount(value) {
                 this.options.itemsPerPage = value
