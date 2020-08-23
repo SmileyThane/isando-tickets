@@ -138,6 +138,18 @@
                                         mdi-eye
                                     </v-icon>
                                 </v-btn>
+
+                                <v-btn @click="showRolesModal(item)"
+                                       dark
+                                       color="green"
+                                       fab
+                                       x-small>
+                                    <v-icon
+                                        small
+                                    >
+                                        mdi-pencil
+                                    </v-icon>
+                                </v-btn>
                             </template>
                         </v-data-table>
                         <v-spacer>
@@ -349,6 +361,35 @@
                 </v-card>
             </v-col>
         </v-row>
+        <v-row justify="center">
+            <v-dialog v-model="rolesDialog" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">Update info for {{singleUserForm.user.name}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-select
+                                label="Role"
+                                color="green"
+                                item-color="green"
+                                item-text="name"
+                                item-value="id"
+                                :items="roles"
+                                v-model="singleUserForm.role_ids"
+                                multiple
+                            />
+                        </v-container>
+                        <!--                        <small>*indicates required field</small>-->
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red" text @click="rolesDialog = false">Close</v-btn>
+                        <v-btn color="green" text @click="updateRole">Save</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-row>
     </v-container>
 
 </template>
@@ -400,6 +441,13 @@
                     phones: [],
                     addresses: []
                 },
+                singleUserForm: {
+                    user: '',
+                    role_ids: [],
+                    company_user_id: ''
+                },
+                roles:[],
+                rolesDialog:false,
                 phoneForm: {
                     entity_id: '',
                     entity_type: 'App\\User',
@@ -426,6 +474,7 @@
             this.getUser();
             this.getPhoneTypes();
             this.getAddressTypes();
+            this.getRoles()
             // if (localStorage.getItem('auth_token')) {
             //     this.$router.push('tickets')
             // }
@@ -562,6 +611,43 @@
                         this.snackbar = true;
                     } else {
                     }
+                });
+            },
+            showRolesModal(item) {
+                this.rolesDialog = true
+                this.singleUserForm.user = this.userData
+                this.singleUserForm.role_ids = []
+                this.singleUserForm.company_user_id = item.company_user_id
+                this.userData.employee.roles.forEach(role => {
+                    this.singleUserForm.role_ids.push(role.id)
+                })
+                // console.log(item);
+            },
+            getRoles() {
+                this.roles = []
+                axios.get('/api/roles').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.roles.push(response.data[response.data.length - 1])
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            updateRole() {
+                axios.patch(`/api/roles`, this.singleUserForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient()
+                        this.rolesDialog = false
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        console.log('error')
+                    }
+
                 });
             },
         }
