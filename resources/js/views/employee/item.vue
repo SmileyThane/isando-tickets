@@ -22,7 +22,8 @@
                         <v-toolbar-title>Basic info</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">Update</v-btn>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">Update
+                        </v-btn>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
@@ -96,6 +97,13 @@
                                 ></v-text-field>
                             </v-row>
                         </v-form>
+                        <v-checkbox
+                            label="Give access to the system"
+                            color="success"
+                            v-model="userData.is_active"
+                            @change="changeIsActive(userData)"
+                            hide-details
+                        ></v-checkbox>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -107,7 +115,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Customer contacts</v-toolbar-title>
+                        <v-toolbar-title>Assigned companies</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -117,8 +125,20 @@
                             class="elevation-1"
                             item-key="id"
                             :footer-props="footerProps"
-                            dense
                         >
+                            <template v-slot:item.actions="{ item }">
+                                <v-btn
+                                    color="grey"
+                                    dark
+                                    @click="showCompany(item)"
+                                    fab
+                                    x-small
+                                >
+                                    <v-icon>
+                                        mdi-eye
+                                    </v-icon>
+                                </v-btn>
+                            </template>
                         </v-data-table>
                         <v-spacer>
                             &nbsp;
@@ -156,7 +176,8 @@
                                             >
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle
+                                                        v-text="item.type.name"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -172,8 +193,11 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="">{{item.address}} {{item.address_line_2}} {{item.address_line_3}}</v-list-item-title>
-                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                    <v-list-item-title v-text="">{{item.address}}
+                                                        {{item.address_line_2}} {{item.address_line_3}}
+                                                    </v-list-item-title>
+                                                    <v-list-item-subtitle
+                                                        v-text="item.type.name"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -356,13 +380,14 @@
                     itemsPerPage: 10,
                     disableItemsPerPage: true,
                 },
-                companies:[],
+                companies: [],
                 snackbar: false,
                 actionColor: '',
                 snackbarMessage: '',
                 errors: [],
-                enableToEdit:false,
+                enableToEdit: false,
                 userData: {
+                    id: '',
                     title: '',
                     title_before_name: '',
                     surname: '',
@@ -419,19 +444,18 @@
             updateUser(e) {
                 e.preventDefault()
                 this.snackbar = false;
-                // axios.post('/api/user/', this.userData).then(response => {
-                //     response = response.data
-                //     if (response.success === true) {
-                //         this.userData.password = ''
-                //         this.getUser()
-                //         this.snackbarMessage = 'Update successful'
-                //         this.actionColor = 'success'
-                //         this.snackbar = true
-                //         this.enableToEdit = false
-                //     } else {
-                //         this.errors = response.error
-                //     }
-                // });
+                axios.post('/api/user', this.userData).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true
+                        this.enableToEdit = false
+                    } else {
+                        this.errors = response.error
+                    }
+                });
             },
             getPhoneTypes() {
                 axios.get(`/api/phone_types`).then(response => {
@@ -488,7 +512,7 @@
                 } else {
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}${this.addressForm.address.country}`
                 }
-                if (this.addressForm.address.postal_code){
+                if (this.addressForm.address.postal_code) {
                     this.addressForm.address.address += `Postal Code: ${this.addressForm.address.postal_code}`
                 }
                 axios.post('/api/address', this.addressForm).then(response => {
@@ -522,19 +546,24 @@
                     }
                 });
             },
-            // parseErrors(errorTypes) {
-            //     for (let typeIndex in errorTypes) {
-            //         let errorType = [];
-            //         if (errorTypes.hasOwnProperty(typeIndex)){
-            //             errorType = errorTypes[typeIndex]
-            //         }
-            //         for (let errorIndex in errorType) {
-            //             if (errorType.hasOwnProperty(errorIndex)){
-            //                 this.error.push(errorType[errorIndex])
-            //             }
-            //         }
-            //     }
-            // }
+            showCompany(item) {
+                this.$router.push(`/customer/${item.clients.id}`)
+            },
+            changeIsActive(item) {
+                let request = {}
+                request.user_id = item.id
+                request.is_active = item.is_active
+                axios.post(`/api/user/is_active`, request).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                    }
+                });
+            },
         }
     }
 </script>
