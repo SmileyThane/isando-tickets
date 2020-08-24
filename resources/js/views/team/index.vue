@@ -52,25 +52,48 @@
                             </v-expansion-panel>
                         </v-expansion-panels>
                         <v-data-table
+                            show-expand
                             :headers="headers"
                             :items="teams"
+                            :single-expand="singleExpand"
+                            :expanded.sync="expanded"
                             :items-per-page="25"
                             class="elevation-1"
+                            @click:row="showItem"
                         >
-                            <template v-slot:item.actions="{ item }">
-                                <v-icon
-                                    small
-                                    class="mr-2"
-                                    @click="showItem(item)"
-                                >
-                                    mdi-eye
-                                </v-icon>
-                                <v-icon
-                                    small
-                                    @click="showItem(item)"
-                                >
-                                    mdi-delete
-                                </v-icon>
+                            <template v-slot:expanded-item="{ headers, item }">
+                                <td :colspan="headers.length">
+                                    <v-spacer>
+                                        &nbsp;
+                                    </v-spacer>
+                                    <p><strong>Actions:</strong></p>
+                                    <p>
+                                        <v-btn
+                                            color="grey"
+                                            dark
+                                            @click="showItem(item)"
+                                            fab
+                                            x-small
+                                        >
+                                            <v-icon
+                                            >
+                                                mdi-eye
+                                            </v-icon>
+                                        </v-btn>
+
+                                        <v-btn
+                                            color="error"
+                                            dark
+                                            @click="deleteProcess(item)"
+                                            fab
+                                            x-small
+                                        >
+                                            <v-icon>
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </p>
+                                </td>
                             </template>
                         </v-data-table>
                     </div>
@@ -86,7 +109,10 @@
 
         data() {
             return {
+                expanded: [],
+                singleExpand: false,
                 headers: [
+                    {text: '', value: 'data-table-expand'},
                     {
                         text: 'ID',
                         align: 'start',
@@ -95,7 +121,6 @@
                     },
                     {text: 'name', value: 'name'},
                     {text: 'Description', value: 'description'},
-                    {text: 'Actions', value: 'actions', sortable: false},
                 ],
                 teams: [],
                 teamForm: {

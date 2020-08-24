@@ -14,16 +14,19 @@
                     <div class="card-header"></div>
                     <div class="card-body">
                         <v-data-table
+                            show-expand
                             :headers="headers"
                             :items="companies"
+                            :single-expand="singleExpand"
+                            :expanded.sync="expanded"
                             :options.sync="options"
                             :server-items-length="totalCompanies"
                             :loading="loading"
                             :footer-props="footerProps"
                             class="elevation-1"
                             hide-default-footer
-                            fixed-header
                             loading-text="Give me a second..."
+                            @click:row="showItem"
                         >
                             <template v-slot:top>
                                 <v-row>
@@ -53,32 +56,39 @@
                                 >
                                 </v-pagination>
                             </template>
-                            <template v-slot:item.actions="{ item }">
-                                <v-btn
-                                    color="grey"
-                                    dark
-                                    @click="showItem(item)"
-                                    fab
-                                    x-small
-                                >
-                                    <v-icon
-                                    >
-                                        mdi-eye
-                                    </v-icon>
-                                </v-btn>
+                            <template v-slot:expanded-item="{ headers, item }">
+                                <td :colspan="headers.length">
+                                    <v-spacer>
+                                        &nbsp;
+                                    </v-spacer>
+                                    <p><strong>Actions:</strong></p>
+                                    <p>
+                                        <v-btn
+                                            color="grey"
+                                            dark
+                                            @click="showItem(item)"
+                                            fab
+                                            x-small
+                                        >
+                                            <v-icon
+                                            >
+                                                mdi-eye
+                                            </v-icon>
+                                        </v-btn>
 
-                                <v-btn
-                                    color="error"
-                                    dark
-                                    @click="deleteProcess(item)"
-                                    fab
-                                    x-small
-                                >
-                                    <v-icon
-                                    >
-                                        mdi-delete
-                                    </v-icon>
-                                </v-btn>
+                                        <v-btn
+                                            color="error"
+                                            dark
+                                            @click="deleteProcess(item)"
+                                            fab
+                                            x-small
+                                        >
+                                            <v-icon>
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </p>
+                                </td>
                             </template>
                         </v-data-table>
                     </div>
@@ -113,6 +123,8 @@
                 totalCompanies: 0,
                 lastPage: 0,
                 loading: 'green',
+                expanded: [],
+                singleExpand: false,
                 options: {
                     page: 1,
                     sortDesc: [false],
@@ -124,6 +136,7 @@
                     itemsPerPageOptions: [10, 25, 50, 100],
                 },
                 headers: [
+                    {text: '', value: 'data-table-expand'},
                     {
                         text: 'ID',
                         align: 'start',
@@ -133,7 +146,6 @@
                     {text: 'name', value: 'name'},
                     {text: 'Company number', value: 'company_number'},
                     {text: 'Description', value: 'description'},
-                    {text: 'Actions', value: 'actions', sortable: false},
                 ],
                 companiesSearch: '',
                 companies: [],

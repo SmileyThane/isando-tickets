@@ -7,16 +7,19 @@
 
                     <div class="card-body">
                         <v-data-table
+                            show-expand
                             :headers="headers"
                             :items="customers"
+                            :single-expand="singleExpand"
+                            :expanded.sync="expanded"
                             :options.sync="options"
                             :server-items-length="totalEmployees"
                             :loading="loading"
                             :footer-props="footerProps"
                             class="elevation-1"
                             hide-default-footer
-                            fixed-header
                             loading-text="Give me a second..."
+                            @click:row="showItem"
                         >
                             <template v-slot:top>
                                 <v-row>
@@ -52,26 +55,38 @@
                                     item.employee.user_data.surname }}
                                 </div>
                             </template>
-                            <template v-slot:item.actions="{ item }">
-                                <v-btn
-                                    color="grey"
-                                    dark
-                                    @click="showItem(item)"
-                                    fab
-                                    x-small
-                                >
-                                    <v-icon
-                                    >
-                                        mdi-eye
-                                    </v-icon>
-                                </v-btn>
-                                <v-icon
-                                    small
-                                    disabled
-                                    @click="showItem(item)"
-                                >
-                                    mdi-delete
-                                </v-icon>
+                            <template v-slot:expanded-item="{ headers, item }">
+                                <td :colspan="headers.length">
+                                    <v-spacer>
+                                        &nbsp;
+                                    </v-spacer>
+                                    <p><strong>Actions:</strong></p>
+                                    <p>
+                                        <v-btn
+                                            color="grey"
+                                            dark
+                                            @click="showItem(item)"
+                                            fab
+                                            x-small
+                                        >
+                                            <v-icon
+                                            >
+                                                mdi-eye
+                                            </v-icon>
+                                        </v-btn>
+
+                                        <v-btn
+                                            color="error"
+                                            dark
+                                            fab
+                                            x-small
+                                        >
+                                            <v-icon>
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </p>
+                                </td>
                             </template>
                         </v-data-table>
                     </div>
@@ -90,6 +105,8 @@
                 totalEmployees: 0,
                 lastPage: 0,
                 loading: 'green',
+                expanded: [],
+                singleExpand: false,
                 options: {
                     page: 1,
                     sortDesc: [false],
@@ -101,6 +118,7 @@
                     itemsPerPageOptions: [10, 25, 50, 100],
                 },
                 headers: [
+                    {text: '', value: 'data-table-expand'},
                     {
                         text: 'ID',
                         align: 'start',
@@ -109,7 +127,6 @@
                     {text: 'Name', value: 'employee'},
                     {text: 'Email', value: 'employee.user_data.email'},
                     {text: 'Client', value: 'clients.name'},
-                    {text: 'Actions', value: 'actions', sortable: false},
                 ],
                 employeesSearch: '',
                 customers: [],
