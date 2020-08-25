@@ -68,7 +68,7 @@ class CompanyUserRepository
         return CompanyUser::find($id);
     }
 
-    public function create($companyId, $userId)
+    public function create($companyId, $userId): CompanyUser
     {
         $companyUser = new CompanyUser();
         $companyUser->user_id = $userId;
@@ -94,8 +94,13 @@ class CompanyUserRepository
         $request['password'] = Controller::getRandomString();
         $user = User::where(['is_active' => true, 'email' => $request['email']])->first();
         if (!$user) {
+            $isValid = $this->userRepo->validate($request, $new = true);
+            if ($isValid !== true) {
+                return Controller::showResponse(false, $isValid);
+            }
             $user = $this->userRepo->create($request);
             $isNew = true;
+
         }
         $request['user_id'] = $user->id;
         $isValid = $this->validate($request);

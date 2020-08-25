@@ -9,6 +9,7 @@ use App\Notifications\RegularInviteEmail;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserRepository
 {
@@ -22,7 +23,7 @@ class UserRepository
             $params['email'] = [
                 'required',
                 Rule::unique('users')->ignore(
-                    User::where('is_active', false)->where('email', $params['email'])->first()
+                    User::where('is_active', false)->where('email', $request['email'])->first()
                 ),
             ];
         }
