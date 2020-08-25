@@ -1,15 +1,85 @@
 <template>
     <v-container>
+        <v-snackbar
+            :bottom="true"
+            :right="true"
+            v-model="snackbar"
+            :color="actionColor"
+        >
+            {{ snackbarMessage }}
+        </v-snackbar>
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
+                    <v-expansion-panels>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>
+                                Add New Contact
+                                <template v-slot:actions>
+                                    <v-icon color="submit">mdi-plus</v-icon>
+                                </template>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <v-form>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <v-text-field
+                                                color="green"
+                                                label="Name"
+                                                name="name"
+                                                type="text"
+                                                v-model="employeeForm.name"
+                                                :error-messages="employeeErrors.name"
+                                                required
+                                            ></v-text-field>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <v-text-field
+                                                color="green"
+                                                label="Email"
+                                                name="email"
+                                                type="email"
+                                                v-model="employeeForm.email"
+                                                :error-messages="employeeErrors.email"
+                                                required
+                                            ></v-text-field>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <v-autocomplete
+                                                v-model="employeeForm.client_id"
+                                                :items="customers"
+                                                :error-messages="employeeErrors.client_id"
+                                                color="green"
+                                                hide-no-data
+                                                hide-selected
+                                                item-text="name"
+                                                item-value="id"
+                                                label="Client"
+                                                placeholder="Start typing to Search"
+                                            ></v-autocomplete>
+                                        </div>
+                                        <v-btn
+                                            dark
+                                            fab
+                                            right
+                                            bottom
+                                            color="green"
+                                            @click="addEmployee"
+                                        >
+                                            <v-icon>mdi-plus</v-icon>
+                                        </v-btn>
+                                    </div>
+                                </v-form>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
                     <div class="card-header"></div>
 
                     <div class="card-body">
                         <v-data-table
                             show-expand
                             :headers="headers"
-                            :items="customers"
+                            :items="contacts"
                             :single-expand="singleExpand"
                             :expanded.sync="expanded"
                             :options.sync="options"
@@ -102,11 +172,15 @@
 
         data() {
             return {
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
                 totalEmployees: 0,
                 lastPage: 0,
                 loading: 'green',
                 expanded: [],
                 singleExpand: false,
+                isLoading: false,
                 options: {
                     page: 1,
                     sortDesc: [false],
@@ -129,19 +203,22 @@
                     {text: 'Client', value: 'clients.name'},
                 ],
                 employeesSearch: '',
+                employeeErrors: [],
+                contacts: [],
+                customersSearch: '',
                 customers: [],
-                clientForm: {
-                    client_name: '',
-                    client_description: '',
-                    supplier_object: '',
-                    supplier_type: '',
-                    supplier_id: ''
+                employeeForm: {
+                    name: '',
+                    email: '',
+                    client_id: '',
+                    is_active: false
                 },
                 suppliers: [],
             }
         },
         mounted() {
             this.getEmployees()
+            this.getClients()
         },
         methods: {
             getEmployees() {
@@ -163,12 +240,36 @@
                     .then(
                         response => {
                             response = response.data
-                            this.customers = response.data.data
-                            console.log(this.customers);
+                            this.contacts = response.data.data
                             this.totalEmployees = response.data.total
                             this.lastPage = response.data.last_page
                             this.loading = false
                         });
+            },
+            getClients() {
+                this.isLoading = true
+                axios.get(`api/client`)
+                    .then(
+                        response => {
+                            response = response.data
+                            this.customers = response.data.data
+                            this.isLoading = false
+                        });
+            },
+            addEmployee() {
+                axios.post(`/api/client/employee`, this.employeeForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getEmployees()
+                        this.snackbarMessage = 'Contact was added successfully'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        console.log('error')
+                        this.employeeErrors = response.error
+                    }
+
+                });
             },
             showItem(item) {
                 this.$router.push(`/employee/${item.employee.user_data.id}`)
