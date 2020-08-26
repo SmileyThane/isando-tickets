@@ -253,6 +253,44 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        dense
+                        color="green"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>Products info</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-data-table
+                            :headers="productHeaders"
+                            :items="client.products"
+                            class="elevation-1"
+                            item-key="id"
+                            dense
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click="showProduct(item.product_data)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-eye
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Show product</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+                    </v-card-text>
+                </v-card>
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -485,44 +523,6 @@
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-                <v-card class="elevation-12">
-                    <v-toolbar
-                        dense
-                        color="green"
-                        dark
-                        flat
-                    >
-                        <v-toolbar-title>Products info</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-                    <v-card-text>
-                        <v-data-table
-                            :headers="productHeaders"
-                            :items="client.products"
-                            class="elevation-1"
-                            item-key="id"
-                            dense
-                        >
-                            <template v-slot:item.actions="{ item }">
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn @click="showProduct(item.product_data)" icon v-bind="attrs" v-on="on">
-                                            <v-icon
-                                                small
-                                            >
-                                                mdi-eye
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>Show product</span>
-                                </v-tooltip>
-                            </template>
-                        </v-data-table>
                     </v-card-text>
                 </v-card>
             </div>
