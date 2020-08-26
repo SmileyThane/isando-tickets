@@ -117,7 +117,7 @@
                                         <v-text-field
                                             color="green"
                                             item-color="green"
-                                            label="Title"
+                                            label="Subject"
                                             v-model="ticketForm.name"
                                         ></v-text-field>
                                     </v-col>
