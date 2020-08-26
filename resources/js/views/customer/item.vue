@@ -487,6 +487,44 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        dense
+                        color="green"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>Products info</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-data-table
+                            :headers="productHeaders"
+                            :items="client.products"
+                            class="elevation-1"
+                            item-key="id"
+                            dense
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click="showProduct(item.product_data)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-eye
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>Show product</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+                    </v-card-text>
+                </v-card>
             </div>
         </div>
     </v-container>
@@ -511,6 +549,17 @@
                     {text: 'roles', value: 'employee.role_names'},
                     {text: 'Actions', value: 'actions', sortable: false},
                 ],
+                productHeaders: [
+                    {
+                        text: 'ID',
+                        align: 'start',
+                        sortable: false,
+                        value: 'product_data.id',
+                    },
+                    {text: 'name', value: 'product_data.name'},
+                    {text: 'description', value: 'product_data.description'},
+                    {text: 'Actions', value: 'actions', sortable: false},
+                ],
                 snackbar: false,
                 actionColor: '',
                 snackbarMessage: '',
@@ -530,6 +579,11 @@
                 client: {
                     client_name: '',
                     client_description: '',
+                    products:[
+                        {
+                            product_data: {}
+                        }
+                    ],
                     phones: [],
                     addresses: [],
                     socials: [],
@@ -842,6 +896,9 @@
             },
             showUser(item) {
                 this.$router.push(`/employee/${item.user_id}`)
+            },
+            showProduct(item) {
+                this.$router.push(`/product/${item.id}`)
             },
             changeIsActive(item) {
                 let request = {}
