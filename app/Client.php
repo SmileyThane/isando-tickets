@@ -51,4 +51,9 @@ class Client extends Model
     {
         return $this->morphMany(Social::class, 'entity');
     }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(ProductClient::class, 'client_id', 'id');
+    }
 }
