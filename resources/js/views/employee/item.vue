@@ -155,13 +155,54 @@
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    New сustomer assignment
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12" class="pa-1">
+                                                <v-autocomplete
+                                                    v-model="employeeForm.client_id"
+                                                    :items="customers"
+                                                    :error-messages="employeeForm.id"
+                                                    color="green"
+                                                    hide-no-data
+                                                    hide-selected
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    label="Client"
+                                                    placeholder="Start typing to Search"
+                                                ></v-autocomplete>
+                                            </v-col>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                small
+                                                color="green"
+                                                @click="addEmployee"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
             </v-col>
-            <v-col class="col-md-6">
+            <v-col offset-md="6">
                 <v-card class="elevation-6">
                     <v-toolbar
                         dense
@@ -446,8 +487,12 @@
                     role_ids: [],
                     company_user_id: ''
                 },
-                roles:[],
-                rolesDialog:false,
+                roles: [],
+                rolesDialog: false,
+                employeeForm: {
+                    client_id: null,
+                    company_user_id: null
+                },
                 phoneForm: {
                     entity_id: '',
                     entity_type: 'App\\User',
@@ -467,7 +512,9 @@
                     address_type: ''
                 },
                 phoneTypes: [],
-                addressTypes: []
+                addressTypes: [],
+                isCustomersLoading:false,
+                customers:[]
             }
         },
         mounted() {
@@ -475,6 +522,7 @@
             this.getPhoneTypes();
             this.getAddressTypes();
             this.getRoles()
+            this.getClients()
             // if (localStorage.getItem('auth_token')) {
             //     this.$router.push('tickets')
             // }
@@ -487,6 +535,7 @@
                         this.userData = response.data
                         this.companies = this.userData.employee.assigned_to_clients.length > 0 ? this.userData.employee.assigned_to_clients : this.userData.employee.companies
                         console.log(this.companies);
+                        this.employeeForm.company_user_id = this.userData.employee.id
                     }
                 });
             },
@@ -642,6 +691,30 @@
                         this.getClient()
                         this.rolesDialog = false
                         this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            getClients() {
+                this.isCustomersLoading = true
+                axios.get(`/api/client`)
+                    .then(
+                        response => {
+                            response = response.data
+                            this.customers = response.data.data
+                            this.isCustomersLoading = false
+                        });
+            },
+            addEmployee() {
+                axios.post(`/api/client/employee`, this.employeeForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.snackbarMessage = 'Customer was attached successfully'
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
