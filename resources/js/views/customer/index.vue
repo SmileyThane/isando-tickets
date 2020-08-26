@@ -250,7 +250,7 @@
             addClient() {
                 this.clientForm.supplier_type = Object.keys(this.clientForm.supplier_object.item)[0]
                 this.clientForm.supplier_id = Object.values(this.clientForm.supplier_object.item)[0]
-                axios.post('api/client', this.clientForm).then(response => {
+                axios.post('/api/client', this.clientForm).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getClients()

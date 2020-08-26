@@ -248,7 +248,7 @@
             },
             getClients() {
                 this.isLoading = true
-                axios.get(`api/client`)
+                axios.get(`/api/client`)
                     .then(
                         response => {
                             response = response.data
