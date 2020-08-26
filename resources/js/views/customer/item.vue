@@ -316,7 +316,8 @@
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn :disabled="!item.employee.user_data.is_active" @click="sendInvite(item.employee)"
+                                        <v-btn :disabled="!item.employee.user_data.is_active"
+                                               @click="sendInvite(item.employee)"
                                                icon v-bind="attrs" v-on="on">
                                             <v-icon
                                                 small
@@ -341,7 +342,11 @@
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
+                                        <v-btn
+                                            @click="removeEmployeeProcess(item)"
+                                            icon
+                                            v-bind="attrs"
+                                            v-on="on">
                                             <v-icon
                                                 small
                                                 hint="Delete contact"
@@ -378,6 +383,18 @@
                             </template>
 
                         </v-data-table>
+                        <template>
+                            <v-dialog v-model="removeEmployeeDialog" persistent max-width="290">
+                                <v-card>
+                                    <v-card-title class="headline">Do you want to delete the contact?</v-card-title>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">Cancel</v-btn>
+                                        <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">Delete</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </template>
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
@@ -563,7 +580,7 @@
                 snackbar: false,
                 actionColor: '',
                 snackbarMessage: '',
-                errors:[],
+                errors: [],
                 footerProps: {
                     itemsPerPage: 10,
                     disableItemsPerPage: true,
@@ -579,7 +596,7 @@
                 client: {
                     client_name: '',
                     client_description: '',
-                    products:[
+                    products: [
                         {
                             product_data: {}
                         }
@@ -608,6 +625,8 @@
                     client_id: '',
                     is_active: false
                 },
+                selectedEmployeeId: null,
+                removeEmployeeDialog: false,
                 roles: [
                     {
                         id: '',
@@ -625,7 +644,7 @@
                     entity_type: 'App\\Client',
                     address: {
                         address: '',
-                        postal_code:'',
+                        postal_code: '',
                         address_line_2: '',
                         address_line_3: '',
                         city: '',
@@ -845,7 +864,7 @@
                 } else {
                     form.address_line_3 = `${form.address.city}${form.address.country}`
                 }
-                if (form.address.postal_code.length > 0){
+                if (form.address.postal_code.length > 0) {
                     form.address.address += ` Postal Code: ${form.address.postal_code}`
                 }
                 axios.post('/api/address', form).then(response => {
@@ -879,8 +898,12 @@
                     }
                 });
             },
-            removeEmployee(item) {
-                axios.delete(`/api/client/employee/${item.id}`).then(response => {
+            removeEmployeeProcess(item) {
+                this.selectedEmployeeId = item.id
+                this.removeEmployeeDialog = true
+            },
+            removeEmployee(id) {
+                axios.delete(`/api/client/employee/${id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getClient()
@@ -888,6 +911,7 @@
                         this.snackbarMessage = 'Contact was removed'
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.removeEmployeeDialog = false
                     } else {
                         console.log('error')
                     }
@@ -944,7 +968,7 @@
             clientUpdates(value) {
                 this.clientIsLoaded = true;
                 // console.log(this.singleUserForm.user);
-                if (this.singleUserForm.user){
+                if (this.singleUserForm.user) {
                     this.singleUserForm.user = this.client.employees.find(x => x.employee.user_id === this.singleUserForm.user.id).employee.user_data;
                 }
             }
