@@ -97,7 +97,7 @@ class EmailReceiverRepository
                         $generatedMessage = $this->createDescriptionFromParsedArray($paramsArray);
                         $senderEmail = $paramsArray['Email'];
                         $attachments = $this->handleEmailAttachments($message->getAttachments());
-                        $priorityId =  $this->parsePriorityByName($paramsArray['Ticket Escalation']);
+                        $priorityId = $this->parsePriorityByName($paramsArray['Ticket Escalation']);
                         $responseBody = $this->createTicketFromEmail($senderEmail, $generatedMessage['description'], $ticketSubject, $attachments, $priorityId, $generatedMessage['access_details']);
                     }
                 }
@@ -260,8 +260,7 @@ class EmailReceiverRepository
             'someday' => 3
         ];
         foreach ($prioritiesArray as $key => $value) {
-            if (strtolower($priorityName) === $key)
-            {
+            if (strtolower($priorityName) === $key) {
                 $priorityId = $value;
             }
         }
