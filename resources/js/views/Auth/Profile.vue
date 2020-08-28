@@ -137,21 +137,22 @@
                                     :readonly="!enableToEdit"
                                 dense
                                 ></v-text-field>
-                                <v-text-field
-                                    color="green"
+                                <v-select
                                     label="Language"
-                                    name="lang"
-                                    prepend-icon="mdi-mail"
-                                    type="text"
-                                    v-model="userData.lang"
-                                    :error-messages="errors.lang"
-                                    lazy-validation
+                                    color="green"
                                     class="col-md-4"
-                                    required
+                                    item-color="green"
+                                    name="language"
+                                    prepend-icon="mdi-mail"
+                                    item-text="name"
+                                    item-value="id"
+                                    :items="languages"
+                                    v-model="userData.language_id"
+                                    :error-messages="errors.language_id"
+                                    lazy-validation
                                     :readonly="!enableToEdit"
-                                dense
-                                ></v-text-field>
-
+                                    dense
+                                />
                             </v-row>
                         </v-form>
                     </v-card-text>
@@ -394,7 +395,8 @@
                     email: "",
                     password: "",
                     phones: [],
-                    addresses: []
+                    addresses: [],
+                    language_id:''
                 },
                 phoneForm: {
                     entity_id: '',
@@ -415,16 +417,15 @@
                     address_type: ''
                 },
                 phoneTypes: [],
-                addressTypes: []
+                addressTypes: [],
+                languages:[]
             }
         },
         mounted() {
             this.getUser();
             this.getPhoneTypes();
             this.getAddressTypes();
-            // if (localStorage.getItem('auth_token')) {
-            //     this.$router.push('tickets')
-            // }
+            this.getLanguages();
         },
         methods: {
             getUser() {
@@ -433,6 +434,14 @@
                     if (response.success === true) {
                         this.userData = response.data
                         // console.log(this.userData);
+                    }
+                });
+            },
+            getLanguages() {
+                axios.get('/api/lang').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.languages = response.data
                     }
                 });
             },
