@@ -83,8 +83,8 @@ class ClientController extends Controller
                 return $inviteResponse;
             }
         }
-            $result = $this->clientRepo->attach($request);
-            return self::showResponse($result);
+        $result = $this->clientRepo->attach($request);
+        return self::showResponse($result);
     }
 
     public function detach(Request $request, $id)
