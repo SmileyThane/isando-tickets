@@ -42,5 +42,6 @@ const app = new Vue({
     store,
     created() {
         store.dispatch('getRoles');
+        store.dispatch('getLanguage');
     }
 });
