@@ -21,7 +21,8 @@
                         <v-toolbar-title>Basic info</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateProduct">Save</v-btn>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateProduct">Save
+                        </v-btn>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
@@ -51,10 +52,10 @@
                             ></v-text-field>
                         </v-form>
                     </v-card-text>
-<!--                    <v-card-actions>-->
-<!--                        <v-spacer></v-spacer>-->
-<!--                        <v-btn color="green" style="color: white;" @click="updateProduct">Save</v-btn>-->
-<!--                    </v-card-actions>-->
+                    <!--                    <v-card-actions>-->
+                    <!--                        <v-spacer></v-spacer>-->
+                    <!--                        <v-btn color="green" style="color: white;" @click="updateProduct">Save</v-btn>-->
+                    <!--                    </v-card-actions>-->
                 </v-card>
             </div>
             <div class="col-md-6">
@@ -132,7 +133,7 @@
                 snackbar: false,
                 actionColor: '',
                 snackbarMessage: '',
-                enableToEdit:false,
+                enableToEdit: false,
                 errors: [],
                 headers: [
                     {
