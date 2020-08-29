@@ -73,7 +73,7 @@
                     v-slot:activator
                 >
                     <v-list-item-content>
-                        <v-list-item-title>Ticket</v-list-item-title>
+                        <v-list-item-title>{{ticket}}</v-list-item-title>
                     </v-list-item-content>
                 </template>
                 <v-list-item link to="/tickets">
@@ -112,7 +112,8 @@
         data: () => ({
             companyName:'Isando',
             localDrawer: null,
-            show:true
+            show:true,
+            ticket: ''
         }),
         watch: {
             value: function () {
@@ -126,6 +127,7 @@
             }
         },
         mounted() {
+            this.getMenuItems()
             this.getCompanyName()
         },
         methods: {
@@ -146,6 +148,9 @@
                             document.title = this.companyName + ' | ' + this.$route.name
                         });
             },
+            getMenuItems() {
+                this.ticket = this.$store.state.lang.lang_map.tickets
+            }
         }
     }
 </script>
