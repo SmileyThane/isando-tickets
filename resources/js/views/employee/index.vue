@@ -98,14 +98,14 @@
                                                       label="Search..." class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
-                                            <v-select
-                                                class="mx-4"
-                                                color="green"
-                                                item-color="green"
-                                                :items="footerProps.itemsPerPageOptions"
-                                                label="Items per page"
-                                                @change="updateItemsCount"
-                                            ></v-select>
+                                        <v-select
+                                            class="mx-4"
+                                            color="green"
+                                            item-color="green"
+                                            :items="footerProps.itemsPerPageOptions"
+                                            label="Items per page"
+                                            @change="updateItemsCount"
+                                        ></v-select>
                                     </v-col>
                                 </v-row>
                             </template>

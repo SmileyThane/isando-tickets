@@ -513,8 +513,8 @@
                 },
                 phoneTypes: [],
                 addressTypes: [],
-                isCustomersLoading:false,
-                customers:[]
+                isCustomersLoading: false,
+                customers: []
             }
         },
         mounted() {
