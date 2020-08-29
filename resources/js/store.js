@@ -20,7 +20,7 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        getRoles({ commit }) {
+        getRoles({commit}) {
             return new Promise((resolve, reject) => {
                 axios.get('/api/user/roles/id')
                     .then(result => {
@@ -32,12 +32,12 @@ export default new Vuex.Store({
                     });
             });
         },
-        getLanguage({ commit }) {
+        getLanguage({commit}) {
             return new Promise((resolve, reject) => {
                 axios.get('/api/lang/map')
                     .then(result => {
                         if (result.data.success === true && result.data.data.lang_map !== null)
-                        commit('setLang', result.data.data);
+                            commit('setLang', result.data.data);
                         resolve();
                     })
 
