@@ -907,7 +907,7 @@
                     {text: 'roles', value: 'role_names'},
                     {text: 'Actions', value: 'actions', sortable: false},
                 ],
-                companyIsLoaded:false,
+                companyIsLoaded: false,
                 company: {
                     name: '',
                     company_number: '',
@@ -958,7 +958,7 @@
                     entity_type: 'App\\Company',
                     address: {
                         address: '',
-                        postal_code:'',
+                        postal_code: '',
                         address_line_2: '',
                         address_line_3: '',
                         city: '',
@@ -983,7 +983,7 @@
                     entity_type: 'App\\User',
                     address: {
                         address: '',
-                        postal_code:'',
+                        postal_code: '',
                         address_line_2: '',
                         address_line_3: '',
                         city: '',
@@ -1231,7 +1231,7 @@
                 } else {
                     form.address_line_3 = `${form.address.city}${form.address.country}`
                 }
-                if (form.address.postal_code){
+                if (form.address.postal_code) {
                     form.address.address += ` Postal Code: ${form.address.postal_code}`
                 }
                 axios.post('/api/address', form).then(response => {
@@ -1321,8 +1321,8 @@
         watch: {
             companyUpdates(value) {
                 this.companyIsLoaded = true;
-                  // console.log(this.singleUserForm.user);
-                if (this.singleUserForm.user){
+                // console.log(this.singleUserForm.user);
+                if (this.singleUserForm.user) {
                     this.singleUserForm.user = this.company.employees.find(x => x.user_id === this.singleUserForm.user.id).user_data;
                 }
             }
