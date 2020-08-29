@@ -386,7 +386,7 @@
                 this.ticketForm.from_entity_id = Object.values(this.ticketForm.from)[0]
                 this.ticketForm.to_entity_type = Object.keys(this.ticketForm.to)[0]
                 this.ticketForm.to_entity_id = Object.values(this.ticketForm.to)[0]
-               this.addTicket()
+                this.addTicket()
             },
             addTicket() {
                 const config = {

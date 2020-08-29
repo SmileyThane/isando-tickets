@@ -82,36 +82,36 @@
                     <v-spacer>
                         &nbsp;
                     </v-spacer>
-                        <p><strong>Contact name:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
-                        <p><strong>Contact email:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
-                        <p><strong>Due date:</strong> {{ item.due_date }}</p>
-                        <p><strong>Access details:</strong> {{ item.access_details }}</p>
+                    <p><strong>Contact name:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
+                    <p><strong>Contact email:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
+                    <p><strong>Due date:</strong> {{ item.due_date }}</p>
+                    <p><strong>Access details:</strong> {{ item.access_details }}</p>
                     <p>
-                                <v-btn
-                                    color="grey"
-                                    dark
-                                    @click="showItem(item)"
-                                    fab
-                                    x-small
-                                >
-                                    <v-icon
-                                    >
-                                        mdi-eye
-                                    </v-icon>
-                                </v-btn>
+                        <v-btn
+                            color="grey"
+                            dark
+                            @click="showItem(item)"
+                            fab
+                            x-small
+                        >
+                            <v-icon
+                            >
+                                mdi-eye
+                            </v-icon>
+                        </v-btn>
 
-                                <v-btn
-                                    color="error"
-                                    dark
-                                    @click="ticketDeleteProcess(item)"
-                                    fab
-                                    x-small
-                                >
-                                    <v-icon
-                                    >
-                                        mdi-delete
-                                    </v-icon>
-                                </v-btn>
+                        <v-btn
+                            color="error"
+                            dark
+                            @click="ticketDeleteProcess(item)"
+                            fab
+                            x-small
+                        >
+                            <v-icon
+                            >
+                                mdi-delete
+                            </v-icon>
+                        </v-btn>
                     </p>
                 </td>
 

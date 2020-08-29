@@ -462,7 +462,8 @@
                                     </v-form>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
-                            <v-expansion-panel v-show="!this.$store.state.roles.includes(6) && ticket.notices.length > 0">
+                            <v-expansion-panel
+                                v-show="!this.$store.state.roles.includes(6) && ticket.notices.length > 0">
                                 <v-expansion-panel-header>
                                     Notes history:
                                     <template v-slot:actions>
