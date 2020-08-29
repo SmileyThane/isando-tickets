@@ -6,6 +6,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Repository\LanguageRepository;
+use Illuminate\Support\Facades\Auth;
 
 class LanguageController extends Controller
 {
@@ -21,8 +22,8 @@ class LanguageController extends Controller
         return self::showResponse(true, $this->langRepo->all());
     }
 
-    public function find($id)
+    public function find($id = null)
     {
-        return self::showResponse(true, $this->langRepo->find($id));
+        return self::showResponse(true, $this->langRepo->find($id ?? Auth::user()->language_id));
     }
 }
