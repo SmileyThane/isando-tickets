@@ -22,7 +22,8 @@
                         <v-toolbar-title>Basic info</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">Update</v-btn>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">Update
+                        </v-btn>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
@@ -38,7 +39,7 @@
                                     lazy-validation
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
-                                dense
+                                    dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -51,7 +52,7 @@
                                     lazy-validation
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
-                                dense
+                                    dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -65,7 +66,7 @@
                                     required
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
-                                dense
+                                    dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -78,7 +79,7 @@
                                     lazy-validation
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
-                                dense
+                                    dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -92,7 +93,7 @@
                                     lazy-validation
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
-                                dense
+                                    dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -107,7 +108,7 @@
                                     class="col-md-6"
                                     required
                                     :readonly="!enableToEdit"
-                                dense
+                                    dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -121,7 +122,7 @@
                                     class="col-md-4"
                                     required
                                     :readonly="!enableToEdit"
-                                dense
+                                    dense
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
@@ -135,7 +136,7 @@
                                     class="col-md-4"
                                     required
                                     :readonly="!enableToEdit"
-                                dense
+                                    dense
                                 ></v-text-field>
                                 <v-select
                                     label="Language"
@@ -156,10 +157,10 @@
                             </v-row>
                         </v-form>
                     </v-card-text>
-<!--                    <v-card-actions>-->
-<!--                        <v-spacer></v-spacer>-->
-<!--                        <v-btn color="green" style="color: white;" @click="updateUser">Update</v-btn>-->
-<!--                    </v-card-actions>-->
+                    <!--                    <v-card-actions>-->
+                    <!--                        <v-spacer></v-spacer>-->
+                    <!--                        <v-btn color="green" style="color: white;" @click="updateUser">Update</v-btn>-->
+                    <!--                    </v-card-actions>-->
                 </v-card>
             </v-col>
             <v-col class="col-md-6">
@@ -189,7 +190,8 @@
                                             >
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle
+                                                        v-text="item.type.name"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -205,8 +207,11 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="">{{item.address}} {{item.address_line_2}} {{item.address_line_3}}</v-list-item-title>
-                                                    <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                                    <v-list-item-title v-text="">{{item.address}}
+                                                        {{item.address_line_2}} {{item.address_line_3}}
+                                                    </v-list-item-title>
+                                                    <v-list-item-subtitle
+                                                        v-text="item.type.name"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -363,7 +368,6 @@
 </template>
 
 <script>
-    import store from "../../store";
 
     export default {
         data() {
@@ -385,7 +389,7 @@
                 actionColor: '',
                 snackbarMessage: '',
                 errors: [],
-                enableToEdit:false,
+                enableToEdit: false,
                 userData: {
                     title: '',
                     title_before_name: '',
@@ -398,7 +402,7 @@
                     password: "",
                     phones: [],
                     addresses: [],
-                    language_id:''
+                    language_id: ''
                 },
                 phoneForm: {
                     entity_id: '',
@@ -420,7 +424,7 @@
                 },
                 phoneTypes: [],
                 addressTypes: [],
-                languages:[]
+                languages: []
             }
         },
         mounted() {
@@ -521,7 +525,7 @@
                 } else {
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}${this.addressForm.address.country}`
                 }
-                if (this.addressForm.address.postal_code){
+                if (this.addressForm.address.postal_code) {
                     this.addressForm.address.address += `Postal Code: ${this.addressForm.address.postal_code}`
                 }
                 axios.post('/api/address', this.addressForm).then(response => {
