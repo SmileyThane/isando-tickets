@@ -363,6 +363,8 @@
 </template>
 
 <script>
+    import store from "../../store";
+
     export default {
         data() {
             return {
@@ -458,6 +460,7 @@
                         this.actionColor = 'success'
                         this.snackbar = true
                         this.enableToEdit = false
+                        window.location.reload()
                     } else {
                         this.errors = response.error
                     }
