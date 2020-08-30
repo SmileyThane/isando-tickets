@@ -19,10 +19,11 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Basic info</v-toolbar-title>
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.main.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">Update
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">
+                            {{this.$store.state.lang.lang_map.main.update}}
                         </v-btn>
                     </v-toolbar>
                     <v-card-text>
@@ -98,7 +99,7 @@
                                 <v-text-field
                                     color="green"
                                     id="password"
-                                    :label="this.$store.state.lang.lang_map.user.password"
+                                    :label="this.$store.state.lang.lang_map.main.password"
                                     name="password"
                                     prepend-icon="mdi-lock"
                                     type="password"
@@ -112,7 +113,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    :label="this.$store.state.lang.lang_map.user.country"
+                                    :label="this.$store.state.lang.lang_map.main.country"
                                     name="country"
                                     prepend-icon="mdi-mail"
                                     type="text"
@@ -171,7 +172,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Additional info</v-toolbar-title>
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.main.additional}} {{this.$store.state.lang.lang_map.main.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -229,7 +230,7 @@
                                     <v-expansion-panels>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                New phone
+                                                {{this.$store.state.lang.lang_map.main.new}} {{this.$store.state.lang.lang_map.main.phone}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -242,7 +243,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="phoneForm.phone"
-                                                                label="Phone"
+                                                                :label="this.$store.state.lang.lang_map.main.phone"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -254,7 +255,7 @@
                                                                 item-value="id"
                                                                 v-model="phoneForm.phone_type"
                                                                 :items="phoneTypes"
-                                                                label="Type"
+                                                                :label="this.$store.state.lang.lang_map.main.type"
                                                                 dense
                                                             ></v-select>
                                                         </v-col>
@@ -275,7 +276,7 @@
                                         </v-expansion-panel>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                New address
+                                                {{this.$store.state.lang.lang_map.main.new}} {{this.$store.state.lang.lang_map.main.address}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -288,7 +289,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.address"
-                                                                label="Address"
+                                                                :label="this.$store.state.lang.lang_map.main.address_line + ' 1'"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -297,7 +298,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.address_line_2"
-                                                                label="Address line 2"
+                                                                :label="this.$store.state.lang.lang_map.main.address_line + ' 2'"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -306,7 +307,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.postal_code"
-                                                                label="Postal code"
+                                                                :label="this.$store.state.lang.lang_map.user.postal_code"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -315,7 +316,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.city"
-                                                                label="City"
+                                                                :label="this.$store.state.lang.lang_map.main.city"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -324,7 +325,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.country"
-                                                                label="Country"
+                                                                :label="this.$store.state.lang.lang_map.main.country"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -336,7 +337,7 @@
                                                                 item-value="id"
                                                                 v-model="addressForm.address_type"
                                                                 :items="addressTypes"
-                                                                label="Type"
+                                                                :label="this.$store.state.lang.lang_map.main.type"
                                                                 dense
                                                             ></v-select>
                                                         </v-col>
