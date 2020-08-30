@@ -5,7 +5,7 @@
         dark
     >
         <v-app-bar-nav-icon @click.stop="localDrawer = !localDrawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>{{ this.$route.name }}</v-toolbar-title>
+        <v-toolbar-title>{{this.$store.state.lang.lang_map.main[this.$route.name] }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-menu
             left

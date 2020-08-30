@@ -28,7 +28,7 @@
                     <v-icon>mdi-office-building</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>Company</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.company.company}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/customer" v-if="checkRoleByIds([1,2,3])">
@@ -36,7 +36,7 @@
                     <v-icon>mdi-account-network</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>Customer</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.customer.customer}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/product">
@@ -44,7 +44,7 @@
                     <v-icon> mdi-monitor-clean</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>Product</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.product.product}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/team" v-if="checkRoleByIds([1,2,3])">
@@ -52,7 +52,7 @@
                     <v-icon>mdi-account-box-multiple-outline</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>Team</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.team.team}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/employee" v-if="checkRoleByIds([1,2,3])">
@@ -60,7 +60,7 @@
                     <v-icon>mdi-card-account-details-outline</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>Individuals</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.main.individuals}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-group
@@ -81,7 +81,7 @@
                         <v-icon>mdi-format-list-numbered</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>Tickets List</v-list-item-title>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.ticket.tickets}} {{this.$store.state.lang.lang_map.main.list}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item link to="/ticket_create">
@@ -89,7 +89,7 @@
                         <v-icon>mdi-shape-rectangle-plus</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>Create Ticket</v-list-item-title>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.main.create}} {{this.$store.state.lang.lang_map.ticket.ticket}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list-group>
@@ -127,8 +127,8 @@
             }
         },
         mounted() {
-            this.getMenuItems()
             this.getCompanyName()
+            this.ticket = this.$store.state.lang.lang_map.ticket.ticket
         },
         methods: {
             checkRoleByIds(ids) {
@@ -147,9 +147,6 @@
                             this.companyName = response.data.data
                             document.title = this.companyName + ' | ' + this.$route.name
                         });
-            },
-            getMenuItems() {
-                this.ticket = this.$store.state.lang.lang_map.tickets
             }
         }
     }
