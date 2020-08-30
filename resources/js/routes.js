@@ -40,7 +40,7 @@ export default [
     },
     {
         path: '/user',
-        name: 'Profile',
+        name: 'profile',
         meta: {
             requiresAuth: true,
         },
@@ -48,7 +48,7 @@ export default [
     },
     {
         path: '/company',
-        name: 'Companies',
+        name: 'companies',
         meta: {
             requiresAuth: true,
         },
@@ -56,7 +56,7 @@ export default [
     },
     {
         path: '/company/:id',
-        name: 'Company Data',
+        name: 'company',
         meta: {
             requiresAuth: true,
         },
@@ -64,7 +64,7 @@ export default [
     },
     {
         path: '/product',
-        name: 'Products',
+        name: 'products',
         meta: {
             requiresAuth: true,
         },
@@ -72,7 +72,7 @@ export default [
     },
     {
         path: '/product/:id',
-        name: 'Product Data',
+        name: 'product',
         meta: {
             requiresAuth: true,
         },
@@ -80,7 +80,7 @@ export default [
     },
     {
         path: '/customer/:id',
-        name: 'Customer Data',
+        name: 'customers',
         meta: {
             requiresAuth: true,
         },
@@ -88,7 +88,7 @@ export default [
     },
     {
         path: '/customer',
-        name: 'Customers',
+        name: 'customer',
         meta: {
             requiresAuth: true,
         },
@@ -96,7 +96,7 @@ export default [
     },
     {
         path: '/team',
-        name: 'Teams',
+        name: 'teams',
         meta: {
             requiresAuth: true,
         },
@@ -104,7 +104,7 @@ export default [
     },
     {
         path: '/team/:id',
-        name: 'Team Data',
+        name: 'team',
         meta: {
             requiresAuth: true,
         },
@@ -112,7 +112,7 @@ export default [
     },
     {
         path: '/employee',
-        name: 'Individuals',
+        name: 'individuals',
         meta: {
             requiresAuth: true,
         },
@@ -120,7 +120,7 @@ export default [
     },
     {
         path: '/employee/:id',
-        name: 'Contact',
+        name: 'contact',
         meta: {
             requiresAuth: true,
         },
@@ -128,7 +128,7 @@ export default [
     },
     {
         path: '/tickets',
-        name: 'Tickets',
+        name: 'tickets',
         meta: {
             requiresAuth: true,
         },
@@ -136,7 +136,7 @@ export default [
     },
     {
         path: '/ticket_create',
-        name: 'Create Ticket',
+        name: 'create_ticket',
         meta: {
             requiresAuth: true,
         },
@@ -144,7 +144,7 @@ export default [
     },
     {
         path: '/ticket/:id',
-        name: 'Ticket',
+        name: 'ticket',
         meta: {
             requiresAuth: true,
         },
