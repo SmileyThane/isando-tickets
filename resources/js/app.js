@@ -18,7 +18,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        axios.get('/api/roles').then(response => {
+        axios.get('/api/auth/check').then(response => {
             if (response.data === null || response.data.success === false) {
                 localStorage.setItem('auth_token', null)
             }
