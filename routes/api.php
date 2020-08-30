@@ -23,6 +23,7 @@ Route::get('plans', 'API\AuthController@plans');
 Route::get('/mail/receive/{type?}', 'HomeController@receiveMail')->name('receiveEmail');
 
 Route::group(['middleware' => 'auth:api'], function () {
+    Route::get('auth/check', 'Controller@checkAuth');
     Route::get('logout', 'API\AuthController@logout');
     Route::get('roles', 'API\UserController@roles');
     Route::patch('roles', 'API\UserController@updateRoles');
