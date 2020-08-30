@@ -30,7 +30,7 @@
                             <v-row>
                                 <v-text-field
                                     color="green"
-                                    label="Title before name"
+                                    :label="this.$store.state.lang.lang_map.user.title_before_name"
                                     name="title_before_name"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
@@ -43,7 +43,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    label="Title"
+                                    :label="this.$store.state.lang.lang_map.user.title"
                                     name="title"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
@@ -56,7 +56,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    label="Name"
+                                    :label="this.$store.state.lang.lang_map.user.name"
                                     name="name"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
@@ -70,7 +70,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    label="Surname"
+                                    :label="this.$store.state.lang.lang_map.user.surname"
                                     name="surname"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
@@ -83,7 +83,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    label="Email"
+                                    :label="this.$store.state.lang.lang_map.user.email"
                                     name="email"
                                     prepend-icon="mdi-mail"
                                     type="text"
@@ -98,7 +98,7 @@
                                 <v-text-field
                                     color="green"
                                     id="password"
-                                    label="Password"
+                                    :label="this.$store.state.lang.lang_map.user.password"
                                     name="password"
                                     prepend-icon="mdi-lock"
                                     type="password"
@@ -112,7 +112,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    label="Country"
+                                    :label="this.$store.state.lang.lang_map.user.country"
                                     name="country"
                                     prepend-icon="mdi-mail"
                                     type="text"
@@ -139,7 +139,7 @@
                                     dense
                                 ></v-text-field>
                                 <v-select
-                                    label="Language"
+                                    :label="this.$store.state.lang.lang_map.user.language"
                                     color="green"
                                     class="col-md-4"
                                     item-color="green"
