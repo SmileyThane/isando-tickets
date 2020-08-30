@@ -1,0 +1,227 @@
+<?php
+
+use Illuminate\Database\Seeder;
+
+class LanguageSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::table('languages')->updateOrInsert(
+            ['id' => 1],
+            [
+                'name' => 'English',
+                'short_code' => 'eng',
+                'lang_map' => '
+{
+   "data":[
+
+   ],
+   "main":{
+      "create":"create",
+      "update":"update",
+      "created":"created",
+      "updated":"updated",
+      "delete":"delete",
+      "deleted":"deleted",
+      "add":"add",
+      "remove":"remove",
+      "added":"added",
+      "removed":"removed",
+      "select":"select",
+      "phone":"phone",
+      "phones":"phones",
+      "address":"address",
+      "address_line":"address_line",
+      "list":"list",
+      "show":"show",
+      "edit":"edit",
+      "info":"info",
+      "additional":"additional",
+      "social":"social",
+      "new":"new",
+      "type":"type",
+      "city":"city",
+      "email":"email",
+      "password":"password",
+      "name":"name",
+      "description":"description",
+      "actions":"actions",
+      "action":"action",
+      "item":"item",
+      "for":"for",
+      "at":"at"
+   },
+   "company":{
+      "companies":"companies",
+      "company":"company",
+      "contacts":"contacts",
+      "contact":"contact",
+      "company_number":"company_number",
+      "registration_date":"registration_date"
+   },
+   "customer":{
+      "customers":"customers",
+      "customer":"customer"
+   },
+   "product":{
+      "products":"products",
+      "product":"product",
+      "clients":"clients",
+      "client":"client"
+   },
+   "team":{
+      "teams":"teams",
+      "team":"team",
+      "members":"members",
+      "member":"member"
+   },
+   "ticket":{
+      "tickets":"tickets",
+      "ticket":"ticket",
+      "status":"status",
+      "priority":"priority",
+      "from":"from",
+      "to":"to",
+      "title":"title",
+      "last":"last",
+      "contact":"contact",
+      "due_date":"due_date",
+      "server":"server",
+      "access":"access",
+      "details":"details",
+      "attachments":"attachments",
+      "attachment":"attachment",
+      "answer":"answer",
+      "answers":"answers",
+      "history":"history",
+      "notices":"notices",
+      "notice":"notice"
+   },
+   "user":{
+      "roles":"roles",
+      "role":"role",
+      "person":"person",
+      "first_name":"first_name",
+      "last_name":"last_name",
+      "language":"language",
+      "postal_code":"postal_code",
+      "title":"title",
+      "title_before_name":"title_before_name"
+   }
+}
+'
+            ]
+        );
+        DB::table('languages')->updateOrInsert(
+            ['id' => 2],
+            [
+                'name' => 'German',
+                'short_code' => 'deu',
+                'lang_map' => '
+{
+   "data":[
+
+   ],
+   "main":{
+      "create":"create",
+      "update":"update",
+      "created":"created",
+      "updated":"updated",
+      "delete":"delete",
+      "deleted":"deleted",
+      "add":"add",
+      "remove":"remove",
+      "added":"added",
+      "removed":"removed",
+      "select":"select",
+      "phone":"phone",
+      "phones":"phones",
+      "address":"address",
+      "address_line":"address_line",
+      "list":"list",
+      "show":"show",
+      "edit":"edit",
+      "info":"info",
+      "additional":"additional",
+      "social":"social",
+      "new":"new",
+      "type":"type",
+      "city":"city",
+      "email":"email",
+      "password":"password",
+      "name":"name",
+      "description":"description",
+      "actions":"actions",
+      "action":"action",
+      "item":"item",
+      "for":"for",
+      "at":"at"
+   },
+   "company":{
+      "companies":"companies",
+      "company":"company",
+      "contacts":"contacts",
+      "contact":"contact",
+      "company_number":"company_number",
+      "registration_date":"registration_date"
+   },
+   "customer":{
+      "customers":"customers",
+      "customer":"customer"
+   },
+   "product":{
+      "products":"products",
+      "product":"product",
+      "clients":"clients",
+      "client":"client"
+   },
+   "team":{
+      "teams":"teams",
+      "team":"team",
+      "members":"members",
+      "member":"member"
+   },
+   "ticket":{
+      "tickets":"tickets",
+      "ticket":"ticket",
+      "status":"status",
+      "priority":"priority",
+      "from":"from",
+      "to":"to",
+      "title":"title",
+      "last":"last",
+      "contact":"contact",
+      "due_date":"due_date",
+      "server":"server",
+      "access":"access",
+      "details":"details",
+      "attachments":"attachments",
+      "attachment":"attachment",
+      "answer":"answer",
+      "answers":"answers",
+      "history":"history",
+      "notices":"notices",
+      "notice":"notice"
+   },
+   "user":{
+      "roles":"roles",
+      "role":"role",
+      "person":"person",
+      "first_name":"first_name",
+      "last_name":"last_name",
+      "language":"language",
+      "postal_code":"postal_code",
+      "title":"title",
+      "title_before_name":"title_before_name"
+   }
+}
+'
+            ]
+        );
+    }
+}
