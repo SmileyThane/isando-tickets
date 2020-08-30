@@ -10,7 +10,7 @@ class TicketPrioritySeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         DB::table('ticket_priorities')->updateOrInsert(
             ['id' => 1],

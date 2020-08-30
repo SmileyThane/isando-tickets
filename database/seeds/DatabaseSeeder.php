@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(TicketPrioritySeeder::class);
         $this->call(TicketStatusSeeder::class);
+        $this->call(TypesSeeder::class);
+
 
     }
 }

@@ -10,7 +10,7 @@ class PlanSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         DB::table('plans')->updateOrInsert(
             ['id' => 1],
