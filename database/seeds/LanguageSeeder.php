@@ -16,11 +16,7 @@ class LanguageSeeder extends Seeder
             [
                 'name' => 'English',
                 'short_code' => 'eng',
-                'lang_map' => '
-{
-   "data":[
-
-   ],
+                'lang_map' => '{
    "main":{
       "create":"create",
       "update":"update",
@@ -54,7 +50,21 @@ class LanguageSeeder extends Seeder
       "action":"action",
       "item":"item",
       "for":"for",
-      "at":"at"
+      "at":"at",
+      "profile":"Profile",
+      "companies":"companies",
+      "company":"company",
+      "products":"products",
+      "product":"product",
+      "customers":"customers",
+      "customer":"customer",
+      "teams":"teams",
+      "team":"team",
+      "individuals":"individuals",
+      "contact":"contact",
+      "tickets":"tickets",
+      "ticket":"ticket",
+      "create_ticket":"create_ticket"
    },
    "company":{
       "companies":"companies",
@@ -122,11 +132,7 @@ class LanguageSeeder extends Seeder
             [
                 'name' => 'German',
                 'short_code' => 'deu',
-                'lang_map' => '
-{
-   "data":[
-
-   ],
+                'lang_map' => '{
    "main":{
       "create":"erstellen",
       "update":"Aktualisierung",
@@ -160,7 +166,21 @@ class LanguageSeeder extends Seeder
       "action":"Aktion",
       "item":"Element",
       "for":"für",
-      "at":"unter"
+      "at":"unter",
+      "profile":"Profil",
+      "companies":"Unternehmen",
+      "company":"Unternehmen",
+      "products":"Produkte",
+      "product":"Produkt",
+      "customers":"Kunden",
+      "customer":"Kunde",
+      "teams":"Mannschaften",
+      "team":"Mannschaft",
+      "individuals":"Kontakte",
+      "contact":"Kontakt",
+      "tickets":"Eintrittskarten",
+      "ticket":"Eintrittskart",
+      "create_ticket":"Erstellen Eintrittskart"
    },
    "company":{
       "companies":"Unternehmen",
