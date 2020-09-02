@@ -40,7 +40,7 @@
                                             color="green"
                                             item-color="green"
                                             :items="footerProps.itemsPerPageOptions"
-                                            label="Items per page"
+                                            :label="langMap.main.items_per_page"
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>

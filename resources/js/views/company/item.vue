@@ -889,6 +889,7 @@
                 footerProps: {
                     itemsPerPage: 10,
                     disableItemsPerPage: true,
+                    itemsPerPageText: this.$store.state.lang.lang_map.main.items_per_page
                 },
                 isCompanyUpdated: false,
                 langMap: this.$store.state.lang.lang_map,
