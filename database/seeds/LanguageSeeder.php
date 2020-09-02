@@ -105,7 +105,20 @@ class LanguageSeeder extends Seeder
 "language": "language",
 "postal_code": "postal code",
 "title": "title",
-"title_before_name": "title before name"
+"title_before_name": "title before name",
+"loading": "Give me a second...",
+"search": "Search...",
+"items_per_page": "Items per page",
+"delete_selected": "Do you want to delete selected",
+"cancel": "cancel",
+"basic": "basic",
+"resend": "resend",
+"invite": "invite",
+"give_access": "Give access to the system",
+"information": "information",
+"user": "user",
+"save": "save"
+
    },
  "exceptions": {
 
@@ -207,7 +220,19 @@ class LanguageSeeder extends Seeder
 "language": "Sprache",
 "postal_code": "Postleitzahl",
 "title": "Titel",
-"title_before_name": "Titel vor Name"
+"title_before_name": "Titel vor Name",
+"loading": "Gib mir eine Sekunde...",
+"search": "Suche...",
+"items_per_page": "Objekte pro Seite",
+"delete_selected": "Möchten Sie ausgewählte löschen",
+"cancel": "stornieren",
+"basic": "Basic",
+"resend": "erneut senden",
+"invite": "einladen",
+"give_access": "Geben Sie Zugriff auf das System",
+"information": "Information",
+"user": "Benutzer",
+"save": "spare"
  },
  "exceptions": {
 
