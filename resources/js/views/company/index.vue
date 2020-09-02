@@ -55,6 +55,7 @@
                                               :total-visible="5"
                                 >
                                 </v-pagination>
+
                             </template>
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
