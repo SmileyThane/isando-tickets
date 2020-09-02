@@ -25,14 +25,14 @@
                             :footer-props="footerProps"
                             class="elevation-1"
                             hide-default-footer
-                            loading-text="Give me a second..."
+                            :loading-text="langMap.main.loading"
                             @click:row="showItem"
                         >
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
                                         <v-text-field @input="getCompanies" v-model="companiesSearch" color="green"
-                                                      label="Search..." class="mx-4"></v-text-field>
+                                                      :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
@@ -97,11 +97,11 @@
         <template>
             <v-dialog v-model="removeCompanyDialog" persistent max-width="290">
                 <v-card>
-                    <v-card-title class="headline">Do you want to delete selected company?</v-card-title>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{langMap.main.company}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeCompanyDialog = false">Cancel</v-btn>
-                        <v-btn color="red darken-1" disabled text @click="deleteCompany(selectedCompanyId)">{{this.$store.state.lang.lang_map.main.delete}}
+                        <v-btn color="grey darken-1" text @click="removeCompanyDialog = false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red darken-1" disabled text @click="deleteCompany(selectedCompanyId)">{{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -123,6 +123,7 @@
                 totalCompanies: 0,
                 lastPage: 0,
                 loading: 'green',
+                langMap: this.$store.state.lang.lang_map,
                 expanded: [],
                 singleExpand: false,
                 options: {
