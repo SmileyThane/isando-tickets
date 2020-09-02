@@ -61,7 +61,6 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <p><strong>Actions:</strong></p>
                                     <p>
                                         <v-btn
                                             color="grey"
@@ -102,7 +101,7 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeCompanyDialog = false">Cancel</v-btn>
-                        <v-btn color="red darken-1" disabled text @click="deleteCompany(selectedCompanyId)">Delete
+                        <v-btn color="red darken-1" disabled text @click="deleteCompany(selectedCompanyId)">{{this.$store.state.lang.lang_map.main.delete}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -144,9 +143,9 @@
                         sortable: false,
                         value: 'id',
                     },
-                    {text: 'name', value: 'name'},
-                    {text: 'Company number', value: 'company_number'},
-                    {text: 'Description', value: 'description'},
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.main.company_number}`, value: 'company_number'},
+                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
                 ],
                 companiesSearch: '',
                 companies: [],
