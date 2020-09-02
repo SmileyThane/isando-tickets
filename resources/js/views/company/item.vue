@@ -17,17 +17,18 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title>Basic info</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.main.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompany">Save
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompany">
+                            {{langMap.main.update}}
                         </v-btn>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
                             <v-text-field
                                 color="green"
-                                label="Name"
+                                :label="langMap.main.name"
                                 name="name"
                                 prepend-icon="mdi-rename-box"
                                 type="text"
@@ -38,7 +39,7 @@
                             ></v-text-field>
                             <v-text-field
                                 color="green"
-                                label="Description"
+                                :label="langMap.main.description"
                                 name="description"
                                 prepend-icon="mdi-comment-text"
                                 type="text"
@@ -50,7 +51,7 @@
 
                             <v-text-field
                                 color="green"
-                                label="Company number"
+                                :label="langMap.main.company_number"
                                 name="company_number"
                                 prepend-icon="mdi-message-alert"
                                 type="text"
@@ -72,7 +73,7 @@
                                     <v-text-field
                                         color="green"
                                         v-model="company.registration_date"
-                                        label="Date of registration"
+                                        :label="langMap.main.registration_date"
                                         name="registration_date"
                                         prepend-icon="mdi-calendar"
                                         readonly
@@ -102,7 +103,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Additional info</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.main.additional}} {{langMap.main.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -160,7 +161,7 @@
                                     >
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                New phone
+                                                {{langMap.main.new}} {{langMap.main.phone}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -173,7 +174,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="phoneForm.phone"
-                                                                label="Phone"
+                                                                :label="langMap.main.phone"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -185,7 +186,7 @@
                                                                 item-value="id"
                                                                 v-model="phoneForm.phone_type"
                                                                 :items="phoneTypes"
-                                                                label="Type"
+                                                                :label="langMap.main.type"
                                                                 dense
                                                             ></v-select>
                                                         </v-col>
@@ -207,7 +208,7 @@
 
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                New address
+                                                {{langMap.main.new}} {{langMap.main.address}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -220,7 +221,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.address"
-                                                                label="Address"
+                                                                :label="langMap.main.address_line + ' 1'"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -229,7 +230,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.address_line_2"
-                                                                label="Address line 2"
+                                                                :label="langMap.main.address_line + ' 2'"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -238,7 +239,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.postal_code"
-                                                                label="Postal code"
+                                                                :label="langMap.main.postal_code"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -247,7 +248,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.city"
-                                                                label="City"
+                                                                :label="langMap.main.city"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -256,7 +257,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.country"
-                                                                label="Country"
+                                                                :label="langMap.main.country"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -268,7 +269,7 @@
                                                                 item-value="id"
                                                                 v-model="addressForm.address_type"
                                                                 :items="addressTypes"
-                                                                label="Type"
+                                                                :label="langMap.main.type"
                                                                 dense
                                                             ></v-select>
                                                         </v-col>
@@ -303,7 +304,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Company contacts</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.main.company}} {{langMap.main.contacts}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -319,15 +320,18 @@
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <p></p>
-                                    <p v-if="item.user_data.email"><strong>E-mail:</strong> {{ item.user_data.email }}
+                                    <p v-if="item.user_data.email"><strong>{{langMap.main.email}}:</strong> {{
+                                        item.user_data.email }}
                                     </p>
-                                    <p v-if="item.user_data.phones.length > 0"><strong>Phone(s):</strong></p>
+                                    <p v-if="item.user_data.phones.length > 0"><strong>{{langMap.main.phone}}:</strong>
+                                    </p>
                                     <p v-if="item.user_data.phones.length > 0"
                                        v-for="phoneItem in item.user_data.phones">{{ phoneItem.phone }} ({{
                                         phoneItem.type.name }})</p>
                                     <!--                                    <p><strong>Lang:</strong></p>-->
                                     <!--                                    <p>{{ item.user_data.lang }}</p>-->
-                                    <p v-if="item.user_data.addresses.length > 0"><strong>Address(es):</strong></p>
+                                    <p v-if="item.user_data.addresses.length > 0">
+                                        <strong>{{langMap.main.address}}:</strong></p>
                                     <p v-if="item.user_data.addresses.length > 0"
                                        v-for="addressItem in item.user_data.addresses">{{ addressItem.address }} {{
                                         addressItem.address_line_2 }} {{ addressItem.address_line_3 }} ({{
@@ -340,13 +344,6 @@
                                 </div>
                             </template>
                             <template v-slot:item.actions="{ item }">
-                                <!--                                <v-icon-->
-                                <!--                                    small-->
-                                <!--                                    class="mr-2"-->
-                                <!--                                    hint="Account status"-->
-                                <!--                                >-->
-                                <!--                                    {{item.user_data.is_active ? 'mdi-account' : 'mdi-account-off'}}-->
-                                <!--                                </v-icon>-->
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn :disabled="!item.user_data.is_active" @click="sendInvite(item)" icon
@@ -358,7 +355,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>Resend invite</span>
+                                    <span>{{langMap.main.resend}} {{langMap.main.invite}}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
@@ -370,7 +367,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>Edit contact</span>
+                                    <span>{{langMap.main.edit}} {{langMap.main.contact}}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
@@ -378,13 +375,13 @@
                                                @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
                                             <v-icon
                                                 small
-                                                hint="Delete contact"
+                                                :hint="langMap.main.delete+ ' ' + langMap.main.contact"
                                             >
                                                 mdi-delete
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>Delete contact</span>
+                                    <span>{{langMap.main.delete}}  {{langMap.main.contact}}</span>
                                 </v-tooltip>
                             </template>
 
@@ -395,7 +392,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    New Contact
+                                    {{langMap.main.new}} {{langMap.main.contact}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -406,7 +403,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     color="green"
-                                                    label="Name"
+                                                    :label="langMap.main.name"
                                                     name="name"
                                                     type="text"
                                                     v-model="employeeForm.name"
@@ -416,7 +413,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     color="green"
-                                                    label="Email"
+                                                    :label="langMap.main.email"
                                                     name="email"
                                                     type="text"
                                                     v-model="employeeForm.email"
@@ -425,7 +422,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-select
-                                                    label="Role"
+                                                    :label="langMap.main.roles"
                                                     color="green"
                                                     item-color="green"
                                                     item-text="name"
@@ -434,7 +431,7 @@
                                                     v-model="employeeForm.role_id"
                                                 />
                                                 <v-checkbox
-                                                    label="Give access to the system"
+                                                    :label="langMap.main.give_access + '?'"
                                                     color="success"
                                                     :disabled="!checkRoleByIds([1,2,3])"
                                                     v-model="employeeForm.is_active"
@@ -469,7 +466,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Social info</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.main.social}} {{langMap.main.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -501,7 +498,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    New social item
+                                    {{langMap.main.new}} {{langMap.main.social}} {{langMap.main.item}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -514,7 +511,7 @@
                                                     color="green"
                                                     item-color="green"
                                                     v-model="socialForm.social_link"
-                                                    label="Social link"
+                                                    :label="langMap.main.social + ' ' + langMap.main.link"
                                                     dense
                                                 ></v-text-field>
                                             </v-col>
@@ -526,7 +523,7 @@
                                                     item-value="id"
                                                     v-model="socialForm.social_type"
                                                     :items="socialTypes"
-                                                    label="Type"
+                                                    :label="langMap.main.type"
                                                     dense
                                                 ></v-select>
                                             </v-col>
@@ -554,12 +551,12 @@
             <v-dialog v-model="rolesDialog" persistent max-width="600px">
                 <v-card>
                     <v-card-title>
-                        <span class="headline">Update info for {{singleUserForm.user.name}}</span>
+                        <span class="headline">{{langMap.main.update}} {{langMap.main.info}}: {{singleUserForm.user.name}}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <v-select
-                                label="Role"
+                                :label="langMap.main.role"
                                 color="green"
                                 item-color="green"
                                 item-text="name"
@@ -574,7 +571,7 @@
                             >
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>
-                                        User information
+                                        {{langMap.main.user}} {{langMap.main.information}}
                                         <template v-slot:actions>
                                             <v-icon color="submit">mdi-plus</v-icon>
                                         </template>
@@ -584,7 +581,7 @@
                                             <v-row>
                                                 <v-text-field
                                                     color="green"
-                                                    label="Title before name"
+                                                    :label="langMap.main.title_before_name"
                                                     name="title_before_name"
                                                     prepend-icon="mdi-book-account-outline"
                                                     type="text"
@@ -596,7 +593,7 @@
                                                 ></v-text-field>
                                                 <v-text-field
                                                     color="green"
-                                                    label="Title"
+                                                    :label="langMap.main.title"
                                                     name="title"
                                                     prepend-icon="mdi-book-account-outline"
                                                     type="text"
@@ -608,7 +605,7 @@
                                                 ></v-text-field>
                                                 <v-text-field
                                                     color="green"
-                                                    label="Name"
+                                                    :label="langMap.main.name"
                                                     name="name"
                                                     prepend-icon="mdi-book-account-outline"
                                                     type="text"
@@ -621,7 +618,7 @@
                                                 ></v-text-field>
                                                 <v-text-field
                                                     color="green"
-                                                    label="Surname"
+                                                    :label="langMap.main.surname"
                                                     name="surname"
                                                     prepend-icon="mdi-book-account-outline"
                                                     type="text"
@@ -633,7 +630,7 @@
                                                 ></v-text-field>
                                                 <v-text-field
                                                     color="green"
-                                                    label="Email"
+                                                    :label="langMap.main.email"
                                                     name="email"
                                                     prepend-icon="mdi-mail"
                                                     type="text"
@@ -661,7 +658,7 @@
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>
-                                        Contact phones and addresses
+                                        {{langMap.main.contact}} {{langMap.main.info}}
                                         <template v-slot:actions>
                                             <v-icon color="submit">mdi-plus</v-icon>
                                         </template>
@@ -721,7 +718,7 @@
                                                     <v-expansion-panels>
                                                         <v-expansion-panel>
                                                             <v-expansion-panel-header>
-                                                                New phone
+                                                                {{langMap.main.new}} {{langMap.main.phone}}
                                                                 <template v-slot:actions>
                                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                                 </template>
@@ -734,7 +731,7 @@
                                                                                 color="green"
                                                                                 item-color="green"
                                                                                 v-model="userPhoneForm.phone"
-                                                                                label="Phone"
+                                                                                :label="langMap.main.phone"
                                                                                 dense
                                                                             ></v-text-field>
                                                                         </v-col>
@@ -746,7 +743,7 @@
                                                                                 item-value="id"
                                                                                 v-model="userPhoneForm.phone_type"
                                                                                 :items="phoneTypes"
-                                                                                label="Type"
+                                                                                :label="langMap.main.type"
                                                                                 dense
                                                                             ></v-select>
                                                                         </v-col>
@@ -767,7 +764,7 @@
                                                         </v-expansion-panel>
                                                         <v-expansion-panel>
                                                             <v-expansion-panel-header>
-                                                                New address
+                                                                {{langMap.main.new}} {{langMap.main.address}}
                                                                 <template v-slot:actions>
                                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                                 </template>
@@ -780,7 +777,7 @@
                                                                                 color="green"
                                                                                 item-color="green"
                                                                                 v-model="userAddressForm.address.address"
-                                                                                label="Address"
+                                                                                :label="langMap.main.address_line + ' 1'"
                                                                                 dense
                                                                             ></v-text-field>
                                                                         </v-col>
@@ -789,7 +786,7 @@
                                                                                 color="green"
                                                                                 item-color="green"
                                                                                 v-model="userAddressForm.address.address_line_2"
-                                                                                label="Address line 2"
+                                                                                :label="langMap.main.address_line + ' 2'"
                                                                                 dense
                                                                             ></v-text-field>
                                                                         </v-col>
@@ -798,7 +795,7 @@
                                                                                 color="green"
                                                                                 item-color="green"
                                                                                 v-model="userAddressForm.address.postal_code"
-                                                                                label="Postal code"
+                                                                                :label="langMap.main.postal_code"
                                                                                 dense
                                                                             ></v-text-field>
                                                                         </v-col>
@@ -807,7 +804,7 @@
                                                                                 color="green"
                                                                                 item-color="green"
                                                                                 v-model="userAddressForm.address.city"
-                                                                                label="City"
+                                                                                :label="langMap.main.city"
                                                                                 dense
                                                                             ></v-text-field>
                                                                         </v-col>
@@ -816,7 +813,7 @@
                                                                                 color="green"
                                                                                 item-color="green"
                                                                                 v-model="userAddressForm.address.country"
-                                                                                label="Country"
+                                                                                :label="langMap.main.country"
                                                                                 dense
                                                                             ></v-text-field>
                                                                         </v-col>
@@ -828,7 +825,7 @@
                                                                                 item-value="id"
                                                                                 v-model="userAddressForm.address_type"
                                                                                 :items="addressTypes"
-                                                                                label="Type"
+                                                                                :label="langMap.main.type"
                                                                                 dense
                                                                             ></v-select>
                                                                         </v-col>
@@ -856,7 +853,7 @@
                             </v-expansion-panels>
 
                             <v-checkbox
-                                label="Give access to the system"
+                                :label="langMap.main.give_access + '?'"
                                 color="success"
                                 :disabled="!checkRoleByIds([1,2,3])"
                                 v-model="singleUserForm.user.is_active"
@@ -868,8 +865,8 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="red" text @click="rolesDialog = false">Close</v-btn>
-                        <v-btn color="green" text @click="updateRole">Save</v-btn>
+                        <v-btn color="red" text @click="rolesDialog = false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="green" text @click="updateRole">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -894,18 +891,13 @@
                     disableItemsPerPage: true,
                 },
                 isCompanyUpdated: false,
+                langMap: this.$store.state.lang.lang_map,
                 headers: [
                     {text: '', value: 'data-table-expand'},
-                    // {
-                    //     text: 'ID',
-                    //     align: 'start',
-                    //     sortable: false,
-                    //     value: 'id',
-                    // },
-                    {text: 'name', value: 'user_data'},
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'user_data'},
                     // {text: 'email', value: 'user_data.email'},
-                    {text: 'roles', value: 'role_names'},
-                    {text: 'Actions', value: 'actions', sortable: false},
+                    {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'role_names'},
+                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
                 companyIsLoaded: false,
                 company: {
