@@ -22,7 +22,7 @@
             class="elevation-4"
             hide-default-footer
             fixed-header
-            loading-text="Give me a second..."
+            :loading-text="langMap.main.loading"
             @click:row="showItem"
         >
             <template v-slot:top>
@@ -30,7 +30,7 @@
                 <v-row>
                     <v-col sm="12" md="10">
                         <v-text-field @input="getTickets" v-model="ticketsSearch" color="green"
-                                      label="Search..." class="mx-4"></v-text-field>
+                                      :label="langMap.main.search" class="mx-4"></v-text-field>
                     </v-col>
                     <v-col sm="12" md="2">
                         <v-select
@@ -38,7 +38,7 @@
                             color="green"
                             item-color="green"
                             :items="footerProps.itemsPerPageOptions"
-                            label="Items per page"
+                            :label="langMap.main.items_per_page"
                             @change="updateItemsCount"
                         ></v-select>
                     </v-col>
@@ -82,10 +82,10 @@
                     <v-spacer>
                         &nbsp;
                     </v-spacer>
-                    <p><strong>Contact name:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
-                    <p><strong>Contact email:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
-                    <p><strong>Due date:</strong> {{ item.due_date }}</p>
-                    <p><strong>Access details:</strong> {{ item.access_details }}</p>
+                    <p><strong>{{langMap.main.contact}} {{langMap.main.name}}:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
+                    <p><strong>{{langMap.main.contact}} {{langMap.main.email}}:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
+                    <p><strong>{{langMap.main.due_date}}:</strong> {{ item.due_date }}</p>
+                    <p><strong>{{langMap.main.access}} {{langMap.main.details}}:</strong> {{ item.access_details }}</p>
                     <p>
                         <v-btn
                             color="grey"
@@ -120,11 +120,11 @@
         <template>
             <v-dialog v-model="removeTicketDialog" persistent max-width="290">
                 <v-card>
-                    <v-card-title class="headline">Do you want to delete the ticket?</v-card-title>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{langMap.main.ticket}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeTicketDialog = false">Cancel</v-btn>
-                        <v-btn color="red darken-1" text @click="deleteTicket(selectedticketId)">Delete</v-btn>
+                        <v-btn color="grey darken-1" text @click="removeTicketDialog = false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red darken-1" text @click="deleteTicket(selectedticketId)">{{langMap.main.delete}}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -136,6 +136,7 @@
     export default {
         data() {
             return {
+                langMap: this.$store.state.lang.lang_map,
                 clientId: 6,
                 snackbar: false,
                 actionColor: '',
@@ -163,14 +164,13 @@
                         sortable: false,
                         value: 'id',
                     },
-                    {text: 'Status', value: 'status.name'},
-                    {text: 'Priority', value: 'priority.name'},
-                    {text: 'Company from', value: 'from.name'},
-                    {text: 'Assigned to', value: 'assigned_person'},
-                    {text: 'Product', value: 'product.name'},
-                    {text: 'Title', value: 'name'},
-                    {text: 'Last update', value: 'last_update'},
-                    // {text: 'Actions', value: 'actions', sortable: false},
+                    {text: `${this.$store.state.lang.lang_map.main.status}`, value: 'status.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.priority}`, value: 'priority.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.company + ' ' + this.$store.state.lang.lang_map.main.from}`, value: 'from.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.to + ' ' + this.$store.state.lang.lang_map.main.user}`, value: 'assigned_person'},
+                    {text: `${this.$store.state.lang.lang_map.main.product}`, value: 'product.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.title}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.main.updated}`, value: 'last_update'},
                 ],
                 ticketsSearch: '',
                 tickets: [],
