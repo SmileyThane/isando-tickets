@@ -85,6 +85,7 @@ class AuthController extends Controller
         $errors = $this->getRegistrationErrors($request);
         if ($errors === null) {
             $request->is_validated = true;
+            $request->is_active = true;
             $company = $this->companyRepo->create($request);
             $request->company_id = $company->id;
             $license = $this->licenseRepo->create($request);
