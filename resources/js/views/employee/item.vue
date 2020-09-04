@@ -611,7 +611,7 @@
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}${this.addressForm.address.country}`
                 }
                 if (this.addressForm.address.postal_code) {
-                    this.addressForm.address.address += `Postal Code: ${this.addressForm.address.postal_code}`
+                    this.addressForm.address.address += ` ${this.addressForm.address.postal_code} `
                 }
                 axios.post('/api/address', this.addressForm).then(response => {
                     response = response.data
