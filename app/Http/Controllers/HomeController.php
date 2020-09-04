@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Country;
 use App\Repository\EmailReceiverRepository;
+use App\TimeZone;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -35,5 +37,15 @@ class HomeController extends Controller
     public function receiveMail(Request $request, $type = 'answer')
     {
         $this->emailReceiverRepo->receiveMail($type);
+    }
+
+    public function getTimeZones()
+    {
+        return self::showResponse(true, TimeZone::all());
+    }
+
+    public function getCountries()
+    {
+        return self::showResponse(true, Country::all());
     }
 }

@@ -68,10 +68,6 @@ class UserController extends Controller
         return self::showResponse($this->userRepo->changeIsActive($request));
     }
 
-    public function getTimeZones()
-    {
-        return self::showResponse(true, TimeZone::all());
-    }
 
     public function sendInvite(Request $request)
     {
