@@ -17,7 +17,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    Add New Client
+                                    {{langMap.main.add}} {{langMap.main.new}} {{langMap.main.client}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -28,7 +28,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     color="green"
-                                                    label="Name"
+                                                    :label="langMap.main.name"
                                                     name="company_name"
                                                     type="text"
                                                     v-model="clientForm.client_name"
@@ -38,7 +38,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     color="green"
-                                                    label="Description"
+                                                    :label="langMap.main.description"
                                                     name="company_description"
                                                     type="text"
                                                     v-model="clientForm.client_description"
@@ -47,7 +47,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-select
-                                                    label="Supplier"
+                                                    :label="langMap.main.supplier"
                                                     color="green"
                                                     item-color="green"
                                                     item-text="name"
@@ -83,14 +83,14 @@
                             :footer-props="footerProps"
                             class="elevation-1"
                             hide-default-footer
-                            loading-text="Give me a second..."
+                            :loading-text="langMap.main.loading"
                             @click:row="showItem"
                         >
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
                                         <v-text-field @input="getClients" v-model="customersSearch" color="green"
-                                                      label="Search..." class="mx-4"></v-text-field>
+                                                      :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
@@ -98,7 +98,7 @@
                                             color="green"
                                             item-color="green"
                                             :items="footerProps.itemsPerPageOptions"
-                                            label="Items per page"
+                                            :label="langMap.main.items_per_page"
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
@@ -119,7 +119,7 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <p><strong>Actions:</strong></p>
+                                    <p><strong>{{langMap.main.actions}}:</strong></p>
                                     <p>
                                         <v-btn
                                             color="grey"
@@ -156,11 +156,11 @@
         <template>
             <v-dialog v-model="removeCustomerDialog" persistent max-width="290">
                 <v-card>
-                    <v-card-title class="headline">Do you want to delete selected client?</v-card-title>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{langMap.main.client}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeCustomerDialog = false">Cancel</v-btn>
-                        <v-btn color="red darken-1" disabled text @click="deleteCustomer(selectedCustomerId)">Delete
+                        <v-btn color="grey darken-1" text @click="removeCustomerDialog = false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red darken-1" disabled text @click="deleteCustomer(selectedCustomerId)">{{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -181,6 +181,7 @@
                 totalCustomers: 0,
                 lastPage: 0,
                 loading: 'green',
+                langMap: this.$store.state.lang.lang_map,
                 expanded: [],
                 singleExpand: false,
                 options: {
@@ -200,8 +201,8 @@
                         align: 'start',
                         value: 'id',
                     },
-                    {text: 'name', value: 'name'},
-                    {text: 'Description', value: 'description'},
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
                 ],
                 customersSearch: '',
                 customers: [],
