@@ -123,7 +123,8 @@ class LanguageSeeder extends Seeder
 "responded": "responded",
 "close": "close",
 "assign": "assign",
-"timezone": "time zone"
+"timezone": "time zone",
+"home": "home"
 
    },
  "exceptions": {
@@ -244,7 +245,8 @@ class LanguageSeeder extends Seeder
 "responded": "antwortete",
 "close": "schließen",
 "assign": "zuordnen",
-"timezone": "Zeitzone"
+"timezone": "Zeitzone",
+"home": "home"
  },
  "exceptions": {
 
