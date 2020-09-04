@@ -38,7 +38,8 @@ class Ticket extends Model
 
     public function getLastUpdateAttribute(): string
     {
-        return Carbon::parse($this->attributes['updated_at'])->calendar();
+        $locale = Language::find(Auth::user()->language_id)->short_code;
+        return Carbon::parse($this->attributes['updated_at'])->locale($locale)->calendar();
     }
 
     public function creator(): \Illuminate\Database\Eloquent\Relations\HasOne

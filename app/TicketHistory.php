@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class TicketHistory extends Model
 {
@@ -13,8 +14,8 @@ class TicketHistory extends Model
 
     public function getCreatedAtAttribute()
     {
-        return Carbon::parse($this->attributes['created_at'])->calendar();
-
+        $locale = Language::find(Auth::user()->language_id)->short_code;
+        return Carbon::parse($this->attributes['created_at'])->locale($locale)->calendar();
     }
 
     public function employee(): HasOne

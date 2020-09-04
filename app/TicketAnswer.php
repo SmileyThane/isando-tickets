@@ -5,6 +5,7 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class TicketAnswer extends Model
 {
@@ -13,7 +14,8 @@ class TicketAnswer extends Model
 
     public function getCreatedAtAttribute()
     {
-        return Carbon::parse($this->attributes['created_at'])->calendar();
+        $locale = Language::find(Auth::user()->language_id)->short_code;
+        return Carbon::parse($this->attributes['created_at'])->locale($locale)->calendar();
     }
 
     public function getCreatedAtTimeAttribute()
