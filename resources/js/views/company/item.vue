@@ -253,13 +253,16 @@
                                                             ></v-text-field>
                                                         </v-col>
                                                         <v-col cols="md-3" class="pa-1">
-                                                            <v-text-field
+                                                            <v-select
                                                                 color="green"
                                                                 item-color="green"
+                                                                item-text="name"
+                                                                item-value="name"
                                                                 v-model="addressForm.address.country"
+                                                                :items="countries"
                                                                 :label="langMap.main.country"
                                                                 dense
-                                                            ></v-text-field>
+                                                            ></v-select>
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
                                                             <v-select
@@ -809,13 +812,16 @@
                                                                             ></v-text-field>
                                                                         </v-col>
                                                                         <v-col cols="md-3" class="pa-1">
-                                                                            <v-text-field
+                                                                            <v-select
                                                                                 color="green"
                                                                                 item-color="green"
+                                                                                item-text="name"
+                                                                                item-value="name"
                                                                                 v-model="userAddressForm.address.country"
+                                                                                :items="countries"
                                                                                 :label="langMap.main.country"
                                                                                 dense
-                                                                            ></v-text-field>
+                                                                            ></v-select>
                                                                         </v-col>
                                                                         <v-col cols="6" class="pa-1">
                                                                             <v-select
@@ -992,7 +998,8 @@
                 },
                 phoneTypes: [],
                 addressTypes: [],
-                socialTypes: []
+                socialTypes: [],
+                countries: [],
             }
         },
         mounted() {
@@ -1001,6 +1008,7 @@
             this.getPhoneTypes();
             this.getAddressTypes();
             this.getSocialTypes();
+            this.getCountries();
             this.employeeForm.company_id = this.$route.params.id
         },
         methods: {
@@ -1025,6 +1033,14 @@
                         console.log('error')
                     }
 
+                });
+            },
+            getCountries() {
+                axios.get('/api/countries').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.countries = response.data
+                    }
                 });
             },
             addEmployee() {
