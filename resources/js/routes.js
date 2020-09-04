@@ -35,7 +35,7 @@ export default [
     },
     {
         path: '/home',
-        name: 'Home',
+        name: 'home',
         component: Ticket
     },
     {
