@@ -15,7 +15,7 @@ class LanguageSeeder extends Seeder
             ['id' => 1],
             [
                 'name' => 'English',
-                'short_code' => 'eng',
+                'short_code' => 'en_US',
                 'lang_map' => '{
    "main":{
 "create": "create",
@@ -135,7 +135,7 @@ class LanguageSeeder extends Seeder
             ['id' => 2],
             [
                 'name' => 'Deutsch',
-                'short_code' => 'deu',
+                'short_code' => 'de_DE',
                 'lang_map' => '{
    "main":{
    "create": "erstellen",
