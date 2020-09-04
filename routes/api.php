@@ -20,7 +20,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', 'API\AuthController@register');
 Route::post('login', 'API\AuthController@login');
 Route::get('plans', 'API\AuthController@plans');
-Route::get('time_zones', 'API\UserController@getTimeZones');
+Route::get('time_zones', 'HomeController@getTimeZones');
+Route::get('countries', 'HomeController@getCountries');
 Route::get('/mail/receive/{type?}', 'HomeController@receiveMail')->name('receiveEmail');
 
 Route::group(['middleware' => 'auth:api'], function () {
