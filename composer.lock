@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0cdbb2c20d14f7a41dd727133ef165c9",
+    "content-hash": "c15d41e6a9d04ff3e846e15f0550208a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1264,6 +1264,74 @@
                 "validator"
             ],
             "time": "2020-08-08T21:28:19+00:00"
+        },
+        {
+            "name": "ernysans/laraworld",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ernysans/laraworld.git",
+                "reference": "c796837500cf45fd67768468c5f169818b550319"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ernysans/laraworld/zipball/c796837500cf45fd67768468c5f169818b550319",
+                "reference": "c796837500cf45fd67768468c5f169818b550319",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "laravel/laravel": "^5.2",
+                "phpunit/phpunit": "5.1.*"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ErnySans\\Laraworld\\LaraworldServiceProvider"
+                    ],
+                    "aliases": {
+                        "Countries": "ErnySans\\Laraworld\\Facades\\Countries",
+                        "TimeZones": "ErnySans\\Laraworld\\Facades\\TimeZones",
+                        "Languages": "ErnySans\\Laraworld\\Facades\\Languages"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ErnySans\\Laraworld\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Erny Sans",
+                    "email": "c@erny.co",
+                    "homepage": "http://erny.co",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Countries, Languages and Time Zones Package for Laravel 5.*",
+            "homepage": "https://github.com/ernysans/laraworld",
+            "keywords": [
+                "countries",
+                "country",
+                "json",
+                "languages",
+                "laravel",
+                "lumen",
+                "migrations",
+                "php",
+                "seed",
+                "time",
+                "timezone"
+            ],
+            "time": "2017-12-18T11:55:45+00:00"
         },
         {
             "name": "fideloper/proxy",

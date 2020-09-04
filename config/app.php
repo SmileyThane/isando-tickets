@@ -164,7 +164,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Webklex\IMAP\Providers\LaravelServiceProvider::class,
         Stevebauman\Location\LocationServiceProvider::class,
-
+        ErnySans\Laraworld\LaraworldServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -230,6 +230,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'IMAPClient' => Webklex\IMAP\Facades\Client::class,
+        'Countries' => ErnySans\Laraworld\Facades\Countries::class,
+        'TimeZones' => ErnySans\Laraworld\Facades\TimeZones::class,
+        'Languages' => ErnySans\Laraworld\Facades\Languages::class,
 
     ],
 

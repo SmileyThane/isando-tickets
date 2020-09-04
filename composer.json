@@ -11,6 +11,7 @@
         "php": "^7.2.5",
         "ext-json": "*",
         "barryvdh/laravel-ide-helper": "^2.7",
+        "ernysans/laraworld": "^1.0",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
