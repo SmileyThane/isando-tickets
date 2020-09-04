@@ -111,20 +111,23 @@
                                     :readonly="!enableToEdit"
                                     dense
                                 ></v-text-field>
-                                <v-text-field
-                                    color="green"
+                                <v-select
                                     :label="this.$store.state.lang.lang_map.main.country"
-                                    name="country"
-                                    prepend-icon="mdi-mail"
-                                    type="text"
-                                    v-model="userData.country"
-                                    :error-messages="errors.country"
-                                    lazy-validation
+                                    color="green"
                                     class="col-md-4"
-                                    required
+                                    item-color="green"
+                                    name="country"
+                                    prepend-icon="mdi-map"
+                                    item-text="name"
+                                    item-value="id"
+                                    :items="countries"
+                                    v-model="userData.country_id"
+                                    :error-messages="errors.country_id"
+                                    lazy-validation
                                     :readonly="!enableToEdit"
+                                    required
                                     dense
-                                ></v-text-field>
+                                />
                                 <v-text-field
                                     color="green"
                                     label="anredeform"
@@ -440,6 +443,7 @@
                 addressTypes: [],
                 languages: [],
                 timezones: [],
+                countries: [],
             }
         },
         mounted() {
@@ -448,6 +452,7 @@
             this.getAddressTypes();
             this.getLanguages();
             this.getTimeZones();
+            this.getCountries();
         },
         methods: {
             getUser() {
@@ -472,6 +477,14 @@
                     response = response.data
                     if (response.success === true) {
                         this.timezones = response.data
+                    }
+                });
+            },
+            getCountries() {
+                axios.get('/api/countries').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.countries = response.data
                     }
                 });
             },
