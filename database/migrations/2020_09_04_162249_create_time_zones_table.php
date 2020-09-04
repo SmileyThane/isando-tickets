@@ -21,7 +21,7 @@ class CreateTimeZonesTable extends Migration
             $table->string('offset')->nullable();
             $table->string('isdst')->nullable();
             $table->string('text')->nullable();
-            $table->json('utc')->nullable();
+            $table->longText('utc')->nullable();
             $table->timestamps();
         });
     }
