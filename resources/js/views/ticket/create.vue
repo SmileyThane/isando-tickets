@@ -6,8 +6,7 @@
         <div>
             <v-row justify="space-around">
                 <v-col cols="12">
-                    <p class="title text-center">Create new ticket</p>
-                    <!--                            <v-slider v-model="steps" label="Create new ticket" min="2" max="20"></v-slider>-->
+                    <p class="title text-center">{{langMap.main.create}} {{langMap.main.new}} {{langMap.main.ticket}}</p>
                 </v-col>
             </v-row>
             <v-stepper
@@ -24,7 +23,7 @@
                             :editable="editable"
                             :color="'green'"
                         >
-                            Step {{ n }}
+<!--                            Step {{ n }}-->
                         </v-stepper-step>
 
                         <v-divider
@@ -43,7 +42,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <v-select
-                                            label="From"
+                                            :label="langMap.main.from"
                                             color="green"
                                             item-color="green"
                                             item-text="name"
@@ -61,13 +60,13 @@
                                             item-value="item"
                                             v-model="ticketForm.to"
                                             :items="suppliers"
-                                            label="To"
+                                            :label="langMap.main.to"
                                         ></v-autocomplete>
 
                                     </v-col>
                                     <div class="col-md-6">
                                         <v-select
-                                            label="Product"
+                                            :label="langMap.main.product"
                                             color="green"
                                             item-color="green"
                                             item-text="product_data.name"
@@ -84,14 +83,14 @@
                                             item-value="id"
                                             v-model="ticketForm.contact_company_user_id"
                                             :items="employees"
-                                            label="Client contact"
+                                            :label="langMap.main.client+' '+ langMap.main.contact"
                                         ></v-autocomplete>
                                     </v-col>
                                     <v-col cols="12">
                                         <v-tooltip v-model="availabilityTooltip" bottom>
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
-                                                    label="Client's availability"
+                                                    :label="langMap.main.availability"
                                                     color="green"
                                                     item-color="green"
                                                     auto-grow
@@ -103,7 +102,7 @@
                                                     v-on="on"
                                                 ></v-textarea>
                                             </template>
-                                            <span>Please provide working hours when we can contact you on the submitted issue</span>
+                                            <span>{{langMap.main.availability_description}}</span>
                                         </v-tooltip>
                                     </v-col>
                                 </div>
@@ -117,13 +116,13 @@
                                         <v-text-field
                                             color="green"
                                             item-color="green"
-                                            label="Subject"
+                                            :label="langMap.main.title"
                                             v-model="ticketForm.name"
                                         ></v-text-field>
                                     </v-col>
                                     <div class="col-md-6">
                                         <v-select
-                                            label="Priority"
+                                            :label="langMap.main.priority"
                                             color="green"
                                             item-color="green"
                                             item-text="name"
@@ -134,7 +133,7 @@
                                     </div>
                                     <v-col cols="12">
                                         <v-textarea
-                                            label="Description"
+                                            :label="langMap.main.description"
                                             color="green"
                                             item-color="green"
                                             auto-grow
@@ -145,13 +144,13 @@
                                         ></v-textarea>
                                     </v-col>
                                     <v-col cols="12">
-                                        <v-label>Server access details:</v-label>
+                                        <v-label>{{langMap.main.server}} {{langMap.main.access}} {{langMap.main.details}}:</v-label>
                                     </v-col>
                                     <v-col cols="md-6">
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
-                                                    label="IP address"
+                                                    :label="'IP' + langMap.main.details"
                                                     color="green"
                                                     item-color="green"
                                                     auto-grow
@@ -163,14 +162,14 @@
                                                     v-on="on"
                                                 ></v-textarea>
                                             </template>
-                                            <span>IP addresses of your server for remote access if applicable</span>
+                                            <span>{{langMap.main.ip_description}}</span>
                                         </v-tooltip>
                                     </v-col>
                                     <v-col cols="md-6">
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
-                                                    label="Access details"
+                                                    :label="langMap.main.access + ' ' + langMap.main.details"
                                                     color="green"
                                                     item-color="green"
                                                     auto-grow
@@ -182,7 +181,7 @@
                                                     v-on="on"
                                                 ></v-textarea>
                                             </template>
-                                            <span>Please provide login details to your server for Teamviewer access, if applicable</span>
+                                            <span>langMap.main.access_desctiption</span>
                                         </v-tooltip>
                                     </v-col>
                                 </div>
@@ -194,7 +193,7 @@
                                     chips
                                     chips-color="green"
                                     multiple
-                                    label="Attach a Document(s)"
+                                    :label="langMap.main.attachments"
                                     color="green"
                                     item-color="green"
                                     prepend-icon="mdi-paperclip"
@@ -222,14 +221,14 @@
                             style="color: white;"
                             color="#4caf50"
                             @click="n !== steps ? nextStep(n) : submit()"
-                            v-text="n !== steps ? 'Continue' : 'Submit'"
+                            v-text="n !== steps ? langMap.main.continue : langMap.main.create"
                         >
                         </v-btn>
                         <v-btn
                             text
                             @click="previousStep(n)"
                         >
-                            Cancel
+                            {{langMap.main.cancel}}
                         </v-btn>
                     </v-stepper-content>
                 </v-stepper-items>
@@ -250,6 +249,7 @@
                 vertical: false,
                 altLabels: true,
                 editable: true,
+                langMap: this.$store.state.lang.lang_map,
                 ticketForm: {
                     from: '',
                     from_entity_type: '',
