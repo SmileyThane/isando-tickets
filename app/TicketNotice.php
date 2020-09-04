@@ -15,7 +15,8 @@ class TicketNotice extends Model
     public function getCreatedAtAttribute()
     {
         $locale = Language::find(Auth::user()->language_id)->short_code;
-        return Carbon::parse($this->attributes['created_at'])->locale($locale)->calendar();
+        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+        return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }
 
     public function employee(): HasOne
