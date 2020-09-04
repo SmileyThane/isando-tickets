@@ -127,7 +127,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    label="Anredeform"
+                                    label="anredeform"
                                     name="anredeform"
                                     prepend-icon="mdi-mail"
                                     type="text"
