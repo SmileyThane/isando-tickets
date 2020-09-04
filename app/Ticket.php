@@ -4,7 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use GeoIp2\Record\Location;
-use Illuminate\Http\Request;
+use Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
