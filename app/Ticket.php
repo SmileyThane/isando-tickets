@@ -3,11 +3,12 @@
 namespace App;
 
 use Carbon\Carbon;
+use GeoIp2\Record\Location;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Request;
 
 class Ticket extends Model
 {
