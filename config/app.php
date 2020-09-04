@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Webklex\IMAP\Providers\LaravelServiceProvider::class,
+        Stevebauman\Location\LocationServiceProvider::class,
 
 
         /*

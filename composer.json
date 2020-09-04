@@ -19,6 +19,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "spatie/laravel-permission": "^3.13",
+        "stevebauman/location": "^5.1",
         "webklex/laravel-imap": "^1.4"
     },
     "require-dev": {
