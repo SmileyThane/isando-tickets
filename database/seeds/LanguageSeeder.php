@@ -122,7 +122,8 @@ class LanguageSeeder extends Seeder
 "supplier": "supplier",
 "responded": "responded",
 "close": "close",
-"assign": "assign"
+"assign": "assign",
+"timezone": "time zone"
 
    },
  "exceptions": {
@@ -242,7 +243,8 @@ class LanguageSeeder extends Seeder
 "supplier": "lieferant",
 "responded": "antwortete",
 "close": "schließen",
-"assign": "zuordnen"
+"assign": "zuordnen",
+"timezone": "Zeitzone"
  },
  "exceptions": {
 
