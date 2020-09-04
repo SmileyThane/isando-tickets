@@ -119,7 +119,10 @@ class LanguageSeeder extends Seeder
 "user": "user",
 "save": "save",
 "continue": "continue",
-"supplier": "supplier"
+"supplier": "supplier",
+"responded": "responded",
+"close": "close",
+"assign": "assign"
 
    },
  "exceptions": {
@@ -236,7 +239,10 @@ class LanguageSeeder extends Seeder
 "user": "benutzer",
 "save": "spare",
 "continue": "fortsetzen",
-"supplier": "lieferant"
+"supplier": "lieferant",
+"responded": "antwortete",
+"close": "schließen",
+"assign": "zuordnen"
  },
  "exceptions": {
 
