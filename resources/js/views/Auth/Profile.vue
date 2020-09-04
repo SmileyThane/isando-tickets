@@ -19,7 +19,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.main.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.main.profile}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">

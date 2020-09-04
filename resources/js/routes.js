@@ -40,7 +40,7 @@ export default [
     },
     {
         path: '/user',
-        name: 'profile',
+        name: 'profile_main',
         meta: {
             requiresAuth: true,
         },
