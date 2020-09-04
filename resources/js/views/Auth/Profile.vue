@@ -155,13 +155,25 @@
                                     :readonly="!enableToEdit"
                                     dense
                                 />
+                                <v-select
+                                    :label="this.$store.state.lang.lang_map.main.timezone"
+                                    color="green"
+                                    class="col-md-6"
+                                    item-color="green"
+                                    name="timezone"
+                                    prepend-icon="mdi-timetable"
+                                    item-text="name"
+                                    item-value="id"
+                                    :items="timezones"
+                                    v-model="userData.timezone_id"
+                                    :error-messages="errors.timezone_id"
+                                    lazy-validation
+                                    :readonly="!enableToEdit"
+                                    dense
+                                />
                             </v-row>
                         </v-form>
                     </v-card-text>
-                    <!--                    <v-card-actions>-->
-                    <!--                        <v-spacer></v-spacer>-->
-                    <!--                        <v-btn color="green" style="color: white;" @click="updateUser">Update</v-btn>-->
-                    <!--                    </v-card-actions>-->
                 </v-card>
             </v-col>
             <v-col class="col-md-6">
@@ -403,7 +415,8 @@
                     password: "",
                     phones: [],
                     addresses: [],
-                    language_id: ''
+                    language_id: '',
+                    timezone_id: ''
                 },
                 phoneForm: {
                     entity_id: '',
@@ -425,7 +438,8 @@
                 },
                 phoneTypes: [],
                 addressTypes: [],
-                languages: []
+                languages: [],
+                timezones: [],
             }
         },
         mounted() {
@@ -433,6 +447,7 @@
             this.getPhoneTypes();
             this.getAddressTypes();
             this.getLanguages();
+            this.getTimeZones();
         },
         methods: {
             getUser() {
@@ -452,7 +467,14 @@
                     }
                 });
             },
-
+            getTimeZones() {
+                axios.get('/api/time_zones').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.timezones = response.data
+                    }
+                });
+            },
             updateUser(e) {
                 e.preventDefault()
                 this.snackbar = false;
