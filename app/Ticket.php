@@ -3,12 +3,12 @@
 namespace App;
 
 use Carbon\Carbon;
-use GeoIp2\Record\Location;
 use Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Stevebauman\Location\Location;
 
 class Ticket extends Model
 {
@@ -42,9 +42,9 @@ class Ticket extends Model
     public function getLastUpdateAttribute(): string
     {
         $locale = Language::find(Auth::user()->language_id)->short_code;
-//        $ip = Request::ip();
-//        $position = Location::get($ip);
-//        Log::info($position->timezone);
+        $ip = Request::ip();
+        $position = Location::get($ip);
+        Log::info($position->timezone);
         return Carbon::parse($this->attributes['updated_at'])->locale($locale)->calendar();
     }
 
