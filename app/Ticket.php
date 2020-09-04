@@ -44,7 +44,7 @@ class Ticket extends Model
         $locale = Language::find(Auth::user()->language_id)->short_code;
         $ip = Request::ip();
         $position = Location::get($ip);
-        Log::info($position->timezone);
+        Log::info(json_encode($position));
         return Carbon::parse($this->attributes['updated_at'])->locale($locale)->calendar();
     }
 
