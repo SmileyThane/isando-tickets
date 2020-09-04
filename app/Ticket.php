@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Request;
 
 class Ticket extends Model
 {
@@ -39,6 +41,9 @@ class Ticket extends Model
     public function getLastUpdateAttribute(): string
     {
         $locale = Language::find(Auth::user()->language_id)->short_code;
+        $ip = Request::ip();
+        $position = Location::get($ip);
+        Log::info($position->timezone);
         return Carbon::parse($this->attributes['updated_at'])->locale($locale)->calendar();
     }
 
