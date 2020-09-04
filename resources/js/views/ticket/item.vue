@@ -36,7 +36,8 @@
                         </v-chip>
                         &nbsp;
                         <v-btn v-show="ticket.can_be_edited && submitEdit" class="float-md-right"
-                               small color="white" style="color: black;" @click="updateTicket">Save
+                               small color="white" style="color: black;" @click="updateTicket">
+                            {{langMap.main.save}}
                         </v-btn>
                     </v-toolbar>
                     <v-container>
@@ -49,7 +50,7 @@
                             <v-col cols="6">
                                 <v-select
                                     dense
-                                    label="From"
+                                    :label="langMap.main.from"
                                     color="green"
                                     item-color="green"
                                     item-text="name"
@@ -73,7 +74,7 @@
                                     </template>
                                 </v-select>
                                 <v-autocomplete
-                                    label="Contact email"
+                                    :label="langMap.main.contact+' '+ langMap.main.email"
                                     dense
                                     color="green"
                                     item-color="green"
@@ -103,7 +104,7 @@
                             <v-col cols="6">
                                 <v-select
                                     dense
-                                    label="Product"
+                                    :label="langMap.main.product"
                                     color="green"
                                     item-color="green"
                                     item-text="product_data.name"
@@ -116,7 +117,7 @@
                             </v-col>
                             <v-col cols="12">
                                 <v-label v-if="ticket.description">
-                                    <strong>Description</strong>
+                                    <strong>{{langMap.main.description}}</strong>
                                 </v-label>
                                 <strong>{{ ticket.name }}</strong>
                                 <div v-html="ticket.description"></div>
@@ -126,7 +127,7 @@
                             </v-col>
                             <v-col cols="12">
                                 <v-label v-if="ticket.availability">
-                                    <strong>Client's availability</strong>
+                                    <strong>{{langMap.main.availability}}</strong>
                                 </v-label>
                                 <div v-html="ticket.availability"></div>
                                 <v-spacer>
@@ -135,7 +136,7 @@
                             </v-col>
                             <v-col cols="12" sm="6">
                                 <v-textarea
-                                    label="IP address(es) of the servers (for remote access)"
+                                    :label="'IP ' + langMap.main.address + ' '+ langMap.main.details"
                                     dense
                                     auto-grow
                                     rows="2"
@@ -161,6 +162,7 @@
                             </v-col>
                             <v-col cols="12" sm="6">
                                 <v-textarea
+                                    :label="langMap.main.access + ' '+ langMap.main.details"
                                     dense
                                     auto-grow
                                     rows="2"
@@ -192,7 +194,7 @@
                                     <template v-slot:actions>
                                         <v-icon>$expand</v-icon>
                                     </template>
-                                    <strong>Attachments: {{ticket.attachments.length}}
+                                    <strong>{{langMap.main.attachments}}: {{ticket.attachments.length}}
                                         <v-icon>mdi-paperclip</v-icon>
                                     </strong>
                                 </v-expansion-panel-header>
@@ -216,7 +218,7 @@
 
                             >
                                 <v-expansion-panel-header>
-                                    <h3>Create Answer</h3>
+                                    <h3>{{langMap.main.create}} {{langMap.main.answer}}</h3>
                                     <template v-slot:actions>
                                         <v-icon color="success">mdi-plus</v-icon>
                                     </template>
@@ -226,7 +228,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <v-textarea
-                                                    label="Write you answer here..."
+                                                    :label="langMap.main.answer_description"
                                                     prepend-icon="mdi-text"
                                                     color="green"
                                                     item-color="green"
@@ -243,7 +245,7 @@
                                                     chips
                                                     chips-color="green"
                                                     multiple
-                                                    label="Attach a Document(s)"
+                                                    :label="langMap.main.add + ' '+ langMap.main.attachments"
                                                     color="green"
                                                     item-color="green"
                                                     prepend-icon="mdi-paperclip"
@@ -286,7 +288,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Ticket Answers</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.main.ticket}} {{langMap.main.answers}}</v-toolbar-title>
                     </v-toolbar>
                     <v-container>
                         <v-row align="center"
@@ -306,19 +308,17 @@
                                         <v-row>
                                             <v-col md="6">
                                                 <p class="text-left mb-3">{{answer.employee.user_data.name}}
-                                                    {{answer.employee.user_data.surname}} responded
+                                                    {{answer.employee.user_data.surname}} {{langMap.main.responded}}
                                                     {{answer.created_at_time}}:</p>
                                             </v-col>
                                             <v-col md="6">
                                                 <p class="text-right caption mb-2">{{answer.created_at}}</p>
                                             </v-col>
                                         </v-row>
-                                        <!--                                        <v-list-item-subtitle class="mb-3">{{answer.employee.user_data.email}}-->
-                                        <!--                                        </v-list-item-subtitle>-->
                                         <v-list class="mb-2" v-html="answer.answer"></v-list>
 
                                         <v-col cols="12" v-if="answer.attachments.length > 0 ">
-                                            <h4>Attachments</h4>
+                                            <h4>{{langMap.main.attachments}}</h4>
                                             <div
                                                 v-for="attachment in answer.attachments"
                                             >
@@ -357,7 +357,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Ticket Actions</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.main.ticket}} {{langMap.main.actions}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-container>
@@ -369,7 +369,7 @@
                         <v-row align="center"
                                justify="center">
                             <v-btn v-if="ticket.status.id !== 5" color="green" style="color: white;"
-                                   @click="closeTicket">Close Ticket
+                                   @click="closeTicket">{{langMap.main.close}} {{langMap.main.ticket}}
                             </v-btn>
                         </v-row>
                     </v-card-actions>
@@ -380,7 +380,7 @@
                         >
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    Assign to:
+                                    {{langMap.main.assign}} {{langMap.main.zu}}:
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -396,7 +396,7 @@
                                                     item-value="id"
                                                     v-model="ticket.to_team_id"
                                                     :items="ticket.to.teams"
-                                                    label="Team"
+                                                    :label="langMap.main.team"
                                                     :disabled="selectionDisabled"
                                                     @change="selectTeam"
                                                 ></v-autocomplete>
@@ -410,7 +410,7 @@
                                                     item-value="employee.id"
                                                     v-model="ticket.to_company_user_id"
                                                     :items="employees"
-                                                    label="Person"
+                                                    :label="langMap.main.contact"
                                                 ></v-autocomplete>
                                             </v-col>
                                             <v-btn v-if="selectionDisabled === false"
@@ -429,7 +429,7 @@
                             </v-expansion-panel>
                             <v-expansion-panel v-show="!this.$store.state.roles.includes(6)">
                                 <v-expansion-panel-header>
-                                    Add internal note
+                                    {{langMap.main.add}} {{langMap.main.internal}} {{langMap.main.note}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -444,7 +444,6 @@
                                                     auto-grow
                                                     rows="1"
                                                     v-model="ticketNotice.notice"
-                                                    label="Type there..."
                                                 ></v-textarea>
                                             </v-col>
                                             <v-btn v-if="selectionDisabled === false"
@@ -465,7 +464,7 @@
                             <v-expansion-panel
                                 v-show="!this.$store.state.roles.includes(6) && ticket.notices.length > 0">
                                 <v-expansion-panel-header>
-                                    Notes history:
+                                    {{langMap.main.notes}} {{langMap.main.history}}:
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -485,7 +484,7 @@
                                                             <p class="text-left mb-3">
                                                                 {{noticeItem.employee.user_data.name}}
                                                                 {{noticeItem.employee.user_data.surname}}
-                                                                responded </p>
+                                                                {{langMap.main.responded}} </p>
                                                         </v-col>
                                                         <v-col md="6">
                                                             <p class="text-right caption mb-2">
@@ -502,7 +501,7 @@
                             </v-expansion-panel>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    Ticket history
+                                    {{langMap.main.ticket}} {{langMap.main.history}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -562,6 +561,7 @@
                 employees: [],
                 contacts: [],
                 from: [],
+                langMap: this.$store.state.lang.lang_map,
                 ticket: {
                     status_id: '',
                     to_company_user_id: '',
