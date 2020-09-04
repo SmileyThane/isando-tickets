@@ -150,7 +150,7 @@
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
-                                                    :label="'IP' + langMap.main.details"
+                                                    :label="'IP ' + langMap.main.details"
                                                     color="green"
                                                     item-color="green"
                                                     auto-grow
@@ -181,7 +181,7 @@
                                                     v-on="on"
                                                 ></v-textarea>
                                             </template>
-                                            <span>langMap.main.access_desctiption</span>
+                                            <span>{{langMap.main.access_description}}</span>
                                         </v-tooltip>
                                     </v-col>
                                 </div>
