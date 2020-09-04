@@ -81,7 +81,9 @@
                         <v-icon>mdi-format-list-numbered</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{this.$store.state.lang.lang_map.main.tickets}} {{this.$store.state.lang.lang_map.main.list}}</v-list-item-title>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.main.tickets}}
+                            {{this.$store.state.lang.lang_map.main.list}}
+                        </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item link to="/ticket_create">
@@ -89,18 +91,20 @@
                         <v-icon>mdi-shape-rectangle-plus</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{this.$store.state.lang.lang_map.main.create}} {{this.$store.state.lang.lang_map.main.ticket}}</v-list-item-title>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.main.create}}
+                            {{this.$store.state.lang.lang_map.main.ticket}}
+                        </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list-group>
-<!--            <v-list-item link to="/user">-->
-<!--                <v-list-item-action>-->
-<!--                    <v-icon>mdi-account</v-icon>-->
-<!--                </v-list-item-action>-->
-<!--                <v-list-item-content>-->
-<!--                    <v-list-item-title>User</v-list-item-title>-->
-<!--                </v-list-item-content>-->
-<!--            </v-list-item>-->
+            <!--            <v-list-item link to="/user">-->
+            <!--                <v-list-item-action>-->
+            <!--                    <v-icon>mdi-account</v-icon>-->
+            <!--                </v-list-item-action>-->
+            <!--                <v-list-item-content>-->
+            <!--                    <v-list-item-title>User</v-list-item-title>-->
+            <!--                </v-list-item-content>-->
+            <!--            </v-list-item>-->
         </v-list>
     </v-navigation-drawer>
 </template>
@@ -110,9 +114,9 @@
         name: "Sidebar",
         props: {value: {type: Boolean}},
         data: () => ({
-            companyName:'Isando',
+            companyName: 'Isando',
             localDrawer: null,
-            show:true,
+            show: true,
             ticket: ''
         }),
         watch: {
@@ -122,8 +126,8 @@
             localDrawer: function () {
                 this.$emit('input', this.localDrawer)
             },
-            $route (to, from){
-                document.title = this.companyName + ' | ' + this.$route.name
+            $route(to, from) {
+                this.changeAppTitle();
             }
         },
         mounted() {
@@ -145,8 +149,11 @@
                     .then(
                         response => {
                             this.companyName = response.data.data
-                            document.title = this.companyName + ' | ' + this.$route.name
+                            this.changeAppTitle();
                         });
+            },
+            changeAppTitle() {
+                document.title = this.companyName + ' | ' + this.$store.state.lang.lang_map.main[this.$route.name]
             }
         }
     }
