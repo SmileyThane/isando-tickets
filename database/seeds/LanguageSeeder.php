@@ -126,7 +126,11 @@ class LanguageSeeder extends Seeder
 "timezone": "time zone",
 "home": "home",
 "profile_main":"profile",
-"profile":"profile"
+"profile":"profile",
+"availability_description": "Please provide working hours when we can contact you on the submitted issue",
+"ip_description": "IP addresses of your server for remote access if applicable",
+"access_desctiption": "Please provide login details to your server for Teamviewer access, if applicable",
+"answer_description": "Write you answer here..."
 
    },
  "exceptions": {
@@ -250,7 +254,11 @@ class LanguageSeeder extends Seeder
 "timezone": "Zeitzone",
 "home": "home",
 "profile_main":"profile",
-"profile":"profil"
+"profile":"profil",
+"availability_description": "Bitte teilen Sie uns mit, zu welcher Zeit Sie verfügbar sind, damit wir Sie umgehend kontaktieren können.",
+"ip_description": " IP-Adressen Ihres Servers für den Fernzugriff, falls vorhanden.",
+"access_desctiption": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
+"answer_description": "Schreiben Sie Ihre Antwort hier..."
 
 
  },
