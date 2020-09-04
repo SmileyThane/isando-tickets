@@ -20,8 +20,9 @@ class TicketAnswer extends Model
 
     public function getCreatedAtTimeAttribute()
     {
+        $locale = Language::find(Auth::user()->language_id)->short_code;
         $createdAt = Carbon::parse($this->attributes['created_at']);
-        return $createdAt->diffInDays(now()) <= 1 ? $createdAt->diffForHumans() : '';
+        return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
     }
 
     public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne
