@@ -124,7 +124,9 @@ class LanguageSeeder extends Seeder
 "close": "close",
 "assign": "assign",
 "timezone": "time zone",
-"home": "home"
+"home": "home",
+"profile_main":"profile",
+"profile":"profile"
 
    },
  "exceptions": {
@@ -246,7 +248,11 @@ class LanguageSeeder extends Seeder
 "close": "schließen",
 "assign": "zuordnen",
 "timezone": "Zeitzone",
-"home": "home"
+"home": "home",
+"profile_main":"profile",
+"profile":"profil"
+
+
  },
  "exceptions": {
 
