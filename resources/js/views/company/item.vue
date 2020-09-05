@@ -902,7 +902,6 @@
                 headers: [
                     {text: '', value: 'data-table-expand'},
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'user_data'},
-                    // {text: 'email', value: 'user_data.email'},
                     {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'role_names'},
                     {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
