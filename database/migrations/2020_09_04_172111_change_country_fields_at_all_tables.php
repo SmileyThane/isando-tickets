@@ -13,17 +13,31 @@ class ChangeCountryFieldsAtAllTables extends Migration
      */
     public function up()
     {
+        if (Schema::hasColumn('users', 'country'))
+        {
+            Schema::table('users', static function (Blueprint $table) {
+                $table->dropColumn('country');
+            });
+        }
         Schema::table('users', static function (Blueprint $table) {
-            $table->dropColumn('country');
             $table->bigInteger('country_id')->nullable();
-
         });
+        if (Schema::hasColumn('companies', 'country'))
+        {
+            Schema::table('companies', static function (Blueprint $table) {
+                $table->dropColumn('country');
+            });
+        }
         Schema::table('companies', static function (Blueprint $table) {
-            $table->dropColumn('country');
             $table->bigInteger('country_id')->nullable();
         });
+        if (Schema::hasColumn('clients', 'country'))
+        {
+            Schema::table('clients', static function (Blueprint $table) {
+                $table->dropColumn('country');
+            });
+        }
         Schema::table('clients', static function (Blueprint $table) {
-            $table->dropColumn('country');
             $table->bigInteger('country_id')->nullable();
         });
     }
