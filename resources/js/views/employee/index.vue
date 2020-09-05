@@ -14,7 +14,7 @@
                     <v-expansion-panels>
                         <v-expansion-panel>
                             <v-expansion-panel-header>
-                                Add New Contact
+                                {{langMap.main.add}} {{langMap.main.new}} {{langMap.main.contact}}
                                 <template v-slot:actions>
                                     <v-icon color="submit">mdi-plus</v-icon>
                                 </template>
@@ -25,7 +25,7 @@
                                         <div class="col-md-4">
                                             <v-text-field
                                                 color="green"
-                                                label="Name"
+                                                :label="langMap.main.name"
                                                 name="name"
                                                 type="text"
                                                 v-model="employeeForm.name"
@@ -36,7 +36,7 @@
                                         <div class="col-md-4">
                                             <v-text-field
                                                 color="green"
-                                                label="Email"
+                                                :label="langMap.main.email"
                                                 name="email"
                                                 type="email"
                                                 v-model="employeeForm.email"
@@ -54,7 +54,7 @@
                                                 hide-selected
                                                 item-text="name"
                                                 item-value="id"
-                                                label="Client"
+                                                :label="langMap.main.client"
                                                 placeholder="Start typing to Search"
                                             ></v-autocomplete>
                                         </div>
@@ -88,14 +88,14 @@
                             :footer-props="footerProps"
                             class="elevation-1"
                             hide-default-footer
-                            loading-text="Give me a second..."
+                            :loading-text="langMap.main.loading"
                             @click:row="showItem"
                         >
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
                                         <v-text-field @input="getEmployees" v-model="employeesSearch" color="green"
-                                                      label="Search..." class="mx-4"></v-text-field>
+                                                      :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
@@ -103,7 +103,7 @@
                                             color="green"
                                             item-color="green"
                                             :items="footerProps.itemsPerPageOptions"
-                                            label="Items per page"
+                                            :label="langMap.main.items_per_page"
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
@@ -130,7 +130,7 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <p><strong>Actions:</strong></p>
+                                    <p><strong> {{langMap.main.actions}}:</strong></p>
                                     <p>
                                         <v-btn
                                             color="grey"
@@ -191,6 +191,7 @@
                     showFirstLastPage: true,
                     itemsPerPageOptions: [10, 25, 50, 100],
                 },
+                langMap: this.$store.state.lang.lang_map,
                 headers: [
                     {text: '', value: 'data-table-expand'},
                     {
@@ -198,9 +199,9 @@
                         align: 'start',
                         value: 'id',
                     },
-                    {text: 'Name', value: 'employee'},
-                    {text: 'Email', value: 'employee.user_data.email'},
-                    {text: 'Client', value: 'clients.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'employee'},
+                    {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
+                    {text: `${this.$store.state.lang.lang_map.main.client}`, value: 'clients.name'},
                 ],
                 employeesSearch: '',
                 employeeErrors: [],
