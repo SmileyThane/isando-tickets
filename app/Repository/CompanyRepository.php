@@ -34,18 +34,17 @@ class CompanyRepository
         if ($employee->hasRole(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $company = $clientCompanyUser->clients()->with('employees.employee.userData');
-            if ($request->search !== '') {
-                $company->where(
-                    function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->search . '%')
-                            ->orWhere('description', 'like', '%' . $request->search . '%');
-                    }
-                );
-            }
         } else {
             $company = Company::where('id', $id ?? $employee->company_id);
         }
-
+        if ($request->search !== '') {
+            $company->where(
+                function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
+                }
+            );
+        }
         return $id ? $company->with(['employees' => function ($query) {
             $query->whereDoesntHave('assignedToClients')->get();
         }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type', 'clients',
