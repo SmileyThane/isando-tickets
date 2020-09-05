@@ -12,35 +12,35 @@ class TicketStatusSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('ticket_priorities')->updateOrInsert(
+        DB::table('ticket_statuses')->updateOrInsert(
             ['id' => 1],
             [
                 'name' => 'new',
                 'color' => 'blue'
             ]
         );
-        DB::table('ticket_priorities')->updateOrInsert(
+        DB::table('ticket_statuses')->updateOrInsert(
             ['id' => 2],
             [
                 'name' => 'open',
                 'color' => 'amber'
             ]
         );
-        DB::table('ticket_priorities')->updateOrInsert(
+        DB::table('ticket_statuses')->updateOrInsert(
             ['id' => 3],
             [
                 'name' => 'responded',
                 'color' => 'amber'
             ]
         );
-        DB::table('ticket_priorities')->updateOrInsert(
+        DB::table('ticket_statuses')->updateOrInsert(
             ['id' => 4],
             [
                 'name' => 'waiting_for_reply',
                 'color' => 'green'
             ]
         );
-        DB::table('ticket_priorities')->updateOrInsert(
+        DB::table('ticket_statuses')->updateOrInsert(
             ['id' => 5],
             [
                 'name' => 'closed',
