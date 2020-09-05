@@ -57,6 +57,16 @@ class CompanyUserRepository
                 'supplier_id' => $employee->company_id
             ])->get()->pluck('id')->toArray();
         $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds);
+        if ($request->search !== '') {
+            $clientCompanyUsers->whereHas(
+                'employee.userData',
+                function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('surname', 'like', '%' . $request->search . '%')
+                        ->orWhere('email', 'like', '%' . $request->search . '%');
+                }
+            );
+        }
         return $clientCompanyUsers
             ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
             ->with('employee.userData', 'clients')
