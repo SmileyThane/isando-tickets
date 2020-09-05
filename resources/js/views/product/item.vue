@@ -18,17 +18,18 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Basic info</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.main.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateProduct">Save
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateProduct">
+                            {{langMap.main.update}}
                         </v-btn>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
                             <v-text-field
                                 color="green"
-                                label="Name"
+                                :label="langMap.main.name"
                                 name="name"
                                 prepend-icon="mdi-rename-box"
                                 type="text"
@@ -40,7 +41,7 @@
                             ></v-text-field>
                             <v-text-field
                                 color="green"
-                                label="Description"
+                                :label="langMap.main.description"
                                 name="description"
                                 prepend-icon="mdi-comment-text"
                                 type="text"
@@ -52,10 +53,6 @@
                             ></v-text-field>
                         </v-form>
                     </v-card-text>
-                    <!--                    <v-card-actions>-->
-                    <!--                        <v-spacer></v-spacer>-->
-                    <!--                        <v-btn color="green" style="color: white;" @click="updateProduct">Save</v-btn>-->
-                    <!--                    </v-card-actions>-->
                 </v-card>
             </div>
             <div class="col-md-6">
@@ -66,14 +63,14 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Product clients</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.main.product}} {{langMap.main.clients}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
                         <v-data-table
                             :headers="headers"
                             :items="product.clients"
-                            :items-per-page="25"
+                            :footer-props="footerProps"
                             class="elevation-1"
                         ></v-data-table>
                         <v-spacer>
@@ -82,7 +79,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    New Product Client
+                                    {{langMap.main.new}} {{langMap.main.client}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -98,7 +95,7 @@
                                                     item-value="id"
                                                     v-model="supplierForm.client_id"
                                                     :items="suppliers"
-                                                    label="Client"
+                                                    :label="langMap.main.client"
                                                 ></v-autocomplete>
                                             </v-col>
                                             <v-btn
@@ -118,7 +115,6 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
-
             </div>
         </div>
     </v-container>
@@ -135,6 +131,12 @@
                 snackbarMessage: '',
                 enableToEdit: false,
                 errors: [],
+                langMap: this.$store.state.lang.lang_map,
+                footerProps: {
+                    itemsPerPage: 10,
+                    disableItemsPerPage: true,
+                    itemsPerPageText: this.$store.state.lang.lang_map.main.items_per_page
+                },
                 headers: [
                     {
                         text: 'ID',
@@ -142,9 +144,9 @@
                         sortable: false,
                         value: 'client_data.id',
                     },
-                    {text: 'name', value: 'client_data.name'},
-                    {text: 'Description', value: 'client_data.description'},
-                    {text: 'Actions', value: 'actions', sortable: false},
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'client_data.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'client_data.description'},
+                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
                 product: {
                     id: '',
