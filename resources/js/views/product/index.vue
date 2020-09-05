@@ -17,7 +17,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel v-if="!this.$store.state.roles.includes(this.clientId)">
                                 <v-expansion-panel-header>
-                                    Add New Product
+                                    {{ langMap.main.add }} {{ langMap.main.new }} {{ langMap.main.product }}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -28,7 +28,7 @@
                                             <div class="col-md-6">
                                                 <v-text-field
                                                     color="green"
-                                                    label="Name"
+                                                    :label="langMap.main.name"
                                                     name="product_name"
                                                     type="text"
                                                     v-model="productForm.product_name"
@@ -38,8 +38,8 @@
                                             <div class="col-md-6">
                                                 <v-text-field
                                                     color="green"
-                                                    label="Description"
-                                                    name="product_name"
+                                                    :label="langMap.main.description"
+                                                    name="product_description"
                                                     type="text"
                                                     v-model="productForm.product_description"
                                                     required
@@ -72,14 +72,14 @@
                             :footer-props="footerProps"
                             class="elevation-1"
                             hide-default-footer
-                            loading-text="Give me a second..."
+                            :loading-text="langMap.main.loading"
                             @click:row="showItem"
                         >
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
                                         <v-text-field @input="getProducts" v-model="productsSearch" color="green"
-                                                      label="Search..." class="mx-4"></v-text-field>
+                                                      :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
@@ -87,7 +87,7 @@
                                             color="green"
                                             item-color="green"
                                             :items="footerProps.itemsPerPageOptions"
-                                            label="Items per page"
+                                            :label="langMap.main.items_per_page"
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
@@ -108,7 +108,7 @@
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <p><strong>Actions:</strong></p>
+                                    <p><strong>{{langMap.main.actions}}:</strong></p>
                                     <p>
                                         <v-btn
                                             color="grey"
@@ -146,11 +146,11 @@
         <template>
             <v-dialog v-model="removeProductDialog" persistent max-width="290">
                 <v-card>
-                    <v-card-title class="headline">Do you want to delete selected product?</v-card-title>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{ langMap.main.product }}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeProductDialog = false">Cancel</v-btn>
-                        <v-btn color="red darken-1" disabled text @click="deleteProduct(selectedProductId)">Delete
+                        <v-btn color="grey darken-1" text @click="removeProductDialog = false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red darken-1" disabled text @click="deleteProduct(selectedProductId)">{{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -161,127 +161,128 @@
 
 
 <script>
-    export default {
+export default {
 
-        data() {
-            return {
-                clientId: 6,
-                snackbar: false,
-                actionColor: '',
-                snackbarMessage: '',
-                totalProducts: 0,
-                lastPage: 0,
-                loading: 'green',
-                expanded: [],
-                singleExpand: false,
-                options: {
-                    page: 1,
-                    sortDesc: [false],
-                    sortBy: ['id']
+    data() {
+        return {
+            clientId: 6,
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            totalProducts: 0,
+            lastPage: 0,
+            loading: 'green',
+            expanded: [],
+            singleExpand: false,
+            langMap: this.$store.state.lang.lang_map,
+            options: {
+                page: 1,
+                sortDesc: [false],
+                sortBy: ['id']
+            },
+            footerProps: {
+                itemsPerPage: 10,
+                showFirstLastPage: true,
+                itemsPerPageOptions: [10, 25, 50, 100],
+            },
+            headers: [
+                {text: '', value: 'data-table-expand'},
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'product_data.id',
                 },
-                footerProps: {
-                    itemsPerPage: 10,
-                    showFirstLastPage: true,
-                    itemsPerPageOptions: [10, 25, 50, 100],
-                },
-                headers: [
-                    {text: '', value: 'data-table-expand'},
-                    {
-                        text: 'ID',
-                        align: 'start',
-                        sortable: false,
-                        value: 'product_data.id',
-                    },
-                    {text: 'name', value: 'product_data.name'},
-                    {text: 'Description', value: 'product_data.description'},
-                ],
-                productsSearch: '',
-                products: [],
-                removeProductDialog: false,
-                selectedProductId: null,
-                productForm: {
-                    product_name: '',
-                    product_description: '',
-                },
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'product_data.name'},
+                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
+            ],
+            productsSearch: '',
+            products: [],
+            removeProductDialog: false,
+            selectedProductId: null,
+            productForm: {
+                product_name: '',
+                product_description: '',
+            },
+        }
+    },
+    mounted() {
+        this.getProducts()
+    },
+    methods: {
+        getProducts() {
+            this.loading = "green"
+            if (this.options.sortDesc.length <= 0) {
+                this.options.sortBy[0] = 'id'
+                this.options.sortDesc[0] = false
             }
-        },
-        mounted() {
-            this.getProducts()
-        },
-        methods: {
-            getProducts() {
-                this.loading = "green"
-                if (this.options.sortDesc.length <= 0) {
-                    this.options.sortBy[0] = 'id'
-                    this.options.sortDesc[0] = false
-                }
-                if (this.totalProducts < this.options.itemsPerPage) {
-                    this.options.page = 1
-                }
-                axios.get(`api/product?
+            if (this.totalProducts < this.options.itemsPerPage) {
+                this.options.page = 1
+            }
+            axios.get(`api/product?
                     search=${this.productsSearch}&
                     sort_by=${this.options.sortBy[0]}&
                     sort_val=${this.options.sortDesc[0]}&
                     per_page=${this.options.itemsPerPage}&
                     page=${this.options.page}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.products = response.data.data
-                        this.totalProducts = response.data.total
-                        this.lastPage = response.data.last_page
-                        this.loading = false
-                    } else {
-                        console.log('error')
-                    }
+                response = response.data
+                if (response.success === true) {
+                    this.products = response.data.data
+                    this.totalProducts = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.loading = false
+                } else {
+                    console.log('error')
+                }
 
-                });
-            },
-            addProduct() {
-                console.log(this.productForm)
-                axios.post('api/product', this.productForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getProducts()
-                    } else {
-                        console.log('error')
-                    }
-                });
-            },
-            showItem(item) {
-                this.$router.push(`/product/${item.product_data.id}`)
-            },
-            deleteProcess(item) {
-                this.selectedProductId = item.id
-                this.removeProductDialog = true
-            },
-            deleteProduct(id) {
-                axios.delete(`/api/product/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getProducts()
-                        this.snackbarMessage = 'Product was deleted '
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.removeProductDialog = false
-                    } else {
-                        this.snackbarMessage = 'Product delete error'
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            updateItemsCount(value) {
-                this.options.itemsPerPage = value
-                this.options.page = 1
-            },
+            });
         },
-        watch: {
-            options: {
-                handler() {
+        addProduct() {
+            console.log(this.productForm)
+            axios.post('api/product', this.productForm).then(response => {
+                response = response.data
+                if (response.success === true) {
                     this.getProducts()
-                },
-                deep: true,
-            },
+                } else {
+                    console.log('error')
+                }
+            });
         },
-    }
+        showItem(item) {
+            this.$router.push(`/product/${item.product_data.id}`)
+        },
+        deleteProcess(item) {
+            this.selectedProductId = item.id
+            this.removeProductDialog = true
+        },
+        deleteProduct(id) {
+            axios.delete(`/api/product/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getProducts()
+                    this.snackbarMessage = 'Product was deleted '
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.removeProductDialog = false
+                } else {
+                    this.snackbarMessage = 'Product delete error'
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateItemsCount(value) {
+            this.options.itemsPerPage = value
+            this.options.page = 1
+        },
+    },
+    watch: {
+        options: {
+            handler() {
+                this.getProducts()
+            },
+            deep: true,
+        },
+    },
+}
 </script>
