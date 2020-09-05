@@ -8,7 +8,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    Add New Team
+                                    {{ langMap.main.add }} {{ langMap.main.new }} {{ langMap.main.team }}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -19,7 +19,7 @@
                                             <div class="col-md-6">
                                                 <v-text-field
                                                     color="green"
-                                                    label="Name"
+                                                    :label="langMap.main.name"
                                                     name="team_name"
                                                     type="text"
                                                     v-model="teamForm.team_name"
@@ -29,7 +29,7 @@
                                             <div class="col-md-6">
                                                 <v-text-field
                                                     color="green"
-                                                    label="Description"
+                                                    :label="langMap.main.description"
                                                     name="team_description"
                                                     type="text"
                                                     v-model="teamForm.team_description"
@@ -55,18 +55,51 @@
                             show-expand
                             :headers="headers"
                             :items="teams"
+                            :loading="loading"
+                            :footer-props="footerProps"
                             :single-expand="singleExpand"
                             :expanded.sync="expanded"
+                            :options.sync="options"
                             :items-per-page="25"
                             class="elevation-1"
+                            hide-default-footer
+                            :loading-text="langMap.main.loading"
                             @click:row="showItem"
                         >
+                            <template v-slot:top>
+                                <v-row>
+                                    <v-col sm="12" md="10">
+                                        <v-text-field @input="getTeams" v-model="teamsSearch" color="green"
+                                                      :label="langMap.main.search" class="mx-4"></v-text-field>
+                                    </v-col>
+                                    <v-col sm="12" md="2">
+                                        <v-select
+                                            class="mx-4"
+                                            color="green"
+                                            item-color="green"
+                                            :items="footerProps.itemsPerPageOptions"
+                                            :label="langMap.main.items_per_page"
+                                            @change="updateItemsCount"
+                                        ></v-select>
+                                    </v-col>
+                                </v-row>
+                            </template>
+                            <template v-slot:footer>
+                                <v-pagination color="green"
+                                              v-model="options.page"
+                                              :length="lastPage"
+                                              circle
+                                              :page="options.page"
+                                              :total-visible="5"
+                                >
+                                </v-pagination>
+                            </template>
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <v-spacer>
                                         &nbsp;
                                     </v-spacer>
-                                    <p><strong>Actions:</strong></p>
+                                    <p><strong>{{ langMap.main.actions }}:</strong></p>
                                     <p>
                                         <v-btn
                                             color="grey"
@@ -100,64 +133,133 @@
                 </div>
             </div>
         </div>
+        <template>
+            <v-dialog v-model="removeTeamDialog" persistent max-width="290">
+                <v-card>
+                    <v-card-title class="headline">{{ langMap.main.delete_selected }} {{
+                            langMap.main.team
+                        }}?
+                    </v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeTeamDialog = false">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="deleteTeam(selectedTeamId)">
+                            {{ langMap.main.delete }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
     </v-container>
 </template>
 
 
 <script>
-    export default {
+export default {
 
-        data() {
-            return {
-                expanded: [],
-                singleExpand: false,
-                headers: [
-                    {text: '', value: 'data-table-expand'},
-                    {
-                        text: 'ID',
-                        align: 'start',
-                        sortable: false,
-                        value: 'id',
-                    },
-                    {text: 'name', value: 'name'},
-                    {text: 'Description', value: 'description'},
-                ],
-                teams: [],
-                teamForm: {
-                    team_name: '',
-                    team_description: '',
+    data() {
+        return {
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            totalTeams: 0,
+            lastPage: 0,
+            loading: 'green',
+            expanded: [],
+            singleExpand: false,
+            langMap: this.$store.state.lang.lang_map,
+            options: {
+                page: 1,
+                sortDesc: [false],
+                sortBy: ['id']
+            },
+            footerProps: {
+                itemsPerPage: 10,
+                showFirstLastPage: true,
+                itemsPerPageOptions: [10, 25, 50, 100],
+            },
+            headers: [
+                {text: '', value: 'data-table-expand'},
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'id',
                 },
-            }
-        },
-        mounted() {
-            this.getTeams()
-        },
-        methods: {
-            getTeams() {
-                axios.get('api/team').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.teams = response.data.data
-                        // console.log(this.customers);
-                    } else {
-                        console.log('error')
-                    }
-
-                });
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
+            ],
+            teamsSearch: '',
+            teams: [],
+            teamForm: {
+                team_name: '',
+                team_description: '',
             },
-            addTeam() {
-                axios.post('api/team', this.teamForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTeams()
-                    } else {
-                        console.log('error')
-                    }
-                });
-            },
-            showItem(item) {
-                this.$router.push(`/team/${item.id}`)
-            }
+            selectedTeamId: null,
+            removeTeamDialog: false,
         }
+    },
+    mounted() {
+        this.getTeams()
+    },
+    methods: {
+        getTeams() {
+            axios.get(`api/team?
+                search=${this.teamsSearch}&
+                sort_by=${this.options.sortBy[0]}&
+                sort_val=${this.options.sortDesc[0]}&
+                per_page=${this.options.itemsPerPage}&
+                page=${this.options.page}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.teams = response.data.data
+                    this.totalTeams = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.loading = false
+                } else {
+                    console.log('error')
+                }
+            });
+        },
+        addTeam() {
+            axios.post('api/team', this.teamForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeams()
+                } else {
+                    console.log('error')
+                }
+            });
+        },
+        showItem(item) {
+            this.$router.push(`/team/${item.id}`)
+        },
+        deleteProcess(item) {
+            this.selectedTeamId = item.id
+            this.removeTeamDialog = true
+        },
+        deleteTeam(id) {
+            axios.delete(`/api/team/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTeams()
+                    this.snackbarMessage = 'Team was deleted '
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.removeTeamDialog = false
+                } else {
+                    this.snackbarMessage = 'Team delete error'
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateItemsCount(value) {
+            this.options.itemsPerPage = value
+            this.options.page = 1
+        },
     }
+}
 </script>
