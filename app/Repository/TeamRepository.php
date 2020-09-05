@@ -34,7 +34,16 @@ class TeamRepository
     public function all(Request $request)
     {
         $companyId = Auth::user()->employee->company_id;
-        return Company::find($companyId)->teams()->paginate(1000);
+        $teamsIds = Company::find($companyId)->teams->pluck('id')->toArray();
+        $teams = Team::whereIn('id', $teamsIds);
+        if ($request->search !== '') {
+            $teams->where(static function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search . '%')
+                    ->orWhere('description', 'like', '%' . $request->search . '%');
+            });
+        }
+        return $teams->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
+            ->paginate($request->per_page ?? $teams->count());
     }
 
 
