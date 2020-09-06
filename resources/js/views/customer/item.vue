@@ -885,9 +885,6 @@
                 } else {
                     form.address_line_3 = `${form.address.city}${form.address.country}`
                 }
-                if (form.address.postal_code.length > 0) {
-                    form.address.address += ` ${form.address.postal_code} `
-                }
                 axios.post('/api/address', form).then(response => {
                     response = response.data
                     if (response.success === true) {

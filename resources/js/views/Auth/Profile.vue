@@ -336,13 +336,16 @@
                                                             ></v-text-field>
                                                         </v-col>
                                                         <v-col cols="md-3" class="pa-1">
-                                                            <v-text-field
+                                                            <v-select
                                                                 color="green"
                                                                 item-color="green"
+                                                                item-text="name"
+                                                                item-value="name"
                                                                 v-model="addressForm.address.country"
+                                                                :items="countries"
                                                                 :label="this.$store.state.lang.lang_map.main.country"
                                                                 dense
-                                                            ></v-text-field>
+                                                            ></v-select>
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
                                                             <v-select
@@ -560,9 +563,6 @@
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}, ${this.addressForm.address.country}`
                 } else {
                     this.addressForm.address.address_line_3 = `${this.addressForm.address.city}${this.addressForm.address.country}`
-                }
-                if (this.addressForm.address.postal_code) {
-                    this.addressForm.address.address += ` ${this.addressForm.address.postal_code} `
                 }
                 axios.post('/api/address', this.addressForm).then(response => {
                     response = response.data
