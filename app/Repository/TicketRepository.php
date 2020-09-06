@@ -50,34 +50,25 @@ class TicketRepository
     public function all(Request $request)
     {
         $companyUser = Auth::user()->employee;
-        $tickets = Ticket::where(static function($query) use ($companyUser){
-           $query->where('from_company_user_id', $companyUser->id)
-               ->orWhere('to_company_user_id', $companyUser->id)
-               ->orWhere('contact_company_user_id', $companyUser->id);
-        });
+        $tickets = Ticket::where('from_company_user_id', $companyUser->id)
+            ->orWhere('to_company_user_id', $companyUser->id)
+            ->orWhere('contact_company_user_id', $companyUser->id);
         if ($companyUser->hasRole(Role::LICENSE_OWNER) || $companyUser->hasRole(Role::ADMIN)) {
             $products = ProductCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($products) {
                 $productsIds = $products->pluck('id')->toArray();
                 if ($productsIds) {
-                    $tickets->where(static function($query) use ($productsIds){
-                        $query->orWhereIn('to_product_id', $productsIds);
-                    });
+                    $tickets->orWhereIn('to_product_id', $productsIds);
                 }
             }
-            $tickets->where(static function($query) use ($companyUser){
-                $query->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
-            });
-
+            $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
         }
         if ($companyUser->hasRole(Role::MANAGER)) {
             $teams = TeamCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($teams) {
                 $teamsIds = $teams->pluck('id')->toArray();
                 if ($teamsIds) {
-                    $tickets->where(static function($query) use ($teamsIds){
-                        $query->orWhereIn('to_team_id', $teamsIds);
-                    });
+                    $tickets->orWhereIn('to_team_id', $teamsIds);
                 }
             }
         }
