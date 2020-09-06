@@ -116,7 +116,7 @@
                                         <v-text-field
                                             color="green"
                                             item-color="green"
-                                            :label="langMap.main.title"
+                                            :label="langMap.main.subject"
                                             v-model="ticketForm.name"
                                         ></v-text-field>
                                     </v-col>
