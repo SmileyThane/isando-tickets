@@ -6,6 +6,7 @@ use App\Role;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
 class RegularInviteEmail extends Notification
@@ -17,6 +18,7 @@ class RegularInviteEmail extends Notification
     protected $role;
     protected $email;
     protected $password;
+    protected $from;
 
     /**
      * Create a new notification instance.
@@ -26,8 +28,9 @@ class RegularInviteEmail extends Notification
      * @param $email
      * @param $password
      */
-    public function __construct($name, $role, $email, $password)
+    public function __construct($from, $name, $role, $email, $password)
     {
+        $this->from = $from;
         $this->name = $name;
         $this->role = $role;
         $this->email = $email;
@@ -55,6 +58,8 @@ class RegularInviteEmail extends Notification
     {
         Log::info('email sending was started!');
         return (new MailMessage)
+            ->from(Config::get('mail.from.address'), $this->from)
+            ->subject('You have been invited to the ticketing system!')
             ->line('Hello, ' . $this->name)
             ->line('You has been attached to ticketing system as ' . Role::find($this->role)->name)
             ->line('Your login is ' . $this->email)
