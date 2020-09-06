@@ -11,6 +11,7 @@ class AddressRepository
 
     public function create($entityId, $entityType, $addressValue, $addressType): Address
     {
+        $addressValue = $this->modifyAddressValues($addressValue);
         return Address::firstOrCreate(
             [
                 'entity_id' => $entityId,
@@ -21,6 +22,16 @@ class AddressRepository
                 'address_type' => $addressType
             ]
         );
+    }
+
+    private function modifyAddressValues($valuesArray)
+    {
+        $separator = $valuesArray['postal_code'] && $valuesArray['postal_code'] !== '' ? ', ' : '';
+        $valuesArray['address'] .= $separator . $valuesArray['postal_code'];
+        $separator = $valuesArray['city'] && $valuesArray['city'] !== '' &&
+        $valuesArray['country'] && $valuesArray['country'] !== '' ? ', ' : '';
+        $valuesArray['address_line_3'] = $valuesArray['city'] . $separator . $valuesArray['country'];
+        return $valuesArray;
     }
 
     public function update($id, $type, $value): Address

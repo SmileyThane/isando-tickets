@@ -24,8 +24,8 @@ class AddressController extends Controller
 
     public function add(Request $request)
     {
-        $phone = $this->addressRepo->create($request['entity_id'], $request['entity_type'], $request['address'], $request['address_type']);
-        return self::showResponse(true, $phone);
+        $address = $this->addressRepo->create($request['entity_id'], $request['entity_type'], $request['address'], $request['address_type']);
+        return self::showResponse(true, $address);
     }
 
     public function edit(Request $request, $id)
