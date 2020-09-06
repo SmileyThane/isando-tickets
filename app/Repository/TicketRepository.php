@@ -51,7 +51,8 @@ class TicketRepository
     {
         $companyUser = Auth::user()->employee;
         $tickets = Ticket::where('from_company_user_id', $companyUser->id)
-            ->orWhere('to_company_user_id', $companyUser->id);
+            ->orWhere('to_company_user_id', $companyUser->id)
+            ->orWhere('contact_company_user_id', $companyUser->id);
         if ($companyUser->hasRole(Role::LICENSE_OWNER) || $companyUser->hasRole(Role::ADMIN)) {
             $products = ProductCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($products) {
@@ -79,7 +80,7 @@ class TicketRepository
                 }
             );
         } else {
-            $tickets->orWhere('contact_company_user_id', $companyUser->id);
+
         }
         return $tickets
             ->with(
