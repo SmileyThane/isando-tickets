@@ -128,6 +128,7 @@ class LanguageSeeder extends Seeder
 "profile_main":"profile",
 "profile":"profile",
 "subject": "subject",
+"create_ticket": "create ticket",
 "availability_description": "Please provide working hours when we can contact you on the submitted issue",
 "ip_description": "IP addresses of your server for remote access if applicable",
 "access_description": "Please provide login details to your server for Teamviewer access, if applicable",
@@ -257,12 +258,11 @@ class LanguageSeeder extends Seeder
 "profile_main": "profile",
 "profile": "profil",
 "subject": "Gegenstand",
+"create_ticket": "Ticket erstellen",
 "availability_description": "Bitte teilen Sie uns mit, zu welcher Zeit Sie verfügbar sind, damit wir Sie umgehend kontaktieren können.",
 "ip_description": " IP-Adressen Ihres Servers für den Fernzugriff, falls vorhanden.",
 "access_description": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
 "answer_description": "Schreiben Sie Ihre Antwort hier..."
-
-
  },
  "exceptions": {
 
