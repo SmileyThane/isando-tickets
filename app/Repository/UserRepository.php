@@ -6,8 +6,10 @@ namespace App\Repository;
 
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
+use App\Role;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -92,7 +94,8 @@ class UserRepository
             $user->password = bcrypt($password);
             $user->save();
         }
-        $user->notify(new RegularInviteEmail($user->name, $role, $user->email, $password));
+        $from = $role === Role::LICENSE_OWNER ? Config::get('mail.from.name') : $user->employee->companyData->name;
+        $user->notify(new RegularInviteEmail($from, $user->name, $role, $user->email, $password));
         return true;
     }
 }

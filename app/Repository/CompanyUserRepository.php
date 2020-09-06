@@ -29,25 +29,6 @@ class CompanyUserRepository
         $this->roleRepo = $roleRepository;
     }
 
-    public function validate($request)
-    {
-        $validator = Validator::make($request->all(), [
-            'company_id' => 'required',
-            'user_id' => [
-                'required',
-                Rule::unique('company_users')->where(function ($query) use ($request) {
-                    return $query->where('company_id', $request['company_id'])
-                        ->where('user_id', $request['user_id']);
-                }),
-            ],
-        ]);
-
-        if ($validator->fails()) {
-            return $validator->errors();
-        }
-        return true;
-    }
-
     public function all(Request $request)
     {
         $employee = Auth::user()->employee;
@@ -76,15 +57,6 @@ class CompanyUserRepository
     public function find($id)
     {
         return CompanyUser::find($id);
-    }
-
-    public function create($companyId, $userId): CompanyUser
-    {
-        $companyUser = new CompanyUser();
-        $companyUser->user_id = $userId;
-        $companyUser->company_id = $companyId;
-        $companyUser->save();
-        return $companyUser;
     }
 
     public function delete($id)
@@ -118,11 +90,43 @@ class CompanyUserRepository
             $companyUser = $this->create($request['company_id'], $request['user_id']);
             if ($user->is_active) {
                 $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
-                $isNew === true ? $user->notify(new RegularInviteEmail($request['name'], $request['role_id'], $request['email'], $request['password'])) : null;
+                if ($isNew === true) {
+                    $user->notify(
+                        new RegularInviteEmail($companyUser->companyData->name, $request['name'], $request['role_id'], $request['email'], $request['password'])
+                    );
+                }
             }
             return Controller::showResponse(true, $companyUser);
         }
         return Controller::showResponse(false, $isValid);
+    }
+
+    public function validate($request)
+    {
+        $validator = Validator::make($request->all(), [
+            'company_id' => 'required',
+            'user_id' => [
+                'required',
+                Rule::unique('company_users')->where(function ($query) use ($request) {
+                    return $query->where('company_id', $request['company_id'])
+                        ->where('user_id', $request['user_id']);
+                }),
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+        return true;
+    }
+
+    public function create($companyId, $userId): CompanyUser
+    {
+        $companyUser = new CompanyUser();
+        $companyUser->user_id = $userId;
+        $companyUser->company_id = $companyId;
+        $companyUser->save();
+        return $companyUser;
     }
 
 
