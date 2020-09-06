@@ -60,12 +60,16 @@ class RegularInviteEmail extends Notification
         return (new MailMessage)
             ->from(Config::get('mail.from.address'), $this->from)
             ->subject('You have been invited to the ticketing system!')
-            ->line('Hello, ' . $this->name)
-            ->line('You has been attached to ticketing system as ' . Role::find($this->role)->name)
-            ->line('Your login is ' . $this->email)
-            ->line('Your password is ' . $this->password)
-            ->action('Start using system', env('APP_URL'))
-            ->line('Thank you for using our application!');
+            ->line('Dear, ' . $this->name)
+            ->line("Welcome to our $this->from ticketing system. Your account has been created.")
+            ->line("Please use below credentials to log into your account:")
+            ->line('Your login name:' . $this->email)
+            ->line('Your password: ' . $this->password)
+            ->action('Link to our ticketing system: ', env('APP_URL'))
+            ->line('Have a Good Day!')
+            ->line('')
+            ->line('- Best Wishes')
+            ->line($this->from);
     }
 
     /**
