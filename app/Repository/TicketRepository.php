@@ -61,7 +61,7 @@ class TicketRepository
                 $productsIds = $products->pluck('id')->toArray();
                 if ($productsIds) {
                     $tickets->where(static function($query) use ($productsIds){
-                        $query->whereIn('to_product_id', $productsIds);
+                        $query->orWhereIn('to_product_id', $productsIds);
                     });
                 }
             }
@@ -76,7 +76,7 @@ class TicketRepository
                 $teamsIds = $teams->pluck('id')->toArray();
                 if ($teamsIds) {
                     $tickets->where(static function($query) use ($teamsIds){
-                        $query->whereIn('to_team_id', $teamsIds);
+                        $query->orWhereIn('to_team_id', $teamsIds);
                     });
                 }
             }
