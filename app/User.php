@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email','surname','title_before_name','title','country_id', 'anredeform', 'language_id', 'timezone_id'
+        'name', 'email', 'surname', 'title_before_name', 'title', 'country_id', 'anredeform', 'language_id', 'timezone_id'
     ];
 
     /**
@@ -37,6 +37,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'full_name'
+    ];
+
     public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(CompanyUser::class, 'user_id', 'id');
@@ -50,6 +54,11 @@ class User extends Authenticatable
     public function addresses()
     {
         return $this->morphMany(Address::class, 'entity');
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->name . ' ' . $this->surname;
     }
 
 
