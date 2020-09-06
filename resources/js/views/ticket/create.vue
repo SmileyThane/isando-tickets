@@ -186,8 +186,6 @@
                                     </v-col>
                                 </div>
                             </v-card-text>
-                        </v-stepper-content>
-                        <v-stepper-content step="3">
                             <div>
                                 <v-file-input
                                     chips
@@ -245,7 +243,7 @@
                 overlay: false,
                 availabilityTooltip: false,
                 e1: 1,
-                steps: 3,
+                steps: 2,
                 vertical: false,
                 altLabels: true,
                 editable: true,
