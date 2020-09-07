@@ -23,6 +23,7 @@ class ChangedTicketStatus extends Notification
     /**
      * Create a new notification instance.
      *
+     * @param $from
      * @param $name
      * @param $ticket_subject
      * @param $ticket_id
@@ -56,10 +57,12 @@ class ChangedTicketStatus extends Notification
     {
         $ticket = Ticket::find($this->ticket_id);
          if($ticket && $ticket->status_id === 5) {
+             $subject = 'Updates on your ticket: ' . $this->ticket_subject;
              $firstLine = "Your ticket has been successfully closed.
              We hope that you have been satisfied with the resolution of the ticket and the speed of response. ";
              $secondLine = "";
          } else {
+             $subject = 'Updates on your ticket: ' . $this->ticket_subject;
              $firstLine = "Your ticket has been updated.";
              $secondLine = "or respond directly to this email.
               Please do not copy this message in your email response, and do not change subject of this email.
@@ -69,14 +72,13 @@ class ChangedTicketStatus extends Notification
         Log::info('email sending was started!');
         return (new MailMessage)
             ->from(Config::get('mail.from.address'), $this->from)
-            ->subject('Updates on your ticket: ' . $this->ticket_subject)
+            ->subject($subject)
             ->line('Hello, ' . $this->name)
             ->line($firstLine)
             ->action('View online', env('APP_URL') . '/ticket/' . $this->ticket_id)
             ->line($secondLine)
             ->line('Have a great day ahead!')
-            ->line('Regards,')
-            ->line($this->from);
+            ->salutation('Regards, ' . $this->from);
     }
 
     /**

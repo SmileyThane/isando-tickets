@@ -68,8 +68,7 @@ class RegularInviteEmail extends Notification
             ->action('Link to our ticketing system: ', env('APP_URL'))
             ->line('Have a Good Day!')
             ->line('')
-            ->line('- Best Wishes')
-            ->line($this->from);
+            ->salutation('- Best Wishes, ' . $this->from);
     }
 
     /**
