@@ -100,7 +100,7 @@ class TicketRepository
                 'histories.employee.userData', 'notices.employee.userData', 'attachments')->first()->makeVisible(['to']);
     }
 
-    public function create(Request $request, $employeeId = null)
+    public function create(Request $request, $employeeId = null): Ticket
     {
         $ticket = new Ticket();
         $ticket->name = $request->name;
@@ -128,7 +128,7 @@ class TicketRepository
         return $ticket;
     }
 
-    private function addHistoryItem($ticketId, $companyUserId = null, $description = null)
+    private function addHistoryItem($ticketId, $companyUserId = null, $description = null): bool
     {
         $ticketHistory = new TicketHistory();
         $ticketHistory->company_user_id = $companyUserId ?? Auth::user()->employee->id;
@@ -158,7 +158,6 @@ class TicketRepository
             $this->updateStatus($request, $id);
             $this->addHistoryItem($ticket->id, null, 'Ticket updated');
         }
-        $this->emailEmployees([$ticket->creator], $ticket, ChangedTicketStatus::class);
         return $ticket;
     }
 
@@ -167,6 +166,7 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->status_id = $request->status_id;
         $ticket->save();
+        $this->emailEmployees([$ticket->creator], $ticket, ChangedTicketStatus::class);
         $this->addHistoryItem($ticket->id, $employeeId, 'Status updated');
         return true;
     }

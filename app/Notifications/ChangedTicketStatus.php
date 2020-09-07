@@ -58,7 +58,7 @@ class ChangedTicketStatus extends Notification
          if($ticket && $ticket->status_id === 5) {
              $firstLine = "Your ticket has been successfully closed.
              We hope that you have been satisfied with the resolution of the ticket and the speed of response. ";
-             $secondLine = "";
+             $secondLine = ".";
          } else {
              $firstLine = "Your ticket has been updated.";
              $secondLine = "or respond directly to this email.
@@ -75,7 +75,6 @@ class ChangedTicketStatus extends Notification
             ->action('View online', env('APP_URL') . '/ticket/' . $this->ticket_id)
             ->line($secondLine)
             ->line('Have a great day ahead!')
-            ->line('')
             ->line('Regards,')
             ->line($this->from);
     }

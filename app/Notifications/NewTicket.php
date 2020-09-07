@@ -63,8 +63,6 @@ class NewTicket extends Notification
             ->line('Please do not copy this message in your email response, and do not change subject of this email.
             This may cause delays in processing as your response may not be correctly assigned to your ticket.')
             ->line('Have a great day ahead!')
-            ->line('')
-            ->line('')
             ->line('Regards,')
             ->line($this->from);
     }
