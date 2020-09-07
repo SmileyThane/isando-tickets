@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Company;
 use App\CompanyUser;
+use App\Notifications\ChangedTicketStatus;
 use App\Notifications\NewTicket;
 use App\ProductCompanyUser;
 use App\Role;
@@ -157,6 +158,7 @@ class TicketRepository
             $this->updateStatus($request, $id);
             $this->addHistoryItem($ticket->id, null, 'Ticket updated');
         }
+        $this->emailEmployees([$ticket->creator], $ticket, ChangedTicketStatus::class);
         return $ticket;
     }
 
@@ -240,15 +242,16 @@ class TicketRepository
         return true;
     }
 
-    public function emailEmployees($companyUsers, Ticket $ticket)
+    public function emailEmployees($companyUsers, Ticket $ticket, $notificationClass = NewTicket::class): bool
     {
         foreach ($companyUsers as $companyUser) {
             $user = $companyUser->userData;
             $company = $companyUser->companyData;
             if ($user->is_active) {
-                $user->notify(new NewTicket($company->name, $user->full_name, $ticket->name, $ticket->id));
+                $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id));
             }
         }
+        return true;
     }
 
     public function filterEmployeesByRoles($employees, $roles)
