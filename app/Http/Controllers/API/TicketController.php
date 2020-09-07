@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\NewTicket;
 use App\Repository\TicketRepository;
 use App\Role;
 use App\Team;
@@ -44,9 +45,7 @@ class TicketController extends Controller
         if ($result === true) {
             $result = $this->ticketRepo->create($request);
             $employees = $this->ticketRepo->filterEmployeesByRoles($result->to->employees, [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER]);
-            if ($employees) {
-                $this->ticketRepo->emailEmployees($employees, $result);
-            }
+//            $this->ticketRepo->emailEmployees($employees, $result, NewTicket::class);
             $success = true;
         }
         return self::showResponse($success, $result);
@@ -74,7 +73,7 @@ class TicketController extends Controller
         $result = $this->ticketRepo->attachTeam($request, $id);
         $employees = Team::find($request->team_id)->employees;
         $ticket = Ticket::find($id);
-        $this->ticketRepo->emailEmployees($employees, $ticket);
+        $this->ticketRepo->emailEmployees($employees, $ticket, NewTicket::class);
         return self::showResponse($result);
     }
 

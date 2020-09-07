@@ -7,7 +7,6 @@ namespace App\Repository;
 use App\Company;
 use App\CompanyUser;
 use App\Notifications\ChangedTicketStatus;
-use App\Notifications\NewTicket;
 use App\ProductCompanyUser;
 use App\Role;
 use App\TeamCompanyUser;
@@ -242,7 +241,7 @@ class TicketRepository
         return true;
     }
 
-    public function emailEmployees($companyUsers, Ticket $ticket, $notificationClass = NewTicket::class): bool
+    public function emailEmployees($companyUsers, Ticket $ticket, $notificationClass): bool
     {
         foreach ($companyUsers as $companyUser) {
             $user = $companyUser->userData;
