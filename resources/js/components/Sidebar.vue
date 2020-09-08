@@ -20,7 +20,7 @@
                     <v-icon>mdi-home</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>Home</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.home}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/company">
@@ -28,7 +28,7 @@
                     <v-icon>mdi-office-building</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>{{this.$store.state.lang.lang_map.main.company}}</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.companies}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/customer" v-if="checkRoleByIds([1,2,3])">
@@ -36,7 +36,7 @@
                     <v-icon>mdi-account-network</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>{{this.$store.state.lang.lang_map.main.customer}}</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.customers}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/product">
@@ -44,7 +44,7 @@
                     <v-icon> mdi-monitor-clean</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>{{this.$store.state.lang.lang_map.main.product}}</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.products}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/team" v-if="checkRoleByIds([1,2,3])">
@@ -52,7 +52,7 @@
                     <v-icon>mdi-account-box-multiple-outline</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>{{this.$store.state.lang.lang_map.main.team}}</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.teams}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/employee" v-if="checkRoleByIds([1,2,3])">
@@ -60,7 +60,7 @@
                     <v-icon>mdi-card-account-details-outline</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>{{this.$store.state.lang.lang_map.main.individuals}}</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.individuals}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
             <v-list-group
@@ -81,8 +81,8 @@
                         <v-icon>mdi-format-list-numbered</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{this.$store.state.lang.lang_map.main.tickets}}
-                            {{this.$store.state.lang.lang_map.main.list}}
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.ticket_list}}
+                            {{this.$store.state.lang.lang_map.sidebar.list}}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -91,20 +91,11 @@
                         <v-icon>mdi-shape-rectangle-plus</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{this.$store.state.lang.lang_map.main.create}}
-                            {{this.$store.state.lang.lang_map.main.ticket}}
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.create_ticket}}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list-group>
-            <!--            <v-list-item link to="/user">-->
-            <!--                <v-list-item-action>-->
-            <!--                    <v-icon>mdi-account</v-icon>-->
-            <!--                </v-list-item-action>-->
-            <!--                <v-list-item-content>-->
-            <!--                    <v-list-item-title>User</v-list-item-title>-->
-            <!--                </v-list-item-content>-->
-            <!--            </v-list-item>-->
         </v-list>
     </v-navigation-drawer>
 </template>
@@ -128,11 +119,14 @@
             },
             $route(to, from) {
                 this.changeAppTitle();
+            },
+            ticket: function () {
+                this.ticket = this.$store.state.lang.lang_map.sidebar.ticket
             }
         },
         mounted() {
             this.getCompanyName()
-            this.ticket = this.$store.state.lang.lang_map.main.ticket
+            this.ticket = this.$store.state.lang.lang_map.sidebar.ticket
         },
         methods: {
             checkRoleByIds(ids) {
@@ -153,7 +147,7 @@
                         });
             },
             changeAppTitle() {
-                document.title = this.companyName + ' | ' + this.$store.state.lang.lang_map.main[this.$route.name]
+                document.title = this.companyName + ' | ' + this.$store.state.lang.lang_map.sidebar[this.$route.name]
             }
         }
     }
