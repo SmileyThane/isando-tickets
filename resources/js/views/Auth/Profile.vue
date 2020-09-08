@@ -57,7 +57,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    :label="this.$store.state.lang.lang_map.main.name"
+                                    :label="this.$store.state.lang.lang_map.main.first_name"
                                     name="name"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
@@ -71,7 +71,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    :label="this.$store.state.lang.lang_map.main.surname"
+                                    :label="this.$store.state.lang.lang_map.main.last_name"
                                     name="surname"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
