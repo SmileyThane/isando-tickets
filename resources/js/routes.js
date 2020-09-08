@@ -40,7 +40,7 @@ export default [
     },
     {
         path: '/user',
-        name: 'profile_main',
+        name: 'profile',
         meta: {
             requiresAuth: true,
         },
@@ -80,7 +80,7 @@ export default [
     },
     {
         path: '/customer/:id',
-        name: 'customers',
+        name: 'customer',
         meta: {
             requiresAuth: true,
         },
@@ -88,7 +88,7 @@ export default [
     },
     {
         path: '/customer',
-        name: 'customer',
+        name: 'customers',
         meta: {
             requiresAuth: true,
         },
@@ -128,7 +128,7 @@ export default [
     },
     {
         path: '/tickets',
-        name: 'tickets',
+        name: 'ticket_list',
         meta: {
             requiresAuth: true,
         },
