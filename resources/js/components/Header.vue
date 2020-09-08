@@ -5,7 +5,7 @@
         dark
     >
         <v-app-bar-nav-icon @click.stop="localDrawer = !localDrawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>{{this.$store.state.lang.lang_map.main[this.$route.name] }}</v-toolbar-title>
+        <v-toolbar-title>{{this.$store.state.lang.lang_map.sidebar[this.$route.name] }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-menu
             left
@@ -19,13 +19,13 @@
 
             <v-list>
                 <v-list-item link to="/user">
-                    <v-list-item-title>Profile</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.profile}}</v-list-item-title>
                     <v-list-item-action>
                         <v-icon>mdi-account-settings</v-icon>
                     </v-list-item-action>
                 </v-list-item>
                 <v-list-item link @click="logout">
-                    <v-list-item-title>Logout</v-list-item-title>
+                    <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.logout}}</v-list-item-title>
                     <v-list-item-action>
                         <v-icon>mdi-logout</v-icon>
                     </v-list-item-action>
@@ -85,6 +85,6 @@
     }
 </script>
 
-<style scoped>
+<!--<style scoped>-->
 
-</style>
+<!--</style>-->
