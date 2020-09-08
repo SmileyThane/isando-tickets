@@ -17,6 +17,19 @@ class LanguageSeeder extends Seeder
                 'name' => 'English',
                 'short_code' => 'en_US',
                 'lang_map' => '{
+                  "sidebar": {
+    "companies": "Company",
+    "customers": "Customer",
+    "products": "Product",
+    "teams": "Team",
+    "individuals": "Individual",
+    "ticket": "Ticket",
+    "ticket_list": "Ticket list",
+    "create_ticket": "Create ticket",
+    "home": "Home",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
    "main":{
 "create": "create",
 "update": "update",
@@ -147,6 +160,19 @@ class LanguageSeeder extends Seeder
                 'name' => 'Deutsch',
                 'short_code' => 'de_DE',
                 'lang_map' => '{
+                                  "sidebar": {
+    "companies": "Meine Firma",
+    "customers": "Firmen",
+    "products": "Produkte",
+    "teams": "Teams",
+    "individuals": "Privatpersonen",
+    "ticket": "Ticket",
+    "ticket_list": "Ticket Liste",
+    "create_ticket": "Neues Ticket",
+    "home": "Home",
+    "profile": "Profil",
+    "logout": "Logout"
+  },
    "main":{
    "create": "erstellen",
 "update": "aktualisierung",
@@ -256,7 +282,7 @@ class LanguageSeeder extends Seeder
 "timezone": "Zeitzone",
 "home": "home",
 "profile_main": "profile",
-"profile": "profil",
+"profile": "Profil",
 "subject": "Gegenstand",
 "create_ticket": "Ticket erstellen",
 "availability_description": "Bitte teilen Sie uns mit, zu welcher Zeit Sie verfügbar sind, damit wir Sie umgehend kontaktieren können.",
