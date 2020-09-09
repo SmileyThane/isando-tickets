@@ -60,10 +60,10 @@
                 </v-pagination>
             </template>
             <template v-slot:item.status.name="{ item }">
-                <v-badge @click="showItem(item)" inline dot :color="item.status.color">{{ item.status.name }}</v-badge>
+                <v-badge @click="showItem(item)" inline dot :color="item.status.color">{{ langMap.ticket_statuses[item.status.name] }}</v-badge>
             </template>
             <template v-slot:item.priority.name="{ item }">
-                <v-badge @click="showItem(item)" inline dot :color="item.priority.color">{{ item.priority.name }}
+                <v-badge @click="showItem(item)" inline dot :color="item.priority.color">{{ langMap.ticket_priorities[item.priority.name] }}
                 </v-badge>
             </template>
             <template v-slot:item.assigned_person="{ item }">
