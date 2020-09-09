@@ -207,13 +207,13 @@ class LanguageSeeder extends Seeder
   "ticket_statuses": {
   "new" : "Neu",
   "open" : "Öffnen",
-  "responded" : "Antwortete",
+  "responded" : "Antwort pendent",
   "waiting_for_reply" : "Warten auf Antwort",
   "closed" : "Geschlossen"
   },
   "ticket_priorities": {
-  "urgent": "dringend",
-  "moderate": "mäßig",
+  "urgent": "Hoch",
+  "moderate": "Normal",
   "low": "niedrig"
   },
   "company": {
