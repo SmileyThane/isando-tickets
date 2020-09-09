@@ -17,7 +17,7 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.company.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompany">
@@ -28,7 +28,7 @@
                         <v-form>
                             <v-text-field
                                 color="green"
-                                :label="langMap.main.name"
+                                :label="langMap.company.name"
                                 name="name"
                                 prepend-icon="mdi-rename-box"
                                 type="text"
@@ -39,7 +39,7 @@
                             ></v-text-field>
                             <v-text-field
                                 color="green"
-                                :label="langMap.main.description"
+                                :label="langMap.company.description"
                                 name="description"
                                 prepend-icon="mdi-comment-text"
                                 type="text"
@@ -51,7 +51,7 @@
 
                             <v-text-field
                                 color="green"
-                                :label="langMap.main.company_number"
+                                :label="langMap.company.company_number"
                                 name="company_number"
                                 prepend-icon="mdi-message-alert"
                                 type="text"
@@ -73,7 +73,7 @@
                                     <v-text-field
                                         color="green"
                                         v-model="company.registration_date"
-                                        :label="langMap.main.registration_date"
+                                        :label="langMap.company.registration_date"
                                         name="registration_date"
                                         prepend-icon="mdi-calendar"
                                         readonly
@@ -103,7 +103,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.additional}} {{langMap.main.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.company.additional_info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -161,7 +161,7 @@
                                     >
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                {{langMap.main.new}} {{langMap.main.phone}}
+                                                {{langMap.company.new_phone}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -208,7 +208,7 @@
 
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                {{langMap.main.new}} {{langMap.main.address}}
+                                                {{langMap.company.new_address}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -307,7 +307,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.company}} {{langMap.main.contacts}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.company.company_contacts}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -331,8 +331,6 @@
                                     <p v-if="item.user_data.phones.length > 0"
                                        v-for="phoneItem in item.user_data.phones">{{ phoneItem.phone }} ({{
                                         phoneItem.type.name }})</p>
-                                    <!--                                    <p><strong>Lang:</strong></p>-->
-                                    <!--                                    <p>{{ item.user_data.lang }}</p>-->
                                     <p v-if="item.user_data.addresses.length > 0">
                                         <strong>{{langMap.main.address}}:</strong></p>
                                     <p v-if="item.user_data.addresses.length > 0"
@@ -358,7 +356,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{langMap.main.resend}} {{langMap.main.invite}}</span>
+                                    <span>{{langMap.company.resend_invite}}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
@@ -370,7 +368,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{langMap.main.edit}} {{langMap.main.contact}}</span>
+                                    <span>{{langMap.company.edit_contact}}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
@@ -384,7 +382,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{langMap.main.delete}}  {{langMap.main.contact}}</span>
+                                    <span>{{langMap.company.delete_contact}}</span>
                                 </v-tooltip>
                             </template>
 
@@ -395,7 +393,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{langMap.main.new}} {{langMap.main.contact}}
+                                    {{langMap.company.new_contact}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -469,7 +467,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.social}} {{langMap.main.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.company.social_info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -501,7 +499,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{langMap.main.new}} {{langMap.main.social}} {{langMap.main.item}}
+                                    {{langMap.company.new_social_item}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -554,7 +552,7 @@
             <v-dialog v-model="rolesDialog" persistent max-width="600px">
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{langMap.main.update}} {{langMap.main.info}}: {{singleUserForm.user.name}}</span>
+                        <span class="headline">{{langMap.company.update_info}}: {{singleUserForm.user.name}}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -574,7 +572,7 @@
                             >
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>
-                                        {{langMap.main.user}} {{langMap.main.information}}
+                                        {{langMap.company.user_info}}
                                         <template v-slot:actions>
                                             <v-icon color="submit">mdi-plus</v-icon>
                                         </template>
@@ -661,7 +659,7 @@
                                 </v-expansion-panel>
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>
-                                        {{langMap.main.contact}} {{langMap.main.info}}
+                                        {{langMap.company.additional_info}}
                                         <template v-slot:actions>
                                             <v-icon color="submit">mdi-plus</v-icon>
                                         </template>
@@ -721,7 +719,7 @@
                                                     <v-expansion-panels>
                                                         <v-expansion-panel>
                                                             <v-expansion-panel-header>
-                                                                {{langMap.main.new}} {{langMap.main.phone}}
+                                                                {{langMap.company.new_phone}}
                                                                 <template v-slot:actions>
                                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                                 </template>
@@ -767,7 +765,7 @@
                                                         </v-expansion-panel>
                                                         <v-expansion-panel>
                                                             <v-expansion-panel-header>
-                                                                {{langMap.main.new}} {{langMap.main.address}}
+                                                                {{langMap.company.new_address}}
                                                                 <template v-slot:actions>
                                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                                 </template>
