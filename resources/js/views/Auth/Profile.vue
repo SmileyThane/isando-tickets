@@ -165,7 +165,7 @@
                                     item-color="green"
                                     name="timezone"
                                     prepend-icon="mdi-timetable"
-                                    item-text="name"
+                                    item-text="text"
                                     item-value="id"
                                     :items="timezones"
                                     v-model="userData.timezone_id"
