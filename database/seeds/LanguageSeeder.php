@@ -30,6 +30,18 @@ class LanguageSeeder extends Seeder
     "profile": "Profile",
     "logout": "Logout"
   },
+  "ticket_statuses": {
+  "new" : "New",
+  "open" : "Open",
+  "responded" : "Responded",
+  "waiting_for_reply" : "Waiting for reply",
+  "closed" : "Closed"
+  },
+  "ticket_priorities": {
+  "urgent": "Urgent",
+  "moderate": "Moderate",
+  "low": "Low"
+  },
    "main":{
 "create": "create",
 "update": "update",
@@ -172,6 +184,18 @@ class LanguageSeeder extends Seeder
     "home": "Home",
     "profile": "Profil",
     "logout": "Logout"
+  },
+  "ticket_statuses": {
+  "new" : "Neu",
+  "open" : "Öffnen",
+  "responded" : "Antwortete",
+  "waiting_for_reply" : "Warten auf Antwort",
+  "closed" : "Geschlossen"
+  },
+  "ticket_priorities": {
+  "urgent": "dringend",
+  "moderate": "mäßig",
+  "low": "niedrig"
   },
    "main":{
    "create": "erstellen",
