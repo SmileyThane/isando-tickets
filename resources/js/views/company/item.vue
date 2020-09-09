@@ -512,7 +512,7 @@
                                                     color="green"
                                                     item-color="green"
                                                     v-model="socialForm.social_link"
-                                                    :label="langMap.main.social + ' ' + langMap.main.link"
+                                                    :label="langMap.main.link"
                                                     dense
                                                 ></v-text-field>
                                             </v-col>
@@ -899,7 +899,7 @@
                 langMap: this.$store.state.lang.lang_map,
                 headers: [
                     {text: '', value: 'data-table-expand'},
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'user_data'},
+                    {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'user_data'},
                     {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'role_names'},
                     {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
