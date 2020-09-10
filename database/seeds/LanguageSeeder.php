@@ -82,9 +82,12 @@ class LanguageSeeder extends Seeder
   "show_product": "Show product"
   },
   "product": {
-    "add_new": "Add new Product",
+    "add_new": "Add new product",
     "info": "Product info",
     "product_clients": "Product clients"
+  },
+  "team": {
+  "add_new": "Add new team"
   },
    "main":{
 "create": "create",
@@ -283,6 +286,9 @@ class LanguageSeeder extends Seeder
     "add_new": "neues Produkt hinzufügen",
     "info": "Produktinfo",
     "product_clients": "Produktkunden"
+  },
+  "team": {
+  "add_new": "neues Team hinzufügen"
   },
    "main":{
    "create": "erstellen",
