@@ -426,11 +426,17 @@
                                                     :label="langMap.main.roles"
                                                     color="green"
                                                     item-color="green"
-                                                    item-text="name"
                                                     item-value="id"
                                                     :items="roles"
                                                     v-model="employeeForm.role_id"
-                                                />
+                                                >
+                                                    <template slot="selection" slot-scope="data">
+                                                        {{ langMap.roles[data.item.name] }}
+                                                    </template>
+                                                    <template slot="item" slot-scope="data">
+                                                        {{ langMap.roles[data.item.name] }}
+                                                    </template>
+                                                </v-select>
                                                 <v-checkbox
                                                     :label="langMap.main.give_access + '?'"
                                                     color="success"
@@ -560,13 +566,19 @@
                                 :label="langMap.main.role"
                                 color="green"
                                 item-color="green"
-                                item-text="name"
                                 item-value="id"
                                 :items="roles"
                                 :disabled="!checkRoleByIds([1,2,3])"
                                 v-model="singleUserForm.role_ids"
                                 multiple
-                            />
+                            >
+                                <template slot="selection" slot-scope="data">
+                                    {{ langMap.roles[data.item.name] }}
+                                </template>
+                                <template slot="item" slot-scope="data">
+                                    {{ langMap.roles[data.item.name] }}
+                                </template>
+                            </v-select>
                             <v-expansion-panels
                                 :disabled="!checkRoleByIds([1,2,3])"
                             >
