@@ -414,12 +414,18 @@
                                 label="Role"
                                 color="green"
                                 item-color="green"
-                                item-text="name"
                                 item-value="id"
                                 :items="roles"
                                 v-model="singleUserForm.role_ids"
                                 multiple
-                            />
+                            >
+                                <template slot="selection" slot-scope="data">
+                                    {{ langMap.roles[data.item.name] }}
+                                </template>
+                                <template slot="item" slot-scope="data">
+                                    {{ langMap.roles[data.item.name] }}
+                                </template>
+                            </v-select>
                         </v-container>
                         <!--                        <small>*indicates required field</small>-->
                     </v-card-text>
