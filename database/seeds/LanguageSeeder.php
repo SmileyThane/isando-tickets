@@ -87,7 +87,10 @@ class LanguageSeeder extends Seeder
     "product_clients": "Product clients"
   },
   "team": {
-  "add_new": "Add new team"
+  "add_new": "Add new team",
+  "info": "Team info",
+  "members": "Team members",
+  "new_member": "New team member"
   },
    "main":{
 "create": "create",
@@ -288,7 +291,10 @@ class LanguageSeeder extends Seeder
     "product_clients": "Produktkunden"
   },
   "team": {
-  "add_new": "neues Team hinzufügen"
+  "add_new": "neues Team hinzufügen",
+  "info": "Teaminfo",
+  "members": "Teammitglieder",
+  "new_member": "neues Teammitglied"
   },
    "main":{
    "create": "erstellen",
