@@ -35,8 +35,6 @@ class TicketRepository
             'from_entity_type' => 'required',
             'to_entity_id' => 'required',
             'to_entity_type' => 'required',
-//            'from_company_user_id' => 'required',
-//            'contact_company_user_id' => 'required',
             'priority_id' => 'required',
             'name' => 'required',
         ];
