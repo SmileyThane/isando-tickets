@@ -263,7 +263,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.customer.product_info}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.product.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
