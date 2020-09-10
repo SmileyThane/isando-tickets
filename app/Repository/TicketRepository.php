@@ -170,6 +170,18 @@ class TicketRepository
         return true;
     }
 
+    public function emailEmployees($companyUsers, Ticket $ticket, $notificationClass): bool
+    {
+        foreach ($companyUsers as $companyUser) {
+            $user = $companyUser->userData;
+            $company = $companyUser->companyData;
+            if ($user->is_active) {
+                $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id));
+            }
+        }
+        return true;
+    }
+
     public function delete($id)
     {
         $result = false;
@@ -238,18 +250,6 @@ class TicketRepository
         $ticketNotice->ticket_id = $id;
         $ticketNotice->save();
         $this->addHistoryItem($ticketNotice->id, null, 'Notice added');
-        return true;
-    }
-
-    public function emailEmployees($companyUsers, Ticket $ticket, $notificationClass): bool
-    {
-        foreach ($companyUsers as $companyUser) {
-            $user = $companyUser->userData;
-            $company = $companyUser->companyData;
-            if ($user->is_active) {
-                $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id));
-            }
-        }
         return true;
     }
 
