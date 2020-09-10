@@ -40,15 +40,15 @@ class ProductRepository
     {
         $employee = Auth::user()->employee()->with('assignedToClients')->first();
         $companyId = $employee->company_id;
-        $products = null;
+        $productIds = null;
         if (!$employee->hasRole(Role::COMPANY_CLIENT)) {
-            $products = CompanyProduct::where('company_id', $companyId);
+            $productIds = CompanyProduct::where('company_id', $companyId);
         } else {
             $clientIds = $employee->assignedToClients->pluck('client_id')->toArray();
-            $products = ProductClient::where('client_id', $clientIds);
+            $productIds = ProductClient::where('client_id', $clientIds);
         }
         if ($request->search !== '') {
-            $products->whereHas(
+            $productIds->whereHas(
                 'productData',
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
@@ -56,8 +56,8 @@ class ProductRepository
                 }
             );
         }
+        $products = Product::whereIn('id', $productIds->get()->pluck('id')->toArray());
         return $products
-            ->with('productData')
             ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
             ->paginate($request->per_page ?? $products->count());
     }
