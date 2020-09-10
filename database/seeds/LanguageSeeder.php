@@ -71,6 +71,12 @@ class LanguageSeeder extends Seeder
   "user_info": "User info",
   "user": "User"
   },
+  "customer": {
+  "add_new": "Add new customer",
+  "supplier": "Supplier",
+  "product_info": "Product info",
+  "show_product": "Show product"
+  },
    "main":{
 "create": "create",
 "update": "update",
@@ -100,7 +106,7 @@ class LanguageSeeder extends Seeder
 "email": "email",
 "password": "password",
 "name": "name",
-"description": "description",
+"description": "Description",
 "actions": "actions",
 "action": "action",
 "item": "item",
@@ -256,6 +262,12 @@ class LanguageSeeder extends Seeder
   "company_client": "Firmenkunde",
   "contact": "Kontakt"
   },
+  "customer": {
+  "add_new": "neuen Kunden hinzufügen",
+  "supplier": "Lieferant",
+  "product_info": "Produktinfo",
+  "show_product": "Produkt anzeigen"
+  },
    "main":{
    "create": "erstellen",
 "update": "aktualisierung",
@@ -268,8 +280,8 @@ class LanguageSeeder extends Seeder
 "added": "hinzugefügt",
 "removed": "entfernt",
 "select": "Wählen Sie",
-"phone": "telefon",
-"phones": "telefone",
+"phone": "Telefon",
+"phones": "Telefone",
 "address": "adresse",
 "address_line": "adresszeile",
 "list": "liste",
@@ -285,9 +297,9 @@ class LanguageSeeder extends Seeder
 "email": "E-Mail",
 "password": "Kennwort",
 "name": "Name",
-"description": "beschreibung",
-"actions": "aktionen",
-"action": "aktion",
+"description": "Beschreibung",
+"actions": "Aktionen",
+"action": "Aktion",
 "item": "element",
 "for": "für",
 "at": "unter",
