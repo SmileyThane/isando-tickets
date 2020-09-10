@@ -17,7 +17,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{ langMap.main.info }}</v-toolbar-title>
+                        <v-toolbar-title>{{ langMap.team.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateTeam">
@@ -61,7 +61,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{ langMap.main.team }} {{ langMap.main.members }}</v-toolbar-title>
+                        <v-toolbar-title>{{ langMap.team.members }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -77,7 +77,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{ langMap.main.new }} {{ langMap.main.team }} {{ langMap.main.member }}
+                                    {{ langMap.team.new_member }}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -143,7 +143,7 @@ export default {
                     sortable: false,
                     value: 'employee.id',
                 },
-                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'employee.user_data.name'},
+                {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'employee.user_data.name'},
                 {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
                 {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'employee.role_names'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: ''},
