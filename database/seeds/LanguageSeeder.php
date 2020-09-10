@@ -92,6 +92,19 @@ class LanguageSeeder extends Seeder
   "members": "Team members",
   "new_member": "New team member"
   },
+  "ticket": {
+    "contact_name": "Contact name",
+    "contact_email": "Contact E-mail",
+    "due_date": "Due date",
+    "access_details": "Access details",
+    "status": "Status",
+    "priority": "Priority",
+    "company_from": "From company",
+    "company_to": "To company",
+    "product_name": "Product name",
+    "title": "Title",
+    "last_update": "Last update"
+  },
    "main":{
 "create": "create",
 "update": "update",
@@ -295,6 +308,19 @@ class LanguageSeeder extends Seeder
   "info": "Teaminfo",
   "members": "Teammitglieder",
   "new_member": "neues Teammitglied"
+  },
+  "ticket": {
+    "contact_name": "Kontaktname",
+    "contact_email": "Kontakt E-mail",
+    "due_date": "Geburtstermin",
+    "access_details": "Zugangsdaten",
+    "status": "Status",
+    "priority": "Priorität",
+    "company_from": "von der Firma",
+    "company_to": "An die Firma",
+    "product_name": "Produktname",
+    "title": "Titel",
+    "last_update": "letztes Update"
   },
    "main":{
    "create": "erstellen",
