@@ -18,7 +18,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.product.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateProduct">
@@ -63,7 +63,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.product}} {{langMap.main.clients}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.product.product_clients}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -79,7 +79,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{langMap.main.new}} {{langMap.main.client}}
+                                    {{langMap.customer.add_new}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -95,7 +95,7 @@
                                                     item-value="id"
                                                     v-model="supplierForm.client_id"
                                                     :items="suppliers"
-                                                    :label="langMap.main.client"
+                                                    :label="langMap.customer.customer"
                                                 ></v-autocomplete>
                                             </v-col>
                                             <v-btn
