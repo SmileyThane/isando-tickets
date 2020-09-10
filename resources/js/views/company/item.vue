@@ -88,10 +88,6 @@
                             </v-menu>
                         </v-form>
                     </v-card-text>
-                    <!--                    <v-card-actions>-->
-                    <!--                        <v-spacer></v-spacer>-->
-                    <!--                        <v-btn color="green" style="color: white;" @click="updateCompany">Save</v-btn>-->
-                    <!--                    </v-card-actions>-->
                 </v-card>
                 <v-spacer>
                     &nbsp;
@@ -376,7 +372,6 @@
                                                @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
                                             <v-icon
                                                 small
-                                                :hint="langMap.main.delete+ ' ' + langMap.main.contact"
                                             >
                                                 mdi-delete
                                             </v-icon>
