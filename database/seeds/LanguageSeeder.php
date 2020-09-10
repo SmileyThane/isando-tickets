@@ -57,8 +57,6 @@ class LanguageSeeder extends Seeder
   "contact": "Contact"
   },
   "company": {
-  "name": "Name",
-  "description": "Description",
   "company_number": "Company number",
   "registration_date": "Date ofregistration",
   "info":"Company info",
@@ -77,10 +75,16 @@ class LanguageSeeder extends Seeder
   "user": "User"
   },
   "customer": {
+  "customer": "Customer",
   "add_new": "Add new customer",
   "supplier": "Supplier",
   "product_info": "Product info",
   "show_product": "Show product"
+  },
+  "product": {
+    "add_new": "Add new Product",
+    "info": "Product info",
+    "product_clients": "Product clients"
   },
    "main":{
 "create": "create",
@@ -242,9 +246,16 @@ class LanguageSeeder extends Seeder
   "moderate": "Normal",
   "low": "Niedrig"
   },
+  "roles": {
+  "superadmin": "Höchster Vorgesetzter",
+  "license_owner": "Lizenzinhaber",
+  "company_admin": "Unternehmensadmin",
+  "company_manager": "Firmenleiter",
+  "regular_user": "Stammbenutzer",
+  "company_client": "Firmenkunde",
+  "contact": "Kontakt"
+  },
   "company": {
-  "name": "Name",
-  "description": "Beschreibung",
   "company_number": "Firmennummer",
   "registration_date": "datum der registrierung",
   "info":"Firmeninfo",
@@ -262,20 +273,16 @@ class LanguageSeeder extends Seeder
   "user_info": "Benutzerinformation",
   "user": "Benutzer"
   },
-  "roles": {
-  "superadmin": "Höchster Vorgesetzter",
-  "license_owner": "Lizenzinhaber",
-  "company_admin": "Unternehmensadmin",
-  "company_manager": "Firmenleiter",
-  "regular_user": "Stammbenutzer",
-  "company_client": "Firmenkunde",
-  "contact": "Kontakt"
-  },
   "customer": {
+  "customer": "Firme",
   "add_new": "neuen Kunden hinzufügen",
   "supplier": "Lieferant",
-  "product_info": "Produktinfo",
   "show_product": "Produkt anzeigen"
+  },
+  "product": {
+    "add_new": "neues Produkt hinzufügen",
+    "info": "Produktinfo",
+    "product_clients": "Produktkunden"
   },
    "main":{
    "create": "erstellen",
