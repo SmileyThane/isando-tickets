@@ -8,7 +8,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{ langMap.main.add }} {{ langMap.main.new }} {{ langMap.main.team }}
+                                    {{ langMap.team.add_new }}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -136,10 +136,7 @@
         <template>
             <v-dialog v-model="removeTeamDialog" persistent max-width="480">
                 <v-card>
-                    <v-card-title class="headline">{{ langMap.main.delete_selected }} {{
-                            langMap.main.team
-                        }}?
-                    </v-card-title>
+                    <v-card-title class="headline">{{ langMap.main.delete_selected }}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeTeamDialog = false">
