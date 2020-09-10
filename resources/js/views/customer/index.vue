@@ -17,7 +17,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{langMap.main.add}} {{langMap.main.new}} {{langMap.main.client}}
+                                    {{langMap.customer.add_new}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -28,7 +28,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     color="green"
-                                                    :label="langMap.main.name"
+                                                    :label="langMap.company.name"
                                                     name="company_name"
                                                     type="text"
                                                     v-model="clientForm.client_name"
@@ -38,7 +38,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     color="green"
-                                                    :label="langMap.main.description"
+                                                    :label="langMap.company.description"
                                                     name="company_description"
                                                     type="text"
                                                     v-model="clientForm.client_description"
@@ -47,7 +47,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-select
-                                                    :label="langMap.main.supplier"
+                                                    :label="langMap.customer.supplier"
                                                     color="green"
                                                     item-color="green"
                                                     item-text="name"
@@ -156,7 +156,7 @@
         <template>
             <v-dialog v-model="removeCustomerDialog" persistent max-width="290">
                 <v-card>
-                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{langMap.main.client}}?</v-card-title>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeCustomerDialog = false">{{langMap.main.cancel}}</v-btn>
