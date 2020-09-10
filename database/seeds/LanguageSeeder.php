@@ -42,6 +42,15 @@ class LanguageSeeder extends Seeder
   "moderate": "Moderate",
   "low": "Low"
   },
+  "roles": {
+  "superadmin": "Superadmin",
+  "license_owner": "License owner",
+  "company_admin": "Company admin",
+  "company_manager": "Company manager",
+  "regular_user": "Regular user",
+  "company_client": "Company client",
+  "contact": "Contact"
+  },
   "company": {
   "name": "Name",
   "description": "Description",
@@ -238,7 +247,15 @@ class LanguageSeeder extends Seeder
   "user_info": "Benutzerinformation",
   "user": "Benutzer"
   },
-
+  "roles": {
+  "superadmin": "Höchster Vorgesetzter",
+  "license_owner": "Lizenzinhaber",
+  "company_admin": "Unternehmensadmin",
+  "company_manager": "Firmenleiter",
+  "regular_user": "Stammbenutzer",
+  "company_client": "Firmenkunde",
+  "contact": "Kontakt"
+  },
    "main":{
    "create": "erstellen",
 "update": "aktualisierung",
