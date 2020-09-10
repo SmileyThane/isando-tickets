@@ -25,7 +25,7 @@ class CompanyUser extends Model
             $result .= $translationsArray->roles->$roleName;
             $result .= $key !== count($roles) - 1 ? ', ' : '';
         }
-        return $result ?? 'contact';
+        return $result ?? $translationsArray->roles->contact;
     }
 
     public function getRolesAttribute()
