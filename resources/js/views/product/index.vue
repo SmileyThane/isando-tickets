@@ -17,7 +17,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel v-if="!this.$store.state.roles.includes(this.clientId)">
                                 <v-expansion-panel-header>
-                                    {{ langMap.main.add }} {{ langMap.main.new }} {{ langMap.main.product }}
+                                    {{ langMap.product.add_new }}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -146,7 +146,7 @@
         <template>
             <v-dialog v-model="removeProductDialog" persistent max-width="290">
                 <v-card>
-                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{ langMap.main.product }}?</v-card-title>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeProductDialog = false">{{langMap.main.cancel}}</v-btn>
