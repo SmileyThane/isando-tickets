@@ -134,7 +134,7 @@
             </div>
         </div>
         <template>
-            <v-dialog v-model="removeTeamDialog" persistent max-width="290">
+            <v-dialog v-model="removeTeamDialog" persistent max-width="480">
                 <v-card>
                     <v-card-title class="headline">{{ langMap.main.delete_selected }} {{
                             langMap.main.team
