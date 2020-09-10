@@ -42,14 +42,9 @@
                             @change="updateItemsCount"
                         ></v-select>
                     </v-col>
-                    <!--                                        <v-col sm="12">-->
-                    <!--                                            <v-switch v-model="singleExpand" label="Single expand" color="green" class="mt-2"></v-switch>-->
-                    <!--                                        </v-col>-->
-
                 </v-row>
             </template>
             <template v-slot:footer>
-
                 <v-pagination color="green"
                               v-model="options.page"
                               :length="lastPage"
@@ -82,10 +77,10 @@
                     <v-spacer>
                         &nbsp;
                     </v-spacer>
-                    <p><strong>{{langMap.main.contact}} {{langMap.main.name}}:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
-                    <p><strong>{{langMap.main.contact}} {{langMap.main.email}}:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
-                    <p><strong>{{langMap.main.due_date}}:</strong> {{ item.due_date }}</p>
-                    <p><strong>{{langMap.main.access}} {{langMap.main.details}}:</strong> {{ item.access_details }}</p>
+                    <p><strong>{{langMap.ticket.contact_name}}:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
+                    <p><strong>{{langMap.ticket.contact_email}}:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
+                    <p><strong>{{langMap.ticket.due_date}}:</strong> {{ item.due_date }}</p>
+                    <p><strong>{{langMap.ticket.access_details}}:</strong> {{ item.access_details }}</p>
                     <p>
                         <v-btn
                             color="grey"
@@ -120,7 +115,7 @@
         <template>
             <v-dialog v-model="removeTicketDialog" persistent max-width="480">
                 <v-card>
-                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{langMap.main.ticket}}?</v-card-title>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeTicketDialog = false">{{langMap.main.cancel}}</v-btn>
@@ -164,13 +159,13 @@
                         sortable: false,
                         value: 'id',
                     },
-                    {text: `${this.$store.state.lang.lang_map.main.status}`, value: 'status.name'},
-                    {text: `${this.$store.state.lang.lang_map.main.priority}`, value: 'priority.name'},
-                    {text: `${this.$store.state.lang.lang_map.main.company + ' ' + this.$store.state.lang.lang_map.main.from}`, value: 'from.name'},
-                    {text: `${this.$store.state.lang.lang_map.main.to + ' ' + this.$store.state.lang.lang_map.main.user}`, value: 'assigned_person'},
-                    {text: `${this.$store.state.lang.lang_map.main.product}`, value: 'product.name'},
-                    {text: `${this.$store.state.lang.lang_map.main.title}`, value: 'name'},
-                    {text: `${this.$store.state.lang.lang_map.main.updated}`, value: 'last_update'},
+                    {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
+                    {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
+                    {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name'},
+                    {text: `${this.$store.state.lang.lang_map.ticket.company_to + ' ' + this.$store.state.lang.lang_map.main.user}`, value: 'assigned_person'},
+                    {text: `${this.$store.state.lang.lang_map.ticket.product_name}`, value: 'product.name'},
+                    {text: `${this.$store.state.lang.lang_map.ticket.title}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update'},
                 ],
                 ticketsSearch: '',
                 tickets: [],
