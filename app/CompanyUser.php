@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 
 class CompanyUser extends Model
@@ -18,8 +19,10 @@ class CompanyUser extends Model
     {
         $result = null;
         $roles = $this->getRolesAttribute();
+        $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
         foreach ($roles as $key => $role) {
-            $result .= $role->name;
+            $roleName = $role->name;
+            $result .= $translationsArray->roles->$roleName;
             $result .= $key !== count($roles) - 1 ? ', ' : '';
         }
         return $result ?? 'contact';
