@@ -17,7 +17,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.company.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateClient">
@@ -29,7 +29,7 @@
                         <v-form>
                             <v-text-field
                                 color="green"
-                                :label="langMap.main.name"
+                                :label="langMap.company.name"
                                 name="client_name"
                                 prepend-icon="mdi-rename-box"
                                 type="text"
@@ -40,7 +40,7 @@
                             ></v-text-field>
                             <v-text-field
                                 color="green"
-                                :label="langMap.main.description"
+                                :label="langMap.company.description"
                                 name="client_description"
                                 prepend-icon="mdi-comment-text"
                                 type="text"
@@ -51,10 +51,6 @@
                             ></v-text-field>
                         </v-form>
                     </v-card-text>
-                    <!--                    <v-card-actions>-->
-                    <!--                        <v-spacer></v-spacer>-->
-                    <!--                        <v-btn color="green" style="color: white;" @click="updateClient">Save</v-btn>-->
-                    <!--                    </v-card-actions>-->
                 </v-card>
                 <v-spacer>
                     &nbsp;
@@ -66,7 +62,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.additional}} {{langMap.main.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.company.additional_info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -122,7 +118,7 @@
                                     <v-expansion-panels>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                {{langMap.main.new}} {{langMap.main.phone}}
+                                                {{langMap.company.new_phone}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -168,7 +164,7 @@
                                         </v-expansion-panel>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                {{langMap.main.new}} {{langMap.main.address}}
+                                                {{langMap.company.new_address}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -267,7 +263,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.products}} {{langMap.main.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.customer.product_info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -290,7 +286,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{langMap.main.show}} {{langMap.main.product}}</span>
+                                    <span>{{langMap.customer.show_product}}</span>
                                 </v-tooltip>
                             </template>
                         </v-data-table>
@@ -305,7 +301,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.customer}} {{langMap.main.contacts}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.company.company_contacts}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -331,7 +327,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{langMap.main.resend}} {{langMap.main.invite}}</span>
+                                    <span>{{langMap.company.resend_invite}}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
@@ -343,7 +339,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{langMap.main.edit}} {{langMap.main.contact}}</span>
+                                    <span>{{langMap.company.edit_contact}}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
@@ -354,13 +350,13 @@
                                             v-on="on">
                                             <v-icon
                                                 small
-                                                hint="Delete contact"
+
                                             >
                                                 mdi-delete
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{langMap.main.delete}} {{langMap.main.contact}}</span>
+                                    <span>{{langMap.company.delete_contact}}</span>
                                 </v-tooltip>
                             </template>
                             <template v-slot:expanded-item="{ headers, item }">
@@ -391,7 +387,7 @@
                         <template>
                             <v-dialog v-model="removeEmployeeDialog" persistent max-width="290">
                                 <v-card>
-                                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{langMap.main.contact}}?</v-card-title>
+                                    <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">{{langMap.main.cancel}}
@@ -409,7 +405,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{langMap.main.new}} {{langMap.main.contact}}
+                                    {{langMap.company.new_contact}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -471,7 +467,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.social}} {{langMap.main.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.company.social_info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -503,7 +499,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{langMap.main.new}} {{langMap.main.social}} {{langMap.main.item}}
+                                    {{langMap.company.new_social_item}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -516,7 +512,7 @@
                                                     color="green"
                                                     item-color="green"
                                                     v-model="socialForm.social_link"
-                                                    :label="langMap.main.social+' '+langMap.main.link"
+                                                    :label="langMap.main.link"
                                                     dense
                                                 ></v-text-field>
                                             </v-col>
@@ -571,7 +567,7 @@
                     //     sortable: false,
                     //     value: 'id',
                     // },
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'user_data'},
+                    {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'user_data'},
                     // {text: 'email', value: 'user_data.email'},
                     {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'employee.role_names'},
                     {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
