@@ -249,7 +249,7 @@ export default {
             });
         },
         showItem(item) {
-            this.$router.push(`/product/${item.product_data.id}`)
+            this.$router.push(`/product/${item.id}`)
         },
         deleteProcess(item) {
             this.selectedProductId = item.id
