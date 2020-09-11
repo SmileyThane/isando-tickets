@@ -54,7 +54,7 @@
                                                 hide-selected
                                                 item-text="name"
                                                 item-value="id"
-                                                :label="langMap.main.client"
+                                                :label="langMap.customer.customer"
                                                 placeholder="Start typing to Search"
                                             ></v-autocomplete>
                                         </div>
