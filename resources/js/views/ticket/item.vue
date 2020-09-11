@@ -26,7 +26,7 @@
                                 inline
                                 dot
                             >
-                                <strong>{{ langMap.status[ticket.status.name] }}</strong>
+                                <strong>{{ langMap.ticket_statuses[ticket.status.name] }}</strong>
                             </v-badge>
                         </v-chip>&nbsp;
 
@@ -37,7 +37,7 @@
                                 inline
                                 dot
                             >
-                                <strong>{{ langMap.priority[ticket.priority.name] }}</strong>
+                                <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>
                             </v-badge>
                         </v-chip>
                         &nbsp;
