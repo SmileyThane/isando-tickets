@@ -14,7 +14,7 @@
                     <v-expansion-panels>
                         <v-expansion-panel>
                             <v-expansion-panel-header>
-                                {{langMap.main.add}} {{langMap.main.new}} {{langMap.main.contact}}
+                                {{langMap.individuals.add_new}}
                                 <template v-slot:actions>
                                     <v-icon color="submit">mdi-plus</v-icon>
                                 </template>
@@ -55,7 +55,7 @@
                                                 item-text="name"
                                                 item-value="id"
                                                 :label="langMap.customer.customer"
-                                                placeholder="Start typing to Search"
+                                                :placeholder="this.$store.state.lang.lang_map.main.search"
                                             ></v-autocomplete>
                                         </div>
                                         <v-btn
