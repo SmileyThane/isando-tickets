@@ -19,10 +19,11 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Basic info</v-toolbar-title>
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.main.profile}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">Update
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">
+                            {{this.$store.state.lang.lang_map.main.update}}
                         </v-btn>
                     </v-toolbar>
                     <v-card-text>
@@ -30,7 +31,7 @@
                             <v-row>
                                 <v-text-field
                                     color="green"
-                                    label="Title before name"
+                                    :label="this.$store.state.lang.lang_map.main.title_before_name"
                                     name="title_before_name"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
@@ -43,7 +44,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    label="Title"
+                                    :label="this.$store.state.lang.lang_map.main.title"
                                     name="title"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
@@ -56,7 +57,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    label="Name"
+                                    :label="this.$store.state.lang.lang_map.main.first_name"
                                     name="name"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
@@ -70,7 +71,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    label="Surname"
+                                    :label="this.$store.state.lang.lang_map.main.last_name"
                                     name="surname"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
@@ -83,7 +84,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     color="green"
-                                    label="Email"
+                                    :label="this.$store.state.lang.lang_map.main.email"
                                     name="email"
                                     prepend-icon="mdi-mail"
                                     type="text"
@@ -98,7 +99,7 @@
                             </v-row>
                         </v-form>
                         <v-checkbox
-                            label="Give access to the system"
+                            :label="this.$store.state.lang.lang_map.main.give_access + '?'"
                             color="success"
                             v-model="userData.is_active"
                             @change="changeIsActive(userData)"
@@ -115,7 +116,8 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Assigned companies</v-toolbar-title>
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.assigned_companies}}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -158,7 +160,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    New сustomer assignment
+                                    {{this.$store.state.lang.lang_map.individuals.new_customer}}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -176,8 +178,8 @@
                                                     hide-selected
                                                     item-text="name"
                                                     item-value="id"
-                                                    label="Client"
-                                                    placeholder="Start typing to Search"
+                                                    :label="this.$store.state.lang.lang_map.customer.customer"
+                                                    :placeholder="this.$store.state.lang.lang_map.main.search"
                                                 ></v-autocomplete>
                                             </v-col>
                                             <v-btn
@@ -210,7 +212,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>Additional info</v-toolbar-title>
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.contact_info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -268,7 +270,7 @@
                                     <v-expansion-panels>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                New phone
+                                                {{this.$store.state.lang.lang_map.main.new_phone}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -281,7 +283,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="phoneForm.phone"
-                                                                label="Phone"
+                                                                :label="langMap.main.phone"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -293,7 +295,7 @@
                                                                 item-value="id"
                                                                 v-model="phoneForm.phone_type"
                                                                 :items="phoneTypes"
-                                                                label="Type"
+                                                                :label="langMap.main.type"
                                                                 dense
                                                             ></v-select>
                                                         </v-col>
@@ -314,7 +316,7 @@
                                         </v-expansion-panel>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                New address
+                                                {{this.$store.state.lang.lang_map.main.new_address}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -327,7 +329,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.address"
-                                                                label="Address"
+                                                                :label="langMap.main.address_line + ' 1'"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -336,7 +338,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.address_line_2"
-                                                                label="Address line 2"
+                                                                :label="langMap.main.address_line + ' 2'"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -345,7 +347,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.postal_code"
-                                                                label="Postal code"
+                                                                :label="langMap.main.postal_code"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -354,7 +356,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.city"
-                                                                label="City"
+                                                                :label="langMap.main.city"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -363,7 +365,7 @@
                                                                 color="green"
                                                                 item-color="green"
                                                                 v-model="addressForm.address.country"
-                                                                label="Country"
+                                                                :label="langMap.main.country"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -375,7 +377,7 @@
                                                                 item-value="id"
                                                                 v-model="addressForm.address_type"
                                                                 :items="addressTypes"
-                                                                label="Type"
+                                                                :label="langMap.main.type"
                                                                 dense
                                                             ></v-select>
                                                         </v-col>
@@ -406,12 +408,12 @@
             <v-dialog v-model="rolesDialog" persistent max-width="600px">
                 <v-card>
                     <v-card-title>
-                        <span class="headline">Update info for {{singleUserForm.user.name}}</span>
+                        <span class="headline">{{langMap.company.update_info}}: {{singleUserForm.user.name}}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <v-select
-                                label="Role"
+                                :label="langMap.main.role"
                                 color="green"
                                 item-color="green"
                                 item-value="id"
@@ -431,9 +433,8 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="red" text @click="rolesDialog = false">Close</v-btn>
-                        <v-btn color="green" text @click="updateRole">Save</v-btn>
-                    </v-card-actions>
+                        <v-btn color="red" text @click="rolesDialog = false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="green" text @click="updateRole">{{langMap.main.save}}</v-btn>                    </v-card-actions>
                 </v-card>
             </v-dialog>
         </v-row>
@@ -445,29 +446,16 @@
     export default {
         data() {
             return {
-                phoneHeaders: [
-                    {text: 'Phone', sortable: false, value: 'phone'},
-                    {text: 'Type', value: 'type.name'},
-                    {text: '', value: 'actions', sortable: false},
-
-                ],
-                addressHeaders: [
-                    {text: '', value: 'data-table-expand'},
-                    {text: 'Address', value: 'address'},
-                    {text: 'Type', value: 'type.name'},
-                    {text: '', value: 'actions', sortable: false},
-
-                ],
                 headers: [
-
-                    {text: 'name', value: 'clients.name'},
-                    // {text: 'email', value: 'user_data.email'},
-                    {text: 'Actions', value: 'actions', sortable: false},
+                    {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'clients.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
                 footerProps: {
                     itemsPerPage: 10,
                     disableItemsPerPage: true,
+                    itemsPerPageText: this.$store.state.lang.lang_map.main.items_per_page
                 },
+                langMap: this.$store.state.lang.lang_map,
                 companies: [],
                 snackbar: false,
                 actionColor: '',
