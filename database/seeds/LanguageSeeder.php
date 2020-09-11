@@ -118,6 +118,7 @@ class LanguageSeeder extends Seeder
     "ticket_actions": "Ticket actions",
     "assign_to": "Assing to team or user",
     "add_internal_note": "Add internal note",
+    "subject": "Subject",
     "notes_history": "Notes history",
     "ticket_history": "Ticket history",
     "access_data": "Access data",
