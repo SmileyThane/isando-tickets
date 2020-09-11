@@ -118,7 +118,7 @@
                                     <v-expansion-panels>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                {{langMap.company.new_phone}}
+                                                {{langMap.main.new_phone}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -164,7 +164,7 @@
                                         </v-expansion-panel>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                {{langMap.company.new_address}}
+                                                {{langMap.main.new_address}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>

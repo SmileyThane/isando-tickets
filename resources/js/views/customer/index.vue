@@ -28,7 +28,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     color="green"
-                                                    :label="langMap.company.name"
+                                                    :label="langMap.main.name"
                                                     name="company_name"
                                                     type="text"
                                                     v-model="clientForm.client_name"
@@ -38,7 +38,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     color="green"
-                                                    :label="langMap.company.description"
+                                                    :label="langMap.main.description"
                                                     name="company_description"
                                                     type="text"
                                                     v-model="clientForm.client_description"
