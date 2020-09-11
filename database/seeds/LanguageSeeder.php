@@ -239,9 +239,7 @@ class LanguageSeeder extends Seeder
 "profile_main":"profile",
 "profile":"profile",
 "subject": "subject",
-"link": "Link",
-
-
+"link": "Link"
    },
  "exceptions": {
 
