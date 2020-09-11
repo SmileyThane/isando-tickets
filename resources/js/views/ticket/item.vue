@@ -56,7 +56,7 @@
                             <v-col cols="6">
                                 <v-select
                                     dense
-                                    :label="langMap.ticket.from"
+                                    :label="langMap.ticket.company_from"
                                     color="green"
                                     item-color="green"
                                     item-text="name"
@@ -113,8 +113,8 @@
                                     :label="langMap.ticket.product_name"
                                     color="green"
                                     item-color="green"
-                                    item-text="product_data.name"
-                                    item-value="product_data.id"
+                                    item-text="name"
+                                    item-value="id"
                                     :items="products"
                                     v-model="ticket.to_product_id"
                                     :disabled="!fromEdit"
