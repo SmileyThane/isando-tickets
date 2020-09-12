@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use App\Ticket;
-use App\TicketStatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -56,18 +55,18 @@ class ChangedTicketStatus extends Notification
     public function toMail($notifiable): MailMessage
     {
         $ticket = Ticket::find($this->ticket_id);
-         if($ticket && $ticket->status_id === 5) {
-             $subject = 'Updates on your ticket: ' . $this->ticket_subject;
-             $firstLine = "Your ticket has been successfully closed.
+        if ($ticket && $ticket->status_id === 5) {
+            $subject = 'Updates on your ticket: ' . $this->ticket_subject;
+            $firstLine = "Your ticket has been successfully closed.
              We hope that you have been satisfied with the resolution of the ticket and the speed of response. ";
-             $secondLine = "";
-         } else {
-             $subject = 'Updates on your ticket: ' . $this->ticket_subject;
-             $firstLine = "Your ticket has been updated.";
-             $secondLine = "or respond directly to this email.
+            $secondLine = "";
+        } else {
+            $subject = 'Updates on your ticket: ' . $this->ticket_subject;
+            $firstLine = "Your ticket has been updated.";
+            $secondLine = "or respond directly to this email.
               Please do not copy this message in your email response, and do not change subject of this email.
               This may cause delays in processing as your response may not be correctly assigned to your ticket.";
-         }
+        }
 
         Log::info('email sending was started!');
         return (new MailMessage)
