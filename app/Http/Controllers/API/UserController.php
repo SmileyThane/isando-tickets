@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Role;
-use App\TimeZone;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
