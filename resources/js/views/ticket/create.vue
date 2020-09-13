@@ -157,7 +157,7 @@
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
-                                                    :label="'IP ' + langMap.ticket.ip_address"
+                                                    :label="langMap.ticket.ip_address"
                                                     color="green"
                                                     item-color="green"
                                                     auto-grow

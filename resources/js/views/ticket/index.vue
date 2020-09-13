@@ -68,8 +68,6 @@
                 </div>
             </template>
             <template v-slot:item.actions="{ item }">
-
-
             </template>
             <template v-slot:expanded-item="{ headers, item }">
 
@@ -162,7 +160,7 @@
                     {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name'},
-                    {text: `${this.$store.state.lang.lang_map.ticket.company_to + ' ' + this.$store.state.lang.lang_map.main.user}`, value: 'assigned_person'},
+                    {text: `${this.$store.state.lang.lang_map.ticket.company_contact}`, value: 'assigned_person'},
                     {text: `${this.$store.state.lang.lang_map.ticket.product_name}`, value: 'product.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.title}`, value: 'name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update'},
