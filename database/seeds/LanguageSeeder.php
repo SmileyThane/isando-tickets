@@ -15,7 +15,8 @@ class LanguageSeeder extends Seeder
             ['id' => 1],
             [
                 'name' => 'English',
-                'short_code' => 'en_US',
+                'short_code' => 'en',
+                'locale' => 'en_US',
                 'lang_map' => '{
                   "sidebar": {
     "companies": "Company",
@@ -269,7 +270,8 @@ class LanguageSeeder extends Seeder
             ['id' => 2],
             [
                 'name' => 'Deutsch',
-                'short_code' => 'de_DE',
+                'short_code' => 'deu',
+                'locale' => 'de_DE',
                 'lang_map' => '{
                                   "sidebar": {
     "companies": "Meine Firma",
