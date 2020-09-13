@@ -448,7 +448,8 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="red" text @click="rolesDialog = false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn color="green" text @click="updateRole">{{langMap.main.save}}</v-btn>                    </v-card-actions>
+                        <v-btn color="green" text @click="updateRole">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-dialog>
         </v-row>

@@ -122,130 +122,130 @@
 
 
 <script>
-export default {
+    export default {
 
-    data() {
-        return {
-            snackbar: false,
-            actionColor: '',
-            snackbarMessage: '',
-            enableToEdit: false,
-            langMap: this.$store.state.lang.lang_map,
-            footerProps: {
-                itemsPerPage: 10,
-                disableItemsPerPage: true,
-                itemsPerPageText: this.$store.state.lang.lang_map.main.items_per_page
-            },
-            headers: [
-                {
-                    text: 'ID',
-                    align: 'start',
-                    sortable: false,
-                    value: 'employee.id',
+        data() {
+            return {
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
+                enableToEdit: false,
+                langMap: this.$store.state.lang.lang_map,
+                footerProps: {
+                    itemsPerPage: 10,
+                    disableItemsPerPage: true,
+                    itemsPerPageText: this.$store.state.lang.lang_map.main.items_per_page
                 },
-                {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'employee.user_data.name'},
-                {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
-                {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'employee.role_names'},
-                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: ''},
-            ],
-            team: {
-                team_name: '',
-                team_description: '',
-                team_owner_id: '',
-                employees: [
+                headers: [
                     {
-                        employee: {
-                            user_id: '',
-                            company_id: '',
-                            roles: [],
-                            user_data: ''
-
-                        }
-                    }
-                ]
-            },
-            employeeForm: {
-                company_user_id: '',
-                team_id: ''
-            },
-            companies: [
-                {
-                    id: '',
-                    name: '',
+                        text: 'ID',
+                        align: 'start',
+                        sortable: false,
+                        value: 'employee.id',
+                    },
+                    {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'employee.user_data.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
+                    {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'employee.role_names'},
+                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: ''},
+                ],
+                team: {
+                    team_name: '',
+                    team_description: '',
+                    team_owner_id: '',
                     employees: [
                         {
-                            user_data:
-                                {
-                                    email: '',
-                                    name: ''
-                                }
+                            employee: {
+                                user_id: '',
+                                company_id: '',
+                                roles: [],
+                                user_data: ''
+
+                            }
                         }
                     ]
-                }
-            ]
+                },
+                employeeForm: {
+                    company_user_id: '',
+                    team_id: ''
+                },
+                companies: [
+                    {
+                        id: '',
+                        name: '',
+                        employees: [
+                            {
+                                user_data:
+                                    {
+                                        email: '',
+                                        name: ''
+                                    }
+                            }
+                        ]
+                    }
+                ]
 
-        }
-    },
-    mounted() {
-        this.getTeam()
-        this.employeeForm.team_id = this.$route.params.id
-    },
-    methods: {
-        getTeam() {
-            axios.get(`/api/team/${this.$route.params.id}`).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.team = response.data
-                    this.team.team_name = response.data.name
-                    this.team.team_description = response.data.description
-                    this.getCompanies()
-                } else {
-                    console.log('error')
-                }
-
-            });
+            }
         },
-        getCompanies() {
-            console.log(this.team);
-            axios.get(`/api/company/${this.team.team_owner_id}`).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.companies = response.data
-                    console.log(this.companies);
-                } else {
-                    console.log('error')
-                }
-
-            });
+        mounted() {
+            this.getTeam()
+            this.employeeForm.team_id = this.$route.params.id
         },
-        addEmployee() {
-            // console.log(this.employeeForm);
-            axios.post(`/api/team/employee`, this.employeeForm).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.getTeam()
-                } else {
-                    console.log('error')
-                }
+        methods: {
+            getTeam() {
+                axios.get(`/api/team/${this.$route.params.id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.team = response.data
+                        this.team.team_name = response.data.name
+                        this.team.team_description = response.data.description
+                        this.getCompanies()
+                    } else {
+                        console.log('error')
+                    }
 
-            });
-        },
-        updateTeam() {
-            axios.patch(`/api/team/${this.$route.params.id}`, this.team).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.team.team_name = response.data.name
-                    this.team.team_description = response.data.description
-                    this.enableToEdit = false
-                    this.snackbarMessage = 'Update successful'
-                    this.actionColor = 'success'
-                    this.snackbar = true;
-                } else {
-                    console.log('error')
-                }
+                });
+            },
+            getCompanies() {
+                console.log(this.team);
+                axios.get(`/api/company/${this.team.team_owner_id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.companies = response.data
+                        console.log(this.companies);
+                    } else {
+                        console.log('error')
+                    }
 
-            });
+                });
+            },
+            addEmployee() {
+                // console.log(this.employeeForm);
+                axios.post(`/api/team/employee`, this.employeeForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getTeam()
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            updateTeam() {
+                axios.patch(`/api/team/${this.$route.params.id}`, this.team).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.team.team_name = response.data.name
+                        this.team.team_description = response.data.description
+                        this.enableToEdit = false
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            }
         }
     }
-}
 </script>

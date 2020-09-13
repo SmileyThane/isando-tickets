@@ -378,7 +378,8 @@
                                     <p></p>
                                     <p v-if="item.employee.user_data.email"><strong>{{langMap.main.email}}:</strong></p>
                                     <p v-if="item.employee.user_data.email">{{ item.employee.user_data.email }}</p>
-                                    <p v-if="item.employee.user_data.phones.length > 0"><strong>{{langMap.main.phone}}:</strong></p>
+                                    <p v-if="item.employee.user_data.phones.length > 0">
+                                        <strong>{{langMap.main.phone}}:</strong></p>
                                     <p v-for="phoneItem in item.employee.user_data.phones">{{ phoneItem.phone }} ({{
                                         phoneItem.type.name }})</p>
                                     <!--                                    <p><strong>Lang:</strong></p>-->
@@ -404,7 +405,8 @@
                                     <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
-                                        <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">{{langMap.main.cancel}}
+                                        <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
+                                            {{langMap.main.cancel}}
                                         </v-btn>
                                         <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">
                                             {{langMap.main.delete}}
@@ -496,7 +498,8 @@
                                 >
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.social_link"></v-list-item-title>
-                                        <v-list-item-subtitle v-text="langMap.social_types[item.type.name]"></v-list-item-subtitle>
+                                        <v-list-item-subtitle
+                                            v-text="langMap.social_types[item.type.name]"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
                                         <v-icon

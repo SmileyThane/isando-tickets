@@ -23,7 +23,7 @@
                             :editable="editable"
                             :color="'green'"
                         >
-<!--                            Step {{ n }}-->
+                            <!--                            Step {{ n }}-->
                         </v-stepper-step>
 
                         <v-divider

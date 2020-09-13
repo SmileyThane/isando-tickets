@@ -159,8 +159,11 @@
                     <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeCustomerDialog = false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn color="red darken-1" disabled text @click="deleteCustomer(selectedCustomerId)">{{langMap.main.delete}}
+                        <v-btn color="grey darken-1" text @click="removeCustomerDialog = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" disabled text @click="deleteCustomer(selectedCustomerId)">
+                            {{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>

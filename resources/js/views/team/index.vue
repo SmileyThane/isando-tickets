@@ -154,109 +154,109 @@
 
 
 <script>
-export default {
+    export default {
 
-    data() {
-        return {
-            snackbar: false,
-            actionColor: '',
-            snackbarMessage: '',
-            totalTeams: 0,
-            lastPage: 0,
-            loading: 'green',
-            expanded: [],
-            singleExpand: false,
-            langMap: this.$store.state.lang.lang_map,
-            options: {
-                page: 1,
-                sortDesc: [false],
-                sortBy: ['id']
-            },
-            footerProps: {
-                itemsPerPage: 10,
-                showFirstLastPage: true,
-                itemsPerPageOptions: [10, 25, 50, 100],
-            },
-            headers: [
-                {text: '', value: 'data-table-expand'},
-                {
-                    text: 'ID',
-                    align: 'start',
-                    sortable: false,
-                    value: 'id',
+        data() {
+            return {
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
+                totalTeams: 0,
+                lastPage: 0,
+                loading: 'green',
+                expanded: [],
+                singleExpand: false,
+                langMap: this.$store.state.lang.lang_map,
+                options: {
+                    page: 1,
+                    sortDesc: [false],
+                    sortBy: ['id']
                 },
-                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
-                {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
-            ],
-            teamsSearch: '',
-            teams: [],
-            teamForm: {
-                team_name: '',
-                team_description: '',
-            },
-            selectedTeamId: null,
-            removeTeamDialog: false,
-        }
-    },
-    mounted() {
-        this.getTeams()
-    },
-    methods: {
-        getTeams() {
-            axios.get(`api/team?
+                footerProps: {
+                    itemsPerPage: 10,
+                    showFirstLastPage: true,
+                    itemsPerPageOptions: [10, 25, 50, 100],
+                },
+                headers: [
+                    {text: '', value: 'data-table-expand'},
+                    {
+                        text: 'ID',
+                        align: 'start',
+                        sortable: false,
+                        value: 'id',
+                    },
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
+                ],
+                teamsSearch: '',
+                teams: [],
+                teamForm: {
+                    team_name: '',
+                    team_description: '',
+                },
+                selectedTeamId: null,
+                removeTeamDialog: false,
+            }
+        },
+        mounted() {
+            this.getTeams()
+        },
+        methods: {
+            getTeams() {
+                axios.get(`api/team?
                 search=${this.teamsSearch}&
                 sort_by=${this.options.sortBy[0]}&
                 sort_val=${this.options.sortDesc[0]}&
                 per_page=${this.options.itemsPerPage}&
                 page=${this.options.page}`).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.teams = response.data.data
-                    this.totalTeams = response.data.total
-                    this.lastPage = response.data.last_page
-                    this.loading = false
-                } else {
-                    console.log('error')
-                }
-            });
-        },
-        addTeam() {
-            axios.post('api/team', this.teamForm).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.getTeams()
-                } else {
-                    console.log('error')
-                }
-            });
-        },
-        showItem(item) {
-            this.$router.push(`/team/${item.id}`)
-        },
-        deleteProcess(item) {
-            this.selectedTeamId = item.id
-            this.removeTeamDialog = true
-        },
-        deleteTeam(id) {
-            axios.delete(`/api/team/${id}`).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.getTeams()
-                    this.snackbarMessage = 'Team was deleted '
-                    this.actionColor = 'success'
-                    this.snackbar = true;
-                    this.removeTeamDialog = false
-                } else {
-                    this.snackbarMessage = 'Team delete error'
-                    this.actionColor = 'error'
-                    this.snackbar = true;
-                }
-            });
-        },
-        updateItemsCount(value) {
-            this.options.itemsPerPage = value
-            this.options.page = 1
-        },
+                    response = response.data
+                    if (response.success === true) {
+                        this.teams = response.data.data
+                        this.totalTeams = response.data.total
+                        this.lastPage = response.data.last_page
+                        this.loading = false
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
+            addTeam() {
+                axios.post('api/team', this.teamForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getTeams()
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
+            showItem(item) {
+                this.$router.push(`/team/${item.id}`)
+            },
+            deleteProcess(item) {
+                this.selectedTeamId = item.id
+                this.removeTeamDialog = true
+            },
+            deleteTeam(id) {
+                axios.delete(`/api/team/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getTeams()
+                        this.snackbarMessage = 'Team was deleted '
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.removeTeamDialog = false
+                    } else {
+                        this.snackbarMessage = 'Team delete error'
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            },
+            updateItemsCount(value) {
+                this.options.itemsPerPage = value
+                this.options.page = 1
+            },
+        }
     }
-}
 </script>

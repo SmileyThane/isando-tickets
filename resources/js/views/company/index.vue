@@ -98,11 +98,14 @@
         <template>
             <v-dialog v-model="removeCompanyDialog" persistent max-width="480">
                 <v-card>
-                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{langMap.main.company}}?</v-card-title>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{langMap.main.company}}?
+                    </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeCompanyDialog = false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn color="red darken-1" disabled text @click="deleteCompany(selectedCompanyId)">{{langMap.main.delete}}
+                        <v-btn color="grey darken-1" text @click="removeCompanyDialog = false">{{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" disabled text @click="deleteCompany(selectedCompanyId)">
+                            {{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>

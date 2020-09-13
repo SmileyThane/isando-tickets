@@ -187,7 +187,9 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.main.additional}} {{this.$store.state.lang.lang_map.main.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.main.additional}}
+                            {{this.$store.state.lang.lang_map.main.info}}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 

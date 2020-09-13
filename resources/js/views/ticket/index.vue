@@ -55,10 +55,13 @@
                 </v-pagination>
             </template>
             <template v-slot:item.status.name="{ item }">
-                <v-badge @click="showItem(item)" inline dot :color="item.status.color">{{ langMap.ticket_statuses[item.status.name] }}</v-badge>
+                <v-badge @click="showItem(item)" inline dot :color="item.status.color">{{
+                    langMap.ticket_statuses[item.status.name] }}
+                </v-badge>
             </template>
             <template v-slot:item.priority.name="{ item }">
-                <v-badge @click="showItem(item)" inline dot :color="item.priority.color">{{ langMap.ticket_priorities[item.priority.name] }}
+                <v-badge @click="showItem(item)" inline dot :color="item.priority.color">{{
+                    langMap.ticket_priorities[item.priority.name] }}
                 </v-badge>
             </template>
             <template v-slot:item.assigned_person="{ item }">
@@ -75,8 +78,10 @@
                     <v-spacer>
                         &nbsp;
                     </v-spacer>
-                    <p><strong>{{langMap.ticket.contact_name}}:</strong> {{ item.contact ? item.contact.user_data.name : '' }}</p>
-                    <p><strong>{{langMap.ticket.contact_email}}:</strong> {{ item.contact ? item.contact.user_data.email : '' }}</p>
+                    <p><strong>{{langMap.ticket.contact_name}}:</strong> {{ item.contact ? item.contact.user_data.name :
+                        '' }}</p>
+                    <p><strong>{{langMap.ticket.contact_email}}:</strong> {{ item.contact ? item.contact.user_data.email
+                        : '' }}</p>
                     <p><strong>{{langMap.ticket.due_date}}:</strong> {{ item.due_date }}</p>
                     <p><strong>{{langMap.ticket.access_details}}:</strong> {{ item.access_details }}</p>
                     <p>
@@ -116,8 +121,11 @@
                     <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeTicketDialog = false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn color="red darken-1" text @click="deleteTicket(selectedticketId)">{{langMap.main.delete}}</v-btn>
+                        <v-btn color="grey darken-1" text @click="removeTicketDialog = false">{{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="deleteTicket(selectedticketId)">
+                            {{langMap.main.delete}}
+                        </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
