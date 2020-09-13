@@ -130,7 +130,7 @@
                                 />
                                 <v-text-field
                                     color="green"
-                                    label="anredeform"
+                                    label="Anredeform"
                                     name="anredeform"
                                     prepend-icon="mdi-mail"
                                     type="text"
@@ -245,7 +245,7 @@
                                     <v-expansion-panels>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                {{this.$store.state.lang.lang_map.main.new}} {{this.$store.state.lang.lang_map.main.phone}}
+                                                {{this.$store.state.lang.lang_map.main.phone}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -291,7 +291,7 @@
                                         </v-expansion-panel>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                {{this.$store.state.lang.lang_map.main.new}} {{this.$store.state.lang.lang_map.main.address}}
+                                                {{this.$store.state.lang.lang_map.main.address}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
