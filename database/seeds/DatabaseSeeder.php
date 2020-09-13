@@ -22,5 +22,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CountriesTableSeeder::class);
         $this->call(TimeZonesTableSeeder::class);
         $this->call(LanguagesTableSeeder::class);
+        $this->call(AddressTypeSeeder::class);
+        $this->call(PhoneTypeSeeder::class);
+        $this->call(SocialTypeSeeder::class);
     }
 }
