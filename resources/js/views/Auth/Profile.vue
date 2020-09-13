@@ -207,7 +207,7 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
                                                     <v-list-item-subtitle
-                                                        v-text="item.type.name"></v-list-item-subtitle>
+                                                        v-text="langMap.phone_types[item.type.name]"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -227,7 +227,7 @@
                                                         {{item.address_line_2}} {{item.address_line_3}}
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle
-                                                        v-text="item.type.name"></v-list-item-subtitle>
+                                                        v-text="langMap.address_types[item.type.name]"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -272,7 +272,14 @@
                                                                 :items="phoneTypes"
                                                                 :label="this.$store.state.lang.lang_map.main.type"
                                                                 dense
-                                                            ></v-select>
+                                                            >
+                                                                <template slot="selection" slot-scope="data">
+                                                                    {{ langMap.phone_types[data.item.name] }}
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    {{ langMap.phone_types[data.item.name] }}
+                                                                </template>
+                                                            </v-select>
                                                         </v-col>
                                                         <v-btn
                                                             dark
@@ -357,7 +364,14 @@
                                                                 :items="addressTypes"
                                                                 :label="this.$store.state.lang.lang_map.main.type"
                                                                 dense
-                                                            ></v-select>
+                                                            >
+                                                                <template slot="selection" slot-scope="data">
+                                                                    {{ langMap.address_types[data.item.name] }}
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    {{ langMap.address_types[data.item.name] }}
+                                                                </template>
+                                                            </v-select>
                                                         </v-col>
                                                         <v-btn
                                                             dark
@@ -391,24 +405,12 @@
     export default {
         data() {
             return {
-                phoneHeaders: [
-                    {text: 'Phone', sortable: false, value: 'phone'},
-                    {text: 'Type', value: 'type.name'},
-                    {text: '', value: 'actions', sortable: false},
-
-                ],
-                addressHeaders: [
-                    {text: '', value: 'data-table-expand'},
-                    {text: 'Address', value: 'address'},
-                    {text: 'Type', value: 'type.name'},
-                    {text: '', value: 'actions', sortable: false},
-
-                ],
                 snackbar: false,
                 actionColor: '',
                 snackbarMessage: '',
                 errors: [],
                 enableToEdit: false,
+                langMap: this.$store.state.lang.lang_map,
                 userData: {
                     title: '',
                     title_before_name: '',
