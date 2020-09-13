@@ -119,7 +119,7 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
                                                     <v-list-item-subtitle
-                                                        v-text="langMap.address_types[item.type.name]"></v-list-item-subtitle>
+                                                        v-text="langMap.phone_types[item.type.name]"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
