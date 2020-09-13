@@ -56,6 +56,22 @@ class LanguageSeeder extends Seeder
   "company_client": "Company client",
   "contact": "Contact"
   },
+  "phone_types":{
+  "primary": "Primary",
+  "secondary": "Secondary",
+  "other": "Other"
+  },
+  "address_types":{
+  "home": "Home",
+  "work": "Work",
+  "other": "Other"
+  },
+  "social_types":{
+  "website": "Website",
+  "linkedin": "LinkedIn",
+  "facebook": "Facebook",
+  "contact_email": "Contact E-mail"
+  },
   "company": {
   "company_number": "Company number",
   "registration_date": "Date ofregistration",
@@ -293,6 +309,22 @@ class LanguageSeeder extends Seeder
   "regular_user": "Stammbenutzer",
   "company_client": "Firmenkunde",
   "contact": "Kontakt"
+  },
+  "phone_types":{
+  "primary": "Telefon",
+  "secondary": "Telefon 2",
+  "other": "Sonstige"
+  },
+  "address_types":{
+  "home": "Privat",
+  "work": "Arbeit",
+  "other": "Sonstige"
+  },
+  "social_types":{
+  "website": "Website",
+  "linkedin": "LinkedIn",
+  "facebook": "Facebook",
+  "contact_email": "Kontakt E-mail"
   },
   "company": {
   "company_number": "Firmennummer",
