@@ -11,7 +11,7 @@ class LanguageRepository
 
     public function all()
     {
-        return Language::select('id', 'name', 'short_code')->get();
+        return Language::select('id', 'name', 'locale')->get();
     }
 
     public function find($id)
