@@ -354,7 +354,7 @@ class LanguageSeeder extends Seeder
     "add_attachments": "Anhänge hinzufügen",
     "ticket_answers": "Ticket Antworten",
     "ticket_actions": "Ticketaktionen",
-    "assign_to": "dem Team oder Benutzer zuweisen",
+    "assign_to": "Zuweisen zu einem Befehl oder Benutzer",
     "add_internal_note": "Interne Notiz hinzufügen",
     "notes_history": "Notiert Geschichte",
     "ticket_history": "Ticketverlauf",
