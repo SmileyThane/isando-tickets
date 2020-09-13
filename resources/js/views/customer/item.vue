@@ -82,7 +82,7 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
                                                     <v-list-item-subtitle
-                                                        v-text="item.type.name"></v-list-item-subtitle>
+                                                        v-text="langMap.phone_types[item.type.name]"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -102,7 +102,7 @@
                                                         {{item.address_line_2}} {{item.address_line_3}}
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle
-                                                        v-text="item.type.name"></v-list-item-subtitle>
+                                                        v-text="langMap.address_types[item.type.name]"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -145,7 +145,14 @@
                                                                 :items="phoneTypes"
                                                                 :label="langMap.main.type"
                                                                 dense
-                                                            ></v-select>
+                                                            >
+                                                                <template slot="selection" slot-scope="data">
+                                                                    {{ langMap.phone_types[data.item.name] }}
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    {{ langMap.phone_types[data.item.name] }}
+                                                                </template>
+                                                            </v-select>
                                                         </v-col>
                                                         <v-btn
                                                             dark
@@ -230,7 +237,14 @@
                                                                 :items="addressTypes"
                                                                 :label="langMap.main.type"
                                                                 dense
-                                                            ></v-select>
+                                                            >
+                                                                <template slot="selection" slot-scope="data">
+                                                                    {{ langMap.address_types[data.item.name] }}
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    {{ langMap.address_types[data.item.name] }}
+                                                                </template>
+                                                            </v-select>
                                                         </v-col>
                                                         <v-btn
                                                             dark
@@ -482,7 +496,7 @@
                                 >
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.social_link"></v-list-item-title>
-                                        <v-list-item-subtitle v-text="item.type.name"></v-list-item-subtitle>
+                                        <v-list-item-subtitle v-text="langMap.social_types[item.type.name]"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
                                         <v-icon
@@ -526,7 +540,14 @@
                                                     :items="socialTypes"
                                                     :label="langMap.main.type"
                                                     dense
-                                                ></v-select>
+                                                >
+                                                    <template slot="selection" slot-scope="data">
+                                                        {{ langMap.social_types[data.item.name] }}
+                                                    </template>
+                                                    <template slot="item" slot-scope="data">
+                                                        {{ langMap.social_types[data.item.name] }}
+                                                    </template>
+                                                </v-select>
                                             </v-col>
                                             <v-btn
                                                 dark
