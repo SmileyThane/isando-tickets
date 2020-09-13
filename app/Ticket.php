@@ -38,7 +38,7 @@ class Ticket extends Model
 
     public function getLastUpdateAttribute(): string
     {
-        $locale = Language::find(Auth::user()->language_id)->short_code;
+        $locale = Language::find(Auth::user()->language_id)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }

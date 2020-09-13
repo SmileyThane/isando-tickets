@@ -13,7 +13,7 @@ class TicketHistory extends Model
 
     public function getCreatedAtAttribute()
     {
-        $locale = Language::find(Auth::user()->language_id)->short_code;
+        $locale = Language::find(Auth::user()->language_id)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }
