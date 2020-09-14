@@ -70,7 +70,22 @@
                             :items="team.employees"
                             class="elevation-1"
                             :footer-props="footerProps"
-                        ></v-data-table>
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click="removeEmployeeProcess(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{langMap.company.delete_contact}}</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
@@ -113,10 +128,24 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
-
-
             </div>
         </div>
+        <template>
+            <v-dialog v-model="removeEmployeeDialog" persistent max-width="480">
+                <v-card>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
     </v-container>
 </template>
 
@@ -146,7 +175,7 @@
                     {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'employee.user_data.name'},
                     {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
                     {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'employee.role_names'},
-                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: ''},
+                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions'},
                 ],
                 team: {
                     team_name: '',
@@ -164,6 +193,8 @@
                         }
                     ]
                 },
+                removeEmployeeDialog: false,
+                selectedEmployeeId: null,
                 employeeForm: {
                     company_user_id: '',
                     team_id: ''
@@ -224,6 +255,26 @@
                     response = response.data
                     if (response.success === true) {
                         this.getTeam()
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            removeEmployeeProcess(item) {
+                this.selectedEmployeeId = item.id
+                this.removeEmployeeDialog = true
+            },
+            removeEmployee(id) {
+                axios.delete(`/api/team/employee/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getTeam()
+                        this.rolesDialog = false
+                        this.snackbarMessage = 'Contact was removed'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.removeEmployeeDialog = false
                     } else {
                         console.log('error')
                     }
