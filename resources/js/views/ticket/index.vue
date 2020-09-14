@@ -256,13 +256,13 @@
                 return value
             }
         },
-        watch: {
-            options: {
-                handler() {
-                    this.getTickets()
-                },
-                deep: true,
-            },
-        },
+        // watch: {
+        //     options: {
+        //         handler() {
+        //             this.getTickets()
+        //         },
+        //         deep: true,
+        //     },
+        // },
     }
 </script>
