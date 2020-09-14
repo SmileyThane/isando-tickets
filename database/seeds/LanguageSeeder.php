@@ -345,7 +345,7 @@ class LanguageSeeder extends Seeder
   "user": "Benutzer"
   },
   "customer": {
-  "customer": "Firme",
+  "customer": "Firma",
   "add_new": "Neuer Kunden hinzufügen",
   "supplier": "Lieferant",
   "show_product": "Produkt anzeigen"
