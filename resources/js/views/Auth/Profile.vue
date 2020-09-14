@@ -188,7 +188,7 @@
                         flat
                     >
                         <v-toolbar-title>
-                            {{this.$store.state.lang.lang_map.individuals.additional_info}}
+                            {{this.$store.state.lang.lang_map.individuals.contact_info}}
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
