@@ -1,7 +1,22 @@
 <template>
-
-
     <v-container>
+        <v-overlay
+            :value="!isLoaded"
+            light
+            opacity="0.45"
+        >
+            <v-progress-circular
+                :rotate="360"
+                :size="150"
+                :width="15"
+                :value="progressBuffer"
+                color="green"
+            >
+                <span class="white--text">{{ progressBuffer }} %</span>
+
+            </v-progress-circular>
+
+        </v-overlay>
         <v-row>
             <v-col
                 cols="12"
@@ -568,6 +583,8 @@
                 detailsEdit: false,
                 priorityEdit: false,
                 submitEdit: false,
+                isLoaded: false,
+                progressBuffer: 0,
                 errorType: '',
                 error: [],
                 suppliers: [],
@@ -685,9 +702,17 @@
                 },
             }
         },
+        watch: {
+            checkProgress(value) {
+                if (value === 100) {
+                    this.isLoaded = true;
+                }
+                console.log(`val ${value}`);
+            }
+        },
         mounted() {
-            this.getSuppliers()
             this.getTicket();
+            this.getSuppliers()
             this.getProducts()
             this.getPriorities()
             // if (localStorage.getticket('auth_token')) {
@@ -709,6 +734,7 @@
                     if (response.success === true) {
                         this.ticket = response.data
                         this.from = {[this.ticket.from_entity_type]: this.ticket.from_entity_id}
+                        this.progressBuffer = this.progressBuffer + 40;
                         this.selectTeam();
                         this.getContacts(this.from)
                         if (this.ticket.notices.length > 0) {
@@ -722,6 +748,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.suppliers = response.data
+                        this.progressBuffer = this.progressBuffer + 20;
                     } else {
                         console.log('error')
                     }
@@ -732,6 +759,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.products = response.data.data
+                        this.progressBuffer = this.progressBuffer + 20;
                     } else {
                         console.log('error')
                     }
@@ -743,6 +771,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.priorities = response.data
+                        this.progressBuffer = this.progressBuffer + 20;
                     } else {
                         console.log('error')
                     }
@@ -848,6 +877,11 @@
                     }
                 });
             }
+        },
+        computed: {
+            checkProgress: function () {
+                return this.progressBuffer
+            },
         }
     }
 </script>
