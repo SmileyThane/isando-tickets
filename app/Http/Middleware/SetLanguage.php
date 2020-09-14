@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
-class setLanguage
+class SetLanguage
 {
     /**
      * Handle an incoming request.

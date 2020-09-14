@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
@@ -34,27 +36,27 @@ class CompanyUser extends Model
         return Role::whereIn('id', $roleIds)->get();
     }
 
-    public function assignedToTeams(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function assignedToTeams(): HasMany
     {
         return $this->hasMany(TeamCompanyUser::class, 'company_user_id', 'id');
     }
 
-    public function assignedToProducts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function assignedToProducts(): HasMany
     {
         return $this->hasMany(ProductCompanyUser::class, 'company_user_id', 'id');
     }
 
-    public function assignedToClients(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function assignedToClients(): HasMany
     {
         return $this->hasMany(ClientCompanyUser::class, 'company_user_id', 'id');
     }
 
-    public function userData(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function userData(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-    public function companyData(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function companyData(): HasOne
     {
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
