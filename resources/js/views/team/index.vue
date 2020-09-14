@@ -203,7 +203,7 @@
         },
         methods: {
             getTeams() {
-                axios.get(`api/team?
+                axios.get(`/api/team?
                 search=${this.teamsSearch}&
                 sort_by=${this.options.sortBy[0]}&
                 sort_val=${this.options.sortDesc[0]}&
@@ -221,7 +221,7 @@
                 });
             },
             addTeam() {
-                axios.post('api/team', this.teamForm).then(response => {
+                axios.post('/api/team', this.teamForm).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getTeams()
