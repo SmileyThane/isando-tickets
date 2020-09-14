@@ -416,7 +416,7 @@
                                                     item-text="name"
                                                     item-value="id"
                                                     v-model="ticket.to_team_id"
-                                                    :items="ticket.to.teams"
+                                                    :items="teams"
                                                     :label="langMap.sidebar.team"
                                                     :disabled="selectionDisabled"
                                                     @change="selectTeam"
@@ -592,6 +592,7 @@
                 priorities: [],
                 employees: [],
                 contacts: [],
+                teams:[],
                 from: [],
                 langMap: this.$store.state.lang.lang_map,
                 ticket: {
@@ -715,6 +716,7 @@
             this.getSuppliers()
             this.getProducts()
             this.getPriorities()
+            this.getTeams()
             // if (localStorage.getticket('auth_token')) {
             //     this.$router.push('tickets')
             // }
@@ -759,7 +761,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.products = response.data.data
-                        this.progressBuffer = this.progressBuffer + 20;
+                        this.progressBuffer = this.progressBuffer + 10;
                     } else {
                         console.log('error')
                     }
@@ -805,6 +807,18 @@
                         console.log('error')
                     }
 
+                });
+            },
+            getTeams() {
+                axios.get(`/api/team`
+                ).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.teams = response.data.data
+                        this.progressBuffer = this.progressBuffer + 10;
+                    } else {
+                        console.log('error')
+                    }
                 });
             },
             selectTeam() {
