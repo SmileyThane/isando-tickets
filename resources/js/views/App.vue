@@ -3,8 +3,8 @@
         <v-overlay :value="!isLoaded">
             <v-progress-circular indeterminate size="64"></v-progress-circular>
         </v-overlay>
-        <sidebar v-if="isLoaded && is_authorized === true" v-model="drawer"></sidebar>
-        <app-header v-if="isLoaded && is_authorized === true" v-model="drawer"></app-header>
+        <sidebar v-if="isLoaded && isAuthorized === true" v-model="drawer"></sidebar>
+        <app-header v-if="isLoaded && isAuthorized === true" v-model="drawer"></app-header>
         <v-content v-if="isLoaded">
             <router-view></router-view>
         </v-content>
@@ -23,7 +23,7 @@
         },
         data: () => ({
             drawer: false,
-            is_authorized: localStorage.getItem('auth_token') !== null,
+            isAuthorized: localStorage.getItem('auth_token') !== null,
             isLoaded: false
         }),
         components: {
@@ -32,14 +32,14 @@
             'appHeader': Header
         },
         watch: {
-            currentRoles(value) {
+            checkPreloaded(value) {
                 this.isLoaded = true;
                 // console.log(`val ${value}`);
             }
         },
         computed: {
-            currentRoles: function () {
-                return this.$store.state.roles
+            checkPreloaded: function () {
+                return this.$store.state.roles && this.$store.state.lang
             },
         }
     }

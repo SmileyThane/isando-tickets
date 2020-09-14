@@ -41,7 +41,8 @@ const app = new Vue({
     router,
     store,
     created() {
-        store.dispatch('getRoles');
+        this.$store.state.roles = this.$store.state.lang = null
         store.dispatch('getLanguage');
+        store.dispatch('getRoles');
     }
 });
