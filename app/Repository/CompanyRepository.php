@@ -46,7 +46,11 @@ class CompanyRepository
             );
         }
         return $id ? $company->with(['employees' => function ($query) {
-            $query->whereDoesntHave('assignedToClients')->get();
+            $result =  $query->whereDoesntHave('assignedToClients');
+            if (Auth::user()->employee->hasAnyRole(Role::COMPANY_CLIENT, Role::USER)) {
+                $result->where('user_id', Auth::id());
+            }
+            return $result->get();
         }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type', 'clients',
             'teams', 'phones.type', 'addresses.type', 'socials.type'])
             ->first() : $company->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $company->count());
