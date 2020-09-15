@@ -126,7 +126,7 @@
                 :value="sidebarGroups"
                 color="green"
                 multiple
-                v-if="checkRoleByIds([1,2,3])"
+
             >
             <template
                 v-slot:activator
@@ -136,7 +136,7 @@
                     <v-list-item-title>{{settings}}</v-list-item-title>
                 </v-list-item-content>
             </template>
-            <v-list-item link to="/company" v-if="checkRoleByIds([1,2,3])">
+            <v-list-item link to="/company">
                 <v-list-item-action>
                     <v-icon>mdi-office-building</v-icon>
                 </v-list-item-action>
@@ -144,7 +144,7 @@
                     <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.companies}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item link to="/" v-if="checkRoleByIds([1,2,3])">
+            <v-list-item link to="/" v-if="checkRoleByIds([1,2])">
                 <v-list-item-action>
                     <v-icon>mdi-folder-cog-outline</v-icon>
                 </v-list-item-action>
@@ -152,7 +152,7 @@
                     <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.system_settings}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-item link to="/" v-if="checkRoleByIds([1,2,3])">
+            <v-list-item link to="/" v-if="checkRoleByIds([1,2])">
                 <v-list-item-action>
                     <v-icon>mdi-cogs</v-icon>
                 </v-list-item-action>
