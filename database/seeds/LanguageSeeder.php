@@ -32,6 +32,11 @@ class LanguageSeeder extends Seeder
     "ticket": "Ticket",
     "ticket_list": "Ticket list",
     "create_ticket": "Create ticket",
+    "notify_customers": "Notify customers",
+    "knowledge_base": "Knowledge base",
+    "settings": "Settings",
+    "system_settings": "System settings",
+    "general_settings": "General settings",
     "home": "Home",
     "profile": "Profile",
     "logout": "Logout"
@@ -287,6 +292,11 @@ class LanguageSeeder extends Seeder
     "ticket": "Ticket",
     "ticket_list": "Ticket Liste",
     "create_ticket": "Neues Ticket",
+    "notify_customers": "Kontakte benachrichtigen",
+    "knowledge_base": "Wissensbasis",
+    "settings": "Die Einstellungen",
+    "system_settings": "Systemeinstellungen",
+    "general_settings": "Allgemeine Einstellungen",
     "home": "Home",
     "profile": "Profil",
     "logout": "Logout"
