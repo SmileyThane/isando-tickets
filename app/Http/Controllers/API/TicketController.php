@@ -101,4 +101,10 @@ class TicketController extends Controller
         return self::showResponse($result);
     }
 
+    public function addMerge(Request $request)
+    {
+        $result = $this->ticketRepo->addMerge($request);
+        return self::showResponse($result);
+    }
+
 }
