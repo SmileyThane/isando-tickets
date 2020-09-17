@@ -43,6 +43,19 @@
                         ></v-select>
                     </v-col>
                 </v-row>
+                <v-row>
+                    <v-col sm="12" md="2">
+                        <v-btn
+                            color="green"
+                            class="ma-2 white--text"
+                            outlined
+                            @click="mergeTicketProcess()"
+                        >
+                            Merge Tickets
+                            <v-icon right dark>mdi-clipboard-flow</v-icon>
+                        </v-btn>
+                    </v-col>
+                </v-row>
             </template>
             <template v-slot:footer>
                 <v-pagination color="green"
@@ -130,6 +143,54 @@
                 </v-card>
             </v-dialog>
         </template>
+        <template>
+            <v-dialog v-model="mergeTicketDialog" persistent max-width="480">
+                <v-card>
+                    <v-card-title class="headline">Merge</v-card-title>
+                    <v-card-text>
+                        <v-autocomplete
+                            :label="langMap.ticket.subject"
+                            dense
+                            color="green"
+                            item-color="green"
+                            item-text="name"
+                            item-value="id"
+                            v-model="mergeTicketForm.parent_ticket_id"
+                            :items="tickets"
+                        />
+                        <v-autocomplete
+                            :label="langMap.ticket.subject"
+                            dense
+                            color="green"
+                            item-color="green"
+                            item-text="name"
+                            item-value="id"
+                            v-model="mergeTicketForm.child_ticket_id"
+                            :items="tickets"
+
+                        />
+                        <v-textarea
+                            :label="langMap.ticket.description"
+                            v-model="mergeTicketForm.merge_comment"
+                            dense
+                            auto-grow
+                            rows="2"
+                            row-height="25"
+                            shaped
+                            color="green"
+                        />
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="mergeTicketDialog = false">{{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="green darken-1" text @click="mergeTicket()">
+                            Merge
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
     </v-container>
 </template>
 
@@ -173,9 +234,16 @@
                     {text: `${this.$store.state.lang.lang_map.ticket.title}`, value: 'name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update'},
                 ],
+                mergeTicketForm: {
+                    parent_ticket_id: null,
+                    child_ticket_id: null,
+                    merge_comment: null
+                },
+                minifiedTickets: false,
                 ticketsSearch: '',
                 tickets: [],
                 removeTicketDialog: false,
+                mergeTicketDialog: false,
                 selectedticketId: null
             }
         },
@@ -197,6 +265,7 @@
                 sort_by=${this.manageSortableField(this.options.sortBy[0])}&
                 sort_val=${this.options.sortDesc[0]}&
                 per_page=${this.options.itemsPerPage}&
+                minified=${this.minifiedTickets}&
                 page=${this.options.page}`)
                     .then(
                         response => {
@@ -227,6 +296,26 @@
                         this.snackbarMessage = 'Ticket delete error'
                         this.actionColor = 'error'
                         this.snackbar = true;
+                    }
+                });
+            },
+            mergeTicketProcess() {
+                this.mergeTicketDialog = true
+                this.minifiedTickets = true
+                this.getTickets()
+            },
+            mergeTicket() {
+                axios.post('/api/merge/ticket', this.mergeTicketForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.minifiedTickets = false
+                        this.getTickets()
+                        this.mergeTicketForm.merge_comment = null
+                        this.mergeTicketForm.parent_ticket_id = null
+                        this.mergeTicketForm.child_ticket_id = null
+                        this.mergeTicketDialog = false
+                    } else {
+                        console.log('error')
                     }
                 });
             },
