@@ -4,6 +4,9 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,13 +28,13 @@ class Ticket extends Model
         return $this->attributes['to_entity_type']::find($this->attributes['to_entity_id']);
     }
 
-    public function getCanBeEditedAttribute()
+    public function getCanBeEditedAttribute(): bool
     {
         $roles = Auth::user()->employee->roles->pluck('id')->toArray();
         return count(array_intersect($roles, Role::HIGH_PRIVIGIES)) > 0;
     }
 
-    public function getCanBeAnsweredAttribute()
+    public function getCanBeAnsweredAttribute(): bool
     {
         return true;
     }
@@ -43,58 +46,67 @@ class Ticket extends Model
         return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }
 
-    public function creator(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function creator(): HasOne
     {
         return $this->hasOne(CompanyUser::class, 'id', 'from_company_user_id')->withTrashed();
     }
 
-    public function assignedPerson(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function assignedPerson(): HasOne
     {
         return $this->hasOne(CompanyUser::class, 'id', 'to_company_user_id')->withTrashed();
     }
 
-    public function contact(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function contact(): HasOne
     {
         return $this->hasOne(CompanyUser::class, 'id', 'contact_company_user_id')->withTrashed();
     }
 
-    public function product(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function product(): HasOne
     {
         return $this->hasOne(Product::class, 'id', 'to_product_id')->withTrashed();
     }
 
-    public function team(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function team(): HasOne
     {
         return $this->hasOne(Team::class, 'id', 'to_team_id')->withTrashed();
     }
 
-    public function priority(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function priority(): HasOne
     {
         return $this->hasOne(TicketPriority::class, 'id', 'priority_id');
     }
 
-    public function status(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function status(): HasOne
     {
         return $this->hasOne(TicketStatus::class, 'id', 'status_id');
     }
 
-    public function answers(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function answers(): HasMany
     {
         return $this->hasMany(TicketAnswer::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');
     }
 
-    public function histories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function histories(): HasMany
     {
         return $this->hasMany(TicketHistory::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');
     }
 
-    public function notices(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function notices(): HasMany
     {
         return $this->hasMany(TicketNotice::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');
     }
 
-    public function attachments(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function attachments(): MorphMany
     {
         return $this->morphMany(File::class, 'model');
+    }
+
+    public function mergedParent(): HasMany
+    {
+        return $this->hasMany(TicketMerge::class, 'child_ticket_id', 'id')->with('parentTicketData');
+    }
+    public function mergedChild(): HasMany
+    {
+        return $this->hasMany(TicketMerge::class, 'parent_ticket_id', 'id')->with('childTicketData');
     }
 }
