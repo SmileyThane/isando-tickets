@@ -13,6 +13,7 @@ use App\TeamCompanyUser;
 use App\Ticket;
 use App\TicketAnswer;
 use App\TicketHistory;
+use App\TicketMerge;
 use App\TicketNotice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,6 +81,9 @@ class TicketRepository
         } else {
 
         }
+        if ($request->minified && $request->minified === 'true') {
+            return $tickets->select('id','name', 'from_entity_id', 'from_entity_type', 'updated_at')->paginate($tickets->count());
+        }
         return $tickets
             ->with(
                 'creator.userData', 'assignedPerson.userData',
@@ -93,8 +97,8 @@ class TicketRepository
     {
         return Ticket::where('id', $id)
             ->with('creator', 'assignedPerson.userData', 'contact.userData', 'product', 'team',
-                'priority', 'status', 'answers.employee.userData', 'answers.attachments',
-                'histories.employee.userData', 'notices.employee.userData', 'attachments')->first()->makeVisible(['to']);
+                'priority', 'status', 'answers.employee.userData', 'answers.attachments', 'mergedChild',
+                'histories.employee.userData', 'notices.employee.userData', 'attachments', 'mergedParent')->first()->makeVisible(['to']);
     }
 
     public function create(Request $request, $employeeId = null): Ticket
@@ -247,7 +251,20 @@ class TicketRepository
         $ticketNotice->notice = $request->notice;
         $ticketNotice->ticket_id = $id;
         $ticketNotice->save();
-        $this->addHistoryItem($ticketNotice->id, null, 'Notice added');
+        $this->addHistoryItem($ticketNotice->ticket_id, null, 'Notice added');
+        return true;
+    }
+
+    public function addMerge(Request $request): bool
+    {
+        $ticketMerge = new TicketMerge();
+        $ticketMerge->merged_by_user_id = Auth::id();
+        $ticketMerge->merge_comment = $request->merge_comment;
+        $ticketMerge->parent_ticket_id = $request->parent_ticket_id;
+        $ticketMerge->child_ticket_id = $request->child_ticket_id;
+        $ticketMerge->save();
+        $this->addHistoryItem($ticketMerge->parent_ticket_id, null, 'ticket_merged');
+        $this->addHistoryItem($ticketMerge->child_ticket_id, null, 'ticket_merged');
         return true;
     }
 
