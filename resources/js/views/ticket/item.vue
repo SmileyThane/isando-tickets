@@ -905,7 +905,7 @@
             },
             showTicket(item) {
                 // this.$router.push(`/ticket/${item.id}`)
-                window.location.href = `/ticket/${item.id}`
+                window.location.href = `/ticket/${item}`
             },
             addTicketAnswer() {
                 const config = {
