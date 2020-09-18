@@ -14,8 +14,9 @@ class Ticket extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id'];
-    protected $appends = ['from', 'to', 'last_update', 'can_be_edited', 'can_be_answered'];
+    protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
+        'replicated_to_entity_id', 'replicated_to_entity_type'];
+    protected $appends = ['from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
     protected $hidden = ['to'];
 
     public function getFromAttribute()
@@ -26,6 +27,12 @@ class Ticket extends Model
     public function getToAttribute()
     {
         return $this->attributes['to_entity_type']::find($this->attributes['to_entity_id']);
+    }
+
+    public function getReplicatedToAttribute()
+    {
+
+        return $this->attributes['replicated_to_entity_type'] ? $this->attributes['replicated_to_entity_type']::find($this->attributes['replicated_to_entity_id']) : null;
     }
 
     public function getCanBeEditedAttribute(): bool
