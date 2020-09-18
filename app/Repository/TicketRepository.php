@@ -4,6 +4,8 @@
 namespace App\Repository;
 
 
+use App\Client;
+use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyUser;
 use App\Notifications\ChangedTicketStatus;
@@ -71,6 +73,20 @@ class TicketRepository
                 }
             }
         }
+        if ($companyUser->hasRole(Role::COMPANY_CLIENT)) {
+            $clientCompanyUser = ClientCompanyUser::where('company_user_id', Auth::user()->employee->id)->first();
+            if ($clientCompanyUser) {
+                $tickets->orWhere(function ($query) use ($clientCompanyUser) {
+                    $query->where('replicated_to_entity_type', Client::class)
+                        ->where('replicated_to_entity_id', $clientCompanyUser->client_id);
+                });
+            }
+        } else {
+            $tickets->orWhere(function ($query)  {
+                $query->where('replicated_to_entity_type', Company::class)
+                    ->where('replicated_to_entity_id', Auth::user()->employee->company_id);
+            });
+        }
         if ($request->search !== '') {
             $tickets->where(
                 function ($query) use ($request) {
@@ -82,7 +98,7 @@ class TicketRepository
 
         }
         if ($request->minified && $request->minified === 'true') {
-            return $tickets->select('id','name', 'from_entity_id', 'from_entity_type', 'updated_at')->paginate($tickets->count());
+            return $tickets->select('id', 'name', 'from_entity_id', 'from_entity_type', 'updated_at')->paginate($tickets->count());
         }
         return $tickets
             ->with(
