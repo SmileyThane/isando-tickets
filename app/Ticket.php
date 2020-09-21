@@ -32,7 +32,7 @@ class Ticket extends Model
     public function getReplicatedToAttribute()
     {
 
-        return $this->attributes['replicated_to_entity_type'] ? $this->attributes['replicated_to_entity_type']::find($this->attributes['replicated_to_entity_id']) : null;
+        return $this->replicated_to_entity_type !== null  ? $this->attributes['replicated_to_entity_type']::find($this->attributes['replicated_to_entity_id']) : null;
     }
 
     public function getCanBeEditedAttribute(): bool
