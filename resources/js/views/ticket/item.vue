@@ -38,7 +38,7 @@
                             v-if="ticket.replicated_to_entity_id"
                             color="white" light label class="float-md-right">
 
-                                <strong>Cloned ticket</strong>
+                            <strong>Cloned ticket</strong>
                         </v-chip>&nbsp;
                         <v-chip
                             color="white" light label class="float-md-right">
