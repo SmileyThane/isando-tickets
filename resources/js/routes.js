@@ -1,4 +1,3 @@
-import Home from './views/Home'
 import Company from './views/company/index'
 import SingleCompany from './views/company/item'
 import Customer from './views/customer/index'
