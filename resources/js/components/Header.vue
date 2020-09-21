@@ -40,7 +40,7 @@
             <v-avatar left>
                 <v-icon>mdi-account-circle</v-icon>
             </v-avatar>
-            <v-label >{{username}}</v-label>
+            <v-label>{{username}}</v-label>
 
         </v-chip>
     </v-app-bar>
