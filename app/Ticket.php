@@ -83,6 +83,11 @@ class Ticket extends Model
         return $this->hasOne(TicketPriority::class, 'id', 'priority_id');
     }
 
+    public function category(): HasOne
+    {
+        return $this->hasOne(TicketCategory::class, 'id', 'category_id');
+    }
+
     public function status(): HasOne
     {
         return $this->hasOne(TicketStatus::class, 'id', 'status_id');
