@@ -77,6 +77,9 @@
                     langMap.ticket_priorities[item.priority.name] }}
                 </v-badge>
             </template>
+            <template v-slot:item.category.name="{ item }">
+                 {{ item.category ? langMap.ticket_categories[item.category.name] : '' }}
+            </template>
             <template v-slot:item.assigned_person="{ item }">
                 <div @click="showItem(item)" class="justify-center" v-if="item.assigned_person">{{
                     item.assigned_person.user_data.name }} {{
@@ -228,6 +231,7 @@
                     },
                     {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.company_contact}`, value: 'assigned_person'},
                     {text: `${this.$store.state.lang.lang_map.ticket.product_name}`, value: 'product.name'},
