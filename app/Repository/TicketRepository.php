@@ -104,7 +104,7 @@ class TicketRepository
             ->with(
                 'creator.userData', 'assignedPerson.userData',
                 'contact.userData', 'product', 'team',
-                'priority', 'status')
+                'priority', 'status', 'category')
             ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $tickets->count());
     }
 
@@ -112,7 +112,7 @@ class TicketRepository
     public function find($id)
     {
         return Ticket::where('id', $id)
-            ->with('creator', 'assignedPerson.userData', 'contact.userData', 'product', 'team',
+            ->with('creator', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'category',
                 'priority', 'status', 'answers.employee.userData', 'answers.attachments', 'mergedChild',
                 'histories.employee.userData', 'notices.employee.userData', 'attachments', 'mergedParent')->first()->makeVisible(['to']);
     }
@@ -136,6 +136,7 @@ class TicketRepository
         $ticket->availability = $request->availability;
         $ticket->connection_details = $request->connection_details;
         $ticket->access_details = $request->access_details;
+        $ticket->category_id = $request->category_id;
         $ticket->save();
         $this->addHistoryItem($ticket->id, $employeeId, 'Ticket created');
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
@@ -170,6 +171,7 @@ class TicketRepository
             $ticket->from_entity_type = $request->from_entity_type;
             $ticket->access_details = $request->access_details;
             $ticket->connection_details = $request->connection_details;
+            $ticket->category_id = $request->category_id;
             $ticket->save();
             $request->status_id = 2;
             $this->updateStatus($request, $id);
