@@ -162,7 +162,7 @@
                         <v-btn color="grey darken-1" text @click="removeCustomerDialog = false">
                             {{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="red darken-1" disabled text @click="deleteCustomer(selectedCustomerId)">
+                        <v-btn color="red darken-1" text @click="deleteCustomer(selectedCustomerId)">
                             {{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
@@ -284,7 +284,7 @@
                 this.removeCustomerDialog = true
             },
             deleteCustomer(id) {
-                axios.delete(`/api/customer/${id}`).then(response => {
+                axios.delete(`/api/client/${id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getClients()
