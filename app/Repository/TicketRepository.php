@@ -82,7 +82,7 @@ class TicketRepository
                 });
             }
         } else {
-            $tickets->orWhere(function ($query)  {
+            $tickets->orWhere(function ($query) {
                 $query->where('replicated_to_entity_type', Company::class)
                     ->where('replicated_to_entity_id', Auth::user()->employee->company_id);
             });

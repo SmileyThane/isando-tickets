@@ -112,6 +112,7 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketMerge::class, 'child_ticket_id', 'id')->with('parentTicketData');
     }
+
     public function mergedChild(): HasMany
     {
         return $this->hasMany(TicketMerge::class, 'parent_ticket_id', 'id')->with('childTicketData');
