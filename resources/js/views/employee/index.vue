@@ -150,6 +150,7 @@
                                             dark
                                             fab
                                             x-small
+                                            @click="removeEmployeeProcess(item)"
                                         >
                                             <v-icon>
                                                 mdi-delete
@@ -163,6 +164,22 @@
                 </div>
             </div>
         </div>
+        <template>
+            <v-dialog v-model="removeEmployeeDialog" persistent max-width="480">
+                <v-card>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
     </v-container>
 </template>
 
@@ -181,6 +198,8 @@
                 expanded: [],
                 singleExpand: false,
                 isLoading: false,
+                selectedEmployeeId: null,
+                removeEmployeeDialog: false,
                 options: {
                     page: 1,
                     sortDesc: [false],
@@ -268,6 +287,26 @@
                     } else {
                         console.log('error')
                         this.employeeErrors = response.error
+                    }
+
+                });
+            },
+            removeEmployeeProcess(item) {
+                this.selectedEmployeeId = item.id
+                this.removeEmployeeDialog = true
+            },
+            removeEmployee(id) {
+                axios.delete(`/api/client/employee/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getEmployees()
+                        this.rolesDialog = false
+                        // this.snackbarMessage = 'Contact was removed'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.removeEmployeeDialog = false
+                    } else {
+                        console.log('error')
                     }
 
                 });
