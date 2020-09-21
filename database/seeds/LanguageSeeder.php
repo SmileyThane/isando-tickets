@@ -53,6 +53,11 @@ class LanguageSeeder extends Seeder
   "moderate": "Moderate",
   "low": "Low"
   },
+  "ticket_categories": {
+  "client": "Client",
+  "notification": "Notification",
+  "internal": "Internal"
+  },
   "roles": {
   "superadmin": "Superadmin",
   "license_owner": "License owner",
@@ -190,6 +195,7 @@ class LanguageSeeder extends Seeder
 "at": "at",
 "photo": "photo",
 "post_code": "post_code",
+"category": "Category",
 "companies": "companies",
 "company": "company",
 "contacts": "contacts",
@@ -313,6 +319,11 @@ class LanguageSeeder extends Seeder
   "urgent": "Hoch",
   "moderate": "Normal",
   "low": "Niedrig"
+  },
+  "ticket_categories": {
+  "client": "Kunde",
+  "notification": "Benachrichtigung",
+  "internal": "Intern"
   },
   "roles": {
   "superadmin": "Höchster Vorgesetzter",
@@ -450,6 +461,7 @@ class LanguageSeeder extends Seeder
 "at": "unter",
 "photo": "foto",
 "post_code": "Postleitzahl",
+"category": "Kategorie",
 "companies": "unternehmen",
 "company": "unternehmen",
 "contacts": "kontakte",
