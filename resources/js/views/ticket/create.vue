@@ -120,7 +120,7 @@
                                             v-model="ticketForm.name"
                                         ></v-text-field>
                                     </v-col>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <v-select
                                             :label="langMap.ticket.priority"
                                             color="green"
@@ -135,6 +135,24 @@
                                             </template>
                                             <template slot="item" slot-scope="data">
                                                 {{ langMap.ticket_priorities[data.item.name] }}
+                                            </template>
+                                        </v-select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <v-select
+                                            :label="langMap.main.category"
+                                            color="green"
+                                            item-color="green"
+                                            item-text="name"
+                                            item-value="id"
+                                            :items="categories"
+                                            v-model="ticketForm.category_id"
+                                        >
+                                            <template slot="selection" slot-scope="data">
+                                                {{ langMap.ticket_categories[data.item.name] }}
+                                            </template>
+                                            <template slot="item" slot-scope="data">
+                                                {{ langMap.ticket_categories[data.item.name] }}
                                             </template>
                                         </v-select>
                                     </div>
@@ -265,6 +283,7 @@
                     contact_company_user_id: '',
                     to_product_id: '',
                     priority_id: '',
+                    category_id: '',
                     name: '',
                     description: '',
                     availability: '',
@@ -275,6 +294,7 @@
                 suppliers: [],
                 products: [],
                 priorities: [],
+                categories: [],
                 employees: [],
                 onFileChange(form) {
                     this[form].files = null;
@@ -298,6 +318,7 @@
             this.getSuppliers()
             this.getProducts()
             this.getPriorities()
+            this.getCategories()
             // this.getCompany()
         },
         methods: {
@@ -350,6 +371,17 @@
                     if (response.success === true) {
                         this.priorities = response.data
                         this.ticketForm.priority_id = this.priorities[1].id
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            getCategories() {
+                axios.get('/api/ticket_categories').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.categories = response.data
                     } else {
                         console.log('error')
                     }
