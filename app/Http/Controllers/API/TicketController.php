@@ -9,6 +9,7 @@ use App\Repository\TicketRepository;
 use App\Role;
 use App\Team;
 use App\Ticket;
+use App\TicketCategory;
 use App\TicketPriority;
 use Illuminate\Http\Request;
 
@@ -30,6 +31,11 @@ class TicketController extends Controller
     public function priorities()
     {
         return self::showResponse(true, TicketPriority::all());
+    }
+
+    public function categories()
+    {
+        return self::showResponse(true, TicketCategory::all());
     }
 
     public function find($id)
