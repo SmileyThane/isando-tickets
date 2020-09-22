@@ -63,7 +63,7 @@ class ChangedTicketStatus extends Notification
         } else {
             $subject = 'Updates on your ticket: ' . $this->ticket_subject;
             $firstLine = "Your ticket has been updated.";
-            $secondLine = "or respond directly to this email.
+            $secondLine = "Or respond directly to this email.
               Please do not copy this message in your email response, and do not change subject of this email.
               This may cause delays in processing as your response may not be correctly assigned to your ticket.";
         }
@@ -72,7 +72,7 @@ class ChangedTicketStatus extends Notification
         return (new MailMessage)
             ->from(Config::get('mail.from.address'), $this->from)
             ->subject($subject)
-            ->line('Hello, ' . $this->name)
+            ->line('Hello ' . $this->name . ',')
             ->line($firstLine)
             ->action('View online', env('APP_URL') . '/ticket/' . $this->ticket_id)
             ->line($secondLine)
