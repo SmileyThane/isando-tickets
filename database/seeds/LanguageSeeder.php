@@ -393,7 +393,7 @@ class LanguageSeeder extends Seeder
   "ticket": {
     "contact_name": "Kontaktname",
     "contact_email": "Kontakt E-mail",
-    "due_date": "Geburtstermin",
+    "due_date": "Deadline",
     "access_details": "Zugangsdaten",
     "status": "Status",
     "priority": "Priorität",
@@ -491,7 +491,7 @@ class LanguageSeeder extends Seeder
 "title": "titel",
 "last": "zuletzt",
 "contact": "kontakt",
-"due_date": "fälligkeitsdatum",
+"due_date": "Deadline",
 "server": "server (für fernzugriff)",
 "access": "zugang",
 "details": "einzelheiten",
