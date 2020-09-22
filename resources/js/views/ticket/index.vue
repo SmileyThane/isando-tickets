@@ -45,15 +45,7 @@
                 </v-row>
                 <v-row>
                     <v-col sm="12" md="2">
-                        <v-btn
-                            color="green"
-                            class="ma-2 white--text"
-                            outlined
-                            @click="mergeTicketProcess()"
-                        >
-                            Link Tickets
-                            <v-icon right dark>mdi-clipboard-flow</v-icon>
-                        </v-btn>
+
                     </v-col>
                 </v-row>
             </template>
@@ -100,6 +92,7 @@
                         : '' }}</p>
                     <p><strong>{{langMap.ticket.due_date}}:</strong> {{ item.due_date }}</p>
                     <p><strong>{{langMap.ticket.access_details}}:</strong> {{ item.access_details }}</p>
+                    <p><strong>{{langMap.main.actions}}:</strong></p>
                     <p>
                         <v-btn
                             color="grey"
@@ -114,6 +107,20 @@
                             </v-icon>
                         </v-btn>
 
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    color="green"
+                                    dark
+                                    fab
+                                    x-small
+                                    @click="mergeTicketProcess(item.id)"
+                                >
+                                    <v-icon dark>mdi-clipboard-flow</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>Link tickets</span>
+                        </v-tooltip>
                         <v-btn
                             color="error"
                             dark
@@ -149,7 +156,7 @@
         <template>
             <v-dialog v-model="mergeTicketDialog" persistent max-width="480">
                 <v-card>
-                    <v-card-title class="headline">Merge</v-card-title>
+                    <v-card-title class="headline">{{langMap.main.link}}</v-card-title>
                     <v-card-text>
                         <v-autocomplete
                             :label="langMap.ticket.subject"
@@ -173,7 +180,7 @@
 
                         />
                         <v-textarea
-                            :label="langMap.ticket.description"
+                            :label="langMap.main.description"
                             v-model="mergeTicketForm.merge_comment"
                             dense
                             auto-grow
@@ -303,10 +310,10 @@
                     }
                 });
             },
-            mergeTicketProcess() {
+            mergeTicketProcess(id) {
+                this.mergeTicketForm.parent_ticket_id = id
                 this.mergeTicketDialog = true
                 this.minifiedTickets = true
-                this.getTickets()
             },
             mergeTicket() {
                 axios.post('/api/merge/ticket', this.mergeTicketForm).then(response => {
