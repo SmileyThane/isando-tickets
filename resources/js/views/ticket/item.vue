@@ -308,52 +308,7 @@
                     </v-card-text>
                 </v-card>
                 <br>
-                <v-card>
-                    <v-toolbar
-                        dense
-                        color="green"
-                        dark
-                        flat
-                    >
-                        <v-toolbar-title>{{langMap.ticket.merged_tickets}}</v-toolbar-title>
-                    </v-toolbar>
-                    <v-container>
-                        <v-row align="center"
-                               justify="center">
-                        </v-row>
-                    </v-container>
-                    <v-card-text>
-                        <v-list
-                            dense
-                        >
-                            <v-list-item-group color="green">
-                                <!--                                <v-subheader>Parent</v-subheader>-->
-                                <v-list-item
-                                    v-for="(item, i) in ticket.merged_parent"
-                                    :key="item.id"
-                                    link
-                                    @click="showTicket(item.parent_ticket_data.id)"
-                                >
-                                    <v-list-item-title>
-                                        {{item.parent_ticket_data.name}}
-                                    </v-list-item-title>
-                                </v-list-item>
-                                <!--                                <v-subheader>Child</v-subheader>-->
-                                <v-list-item
-                                    v-for="(item, i) in ticket.merged_child"
-                                    :key="item.id"
-                                    link
-                                    @click="showTicket(item.child_ticket_data.id)"
-                                >
-                                    <v-list-item-title>
-                                        {{item.child_ticket_data.name}}
-                                    </v-list-item-title>
-                                </v-list-item>
-                            </v-list-item-group>
-                        </v-list>
-                    </v-card-text>
-                </v-card>
-                <br>
+
                 <v-card>
                     <v-toolbar
                         dense
@@ -611,6 +566,47 @@
                                             &nbsp;
                                         </v-spacer>
                                     </div>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                            <v-expansion-panel
+                                v-if="ticket.merged_parent.length > 0 ||
+                                ticket.merged_child.length > 0"
+                            >
+                                <v-expansion-panel-header>
+                                    {{langMap.ticket.merged_tickets}}
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-list
+                                        dense
+                                    >
+                                        <v-list-item-group color="green">
+                                            <!--                                <v-subheader>Parent</v-subheader>-->
+                                            <v-list-item
+                                                v-for="(item, i) in ticket.merged_parent"
+                                                :key="item.id"
+                                                link
+                                                @click="showTicket(item.parent_ticket_data.id)"
+                                            >
+                                                <v-list-item-title>
+                                                    {{item.parent_ticket_data.name}}
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                            <!--                                <v-subheader>Child</v-subheader>-->
+                                            <v-list-item
+                                                v-for="(item, i) in ticket.merged_child"
+                                                :key="item.id"
+                                                link
+                                                @click="showTicket(item.child_ticket_data.id)"
+                                            >
+                                                <v-list-item-title>
+                                                    {{item.child_ticket_data.name}}
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>
