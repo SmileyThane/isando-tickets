@@ -51,7 +51,7 @@
                             outlined
                             @click="mergeTicketProcess()"
                         >
-                            Merge Tickets
+                            Link Tickets
                             <v-icon right dark>mdi-clipboard-flow</v-icon>
                         </v-btn>
                     </v-col>
