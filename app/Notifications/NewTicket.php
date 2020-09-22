@@ -57,10 +57,10 @@ class NewTicket extends Notification
         return (new MailMessage)
             ->from(Config::get('mail.from.address'), $this->from)
             ->subject('New ticket for you!')
-            ->line('Hello, ' . $this->name)
+            ->line('Hello ' . $this->name . ',')
             ->line('You have a new ticket on your profile:' . $this->ticket_subject)
-            ->line('View online' . env('APP_URL') . '/ticket/' . $this->ticket_id)
-            ->line('or respond directly to this email.')
+            ->action('View online' , env('APP_URL') . '/ticket/' . $this->ticket_id)
+            ->line('Or respond directly to this email.')
             ->line('Please do not copy this message in your email response, and do not change subject of this email.
             This may cause delays in processing as your response may not be correctly assigned to your ticket.')
             ->line('Have a great day ahead!')
