@@ -195,7 +195,7 @@
                         <v-btn color="grey darken-1" text @click="mergeTicketDialog = false">{{langMap.main.cancel}}
                         </v-btn>
                         <v-btn color="green darken-1" text @click="mergeTicket()">
-                            Merge
+                            {{langMap.main.link}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
