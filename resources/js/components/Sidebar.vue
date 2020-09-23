@@ -1,6 +1,7 @@
 <template>
     <v-navigation-drawer
-        v-model="localDrawer"
+        v-model="drawer"
+        :mini-variant="localDrawer"
         app
     >
         <v-list-item>
@@ -26,8 +27,8 @@
             <v-list-group
                 prepend-icon="mdi-account"
                 :value="sidebarGroups"
-                active-class="green--text"
-                color="green"
+                active-class="#1d6f7e--text"
+                color="#1d6f7e"
                 multiple
             >
                 <template
@@ -72,9 +73,9 @@
             </v-list-item>
             <v-list-group
                 prepend-icon="mdi-ticket-account"
-                active-class="green--text"
+                active-class="#1d6f7e--text"
                 :value="sidebarGroups"
-                color="green"
+                color="#1d6f7e"
                 multiple
             >
                 <template
@@ -123,9 +124,9 @@
             </v-list-item>
             <v-list-group
                 prepend-icon="mdi-cog"
-                active-class="green--text"
+                active-class="#1d6f7e--text"
                 :value="sidebarGroups"
-                color="green"
+                color="#1d6f7e"
                 multiple
 
             >
@@ -175,6 +176,7 @@
         data: () => ({
             companyName: 'Isando',
             localDrawer: null,
+            drawer: true,
             show: true,
             ticket: '',
             customers: '',
