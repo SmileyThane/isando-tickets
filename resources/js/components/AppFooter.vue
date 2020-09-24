@@ -1,6 +1,6 @@
 <template>
     <v-footer
-        color="#1d6f7e"
+        color="green"
         app
     >
         <span class="white--text">&copy;ISANDO 2020</span>
