@@ -1,7 +1,7 @@
 <template>
     <v-app-bar
         app
-        color="#1d6f7e"
+        color="green"
         dark
     >
         <v-app-bar-nav-icon @click.stop="localDrawer = !localDrawer"></v-app-bar-nav-icon>
