@@ -27,8 +27,8 @@
             <v-list-group
                 prepend-icon="mdi-account"
                 :value="sidebarGroups"
-                active-class="#1d6f7e--text"
-                color="#1d6f7e"
+                active-class="green--text"
+                color="green"
                 multiple
             >
                 <template
@@ -73,9 +73,9 @@
             </v-list-item>
             <v-list-group
                 prepend-icon="mdi-ticket-account"
-                active-class="#1d6f7e--text"
+                active-class="green--text"
                 :value="sidebarGroups"
-                color="#1d6f7e"
+                color="green"
                 multiple
             >
                 <template
@@ -124,9 +124,9 @@
             </v-list-item>
             <v-list-group
                 prepend-icon="mdi-cog"
-                active-class="#1d6f7e--text"
+                active-class="green--text"
                 :value="sidebarGroups"
-                color="#1d6f7e"
+                color="green"
                 multiple
 
             >
