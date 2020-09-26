@@ -222,7 +222,6 @@
             }
         },
         mounted() {
-            this.getClients()
             this.getSuppliers()
         },
         methods: {
