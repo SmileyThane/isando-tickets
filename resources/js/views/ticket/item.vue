@@ -17,334 +17,94 @@
             </v-progress-circular>
 
         </v-overlay>
-        <v-row>
+        <v-row v-if="isLoaded">
             <v-col
                 cols="12"
                 sm="12"
-                md="8"
+                md="7"
             >
-                <v-card>
-                    <v-toolbar
-                        dense
-                        color="green"
-                        dark
-                        flat
+                <v-toolbar dense color="#F0F0F0"  class="rounded-lg elevation-2">
+                    <v-btn class="ma-2" color="green" style="color: white;"
+                    >{{langMap.ticket.create_answer}}
+                    </v-btn>
+                    <v-btn class="ma-2" color="#f2f2f2"
+                    > {{langMap.ticket.assign_to}}
+                    </v-btn>
+                    <v-btn class="ma-2" color="#f2f2f2"
+                    >{{langMap.ticket.ticket_history}}
+                    </v-btn>
+                    <v-btn class="ma-2" color="grey" style="color: white;"
+                           v-if="ticket.status.id !== 5"
+                           @click="closeTicket"
+                    >{{langMap.main.close}}
+                    </v-btn>&nbsp;
+                    <v-spacer></v-spacer>
+                    <v-badge
+                        :color="ticket.status.color"
+                        inline
+                        dot
                     >
-                        <v-toolbar-title class="text-truncate" style="max-width: 60%">
-                            #{{ ticket.id }} {{ ticket.name }}
-                        </v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-chip
-                            v-if="ticket.replicated_to_entity_id"
-                            color="white" light label class="float-md-right">
-
-                            <strong>Cloned ticket</strong>
-                        </v-chip>&nbsp;
-                        <v-chip
-                            color="white" light label class="float-md-right">
-                            <v-badge
-                                :color="ticket.status.color"
-                                inline
-                                dot
-                            >
-                                <strong>{{ langMap.ticket_statuses[ticket.status.name] }}</strong>
-                            </v-badge>
-                        </v-chip>&nbsp;
-
-                        <v-chip
-                            color="white" light label class="float-md-right">
-                            <v-badge
-                                :color="ticket.priority.color"
-                                inline
-                                dot
-                            >
-                                <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>
-                            </v-badge>
-                        </v-chip>
-                        &nbsp;
-                        <v-btn v-show="ticket.can_be_edited && submitEdit" class="float-md-right"
-                               small color="white" style="color: black;" @click="updateTicket">
-                            {{langMap.main.update}}
-                        </v-btn>
-                    </v-toolbar>
-                    <v-container>
-                        <v-row align="center"
-                               justify="center">
-                        </v-row>
-                    </v-container>
-                    <v-card-text>
-                        <v-row dense>
-                            <v-col cols="6">
-                                <v-select
-                                    dense
-                                    :label="langMap.ticket.company_from"
-                                    color="green"
-                                    item-color="green"
-                                    item-text="name"
-                                    item-value="item"
-                                    :items="suppliers"
-                                    :filled="fromEdit"
-                                    v-model="from"
-                                    :readonly="!fromEdit"
-                                    @input="getContacts"
-                                >
-                                    <template slot="append">
-                                        <v-btn
-                                            text
-                                            small
-                                            v-show="ticket.can_be_edited"
-                                            :disabled="fromEdit"
-                                            @click="toggleEdit('fromEdit')"
-                                        >
-                                            <v-icon>{{!fromEdit ? 'mdi-pencil' : '$expand'}}</v-icon>
-                                        </v-btn>
-                                    </template>
-                                </v-select>
-                                <v-autocomplete
-                                    :label="langMap.ticket.contact_email"
-                                    dense
-                                    color="green"
-                                    item-color="green"
-                                    item-text="user_data.email"
-                                    item-value="id"
-                                    v-model="ticket.contact_company_user_id"
-                                    :items="contacts"
-                                    :filled="contactEdit"
-                                    :readonly="!contactEdit"
-                                >
-                                    <template slot="append">
-                                        <v-btn
-                                            text
-                                            small
-                                            v-show="ticket.can_be_edited"
-                                            :disabled="contactEdit"
-                                            @click="toggleEdit('contactEdit')"
-                                        >
-                                            <v-icon>{{contactEdit ? '$expand' : 'mdi-pencil'}}</v-icon>
-                                        </v-btn>
-                                    </template>
-                                </v-autocomplete>
-                                <p v-if="ticket.contact ">
-                                    {{ticket.contact.user_data.name}} {{ticket.contact.user_data.surname}}
-                                </p>
-                            </v-col>
-                            <v-col cols="6">
-                                <v-select
-                                    dense
-                                    :label="langMap.ticket.product_name"
-                                    color="green"
-                                    item-color="green"
-                                    item-text="name"
-                                    item-value="id"
-                                    :items="products"
-                                    v-model="ticket.to_product_id"
-                                    :disabled="!fromEdit"
-                                    @input="getProducts"
-                                />
-                            </v-col>
-                            <v-col cols="12">
-                                <v-label v-if="ticket.description">
-                                    <strong>{{langMap.main.description}}</strong>
-                                </v-label>
-                                <strong>{{ ticket.name }}</strong>
-                                <div v-html="ticket.description"></div>
-                                <v-spacer>
-                                    &nbsp;
-                                </v-spacer>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-label v-if="ticket.availability">
-                                    <strong>{{langMap.ticket.availability}}</strong>
-                                </v-label>
-                                <div v-html="ticket.availability"></div>
-                                <v-spacer>
-                                    &nbsp;
-                                </v-spacer>
-                            </v-col>
-                            <v-col cols="12" sm="6">
-                                <v-textarea
-                                    :label="langMap.ticket.ip_address"
-                                    dense
-                                    auto-grow
-                                    rows="2"
-                                    row-height="25"
-                                    shaped
-                                    color="green"
-                                    :filled="ipEdit"
-                                    :readonly="!ipEdit"
-                                    v-model="ticket.connection_details"
-                                >
-                                    <template slot="append">
-                                        <v-btn
-                                            text
-                                            small
-                                            v-show="ticket.can_be_edited"
-                                            :disabled="ipEdit"
-                                            @click="toggleEdit('ipEdit')"
-                                        >
-                                            <v-icon>{{ipEdit ? '' : 'mdi-pencil'}}</v-icon>
-                                        </v-btn>
-                                    </template>
-                                </v-textarea>
-                            </v-col>
-                            <v-col cols="12" sm="6">
-                                <v-textarea
-                                    :label="langMap.ticket.access_details"
-                                    dense
-                                    auto-grow
-                                    rows="2"
-                                    row-height="25"
-                                    shaped
-                                    color="green"
-                                    :filled="detailsEdit"
-                                    :readonly="!detailsEdit"
-                                    v-model="ticket.access_details"
-                                >
-                                    <template slot="append">
-                                        <v-btn
-                                            text
-                                            small
-                                            v-show="ticket.can_be_edited"
-                                            :disabled="detailsEdit"
-                                            @click="toggleEdit('detailsEdit')"
-                                        >
-                                            <v-icon>{{detailsEdit ? '' : 'mdi-pencil'}}</v-icon>
-                                        </v-btn>
-                                    </template>
-                                </v-textarea>
-                            </v-col>
-                        </v-row>
-
-                        <v-expansion-panels focusable dense multiple inset>
-                            <v-expansion-panel v-if="ticket.attachments.length > 0 ">
-                                <v-expansion-panel-header>
-                                    <template v-slot:actions>
-                                        <v-icon>$expand</v-icon>
-                                    </template>
-                                    <strong>{{langMap.main.attachments}}: {{ticket.attachments.length}}
-                                        <v-icon>mdi-paperclip</v-icon>
-                                    </strong>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <div
-                                        v-for="attachment in ticket.attachments"
-                                    >
-                                        <v-chip
-                                            class="ma-2"
-                                            color="green"
-                                            text-color="white"
-                                            :href="attachment.link"
-                                        >
-                                            {{attachment.name}}
-                                        </v-chip>
-                                    </div>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel
-
-
-                            >
-                                <v-expansion-panel-header>
-                                    <h3>{{langMap.ticket.create_answer}}</h3>
-                                    <template v-slot:actions>
-                                        <v-icon color="success">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <v-textarea
-                                                    :label="langMap.ticket.answer_description"
-                                                    prepend-icon="mdi-text"
-                                                    color="green"
-                                                    item-color="green"
-                                                    auto-grow
-                                                    rows="1"
-                                                    row-height="25"
-                                                    shaped
-                                                    v-model="ticketAnswer.answer"
-                                                    dense
-                                                ></v-textarea>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <v-file-input
-                                                    chips
-                                                    chips-color="green"
-                                                    multiple
-                                                    :label="langMap.ticket.add_attachments"
-                                                    color="green"
-                                                    item-color="green"
-                                                    prepend-icon="mdi-paperclip"
-                                                    :show-size="1000"
-                                                    dense
-                                                    v-on:change="onFileChange('ticketAnswer')"
-                                                >
-                                                    <template v-slot:selection="{ index, text }">
-                                                        <v-chip
-                                                            color="green"
-                                                        >
-                                                            {{ text }}
-                                                        </v-chip>
-                                                    </template>
-                                                </v-file-input>
-                                            </div>
-                                            <v-btn
-                                                dark
-                                                fab
-                                                right
-                                                bottom
-                                                color="green"
-                                                small
-                                                @click="addTicketAnswer"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
+                        <strong>{{ langMap.ticket_statuses[ticket.status.name] }}</strong>
+                    </v-badge>
+                    <v-badge
+                        :color="ticket.priority.color"
+                        inline
+                        dot
+                    >
+                        <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>
+                    </v-badge>
+                </v-toolbar>
                 <br>
+                <v-card
+                    outlined
+                >
+                    <!--                    <v-toolbar-->
+                    <!--                        dense-->
+                    <!--                        color="green"-->
+                    <!--                        dark-->
+                    <!--                        flat-->
+                    <!--                    >-->
+                    <!--                        <v-toolbar-title >-->
 
-                <v-card>
-                    <v-toolbar
-                        dense
-                        color="green"
-                        dark
-                        flat
-                    >
-                        <v-toolbar-title>{{langMap.ticket.ticket_answers}}</v-toolbar-title>
-                    </v-toolbar>
-                    <v-container>
-                        <v-row align="center"
-                               justify="center">
-                        </v-row>
-                    </v-container>
+                    <!--                        </v-toolbar-title>-->
+                    <!--                        <v-spacer></v-spacer>-->
+                    <!--                        -->
+
+                    <!--                        <v-chip-->
+                    <!--                            color="white" light label class="float-md-right">-->
+                    <!--                            <v-badge-->
+                    <!--                                :color="ticket.priority.color"-->
+                    <!--                                inline-->
+                    <!--                                dot-->
+                    <!--                            >-->
+                    <!--                                <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>-->
+                    <!--                            </v-badge>-->
+                    <!--                        </v-chip>-->
+                    <!--                        &nbsp;-->
+                    <!--                        <v-btn v-show="ticket.can_be_edited && submitEdit" class="float-md-right"-->
+                    <!--                               small color="white" style="color: black;" @click="updateTicket">-->
+                    <!--                            {{langMap.main.update}}-->
+                    <!--                        </v-btn>-->
+                    <!--                    </v-toolbar>-->
                     <v-card-text>
+
                         <div v-for="answer in ticket.answers"
                              :key="answer.id"
                         >
                             <v-card
                                 class="mx-auto"
                                 outlined
+                                dense
                             >
                                 <v-list-item three-line>
                                     <v-list-item-content>
-                                        <v-row>
-                                            <v-col md="6">
-                                                <p class="text-left mb-3">{{answer.employee.user_data.name}}
-                                                    {{answer.employee.user_data.surname}}
-                                                    {{answer.created_at_time}}:</p>
-                                            </v-col>
-                                            <v-col md="6">
-                                                <p class="text-right caption mb-2">{{answer.created_at}}</p>
-                                            </v-col>
-                                        </v-row>
-                                        <v-list class="mb-2" v-html="answer.answer"></v-list>
-
+                                        <strong class="text-left">
+                                            {{answer.employee.user_data.name}}
+                                            {{answer.employee.user_data.surname}}
+                                            {{answer.created_at_time !== '' ? answer.created_at_time :
+                                            answer.created_at}}:
+                                        </strong>
+                                        <div v-html="answer.answer"></div>
                                         <v-col cols="12" v-if="answer.attachments.length > 0 ">
                                             <h4>{{langMap.main.attachments}}</h4>
                                             <div
@@ -359,259 +119,502 @@
                                                     {{attachment.name}}
                                                 </v-chip>
                                             </div>
-
                                         </v-col>
                                     </v-list-item-content>
-
                                 </v-list-item>
-
                             </v-card>
                             <v-spacer>
                                 &nbsp;
                             </v-spacer>
                         </div>
+                        <v-card
+                            class="mx-auto"
+                            outlined
+                            dense
+                            v-if="ticket.description"
+                            color="#f2f2f2"
+                        >
+                            <v-list-item three-line>
+                                <v-list-item-content>
+                                    <strong>{{ ticket.name }}</strong>
+                                    <div v-html="ticket.description"></div>
+                                </v-list-item-content>
+
+                            </v-list-item>
+
+                        </v-card>
+                        <br>
+
+                        <!--                                <div v-if="ticket.attachments.length > 0 ">-->
+                        <!--                                    <strong>{{langMap.main.attachments}}: {{ticket.attachments.length}}-->
+                        <!--                                        <v-icon>mdi-paperclip</v-icon>-->
+                        <!--                                    </strong>-->
+                        <!--                                    <template>-->
+                        <!--                                        <div class="text-center"-->
+                        <!--                                             v-for="attachment in ticket.attachments"-->
+                        <!--                                        >-->
+                        <!--                                            <v-chip-->
+                        <!--                                                class="ma-2"-->
+                        <!--                                                label-->
+                        <!--                                                outlined-->
+                        <!--                                                color="grey"-->
+                        <!--                                                :href="attachment.link"-->
+                        <!--                                            >-->
+                        <!--                                                {{attachment.name}}-->
+                        <!--                                            </v-chip>-->
+                        <!--                                        </div>-->
+                        <!--                                    </template>-->
+
+                        <!--                                </div>-->
                     </v-card-text>
                 </v-card>
+                <!--                    </v-col>-->
+                <!--                </v-row>-->
+
+                <!--                <v-expansion-panels focusable dense multiple inset>-->
+                <!--                    <v-expansion-panel-->
+
+
+                <!--                    >-->
+                <!--                        <v-expansion-panel-header>-->
+                <!--                            <h3>{{langMap.ticket.create_answer}}</h3>-->
+                <!--                            <template v-slot:actions>-->
+                <!--                                <v-icon color="success">mdi-plus</v-icon>-->
+                <!--                            </template>-->
+                <!--                        </v-expansion-panel-header>-->
+                <!--                        <v-expansion-panel-content>-->
+                <!--                            <v-form>-->
+                <!--                                <div class="row">-->
+                <!--                                    <div class="col-md-12">-->
+                <!--                                        <v-textarea-->
+                <!--                                            :label="langMap.ticket.answer_description"-->
+                <!--                                            prepend-icon="mdi-text"-->
+                <!--                                            color="green"-->
+                <!--                                            item-color="green"-->
+                <!--                                            auto-grow-->
+                <!--                                            rows="1"-->
+                <!--                                            row-height="25"-->
+                <!--                                            shaped-->
+                <!--                                            v-model="ticketAnswer.answer"-->
+                <!--                                            dense-->
+                <!--                                        ></v-textarea>-->
+                <!--                                    </div>-->
+                <!--                                    <div class="col-md-12">-->
+                <!--                                        <v-file-input-->
+                <!--                                            chips-->
+                <!--                                            chips-color="green"-->
+                <!--                                            multiple-->
+                <!--                                            :label="langMap.ticket.add_attachments"-->
+                <!--                                            color="green"-->
+                <!--                                            item-color="green"-->
+                <!--                                            prepend-icon="mdi-paperclip"-->
+                <!--                                            :show-size="1000"-->
+                <!--                                            dense-->
+                <!--                                            v-on:change="onFileChange('ticketAnswer')"-->
+                <!--                                        >-->
+                <!--                                            <template v-slot:selection="{ index, text }">-->
+                <!--                                                <v-chip-->
+                <!--                                                    color="green"-->
+                <!--                                                >-->
+                <!--                                                    {{ text }}-->
+                <!--                                                </v-chip>-->
+                <!--                                            </template>-->
+                <!--                                        </v-file-input>-->
+                <!--                                    </div>-->
+                <!--                                    <v-btn-->
+                <!--                                        dark-->
+                <!--                                        fab-->
+                <!--                                        right-->
+                <!--                                        bottom-->
+                <!--                                        color="green"-->
+                <!--                                        small-->
+                <!--                                        @click="addTicketAnswer"-->
+                <!--                                    >-->
+                <!--                                        <v-icon>mdi-plus</v-icon>-->
+                <!--                                    </v-btn>-->
+                <!--                                </div>-->
+                <!--                            </v-form>-->
+                <!--                        </v-expansion-panel-content>-->
+                <!--                    </v-expansion-panel>-->
+                <!--                </v-expansion-panels>-->
+
+                <br>
+                <!--                <v-card>-->
+                <!--                    <v-toolbar-->
+                <!--                        dense-->
+                <!--                        color="green"-->
+                <!--                        dark-->
+                <!--                        flat-->
+                <!--                    >-->
+                <!--                        <v-toolbar-title>{{langMap.ticket.ticket_actions}}</v-toolbar-title>-->
+                <!--                        <v-spacer></v-spacer>-->
+                <!--                    </v-toolbar>-->
+                <!--                    <v-container>-->
+                <!--                        <v-row align="center"-->
+                <!--                               justify="center">-->
+                <!--                        </v-row>-->
+                <!--                    </v-container>-->
+                <!--                    <v-card-actions>-->
+                <!--                        <v-row align="center"-->
+                <!--                               justify="center">-->
+                <!--                            <v-btn v-if="ticket.status.id !== 5" color="green" style="color: white;"-->
+                <!--                                   @click="closeTicket">{{langMap.main.close}}-->
+                <!--                            </v-btn>-->
+                <!--                        </v-row>-->
+                <!--                    </v-card-actions>-->
+                <!--                    <v-card-text>-->
+                <!--                        <v-expansion-panels-->
+                <!--                            multiple-->
+                <!--                            v-model="assignPanel"-->
+                <!--                        >-->
+                <!--                            <v-expansion-panel>-->
+                <!--                                <v-expansion-panel-header>-->
+                <!--                                    {{langMap.ticket.assign_to}}:-->
+                <!--                                    <template v-slot:actions>-->
+                <!--                                        <v-icon color="submit">mdi-plus</v-icon>-->
+                <!--                                    </template>-->
+                <!--                                </v-expansion-panel-header>-->
+                <!--                                <v-expansion-panel-content>-->
+                <!--                                    <v-form>-->
+                <!--                                        <div class="row">-->
+                <!--                                            <v-col cols="md-12">-->
+                <!--                                                <v-autocomplete-->
+                <!--                                                    color="green"-->
+                <!--                                                    item-color="green"-->
+                <!--                                                    item-text="name"-->
+                <!--                                                    item-value="id"-->
+                <!--                                                    v-model="ticket.to_team_id"-->
+                <!--                                                    :items="teams"-->
+                <!--                                                    :label="langMap.sidebar.team"-->
+                <!--                                                    :disabled="selectionDisabled"-->
+                <!--                                                    @change="selectTeam"-->
+                <!--                                                ></v-autocomplete>-->
+                <!--                                            </v-col>-->
+                <!--                                            <v-col cols="12">-->
+                <!--                                                <v-autocomplete-->
+                <!--                                                    :disabled="selectionDisabled"-->
+                <!--                                                    color="green"-->
+                <!--                                                    item-color="green"-->
+                <!--                                                    item-text="employee.user_data.email"-->
+                <!--                                                    item-value="employee.id"-->
+                <!--                                                    v-model="ticket.to_company_user_id"-->
+                <!--                                                    :items="employees"-->
+                <!--                                                    :label="langMap.team.members"-->
+                <!--                                                ></v-autocomplete>-->
+                <!--                                            </v-col>-->
+                <!--                                            <v-btn v-if="selectionDisabled === false"-->
+                <!--                                                   dark-->
+                <!--                                                   fab-->
+                <!--                                                   right-->
+                <!--                                                   bottom-->
+                <!--                                                   color="green"-->
+                <!--                                                   @click="updateTicket"-->
+                <!--                                            >-->
+                <!--                                                <v-icon>mdi-plus</v-icon>-->
+                <!--                                            </v-btn>-->
+                <!--                                        </div>-->
+                <!--                                    </v-form>-->
+                <!--                                </v-expansion-panel-content>-->
+                <!--                            </v-expansion-panel>-->
+                <!--                            <v-expansion-panel v-show="!this.$store.state.roles.includes(6)">-->
+                <!--                                <v-expansion-panel-header>-->
+                <!--                                    {{langMap.ticket.add_internal_note}}-->
+                <!--                                    <template v-slot:actions>-->
+                <!--                                        <v-icon color="submit">mdi-plus</v-icon>-->
+                <!--                                    </template>-->
+                <!--                                </v-expansion-panel-header>-->
+                <!--                                <v-expansion-panel-content>-->
+                <!--                                    <v-form>-->
+                <!--                                        <div class="row">-->
+                <!--                                            <v-col cols="12">-->
+                <!--                                                <v-textarea-->
+                <!--                                                    color="green"-->
+                <!--                                                    item-color="green"-->
+                <!--                                                    auto-grow-->
+                <!--                                                    rows="1"-->
+                <!--                                                    v-model="ticketNotice.notice"-->
+                <!--                                                ></v-textarea>-->
+                <!--                                            </v-col>-->
+                <!--                                            <v-btn v-if="selectionDisabled === false"-->
+                <!--                                                   dark-->
+                <!--                                                   fab-->
+                <!--                                                   right-->
+                <!--                                                   bottom-->
+                <!--                                                   color="green"-->
+                <!--                                                   small-->
+                <!--                                                   @click="addTicketNotice"-->
+                <!--                                            >-->
+                <!--                                                <v-icon>mdi-plus</v-icon>-->
+                <!--                                            </v-btn>-->
+                <!--                                        </div>-->
+                <!--                                    </v-form>-->
+                <!--                                </v-expansion-panel-content>-->
+                <!--                            </v-expansion-panel>-->
+                <!--                            <v-expansion-panel-->
+                <!--                                v-show="!this.$store.state.roles.includes(6) && ticket.notices.length > 0">-->
+                <!--                                <v-expansion-panel-header>-->
+                <!--                                    {{langMap.ticket.notes_history}}:-->
+                <!--                                    <template v-slot:actions>-->
+                <!--                                        <v-icon color="submit">mdi-plus</v-icon>-->
+                <!--                                    </template>-->
+                <!--                                </v-expansion-panel-header>-->
+                <!--                                <v-expansion-panel-content>-->
+                <!--                                    <div v-for="noticeItem in ticket.notices"-->
+                <!--                                         :key="noticeItem.id"-->
+                <!--                                    >-->
+                <!--                                        <v-card-->
+                <!--                                            class="mx-auto"-->
+                <!--                                            outlined-->
+                <!--                                        >-->
+                <!--                                            <v-list-item three-line>-->
+                <!--                                                <v-list-item-content>-->
+                <!--                                                    <v-row>-->
+                <!--                                                        <v-col md="6">-->
+                <!--                                                            <p class="text-left mb-3">-->
+                <!--                                                                {{noticeItem.employee.user_data.name}}-->
+                <!--                                                                {{noticeItem.employee.user_data.surname}}-->
+                <!--                                                            </p>-->
+                <!--                                                        </v-col>-->
+                <!--                                                        <v-col md="6">-->
+                <!--                                                            <p class="text-right caption mb-2">-->
+                <!--                                                                {{noticeItem.created_at}}</p>-->
+                <!--                                                        </v-col>-->
+                <!--                                                    </v-row>-->
+                <!--                                                    <v-list class="mb-2"-->
+                <!--                                                            v-html="noticeItem.notice"></v-list>-->
+                <!--                                                </v-list-item-content>-->
+                <!--                                            </v-list-item>-->
+                <!--                                        </v-card>-->
+                <!--                                    </div>-->
+                <!--                                </v-expansion-panel-content>-->
+                <!--                            </v-expansion-panel>-->
+                <!--                            <v-expansion-panel>-->
+                <!--                                <v-expansion-panel-header>-->
+                <!--                                    {{langMap.ticket.ticket_history}}-->
+                <!--                                    <template v-slot:actions>-->
+                <!--                                        <v-icon color="submit">mdi-plus</v-icon>-->
+                <!--                                    </template>-->
+                <!--                                </v-expansion-panel-header>-->
+                <!--                                <v-expansion-panel-content>-->
+                <!--                                    <div v-for="history in ticket.histories"-->
+                <!--                                         :key="history.id"-->
+                <!--                                    >-->
+                <!--                                        <v-card-->
+                <!--                                            class="mx-auto"-->
+                <!--                                            outlined-->
+                <!--                                        >-->
+                <!--                                            <v-list-item three-line>-->
+                <!--                                                <v-list-item-content>-->
+                <!--                                                    <v-row>-->
+                <!--                                                        <v-col md="6">-->
+                <!--                                                            <p class="text-left mb-3">-->
+                <!--                                                                {{history.employee.user_data.name}}-->
+                <!--                                                                {{history.employee.user_data.surname}}-->
+                <!--                                                            </p>-->
+                <!--                                                        </v-col>-->
+                <!--                                                        <v-col md="6">-->
+                <!--                                                            <p class="text-right caption mb-2">-->
+                <!--                                                                {{history.created_at}}</p>-->
+                <!--                                                        </v-col>-->
+                <!--                                                    </v-row>-->
+                <!--                                                    <v-list class="mb-2"-->
+                <!--                                                            v-html="history.description"></v-list>-->
+                <!--                                                </v-list-item-content>-->
+                <!--                                            </v-list-item>-->
+
+                <!--                                        </v-card>-->
+                <!--                                        <v-spacer>-->
+                <!--                                            &nbsp;-->
+                <!--                                        </v-spacer>-->
+                <!--                                    </div>-->
+                <!--                                </v-expansion-panel-content>-->
+                <!--                            </v-expansion-panel>-->
+                <!--                            <v-expansion-panel-->
+                <!--                                v-if="ticket.merged_parent.length > 0 ||-->
+                <!--                                ticket.merged_child.length > 0"-->
+                <!--                            >-->
+                <!--                                <v-expansion-panel-header>-->
+                <!--                                    {{langMap.ticket.merged_tickets}}-->
+                <!--                                    <template v-slot:actions>-->
+                <!--                                        <v-icon color="submit">mdi-plus</v-icon>-->
+                <!--                                    </template>-->
+                <!--                                </v-expansion-panel-header>-->
+                <!--                                <v-expansion-panel-content>-->
+                <!--                                    <v-list-->
+                <!--                                        dense-->
+                <!--                                    >-->
+                <!--                                        <v-list-item-group color="green">-->
+                <!--                                            &lt;!&ndash;                                <v-subheader>Parent</v-subheader>&ndash;&gt;-->
+                <!--                                            <v-list-item-->
+                <!--                                                v-for="(item, i) in ticket.merged_parent"-->
+                <!--                                                :key="item.id"-->
+                <!--                                                link-->
+                <!--                                                @click="showTicket(item.parent_ticket_data.id)"-->
+                <!--                                            >-->
+                <!--                                                <v-list-item-title>-->
+                <!--                                                    {{item.parent_ticket_data.name}}-->
+                <!--                                                </v-list-item-title>-->
+                <!--                                            </v-list-item>-->
+                <!--                                            &lt;!&ndash;                                <v-subheader>Child</v-subheader>&ndash;&gt;-->
+                <!--                                            <v-list-item-->
+                <!--                                                v-for="(item, i) in ticket.merged_child"-->
+                <!--                                                :key="item.id"-->
+                <!--                                                link-->
+                <!--                                                @click="showTicket(item.child_ticket_data.id)"-->
+                <!--                                            >-->
+                <!--                                                <v-list-item-title>-->
+                <!--                                                    {{item.child_ticket_data.name}}-->
+                <!--                                                </v-list-item-title>-->
+                <!--                                            </v-list-item>-->
+                <!--                                        </v-list-item-group>-->
+                <!--                                    </v-list>-->
+                <!--                                </v-expansion-panel-content>-->
+                <!--                            </v-expansion-panel>-->
+                <!--                        </v-expansion-panels>-->
+                <!--                    </v-card-text>-->
+                <!--                </v-card>-->
+
             </v-col>
             <v-col
                 cols="12"
                 sm="12"
-                md="4"
+                md="5"
             >
-                <v-card>
-                    <v-toolbar
-                        dense
-                        color="green"
-                        dark
-                        flat
-                    >
-                        <v-toolbar-title>{{langMap.ticket.ticket_actions}}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-                    <v-container>
-                        <v-row align="center"
-                               justify="center">
-                        </v-row>
-                    </v-container>
-                    <v-card-actions>
-                        <v-row align="center"
-                               justify="center">
-                            <v-btn v-if="ticket.status.id !== 5" color="green" style="color: white;"
-                                   @click="closeTicket">{{langMap.main.close}}
-                            </v-btn>
-                        </v-row>
-                    </v-card-actions>
-                    <v-card-text>
-                        <v-expansion-panels
-                            multiple
-                            v-model="assignPanel"
+                <!--                <v-row>-->
+                <!--                    <v-col md="11">-->
+                <v-expansion-panels
+                    v-model="assignPanel"
+                >
+                    <v-expansion-panel>
+                        <v-expansion-panel-header
+                            style="background:#F0F0F0;"
                         >
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    {{langMap.ticket.assign_to}}:
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col cols="md-12">
-                                                <v-autocomplete
-                                                    color="green"
-                                                    item-color="green"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="ticket.to_team_id"
-                                                    :items="teams"
-                                                    :label="langMap.sidebar.team"
-                                                    :disabled="selectionDisabled"
-                                                    @change="selectTeam"
-                                                ></v-autocomplete>
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-autocomplete
-                                                    :disabled="selectionDisabled"
-                                                    color="green"
-                                                    item-color="green"
-                                                    item-text="employee.user_data.email"
-                                                    item-value="employee.id"
-                                                    v-model="ticket.to_company_user_id"
-                                                    :items="employees"
-                                                    :label="langMap.team.members"
-                                                ></v-autocomplete>
-                                            </v-col>
-                                            <v-btn v-if="selectionDisabled === false"
-                                                   dark
-                                                   fab
-                                                   right
-                                                   bottom
-                                                   color="green"
-                                                   @click="updateTicket"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel v-show="!this.$store.state.roles.includes(6)">
-                                <v-expansion-panel-header>
-                                    {{langMap.ticket.add_internal_note}}
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col cols="12">
-                                                <v-textarea
-                                                    color="green"
-                                                    item-color="green"
-                                                    auto-grow
-                                                    rows="1"
-                                                    v-model="ticketNotice.notice"
-                                                ></v-textarea>
-                                            </v-col>
-                                            <v-btn v-if="selectionDisabled === false"
-                                                   dark
-                                                   fab
-                                                   right
-                                                   bottom
-                                                   color="green"
-                                                   small
-                                                   @click="addTicketNotice"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel
-                                v-show="!this.$store.state.roles.includes(6) && ticket.notices.length > 0">
-                                <v-expansion-panel-header>
-                                    {{langMap.ticket.notes_history}}:
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <div v-for="noticeItem in ticket.notices"
-                                         :key="noticeItem.id"
-                                    >
-                                        <v-card
-                                            class="mx-auto"
-                                            outlined
-                                        >
-                                            <v-list-item three-line>
-                                                <v-list-item-content>
-                                                    <v-row>
-                                                        <v-col md="6">
-                                                            <p class="text-left mb-3">
-                                                                {{noticeItem.employee.user_data.name}}
-                                                                {{noticeItem.employee.user_data.surname}}
-                                                            </p>
-                                                        </v-col>
-                                                        <v-col md="6">
-                                                            <p class="text-right caption mb-2">
-                                                                {{noticeItem.created_at}}</p>
-                                                        </v-col>
-                                                    </v-row>
-                                                    <v-list class="mb-2"
-                                                            v-html="noticeItem.notice"></v-list>
-                                                </v-list-item-content>
-                                            </v-list-item>
-                                        </v-card>
-                                    </div>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    {{langMap.ticket.ticket_history}}
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <div v-for="history in ticket.histories"
-                                         :key="history.id"
-                                    >
-                                        <v-card
-                                            class="mx-auto"
-                                            outlined
-                                        >
-                                            <v-list-item three-line>
-                                                <v-list-item-content>
-                                                    <v-row>
-                                                        <v-col md="6">
-                                                            <p class="text-left mb-3">
-                                                                {{history.employee.user_data.name}}
-                                                                {{history.employee.user_data.surname}}
-                                                            </p>
-                                                        </v-col>
-                                                        <v-col md="6">
-                                                            <p class="text-right caption mb-2">
-                                                                {{history.created_at}}</p>
-                                                        </v-col>
-                                                    </v-row>
-                                                    <v-list class="mb-2"
-                                                            v-html="history.description"></v-list>
-                                                </v-list-item-content>
-                                            </v-list-item>
+                            <span>
+                                <strong>Reported by: </strong>
+                                {{ ticket.contact.user_data.name }}
+                                {{ ticket.contact.user_data.surname }}
+                                {{ ticket.from.name }}
+                                <!--                                    <v-btn-->
+                                <!--                                        text-->
+                                <!--                                        small-->
+                                <!--                                        :to="makeCompanyLink(ticket)"-->
+                                <!--                                        style="text-transform: none;"-->
+                                <!--                                    >-->
+                                <!--                                        {{ ticket.from.name }}-->
+                                <!--                                    </v-btn>-->
+                                <!--                                    <v-btn-->
+                                <!--                                        text-->
+                                <!--                                        small-->
+                                <!--                                        :to="'/individuals/'+ ticket.contact.id"-->
+                                <!--                                        style="text-transform: none;"-->
+                                <!--                                    >-->
+                                <!--                                        {{ ticket.contact.user_data.name }}-->
+                                <!--                                        {{ ticket.contact.user_data.surname }}-->
+                                <!--                                    </v-btn>-->
+                            </span>
 
-                                        </v-card>
-                                        <v-spacer>
-                                            &nbsp;
-                                        </v-spacer>
-                                    </div>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                            <v-expansion-panel
-                                v-if="ticket.merged_parent.length > 0 ||
-                                ticket.merged_child.length > 0"
+
+                            <template v-slot:actions>
+                                <v-icon>$expand</v-icon>
+                            </template>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <span>
+                                    <v-label v-if="ticket.contact">
+                                        {{langMap.ticket.contact_email}}:
+                                    </v-label>
+                                {{ ticket.contact.user_data.email }}
+                                <!--                                    <v-btn-->
+                                <!--                                        text-->
+                                <!--                                        x-small-->
+                                <!--                                        :to="'/individuals/'+ticket.contact.id"-->
+                                <!--                                        style="text-transform: none;"-->
+                                <!--                                    >-->
+                                <!--                                        {{ ticket.contact.user_data.email }}-->
+                                <!--                                    </v-btn>-->
+                                </span>
+                            <br>
+                            <span>
+                                <v-label v-if="ticket.product">
+                                    {{langMap.ticket.product_name}}:
+                                </v-label>
+                                {{ ticket.product.name }}
+                                <!--                                <v-btn-->
+                                <!--                                    text-->
+                                <!--                                    x-small-->
+                                <!--                                    :to="'/product/'+ticket.product.id"-->
+                                <!--                                    style="text-transform: none;"-->
+                                <!--                                >-->
+                                <!--                                    {{ ticket.product.name }}-->
+                                <!--                                </v-btn>-->
+                            </span>
+                            <br>
+                            <v-label v-if="ticket.availability">
+                                {{langMap.ticket.availability}}:
+                            </v-label>
+                            <span v-if="ticket.availability" v-html="ticket.availability">
+                            </span>
+                            <br>
+                            <v-label v-if="ticket.connection_details">
+                                {{langMap.ticket.ip_address}}:
+                            </v-label>
+                            <span v-if="ticket.connection_details" v-text="ticket.connection_details">
+                            </span>
+                            <br>
+                            <v-label v-if="ticket.access_details">
+                                {{langMap.ticket.access_details}}:
+                            </v-label>
+                            <span v-if="ticket.access_details" v-text="ticket.access_details">
+                            </span>
+                            <br>
+                            <v-btn class="float-md-right"
+                                   small color="white"
+                                   style="color: black;"
                             >
-                                <v-expansion-panel-header>
-                                    {{langMap.ticket.merged_tickets}}
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-list
-                                        dense
-                                    >
-                                        <v-list-item-group color="green">
-                                            <!--                                <v-subheader>Parent</v-subheader>-->
-                                            <v-list-item
-                                                v-for="(item, i) in ticket.merged_parent"
-                                                :key="item.id"
-                                                link
-                                                @click="showTicket(item.parent_ticket_data.id)"
-                                            >
-                                                <v-list-item-title>
-                                                    {{item.parent_ticket_data.name}}
-                                                </v-list-item-title>
-                                            </v-list-item>
-                                            <!--                                <v-subheader>Child</v-subheader>-->
-                                            <v-list-item
-                                                v-for="(item, i) in ticket.merged_child"
-                                                :key="item.id"
-                                                link
-                                                @click="showTicket(item.child_ticket_data.id)"
-                                            >
-                                                <v-list-item-title>
-                                                    {{item.child_ticket_data.name}}
-                                                </v-list-item-title>
-                                            </v-list-item>
-                                        </v-list-item-group>
-                                    </v-list>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
+                                <v-icon small>mdi-pencil</v-icon>
+                                {{langMap.main.edit}}
+                            </v-btn>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+                <br>
+                <v-expansion-panels>
+                    <v-expansion-panel>
+                        <v-expansion-panel-header
+                            style="background:#F0F0F0;"
+                        >
+                            <span>
+                                <strong>{{langMap.ticket.notes_history}}</strong>
+                            </span>
+                            <template v-slot:actions>
+                                <v-icon>$expand</v-icon>
+                            </template>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <br>
+                            <div v-for="noticeItem in ticket.notices"
+                                 :key="noticeItem.id"
+                            >
+                                <v-card
+                                    class="mx-auto"
+                                    outlined
+                                    dense
+                                >
+                                    <v-list-item three-line>
+                                        <v-list-item-content class="custom-small-text">
+                                            <strong>{{noticeItem.employee.user_data.name}}
+                                                {{noticeItem.employee.user_data.surname}}
+                                                {{noticeItem.created_at}}:</strong>
+                                            <div v-html="noticeItem.notice"></div>
+                                        </v-list-item-content>
+
+                                    </v-list-item>
+                                </v-card>
+                                <br>
+                            </div>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
             </v-col>
         </v-row>
     </v-container>
@@ -619,6 +622,8 @@
 </template>
 
 <script>
+    import store from "../../store";
+
     export default {
         data() {
             return {
@@ -746,7 +751,7 @@
                 },
                 onFileChange(form) {
                     this[form].files = null;
-                    console.log(event.target.files);
+                    // console.log(event.target.files);
                     this[form].files = event.target.files;
                 },
             }
@@ -785,6 +790,7 @@
                         this.ticket = response.data
                         this.from = {[this.ticket.from_entity_type]: this.ticket.from_entity_id}
                         this.progressBuffer = this.progressBuffer + 40;
+                        this.$store.state.pageName = '#' + this.ticket.id + ' ' + this.ticket.name
                         this.selectTeam();
                         this.getContacts(this.from)
                         if (this.ticket.notices.length > 0) {
@@ -913,7 +919,7 @@
                 const config = {
                     headers: {'content-type': 'multipart/form-data'}
                 }
-                console.log(this.ticketAnswer);
+                // console.log(this.ticketAnswer);
                 let formData = new FormData();
                 for (let key in this.ticketAnswer) {
                     if (key !== 'files') {
@@ -942,6 +948,10 @@
                         console.log('error')
                     }
                 });
+            },
+            makeCompanyLink(ticket) {
+                let redirectToEntity = ticket.from_entity_type.substring(ticket.from_entity_type.lastIndexOf("\\") + 1).toLowerCase()
+                return `/${redirectToEntity}/${ticket.from_entity_id}`
             }
         },
         computed: {
@@ -951,3 +961,9 @@
         }
     }
 </script>
+
+<style>
+    .custom-small-text {
+      font-size: .875rem;
+    }
+</style>
