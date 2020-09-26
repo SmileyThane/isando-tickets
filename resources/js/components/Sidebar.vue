@@ -225,6 +225,7 @@
                         });
             },
             changeAppTitle() {
+                this.$store.state.pageName = this.$store.state.lang.lang_map.sidebar[this.$route.name]
                 document.title = this.companyName + ' | ' + this.$store.state.lang.lang_map.sidebar[this.$route.name]
             }
         }
