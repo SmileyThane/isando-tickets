@@ -5,7 +5,7 @@
         dark
     >
         <v-app-bar-nav-icon @click.stop="localDrawer = !localDrawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>{{this.$store.state.lang.lang_map.sidebar[this.$route.name] }}</v-toolbar-title>
+        <v-toolbar-title>{{ this.$store.state.pageName }}</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-menu
             left
@@ -57,7 +57,6 @@
         watch: {
             value: function () {
                 this.localDrawer = this.value
-
             },
             localDrawer: function () {
                 this.$emit('input', this.localDrawer)
@@ -81,10 +80,5 @@
                 window.open('/login', '_self')
             }
         }
-
     }
 </script>
-
-<!--<style scoped>-->
-
-<!--</style>-->
