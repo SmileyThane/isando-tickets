@@ -7,9 +7,10 @@ export default new Vuex.Store({
     state: {
         roles: {},
         lang: {},
+        pageName: ''
     },
     getters: {
-        roles: state => [state.roles, state.lang]
+        roles: state => [state.roles, state.lang, state.pageName]
     },
     mutations: {
         setRoles(state, roles) {
@@ -17,6 +18,9 @@ export default new Vuex.Store({
         },
         setLang(state, lang) {
             state.lang = lang;
+        },
+        setPageName(state, pageName) {
+            state.pageName = pageName;
         },
     },
     actions: {
