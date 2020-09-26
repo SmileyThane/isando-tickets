@@ -228,7 +228,7 @@
         methods: {
             getClients() {
                 this.loading = "green"
-                console.log(this.options);
+                // console.log(this.options);
                 if (this.options.sortDesc.length <= 0) {
                     this.options.sortBy[0] = 'id'
                     this.options.sortDesc[0] = false
@@ -246,7 +246,7 @@
                         response => {
                             response = response.data
                             this.customers = response.data.data
-                            console.log(this.customers);
+                            // console.log(this.customers);
                             this.totalCustomers = response.data.total
                             this.lastPage = response.data.last_page
                             this.loading = false
