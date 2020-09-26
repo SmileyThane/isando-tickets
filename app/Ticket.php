@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -121,5 +122,10 @@ class Ticket extends Model
     public function mergedChild(): HasMany
     {
         return $this->hasMany(TicketMerge::class, 'parent_ticket_id', 'id')->with('childTicketData');
+    }
+
+    public function childTickets(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id', 'id');
     }
 }
