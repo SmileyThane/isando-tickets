@@ -273,7 +273,7 @@ class TicketRepository
         return true;
     }
 
-    public function addMerge(Request $request): bool
+    public function addLink(Request $request): bool
     {
         $ticketMerge = new TicketMerge();
         $ticketMerge->merged_by_user_id = Auth::id();
@@ -281,8 +281,17 @@ class TicketRepository
         $ticketMerge->parent_ticket_id = $request->parent_ticket_id;
         $ticketMerge->child_ticket_id = $request->child_ticket_id;
         $ticketMerge->save();
-        $this->addHistoryItem($ticketMerge->parent_ticket_id, null, 'ticket_merged');
-        $this->addHistoryItem($ticketMerge->child_ticket_id, null, 'ticket_merged');
+        $this->addHistoryItem($ticketMerge->parent_ticket_id, null, 'ticket_linked');
+        $this->addHistoryItem($ticketMerge->child_ticket_id, null, 'ticket_linked');
+        return true;
+    }
+
+    public function addMerge(Request $request): bool
+    {
+        $ticket = Ticket::find($request->child_ticket_id);
+        $ticket->parent_id = $request->parent_ticket_id;
+        $ticket->save();
+        $this->addHistoryItem($ticket->child_ticket_id, null, 'ticket_merged');
         return true;
     }
 
