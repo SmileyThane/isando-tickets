@@ -543,7 +543,7 @@
                     if (response.success === true) {
                         this.userData = response.data
                         this.companies = this.userData.employee.assigned_to_clients.length > 0 ? this.userData.employee.assigned_to_clients : this.userData.employee.companies
-                        console.log(this.companies);
+                        // console.log(this.companies);
                         this.employeeForm.company_user_id = this.userData.employee.id
                     }
                 });
