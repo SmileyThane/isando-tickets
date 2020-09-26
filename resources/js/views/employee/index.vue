@@ -243,7 +243,7 @@
         methods: {
             getEmployees() {
                 this.loading = "green"
-                console.log(this.options);
+                // console.log(this.options);
                 if (this.options.sortDesc.length <= 0) {
                     this.options.sortBy[0] = 'id'
                     this.options.sortDesc[0] = false
