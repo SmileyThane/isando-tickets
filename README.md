@@ -13,6 +13,6 @@ Isando ticketing system
     7. php artisan passport:install
     8. php artisan storage:link
     9. php artisan key:generate
-   10. [go to "/register" route and create your first company for using.]
+   10. [go to "/register" page and create your first company for using.]
 _________________________________
 Good luck 🙂
