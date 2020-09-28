@@ -23,36 +23,183 @@
                 sm="12"
                 md="7"
             >
-                <v-toolbar dense color="#F0F0F0"  class="rounded-lg elevation-2">
+                <v-toolbar dense color="#F0F0F0" class="rounded-lg elevation-2">
                     <v-btn class="ma-2" color="green" style="color: white;"
                     >{{langMap.ticket.create_answer}}
                     </v-btn>
+                    <!--                    <v-btn class="ma-2" color="#f2f2f2"-->
+                    <!--                    >{{langMap.ticket.ticket_history}}-->
+                    <!--                    </v-btn>-->
                     <v-btn class="ma-2" color="#f2f2f2"
-                    > {{langMap.ticket.assign_to}}
+                    >{{langMap.main.link}}
                     </v-btn>
                     <v-btn class="ma-2" color="#f2f2f2"
-                    >{{langMap.ticket.ticket_history}}
+                    >
+                        Merge
                     </v-btn>
-                    <v-btn class="ma-2" color="grey" style="color: white;"
-                           v-if="ticket.status.id !== 5"
-                           @click="closeTicket"
-                    >{{langMap.main.close}}
-                    </v-btn>&nbsp;
+                    <v-btn class="ma-2" color="#f2f2f2"
+                    >
+                        Spam
+                    </v-btn>
+                    <!--                    <v-btn class="ma-2" color="grey" style="color: white;"-->
+                    <!--                           v-if="ticket.status.id !== 5"-->
+                    <!--                           @click="closeTicket"-->
+                    <!--                    >{{langMap.main.close}}-->
+                    <!--                    </v-btn>&nbsp;-->
+                    <v-menu
+                        rounded
+                        offset-y
+                    >
+                        <template v-slot:activator="{ on: menu, attrs }">
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on: tooltip }">
+                                    <v-btn
+                                        color="text"
+                                        v-bind="attrs"
+                                        v-on="{ ...tooltip, ...menu }"
+                                    >
+                                        ...
+                                    </v-btn>
+                                </template>
+                                <span>Special info</span>
+                            </v-tooltip>
+                        </template>
+                        <v-list
+                            dense
+                        >
+                            <v-list-item
+                                link
+                            >
+                                <v-list-item-title>Show linked tickets</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item
+                                link
+                            >
+                                <v-list-item-title>Change assignment
+                                </v-list-item-title>
+                            </v-list-item>
+                            <v-list-item
+                                link
+                            >
+                                <v-list-item-title>Change priority</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item
+                                link
+                            >
+                                <v-list-item-title>Change status</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item
+                                link
+                            >
+                                <v-list-item-title>Change type</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item
+                                link
+                                active-class="red--text"
+                                color="red"
+                            >
+                                <v-list-item-title>Delete</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
                     <v-spacer></v-spacer>
-                    <v-badge
-                        :color="ticket.status.color"
-                        inline
-                        dot
+                    <v-menu
+                        rounded
+                        offset-y
                     >
-                        <strong>{{ langMap.ticket_statuses[ticket.status.name] }}</strong>
-                    </v-badge>
-                    <v-badge
-                        :color="ticket.priority.color"
-                        inline
-                        dot
+                        <template v-slot:activator="{ on: menu, attrs }">
+                            <v-btn
+                                class="ma-2"
+                                v-bind="attrs"
+                                v-on="{...menu}"
+                            >
+                                <v-badge
+                                    :color="ticket.status.color"
+                                    inline
+                                    dot
+                                >
+                                    <strong>{{ langMap.ticket_statuses[ticket.status.name] }}</strong>
+                                </v-badge>
+                            </v-btn>
+
+                        </template>
+                        <v-list
+                            dense
+                        >
+                            <v-list-item
+                                link
+                            >
+                                <v-list-item-title>
+                                    {{langMap.ticket_statuses[langMap.main.close]}}
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                    <v-menu
+                        rounded
+                        offset-y
                     >
-                        <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>
-                    </v-badge>
+                        <template v-slot:activator="{ on: menu, attrs }">
+                            <v-btn
+                                class="ma-2"
+                                v-bind="attrs"
+                                v-on="{...menu}"
+                            >
+                                <v-badge
+                                    :color="ticket.priority.color"
+                                    inline
+                                    dot
+                                >
+                                    <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>
+                                </v-badge>
+                            </v-btn>
+                        </template>
+                        <v-list
+                            dense
+                        >
+                            <v-list-item
+                                link
+                                v-for="priority in priorities"
+                                :key="priority.id"
+                                onclick="console.log(priority.id);"
+                            >
+                                <v-list-item-title>
+                                    <v-badge
+                                        :color="priority.color"
+                                        inline
+                                        dot
+                                    >
+                                        <strong>{{ langMap.ticket_priorities[priority.name] }}</strong>
+                                    </v-badge>
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                    <v-menu
+                        rounded
+                        offset-y
+                    >
+                        <template v-slot:activator="{ on: menu, attrs }">
+                            <v-btn
+                                class="ma-2"
+                                v-bind="attrs"
+                                v-on="{...menu}"
+                            >
+                                <strong>Type</strong>
+                            </v-btn>
+
+                        </template>
+                        <v-list
+                            dense
+                        >
+                            <v-list-item
+                                link
+                            >
+                                <v-list-item-title>
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
                 </v-toolbar>
                 <br>
                 <v-card
@@ -353,7 +500,7 @@
                 <!--                            <v-expansion-panel-->
                 <!--                                v-show="!this.$store.state.roles.includes(6) && ticket.notices.length > 0">-->
                 <!--                                <v-expansion-panel-header>-->
-                <!--                                    {{langMap.ticket.notes_history}}:-->
+                <!--                                    {{langMap.ticket.internal_notes}}:-->
                 <!--                                    <template v-slot:actions>-->
                 <!--                                        <v-icon color="submit">mdi-plus</v-icon>-->
                 <!--                                    </template>-->
@@ -478,7 +625,7 @@
             <v-col
                 cols="12"
                 sm="12"
-                md="5"
+                md="4"
             >
                 <!--                <v-row>-->
                 <!--                    <v-col md="11">-->
@@ -519,6 +666,14 @@
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
+                            <br>
+                            <v-btn class="float-md-right"
+                                   small color="white"
+                                   style="color: black;"
+                            >
+                                <v-icon small>mdi-pencil</v-icon>
+                                {{langMap.main.edit}}
+                            </v-btn>
                             <span>
                                     <v-label v-if="ticket.contact">
                                         {{langMap.ticket.contact_email}}:
@@ -567,13 +722,6 @@
                             <span v-if="ticket.access_details" v-text="ticket.access_details">
                             </span>
                             <br>
-                            <v-btn class="float-md-right"
-                                   small color="white"
-                                   style="color: black;"
-                            >
-                                <v-icon small>mdi-pencil</v-icon>
-                                {{langMap.main.edit}}
-                            </v-btn>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
@@ -584,7 +732,36 @@
                             style="background:#F0F0F0;"
                         >
                             <span>
-                                <strong>{{langMap.ticket.notes_history}}</strong>
+                                <strong>{{langMap.ticket.assign_to}}ments</strong>
+                            </span>
+                            <template v-slot:actions>
+                                <v-icon>$expand</v-icon>
+                            </template>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <br>
+                            <v-btn class="float-md-right"
+                                   small color="white"
+                                   style="color: black;"
+                            >
+                                <v-icon small>mdi-pencil</v-icon>
+                                {{langMap.main.edit}}
+                            </v-btn>
+                            <br>
+                            {{langMap.sidebar.team}}:
+                            <br>
+                            {{langMap.team.members}}:
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+                <br>
+                <v-expansion-panels>
+                    <v-expansion-panel>
+                        <v-expansion-panel-header
+                            style="background:#F0F0F0;"
+                        >
+                            <span>
+                                <strong>{{langMap.ticket.internal_notes}}</strong>
                             </span>
                             <template v-slot:actions>
                                 <v-icon>$expand</v-icon>
@@ -615,6 +792,41 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
+
+            </v-col>
+            <v-col
+                cols="12"
+                sm="12"
+                md="1"
+            >
+                <v-navigation-drawer
+                    absolute
+                    permanent
+                    mini-variant
+                    right
+                >
+                    <v-divider></v-divider>
+                    <v-list
+                        nav
+                        dense
+                    >
+                        <v-list-item link>
+                            <v-list-item-icon>
+                                <v-icon>mdi-folder</v-icon>
+                            </v-list-item-icon>
+                        </v-list-item>
+                        <v-list-item link>
+                            <v-list-item-icon>
+                                <v-icon>mdi-account-multiple</v-icon>
+                            </v-list-item-icon>
+                        </v-list-item>
+                        <v-list-item link>
+                            <v-list-item-icon>
+                                <v-icon>mdi-star</v-icon>
+                            </v-list-item-icon>
+                        </v-list-item>
+                    </v-list>
+                </v-navigation-drawer>
             </v-col>
         </v-row>
     </v-container>
@@ -622,7 +834,6 @@
 </template>
 
 <script>
-    import store from "../../store";
 
     export default {
         data() {
@@ -964,6 +1175,6 @@
 
 <style>
     .custom-small-text {
-      font-size: .875rem;
+        font-size: .875rem;
     }
 </style>
