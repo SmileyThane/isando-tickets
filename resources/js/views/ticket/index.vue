@@ -78,8 +78,8 @@
                     item.assigned_person.user_data.surname }}
                 </div>
             </template>
-            <template v-slot:item.actions="{ item }">
-            </template>
+<!--            <template v-slot:item.actions="{ item }">-->
+<!--            </template>-->
             <template v-slot:expanded-item="{ headers, item }">
 
                 <td :colspan="headers.length">
