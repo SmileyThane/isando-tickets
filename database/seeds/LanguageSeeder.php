@@ -300,7 +300,7 @@ class LanguageSeeder extends Seeder
     "ticket_list": "Ticket Liste",
     "create_ticket": "Neues Ticket",
     "notify_customers": "Kontakte benachrichtigen",
-    "knowledge_base": "Wissensbasis",
+    "knowledge_base": "Wissensdatenbank",
     "settings": "Die Einstellungen",
     "system_settings": "Systemeinstellungen",
     "general_settings": "Allgemeine Einstellungen",
