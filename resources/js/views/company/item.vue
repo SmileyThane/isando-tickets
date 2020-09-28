@@ -329,6 +329,7 @@
                             show-expand
                             :footer-props="footerProps"
                             dense
+                            @click:row="showRolesModal"
                         >
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
@@ -347,6 +348,45 @@
                                        v-for="addressItem in item.user_data.addresses">{{ addressItem.address }} {{
                                         addressItem.address_line_2 }} {{ addressItem.address_line_3 }} ({{
                                         addressItem.type.name }})</p>
+                                    <p><strong>{{langMap.main.actions}}:</strong></p>
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn :disabled="!item.user_data.is_active" @click="sendInvite(item)" icon
+                                                   v-bind="attrs" v-on="on">
+                                                <v-icon
+                                                    small
+                                                >
+                                                    mdi-email-alert
+                                                </v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{langMap.company.resend_invite}}</span>
+                                    </v-tooltip>
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn @click="showRolesModal(item)" icon v-bind="attrs" v-on="on">
+                                                <v-icon
+                                                    small
+                                                >
+                                                    mdi-pencil
+                                                </v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{langMap.company.edit_contact}}</span>
+                                    </v-tooltip>
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn :disabled="checkEmployeeRoleByIds(item, [2])"
+                                                   @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
+                                                <v-icon
+                                                    small
+                                                >
+                                                    mdi-delete
+                                                </v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>{{langMap.company.delete_contact}}</span>
+                                    </v-tooltip>
                                 </td>
                             </template>
                             <template v-slot:item.user_data="{ item }">
@@ -355,44 +395,7 @@
                                 </div>
                             </template>
                             <template v-slot:item.actions="{ item }">
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn :disabled="!item.user_data.is_active" @click="sendInvite(item)" icon
-                                               v-bind="attrs" v-on="on">
-                                            <v-icon
-                                                small
-                                            >
-                                                mdi-email-alert
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{langMap.company.resend_invite}}</span>
-                                </v-tooltip>
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn @click="showRolesModal(item)" icon v-bind="attrs" v-on="on">
-                                            <v-icon
-                                                small
-                                            >
-                                                mdi-pencil
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{langMap.company.edit_contact}}</span>
-                                </v-tooltip>
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn :disabled="checkEmployeeRoleByIds(item, [2])"
-                                               @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
-                                            <v-icon
-                                                small
-                                            >
-                                                mdi-delete
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{langMap.company.delete_contact}}</span>
-                                </v-tooltip>
+
                             </template>
 
                         </v-data-table>
