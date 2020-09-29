@@ -316,7 +316,7 @@
                 this.minifiedTickets = true
             },
             mergeTicket() {
-                axios.post('/api/merge/ticket', this.mergeTicketForm).then(response => {
+                axios.post('/api/link/ticket', this.mergeTicketForm).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.minifiedTickets = false
