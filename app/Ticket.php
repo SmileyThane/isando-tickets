@@ -22,7 +22,7 @@ class Ticket extends Model
 
     public function getNameAttribute()
     {
-        return $this->attributes['parent_id'] === null ? $this->attributes['name'] : $this->attributes['name'] . "[Merged]";
+        return $this->parent_id ? $this->attributes['name'] : $this->attributes['name'] . "[Merged]";
     }
 
     public function getFromAttribute()
