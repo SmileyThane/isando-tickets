@@ -281,8 +281,8 @@ class TicketRepository
         $ticketMerge->parent_ticket_id = $request->parent_ticket_id;
         $ticketMerge->child_ticket_id = $request->child_ticket_id;
         $ticketMerge->save();
-        $this->addHistoryItem($ticketMerge->parent_ticket_id, null, 'ticket_linked');
-        $this->addHistoryItem($ticketMerge->child_ticket_id, null, 'ticket_linked');
+        $this->addHistoryItem($request->parent_ticket_id, null, 'ticket_linked');
+        $this->addHistoryItem($request->child_ticket_id, null, 'ticket_linked');
         return true;
     }
 
