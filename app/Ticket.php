@@ -20,6 +20,11 @@ class Ticket extends Model
     protected $appends = ['from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
     protected $hidden = ['to'];
 
+    public function getNameAttribute()
+    {
+        return $this->attributes['parent_id'] === null ? $this->attributes['name'] : $this->attributes['name'] . "[Merged]";
+    }
+
     public function getFromAttribute()
     {
         return $this->attributes['from_entity_type']::find($this->attributes['from_entity_id']);
@@ -33,7 +38,7 @@ class Ticket extends Model
     public function getReplicatedToAttribute()
     {
 
-        return $this->replicated_to_entity_type !== null  ? $this->attributes['replicated_to_entity_type']::find($this->attributes['replicated_to_entity_id']) : null;
+        return $this->replicated_to_entity_type !== null ? $this->attributes['replicated_to_entity_type']::find($this->attributes['replicated_to_entity_id']) : null;
     }
 
     public function getCanBeEditedAttribute(): bool
