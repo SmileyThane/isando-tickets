@@ -775,19 +775,17 @@
                                 <strong>{{langMap.ticket.internal_notes}}</strong>
                             </span>
                             <template v-slot:actions>
+                                <v-btn class="float-md-right"
+                                       small color="white"
+                                       style="color: black;"
+                                       @click.native.stop="closeTicket"
+                                >
+                                    {{langMap.ticket.add_internal_note}}
+                                </v-btn>
                                 <v-icon>$expand</v-icon>
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <br>
-                            <v-btn class="float-md-right"
-                                   small color="white"
-                                   style="color: black;"
-                            >
-                                <v-icon small>mdi-plus</v-icon>
-                                {{langMap.ticket.add_internal_note}}
-                            </v-btn>
-                            <br>
                             <br>
                             <div v-for="noticeItem in ticket.notices"
                                  :key="noticeItem.id"
