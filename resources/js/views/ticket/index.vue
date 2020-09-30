@@ -271,7 +271,7 @@
                 if (this.totalTickets < this.options.itemsPerPage) {
                     this.options.page = 1
                 }
-                axios.get(`api/ticket?
+                axios.get(`/api/ticket?
                 search=${this.ticketsSearch}&
                 sort_by=${this.manageSortableField(this.options.sortBy[0])}&
                 sort_val=${this.options.sortDesc[0]}&
