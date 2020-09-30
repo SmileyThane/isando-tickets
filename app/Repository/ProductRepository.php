@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\CompanyProduct;
 use App\Product;
+use App\ProductCategory;
 use App\ProductClient;
 use App\ProductCompanyUser;
 use App\Role;
@@ -64,7 +65,7 @@ class ProductRepository
 
     public function find($id)
     {
-        return Product::where('id', $id)->with('employees', 'clients.clientData')->first();
+        return Product::where('id', $id)->with('employees', 'clients.clientData', 'category')->first();
     }
 
     public function create(Request $request)
@@ -73,6 +74,7 @@ class ProductRepository
         $product->name = $request->product_name;
         $product->description = $request->product_description;
         $product->photo = $request->product_photo;
+        $product->category_id = $request->category_id ?? null;
         $product->save();
         $request->product_id = $product->id;
         $request->company_id = Auth::user()->employee->company_id;
@@ -86,6 +88,7 @@ class ProductRepository
         $product->name = $request->product_name;
         $product->description = $request->product_description;
         $product->photo = $request->product_photo;
+        $product->category_id = $request->category_id ?? null;
         $product->save();
         return $product;
     }
@@ -140,5 +143,4 @@ class ProductRepository
         }
         return $result;
     }
-
 }

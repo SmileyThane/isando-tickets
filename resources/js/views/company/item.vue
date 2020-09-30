@@ -571,6 +571,97 @@
                 </v-card>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <v-spacer></v-spacer>
+                <v-card class="elevation-12">
+                    <v-toolbar dense color="green" dark flat>
+                        <v-toolbar-title>{{langMap.company.product_categories}}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-treeview
+                                        open-on-click
+                                        :items="productCategoriesTree"
+                                        activatable
+                                        item-key="id"
+                                    >
+                                        <template v-slot:prepend="{ item }">
+                                            <v-icon v-if="item.children.length">mdi-folder</v-icon>
+                                            <v-icon v-else>mdi-file</v-icon>
+                                        </template>
+                                        <template v-slot:append="{ item }">
+                                            <v-btn
+                                                icon
+                                                small
+                                                @click="deleteProductCategory(item.id)"
+                                            >
+                                                <v-icon>mdi-trash-can</v-icon>
+                                            </v-btn>
+                                        </template>
+
+                                    </v-treeview>
+
+                                    <v-expansion-panels>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{langMap.company.new_product_category}}
+                                                <template v-slot:actions>
+                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col cols="md-6" class="pa-1">
+                                                            <v-text-field
+                                                                color="green"
+                                                                item-color="green"
+                                                                v-model="productCategoryForm.name"
+                                                                :label="langMap.main.name"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="6" class="pa-1">
+                                                            <v-select
+                                                                color="green"
+                                                                item-color="green"
+                                                                item-text="name"
+                                                                item-value="id"
+                                                                v-model="productCategoryForm.parent_id"
+                                                                :items="productCategoriesFlat"
+                                                                :label="langMap.company.parent_product_category"
+                                                                dense
+                                                            >
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn
+                                                            dark
+                                                            fab
+                                                            right
+                                                            bottom
+                                                            small
+                                                            color="green"
+                                                            @click="submitNewData(company.id, productCategoryForm, 'addProductCategory')"
+                                                        >
+                                                            <v-icon>mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+            </div>
+        </div>
         <v-row justify="center">
             <v-dialog v-model="rolesDialog" persistent max-width="600px">
                 <v-card>
@@ -1046,10 +1137,18 @@
                     social_link: '',
                     social_type: ''
                 },
+                productCategoryForm: {
+                    name: '',
+                    company_id: '',
+                    parent_id: '',
+                },
                 phoneTypes: [],
                 addressTypes: [],
                 socialTypes: [],
                 countries: [],
+                productCategoriesFlat: [],
+                productCategoriesTree: [],
+                selectedProductCategoryId: null,
             }
         },
         mounted() {
@@ -1059,7 +1158,10 @@
             this.getAddressTypes();
             this.getSocialTypes();
             this.getCountries();
-            this.employeeForm.company_id = this.$route.params.id
+            this.getProductCategoriesTree();
+            this.getProductCategoriesFlat();
+            this.productCategoryForm.company_id = this.$route.params.id;
+            this.employeeForm.company_id = this.$route.params.id;
         },
         methods: {
             getCompany() {
@@ -1092,6 +1194,68 @@
                         this.countries = response.data
                     }
                 });
+            },
+            getProductCategoriesTree() {
+                axios.get(`/api/company/${this.$route.params.id}/product_categories/tree`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.productCategoriesTree = response.data;
+                    }
+                });
+
+            },
+            getProductCategoriesFlat() {
+                axios.get(`/api/company/${this.$route.params.id}/product_categories/flat`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.productCategoriesFlat = [{
+                            id: null,
+                            name: `${this.$store.state.lang.lang_map.main.none}`,
+                            parent_id: null
+                        }].concat(response.data);
+                    }
+                });
+            },
+            addProductCategory() {
+                this.snackbar = false;
+                axios.post(`/api/company/${this.$route.params.id}/product_category`, this.productCategoryForm).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.getProductCategoriesTree();
+                        this.getProductCategoriesFlat();
+                        this.productCategoryForm.parent_id = '';
+                        this.productCategoryForm.name = '';
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.company.product_category_created}`;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                        console.log('error')
+                    }
+                });
+
+            },
+            deleteProductCategory(id) {
+                this.snackbar = false;
+                axios.delete(`/api/product_category/${id}`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.selectedProductCategoryId = null;
+                        this.getProductCategoriesTree();
+                        this.getProductCategoriesFlat();
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.company.product_category_deleted}`;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                        console.log('error')
+                    }
+                });
+
             },
             addEmployee() {
                 axios.post(`/api/company/${this.$route.params.id}/employee`, this.employeeForm).then(response => {

@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
+use App\ProductCategory;
 use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -112,5 +113,51 @@ class CompanyRepository
         return $result;
     }
 
+
+    public function attachProductCategory(Request $request)
+    {
+        ProductCategory::firstOrCreate([
+            'name' => $request->name,
+            'company_id' => $request->company_id,
+            'parent_id' => $request->parent_id ?? null,
+        ]);
+
+        return true;
+    }
+
+    public function detachProductCategory($id)
+    {
+        $result = false;
+        $category = ProductCategory::find($id);
+        if ($category) {
+            $category->delete();
+            $result = true;
+        }
+        return $result;
+    }
+
+    public function getProductCategoriesTree($id, $showFullNames = false)
+    {
+        $result = [];
+        $company = Company::find($id);
+        if ($company) {
+            $result = $company->productCategories()->orderBy('name', 'ASC')->get()->toTree();
+        }
+        return $result;
+    }
+
+    public function getProductCategoriesFlat($id)
+    {
+        $result = [];
+        $company = Company::find($id);
+        if ($company) {
+            $result = $company->productCategories()->orderBy('parent_id', 'ASC')->orderBy('name', 'ASC')->get();
+
+            foreach ($result as &$category) {
+                $category->name = $category->getFullName();
+            }
+        }
+        return $result;
+    }
 
 }

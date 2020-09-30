@@ -51,4 +51,9 @@ class Company extends Model
     {
         return $this->morphMany(Social::class, 'entity');
     }
+
+    public function productCategories(): HasMany
+    {
+        return $this->hasMany(ProductCategory::class,'company_id','id');
+    }
 }

@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Company;
 use App\Http\Controllers\Controller;
 use App\Repository\CompanyRepository;
 use App\Repository\CompanyUserRepository;
@@ -57,10 +58,29 @@ class CompanyController extends Controller
         return self::showResponse($this->companyRepo->attachProduct($request));
     }
 
-
     public function getIndividuals(Request $request): JsonResponse
     {
         return self::showResponse(true, $this->companyUserRepo->all($request));
+    }
+
+    public function attachProductCategory(Request $request): JsonResponse
+    {
+        return self::showResponse($this->companyRepo->attachProductCategory($request));
+    }
+
+    public function detachProductCategory($id): JsonResponse
+    {
+        return self::showResponse($this->companyRepo->detachProductCategory($id));
+    }
+
+    public function getProductCategoriesTree(Request $request, $id = null): JsonResponse
+    {
+        return self::showResponse(true, $this->companyRepo->getProductCategoriesTree($id));
+    }
+
+    public function getProductCategoriesFlat(Request $request, $id = null): JsonResponse
+    {
+        return self::showResponse(true, $this->companyRepo->getProductCategoriesFlat($id));
     }
 
 }
