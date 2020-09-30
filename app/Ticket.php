@@ -22,7 +22,7 @@ class Ticket extends Model
 
     public function getNameAttribute()
     {
-        return $this->parent_id ? $this->attributes['name'] . "[Merged]" : $this->attributes['name'];
+        return $this->parent_id ? $this->attributes['name'] . " [Merged]" : $this->attributes['name'];
     }
 
     public function getFromAttribute()
@@ -129,8 +129,9 @@ class Ticket extends Model
         return $this->hasMany(TicketMerge::class, 'parent_ticket_id', 'id')->with('childTicketData');
     }
 
-    public function childTickets(): BelongsTo
+    public function childTickets(): HasMany
     {
-        return $this->belongsTo(self::class, 'parent_id', 'id');
+//        return self::where('parent_id', $this->id);
+        return $this->hasMany(self::class, 'parent_id', 'id');
     }
 }
