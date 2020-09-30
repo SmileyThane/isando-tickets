@@ -114,7 +114,7 @@ class LanguageSeeder extends Seeder
   "team": {
   "add_new": "Add new team",
   "info": "Team info",
-  "members": "Team members",
+  "members": "Agent",
   "new_member": "New team member"
   },
   "individuals": {
@@ -148,7 +148,7 @@ class LanguageSeeder extends Seeder
     "add_internal_note": "Add note",
     "subject": "Subject",
     "internal_notes": "Internal notes",
-    "ticket_history": "Ticket history",
+    "ticket_history": "History",
     "access_data": "Access data",
     "merged_tickets": "Merged tickets",
     "availability_description": "Please provide working hours when we can contact you on the submitted issue",
