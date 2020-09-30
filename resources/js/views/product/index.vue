@@ -240,7 +240,7 @@
                 });
             },
             addProduct() {
-                console.log(this.productForm)
+                // console.log(this.productForm)
                 axios.post('api/product', this.productForm).then(response => {
                     response = response.data
                     if (response.success === true) {

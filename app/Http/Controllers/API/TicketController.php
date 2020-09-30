@@ -113,4 +113,10 @@ class TicketController extends Controller
         return self::showResponse($result);
     }
 
+    public function addLink(Request $request)
+    {
+        $result = $this->ticketRepo->addLink($request);
+        return self::showResponse($result);
+    }
+
 }

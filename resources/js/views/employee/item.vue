@@ -127,32 +127,42 @@
                             class="elevation-1"
                             item-key="id"
                             :footer-props="footerProps"
+                            show-expand
+                            dense
+                            @click:row="showCompany"
                         >
-                            <template v-slot:item.actions="{ item }">
-                                <v-btn
-                                    color="grey"
-                                    dark
-                                    @click="showCompany(item)"
-                                    fab
-                                    x-small
-                                >
-                                    <v-icon>
-                                        mdi-eye
-                                    </v-icon>
-                                </v-btn>
-
-                                <v-btn @click="showRolesModal(item)"
-                                       dark
-                                       color="green"
-                                       fab
-                                       x-small>
-                                    <v-icon
-                                        small
+                            <template v-slot:expanded-item="{ headers, item }">
+                                <td :colspan="headers.length">
+                                    <p></p>
+                                    <p><strong>{{langMap.main.actions}}:</strong></p>
+                                    <v-btn
+                                        color="grey"
+                                        dark
+                                        @click="showCompany(item)"
+                                        fab
+                                        x-small
                                     >
-                                        mdi-pencil
-                                    </v-icon>
-                                </v-btn>
+                                        <v-icon>
+                                            mdi-eye
+                                        </v-icon>
+                                    </v-btn>
+
+                                    <v-btn @click="showRolesModal(item)"
+                                           dark
+                                           color="green"
+                                           fab
+                                           x-small>
+                                        <v-icon
+                                            small
+                                        >
+                                            mdi-pencil
+                                        </v-icon>
+                                    </v-btn>
+                                </td>
                             </template>
+<!--                            <template v-slot:item.actions="{ item }">-->
+<!--                                -->
+<!--                            </template>-->
                         </v-data-table>
                         <v-spacer>
                             &nbsp;
@@ -462,8 +472,9 @@
         data() {
             return {
                 headers: [
+                    {text: '', value: 'data-table-expand'},
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'clients.name'},
-                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+                    // {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
                 footerProps: {
                     itemsPerPage: 10,
@@ -543,7 +554,7 @@
                     if (response.success === true) {
                         this.userData = response.data
                         this.companies = this.userData.employee.assigned_to_clients.length > 0 ? this.userData.employee.assigned_to_clients : this.userData.employee.companies
-                        console.log(this.companies);
+                        // console.log(this.companies);
                         this.employeeForm.company_user_id = this.userData.employee.id
                     }
                 });

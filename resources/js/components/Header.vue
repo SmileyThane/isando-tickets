@@ -1,12 +1,53 @@
 <template>
     <v-app-bar
         app
-        color="#1d6f7e"
+        color="green"
         dark
     >
-        <v-app-bar-nav-icon @click.stop="localDrawer = !localDrawer"></v-app-bar-nav-icon>
-        <v-toolbar-title>{{this.$store.state.lang.lang_map.sidebar[this.$route.name] }}</v-toolbar-title>
+        <v-app-bar-nav-icon
+            @click.stop="localDrawer = !localDrawer"
+        ></v-app-bar-nav-icon>
+        <v-toolbar-title
+        >{{ this.$store.state.pageName }}</v-toolbar-title>
         <v-spacer></v-spacer>
+        <v-text-field
+            class="text-center"
+            dense
+            hide-details="auto"
+            :label="searchLabel"
+        >
+            <template slot="append">
+                <v-menu
+                    rounded
+                    transition="slide-y-transition"
+                    bottom
+                >
+                    <template v-slot:activator="{ on: menu, attrs }">
+                        <v-btn
+                            text
+                            v-bind="attrs"
+                            v-on="{...menu}"
+                        >
+                            <v-icon color="white">$expand</v-icon>
+                        </v-btn>
+                    </template>
+                    <v-list
+                        dense
+                    >
+                        <v-list-item
+                            link
+                            v-for="item in searchCategories"
+                            :key="item.id"
+                            @click="selectSearchCategory(item)"
+                        >
+                            <v-list-item-title>
+                                {{ item.name }}
+                            </v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+            </template>
+        </v-text-field>
         <v-menu
             left
             bottom
@@ -40,7 +81,7 @@
             <v-avatar left>
                 <v-icon>mdi-account-circle</v-icon>
             </v-avatar>
-            <v-label>{{username}}</v-label>
+            <v-label class="d-sm-none d-md-flex">{{username}}</v-label>
 
         </v-chip>
     </v-app-bar>
@@ -50,14 +91,30 @@
     export default {
         name: "Header",
         props: {value: {type: Boolean}},
-        data: () => ({
-            username: localStorage.getItem('name'),
-            localDrawer: null
-        }),
+        data(){
+            return {
+                username: localStorage.getItem('name'),
+                localDrawer: null,
+                searchCategories: [
+                    {
+                        id: 1,
+                        name: 'ID'
+                    },
+                    {
+                        id: 2,
+                        name: 'Subject'
+                    },
+                    {
+                        id: 3,
+                        name: 'Contact'
+                    }
+                ],
+                searchLabel: this.$store.state.lang.lang_map.main.search
+            }
+        },
         watch: {
             value: function () {
                 this.localDrawer = this.value
-
             },
             localDrawer: function () {
                 this.$emit('input', this.localDrawer)
@@ -79,12 +136,10 @@
                 e.preventDefault()
                 localStorage.removeItem('auth_token')
                 window.open('/login', '_self')
+            },
+            selectSearchCategory(item) {
+                this.searchLabel = item.name
             }
         }
-
     }
 </script>
-
-<!--<style scoped>-->
-
-<!--</style>-->

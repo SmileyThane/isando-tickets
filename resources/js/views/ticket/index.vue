@@ -78,8 +78,8 @@
                     item.assigned_person.user_data.surname }}
                 </div>
             </template>
-            <template v-slot:item.actions="{ item }">
-            </template>
+<!--            <template v-slot:item.actions="{ item }">-->
+<!--            </template>-->
             <template v-slot:expanded-item="{ headers, item }">
 
                 <td :colspan="headers.length">
@@ -271,7 +271,7 @@
                 if (this.totalTickets < this.options.itemsPerPage) {
                     this.options.page = 1
                 }
-                axios.get(`api/ticket?
+                axios.get(`/api/ticket?
                 search=${this.ticketsSearch}&
                 sort_by=${this.manageSortableField(this.options.sortBy[0])}&
                 sort_val=${this.options.sortDesc[0]}&
@@ -316,7 +316,7 @@
                 this.minifiedTickets = true
             },
             mergeTicket() {
-                axios.post('/api/merge/ticket', this.mergeTicketForm).then(response => {
+                axios.post('/api/link/ticket', this.mergeTicketForm).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.minifiedTickets = false

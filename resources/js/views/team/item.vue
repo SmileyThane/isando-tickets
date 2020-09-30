@@ -237,12 +237,12 @@
                 });
             },
             getCompanies() {
-                console.log(this.team);
+                // console.log(this.team);
                 axios.get(`/api/company/${this.team.team_owner_id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.companies = response.data
-                        console.log(this.companies);
+                        // console.log(this.companies);
                     } else {
                         console.log('error')
                     }

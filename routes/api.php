@@ -115,9 +115,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('ticket/{id}/notice', 'API\TicketController@addNotice');
         Route::get('ticket_priorities', 'API\TicketController@priorities');
         Route::get('ticket_categories', 'API\TicketController@categories');
-
-
         Route::post('merge/ticket', 'API\TicketController@addMerge');
+        Route::post('link/ticket', 'API\TicketController@addLink');
     });
 
     //language management
