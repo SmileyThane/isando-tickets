@@ -204,6 +204,7 @@
                     >
                         Delete
                     </v-btn>
+                    <v-spacer></v-spacer>
                     <v-menu
                         rounded
                         offset-y
