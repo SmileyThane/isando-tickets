@@ -43,6 +43,10 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('company/{id?}', 'API\CompanyController@find');
         Route::post('company/{id}', 'API\CompanyController@update');
         Route::post('company/product', 'API\CompanyController@attachProduct');
+        Route::get('company/{id?}/product_categories/tree', 'API\CompanyController@getProductCategoriesTree');
+        Route::get('company/{id?}/product_categories/flat', 'API\CompanyController@getProductCategoriesFlat');
+        Route::post('company/{id}/product_category', 'API\CompanyController@attachProductCategory');
+        Route::delete('product_category/{id}', 'API\CompanyController@detachProductCategory');
         Route::get('main_company_name', 'API\CompanyController@mainCompanyName');
 
         //employee management

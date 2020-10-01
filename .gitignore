@@ -10,4 +10,6 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-/.idea/symfony2.xml
+/.idea/*
+/public/js/app.js
+/public/css/app.css

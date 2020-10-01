@@ -97,7 +97,13 @@ class LanguageSeeder extends Seeder
   "new_social_item": "New social item",
   "update_info": "Update info",
   "user_info": "User info",
-  "user": "User"
+  "user": "User",
+  "product_categories": "Product categories",
+  "new_product_category": "Add product category",
+  "delete_product_category": "Delete product category",
+  "parent_product_category": "Parent category",
+  "product_category_created": "Product category created",
+  "product_category_deleted": "Product category deleted"
   },
   "customer": {
   "customer": "Customer",
@@ -270,8 +276,10 @@ class LanguageSeeder extends Seeder
 "profile_main":"profile",
 "profile":"profile",
 "subject": "subject",
-"link": "Link"
-   },
+"link": "Link",
+"none": "None",
+"generic_error": "Something went wrong"
+},
  "exceptions": {
 
  }

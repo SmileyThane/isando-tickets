@@ -19,4 +19,9 @@ class Product extends Model
         return $this->hasMany(ProductClient::class, 'product_id', 'id');
     }
 
+    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(ProductCategory::class, 'id', 'category_id');
+    }
+
 }
