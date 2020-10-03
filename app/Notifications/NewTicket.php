@@ -59,7 +59,7 @@ class NewTicket extends Notification
             ->subject('New ticket for you!')
             ->line('Hello ' . $this->name . ',')
             ->line('You have a new ticket on your profile:' . $this->ticket_subject)
-            ->action('View online' , env('APP_URL') . '/ticket/' . $this->ticket_id)
+            ->action('View online', env('APP_URL') . '/ticket/' . $this->ticket_id)
             ->line('Or respond directly to this email.')
             ->line('Please do not copy this message in your email response, and do not change subject of this email.
             This may cause delays in processing as your response may not be correctly assigned to your ticket.')
