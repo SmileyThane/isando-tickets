@@ -4,7 +4,6 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -37,8 +36,9 @@ class Ticket extends Model
 
     public function getReplicatedToAttribute()
     {
-
-        return $this->replicated_to_entity_type !== null ? $this->attributes['replicated_to_entity_type']::find($this->attributes['replicated_to_entity_id']) : null;
+        return $this->replicated_to_entity_type !== null ?
+            $this->attributes['replicated_to_entity_type']::find($this->attributes['replicated_to_entity_id']) :
+            null;
     }
 
     public function getCanBeEditedAttribute(): bool
@@ -101,17 +101,20 @@ class Ticket extends Model
 
     public function answers(): HasMany
     {
-        return $this->hasMany(TicketAnswer::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');
+        return $this->hasMany(TicketAnswer::class, 'ticket_id', 'id')
+            ->orderBy('updated_at', 'desc');
     }
 
     public function histories(): HasMany
     {
-        return $this->hasMany(TicketHistory::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');
+        return $this->hasMany(TicketHistory::class, 'ticket_id', 'id')
+            ->orderBy('updated_at', 'desc');
     }
 
     public function notices(): HasMany
     {
-        return $this->hasMany(TicketNotice::class, 'ticket_id', 'id')->orderBy('updated_at', 'desc');
+        return $this->hasMany(TicketNotice::class, 'ticket_id', 'id')
+            ->orderBy('updated_at', 'desc');
     }
 
     public function attachments(): MorphMany
@@ -121,12 +124,14 @@ class Ticket extends Model
 
     public function mergedParent(): HasMany
     {
-        return $this->hasMany(TicketMerge::class, 'child_ticket_id', 'id')->with('parentTicketData');
+        return $this->hasMany(TicketMerge::class, 'child_ticket_id', 'id')
+            ->with('parentTicketData');
     }
 
     public function mergedChild(): HasMany
     {
-        return $this->hasMany(TicketMerge::class, 'parent_ticket_id', 'id')->with('childTicketData');
+        return $this->hasMany(TicketMerge::class, 'parent_ticket_id', 'id')
+            ->with('childTicketData');
     }
 
     public function childTickets(): HasMany
