@@ -69,17 +69,6 @@ class AuthController extends Controller
         return self::showResponse(true);
     }
 
-    private function getRegistrationErrors($request)
-    {
-        $isCompanyValid = $this->companyRepo->validate($request);
-        $errors['company'] = $isCompanyValid !== true ? $isCompanyValid : null;
-        $isUserValid = $this->userRepo->validate($request);
-        $errors['user'] = $isUserValid !== true ? $isUserValid : null;
-        $isLicenseValid = $this->licenseRepo->validate($request);
-        $errors['license'] = $isLicenseValid !== true ? $isLicenseValid : null;
-        return $isCompanyValid === true && $isUserValid === true && $isLicenseValid === true ? null : $errors;
-    }
-
     public function register(Request $request)
     {
         $errors = $this->getRegistrationErrors($request);
@@ -97,6 +86,17 @@ class AuthController extends Controller
             return self::showResponse(true);
         }
         return self::showResponse(false, $errors);
+    }
+
+    private function getRegistrationErrors($request)
+    {
+        $isCompanyValid = $this->companyRepo->validate($request);
+        $errors['company'] = $isCompanyValid !== true ? $isCompanyValid : null;
+        $isUserValid = $this->userRepo->validate($request);
+        $errors['user'] = $isUserValid !== true ? $isUserValid : null;
+        $isLicenseValid = $this->licenseRepo->validate($request);
+        $errors['license'] = $isLicenseValid !== true ? $isLicenseValid : null;
+        return $isCompanyValid === true && $isUserValid === true && $isLicenseValid === true ? null : $errors;
     }
 
     public function plans()
