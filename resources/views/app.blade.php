@@ -11,7 +11,6 @@
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="{{asset('css/app.css')}}">
     <link rel="icon" type="image/png" href="{{asset('favicon.jpg')}}"/>
-
 </head>
 <body>
 <div id="app">
