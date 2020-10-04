@@ -3,7 +3,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Company;
 use App\Http\Controllers\Controller;
 use App\Repository\CompanyRepository;
 use App\Repository\CompanyUserRepository;
