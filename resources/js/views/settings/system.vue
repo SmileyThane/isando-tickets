@@ -56,7 +56,7 @@
                                                             <v-text-field color="green" item-color="green" v-model="phoneTypeForm.name" :label="langMap.main.name" dense></v-text-field>
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
-                                                            <v-text-field color="green" item-color="green" v-model="phoneTypeForm.icon" :label="langMap.main.icon" dense></v-text-field>
+                                                            <v-text-field color="green" item-color="green" v-model="phoneTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="phoneTypeForm.icon"></v-text-field>
                                                         </v-col>
                                                         <v-btn dark fab right bottom small color="green" @click="submitNewData(phoneTypeForm, 'addPhoneType')">
                                                             <v-icon>mdi-plus</v-icon>
@@ -125,7 +125,7 @@
                                                             <v-text-field color="green" item-color="green" v-model="socialTypeForm.name" :label="langMap.main.name" dense></v-text-field>
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
-                                                            <v-text-field color="green" item-color="green" v-model="socialTypeForm.icon" :label="langMap.main.icon" dense></v-text-field>
+                                                            <v-text-field color="green" item-color="green" v-model="socialTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="socialTypeForm.icon"></v-text-field>
                                                         </v-col>
                                                         <v-btn dark fab right bottom small color="green" @click="submitNewData(socialTypeForm, 'addSocialType')">
                                                             <v-icon>mdi-plus</v-icon>
@@ -193,7 +193,7 @@
                                                             <v-text-field color="green" item-color="green" v-model="addressTypeForm.name" :label="langMap.main.name" dense></v-text-field>
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
-                                                            <v-text-field color="green" item-color="green" v-model="addressTypeForm.icon" :label="langMap.main.icon" dense></v-text-field>
+                                                            <v-text-field color="green" item-color="green" v-model="addressTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="addressTypeForm.icon"></v-text-field>
                                                         </v-col>
                                                         <v-btn dark fab right bottom small color="green" @click="submitNewData(addressTypeForm, 'addAddressType')">
                                                             <v-icon>mdi-plus</v-icon>

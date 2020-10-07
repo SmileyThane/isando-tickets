@@ -239,6 +239,9 @@
                                                 v-for="(item, i) in userData.phones"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-icon>
+                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
                                                     <v-list-item-subtitle
@@ -257,6 +260,9 @@
                                                 v-for="(item, i) in userData.addresses"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-icon>
+                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">{{item.address}}
                                                         {{item.address_line_2}} {{item.address_line_3}}

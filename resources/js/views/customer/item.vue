@@ -79,6 +79,9 @@
                                                 v-for="(item, i) in client.phones"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-icon>
+                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
                                                     <v-list-item-subtitle
@@ -97,6 +100,9 @@
                                                 v-for="(item, i) in client.addresses"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-icon>
+                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">{{item.address}}
                                                         {{item.address_line_2}} {{item.address_line_3}}
@@ -339,13 +345,13 @@
                                     <p v-if="item.employee.user_data.email">{{ item.employee.user_data.email }}</p>
                                     <p v-if="item.employee.user_data.phones.length > 0">
                                         <strong>{{langMap.main.phone}}:</strong></p>
-                                    <p v-for="phoneItem in item.employee.user_data.phones">{{ phoneItem.phone }} ({{
+                                    <p v-for="phoneItem in item.employee.user_data.phones"><v-icon small dense left>{{phoneItem.type.icon}}</v-icon> {{ phoneItem.phone }} ({{
                                         phoneItem.type.name }})</p>
                                     <!--                                    <p><strong>Lang:</strong></p>-->
                                     <!--                                    <p>{{ item.employee.user_data.lang }}</p>-->
                                     <p v-if="item.employee.user_data.addresses.length > 0"><strong>{{langMap.main.address}}:</strong>
                                     </p>
-                                    <p v-for="addressItem in item.employee.user_data.addresses">{{ addressItem.address
+                                    <p v-for="addressItem in item.employee.user_data.addresses"><v-icon small dense left>{{addressItem.type.icon}}</v-icon> {{ addressItem.address
                                         }} {{ addressItem.address_line_2 }} {{ addressItem.address_line_3 }} ({{
                                         addressItem.type.name }})</p>
                                     <p><strong>{{langMap.main.actions}}:</strong></p>
@@ -500,6 +506,9 @@
                                     v-for="(item) in client.socials"
                                     :key="item.id"
                                 >
+                                    <v-list-item-icon>
+                                        <v-icon v-text="item.type.icon"></v-icon>
+                                    </v-list-item-icon>
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.social_link"></v-list-item-title>
                                         <v-list-item-subtitle
