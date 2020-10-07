@@ -5,6 +5,7 @@ namespace App\Repository;
 
 
 use App\Phone;
+use App\PhoneType;
 
 class PhoneRepository
 {
@@ -39,4 +40,34 @@ class PhoneRepository
             return false;
         }
     }
+
+    public function createType($name, $icon): PhoneType
+    {
+        return PhoneType::firstOrCreate([
+                'name' => $name,
+                'icon' => $icon
+        ]);
+    }
+
+    public function updateType($id, $name, $icon): PhoneType
+    {
+        $type = PhoneType::findOrFail($id);
+        $type->update([
+                'name' => $name,
+                'icon' => $icon
+        ]);
+        $type->save();
+        return $type;
+    }        
+
+    public function deleteType($id): ?bool
+    {
+        try {
+            PhoneType::where('id', $id)->delete();
+            return true;
+        } catch (\Throwable $throwable) {
+            return false;
+        }
+    }
+
 }

@@ -21,6 +21,22 @@ class PhoneController extends Controller
         return self::showResponse(true, PhoneType::all());
     }
 
+    public function addType(Request $request)
+    {
+        $type = $this->phoneRepo->createType($request['name'], $request['icon']);
+        return self::showResponse(true, $type);
+    }
+
+    public function updateType(Request $request, $id)
+    {
+        $type = $this->phoneRepo->updateType($id, $request['name'], $request['icon']);
+        return self::showResponse(true, $type);
+    }
+
+    public function deleteType($id)
+    {
+        return self::showResponse($this->phoneRepo->deleteType($id));
+    }
 
     public function add(Request $request)
     {

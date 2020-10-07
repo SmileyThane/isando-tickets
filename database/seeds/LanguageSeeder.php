@@ -18,7 +18,7 @@ class LanguageSeeder extends Seeder
                 'short_code' => 'en',
                 'locale' => 'en_US',
                 'lang_map' => '{
-                  "sidebar": {
+  "sidebar": {
     "companies": "Company",
     "customers": "Customer",
     "products": "Product",
@@ -42,75 +42,75 @@ class LanguageSeeder extends Seeder
     "logout": "Logout"
   },
   "ticket_statuses": {
-  "new" : "New",
-  "open" : "Open",
-  "responded" : "Responded",
-  "waiting_for_reply" : "Waiting for reply",
-  "closed" : "Closed"
+    "new" : "New",
+    "open" : "Open",
+    "responded" : "Responded",
+    "waiting_for_reply" : "Waiting for reply",
+    "closed" : "Closed"
   },
-  "ticket_priorities": {
-  "urgent": "Urgent",
-  "moderate": "Moderate",
-  "low": "Low"
+    "ticket_priorities": {
+    "urgent": "Urgent",
+    "moderate": "Moderate",
+    "low": "Low"
   },
   "ticket_categories": {
-  "client": "Client",
-  "notification": "Notification",
-  "internal": "Internal"
+    "client": "Client",
+    "notification": "Notification",
+    "internal": "Internal"
   },
   "roles": {
-  "superadmin": "Superadmin",
-  "license_owner": "License owner",
-  "company_admin": "Company admin",
-  "company_manager": "Company manager",
-  "regular_user": "Regular user",
-  "company_client": "Company client",
-  "contact": "Contact"
+    "superadmin": "Superadmin",
+    "license_owner": "License owner",
+    "company_admin": "Company admin",
+    "company_manager": "Company manager",
+    "regular_user": "Regular user",
+    "company_client": "Company client",
+    "contact": "Contact"
   },
   "phone_types":{
-  "primary": "Primary",
-  "secondary": "Secondary",
-  "other": "Other"
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "other": "Other"
   },
   "address_types":{
-  "home": "Home",
-  "work": "Work",
-  "other": "Other"
+    "home": "Home",
+    "work": "Work",
+    "other": "Other"
   },
   "social_types":{
-  "website": "Website",
-  "linkedin": "LinkedIn",
-  "facebook": "Facebook",
-  "contact_email": "Contact E-mail"
+    "website": "Website",
+    "linkedin": "LinkedIn",
+    "facebook": "Facebook",
+    "contact_email": "Contact E-mail"
   },
   "company": {
-  "company_number": "Company number",
-  "registration_date": "Date ofregistration",
-  "info":"Company info",
-  "additional_info":"Additional information",
-  "company_contacts": "Company contacts",
-  "resend_invite": "Resend invite",
-  "edit_contact": "Edit contact",
-  "delete_contact": "Delete contact",
-  "new_contact": "New contact",
-  "social_info": "Social info",
-  "new_social_item": "New social item",
-  "update_info": "Update info",
-  "user_info": "User info",
-  "user": "User",
-  "product_categories": "Product categories",
-  "new_product_category": "Add product category",
-  "delete_product_category": "Delete product category",
-  "parent_product_category": "Parent category",
-  "product_category_created": "Product category created",
-  "product_category_deleted": "Product category deleted"
+    "company_number": "Company number",
+    "registration_date": "Date of registration",
+    "info": "Company info",
+    "additional_info": "Additional information",
+    "company_contacts": "Company contacts",
+    "resend_invite": "Resend invite",
+    "edit_contact": "Edit contact",
+    "delete_contact": "Delete contact",
+    "new_contact": "New contact",
+    "social_info": "Social info",
+    "new_social_item": "New social item",
+    "update_info": "Update info",
+    "user_info": "User info",
+    "user": "User",
+    "product_categories": "Product categories",
+    "new_product_category": "Add product category",
+    "delete_product_category": "Delete product category",
+    "parent_product_category": "Parent category",
+    "product_category_created": "Product category created",
+    "product_category_deleted": "Product category deleted"
   },
   "customer": {
-  "customer": "Customer",
-  "add_new": "Add new customer",
-  "supplier": "Supplier",
-  "product_info": "Product info",
-  "show_product": "Show product"
+    "customer": "Customer",
+    "add_new": "Add new customer",
+    "supplier": "Supplier",
+    "product_info": "Product info",
+    "show_product": "Show product"
   },
   "product": {
     "add_new": "Add new product",
@@ -118,17 +118,17 @@ class LanguageSeeder extends Seeder
     "product_clients": "Product clients"
   },
   "team": {
-  "add_new": "Add new team",
-  "info": "Team info",
-  "members": "Agent",
-  "new_member": "New team member"
+    "add_new": "Add new team",
+    "info": "Team info",
+    "members": "Agent",
+    "new_member": "New team member"
   },
   "individuals": {
-  "add_new": "Add new contact",
-  "info": "User info",
-  "contact_info": "Contact info",
-  "assigned_companies": "Assigned companies",
-  "new_customer": "Assign to Customer"
+    "add_new": "Add new contact",
+    "info": "User info",
+    "contact_info": "Contact info",
+    "assigned_companies": "Assigned companies",
+    "new_customer": "Assign to Customer"
   },
   "ticket": {
     "contact_name": "Contact name",
@@ -278,11 +278,31 @@ class LanguageSeeder extends Seeder
 "subject": "subject",
 "link": "Link",
 "none": "None",
-"generic_error": "Something went wrong"
+"generic_error": "Something went wrong",
+"name": "Name",
+"icon": "Icon (MD)"
 },
- "exceptions": {
-
- }
+  "system_settings": {
+    "title": "System settings",
+    "phone_types": "Phone types",
+    "new_phone_type": "Add new phone type",
+    "phone_type_created": "Phone type created",
+    "phone_type_deleted": "Phone type deleted",
+    "phone_type_updated": "Phone type updated",
+    "social_types": "Social link types",
+    "new_social_type": "Add new social link type",
+    "social_type_created": "Social link type created",
+    "social_type_deleted": "Social link type deleted",
+    "social_type_updated": "Social type updated",
+    "address_types": "Address types",
+    "new_address_type": "Add new address type",
+    "address_type_created": "Address type created",
+    "address_type_deleted": "Address type deleted",
+    "address_type_updated": "Address type updated",
+    "update_type_info": "Update information"
+  },
+  "exceptions": {
+  }
 }'
             ]
         );

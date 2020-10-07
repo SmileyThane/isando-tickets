@@ -21,6 +21,22 @@ class AddressController extends Controller
         return self::showResponse(true, AddressType::all());
     }
 
+    public function addType(Request $request)
+    {
+        $type = $this->addressRepo->createType($request['name'], $request['icon']);
+        return self::showResponse(true, $type);
+    }
+
+    public function updateType(Request $request, $id)
+    {
+        $type = $this->addressRepo->updateType($id, $request['name'], $request['icon']);
+        return self::showResponse(true, $type);
+    }
+
+    public function deleteType($id)
+    {
+        return self::showResponse($this->addressRepo->deleteType($id));
+    }
 
     public function add(Request $request)
     {
