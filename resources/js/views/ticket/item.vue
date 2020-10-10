@@ -44,6 +44,62 @@
             </v-dialog>
         </template>
         <template>
+            <v-dialog v-model="answerDialog" max-width="480">
+                <v-card outlined dense>
+                    <v-card-title class="headline" style="background-color: #F0F0F0;">{{langMap.ticket.create_answer}}
+                    </v-card-title>
+                    <v-card-text>
+                        <v-form>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <v-textarea
+                                        :label="langMap.ticket.answer_description"
+                                        prepend-icon="mdi-text"
+                                        color="green"
+                                        item-color="green"
+                                        auto-grow
+                                        rows="1"
+                                        row-height="25"
+                                        shaped
+                                        v-model="ticketAnswer.answer"
+                                        dense
+                                    ></v-textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <v-file-input
+                                        chips
+                                        chips-color="green"
+                                        multiple
+                                        :label="langMap.ticket.add_attachments"
+                                        color="green"
+                                        item-color="green"
+                                        prepend-icon="mdi-paperclip"
+                                        :show-size="1000"
+                                        dense
+                                        v-on:change="onFileChange('ticketAnswer')"
+                                    >
+                                        <template v-slot:selection="{ index, text }">
+                                            <v-chip
+                                                color="green"
+                                            >
+                                                {{ text }}
+                                            </v-chip>
+                                        </template>
+                                    </v-file-input>
+                                </div>
+                            </div>
+                        </v-form>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="grey darken-1" text @click="answerDialog = false">{{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="green" dark @click="addTicketAnswer" >{{langMap.main.create}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
+        <template>
             <v-dialog v-model="ticketLinkDialog" persistent max-width="480">
                 <v-card>
                     <v-card-title class="headline">{{langMap.main.link}}</v-card-title>
@@ -147,6 +203,7 @@
             >
                 <v-toolbar dense color="#F0F0F0" class="rounded-lg elevation-2">
                     <v-btn small class="ma-2" color="green" style="color: white;"
+                           @click="answerDialog = true"
                     >{{langMap.ticket.create_answer}}
                     </v-btn>
                     <v-btn small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
@@ -335,31 +392,31 @@
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
                         >
-                            <span>
-                                <strong>Reported by: </strong>
-                                <span v-if="ticket.contact !== null">
-                                    {{ ticket.contact.user_data.name}}
-                                    {{ ticket.contact.user_data.surname}}
-                                    <br>
-                                </span>
-                                {{ ticket.from.name }}
-                                <!--                                    <v-btn-->
-                                <!--                                        text-->
-                                <!--                                        small-->
-                                <!--                                        :to="makeCompanyLink(ticket)"-->
-                                <!--                                        style="text-transform: none;"-->
-                                <!--                                    >-->
-                                <!--                                        {{ ticket.from.name }}-->
-                                <!--                                    </v-btn>-->
-                                <!--                                    <v-btn-->
-                                <!--                                        text-->
-                                <!--                                        small-->
-                                <!--                                        :to="'/individuals/'+ ticket.contact.id"-->
-                                <!--                                        style="text-transform: none;"-->
-                                <!--                                    >-->
-                                <!--                                        {{ ticket.contact.user_data.name }}-->
-                                <!--                                        {{ ticket.contact.user_data.surname }}-->
-                                <!--                                    </v-btn>-->
+                                        <span>
+                                            <strong>Reported by: </strong>
+                                            <span v-if="ticket.contact !== null">
+                                                {{ ticket.contact.user_data.name}}
+                                                {{ ticket.contact.user_data.surname}}
+                                                <br>
+                                            </span>
+                                            {{ ticket.from.name }}
+                                            <!--                                    <v-btn-->
+                                            <!--                                        text-->
+                                            <!--                                        small-->
+                                            <!--                                        :to="makeCompanyLink(ticket)"-->
+                                            <!--                                        style="text-transform: none;"-->
+                                            <!--                                    >-->
+                                            <!--                                        {{ ticket.from.name }}-->
+                                            <!--                                    </v-btn>-->
+                                            <!--                                    <v-btn-->
+                                            <!--                                        text-->
+                                            <!--                                        small-->
+                                            <!--                                        :to="'/individuals/'+ ticket.contact.id"-->
+                                            <!--                                        style="text-transform: none;"-->
+                                            <!--                                    >-->
+                                            <!--                                        {{ ticket.contact.user_data.name }}-->
+                                            <!--                                        {{ ticket.contact.user_data.surname }}-->
+                                            <!--                                    </v-btn>-->
                             </span>
 
 
@@ -1235,6 +1292,7 @@
                 rightSidebarClass: 'd-sm-none d-md-flex',
                 ticketLinkDialog: false,
                 serverAccessDialog: false,
+                answerDialog: false,
                 alert: false,
                 fromEdit: false,
                 contactEdit: false,
@@ -1564,6 +1622,7 @@
                         console.log('error')
                     }
                 });
+                this.answerDialog = false
             },
             addTicketNotice() {
                 axios.post(`/api/ticket/${this.$route.params.id}/notice`, this.ticketNotice).then(response => {
