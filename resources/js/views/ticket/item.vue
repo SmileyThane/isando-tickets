@@ -1618,11 +1618,11 @@
                         this.ticketAnswer.answer = ''
                         this.ticketAnswer.files = []
                         this.getTicket()
+                        this.answerDialog = false
                     } else {
                         console.log('error')
                     }
                 });
-                this.answerDialog = false
             },
             addTicketNotice() {
                 axios.post(`/api/ticket/${this.$route.params.id}/notice`, this.ticketNotice).then(response => {
