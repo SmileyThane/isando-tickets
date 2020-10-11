@@ -192,11 +192,20 @@
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    {{ langMap.phone_types[data.item.name] }}
+                                                                    <v-list-item-icon>
+                                                                        <v-icon v-text="data.item.icon"></v-icon>
+                                                                    </v-list-item-icon>
+                                                                    <v-list-item-content>
+                                                                        {{ langMap.phone_types[data.item.name] }}
+                                                                    </v-list-item-content>
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    {{ langMap.phone_types[data.item.name] }}
-                                                                </template>
+                                                                    <v-list-item-icon>
+                                                                        <v-icon v-text="data.item.icon"></v-icon>
+                                                                    </v-list-item-icon>
+                                                                    <v-list-item-content>
+                                                                        {{ langMap.phone_types[data.item.name] }}
+                                                                    </v-list-item-content>                                                                </template>
                                                             </v-select>
                                                         </v-col>
                                                         <v-btn
@@ -285,10 +294,20 @@
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    {{ langMap.address_types[data.item.name] }}
+                                                                    <v-list-item-icon>
+                                                                        <v-icon v-text="data.item.icon"></v-icon>
+                                                                    </v-list-item-icon>
+                                                                    <v-list-item-content>
+                                                                        {{ langMap.address_types[data.item.name] }}
+                                                                    </v-list-item-content>
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    {{ langMap.address_types[data.item.name] }}
+                                                                    <v-list-item-icon>
+                                                                        <v-icon v-text="data.item.icon"></v-icon>
+                                                                    </v-list-item-icon>
+                                                                    <v-list-item-content>
+                                                                        {{ langMap.address_types[data.item.name] }}
+                                                                    </v-list-item-content>
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
@@ -556,10 +575,20 @@
                                                     dense
                                                 >
                                                     <template slot="selection" slot-scope="data">
-                                                        {{ langMap.social_types[data.item.name] }}
+                                                        <v-list-item-icon>
+                                                            <v-icon v-text="data.item.icon"></v-icon>
+                                                        </v-list-item-icon>
+                                                        <v-list-item-content>
+                                                            {{ langMap.social_types[data.item.name] }}
+                                                        </v-list-item-content>
                                                     </template>
                                                     <template slot="item" slot-scope="data">
-                                                        {{ langMap.social_types[data.item.name] }}
+                                                        <v-list-item-icon>
+                                                            <v-icon v-text="data.item.icon"></v-icon>
+                                                        </v-list-item-icon>
+                                                        <v-list-item-content>
+                                                            {{ langMap.social_types[data.item.name] }}
+                                                        </v-list-item-content>
                                                     </template>
                                                 </v-select>
                                             </v-col>
