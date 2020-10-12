@@ -7,8 +7,72 @@
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar dense color="green" dark flat>
+                        <v-toolbar-title>{{langMap.system_settings.languages}}</v-toolbar-title>
+
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-list dense subheader>
+                                        <v-list-item-group color="green">
+                                            <v-list-item
+                                                v-for="(item, i) in languages"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-action>
+                                                    <v-checkbox :input-value="active"></v-checkbox>
+                                                </v-list-item-action>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="item.name"></v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar dense color="green" dark flat>
+                        <v-toolbar-title>{{langMap.system_settings.countries}}</v-toolbar-title>
+
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-list dense subheader style="max-height: 35em" class="overflow-y-auto">
+                                        <v-list-item-group color="green">
+                                            <v-list-item
+                                                v-for="(item, i) in countries"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-action>
+                                                    <v-checkbox :input-value="active"></v-checkbox>
+                                                </v-list-item-action>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="item.name"></v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+            </div>
+            <div class="col-md-6">
+                <v-card class="elevation-12">
+                    <v-toolbar dense color="green" dark flat>
                         <v-toolbar-title>{{langMap.system_settings.phone_types}}</v-toolbar-title>
-                        <v-spacer></v-spacer>
+
                     </v-toolbar>
 
                     <v-card-text>
@@ -71,13 +135,12 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
-
-                <v-spacer></v-spacer>
+                <v-spacer>&nbsp;</v-spacer>
 
                 <v-card class="elevation-12">
                     <v-toolbar dense color="green" dark flat>
                         <v-toolbar-title>{{langMap.system_settings.social_types}}</v-toolbar-title>
-                        <v-spacer></v-spacer>
+
                     </v-toolbar>
 
                     <v-card-text>
@@ -140,12 +203,12 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
-            </div>
-            <div class="col-md-6">
+                <v-spacer>&nbsp;</v-spacer>
+
                 <v-card class="elevation-12">
                     <v-toolbar dense color="green" dark flat>
                         <v-toolbar-title>{{langMap.system_settings.address_types}}</v-toolbar-title>
-                        <v-spacer></v-spacer>
+
                     </v-toolbar>
 
                     <v-card-text>
@@ -208,7 +271,6 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
-                <v-spacer></v-spacer>
             </div>
         </div>
 
@@ -231,7 +293,7 @@
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
-                        <v-spacer></v-spacer>
+
                         <v-btn color="red" text @click="updateTypeDialog=false">{{langMap.main.cancel}}</v-btn>
                         <v-btn color="green" text @click="updateTypeDialog=false; submitNewData(updateTypeForm, updateTypeForm.method)">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
@@ -283,7 +345,8 @@
                 phoneTypes: [],
                 addressTypes: [],
                 socialTypes: [],
-                countries: []
+                countries: [],
+                languages: []
             }
         },
         mounted() {
@@ -291,8 +354,17 @@
             this.getAddressTypes();
             this.getSocialTypes();
             this.getCountries();
+            this.getLanguages();
         },
         methods: {
+            getLanguages() {
+                axios.get('/api/lang').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.languages = response.data
+                    }
+                });
+            },
             getCountries() {
                 axios.get('/api/countries').then(response => {
                     response = response.data

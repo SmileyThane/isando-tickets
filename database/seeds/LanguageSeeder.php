@@ -284,6 +284,8 @@ class LanguageSeeder extends Seeder
 },
   "system_settings": {
     "title": "System settings",
+    "languages": "Languages",
+    "countries": "Countries",
     "phone_types": "Phone types",
     "new_phone_type": "Add new phone type",
     "phone_type_created": "Phone type created",
