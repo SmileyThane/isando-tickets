@@ -1702,7 +1702,6 @@
         }
     }
 </script>
-
 <style>
     .custom-small-text {
         font-size: .875rem;
