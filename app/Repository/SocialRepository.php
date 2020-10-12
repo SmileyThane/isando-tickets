@@ -4,9 +4,8 @@
 namespace App\Repository;
 
 
-use App\Address;
 use App\Social;
-use Throwable;
+use App\SocialType;
 
 class SocialRepository
 {
@@ -23,7 +22,7 @@ class SocialRepository
         );
     }
 
-    public function update($id, $type, $value): Address
+    public function update($id, $type, $value): Social
     {
         $social = Social::find($id);
         $social->socialLink = $value;
@@ -37,7 +36,37 @@ class SocialRepository
         try {
             Social::where('id', $id)->delete();
             return true;
-        } catch (Throwable $throwable) {
+        } catch (\Throwable $throwable) {
+            return false;
+        }
+    }
+
+
+    public function createType($name, $icon): SocialType
+    {
+        return SocialType::firstOrCreate([
+                'name' => $name,
+                'icon' => $icon
+        ]);
+    }
+
+    public function updateType($id, $name, $icon): SocialType
+    {
+        $type = SocialType::findOrFail($id);
+        $type->update([
+                'name' => $name,
+                'icon' => $icon
+        ]);
+        $type->save();
+        return $type;
+    }
+
+    public function deleteType($id): ?bool
+    {
+        try {
+            SocialType::where('id', $id)->delete();
+            return true;
+        } catch (\Throwable $throwable) {
             return false;
         }
     }

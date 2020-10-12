@@ -21,6 +21,22 @@ class SocialController extends Controller
         return self::showResponse(true, SocialType::all());
     }
 
+    public function addType(Request $request)
+    {
+        $type = $this->socialRepo->createType($request['name'], $request['icon']);
+        return self::showResponse(true, $type);
+    }
+
+    public function updateType(Request $request, $id)
+    {
+        $type = $this->socialRepo->updateType($id, $request['name'], $request['icon']);
+        return self::showResponse(true, $type);
+    }
+
+    public function deleteType($id)
+    {
+        return self::showResponse($this->socialRepo->deleteType($id));
+    }
 
     public function add(Request $request)
     {

@@ -5,6 +5,7 @@ namespace App\Repository;
 
 
 use App\Address;
+use App\AddressType;
 
 class AddressRepository
 {
@@ -49,6 +50,35 @@ class AddressRepository
     {
         try {
             Address::where('id', $id)->delete();
+            return true;
+        } catch (\Throwable $throwable) {
+            return false;
+        }
+    }
+
+    public function createType($name, $icon): AddressType
+    {
+        return AddressType::firstOrCreate([
+                'name' => $name,
+                'icon' => $icon
+        ]);
+    }
+
+    public function updateType($id, $name, $icon): AddressType
+    {
+        $type = AddressType::findOrFail($id);
+        $type->update([
+                'name' => $name,
+                'icon' => $icon
+        ]);
+        $type->save();
+        return $type;
+    }
+
+    public function deleteType($id): ?bool
+    {
+        try {
+            AddressType::where('id', $id)->delete();
             return true;
         } catch (\Throwable $throwable) {
             return false;

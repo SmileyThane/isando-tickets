@@ -239,6 +239,9 @@
                                                 v-for="(item, i) in userData.phones"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-icon>
+                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
                                                     <v-list-item-subtitle
@@ -257,6 +260,9 @@
                                                 v-for="(item, i) in userData.addresses"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-icon>
+                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">{{item.address}}
                                                         {{item.address_line_2}} {{item.address_line_3}}
@@ -309,10 +315,20 @@
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    {{ langMap.phone_types[data.item.name] }}
+                                                                    <v-list-item-icon>
+                                                                        <v-icon v-text="data.item.icon"></v-icon>
+                                                                    </v-list-item-icon>
+                                                                    <v-list-item-content>
+                                                                        {{ langMap.phone_types[data.item.name] }}
+                                                                    </v-list-item-content>
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    {{ langMap.phone_types[data.item.name] }}
+                                                                    <v-list-item-icon>
+                                                                        <v-icon v-text="data.item.icon"></v-icon>
+                                                                    </v-list-item-icon>
+                                                                    <v-list-item-content>
+                                                                        {{ langMap.phone_types[data.item.name] }}
+                                                                    </v-list-item-content>
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
@@ -398,10 +414,20 @@
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    {{ langMap.address_types[data.item.name] }}
+                                                                    <v-list-item-icon>
+                                                                        <v-icon v-text="data.item.icon"></v-icon>
+                                                                    </v-list-item-icon>
+                                                                    <v-list-item-content>
+                                                                        {{ langMap.address_types[data.item.name] }}
+                                                                    </v-list-item-content>
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    {{ langMap.address_types[data.item.name] }}
+                                                                    <v-list-item-icon>
+                                                                        <v-icon v-text="data.item.icon"></v-icon>
+                                                                    </v-list-item-icon>
+                                                                    <v-list-item-content>
+                                                                        {{ langMap.address_types[data.item.name] }}
+                                                                    </v-list-item-content>
                                                                 </template>
                                                             </v-select>
                                                         </v-col>

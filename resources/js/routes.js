@@ -14,6 +14,7 @@ import SingleTicket from './views/ticket/item'
 import Login from './views/Auth/Login'
 import Register from './views/Auth/Register'
 import Profile from './views/Auth/Profile'
+import SystemSettings from './views/settings/system'
 
 
 export default [
@@ -149,4 +150,12 @@ export default [
         },
         component: SingleTicket
     },
+    {
+        path: '/settings/system',
+        name: 'system_settings',
+        meta: {
+            requiresAuth: true,
+        },
+        component: SystemSettings
+    }
 ];
