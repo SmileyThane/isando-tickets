@@ -1062,7 +1062,7 @@
                         >
                             <span>
                                 <strong>{{langMap.ticket.assign_to}}ments: </strong>
-                                <span v-if="ticket.contact !== null">
+                                <span v-if="ticket.assigned_person !== null">
                                     {{ ticket.assigned_person.user_data.name}}
                                     {{ ticket.assigned_person.user_data.surname}}
                                     <br>
