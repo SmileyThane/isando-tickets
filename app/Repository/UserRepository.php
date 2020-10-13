@@ -10,6 +10,7 @@ use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -95,7 +96,12 @@ class UserRepository
             $user->save();
         }
         $from = $role === Role::LICENSE_OWNER ? Config::get('mail.from.name') : $user->employee->companyData->name;
-        @$user->notify(new RegularInviteEmail($from, $user->name, $role, $user->email, $password));//hack for broken notification system
+        try {
+            $user->notify(new RegularInviteEmail($from, $user->name, $role, $user->email, $password));
+        } catch (\Throwable $throwable) {
+            Log::error($throwable);
+            //hack for broken notification system
+        }
         return true;
     }
 }
