@@ -23,13 +23,13 @@ class PhoneController extends Controller
 
     public function addType(Request $request)
     {
-        $type = $this->phoneRepo->createType($request['name'], $request['icon']);
+        $type = $this->phoneRepo->createType($request->name, $request->icon);
         return self::showResponse(true, $type);
     }
 
     public function updateType(Request $request, $id)
     {
-        $type = $this->phoneRepo->updateType($id, $request['name'], $request['icon']);
+        $type = $this->phoneRepo->updateType($id, $request->name, $request->icon);
         return self::showResponse(true, $type);
     }
 

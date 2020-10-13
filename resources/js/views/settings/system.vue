@@ -22,7 +22,7 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox :input-value="active"></v-checkbox>
+                                                    <v-checkbox v-model="companyLanguages" :value="item.id" v-on:change="updateCompanyLanguages(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.name"></v-list-item-title>
@@ -54,7 +54,7 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox :input-value="active"></v-checkbox>
+                                                    <v-checkbox :input-value="item.id"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.name"></v-list-item-title>
@@ -346,7 +346,8 @@
                 addressTypes: [],
                 socialTypes: [],
                 countries: [],
-                languages: []
+                languages: [],
+                companyLanguages: []
             }
         },
         mounted() {
@@ -355,15 +356,49 @@
             this.getSocialTypes();
             this.getCountries();
             this.getLanguages();
+            this.getCompanyLanguages();
         },
         methods: {
             getLanguages() {
-                axios.get('/api/lang').then(response => {
-                    response = response.data
+                axios.get('/api/lang/all').then(response => {
+                    response = response.data;
                     if (response.success === true) {
-                        this.languages = response.data
+                        this.languages = response.data;
                     }
                 });
+            },
+            getCompanyLanguages() {
+                axios.get('/api/lang/company').then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.companyLanguages = response.data;
+                    }
+                });
+            },
+            updateCompanyLanguages(id) {
+                if (this.companyLanguages.includes(id)) {
+                    axios.post('/api/lang/company', {'language_id': id}).then(response => {
+                        response = response.data;
+                        if (response.success !== true) {
+                            this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                            this.errorType = 'error';
+                            this.alert = true;
+                            this.getCompanyLanguages();
+                        }
+                        return true;
+                    });
+                } else {
+                    axios.delete('/api/lang/company', {'language_id': id}).then(response => {
+                        response = response.data;
+                        if (response.success !== true) {
+                            this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                            this.errorType = 'error';
+                            this.alert = true;
+                            this.getCompanyLanguages();
+                        }
+                        return true;
+                    });
+                }
             },
             getCountries() {
                 axios.get('/api/countries').then(response => {

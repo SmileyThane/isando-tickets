@@ -129,7 +129,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     //language management
-    Route::get('lang', 'API\LanguageController@all');
+    Route::get('lang', 'API\LanguageController@list');
     Route::get('lang/map/{id?}', 'API\LanguageController@find');
+    Route::get('lang/all', 'API\LanguageController@all');
+    Route::get('lang/company', 'API\LanguageController@getCompanyLanguages');
+    Route::post('lang/company', 'API\LanguageController@addCompanyLanguage');
+    Route::delete('lang/company', 'API\LanguageController@deleteCompanyLanguage');
 });
 

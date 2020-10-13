@@ -23,13 +23,13 @@ class SocialController extends Controller
 
     public function addType(Request $request)
     {
-        $type = $this->socialRepo->createType($request['name'], $request['icon']);
+        $type = $this->socialRepo->createType($request->name, $request->icon);
         return self::showResponse(true, $type);
     }
 
     public function updateType(Request $request, $id)
     {
-        $type = $this->socialRepo->updateType($id, $request['name'], $request['icon']);
+        $type = $this->socialRepo->updateType($id, $request->name, $request->icon);
         return self::showResponse(true, $type);
     }
 

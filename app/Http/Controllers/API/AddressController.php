@@ -23,13 +23,13 @@ class AddressController extends Controller
 
     public function addType(Request $request)
     {
-        $type = $this->addressRepo->createType($request['name'], $request['icon']);
+        $type = $this->addressRepo->createType($request->name, $request->icon);
         return self::showResponse(true, $type);
     }
 
     public function updateType(Request $request, $id)
     {
-        $type = $this->addressRepo->updateType($id, $request['name'], $request['icon']);
+        $type = $this->addressRepo->updateType($id, $request->name, $request->icon);
         return self::showResponse(true, $type);
     }
 
