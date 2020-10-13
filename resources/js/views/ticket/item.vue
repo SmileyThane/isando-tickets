@@ -1067,7 +1067,7 @@
                                     {{ ticket.assigned_person.user_data.surname}}
                                     <br>
                                 </span>
-                                    {{ ticket.team.name}}
+                                    {{ ticket.team !== null ? ticket.team.name : ''}}
                             </span>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
