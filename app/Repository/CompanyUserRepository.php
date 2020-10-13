@@ -91,9 +91,9 @@ class CompanyUserRepository
             if ($user->is_active) {
                 $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
                 if ($isNew === true) {
-                    $user->notify(
+                    @$user->notify(
                         new RegularInviteEmail($companyUser->companyData->name, $request['name'], $request['role_id'], $request['email'], $request['password'])
-                    );
+                    );//hack for broken notification system
                 }
             }
             return Controller::showResponse(true, $companyUser);

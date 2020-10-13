@@ -95,7 +95,7 @@ class UserRepository
             $user->save();
         }
         $from = $role === Role::LICENSE_OWNER ? Config::get('mail.from.name') : $user->employee->companyData->name;
-        $user->notify(new RegularInviteEmail($from, $user->name, $role, $user->email, $password));
+        @$user->notify(new RegularInviteEmail($from, $user->name, $role, $user->email, $password));//hack for broken notification system
         return true;
     }
 }
