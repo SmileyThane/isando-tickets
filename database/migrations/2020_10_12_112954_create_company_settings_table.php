@@ -17,7 +17,7 @@ class CreateCompanySettingsTable extends Migration
         Schema::create('company_settings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained('companies');
-            $table->longText('settings')->nullable();
+            $table->longText('data')->nullable();
             $table->timestamps();
         });
     }

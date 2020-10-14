@@ -82,4 +82,12 @@ class CompanyController extends Controller
         return self::showResponse(true, $this->companyRepo->getProductCategoriesFlat($id));
     }
 
+    public function getSettings(Request $request, $id = null): JsonResponse
+    {
+        return self::showResponse(true, $this->companyRepo->getSettings($id));
+    }
+   public function updateSettings(Request $request, $id = null): JsonResponse
+   {
+        return self::showResponse($this->companyRepo->updateSettings($id, $request));
+   }
 }

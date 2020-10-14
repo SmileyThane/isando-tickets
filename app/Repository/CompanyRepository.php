@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
+use App\CompanySettings;
 use App\ProductCategory;
 use App\Role;
 use Illuminate\Http\Request;
@@ -158,6 +159,29 @@ class CompanyRepository
             }
         }
         return $result;
+    }
+
+    public function getSettings($companyId = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        $settings = CompanySettings::where('company_id', $companyId)->firstOrCreate();
+        return $settings->data;
+    }
+
+    public function updateSettings($companyId = null, $newData)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        $settings = CompanySettings::where('company_id', $companyId)->firstOrCreate();
+        $data = $settings->data;
+        if ($newData->timezone) {
+            $data['timezone'] = $newData->timezone;
+        }
+        if ($newData->navbar_type) {
+            $data['navbar_type'] = $newData->navbar_type;
+        }
+        $settings->data = $data;
+        $settings->save();
+        return true;
     }
 
 }
