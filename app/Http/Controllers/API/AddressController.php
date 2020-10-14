@@ -16,12 +16,6 @@ class AddressController extends Controller
         $this->addressRepo = $addressRepository;
     }
 
-    public function getTypes()
-    {
-        return self::showResponse(true, AddressType::all());
-    }
-
-
     public function add(Request $request)
     {
         $address = $this->addressRepo->create($request['entity_id'], $request['entity_type'], $request['address'], $request['address_type']);
@@ -37,5 +31,47 @@ class AddressController extends Controller
     public function delete($id)
     {
         return self::showResponse($this->addressRepo->delete($id));
+    }
+
+    public function addType(Request $request)
+    {
+        $type = $this->addressRepo->createType($request->name, $request->icon);
+        return self::showResponse(true, $type);
+    }
+
+    public function updateType(Request $request, $id)
+    {
+        $type = $this->addressRepo->updateType($id, $request->name, $request->icon);
+        return self::showResponse(true, $type);
+    }
+
+    public function deleteType($id)
+    {
+        return self::showResponse($this->addressRepo->deleteType($id));
+    }
+
+    public function getTypes()
+    {
+        return self::showResponse(true, $this->addressRepo->getTypesInCompanyContext());
+    }
+
+    public function getAllTypes()
+    {
+        return self::showResponse(true, $this->addressRepo->getAllTypes());
+    }
+
+    public function getCompanyTypes()
+    {
+        return self::showResponse(true, $this->addressRepo->getCompanyTypeIds());
+    }
+
+    public function addCompanyType(Request $request)
+    {
+        $country = $this->addressRepo->createCompanyType($request->address_type_id, $request->company_id);
+        return self::showResponse(true, $country);
+    }
+    public function deleteCompanyType(Request $request, $id)
+    {
+        return self::showResponse($this->addressRepo->deleteCompanyType($id, $request->company_id));
     }
 }

@@ -16,12 +16,6 @@ class PhoneController extends Controller
         $this->phoneRepo = $phoneRepository;
     }
 
-    public function getTypes()
-    {
-        return self::showResponse(true, PhoneType::all());
-    }
-
-
     public function add(Request $request)
     {
         $phone = $this->phoneRepo->create($request['entity_id'], $request['entity_type'], $request['phone'], $request['phone_type']);
@@ -37,5 +31,47 @@ class PhoneController extends Controller
     public function delete($id)
     {
         return self::showResponse($this->phoneRepo->delete($id));
+    }
+
+    public function getTypes()
+    {
+        return self::showResponse(true, $this->phoneRepo->getTypesInCompanyContext());
+    }
+
+    public function addType(Request $request)
+    {
+        $type = $this->phoneRepo->createType($request->name, $request->icon);
+        return self::showResponse(true, $type);
+    }
+
+    public function updateType(Request $request, $id)
+    {
+        $type = $this->phoneRepo->updateType($id, $request->name, $request->icon);
+        return self::showResponse(true, $type);
+    }
+
+    public function deleteType($id)
+    {
+        return self::showResponse($this->phoneRepo->deleteType($id));
+    }
+
+    public function getAllTypes()
+    {
+        return self::showResponse(true, $this->phoneRepo->getAllTypes());
+    }
+
+    public function getCompanyTypes()
+    {
+        return self::showResponse(true, $this->phoneRepo->getCompanyTypeIds());
+    }
+
+    public function addCompanyType(Request $request)
+    {
+        $country = $this->phoneRepo->createCompanyType($request->phone_type_id, $request->company_id);
+        return self::showResponse(true, $country);
+    }
+    public function deleteCompanyType(Request $request, $id)
+    {
+        return self::showResponse($this->phoneRepo->deleteCompanyType($id, $request->company_id));
     }
 }

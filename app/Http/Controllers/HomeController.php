@@ -43,9 +43,4 @@ class HomeController extends Controller
     {
         return self::showResponse(true, TimeZone::all());
     }
-
-    public function getCountries()
-    {
-        return self::showResponse(true, Country::all());
-    }
 }
