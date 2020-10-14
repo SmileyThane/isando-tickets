@@ -7,6 +7,58 @@
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar dense color="green" dark flat>
+                        <v-toolbar-title>{{langMap.system_settings.display}}</v-toolbar-title>
+
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-label>{{langMap.system_settings.navbar_style}}</v-label>
+                                    <v-radio-group dense row v-model="companySettings.navbar_style" v-on:change="updateCompanySettings()">
+                                        <v-radio color="green" :label="langMap.system_settings.navbar_no_logo" :value="1"></v-radio>
+                                        <v-radio color="green" :label="langMap.system_settings.navbar_logo" :value="2"></v-radio>
+                                    </v-radio-group>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+
+                        <v-spacer>&nbsp;</v-spacer>
+
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-label>{{langMap.system_settings.ticket_number_format}}</v-label>
+                                    <v-text-field color="green" dense v-model="companySettings.ticket_number_format" v-on:change="updateCompanySettings()"></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+
+                        <v-spacer>&nbsp;</v-spacer>
+
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-label>{{langMap.system_settings.default_timezone}}</v-label>
+                                    <v-select claass="mx-4" color="green" dense
+                                              v-model="companySettings.timezone"
+                                              :items="timezones"
+                                              item-text="name"
+                                              item-value="id"
+                                              item-color="green"
+                                              v-on:change="updateCompanySettings()"
+                                    >
+                                    </v-select>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar dense color="green" dark flat>
                         <v-toolbar-title>{{langMap.system_settings.languages}}</v-toolbar-title>
 
                     </v-toolbar>
@@ -22,7 +74,7 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox v-model="companyLanguages" :value="item.id" v-on:change="updateCompanyLanguages(item.id)"></v-checkbox>
+                                                    <v-checkbox color="green" v-model="companyLanguages" :value="item.id" v-on:change="updateCompanyLanguages(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.name"></v-list-item-title>
@@ -47,14 +99,14 @@
                         <v-form>
                             <v-row>
                                 <v-col class="col-md-12">
-                                    <v-list dense subheader style="max-height: 35em" class="overflow-y-auto">
+                                    <v-list dense subheader style="max-height: 15em" class="overflow-y-auto">
                                         <v-list-item-group color="green">
                                             <v-list-item
                                                 v-for="(item, i) in countries"
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox v-model="companyCountries" :value="item.id" v-on:change="updateCompanyCountries(item.id)"></v-checkbox>
+                                                    <v-checkbox color="green" v-model="companyCountries" :value="item.id" v-on:change="updateCompanyCountries(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.name"></v-list-item-title>
@@ -86,7 +138,7 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox v-model="companyPhoneTypes" :value="item.id" v-on:change="updateCompanyPhoneTypes(item.id)"></v-checkbox>
+                                                    <v-checkbox color="green" v-model="companyPhoneTypes" :value="item.id" v-on:change="updateCompanyPhoneTypes(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-icon>
                                                     <v-icon left v-text="item.icon"></v-icon>
@@ -157,7 +209,7 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox v-model="companySocialTypes" :value="item.id" v-on:change="updateCompanySocialTypes(item.id)"></v-checkbox>
+                                                    <v-checkbox color="green" v-model="companySocialTypes" :value="item.id" v-on:change="updateCompanySocialTypes(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-icon>
                                                     <v-icon left v-text="item.icon"></v-icon>
@@ -228,7 +280,7 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox v-model="companyAddressTypes" :value="item.id" v-on:change="updateCompanyAddressTypes(item.id)"></v-checkbox>
+                                                    <v-checkbox color="green" v-model="companyAddressTypes" :value="item.id" v-on:change="updateCompanyAddressTypes(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-icon>
                                                     <v-icon left v-text="item.icon"></v-icon>
@@ -315,6 +367,8 @@
 
 
 <script>
+    import Sidebar from "../../components/Sidebar";
+
     export default {
 
         data() {
@@ -360,7 +414,13 @@
                 countries: [],
                 companyCountries:[],
                 languages: [],
-                companyLanguages: []
+                companyLanguages: [],
+                companySettings: {
+                    navbar_style: '',
+                    ticket_number_format: '',
+                    timezone: ''
+                },
+                timezones:[]
             }
         },
         mounted() {
@@ -374,6 +434,8 @@
             this.getCompanyCountries();
             this.getLanguages();
             this.getCompanyLanguages();
+            this.getCompanySettings();
+            this.getTimezones();
         },
         methods: {
             getLanguages() {
@@ -754,6 +816,36 @@
                 this.updateTypeForm.method = method;
 
                 this.updateTypeDialog = true;
+            },
+            getCompanySettings() {
+                axios.get(`/api/main_company_settings`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.companySettings['navbar_style'] = response.data.hasOwnProperty('navbar_style') ? response.data.navbar_style : 1;
+                        this.companySettings['ticket_number_format'] = response.data.hasOwnProperty('ticket_number_format') ? response.data.ticket_number_format : 'YYMMDDXXXX';
+                        this.companySettings['timezone'] = response.data.hasOwnProperty('timezone') ? response.data.timezone : 35;
+                    }
+                });
+            },
+            updateCompanySettings() {
+                axios.post('/api/main_company_settings', this.companySettings).then(response => {
+                    response = response.data;
+                    if (response.success !== true) {
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                        this.errorType = 'error';
+                        this.alert = true;
+                        this.getCompanySettings();
+                    }
+                    return true;
+                });
+            },
+            getTimezones() {
+                axios.get(`/api/time_zones`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.timezones = response.data;
+                    }
+                });
             }
         }
     }

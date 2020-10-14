@@ -47,6 +47,11 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('company/{id}/product_category', 'API\CompanyController@attachProductCategory');
         Route::delete('product_category/{id}', 'API\CompanyController@detachProductCategory');
         Route::get('main_company_name', 'API\CompanyController@mainCompanyName');
+        Route::get('main_company_logo', 'API\CompanyController@mainCompanyLogo');
+        Route::get('main_company_settings', 'API\CompanyController@getSettings');
+        Route::post('main_company_settings', 'API\CompanyController@updateSettings');
+        Route::post('company/{id}/settings', 'API\CompanyController@updateSettings');
+        Route::post('company/{id}/logo', 'API\CompanyController@updateLogo');
 
         //employee management
         Route::get('employee', 'API\CompanyController@getIndividuals');
@@ -62,9 +67,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('phone_type/{id}', 'API\PhoneController@updateType');
         Route::delete('phone_type/{id}', 'API\PhoneController@deleteType');
         Route::get('phone_types/all', 'API\PhoneController@getAllTypes');
-        Route::get('phone_types/company', 'API\PhoneController@getCompanyTypes');
+        Route::get('phone_types/company/{company_id?}', 'API\PhoneController@getCompanyTypes');
         Route::post('phone_type/company', 'API\PhoneController@addCompanyType');
-        Route::delete('phone_type/{id}/company', 'API\PhoneController@deleteCompanyType');
+        Route::delete('phone_type/{id}/company/{company_id?}', 'API\PhoneController@deleteCompanyType');
 
         //social management
         Route::get('social_types', 'API\SocialController@getTypes');
@@ -75,9 +80,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('social/{id}', 'API\SocialController@update');
         Route::delete('social/{id}', 'API\SocialController@delete');
         Route::get('social_types/all', 'API\SocialController@getAllTypes');
-        Route::get('social_types/company', 'API\SocialController@getCompanyTypes');
+        Route::get('social_types/company/{company_id?}', 'API\SocialController@getCompanyTypes');
         Route::post('social_type/company', 'API\SocialController@addCompanyType');
-        Route::delete('social_type/{id}/company', 'API\SocialController@deleteCompanyType');
+        Route::delete('social_type/{id}/company/{company_id?}', 'API\SocialController@deleteCompanyType');
 
         //address management
         Route::get('address_types', 'API\AddressController@getTypes');
@@ -88,9 +93,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('address/{id}', 'API\AddressController@update');
         Route::delete('address/{id}', 'API\AddressController@delete');
         Route::get('address_types/all', 'API\AddressController@getAllTypes');
-        Route::get('address_types/company', 'API\AddressController@getCompanyTypes');
+        Route::get('address_types/company/{company_id?}', 'API\AddressController@getCompanyTypes');
         Route::post('address_type/company', 'API\AddressController@addCompanyType');
-        Route::delete('address_type/{id}/company', 'API\AddressController@deleteCompanyType');
+        Route::delete('address_type/{id}/company/{company_id?}', 'API\AddressController@deleteCompanyType');
 
         //client management
         Route::get('client', 'API\ClientController@get');
@@ -143,15 +148,15 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('lang', 'API\LanguageController@getLanguages');
     Route::get('lang/map/{id?}', 'API\LanguageController@find');
     Route::get('lang/all', 'API\LanguageController@getAllLanguages');
-    Route::get('lang/company', 'API\LanguageController@getCompanyLanguages');
+    Route::get('lang/company/{company_id?}', 'API\LanguageController@getCompanyLanguages');
     Route::post('lang/company', 'API\LanguageController@addCompanyLanguage');
-    Route::delete('lang/{id}/company', 'API\LanguageController@deleteCompanyLanguage');
+    Route::delete('lang/{id}/company/{company_id?}', 'API\LanguageController@deleteCompanyLanguage');
 
     // country management
     Route::get('countries', 'API\CountryController@getCountries');
     Route::get('countries/all', 'API\CountryController@getAllCountries');
-    Route::get('countries/company', 'API\CountryController@getCompanyCountries');
+    Route::get('countries/company/{company_id?}', 'API\CountryController@getCompanyCountries');
     Route::post('country/company', 'API\CountryController@addCompanyCountry');
-    Route::delete('country/{id}/company', 'API\CountryController@deleteCompanyCountry');
+    Route::delete('country/{id}/company/{company_id?}', 'API\CountryController@deleteCompanyCountry');
 });
 
