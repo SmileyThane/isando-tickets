@@ -17,9 +17,10 @@ class LanguageRepository
         return Language::select('id', 'name', 'locale')->get();
 
     }
-    public function getAllLanguagesInCompanyContext()
+    public function getLanguagesInCompanyContext($companyId = null)
     {
-        $companyLangs = CompanyLanguage::where('company_id', Auth::user()->employee->companyData->id)->pluck('id');
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        $companyLangs = CompanyLanguage::where('company_id', $companyId)->pluck('id');
         return Language::select('id', 'name', 'locale')->whereIn('id', $companyLangs)->get();
     }
 
@@ -42,8 +43,7 @@ class LanguageRepository
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         try {
-            CompanyLanguage::where('language_id', $languageId)->where('company_id', $companyId)->delete();
-            return true;
+            return (bool) CompanyLanguage::where('language_id', $languageId)->where('company_id', $companyId)->delete();
         } catch (\Throwable $throwable) {
             return false;
         }

@@ -16,9 +16,21 @@ class AddressController extends Controller
         $this->addressRepo = $addressRepository;
     }
 
-    public function getTypes()
+    public function add(Request $request)
     {
-        return self::showResponse(true, AddressType::all());
+        $address = $this->addressRepo->create($request['entity_id'], $request['entity_type'], $request['address'], $request['address_type']);
+        return self::showResponse(true, $address);
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $phone = $this->addressRepo->update($id, $request['address'], $request['address_type']);
+        return self::showResponse(true, $phone);
+    }
+
+    public function delete($id)
+    {
+        return self::showResponse($this->addressRepo->delete($id));
     }
 
     public function addType(Request $request)
@@ -38,20 +50,28 @@ class AddressController extends Controller
         return self::showResponse($this->addressRepo->deleteType($id));
     }
 
-    public function add(Request $request)
+    public function getTypes()
     {
-        $address = $this->addressRepo->create($request['entity_id'], $request['entity_type'], $request['address'], $request['address_type']);
-        return self::showResponse(true, $address);
+        return self::showResponse(true, $this->addressRepo->getTypesInCompanyContext());
     }
 
-    public function edit(Request $request, $id)
+    public function getAllTypes()
     {
-        $phone = $this->addressRepo->update($id, $request['address'], $request['address_type']);
-        return self::showResponse(true, $phone);
+        return self::showResponse(true, $this->addressRepo->getAllTypes());
     }
 
-    public function delete($id)
+    public function getCompanyTypes()
     {
-        return self::showResponse($this->addressRepo->delete($id));
+        return self::showResponse(true, $this->addressRepo->getCompanyTypeIds());
+    }
+
+    public function addCompanyType(Request $request)
+    {
+        $country = $this->addressRepo->createCompanyType($request->address_type_id, $request->company_id);
+        return self::showResponse(true, $country);
+    }
+    public function deleteCompanyType(Request $request, $id)
+    {
+        return self::showResponse($this->addressRepo->deleteCompanyType($id, $request->company_id));
     }
 }

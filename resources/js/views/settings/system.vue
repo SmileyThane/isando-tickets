@@ -54,7 +54,7 @@
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox :input-value="item.id"></v-checkbox>
+                                                    <v-checkbox v-model="companyCountries" :value="item.id" v-on:change="updateCompanyCountries(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.name"></v-list-item-title>
@@ -85,8 +85,11 @@
                                                 v-for="(item, i) in phoneTypes"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-action>
+                                                    <v-checkbox v-model="companyPhoneTypes" :value="item.id" v-on:change="updateCompanyPhoneTypes(item.id)"></v-checkbox>
+                                                </v-list-item-action>
                                                 <v-list-item-icon>
-                                                    <v-icon v-text="item.icon"></v-icon>
+                                                    <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-if="item.name in langMap.phone_types" v-text="langMap.phone_types[item.name]"></v-list-item-title>
@@ -153,8 +156,11 @@
                                                 v-for="(item, i) in socialTypes"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-action>
+                                                    <v-checkbox v-model="companySocialTypes" :value="item.id" v-on:change="updateCompanySocialTypes(item.id)"></v-checkbox>
+                                                </v-list-item-action>
                                                 <v-list-item-icon>
-                                                    <v-icon v-text="item.icon"></v-icon>
+                                                    <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-if="item.name in langMap.social_types" v-text="langMap.social_types[item.name]"></v-list-item-title>
@@ -221,8 +227,11 @@
                                                 v-for="(item, i) in addressTypes"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-action>
+                                                    <v-checkbox v-model="companyAddressTypes" :value="item.id" v-on:change="updateCompanyAddressTypes(item.id)"></v-checkbox>
+                                                </v-list-item-action>
                                                 <v-list-item-icon>
-                                                    <v-icon v-text="item.icon"></v-icon>
+                                                    <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-if="item.name in langMap.address_types" v-text="langMap.address_types[item.name]"></v-list-item-title>
@@ -343,18 +352,26 @@
                     method: ''
                 },
                 phoneTypes: [],
+                companyPhoneTypes: [],
                 addressTypes: [],
+                companyAddressTypes: [],
                 socialTypes: [],
+                companySocialTypes: [],
                 countries: [],
+                companyCountries:[],
                 languages: [],
                 companyLanguages: []
             }
         },
         mounted() {
             this.getPhoneTypes();
+            this.getCompanyPhoneTypes();
             this.getAddressTypes();
+            this.getCompanyAddressTypes();
             this.getSocialTypes();
+            this.getCompanySocialTypes();
             this.getCountries();
+            this.getCompanyCountries();
             this.getLanguages();
             this.getCompanyLanguages();
         },
@@ -388,7 +405,7 @@
                         return true;
                     });
                 } else {
-                    axios.delete('/api/lang/company', {'language_id': id}).then(response => {
+                    axios.delete(`/api/lang/${id}/company`).then(response => {
                         response = response.data;
                         if (response.success !== true) {
                             this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
@@ -401,15 +418,48 @@
                 }
             },
             getCountries() {
-                axios.get('/api/countries').then(response => {
+                axios.get('/api/countries/all').then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.countries = response.data
                     }
                 });
             },
+            getCompanyCountries() {
+                axios.get('/api/countries/company').then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.companyCountries= response.data;
+                    }
+                });
+            },
+            updateCompanyCountries(id) {
+                if (this.companyCountries.includes(id)) {
+                    axios.post('/api/country/company', {'country_id': id}).then(response => {
+                        response = response.data;
+                        if (response.success !== true) {
+                            this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                            this.errorType = 'error';
+                            this.alert = true;
+                            this.getCompanyCountries();
+                        }
+                        return true;
+                    });
+                } else {
+                    axios.delete(`/api/country/${id}/company`,).then(response => {
+                        response = response.data;
+                        if (response.success !== true) {
+                            this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                            this.errorType = 'error';
+                            this.alert = true;
+                            this.getCompanyCountries();
+                        }
+                        return true;
+                    });
+                }
+            },
             getPhoneTypes() {
-                axios.get(`/api/phone_types`).then(response => {
+                axios.get(`/api/phone_types/all`).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.phoneTypes = response.data
@@ -470,8 +520,41 @@
                     }
                 });
             },
+            getCompanyPhoneTypes() {
+                axios.get('/api/phone_types/company').then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.companyPhoneTypes = response.data;
+                    }
+                });
+            },
+            updateCompanyPhoneTypes(id) {
+                if (this.companyPhoneTypes.includes(id)) {
+                    axios.post('/api/phone_type/company', {'phone_type_id': id}).then(response => {
+                        response = response.data;
+                        if (response.success !== true) {
+                            this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                            this.errorType = 'error';
+                            this.alert = true;
+                            this.getCompanyPhoneTypes();
+                        }
+                        return true;
+                    });
+                } else {
+                    axios.delete(`/api/phone_type/${id}/company`).then(response => {
+                        response = response.data;
+                        if (response.success !== true) {
+                            this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                            this.errorType = 'error';
+                            this.alert = true;
+                            this.getCompanyPhoneTypes();
+                        }
+                        return true;
+                    });
+                }
+            },
             getSocialTypes() {
-                axios.get(`/api/social_types`).then(response => {
+                axios.get(`/api/social_types/all`).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.socialTypes = response.data
@@ -532,8 +615,41 @@
                     }
                 });
             },
+            getCompanySocialTypes() {
+                axios.get('/api/social_types/company').then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.companySocialTypes = response.data;
+                    }
+                });
+            },
+            updateCompanySocialTypes(id) {
+                if (this.companySocialTypes.includes(id)) {
+                    axios.post('/api/social_type/company', {'social_type_id': id}).then(response => {
+                        response = response.data;
+                        if (response.success !== true) {
+                            this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                            this.errorType = 'error';
+                            this.alert = true;
+                            this.getCompanySocialTypes();
+                        }
+                        return true;
+                    });
+                } else {
+                    axios.delete(`/api/social_type/${id}/company`).then(response => {
+                        response = response.data;
+                        if (response.success !== true) {
+                            this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                            this.errorType = 'error';
+                            this.alert = true;
+                            this.getCompanySocialTypes();
+                        }
+                        return true;
+                    });
+                }
+            },
             getAddressTypes() {
-                axios.get(`/api/address_types`).then(response => {
+                axios.get(`/api/address_types/all`).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.addressTypes = response.data;
@@ -593,6 +709,39 @@
 
                     }
                 });
+            },
+            getCompanyAddressTypes() {
+                axios.get('/api/address_types/company').then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.companyAddressTypes = response.data;
+                    }
+                });
+            },
+            updateCompanyAddressTypes(id) {
+                if (this.companyAddressTypes.includes(id)) {
+                    axios.post('/api/address_type/company', {'address_type_id': id}).then(response => {
+                        response = response.data;
+                        if (response.success !== true) {
+                            this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                            this.errorType = 'error';
+                            this.alert = true;
+                            this.getCompanyAddressTypes();
+                        }
+                        return true;
+                    });
+                } else {
+                    axios.delete(`/api/address_type/${id}/company`).then(response => {
+                        response = response.data;
+                        if (response.success !== true) {
+                            this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
+                            this.errorType = 'error';
+                            this.alert = true;
+                            this.getCompanyAddressTypes();
+                        }
+                        return true;
+                    });
+                }
             },
             submitNewData(data, method) {
                 this[method](data);

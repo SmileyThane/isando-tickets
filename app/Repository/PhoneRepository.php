@@ -4,8 +4,10 @@
 namespace App\Repository;
 
 
+use App\CompanyPhoneType;
 use App\Phone;
 use App\PhoneType;
+use Illuminate\Support\Facades\Auth;
 
 class PhoneRepository
 {
@@ -58,7 +60,7 @@ class PhoneRepository
         ]);
         $type->save();
         return $type;
-    }        
+    }
 
     public function deleteType($id): ?bool
     {
@@ -70,4 +72,41 @@ class PhoneRepository
         }
     }
 
+    public function getAllTypes()
+    {
+        return PhoneType::all();
+
+    }
+
+    public function getTypesInCompanyContext($companyId = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        $companyTypes = CompanyPhoneType::where('company_id', $companyId)->pluck('id');
+        return PhoneType::whereIn('id', $companyTypes)->get();
+    }
+
+    public function getCompanyTypeIds($companyId = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        return CompanyPhoneType::where('company_id', $companyId)->pluck('phone_type_id');
+    }
+
+    public function createCompanyType($phoneTypeId, $companyId = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        return CompanyPhoneType::firstOrCreate([
+            'phone_type_id' => $phoneTypeId,
+            'company_id' => $companyId
+        ]);
+    }
+
+    public function deleteCompanyType($phoneTypeId, $companyId = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        try {
+            return (bool) CompanyPhoneType::where('phone_type_id', $phoneTypeId)->where('company_id', $companyId)->delete();
+        } catch (\Throwable $throwable) {
+            return false;
+        }
+    }
 }

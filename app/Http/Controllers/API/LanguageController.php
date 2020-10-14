@@ -19,9 +19,9 @@ class LanguageController extends Controller
         $this->langRepo = $languageRepository;
     }
 
-    public function list()
+    public function getLanguages()
     {
-        return self::showResponse(true, $this->langRepo->getAllLanguagesInCompanyContext());
+        return self::showResponse(true, $this->langRepo->getLanguagesInCompanyContext());
     }
 
     public function find($id = null)
@@ -29,7 +29,7 @@ class LanguageController extends Controller
         return self::showResponse(true, $this->langRepo->find($id ?? Auth::user()->language_id));
     }
 
-    public function all()
+    public function getAllLanguages()
     {
         return self::showResponse(true, $this->langRepo->getAllLanguages());
     }
@@ -44,8 +44,8 @@ class LanguageController extends Controller
         $lang = $this->langRepo->createCompanyLanguage($request->language_id, $request->company_id);
         return self::showResponse(true, $lang);
     }
-    public function deleteCompanyLanguage(Request $request)
+    public function deleteCompanyLanguage(Request $request, $id)
     {
-        return self::showResponse($this->langRepo->deleteCompanyLanguage($request->language_id, $request->company_id));
+        return self::showResponse($this->langRepo->deleteCompanyLanguage($id, $request->company_id));
     }
 }

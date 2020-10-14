@@ -16,9 +16,21 @@ class SocialController extends Controller
         $this->socialRepo = $socialRepository;
     }
 
-    public function getTypes()
+     public function add(Request $request)
     {
-        return self::showResponse(true, SocialType::all());
+        $phone = $this->socialRepo->create($request['entity_id'], $request['entity_type'], $request['social_link'], $request['social_type']);
+        return self::showResponse(true, $phone);
+    }
+
+    public function edit(Request $request, $id)
+    {
+        $phone = $this->socialRepo->update($id, $request['phone'], $request['phone_type']);
+        return self::showResponse(true, $phone);
+    }
+
+    public function delete($id)
+    {
+        return self::showResponse($this->socialRepo->delete($id));
     }
 
     public function addType(Request $request)
@@ -38,20 +50,28 @@ class SocialController extends Controller
         return self::showResponse($this->socialRepo->deleteType($id));
     }
 
-    public function add(Request $request)
+    public function getTypes()
     {
-        $phone = $this->socialRepo->create($request['entity_id'], $request['entity_type'], $request['social_link'], $request['social_type']);
-        return self::showResponse(true, $phone);
+        return self::showResponse(true, $this->socialRepo->getTypesInCompanyContext());
     }
 
-    public function edit(Request $request, $id)
+    public function getAllTypes()
     {
-        $phone = $this->socialRepo->update($id, $request['phone'], $request['phone_type']);
-        return self::showResponse(true, $phone);
+        return self::showResponse(true, $this->socialRepo->getAllTypes());
     }
 
-    public function delete($id)
+    public function getCompanyTypes()
     {
-        return self::showResponse($this->socialRepo->delete($id));
+        return self::showResponse(true, $this->socialRepo->getCompanyTypeIds());
+    }
+
+    public function addCompanyType(Request $request)
+    {
+        $country = $this->socialRepo->createCompanyType($request->social_type_id, $request->company_id);
+        return self::showResponse(true, $country);
+    }
+    public function deleteCompanyType(Request $request, $id)
+    {
+        return self::showResponse($this->socialRepo->deleteCompanyType($id, $request->company_id));
     }
 }

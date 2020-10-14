@@ -56,4 +56,10 @@ class Company extends Model
     {
         return $this->hasMany(ProductCategory::class,'company_id','id');
     }
+
+    public function settings(): HasOne
+    {
+        return $this->hasOne(CompanySettings::class, 'company_id', 'id');
+    }
+
 }
