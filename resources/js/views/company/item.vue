@@ -37,6 +37,24 @@
                                 :readonly="!enableToEdit"
                                 dense
                             ></v-text-field>
+                            <v-row>
+                                <v-col class="col-md-10">
+                                    <v-file-input
+                                        color="green"
+                                        :label="langMap.company.logo"
+                                        accept="image/*"
+                                        show-size
+                                        prepend-icon="mdi-camera"
+                                        :disabled="!enableToEdit"
+                                        dense
+                                        v-model="company.logo"
+                                    >
+                                    </v-file-input>
+                                </v-col>
+                                <v-col class="col-md-2">
+                                    <v-img contain max-width="50" max-height="50" :src="company.logo_url"></v-img>
+                                </v-col>
+                            </v-row>
                             <v-text-field
                                 color="green"
                                 :label="langMap.company.description"
@@ -1065,6 +1083,8 @@
 
 
 <script>
+    import Sidebar from "../../components/Sidebar";
+
     export default {
 
         data() {
@@ -1091,6 +1111,7 @@
                 companyIsLoaded: false,
                 company: {
                     name: '',
+                    logo: null,
                     company_number: '',
                     description: '',
                     registration_date: '',
@@ -1319,10 +1340,27 @@
                 this.company.employees = null;
                 this.company.clients = null;
                 this.company.teams = null;
+
+                if (this.company.logo) {
+                    var formData = new FormData();
+                    formData.append('logo', this.company.logo);
+                    axios.post(
+                        `/api/company/${this.$route.params.id}/logo`,
+                        formData, {
+                        headers: {'Content-Type': 'multipart/form-data' }}
+                        ).then(response => {
+                        response = response.data;
+                        this.company.logo = null;
+                        if (response.success !== true) {
+                            console.log('error')
+                        }
+                    });
+                }
+
                 axios.post(`/api/company/${this.$route.params.id}`, this.company).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.getCompany()
+                        this.getCompany();
                         this.snackbarMessage = 'Update successful'
                         this.actionColor = 'success'
                         this.snackbar = true;
@@ -1330,7 +1368,6 @@
                     } else {
                         console.log('error')
                     }
-
                 });
             },
             showRolesModal(item) {

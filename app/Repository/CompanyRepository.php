@@ -12,7 +12,9 @@ use App\ProductCategory;
 use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+
 
 class CompanyRepository
 {
@@ -69,6 +71,16 @@ class CompanyRepository
         $company->registration_date = $request->registration_date ?? now();
         $company->is_validated = $request->is_validated;
         $company->save();
+
+        if ($request->hasFile('logo')) {
+            if (!Storage::exists('public/logos')) {
+                Storage::makeDirectory('public/logos');
+            }
+            $file = $request->file('logo')->storeAs('public/logos', $company->id . '.' . $extension = $request->file('logo')->extension());
+            $company->logo_url = Storage::url($file);
+            $company->save();
+
+        }
         return $company;
     }
 
@@ -79,6 +91,15 @@ class CompanyRepository
         $company->company_number = $request->company_number;
         $company->description = $request->description;
         $company->registration_date = $request->registration_date ?? now();
+
+        if ($request->hasFile('logo')) {
+            if (!Storage::exists('public/logos')) {
+                Storage::makeDirectory('public/logos');
+            }
+            $file = $request->file('logo')->storeAs('public/logos',$company->id . '.' . $extension = $request->file('logo')->extension());
+            $company->logo_url = Storage::url($file);
+        }
+
         $company->save();
         return $company;
     }
@@ -88,6 +109,9 @@ class CompanyRepository
         $result = false;
         $company = Company::find($id);
         if ($company) {
+            if ($company->logo_url) {
+                Storage::delete('logos', $company->logo_url);
+            }
             $company->delete();
             $result = true;
         }
@@ -164,24 +188,43 @@ class CompanyRepository
     public function getSettings($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $settings = CompanySettings::where('company_id', $companyId)->firstOrCreate();
+        $settings = CompanySettings::firstOrCreate(['company_id' => $companyId]);
         return $settings->data;
     }
 
-    public function updateSettings($companyId = null, $newData)
+    public function updateSettings(Request $request, $companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $settings = CompanySettings::where('company_id', $companyId)->firstOrCreate();
+        $settings = CompanySettings::firstOrCreate(['company_id' => $companyId]);
         $data = $settings->data;
-        if ($newData->timezone) {
-            $data['timezone'] = $newData->timezone;
+
+        if ($request->has('imezone')) {
+            $data['timezone'] = $request->timezone;
         }
-        if ($newData->navbar_type) {
-            $data['navbar_type'] = $newData->navbar_type;
+        if ($request->has('navbar_style')) {
+            $data['navbar_style'] = $request->navbar_style;
         }
+
+        if ($request->has('ticket_number_format')) {
+            $data['ticket_number_format'] = $request->ticket_number_format;
+        }
+
         $settings->data = $data;
         $settings->save();
         return true;
     }
 
+    public function updatelogo(Request $request, $id = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        $company = Company::find($id);
+
+        if (!Storage::exists('public/logos')) {
+            Storage::makeDirectory('public/logos');
+        }
+        $file = $request->file('logo')->storeAs('public/logos', $companyId . '.' . $extension = $request->file('logo')->extension());
+        $company->logo_url =Storage::url($file);
+        $company->save();
+        return $company;
+    }
 }

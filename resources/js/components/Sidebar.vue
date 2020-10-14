@@ -4,7 +4,7 @@
         :mini-variant="localDrawer"
         app
     >
-        <v-list-item>
+        <v-list-item v-if="this.navbarStyle == 1 || !this.companyLogo">
             <v-list-item-content>
                 <v-list-item-title class="title">
                     {{ companyName }} | Ticketing
@@ -13,8 +13,18 @@
                 </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
+        <v-list-item v-else>
+            <v-list-item-icon><v-img contain max-height="30" max-width="30" :src="companyLogo" left></v-img></v-list-item-icon>
+            <v-list-item-content>
+                <v-list-item-title class="title">
+                    <v-list-item-content>{{ companyName }} | Ticketing</v-list-item-content>
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                </v-list-item-subtitle>
+            </v-list-item-content>
+        </v-list-item>
 
-        <v-divider></v-divider>
+        <v-divider>&nbsp;</v-divider>
         <v-list dense>
             <v-list-item link to="/home">
                 <v-list-item-action>
@@ -174,7 +184,9 @@
         name: "Sidebar",
         props: {value: {type: Boolean}},
         data: () => ({
-            companyName: 'Isando',
+            companyName: 'ISANDO',
+            companyLogo: '',
+            navbarStyle: 1,
             localDrawer: null,
             drawer: true,
             show: true,
@@ -182,7 +194,6 @@
             customers: '',
             settings: '',
             sidebarGroups: []
-
         }),
         watch: {
             value: function () {
@@ -201,7 +212,9 @@
             }
         },
         mounted() {
-            this.getCompanyName()
+            this.getCompanyName();
+            this.getCompanyLogo();
+            this.getCompanySettings();
             this.ticket = this.$store.state.lang.lang_map.sidebar.ticket
             this.customers = this.$store.state.lang.lang_map.sidebar.customers
             this.settings = this.$store.state.lang.lang_map.sidebar.settings
@@ -217,12 +230,29 @@
                 return roleExists
             },
             getCompanyName() {
-                axios.get(`/api/main_company_name`)
+               axios.get(`/api/main_company_name`)
                     .then(
                         response => {
                             this.companyName = response.data.data
                             this.changeAppTitle();
                         });
+            },
+            getCompanyLogo() {
+                axios.get(`/api/main_company_logo`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.companyLogo = response.data;
+                        this.changeAppTitle();
+                    }
+                });
+            },
+            getCompanySettings() {
+                axios.get(`/api/main_company_settings`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.navbarStyle = response.data.hasOwnProperty('navbar_style') ? response.data.navbar_style : 1;
+                    }
+                });
             },
             changeAppTitle() {
                 this.$store.state.pageName = this.$store.state.lang.lang_map.sidebar[this.$route.name]

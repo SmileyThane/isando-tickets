@@ -29,6 +29,11 @@ class CompanyController extends Controller
         return self::showResponse(true, Auth::user()->employee->companyData->name);
     }
 
+    public function mainCompanyLogo(): JsonResponse
+    {
+        return self::showResponse(true, Auth::user()->employee->companyData->logo_url);
+    }
+
     public function find(Request $request, $id = null): JsonResponse
     {
         $company = $this->companyRepo->find($request, $id);
@@ -86,8 +91,14 @@ class CompanyController extends Controller
     {
         return self::showResponse(true, $this->companyRepo->getSettings($id));
     }
+
    public function updateSettings(Request $request, $id = null): JsonResponse
    {
-        return self::showResponse($this->companyRepo->updateSettings($id, $request));
+        return self::showResponse($this->companyRepo->updateSettings($request, $id));
+   }
+
+   public function updateLogo(Request $request, $id)
+   {
+       return self::showResponse(true, $this->companyRepo->updateLogo($request, $id));
    }
 }
