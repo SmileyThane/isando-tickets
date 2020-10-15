@@ -30,7 +30,12 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-label>{{langMap.system_settings.ticket_number_format}}</v-label>
-                                    <v-text-field color="green" dense v-model="companySettings.ticket_number_format" v-on:change="updateCompanySettings()"></v-text-field>
+                                    <v-text-field
+                                        color="green"
+                                        dense
+                                        v-model="companySettings.ticket_number_format"
+                                        v-on:blur="updateCompanySettings()"
+                                    ></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-form>

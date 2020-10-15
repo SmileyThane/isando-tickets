@@ -14,9 +14,9 @@ class CountryRepository
 
     public function getAllCountries()
     {
-        return Country::all();
-
+        return Country::orderBy('name', 'ASC')->get();
     }
+
     public function getCountriesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;

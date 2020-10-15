@@ -14,7 +14,7 @@ class LanguageRepository
 
     public function getAllLanguages()
     {
-        return Language::select('id', 'name', 'locale')->get();
+        return Language::select(['id', 'name', 'locale'])->orderBy('id', 'ASC')->get();
 
     }
     public function getLanguagesInCompanyContext($companyId = null)
