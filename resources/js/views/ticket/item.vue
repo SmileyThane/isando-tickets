@@ -93,7 +93,7 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="answerDialog = false">{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="green" dark @click="addTicketAnswer" >{{langMap.main.create}}
+                        <v-btn color="green" dark @click="addTicketAnswer">{{langMap.main.create}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -102,7 +102,8 @@
         <template>
             <v-dialog v-model="noteDialog" max-width="480">
                 <v-card outlined dense>
-                    <v-card-title class="headline" style="background-color: #F0F0F0;">{{langMap.ticket.add_internal_note}}
+                    <v-card-title class="headline" style="background-color: #F0F0F0;">
+                        {{langMap.ticket.add_internal_note}}
                     </v-card-title>
                     <v-card-text>
                         <v-form>
@@ -127,7 +128,7 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="noteDialog = false">{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="green" dark @click="addTicketNotice" >{{langMap.main.create}}
+                        <v-btn color="green" dark @click="addTicketNotice">{{langMap.main.create}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
