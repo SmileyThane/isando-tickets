@@ -76,7 +76,8 @@ class CompanyRepository
             if (!Storage::exists('public/logos')) {
                 Storage::makeDirectory('public/logos');
             }
-            $file = $request->file('logo')->storeAs('public/logos', $company->id . '.' . $extension = $request->file('logo')->extension());
+
+            $file = $request->file('logo')->storeAs('public/logos', $company->id  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
             $company->logo_url = Storage::url($file);
             $company->save();
 
@@ -96,7 +97,8 @@ class CompanyRepository
             if (!Storage::exists('public/logos')) {
                 Storage::makeDirectory('public/logos');
             }
-            $file = $request->file('logo')->storeAs('public/logos',$company->id . '.' . $extension = $request->file('logo')->extension());
+
+            $file = $request->file('logo')->storeAs('public/logos', $company->id  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
             $company->logo_url = Storage::url($file);
         }
 
@@ -222,8 +224,8 @@ class CompanyRepository
         if (!Storage::exists('public/logos')) {
             Storage::makeDirectory('public/logos');
         }
-        $file = $request->file('logo')->storeAs('public/logos', $companyId . '.' . $extension = $request->file('logo')->extension());
-        $company->logo_url =Storage::url($file);
+        $file = $request->file('logo')->storeAs('public/logos', $companyId  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
+        $company->logo_url = Storage::url($file);
         $company->save();
         return $company;
     }

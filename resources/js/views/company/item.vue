@@ -1231,7 +1231,10 @@
                 axios.get(`/api/company/${this.$route.params.id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.company = response.data
+                        this.company = response.data;
+                        if (!this.company.logo_url) {
+                            this.company.logo_url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
+                        }
                     } else {
                         console.log('error')
                     }

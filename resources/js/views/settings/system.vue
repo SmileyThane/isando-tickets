@@ -30,7 +30,12 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-label>{{langMap.system_settings.ticket_number_format}}</v-label>
-                                    <v-text-field color="green" dense v-model="companySettings.ticket_number_format" v-on:change="updateCompanySettings()"></v-text-field>
+                                    <v-text-field
+                                        color="green"
+                                        dense
+                                        v-model="companySettings.ticket_number_format"
+                                        v-on:blur="updateCompanySettings()"
+                                    ></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -44,7 +49,7 @@
                                     <v-select claass="mx-4" color="green" dense
                                               v-model="companySettings.timezone"
                                               :items="timezones"
-                                              item-text="name"
+                                              item-text="text"
                                               item-value="id"
                                               item-color="green"
                                               v-on:change="updateCompanySettings()"
@@ -109,7 +114,7 @@
                                                     <v-checkbox color="green" v-model="companyCountries" :value="item.id" v-on:change="updateCompanyCountries(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="item.name"></v-list-item-title>
+                                                    <v-list-item-title v-text="'('+item.iso_3166_2+') '+item.name"></v-list-item-title>
                                                 </v-list-item-content>
                                             </v-list-item>
                                         </v-list-item-group>
@@ -147,12 +152,12 @@
                                                     <v-list-item-title v-if="item.name in langMap.phone_types" v-text="langMap.phone_types[item.name]"></v-list-item-title>
                                                     <v-list-item-title v-else v-text="item.name"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action>
+                                                <v-list-item-action v-if="checkRoleByIds([1])">
                                                     <v-icon small @click="showUpdateTypeDialog(item, 'updatePhoneType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action>
+                                                <v-list-item-action v-if="checkRoleByIds([1])">
                                                     <v-icon small @click="deletePhoneType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -160,7 +165,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels multiple>
+                                    <v-expansion-panels multiple v-if="checkRoleByIds([1])">
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{langMap.system_settings.new_phone_type}}
@@ -218,12 +223,12 @@
                                                     <v-list-item-title v-if="item.name in langMap.social_types" v-text="langMap.social_types[item.name]"></v-list-item-title>
                                                     <v-list-item-title v-else v-text="item.name"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action>
+                                                <v-list-item-action v-if="checkRoleByIds([1])">
                                                     <v-icon small @click="showUpdateTypeDialog(item, 'updateSocialType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action>
+                                                <v-list-item-action v-if="checkRoleByIds([1])">
                                                     <v-icon small @click="deleteSocialType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -231,7 +236,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels multiple>
+                                    <v-expansion-panels multiple v-if="checkRoleByIds([1])">
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{langMap.system_settings.new_social_type}}
@@ -289,12 +294,12 @@
                                                     <v-list-item-title v-if="item.name in langMap.address_types" v-text="langMap.address_types[item.name]"></v-list-item-title>
                                                     <v-list-item-title v-else v-text="item.name"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action>
+                                                <v-list-item-action v-if="checkRoleByIds([1])">
                                                     <v-icon small @click="showUpdateTypeDialog(item, 'updateAddressType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action>
+                                                <v-list-item-action v-if="checkRoleByIds([1])">
                                                 <v-icon small @click="deleteAddressType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -302,7 +307,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels multiple>
+                                    <v-expansion-panels multiple v-if="checkRoleByIds([1])">
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{langMap.system_settings.new_address_type}}
@@ -438,6 +443,15 @@
             this.getTimezones();
         },
         methods: {
+            checkRoleByIds(ids) {
+                let roleExists = false;
+                ids.forEach(id => {
+                    if (roleExists === false) {
+                        roleExists = this.$store.state.roles.includes(id)
+                    }
+                });
+                return roleExists
+            },
             getLanguages() {
                 axios.get('/api/lang/all').then(response => {
                     response = response.data;

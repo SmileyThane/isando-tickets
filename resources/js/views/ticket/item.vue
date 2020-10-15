@@ -323,7 +323,7 @@
                                 link
                             >
                                 <v-list-item-title>
-                                    {{langMap.ticket_statuses[langMap.main.close]}}
+                                    {{langMap.ticket_statuses[ticket.status.name]}}
                                 </v-list-item-title>
                             </v-list-item>
                         </v-list>
