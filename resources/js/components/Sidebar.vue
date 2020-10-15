@@ -156,7 +156,7 @@
                         <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.companies}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/settings/system" v-if="checkRoleByIds([1,2])">
+                <v-list-item link to="/settings/system" v-if="checkRoleByIds([1,2,3])">
                     <v-list-item-action>
                         <v-icon>mdi-folder-cog-outline</v-icon>
                     </v-list-item-action>
@@ -165,7 +165,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/" v-if="checkRoleByIds([1,2])">
+                <v-list-item link to="/" v-if="checkRoleByIds([1,2,3])">
                     <v-list-item-action>
                         <v-icon>mdi-cogs</v-icon>
                     </v-list-item-action>
