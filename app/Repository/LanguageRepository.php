@@ -21,7 +21,7 @@ class LanguageRepository
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         $companyLangs = CompanyLanguage::where('company_id', $companyId)->pluck('id');
-        return Language::select('id', 'name', 'locale')->whereIn('id', $companyLangs)->get();
+        return Language::select(['id', 'name', 'locale'])->whereIn('id', $companyLangs)->orderBy('id', 'ASC')->get();
     }
 
     public function getCompanyLanguageIds($companyId = null)

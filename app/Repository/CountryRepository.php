@@ -21,7 +21,7 @@ class CountryRepository
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         $companyCountries = CompanyCountry::where('company_id', $companyId)->pluck('id');
-        return Country::whereIn('id', $companyCountries)->get();
+        return Country::whereIn('id', $companyCountries)->orderBy('name', 'ASC')->get();
     }
 
     public function getCompanyCountryIds($companyId = null)
