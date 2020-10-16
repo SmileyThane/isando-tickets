@@ -322,9 +322,11 @@
                         >
                             <v-list-item
                                 link
+                                @click="closeTicket"
                             >
                                 <v-list-item-title>
-                                    {{langMap.ticket_statuses[ticket.status.name]}}
+<!--                                    {{langMap.ticket_statuses['closed']}}-->
+                                    Close ticket
                                 </v-list-item-title>
                             </v-list-item>
                         </v-list>
@@ -357,7 +359,7 @@
                                 link
                                 v-for="priority in priorities"
                                 :key="priority.id"
-                                onclick="console.log(priority.id);"
+                                @click="changePriority(priority.id)"
                             >
                                 <v-list-item-title>
                                     <v-badge
@@ -1709,6 +1711,10 @@
                         console.log('error')
                     }
                 });
+            },
+            changePriority(id) {
+                this.ticket.priority_id = id
+                this.updateTicket()
             },
             linkTicketProcess(id) {
                 this.mergeTicketForm.parent_ticket_id = id
