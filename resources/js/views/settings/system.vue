@@ -29,6 +29,22 @@
                         <v-form>
                             <v-row>
                                 <v-col class="col-md-12">
+                                    <v-label>{{langMap.system_settings.theme_color}}</v-label>
+                                    <v-color-picker
+                                        dot-size="25"
+                                        swatches-max-height="200"
+                                        :value="companySettings.theme_color"
+                                        v-on:blur="updateCompanySettings()"
+                                    ></v-color-picker>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+
+                        <v-spacer>&nbsp;</v-spacer>
+
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
                                     <v-label>{{langMap.system_settings.ticket_number_format}}</v-label>
                                     <v-text-field
                                         color="green"
@@ -36,6 +52,7 @@
                                         v-model="companySettings.ticket_number_format"
                                         v-on:blur="updateCompanySettings()"
                                     ></v-text-field>
+                                    <p>{{langMap.system_settings.ticket_number_format_help}}</p>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -152,12 +169,12 @@
                                                     <v-list-item-title v-if="item.name in langMap.phone_types" v-text="langMap.phone_types[item.name]"></v-list-item-title>
                                                     <v-list-item-title v-else v-text="item.name"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1])">
+                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
                                                     <v-icon small @click="showUpdateTypeDialog(item, 'updatePhoneType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1])">
+                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
                                                     <v-icon small @click="deletePhoneType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -165,7 +182,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels multiple v-if="checkRoleByIds([1])">
+                                    <v-expansion-panels multiple v-if="checkRoleByIds([1, 2, 3])">
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{langMap.system_settings.new_phone_type}}
@@ -223,12 +240,12 @@
                                                     <v-list-item-title v-if="item.name in langMap.social_types" v-text="langMap.social_types[item.name]"></v-list-item-title>
                                                     <v-list-item-title v-else v-text="item.name"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1])">
+                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
                                                     <v-icon small @click="showUpdateTypeDialog(item, 'updateSocialType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1])">
+                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteSocialType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -236,7 +253,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels multiple v-if="checkRoleByIds([1])">
+                                    <v-expansion-panels multiple v-if="checkRoleByIds([1, 2, 3])">
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{langMap.system_settings.new_social_type}}
@@ -294,12 +311,12 @@
                                                     <v-list-item-title v-if="item.name in langMap.address_types" v-text="langMap.address_types[item.name]"></v-list-item-title>
                                                     <v-list-item-title v-else v-text="item.name"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1])">
+                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
                                                     <v-icon small @click="showUpdateTypeDialog(item, 'updateAddressType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1])">
+                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
                                                 <v-icon small @click="deleteAddressType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -307,7 +324,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels multiple v-if="checkRoleByIds([1])">
+                                    <v-expansion-panels multiple v-if="checkRoleByIds([1, 2, 3])">
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{langMap.system_settings.new_address_type}}
@@ -423,7 +440,8 @@
                 companySettings: {
                     navbar_style: '',
                     ticket_number_format: '',
-                    timezone: ''
+                    timezone: '',
+                    color: ''
                 },
                 timezones:[]
             }
@@ -838,6 +856,7 @@
                         this.companySettings['navbar_style'] = response.data.hasOwnProperty('navbar_style') ? response.data.navbar_style : 1;
                         this.companySettings['ticket_number_format'] = response.data.hasOwnProperty('ticket_number_format') ? response.data.ticket_number_format : 'YYMMDDXXXX';
                         this.companySettings['timezone'] = response.data.hasOwnProperty('timezone') ? response.data.timezone : 35;
+                        this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#00ff00';
                     }
                 });
             },

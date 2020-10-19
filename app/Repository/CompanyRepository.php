@@ -211,6 +211,10 @@ class CompanyRepository
             $data['ticket_number_format'] = $request->ticket_number_format;
         }
 
+        if ($request->has('theme_color')) {
+            $data['theme_color'] = $request->theme_color;
+        }
+
         $settings->data = $data;
         $settings->save();
         return true;
