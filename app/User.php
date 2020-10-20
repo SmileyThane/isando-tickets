@@ -56,6 +56,11 @@ class User extends Authenticatable
         return $this->morphMany(Address::class, 'entity');
     }
 
+    public function socials()
+    {
+        return $this->morphMany(Social::class, 'entity');
+    }
+
     public function getFullNameAttribute()
     {
         return $this->name . ' ' . $this->surname;
