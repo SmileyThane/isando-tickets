@@ -230,6 +230,21 @@
                 </v-card>
             </v-dialog>
         </template>
+        <template>
+            <v-dialog v-model="removeTicketDialog" persistent max-width="480">
+                <v-card>
+                    <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeTicketDialog = false">{{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="deleteTicket()">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
         <v-row v-if="isLoaded">
             <v-col
                 cols="12"
@@ -256,43 +271,12 @@
                     >
                         {{langMap.ticket.ticket_history}}
                     </v-btn>
-                    <v-menu
-                        rounded
-                        offset-y
-                    >
-                        <template v-slot:activator="{ on: menu, attrs }">
-                            <v-btn
-                                small
-                                class="ma-2 d-sm-flex d-md-none"
-                                color="#f2f2f2"
-                                v-bind="attrs"
-                                v-on="{...menu }"
-                            >
-                                <v-icon small>mdi-dots-vertical</v-icon>
-                            </v-btn>
-                        </template>
-                        <v-list
-                            dense
-                        >
-                            <v-list-item
-                            >
-                                <v-list-item-title>Spam</v-list-item-title>
-                            </v-list-item>
-
-                            <v-list-item
-                                link
-                                active-class="red--text"
-                                color="red"
-                            >
-                                <v-list-item-title>Delete</v-list-item-title>
-                            </v-list-item>
-                        </v-list>
-                    </v-menu>
                     <v-btn small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
                     >
                         Spam
                     </v-btn>
                     <v-btn small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
+                           @click="ticketDeleteProcess"
                     >
                         Delete
                     </v-btn>
@@ -304,7 +288,7 @@
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
                                 small
-                                class="ma-2 d-sm-none d-md-flex float-md-right"
+                                class="ma-2 float-md-right"
                                 v-bind="attrs"
                                 v-on="{...menu}"
                             >
@@ -331,7 +315,6 @@
                             </v-list-item>
                         </v-list>
                     </v-menu>
-
                     <v-menu
                         rounded
                         offset-y
@@ -339,7 +322,7 @@
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
                                 small
-                                class="ma-2 d-sm-none d-md-flex float-md-right"
+                                class="ma-2 float-md-right"
                                 v-bind="attrs"
                                 v-on="{...menu}"
                             >
@@ -380,7 +363,7 @@
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
                                 small
-                                class="ma-2 d-sm-none d-md-flex float-md-right"
+                                class="ma-2 float-md-right"
                                 v-bind="attrs"
                                 v-on="{...menu}"
                             >
@@ -411,6 +394,48 @@
                                 <v-list-item-title>
                                     Quote request
                                 </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                    <v-menu
+                        rounded
+                        offset-y
+                    >
+                        <template v-slot:activator="{ on: menu, attrs }">
+                            <v-btn
+                                small
+                                class="ma-2 d-sm-flex d-md-none"
+                                color="#f2f2f2"
+                                v-bind="attrs"
+                                v-on="{...menu }"
+                            >
+                                <v-icon small>mdi-dots-vertical</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-list
+                            dense
+                        >
+                            <v-list-item
+                                   @click="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0 ? manageThirdColumn() : ticketLinkDialog = true"
+                            >
+                                <v-list-item-title>{{langMap.main.link}}</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item
+                            >
+                                <v-list-item-title>Merge</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item
+                            >
+                                <v-list-item-title>Spam</v-list-item-title>
+                            </v-list-item>
+
+                            <v-list-item
+                                link
+                                active-class="red--text"
+                                color="red"
+                                @click="ticketDeleteProcess"
+                            >
+                                <v-list-item-title>Delete</v-list-item-title>
                             </v-list-item>
                         </v-list>
                     </v-menu>
@@ -1120,7 +1145,6 @@
                                 <v-btn class="ma-2"
                                        small color="white"
                                        style="color: black;"
-                                       @click.native.stop="closeTicket"
                                 >
                                     Cancel
                                 </v-btn>
@@ -1129,7 +1153,7 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <br>
-                <v-expansion-panels>
+                <v-expansion-panels v-model="notesPanel" multiple>
                     <v-expansion-panel>
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
@@ -1138,7 +1162,7 @@
                                 <strong>{{langMap.ticket.internal_notes}}</strong>
                             </span>
                             <template v-slot:actions>
-                                <v-btn class="ma-2"
+                                <v-btn
                                        small color="white"
                                        style="color: black;"
                                        @click.native.stop="noteDialog = true"
@@ -1146,7 +1170,6 @@
                                     {{langMap.ticket.add_internal_note}}
                                 </v-btn>
                             </template>
-
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <br>
@@ -1320,6 +1343,7 @@
             return {
                 selectionDisabled: false,
                 assignPanel: [],
+                notesPanel: [],
                 thirdColumn: false,
                 thirdColumnPanels: [0],
                 firstColumnSize: 7,
@@ -1330,6 +1354,7 @@
                 serverAccessDialog: false,
                 answerDialog: false,
                 noteDialog: false,
+                removeTicketDialog: false,
                 alert: false,
                 fromEdit: false,
                 contactEdit: false,
@@ -1509,8 +1534,9 @@
                         this.selectTeam();
                         this.getContacts(this.from)
                         if (this.ticket.notices.length > 0) {
-                            this.assignPanel.push(1);
+                            this.notesPanel.push(0);
                         }
+
                     }
                 });
             },
@@ -1733,6 +1759,21 @@
                         this.ticketLinkDialog = false
                     } else {
                         console.log('error')
+                    }
+                });
+            },
+            ticketDeleteProcess() {
+                this.removeTicketDialog = true
+            },
+            deleteTicket() {
+                axios.delete(`/api/ticket/${this.ticket.id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        window.location.href = `/tickets`
+                    } else {
+                        this.snackbarMessage = 'Ticket delete error'
+                        this.actionColor = 'error'
+                        this.snackbar = true;
                     }
                 });
             },
