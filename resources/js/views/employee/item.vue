@@ -214,7 +214,117 @@
                     &nbsp;
                 </v-spacer>
             </v-col>
-            <v-col offset-md="6">
+            <v-col md="6">
+                <v-card class="elevation-6">
+                    <v-toolbar
+                        dense
+                        color="green"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.contact_info}}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-list
+                            dense
+                            subheader
+                        >
+                            <v-list-item-group color="green">
+                                <v-list-item
+                                    v-for="(item) in userData.socials"
+                                    :key="item.id"
+                                >
+                                    <v-list-item-icon>
+                                        <v-icon v-text="item.type.icon"></v-icon>
+                                    </v-list-item-icon>
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="item.social_link"></v-list-item-title>
+                                        <v-list-item-subtitle
+                                            v-text="langMap.social_types[item.type.name]"></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-icon
+                                            small
+                                            @click="deleteSocial(item.id)"
+                                        >
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+
+                            </v-list-item-group>
+                        </v-list>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{langMap.company.new_social_item}}
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12" class="pa-1">
+                                                <v-text-field
+                                                    color="green"
+                                                    item-color="green"
+                                                    v-model="socialForm.social_link"
+                                                    :label="langMap.main.link"
+                                                    dense
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" class="pa-1">
+                                                <v-select
+                                                    color="green"
+                                                    item-color="green"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="socialForm.social_type"
+                                                    :items="socialTypes"
+                                                    :label="langMap.main.type"
+                                                    dense
+                                                >
+                                                    <template slot="selection" slot-scope="data">
+                                                        <v-list-item-icon>
+                                                            <v-icon v-text="data.item.icon"></v-icon>
+                                                        </v-list-item-icon>
+                                                        <v-list-item-content>
+                                                            {{ langMap.social_types[data.item.name] }}
+                                                        </v-list-item-content>
+                                                    </template>
+                                                    <template slot="item" slot-scope="data">
+                                                        <v-list-item-icon>
+                                                            <v-icon v-text="data.item.icon"></v-icon>
+                                                        </v-list-item-icon>
+                                                        <v-list-item-content>
+                                                            {{ langMap.social_types[data.item.name] }}
+                                                        </v-list-item-content>
+                                                    </template>
+                                                </v-select>
+                                            </v-col>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                small
+                                                color="green"
+                                                @click="submitNewData(userData.id, socialForm, 'addSocial')"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col md="6">
                 <v-card class="elevation-6">
                     <v-toolbar
                         dense
@@ -557,16 +667,24 @@
                     },
                     address_type: ''
                 },
+                socialForm: {
+                    entity_id: '',
+                    entity_type: 'App\\User',
+                    social_link: '',
+                    social_type: ''
+                },
                 phoneTypes: [],
                 addressTypes: [],
+                socialTypes: [],
                 isCustomersLoading: false,
                 customers: []
             }
         },
         mounted() {
-            this.getUser();
-            this.getPhoneTypes();
-            this.getAddressTypes();
+            this.getUser()
+            this.getPhoneTypes()
+            this.getAddressTypes()
+            this.getSocialTypes()
             this.getRoles()
             this.getClients()
             // if (localStorage.getItem('auth_token')) {
@@ -601,6 +719,10 @@
                     }
                 });
             },
+            submitNewData(id, data, method) {
+                data.entity_id = id
+                this[method](data)
+            },
             getPhoneTypes() {
                 axios.get(`/api/phone_types`).then(response => {
                     response = response.data
@@ -614,6 +736,15 @@
                     response = response.data
                     if (response.success === true) {
                         this.addressTypes = response.data
+                    }
+                });
+            },
+            getSocialTypes() {
+                axios.get(`/api/social_types`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.socialTypes = response.data
+                    } else {
                     }
                 });
             },
@@ -683,6 +814,38 @@
                         this.snackbarMessage = 'Address delete error'
                         this.actionColor = 'error'
                         this.snackbar = true;
+
+                    }
+                });
+            },
+            addSocial(form) {
+                axios.post('/api/social', form).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
+
+                    }
+                });
+            },
+            deleteSocial(id) {
+                axios.delete(`/api/social/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.snackbarMessage = 'Delete successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
 
                     }
                 });
