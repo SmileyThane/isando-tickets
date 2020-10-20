@@ -389,7 +389,7 @@
 
 
 <script>
-    import Sidebar from "../../components/Sidebar";
+    import EventBus from '../../components/EventBus';
 
     export default {
 
@@ -441,7 +441,7 @@
                     navbar_style: '',
                     ticket_number_format: '',
                     timezone: '',
-                    color: ''
+                    theme_color: ''
                 },
                 timezones:[]
             }
@@ -863,7 +863,9 @@
             updateCompanySettings() {
                 axios.post('/api/main_company_settings', this.companySettings).then(response => {
                     response = response.data;
-                    if (response.success !== true) {
+                    if (response.success === true) {
+                        EventBus.$emit('update-sidebar', this.companySettings)
+                    } else {
                         this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
                         this.errorType = 'error';
                         this.alert = true;

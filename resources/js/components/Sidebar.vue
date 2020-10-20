@@ -180,6 +180,8 @@
 </template>
 
 <script>
+    import EventBus from './EventBus.vue';
+
     export default {
         name: "Sidebar",
         props: {value: {type: Boolean}},
@@ -215,9 +217,13 @@
             this.getCompanyName();
             this.getCompanyLogo();
             this.getCompanySettings();
-            this.ticket = this.$store.state.lang.lang_map.sidebar.ticket
-            this.customers = this.$store.state.lang.lang_map.sidebar.customers
-            this.settings = this.$store.state.lang.lang_map.sidebar.settings
+            this.ticket = this.$store.state.lang.lang_map.sidebar.ticket;
+            this.customers = this.$store.state.lang.lang_map.sidebar.customers;
+            this.settings = this.$store.state.lang.lang_map.sidebar.settings;
+            let that = this;
+            EventBus.$on('update-sidebar', function (settings) {
+                that.navbarStyle = settings['navbar_style'];
+            })
         },
         methods: {
             checkRoleByIds(ids) {
