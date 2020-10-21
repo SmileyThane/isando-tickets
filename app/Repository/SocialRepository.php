@@ -80,7 +80,7 @@ class SocialRepository
     public function getTypesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $companyTypes = CompanySocialType::where('company_id', $companyId)->pluck('id');
+        $companyTypes = CompanySocialType::where('company_id', $companyId)->pluck('social_type_id');
         return SocialType::whereIn('id', $companyTypes)->get();
     }
 
