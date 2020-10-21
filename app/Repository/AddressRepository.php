@@ -96,7 +96,7 @@ class AddressRepository
     public function getTypesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $companyTypes = CompanyAddressType::where('company_id', $companyId)->pluck('id');
+        $companyTypes = CompanyAddressType::where('company_id', $companyId)->pluck('address_type_id');
         return AddressType::whereIn('id', $companyTypes)->get();
     }
 

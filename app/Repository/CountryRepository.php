@@ -20,7 +20,7 @@ class CountryRepository
     public function getCountriesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $companyCountries = CompanyCountry::where('company_id', $companyId)->pluck('id');
+        $companyCountries = CompanyCountry::where('company_id', $companyId)->pluck('country_id');
         return Country::whereIn('id', $companyCountries)->orderBy('name', 'ASC')->get();
     }
 
