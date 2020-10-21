@@ -23,7 +23,7 @@
                     <v-card class="elevation-12">
                         <v-toolbar
                             dense
-                            color="green"
+                            :color="themeColor"
                             dark
                             flat
                         >
@@ -33,7 +33,7 @@
                         <v-card-text>
                             <v-form>
                                 <v-text-field
-                                    color="green"
+                                    :color="themeColor"
                                     label="Login"
                                     name="email"
                                     prepend-icon="mdi-account"
@@ -45,7 +45,7 @@
 
                                 <v-text-field
                                     autocomplete="new-password"
-                                    color="green"
+                                    :color="themeColor"
                                     id="password"
                                     label="Password"
                                     name="password"
@@ -58,7 +58,7 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="green" style="color: white;" @click="handleSubmit">Login</v-btn>
+                            <v-btn :color="themeColor" style="color: white;" @click="handleSubmit">Login</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -74,7 +74,8 @@
             return {
                 alert: false,
                 email: "",
-                password: ""
+                password: "",
+                themeColor: this.$store.state.themeColor
             }
         },
         mounted() {

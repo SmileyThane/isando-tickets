@@ -18,7 +18,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <v-text-field
-                                                    color="green"
+                                                    :color="themeColor"
                                                     :label="langMap.main.name"
                                                     name="team_name"
                                                     type="text"
@@ -28,7 +28,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <v-text-field
-                                                    color="green"
+                                                    :color="themeColor"
                                                     :label="langMap.main.description"
                                                     name="team_description"
                                                     type="text"
@@ -41,7 +41,7 @@
                                                 fab
                                                 right
                                                 bottom
-                                                color="green"
+                                                :color="themeColor"
                                                 @click="addTeam"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
@@ -69,14 +69,14 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getTeams" v-model="teamsSearch" color="green"
+                                        <v-text-field @input="getTeams" v-model="teamsSearch" :color="themeColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
                                             class="mx-4"
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             @change="updateItemsCount"
@@ -85,7 +85,7 @@
                                 </v-row>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination color="green"
+                                <v-pagination :color="themeColor"
                                               v-model="options.page"
                                               :length="lastPage"
                                               circle
@@ -163,10 +163,11 @@
                 snackbarMessage: '',
                 totalTeams: 0,
                 lastPage: 0,
-                loading: 'green',
+                loading: this.themeColor,
                 expanded: [],
                 singleExpand: false,
                 langMap: this.$store.state.lang.lang_map,
+                themeColor: this.$store.state.themeColor,
                 options: {
                     page: 1,
                     sortDesc: [false],
@@ -195,7 +196,7 @@
                     team_description: '',
                 },
                 selectedTeamId: null,
-                removeTeamDialog: false,
+                removeTeamDialog: false
             }
         },
         mounted() {
