@@ -6,9 +6,13 @@
         <div class="row">
             <div class="col-md-6">
                 <v-card class="elevation-12">
-                    <v-toolbar dense color="green" dark flat>
+                    <v-toolbar :color="themeColor" dark dense flat>
                         <v-toolbar-title>{{langMap.system_settings.display}}</v-toolbar-title>
-
+                        <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompanySettings">
+                            {{langMap.main.update}}
+                        </v-btn>
                     </v-toolbar>
 
                     <v-card-text>
@@ -16,9 +20,9 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-label>{{langMap.system_settings.navbar_style}}</v-label>
-                                    <v-radio-group dense row v-model="companySettings.navbar_style" v-on:change="updateCompanySettings()">
-                                        <v-radio color="green" :label="langMap.system_settings.navbar_no_logo" :value="1"></v-radio>
-                                        <v-radio color="green" :label="langMap.system_settings.navbar_logo" :value="2"></v-radio>
+                                    <v-radio-group dense row v-model="companySettings.navbar_style" :readonly="!enableToEdit">
+                                        <v-radio :color="themeColor" :label="langMap.system_settings.navbar_no_logo" :value="1"></v-radio>
+                                        <v-radio :color="themeColor" :label="langMap.system_settings.navbar_logo" :value="2"></v-radio>
                                     </v-radio-group>
                                 </v-col>
                             </v-row>
@@ -33,8 +37,9 @@
                                     <v-color-picker
                                         dot-size="25"
                                         swatches-max-height="200"
-                                        :value="companySettings.theme_color"
-                                        v-on:blur="updateCompanySettings()"
+                                        mode.sync="hexa"
+                                        v-model="companySettings.theme_color"
+                                        :disabled="!enableToEdit"
                                     ></v-color-picker>
                                 </v-col>
                             </v-row>
@@ -47,10 +52,10 @@
                                 <v-col class="col-md-12">
                                     <v-label>{{langMap.system_settings.ticket_number_format}}</v-label>
                                     <v-text-field
-                                        color="green"
+                                        :color="themeColor"
                                         dense
                                         v-model="companySettings.ticket_number_format"
-                                        v-on:blur="updateCompanySettings()"
+                                        :readonly="!enableToEdit"
                                     ></v-text-field>
                                     <p>{{langMap.system_settings.ticket_number_format_help}}</p>
                                 </v-col>
@@ -63,13 +68,13 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-label>{{langMap.system_settings.default_timezone}}</v-label>
-                                    <v-select claass="mx-4" color="green" dense
+                                    <v-select claass="mx-4" :color="themeColor" dense
                                               v-model="companySettings.timezone"
                                               :items="timezones"
                                               item-text="text"
                                               item-value="id"
-                                              item-color="green"
-                                              v-on:change="updateCompanySettings()"
+                                              :item-color="themeColor"
+                                              :readonly="!enableToEdit"
                                     >
                                     </v-select>
                                 </v-col>
@@ -80,7 +85,7 @@
                 <v-spacer>&nbsp;</v-spacer>
 
                 <v-card class="elevation-12">
-                    <v-toolbar dense color="green" dark flat>
+                    <v-toolbar dense :color="themeColor" dark flat>
                         <v-toolbar-title>{{langMap.system_settings.languages}}</v-toolbar-title>
 
                     </v-toolbar>
@@ -90,13 +95,13 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-list dense subheader>
-                                        <v-list-item-group color="green">
+                                        <v-list-item-group :color="themeColor">
                                             <v-list-item
                                                 v-for="(item, i) in languages"
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox color="green" v-model="companyLanguages" :value="item.id" v-on:change="updateCompanyLanguages(item.id)"></v-checkbox>
+                                                    <v-checkbox :color="themeColor" v-model="companyLanguages" :value="item.id" v-on:change="updateCompanyLanguages(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.name"></v-list-item-title>
@@ -112,7 +117,7 @@
                 <v-spacer>&nbsp;</v-spacer>
 
                 <v-card class="elevation-12">
-                    <v-toolbar dense color="green" dark flat>
+                    <v-toolbar dense :color="themeColor" dark flat>
                         <v-toolbar-title>{{langMap.system_settings.countries}}</v-toolbar-title>
 
                     </v-toolbar>
@@ -122,13 +127,13 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-list dense subheader style="max-height: 15em" class="overflow-y-auto">
-                                        <v-list-item-group color="green">
+                                        <v-list-item-group :color="themeColor">
                                             <v-list-item
                                                 v-for="(item, i) in countries"
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox color="green" v-model="companyCountries" :value="item.id" v-on:change="updateCompanyCountries(item.id)"></v-checkbox>
+                                                    <v-checkbox :color="themeColor" v-model="companyCountries" :value="item.id" v-on:change="updateCompanyCountries(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="'('+item.iso_3166_2+') '+item.name"></v-list-item-title>
@@ -144,7 +149,7 @@
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
-                    <v-toolbar dense color="green" dark flat>
+                    <v-toolbar dense :color="themeColor" dark flat>
                         <v-toolbar-title>{{langMap.system_settings.phone_types}}</v-toolbar-title>
 
                     </v-toolbar>
@@ -154,13 +159,13 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-list dense subheader>
-                                        <v-list-item-group color="green">
+                                        <v-list-item-group :color="themeColor">
                                             <v-list-item
                                                 v-for="(item, i) in phoneTypes"
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox color="green" v-model="companyPhoneTypes" :value="item.id" v-on:change="updateCompanyPhoneTypes(item.id)"></v-checkbox>
+                                                    <v-checkbox :color="themeColor" v-model="companyPhoneTypes" :value="item.id" v-on:change="updateCompanyPhoneTypes(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-icon>
                                                     <v-icon left v-text="item.icon"></v-icon>
@@ -194,12 +199,12 @@
                                                 <v-form>
                                                     <div class="row">
                                                         <v-col cols="md-6" class="pa-1">
-                                                            <v-text-field color="green" item-color="green" v-model="phoneTypeForm.name" :label="langMap.main.name" dense></v-text-field>
+                                                            <v-text-field :color="themeColor" :item-color="themeColor" v-model="phoneTypeForm.name" :label="langMap.main.name" dense></v-text-field>
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
-                                                            <v-text-field color="green" item-color="green" v-model="phoneTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="phoneTypeForm.icon"></v-text-field>
+                                                            <v-text-field :color="themeColor" :item-color="themeColor" v-model="phoneTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="phoneTypeForm.icon"></v-text-field>
                                                         </v-col>
-                                                        <v-btn dark fab right bottom small color="green" @click="submitNewData(phoneTypeForm, 'addPhoneType')">
+                                                        <v-btn dark fab right bottom small :color="themeColor" @click="submitNewData(phoneTypeForm, 'addPhoneType')">
                                                             <v-icon>mdi-plus</v-icon>
                                                         </v-btn>
                                                     </div>
@@ -215,7 +220,7 @@
                 <v-spacer>&nbsp;</v-spacer>
 
                 <v-card class="elevation-12">
-                    <v-toolbar dense color="green" dark flat>
+                    <v-toolbar dense :color="themeColor" dark flat>
                         <v-toolbar-title>{{langMap.system_settings.social_types}}</v-toolbar-title>
 
                     </v-toolbar>
@@ -225,13 +230,13 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-list dense subheader>
-                                        <v-list-item-group color="green">
+                                        <v-list-item-group :color="themeColor">
                                             <v-list-item
                                                 v-for="(item, i) in socialTypes"
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox color="green" v-model="companySocialTypes" :value="item.id" v-on:change="updateCompanySocialTypes(item.id)"></v-checkbox>
+                                                    <v-checkbox :color="themeColor" v-model="companySocialTypes" :value="item.id" v-on:change="updateCompanySocialTypes(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-icon>
                                                     <v-icon left v-text="item.icon"></v-icon>
@@ -265,12 +270,12 @@
                                                 <v-form>
                                                     <div class="row">
                                                         <v-col cols="md-6" class="pa-1">
-                                                            <v-text-field color="green" item-color="green" v-model="socialTypeForm.name" :label="langMap.main.name" dense></v-text-field>
+                                                            <v-text-field :color="themeColor" :item-color="themeColor" v-model="socialTypeForm.name" :label="langMap.main.name" dense></v-text-field>
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
-                                                            <v-text-field color="green" item-color="green" v-model="socialTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="socialTypeForm.icon"></v-text-field>
+                                                            <v-text-field :color="themeColor" :item-color="themeColor" v-model="socialTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="socialTypeForm.icon"></v-text-field>
                                                         </v-col>
-                                                        <v-btn dark fab right bottom small color="green" @click="submitNewData(socialTypeForm, 'addSocialType')">
+                                                        <v-btn dark fab right bottom small :color="themeColor" @click="submitNewData(socialTypeForm, 'addSocialType')">
                                                             <v-icon>mdi-plus</v-icon>
                                                         </v-btn>
                                                     </div>
@@ -286,7 +291,7 @@
                 <v-spacer>&nbsp;</v-spacer>
 
                 <v-card class="elevation-12">
-                    <v-toolbar dense color="green" dark flat>
+                    <v-toolbar dense :color="themeColor" dark flat>
                         <v-toolbar-title>{{langMap.system_settings.address_types}}</v-toolbar-title>
 
                     </v-toolbar>
@@ -296,13 +301,13 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-list dense subheader>
-                                        <v-list-item-group color="green">
+                                        <v-list-item-group :color="themeColor">
                                             <v-list-item
                                                 v-for="(item, i) in addressTypes"
                                                 :key="item.id"
                                             >
                                                 <v-list-item-action>
-                                                    <v-checkbox color="green" v-model="companyAddressTypes" :value="item.id" v-on:change="updateCompanyAddressTypes(item.id)"></v-checkbox>
+                                                    <v-checkbox :color="themeColor" v-model="companyAddressTypes" :value="item.id" v-on:change="updateCompanyAddressTypes(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-icon>
                                                     <v-icon left v-text="item.icon"></v-icon>
@@ -336,12 +341,12 @@
                                                 <v-form>
                                                     <div class="row">
                                                         <v-col cols="md-6" class="pa-1">
-                                                            <v-text-field color="green" item-color="green" v-model="addressTypeForm.name" :label="langMap.main.name" dense></v-text-field>
+                                                            <v-text-field :color="themeColor" :item-color="themeColor" v-model="addressTypeForm.name" :label="langMap.main.name" dense></v-text-field>
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
-                                                            <v-text-field color="green" item-color="green" v-model="addressTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="addressTypeForm.icon"></v-text-field>
+                                                            <v-text-field :color="themeColor" :item-color="themeColor" v-model="addressTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="addressTypeForm.icon"></v-text-field>
                                                         </v-col>
-                                                        <v-btn dark fab right bottom small color="green" @click="submitNewData(addressTypeForm, 'addAddressType')">
+                                                        <v-btn dark fab right bottom small :color="themeColor" @click="submitNewData(addressTypeForm, 'addAddressType')">
                                                             <v-icon>mdi-plus</v-icon>
                                                         </v-btn>
                                                     </div>
@@ -367,10 +372,10 @@
                         <v-container>
                             <div class="row">
                                 <v-col cols="md-6" class="pa-1">
-                                    <v-text-field color="green" item-color="green" v-model="updateTypeForm.name" :label="langMap.main.name" dense></v-text-field>
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="updateTypeForm.name" :label="langMap.main.name" dense></v-text-field>
                                 </v-col>
                                 <v-col cols="6" class="pa-1">
-                                    <v-text-field color="green" item-color="green" v-model="updateTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="updateTypeForm.icon"></v-text-field>
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="updateTypeForm.icon" :label="langMap.main.icon" dense :append-outer-icon="updateTypeForm.icon"></v-text-field>
                                 </v-col>
                             </div>
                         </v-container>
@@ -378,7 +383,7 @@
                     <v-card-actions>
 
                         <v-btn color="red" text @click="updateTypeDialog=false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn color="green" text @click="updateTypeDialog=false; submitNewData(updateTypeForm, updateTypeForm.method)">{{langMap.main.save}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateTypeDialog=false; submitNewData(updateTypeForm, updateTypeForm.method)">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -392,9 +397,9 @@
     import EventBus from '../../components/EventBus';
 
     export default {
-
         data() {
             return {
+                enableToEdit: false,
                 snackbar: false,
                 actionColor: '',
                 snackbarMessage: '',
@@ -402,6 +407,7 @@
                 updateTypeDialog: false,
                 errors: [],
                 langMap: this.$store.state.lang.lang_map,
+                themeColor: this.$store.state.themeColor,
                 phoneTypeForm: {
                     entity_id: '',
                     entity_type: 'App\\PhoneType',
@@ -856,15 +862,18 @@
                         this.companySettings['navbar_style'] = response.data.hasOwnProperty('navbar_style') ? response.data.navbar_style : 1;
                         this.companySettings['ticket_number_format'] = response.data.hasOwnProperty('ticket_number_format') ? response.data.ticket_number_format : 'YYMMDDXXXX';
                         this.companySettings['timezone'] = response.data.hasOwnProperty('timezone') ? response.data.timezone : 35;
-                        this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#00ff00';
+                        this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
                     }
                 });
             },
             updateCompanySettings() {
+                this.enableToEdit = false;
                 axios.post('/api/main_company_settings', this.companySettings).then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        EventBus.$emit('update-sidebar', this.companySettings)
+                        this.themeColor = this.companySettings.theme_color;
+                        this.$store.state.themeColor = this.companySettings.theme_color;
+                        EventBus.$emit('update-navbar-style', this.companySettings.navbar_style);
                     } else {
                         this.snackbarMessage = `${this.$store.state.lang.lang_map.main.generic_error}`;
                         this.errorType = 'error';

@@ -24,7 +24,7 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <v-text-field
-                                                color="green"
+                                                :color="themeColor"
                                                 :label="langMap.main.name"
                                                 name="name"
                                                 type="text"
@@ -35,7 +35,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <v-text-field
-                                                color="green"
+                                                :color="themeColor"
                                                 :label="langMap.main.email"
                                                 name="email"
                                                 type="email"
@@ -49,7 +49,7 @@
                                                 v-model="employeeForm.client_id"
                                                 :items="customers"
                                                 :error-messages="employeeErrors.client_id"
-                                                color="green"
+                                                :color="themeColor"
                                                 hide-no-data
                                                 hide-selected
                                                 item-text="name"
@@ -63,7 +63,7 @@
                                             fab
                                             right
                                             bottom
-                                            color="green"
+                                            :color="themeColor"
                                             @click="addEmployee"
                                         >
                                             <v-icon>mdi-plus</v-icon>
@@ -94,14 +94,14 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getEmployees" v-model="employeesSearch" color="green"
+                                        <v-text-field @input="getEmployees" v-model="employeesSearch" :color="themeColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
                                             class="mx-4"
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             @change="updateItemsCount"
@@ -110,7 +110,7 @@
                                 </v-row>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination color="green"
+                                <v-pagination :color="themeColor"
                                               v-model="options.page"
                                               :length="lastPage"
                                               circle
@@ -191,10 +191,11 @@
             return {
                 snackbar: false,
                 actionColor: '',
+                themeColor: this.$store.state.themeColor,
                 snackbarMessage: '',
                 totalEmployees: 0,
                 lastPage: 0,
-                loading: 'green',
+                loading: this.themeColor,
                 expanded: [],
                 singleExpand: false,
                 isLoading: false,
@@ -233,7 +234,7 @@
                     client_id: '',
                     is_active: false
                 },
-                suppliers: [],
+                suppliers: []
             }
         },
         mounted() {
@@ -242,7 +243,7 @@
         },
         methods: {
             getEmployees() {
-                this.loading = "green"
+                this.loading = this.themeColor
                 // console.log(this.options);
                 if (this.options.sortDesc.length <= 0) {
                     this.options.sortBy[0] = 'id'

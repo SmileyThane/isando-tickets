@@ -19,6 +19,7 @@ use App\TicketMerge;
 use App\TicketNotice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class TicketRepository
@@ -197,8 +198,14 @@ class TicketRepository
             $user = $companyUser->userData;
             $company = $companyUser->companyData;
             if ($user->is_active) {
-                $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id));
+                try{
+                    $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id));
+                } catch (\Throwable $throwable) {
+                    Log::error($throwable);
+                    //hack for broken notification system
+                }
             }
+
         }
         return true;
     }

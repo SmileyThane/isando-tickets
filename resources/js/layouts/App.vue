@@ -1,13 +1,5 @@
-<template>
-
-</template>
-
 <script>
     export default {
-        name: "Auth"
+        name: "App"
     }
 </script>
-
-<style scoped>
-
-</style>

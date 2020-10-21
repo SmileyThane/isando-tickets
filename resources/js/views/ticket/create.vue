@@ -21,7 +21,7 @@
                             :complete="e1 > n"
                             :step="n"
                             :editable="editable"
-                            :color="'green'"
+                            :color="themeColor"
                         >
                             <!--                            Step {{ n }}-->
                         </v-stepper-step>
@@ -43,8 +43,8 @@
                                     <div class="col-md-6">
                                         <v-select
                                             :label="langMap.ticket.company_from"
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             item-text="name"
                                             item-value="item"
                                             :items="suppliers"
@@ -54,8 +54,8 @@
                                     </div>
                                     <v-col cols="md-6">
                                         <v-autocomplete
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             item-text="name"
                                             item-value="item"
                                             v-model="ticketForm.to"
@@ -67,8 +67,8 @@
                                     <div class="col-md-6">
                                         <v-select
                                             :label="langMap.ticket.product_name"
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             item-text="name"
                                             item-value="id"
                                             :items="products"
@@ -77,8 +77,8 @@
                                     </div>
                                     <v-col cols="md-6">
                                         <v-autocomplete
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             item-text="user_data.email"
                                             item-value="id"
                                             v-model="ticketForm.contact_company_user_id"
@@ -91,8 +91,8 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
                                                     :label="langMap.ticket.availability"
-                                                    color="green"
-                                                    item-color="green"
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
                                                     auto-grow
                                                     outlined
                                                     rows="1"
@@ -114,8 +114,8 @@
                                 <div class="row">
                                     <v-col cols="md-6">
                                         <v-text-field
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             :label="langMap.ticket.subject"
                                             v-model="ticketForm.name"
                                         ></v-text-field>
@@ -123,8 +123,8 @@
                                     <div class="col-md-3">
                                         <v-select
                                             :label="langMap.ticket.priority"
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             item-text="name"
                                             item-value="id"
                                             :items="priorities"
@@ -141,8 +141,8 @@
                                     <div class="col-md-3">
                                         <v-select
                                             :label="langMap.main.category"
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             item-text="name"
                                             item-value="id"
                                             :items="categories"
@@ -159,8 +159,8 @@
                                     <v-col cols="12">
                                         <v-textarea
                                             :label="langMap.main.description"
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             auto-grow
                                             outlined
                                             rows="3"
@@ -176,8 +176,8 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
                                                     :label="langMap.ticket.ip_address"
-                                                    color="green"
-                                                    item-color="green"
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
                                                     auto-grow
                                                     outlined
                                                     rows="3"
@@ -195,8 +195,8 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
                                                     :label="langMap.ticket.access_details"
-                                                    color="green"
-                                                    item-color="green"
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
                                                     auto-grow
                                                     outlined
                                                     rows="3"
@@ -214,18 +214,18 @@
                             <div>
                                 <v-file-input
                                     chips
-                                    chips-color="green"
+                                    chips-:color="themeColor"
                                     multiple
                                     :label="langMap.main.attachments"
-                                    color="green"
-                                    item-color="green"
+                                    :color="themeColor"
+                                    :item-color="themeColor"
                                     prepend-icon="mdi-paperclip"
                                     :show-size="1000"
                                     v-on:change="onFileChange('ticketForm')"
                                 >
                                     <template v-slot:selection="{ index, text }">
                                         <v-chip
-                                            color="green"
+                                            :color="themeColor"
                                         >
                                             {{ text }}
                                         </v-chip>
@@ -273,6 +273,7 @@
                 altLabels: true,
                 editable: true,
                 langMap: this.$store.state.lang.lang_map,
+                themeColor: this.$store.state.themeColor,
                 ticketForm: {
                     from: '',
                     from_entity_type: '',
@@ -300,7 +301,7 @@
                     this[form].files = null;
                     // console.log(event.target.files);
                     this[form].files = event.target.files;
-                },
+                }
             }
         },
         watch: {

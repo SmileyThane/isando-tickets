@@ -15,6 +15,7 @@ use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -97,9 +98,14 @@ class CompanyUserRepository
             if ($user->is_active) {
                 $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
                 if ($isNew === true) {
-                    $user->notify(
-                        new RegularInviteEmail($companyUser->companyData->name, $request['name'], $request['role_id'], $request['email'], $request['password'])
-                    );
+                    try {
+                        @$user->notify(
+                            new RegularInviteEmail($companyUser->companyData->name, $request['name'], $request['role_id'], $request['email'], $request['password'])
+                        );
+                    } catch (\Throwable $throwable) {
+                        Log::error($throwable);
+                        //hack for broken notification system
+                    }
                 }
             }
             return Controller::showResponse(true, $companyUser);
