@@ -14,7 +14,7 @@ class AddNameDeuFieldAtCountriesTable extends Migration
     public function up()
     {
         Schema::table('countries', static function (Blueprint $table) {
-            $table->string('name_deu')->nullable();
+            $table->string('name_de')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddNameDeuFieldAtCountriesTable extends Migration
     public function down()
     {
         Schema::table('companies', static function (Blueprint $table) {
-            $table->dropColumn('name_deu');
+            $table->dropColumn('name_de');
         });
     }
 }
