@@ -125,6 +125,11 @@
                                     item.employee.user_data.surname }}
                                 </div>
                             </template>
+                            <template v-slot:item.employee.user_data.is_active="{ item }">
+                                <div @click="showItem(item)" class="justify-center" v-if="item">{{
+                                    item.employee.user_data.is_active === 1 ? '+' : '-' }}
+                                </div>
+                            </template>
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <v-spacer>
@@ -220,6 +225,7 @@
                     },
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'employee'},
                     {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
+                    {text: `${this.$store.state.lang.lang_map.individuals.is_active}`, value: 'employee.user_data.is_active'},
                     {text: `${this.$store.state.lang.lang_map.main.client}`, value: 'clients.name'},
                 ],
                 employeesSearch: '',
