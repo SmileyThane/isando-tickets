@@ -1089,13 +1089,16 @@
                             style="background:#F0F0F0;"
                         >
                             <span>
-                                <strong>{{langMap.ticket.assign_to}}ments: </strong>
-                                <span v-if="ticket.assigned_person !== null">
-                                    {{ ticket.assigned_person.user_data.name}}
-                                    {{ ticket.assigned_person.user_data.surname}}
+                                <span v-if="ticket.team !== null">
+                                <strong>{{langMap.sidebar.team}}: </strong>
+                                    {{ ticket.team.name }}
                                     <br>
                                 </span>
-                                    {{ ticket.team !== null ? ticket.team.name : ''}}
+                                <span v-if="ticket.assigned_person !== null">
+                                <strong>{{langMap.team.members}}: </strong>
+                                    {{ ticket.assigned_person.user_data.name}}
+                                    {{ ticket.assigned_person.user_data.surname}}
+                                </span>
                             </span>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
@@ -1103,7 +1106,7 @@
                                        small color="white"
                                        style="color: black;"
                                 >
-                                    {{langMap.ticket.assign_to}}
+                                    {{langMap.main.edit}}
                                 </v-btn>
                                 <!--                                <v-icon>$expand</v-icon>-->
                             </template>
