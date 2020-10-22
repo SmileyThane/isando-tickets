@@ -129,7 +129,8 @@ class LanguageSeeder extends Seeder
     "info": "User info",
     "contact_info": "Contact info",
     "assigned_companies": "Assigned companies",
-    "new_customer": "Assign to Customer"
+    "new_customer": "Assign to Customer",
+    "is_active": "Is active"
   },
   "ticket": {
     "contact_name": "Contact name",
@@ -427,7 +428,8 @@ class LanguageSeeder extends Seeder
   "info": "Allgemeines",
   "contact_info": "Zusätzliche Infos",
   "assigned_companies": "Kontakte",
-  "new_customer": "Kontakt hinzufügen"
+  "new_customer": "Kontakt hinzufügen",
+  "is_active": "Is active"
   },
   "ticket": {
     "contact_name": "Kontaktname",
