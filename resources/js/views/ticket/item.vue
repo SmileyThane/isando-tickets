@@ -10,7 +10,7 @@
                 :size="150"
                 :width="15"
                 :value="progressBuffer"
-                color="green"
+                :color="themeColor"
             >
                 <span class="white--text">{{ progressBuffer }} %</span>
 
@@ -55,8 +55,8 @@
                                     <v-textarea
                                         :label="langMap.ticket.answer_description"
                                         prepend-icon="mdi-text"
-                                        color="green"
-                                        item-color="green"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
                                         auto-grow
                                         rows="1"
                                         row-height="25"
@@ -68,11 +68,11 @@
                                 <div class="col-md-12">
                                     <v-file-input
                                         chips
-                                        chips-color="green"
+                                        chips-:color="themeColor"
                                         multiple
                                         :label="langMap.ticket.add_attachments"
-                                        color="green"
-                                        item-color="green"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
                                         prepend-icon="mdi-paperclip"
                                         :show-size="1000"
                                         dense
@@ -80,7 +80,7 @@
                                     >
                                         <template v-slot:selection="{ index, text }">
                                             <v-chip
-                                                color="green"
+                                                :color="themeColor"
                                             >
                                                 {{ text }}
                                             </v-chip>
@@ -93,7 +93,7 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="answerDialog = false">{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="green" dark @click="addTicketAnswer">{{langMap.main.create}}
+                        <v-btn :color="themeColor" dark @click="addTicketAnswer">{{langMap.main.create}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -112,8 +112,8 @@
                                     <v-textarea
                                         :label="langMap.ticket.add_internal_note"
                                         prepend-icon="mdi-text"
-                                        color="green"
-                                        item-color="green"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
                                         auto-grow
                                         rows="1"
                                         row-height="25"
@@ -128,7 +128,7 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="noteDialog = false">{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="green" dark @click="addTicketNotice">{{langMap.main.create}}
+                        <v-btn :color="themeColor" dark @click="addTicketNotice">{{langMap.main.create}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -142,8 +142,8 @@
                         <v-autocomplete
                             :label="langMap.ticket.subject"
                             dense
-                            color="green"
-                            item-color="green"
+                            :color="themeColor"
+                            :item-color="themeColor"
                             item-text="name"
                             item-value="id"
                             v-model="linkTicketForm.parent_ticket_id"
@@ -152,8 +152,8 @@
                         <v-autocomplete
                             :label="langMap.ticket.subject"
                             dense
-                            color="green"
-                            item-color="green"
+                            :color="themeColor"
+                            :item-color="themeColor"
                             item-text="name"
                             item-value="id"
                             v-model="linkTicketForm.child_ticket_id"
@@ -168,14 +168,14 @@
                             rows="2"
                             row-height="25"
                             shaped
-                            color="green"
+                            :color="themeColor"
                         />
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="ticketLinkDialog = false">{{langMap.main.cancel}}
+                        <v-btn :color="themeColor" darken-1 text @click="ticketLinkDialog = false">{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="green darken-1" text @click="linkTicket()">
+                        <v-btn :color="themeColor" darken-1 text @click="linkTicket()">
                             {{langMap.main.link}}
                         </v-btn>
                     </v-card-actions>
@@ -190,8 +190,8 @@
                         <v-autocomplete
                             :label="langMap.ticket.subject"
                             dense
-                            color="green"
-                            item-color="green"
+                            :color="themeColor"
+                            :item-color="themeColor"
                             item-text="name"
                             item-value="id"
                             v-model="mergeTicketForm.parent_ticket_id"
@@ -200,8 +200,8 @@
                         <v-autocomplete
                             :label="langMap.ticket.subject"
                             dense
-                            color="green"
-                            item-color="green"
+                            :color="themeColor"
+                            :item-color="themeColor"
                             item-text="name"
                             item-value="id"
                             v-model="mergeTicketForm.child_ticket_id"
@@ -216,14 +216,14 @@
                             rows="2"
                             row-height="25"
                             shaped
-                            color="green"
+                            :color="themeColor"
                         />
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="mergeTicketDialog = false">{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="green darken-1" text @click="mergeTicket()">
+                        <v-btn :color="themeColor" darken-1 text @click="mergeTicket()">
                             {{langMap.main.link}}
                         </v-btn>
                     </v-card-actions>
@@ -252,7 +252,7 @@
                 :md="firstColumnSize + secondColumnSize + thirdColumnSize"
             >
                 <v-toolbar dense color="#F0F0F0" class="rounded-lg elevation-2">
-                    <v-btn small class="ma-2" color="green" style="color: white;"
+                    <v-btn small class="ma-2" :color="themeColor" style="color: white;"
                            @click="answerDialog = true"
                     >{{langMap.ticket.create_answer}}
                     </v-btn>
@@ -574,7 +574,7 @@
                                             >
                                                 <v-chip
                                                     class="ma-2"
-                                                    color="green"
+                                                    :color="themeColor"
                                                     text-color="white"
                                                     :href="attachment.link"
                                                 >
@@ -637,7 +637,7 @@
                                                 >
                                                     <v-chip
                                                         class="ma-2"
-                                                        color="green"
+                                                        :color="themeColor"
                                                         text-color="white"
                                                         :href="attachment.link"
                                                     >
@@ -717,8 +717,8 @@
                 <!--                                        <v-textarea-->
                 <!--                                            :label="langMap.ticket.answer_description"-->
                 <!--                                            prepend-icon="mdi-text"-->
-                <!--                                            color="green"-->
-                <!--                                            item-color="green"-->
+                <!--                                            :color="themeColor"-->
+                <!--                                            :item-color="themeColor"-->
                 <!--                                            auto-grow-->
                 <!--                                            rows="1"-->
                 <!--                                            row-height="25"-->
@@ -730,11 +730,11 @@
                 <!--                                    <div class="col-md-12">-->
                 <!--                                        <v-file-input-->
                 <!--                                            chips-->
-                <!--                                            chips-color="green"-->
+                <!--                                            chips-:color="themeColor"-->
                 <!--                                            multiple-->
                 <!--                                            :label="langMap.ticket.add_attachments"-->
-                <!--                                            color="green"-->
-                <!--                                            item-color="green"-->
+                <!--                                            :color="themeColor"-->
+                <!--                                            :item-color="themeColor"-->
                 <!--                                            prepend-icon="mdi-paperclip"-->
                 <!--                                            :show-size="1000"-->
                 <!--                                            dense-->
@@ -742,7 +742,7 @@
                 <!--                                        >-->
                 <!--                                            <template v-slot:selection="{ index, text }">-->
                 <!--                                                <v-chip-->
-                <!--                                                    color="green"-->
+                <!--                                                    :color="themeColor"-->
                 <!--                                                >-->
                 <!--                                                    {{ text }}-->
                 <!--                                                </v-chip>-->
@@ -754,7 +754,7 @@
                 <!--                                        fab-->
                 <!--                                        right-->
                 <!--                                        bottom-->
-                <!--                                        color="green"-->
+                <!--                                        :color="themeColor"-->
                 <!--                                        small-->
                 <!--                                        @click="addTicketAnswer"-->
                 <!--                                    >-->
@@ -770,7 +770,7 @@
                 <!--                <v-card>-->
                 <!--                    <v-toolbar-->
                 <!--                        dense-->
-                <!--                        color="green"-->
+                <!--                        :color="themeColor"-->
                 <!--                        dark-->
                 <!--                        flat-->
                 <!--                    >-->
@@ -785,7 +785,7 @@
                 <!--                    <v-card-actions>-->
                 <!--                        <v-row align="center"-->
                 <!--                               justify="center">-->
-                <!--                            <v-btn v-if="ticket.status.id !== 5" color="green" style="color: white;"-->
+                <!--                            <v-btn v-if="ticket.status.id !== 5" :color="themeColor" style="color: white;"-->
                 <!--                                   @click="closeTicket">{{langMap.main.close}}-->
                 <!--                            </v-btn>-->
                 <!--                        </v-row>-->
@@ -807,8 +807,8 @@
                 <!--                                        <div class="row">-->
                 <!--                                            <v-col cols="md-12">-->
                 <!--                                                <v-autocomplete-->
-                <!--                                                    color="green"-->
-                <!--                                                    item-color="green"-->
+                <!--                                                    :color="themeColor"-->
+                <!--                                                    :item-color="themeColor"-->
                 <!--                                                    item-text="name"-->
                 <!--                                                    item-value="id"-->
                 <!--                                                    v-model="ticket.to_team_id"-->
@@ -821,8 +821,8 @@
                 <!--                                            <v-col cols="12">-->
                 <!--                                                <v-autocomplete-->
                 <!--                                                    :disabled="selectionDisabled"-->
-                <!--                                                    color="green"-->
-                <!--                                                    item-color="green"-->
+                <!--                                                    :color="themeColor"-->
+                <!--                                                    :item-color="themeColor"-->
                 <!--                                                    item-text="employee.user_data.email"-->
                 <!--                                                    item-value="employee.id"-->
                 <!--                                                    v-model="ticket.to_company_user_id"-->
@@ -835,7 +835,7 @@
                 <!--                                                   fab-->
                 <!--                                                   right-->
                 <!--                                                   bottom-->
-                <!--                                                   color="green"-->
+                <!--                                                   :color="themeColor"-->
                 <!--                                                   @click="updateTicket"-->
                 <!--                                            >-->
                 <!--                                                <v-icon>mdi-plus</v-icon>-->
@@ -856,8 +856,8 @@
                 <!--                                        <div class="row">-->
                 <!--                                            <v-col cols="12">-->
                 <!--                                                <v-textarea-->
-                <!--                                                    color="green"-->
-                <!--                                                    item-color="green"-->
+                <!--                                                    :color="themeColor"-->
+                <!--                                                    :item-color="themeColor"-->
                 <!--                                                    auto-grow-->
                 <!--                                                    rows="1"-->
                 <!--                                                    v-model="ticketNotice.notice"-->
@@ -868,7 +868,7 @@
                 <!--                                                   fab-->
                 <!--                                                   right-->
                 <!--                                                   bottom-->
-                <!--                                                   color="green"-->
+                <!--                                                   :color="themeColor"-->
                 <!--                                                   small-->
                 <!--                                                   @click="addTicketNotice"-->
                 <!--                                            >-->
@@ -1113,8 +1113,8 @@
                             <v-form>
                                 <v-autocomplete
                                     dense
-                                    color="green"
-                                    item-color="green"
+                                    :color="themeColor"
+                                    :item-color="themeColor"
                                     item-text="name"
                                     item-value="id"
                                     v-model="ticket.to_team_id"
@@ -1126,8 +1126,8 @@
                                 <v-autocomplete
                                     dense
                                     :disabled="selectionDisabled"
-                                    color="green"
-                                    item-color="green"
+                                    :color="themeColor"
+                                    :item-color="themeColor"
                                     item-text="employee.user_data.email"
                                     item-value="employee.id"
                                     v-model="ticket.to_company_user_id"
@@ -1136,7 +1136,7 @@
                                 ></v-autocomplete>
                                 <v-btn class="ma-2"
                                        small
-                                       color="green"
+                                       :color="themeColor"
                                        style="color: white;"
                                        @click.native.stop="updateTicket"
                                 >
@@ -1225,13 +1225,13 @@
                             <v-list
                                 dense
                             >
-                                <v-list-item-group color="green">
+                                <v-list-item-group :color="themeColor">
                                     <!--                                <v-subheader>Parent</v-subheader>-->
                                     <v-list-item
                                         v-for="(item, i) in ticket.merged_parent"
                                         :key="item.id"
                                         link
-                                        color="green"
+                                        :color="themeColor"
                                         @click="showTicket(item.parent_ticket_data.id)"
                                     >
                                         <v-list-item-title>
@@ -1341,6 +1341,7 @@
     export default {
         data() {
             return {
+                themeColor: this.$store.state.themeColor,
                 selectionDisabled: false,
                 assignPanel: [],
                 notesPanel: [],
@@ -1492,7 +1493,7 @@
                     this[form].files = null;
                     // console.log(event.target.files);
                     this[form].files = event.target.files;
-                },
+                }
             }
         },
         watch: {

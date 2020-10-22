@@ -81,7 +81,7 @@ class PhoneRepository
     public function getTypesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $companyTypes = CompanyPhoneType::where('company_id', $companyId)->pluck('id');
+        $companyTypes = CompanyPhoneType::where('company_id', $companyId)->pluck('phone_type_id');
         return PhoneType::whereIn('id', $companyTypes)->get();
     }
 

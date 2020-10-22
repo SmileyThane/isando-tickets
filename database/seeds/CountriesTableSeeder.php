@@ -14,7 +14,7 @@ class CountriesTableSeeder extends Seeder
     public function run()
     {
         // Empty the table
-        Countries::truncate();
+        //Countries::truncate();
 
         // Get all from the JSON file
         $JSON_countries = Countries::allJSON();

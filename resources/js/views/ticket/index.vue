@@ -29,14 +29,14 @@
 
                 <v-row>
                     <v-col sm="12" md="10">
-                        <v-text-field @input="getTickets" v-model="ticketsSearch" color="green"
+                        <v-text-field @input="getTickets" v-model="ticketsSearch" :color="themeColor"
                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                     </v-col>
                     <v-col sm="12" md="2">
                         <v-select
                             class="mx-4"
-                            color="green"
-                            item-color="green"
+                            :color="themeColor"
+                            :item-color="themeColor"
                             :items="footerProps.itemsPerPageOptions"
                             :label="langMap.main.items_per_page"
                             @change="updateItemsCount"
@@ -50,7 +50,7 @@
                 </v-row>
             </template>
             <template v-slot:footer>
-                <v-pagination color="green"
+                <v-pagination :color="themeColor"
                               v-model="options.page"
                               :length="lastPage"
                               circle
@@ -110,7 +110,7 @@
                         <v-tooltip top>
                             <template v-slot:activator="{ on, attrs }">
                                 <v-btn
-                                    color="green"
+                                    :color="themeColor"
                                     dark
                                     fab
                                     x-small
@@ -161,8 +161,8 @@
                         <v-autocomplete
                             :label="langMap.ticket.subject"
                             dense
-                            color="green"
-                            item-color="green"
+                            :color="themeColor"
+                            :item-color="themeColor"
                             item-text="name"
                             item-value="id"
                             v-model="mergeTicketForm.parent_ticket_id"
@@ -171,8 +171,8 @@
                         <v-autocomplete
                             :label="langMap.ticket.subject"
                             dense
-                            color="green"
-                            item-color="green"
+                            :color="themeColor"
+                            :item-color="themeColor"
                             item-text="name"
                             item-value="id"
                             v-model="mergeTicketForm.child_ticket_id"
@@ -187,14 +187,14 @@
                             rows="2"
                             row-height="25"
                             shaped
-                            color="green"
+                            :color="themeColor"
                         />
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="mergeTicketDialog = false">{{langMap.main.cancel}}
+                        <v-btn :color="themeColor" darken-1 text @click="mergeTicketDialog = false">{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="green darken-1" text @click="mergeTicket()">
+                        <v-btn :color="themeColor" darken-1 text @click="mergeTicket()">
                             {{langMap.main.link}}
                         </v-btn>
                     </v-card-actions>
@@ -209,6 +209,7 @@
         data() {
             return {
                 langMap: this.$store.state.lang.lang_map,
+                themeColor: this.$store.state.themeColor,
                 clientId: 6,
                 snackbar: false,
                 actionColor: '',
@@ -217,7 +218,7 @@
                 singleExpand: false,
                 totalTickets: 0,
                 lastPage: 0,
-                loading: 'green',
+                loading: this.themeColor,
                 options: {
                     page: 1,
                     sortDesc: [true],
@@ -263,7 +264,7 @@
         },
         methods: {
             getTickets() {
-                this.loading = "green"
+                this.loading = this.themeColor
                 if (this.options.sortDesc.length <= 0) {
                     this.options.sortBy[0] = 'id'
                     this.options.sortDesc[0] = true

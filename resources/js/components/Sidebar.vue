@@ -46,8 +46,7 @@
             <v-list-group
                 prepend-icon="mdi-account"
                 :value="sidebarGroups"
-                active-class="green--text"
-                color="green"
+                :color="themeColor"
                 multiple
             >
                 <template
@@ -95,9 +94,8 @@
         <v-list dense>
             <v-list-group
                 prepend-icon="mdi-ticket-account"
-                active-class="green--text"
                 :value="sidebarGroups"
-                color="green"
+                :color="themeColor"
                 multiple
             >
                 <template
@@ -147,12 +145,11 @@
         </v-list>
         <v-divider>&nbsp;</v-divider>
         <v-list dense>
-            <v-list-group
-                prepend-icon="mdi-cog"
-                active-class="green--text"
-                :value="sidebarGroups"
-                color="green"
-                multiple
+        <v-list-group
+            prepend-icon="mdi-cog"
+            :value="sidebarGroups"
+            :color="themeColor"
+            multiple
 
             >
                 <template
@@ -195,21 +192,26 @@
 </template>
 
 <script>
+    import EventBus from './EventBus.vue';
+
     export default {
         name: "Sidebar",
         props: {value: {type: Boolean}},
-        data: () => ({
-            companyName: 'ISANDO',
-            companyLogo: '',
-            navbarStyle: 1,
-            localDrawer: null,
-            drawer: true,
-            show: true,
-            ticket: '',
-            customers: '',
-            settings: '',
-            sidebarGroups: []
-        }),
+        data() {
+            return {
+                companyName: '',
+                companyLogo: '',
+                navbarStyle: 1,
+                localDrawer: null,
+                drawer: true,
+                show: true,
+                ticket: '',
+                customers: '',
+                settings: '',
+                sidebarGroups: [],
+                themeColor: this.$store.state.themeColor
+            }
+        },
         watch: {
             value: function () {
                 this.localDrawer = this.value
@@ -230,9 +232,16 @@
             this.getCompanyName();
             this.getCompanyLogo();
             this.getCompanySettings();
-            this.ticket = this.$store.state.lang.lang_map.sidebar.ticket
-            this.customers = this.$store.state.lang.lang_map.sidebar.customers
-            this.settings = this.$store.state.lang.lang_map.sidebar.settings
+            this.ticket = this.$store.state.lang.lang_map.sidebar.ticket;
+            this.customers = this.$store.state.lang.lang_map.sidebar.customers;
+            this.settings = this.$store.state.lang.lang_map.sidebar.settings;
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
+            EventBus.$on('update-navbar-style', function (style) {
+                that.navbarStyle = style;
+            });
         },
         methods: {
             checkRoleByIds(ids) {

@@ -40,7 +40,7 @@
         computed: {
             checkPreloaded: function () {
                 return this.$store.state.roles && this.$store.state.lang
-            },
+            }
         }
     }
 </script>
