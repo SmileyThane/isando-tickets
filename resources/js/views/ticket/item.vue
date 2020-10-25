@@ -1094,6 +1094,9 @@
                                     {{ ticket.team.name }}
                                     <br>
                                 </span>
+                                 <span v-else>
+                                    <strong>{{ langMap.ticket.no_assigned }}</strong>
+                                </span>
                                 <span v-if="ticket.assigned_person !== null">
                                 <strong>{{langMap.team.members}}: </strong>
                                     {{ ticket.assigned_person.user_data.name}}
