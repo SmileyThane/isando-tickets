@@ -186,7 +186,7 @@
         <template>
             <v-dialog v-model="mergeTicketDialog" persistent max-width="480">
                 <v-card>
-                    <v-card-title class="headline">{{langMap.main.link}}</v-card-title>
+                    <v-card-title class="headline">{{langMap.ticket.merge}}</v-card-title>
                     <v-card-text>
                         <v-autocomplete
                             :label="langMap.ticket.subject"
@@ -225,7 +225,7 @@
                         <v-btn color="grey darken-1" text @click="mergeTicketDialog = false">{{langMap.main.cancel}}
                         </v-btn>
                         <v-btn :color="themeColor" darken-1 text @click="mergeTicket()">
-                            {{langMap.main.link}}
+                            {{langMap.ticket.merge}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -258,10 +258,11 @@
                     >{{langMap.ticket.create_answer}}
                     </v-btn>
                     <v-btn small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
-                           @click="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0 ? manageThirdColumn() : ticketLinkDialog = true"
+                           @click="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0 ? manageThirdColumn() : linkTicketProcess()"
                     >{{langMap.main.link}}
                     </v-btn>
                     <v-btn small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
+                           @click="mergeTicketProcess"
                     >
                         Merge
                     </v-btn>
@@ -417,11 +418,12 @@
                             dense
                         >
                             <v-list-item
-                                @click="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0 ? manageThirdColumn() : ticketLinkDialog = true"
+                                @click="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0 ? manageThirdColumn() : linkTicketProcess()"
                             >
                                 <v-list-item-title>{{langMap.main.link}}</v-list-item-title>
                             </v-list-item>
                             <v-list-item
+                                @click="mergeTicketProcess"
                             >
                                 <v-list-item-title>Merge</v-list-item-title>
                             </v-list-item>
@@ -938,7 +940,7 @@
                             <v-btn
                                 small
                                 color="#f2f2f2"
-                                @click="ticketLinkDialog = true"
+                                @click="linkTicketProcess()"
                             >
                                 New {{langMap.main.link}}
                             </v-btn>
@@ -1403,13 +1405,13 @@
                     this.rightSidebarClass = 'd-sm-none d-md-flex'
                 }
             },
-            mergeTicketProcess(id) {
-                this.mergeTicketForm.parent_ticket_id = id
+            mergeTicketProcess() {
+                this.mergeTicketForm.parent_ticket_id = this.ticket.id
                 this.mergeTicketDialog = true
                 this.minifiedTickets = true
             },
             mergeTicket() {
-                axios.post('/api/link/ticket', this.mergeTicketForm).then(response => {
+                axios.post('/api/merge/ticket', this.mergeTicketForm).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.minifiedTickets = false
@@ -1427,17 +1429,15 @@
                 this.ticket.priority_id = id
                 this.updateTicket()
             },
-            linkTicketProcess(id) {
-                this.mergeTicketForm.parent_ticket_id = id
-                this.mergeTicketDialog = true
+            linkTicketProcess() {
+                this.linkTicketForm.parent_ticket_id = this.ticket.id
+                this.ticketLinkDialog = true
                 this.minifiedTickets = true
             },
             linkTicket() {
                 axios.post('/api/link/ticket', this.mergeTicketForm).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        // this.minifiedTickets = false
-                        // this.getTickets()
                         this.linkTicketForm.merge_comment = null
                         this.linkTicketForm.parent_ticket_id = null
                         this.linkTicketForm.child_ticket_id = null
