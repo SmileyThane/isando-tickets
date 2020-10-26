@@ -129,7 +129,8 @@ class LanguageSeeder extends Seeder
     "info": "User info",
     "contact_info": "Contact info",
     "assigned_companies": "Assigned companies",
-    "new_customer": "Assign to Customer"
+    "new_customer": "Assign to Customer",
+    "is_active": "Is active"
   },
   "ticket": {
     "contact_name": "Contact name",
@@ -152,7 +153,7 @@ class LanguageSeeder extends Seeder
     "ticket_answers": "Ticket answers",
     "ticket_actions": "Ticket actions",
     "assign_to": "Assign",
-    "add_internal_note": "Add note",
+    "add_internal_note": "Add",
     "subject": "Subject",
     "internal_notes": "Internal notes",
     "ticket_history": "History",
@@ -161,7 +162,9 @@ class LanguageSeeder extends Seeder
     "availability_description": "Please provide working hours when we can contact you on the submitted issue",
     "ip_description": "IP addresses of your server for remote access if applicable",
     "access_description": "Please provide login details to your server for Teamviewer access, if applicable",
-    "answer_description": "Write you answer here..."
+    "answer_description": "Write you answer here...",
+    "no_assigned": "No agent assigned",
+    "merge": "Merge"
   },
    "main":{
 "create": "create",
@@ -431,7 +434,8 @@ class LanguageSeeder extends Seeder
   "info": "Allgemeines",
   "contact_info": "Zusätzliche Infos",
   "assigned_companies": "Kontakte",
-  "new_customer": "Kontakt hinzufügen"
+  "new_customer": "Kontakt hinzufügen",
+  "is_active": "Is active"
   },
   "ticket": {
     "contact_name": "Kontaktname",
@@ -463,7 +467,9 @@ class LanguageSeeder extends Seeder
     "availability_description": "Bitte teilen Sie uns mit, zu welcher Zeit Sie verfügbar sind, damit wir Sie umgehend kontaktieren können.",
     "ip_description": " IP-Adressen Ihres Servers für den Fernzugriff, falls vorhanden.",
     "access_description": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
-    "answer_description": "Schreiben Sie Ihre Antwort hier..."
+    "answer_description": "Schreiben Sie Ihre Antwort hier...",
+    "no_assigned": "No agent assigned",
+    "merge": "Merge"
   },
    "main":{
    "create": "erstellen",

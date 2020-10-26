@@ -5,6 +5,7 @@
         dark
     >
         <v-app-bar-nav-icon
+            v-show="!localDrawer"
             @click.stop="localDrawer = !localDrawer"
         ></v-app-bar-nav-icon>
         <v-toolbar-title
