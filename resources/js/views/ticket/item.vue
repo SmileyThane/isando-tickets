@@ -698,8 +698,8 @@
                                  <span v-if="ticket.contact !== null" class="float-md-right">
                                      {{ ticket.contact.user_data.name}}
                                      {{ ticket.contact.user_data.surname}}
+                                     <br/>
                                   </span>
-                                  <br/>
                                   <span class="float-md-right">
                                      {{ ticket.from.name }}
                                   </span>
