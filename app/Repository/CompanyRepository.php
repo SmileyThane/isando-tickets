@@ -220,10 +220,10 @@ class CompanyRepository
         return true;
     }
 
-    public function updatelogo(Request $request, $id = null)
+    public function updatelogo(Request $request, $companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $company = Company::find($id);
+        $company = Company::findOrFail($companyId);
 
         if (!Storage::exists('public/logos')) {
             Storage::makeDirectory('public/logos');

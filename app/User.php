@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -46,19 +47,34 @@ class User extends Authenticatable
         return $this->hasOne(CompanyUser::class, 'user_id', 'id');
     }
 
-    public function phones(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function phones(): MorphMany
     {
         return $this->morphMany(Phone::class, 'entity');
     }
 
-    public function addresses()
+    public function phoneTypes(): MorphMany
+    {
+        return $this->morphMany(PhoneType::class, 'entity');
+    }
+
+    public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'entity');
     }
 
-    public function socials()
+    public function addressTypes(): MorphMany
+    {
+        return $this->morphMany(AddressType::class, 'entity');
+    }
+
+    public function socials(): MorphMany
     {
         return $this->morphMany(Social::class, 'entity');
+    }
+
+    public function socialTypes(): MorphMany
+    {
+        return $this->morphMany(SocialType::class, 'entity');
     }
 
     public function getFullNameAttribute()
