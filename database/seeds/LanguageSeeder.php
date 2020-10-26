@@ -163,7 +163,8 @@ class LanguageSeeder extends Seeder
     "ip_description": "IP addresses of your server for remote access if applicable",
     "access_description": "Please provide login details to your server for Teamviewer access, if applicable",
     "answer_description": "Write you answer here...",
-    "no_assigned": "No agent assigned"
+    "no_assigned": "No agent assigned",
+    "merge": "Merge"
   },
    "main":{
 "create": "create",
@@ -463,7 +464,8 @@ class LanguageSeeder extends Seeder
     "ip_description": " IP-Adressen Ihres Servers für den Fernzugriff, falls vorhanden.",
     "access_description": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
     "answer_description": "Schreiben Sie Ihre Antwort hier...",
-    "no_assigned": "No agent assigned"
+    "no_assigned": "No agent assigned",
+    "merge": "Merge"
   },
    "main":{
    "create": "erstellen",
