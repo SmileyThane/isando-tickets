@@ -299,7 +299,9 @@ class TicketRepository
         $ticket = Ticket::find($request->child_ticket_id);
         $ticket->parent_id = $request->parent_ticket_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->child_ticket_id, null, 'ticket_merged');
+        $request->status_id = 5;
+        $this->updateStatus($request, $request->child_ticket_id);
+        $this->addHistoryItem($ticket->id, null, 'ticket_merged');
         return true;
     }
 
