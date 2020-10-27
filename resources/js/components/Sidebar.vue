@@ -4,13 +4,33 @@
         :mini-variant="localDrawer"
         app
     >
-        <v-list-item v-if="this.navbarStyle == 1 || !this.companyLogo">
+        <v-list-item v-if="this.navbarStyle == 2 && this.companyLogo">
+            <v-list-item-icon>
+                <v-img contain max-height="3em" max-width="30" :src="companyLogo"></v-img>
+            </v-list-item-icon>
             <v-list-item-content>
                 <v-list-item-title class="title">
-                    {{ companyName }} | Ticketing
+                    {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
                 </v-list-item-subtitle>
+            </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-else-if="this.navbarStyle == 3 && this.companyLogo">
+            <v-list-item-content>
+                <v-list-item-icon>
+                    <v-img contain :src="companyLogo"></v-img>
+                </v-list-item-icon>
+                <v-list-item-title class="title">
+                    {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
+                </v-list-item-title>
+            </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-else-if="this.navbarStyle == 4 && this.companyLogo">
+            <v-list-item-content>
+                <v-list-item-icon>
+                    <v-img contain :src="companyLogo"></v-img>
+                </v-list-item-icon>
             </v-list-item-content>
         </v-list-item>
         <v-list-item v-else>
@@ -19,13 +39,10 @@
             </v-list-item-icon>
             <v-list-item-content>
                 <v-list-item-title class="title">
-                    <v-list-item-content>{{ companyName }} | Ticketing</v-list-item-content>
+                    {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
                 </v-list-item-title>
-                <v-list-item-subtitle>
-                </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
-
         <v-divider>&nbsp;</v-divider>
         <v-list dense>
             <v-list-item v-show="localDrawer"
@@ -242,6 +259,9 @@
             EventBus.$on('update-navbar-style', function (style) {
                 that.navbarStyle = style;
             });
+            EventBus.$on('update-navbar-logo', function (logo) {
+                that.companyLogo = logo;
+            });
         },
         methods: {
             checkRoleByIds(ids) {
@@ -266,7 +286,6 @@
                     response = response.data;
                     if (response.success === true) {
                         this.companyLogo = response.data;
-                        this.changeAppTitle();
                     }
                 });
             },

@@ -35,13 +35,13 @@ class SocialController extends Controller
 
     public function addType(Request $request)
     {
-        $type = $this->socialRepo->createType($request->name, $request->icon);
+        $type = $this->socialRepo->createType($request->name, $request->name_de, $request->icon);
         return self::showResponse(true, $type);
     }
 
     public function updateType(Request $request, $id)
     {
-        $type = $this->socialRepo->updateType($id, $request->name, $request->icon);
+        $type = $this->socialRepo->updateType($id, $request->name, $request->name_de, $request->icon);
         return self::showResponse(true, $type);
     }
 
@@ -53,25 +53,5 @@ class SocialController extends Controller
     public function getTypes()
     {
         return self::showResponse(true, $this->socialRepo->getTypesInCompanyContext());
-    }
-
-    public function getAllTypes()
-    {
-        return self::showResponse(true, $this->socialRepo->getAllTypes());
-    }
-
-    public function getCompanyTypes()
-    {
-        return self::showResponse(true, $this->socialRepo->getCompanyTypeIds());
-    }
-
-    public function addCompanyType(Request $request)
-    {
-        $country = $this->socialRepo->createCompanyType($request->social_type_id, $request->company_id);
-        return self::showResponse(true, $country);
-    }
-    public function deleteCompanyType(Request $request, $id)
-    {
-        return self::showResponse($this->socialRepo->deleteCompanyType($id, $request->company_id));
     }
 }

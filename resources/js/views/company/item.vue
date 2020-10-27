@@ -1346,7 +1346,7 @@
                 this.company.teams = null;
 
                 if (this.company.logo) {
-                    var formData = new FormData();
+                    let formData = new FormData();
                     formData.append('logo', this.company.logo);
                     axios.post(
                         `/api/company/${this.$route.params.id}/logo`,

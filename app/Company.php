@@ -42,14 +42,29 @@ class Company extends Model
         return $this->morphMany(Phone::class, 'entity');
     }
 
+    public function phoneTypes(): MorphMany
+    {
+        return $this->morphMany(PhoneType::class, 'entity');
+    }
+
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'entity');
     }
 
+    public function addressTypes(): MorphMany
+    {
+        return $this->morphMany(AddressType::class, 'entity');
+    }
+
     public function socials(): MorphMany
     {
         return $this->morphMany(Social::class, 'entity');
+    }
+
+    public function socialTypes(): MorphMany
+    {
+        return $this->morphMany(SocialType::class, 'entity');
     }
 
     public function productCategories(): HasMany

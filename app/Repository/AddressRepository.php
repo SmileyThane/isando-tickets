@@ -3,10 +3,9 @@
 
 namespace App\Repository;
 
-
 use App\Address;
 use App\AddressType;
-use App\CompanyAddressType;
+use App\Company;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -59,20 +58,26 @@ class AddressRepository
         }
     }
 
-    public function createType($name, $icon): AddressType
+    public function createType($name, $name_de, $icon, $companyId = null): AddressType
     {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+
         return AddressType::firstOrCreate([
-                'name' => $name,
-                'icon' => $icon
+            'entity_type' => Company::class,
+            'entity_id' => $companyId,
+            'name' => $name,
+            'name_de' => $name_de,
+            'icon' => $icon
         ]);
     }
 
-    public function updateType($id, $name, $icon): AddressType
+    public function updateType($id, $name, $name_de, $icon): AddressType
     {
         $type = AddressType::findOrFail($id);
         $type->update([
-                'name' => $name,
-                'icon' => $icon
+            'name' => $name,
+            'name_de' => $name_de,
+            'icon' => $icon
         ]);
         $type->save();
         return $type;
@@ -88,40 +93,9 @@ class AddressRepository
         }
     }
 
-    public function getAllTypes()
-    {
-        return AddressType::all();
-
-    }
     public function getTypesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $companyTypes = CompanyAddressType::where('company_id', $companyId)->pluck('address_type_id');
-        return AddressType::whereIn('id', $companyTypes)->get();
-    }
-
-    public function getCompanyTypeIds($companyId = null)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        return CompanyAddressType::where('company_id', $companyId)->pluck('address_type_id');
-    }
-
-    public function createCompanyType($addressTypeId, $companyId = null)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        return CompanyAddressType::firstOrCreate([
-            'address_type_id' => $addressTypeId,
-            'company_id' => $companyId
-        ]);
-    }
-
-    public function deleteCompanyType($addressTypeId, $companyId = null)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        try {
-            return (bool) CompanyAddressType::where('address_type_id', $addressTypeId)->where('company_id', $companyId)->delete();
-        } catch (\Throwable $throwable) {
-            return false;
-        }
+        return AddressType::where('entity_type', Company::class)->where('entity_id', $companyId)->get();
     }
 }

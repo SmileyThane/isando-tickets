@@ -35,13 +35,13 @@ class AddressController extends Controller
 
     public function addType(Request $request)
     {
-        $type = $this->addressRepo->createType($request->name, $request->icon);
+        $type = $this->addressRepo->createType($request->name, $request->name_de, $request->icon);
         return self::showResponse(true, $type);
     }
 
     public function updateType(Request $request, $id)
     {
-        $type = $this->addressRepo->updateType($id, $request->name, $request->icon);
+        $type = $this->addressRepo->updateType($id, $request->name, $request->name_de, $request->icon);
         return self::showResponse(true, $type);
     }
 
@@ -53,25 +53,5 @@ class AddressController extends Controller
     public function getTypes()
     {
         return self::showResponse(true, $this->addressRepo->getTypesInCompanyContext());
-    }
-
-    public function getAllTypes()
-    {
-        return self::showResponse(true, $this->addressRepo->getAllTypes());
-    }
-
-    public function getCompanyTypes()
-    {
-        return self::showResponse(true, $this->addressRepo->getCompanyTypeIds());
-    }
-
-    public function addCompanyType(Request $request)
-    {
-        $country = $this->addressRepo->createCompanyType($request->address_type_id, $request->company_id);
-        return self::showResponse(true, $country);
-    }
-    public function deleteCompanyType(Request $request, $id)
-    {
-        return self::showResponse($this->addressRepo->deleteCompanyType($id, $request->company_id));
     }
 }
