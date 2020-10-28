@@ -4,28 +4,53 @@
         :mini-variant="localDrawer"
         app
     >
-        <v-list-item v-if="this.navbarStyle == 1 || !this.companyLogo">
+        <v-list-item v-if="this.navbarStyle == 2 && this.companyLogo">
+            <v-list-item-icon>
+                <v-img contain max-height="3em" max-width="30" :src="companyLogo"></v-img>
+            </v-list-item-icon>
             <v-list-item-content>
                 <v-list-item-title class="title">
-                    {{ companyName }} | Ticketing
+                    {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
                 </v-list-item-subtitle>
+            </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-else-if="this.navbarStyle == 3 && this.companyLogo">
+            <v-list-item-content>
+                <v-list-item-icon>
+                    <v-img contain :src="companyLogo"></v-img>
+                </v-list-item-icon>
+                <v-list-item-title class="title">
+                    {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
+                </v-list-item-title>
+            </v-list-item-content>
+        </v-list-item>
+        <v-list-item v-else-if="this.navbarStyle == 4 && this.companyLogo">
+            <v-list-item-content>
+                <v-list-item-icon>
+                    <v-img contain :src="companyLogo"></v-img>
+                </v-list-item-icon>
             </v-list-item-content>
         </v-list-item>
         <v-list-item v-else>
-            <v-list-item-icon><v-img contain max-height="30" max-width="30" :src="companyLogo" left></v-img></v-list-item-icon>
+            <v-list-item-icon>
+                <v-img contain max-height="30" max-width="30" :src="companyLogo" left></v-img>
+            </v-list-item-icon>
             <v-list-item-content>
                 <v-list-item-title class="title">
-                    <v-list-item-content>{{ companyName }} | Ticketing</v-list-item-content>
+                    {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
                 </v-list-item-title>
-                <v-list-item-subtitle>
-                </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
-
         <v-divider>&nbsp;</v-divider>
         <v-list dense>
+            <v-list-item v-show="localDrawer"
+                         @click.stop="localDrawer = !localDrawer">
+                <v-list-item-action>
+                    <v-icon> mdi-menu</v-icon>
+                </v-list-item-action>
+            </v-list-item>
             <v-list-item link to="/home">
                 <v-list-item-action>
                     <v-icon>mdi-home</v-icon>
@@ -34,11 +59,11 @@
                     <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.home}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
+            <v-divider>&nbsp;</v-divider>
             <v-list-group
                 prepend-icon="mdi-account"
                 :value="sidebarGroups"
-                active-class="green--text"
-                color="green"
+                :color="themeColor"
                 multiple
             >
                 <template
@@ -81,11 +106,13 @@
                     <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.teams}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
+        </v-list>
+        <v-divider>&nbsp;</v-divider>
+        <v-list dense>
             <v-list-group
                 prepend-icon="mdi-ticket-account"
-                active-class="green--text"
                 :value="sidebarGroups"
-                color="green"
+                :color="themeColor"
                 multiple
             >
                 <template
@@ -132,12 +159,14 @@
                     <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.knowledge_base}}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
-            <v-list-group
-                prepend-icon="mdi-cog"
-                active-class="green--text"
-                :value="sidebarGroups"
-                color="green"
-                multiple
+        </v-list>
+        <v-divider>&nbsp;</v-divider>
+        <v-list dense>
+        <v-list-group
+            prepend-icon="mdi-cog"
+            :value="sidebarGroups"
+            :color="themeColor"
+            multiple
 
             >
                 <template
@@ -156,7 +185,7 @@
                         <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.companies}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/settings/system" v-if="checkRoleByIds([1,2])">
+                <v-list-item link to="/settings/system" v-if="checkRoleByIds([1,2,3])">
                     <v-list-item-action>
                         <v-icon>mdi-folder-cog-outline</v-icon>
                     </v-list-item-action>
@@ -165,7 +194,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/" v-if="checkRoleByIds([1,2])">
+                <v-list-item link to="/" v-if="checkRoleByIds([1,2,3])">
                     <v-list-item-action>
                         <v-icon>mdi-cogs</v-icon>
                     </v-list-item-action>
@@ -180,21 +209,26 @@
 </template>
 
 <script>
+    import EventBus from './EventBus.vue';
+
     export default {
         name: "Sidebar",
         props: {value: {type: Boolean}},
-        data: () => ({
-            companyName: 'ISANDO',
-            companyLogo: '',
-            navbarStyle: 1,
-            localDrawer: null,
-            drawer: true,
-            show: true,
-            ticket: '',
-            customers: '',
-            settings: '',
-            sidebarGroups: []
-        }),
+        data() {
+            return {
+                companyName: '',
+                companyLogo: '',
+                navbarStyle: 1,
+                localDrawer: null,
+                drawer: true,
+                show: true,
+                ticket: '',
+                customers: '',
+                settings: '',
+                sidebarGroups: [],
+                themeColor: this.$store.state.themeColor
+            }
+        },
         watch: {
             value: function () {
                 this.localDrawer = this.value
@@ -215,9 +249,19 @@
             this.getCompanyName();
             this.getCompanyLogo();
             this.getCompanySettings();
-            this.ticket = this.$store.state.lang.lang_map.sidebar.ticket
-            this.customers = this.$store.state.lang.lang_map.sidebar.customers
-            this.settings = this.$store.state.lang.lang_map.sidebar.settings
+            this.ticket = this.$store.state.lang.lang_map.sidebar.ticket;
+            this.customers = this.$store.state.lang.lang_map.sidebar.customers;
+            this.settings = this.$store.state.lang.lang_map.sidebar.settings;
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
+            EventBus.$on('update-navbar-style', function (style) {
+                that.navbarStyle = style;
+            });
+            EventBus.$on('update-navbar-logo', function (logo) {
+                that.companyLogo = logo;
+            });
         },
         methods: {
             checkRoleByIds(ids) {
@@ -230,7 +274,7 @@
                 return roleExists
             },
             getCompanyName() {
-               axios.get(`/api/main_company_name`)
+                axios.get(`/api/main_company_name`)
                     .then(
                         response => {
                             this.companyName = response.data.data
@@ -242,7 +286,6 @@
                     response = response.data;
                     if (response.success === true) {
                         this.companyLogo = response.data;
-                        this.changeAppTitle();
                     }
                 });
             },

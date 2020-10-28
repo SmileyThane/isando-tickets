@@ -15,7 +15,7 @@
                 <v-card class="elevation-6">
                     <v-toolbar
                         dense
-                        color="green"
+                        :color="themeColor"
                         dark
                         flat
                     >
@@ -30,7 +30,7 @@
                         <v-form>
                             <v-row>
                                 <v-text-field
-                                    color="green"
+                                    :color="themeColor"
                                     :label="this.$store.state.lang.lang_map.main.title_before_name"
                                     name="title_before_name"
                                     prepend-icon="mdi-book-account-outline"
@@ -43,7 +43,7 @@
                                     dense
                                 ></v-text-field>
                                 <v-text-field
-                                    color="green"
+                                    :color="themeColor"
                                     :label="this.$store.state.lang.lang_map.main.title"
                                     name="title"
                                     prepend-icon="mdi-book-account-outline"
@@ -56,7 +56,7 @@
                                     dense
                                 ></v-text-field>
                                 <v-text-field
-                                    color="green"
+                                    :color="themeColor"
                                     :label="this.$store.state.lang.lang_map.main.first_name"
                                     name="name"
                                     prepend-icon="mdi-book-account-outline"
@@ -70,7 +70,7 @@
                                     dense
                                 ></v-text-field>
                                 <v-text-field
-                                    color="green"
+                                    :color="themeColor"
                                     :label="this.$store.state.lang.lang_map.main.last_name"
                                     name="surname"
                                     prepend-icon="mdi-book-account-outline"
@@ -83,7 +83,7 @@
                                     dense
                                 ></v-text-field>
                                 <v-text-field
-                                    color="green"
+                                    :color="themeColor"
                                     :label="this.$store.state.lang.lang_map.main.email"
                                     name="email"
                                     prepend-icon="mdi-mail"
@@ -97,7 +97,7 @@
                                     dense
                                 ></v-text-field>
                                 <v-text-field
-                                    color="green"
+                                    :color="themeColor"
                                     id="password"
                                     :label="this.$store.state.lang.lang_map.main.password"
                                     name="password"
@@ -113,9 +113,9 @@
                                 ></v-text-field>
                                 <v-select
                                     :label="this.$store.state.lang.lang_map.main.country"
-                                    color="green"
+                                    :color="themeColor"
                                     class="col-md-4"
-                                    item-color="green"
+                                    :item-color="themeColor"
                                     name="country"
                                     prepend-icon="mdi-map"
                                     item-text="name"
@@ -129,7 +129,7 @@
                                     dense
                                 />
                                 <v-text-field
-                                    color="green"
+                                    :color="themeColor"
                                     label="Anredeform"
                                     name="anredeform"
                                     prepend-icon="mdi-mail"
@@ -144,9 +144,9 @@
                                 ></v-text-field>
                                 <v-select
                                     :label="this.$store.state.lang.lang_map.main.language"
-                                    color="green"
+                                    :color="themeColor"
                                     class="col-md-4"
-                                    item-color="green"
+                                    :item-color="themeColor"
                                     name="language"
                                     prepend-icon="mdi-mail"
                                     item-text="name"
@@ -160,9 +160,9 @@
                                 />
                                 <v-select
                                     :label="this.$store.state.lang.lang_map.main.timezone"
-                                    color="green"
+                                    :color="themeColor"
                                     class="col-md-6"
-                                    item-color="green"
+                                    :item-color="themeColor"
                                     name="timezone"
                                     prepend-icon="mdi-timetable"
                                     item-text="text"
@@ -183,7 +183,7 @@
                 <v-card class="elevation-6">
                     <v-toolbar
                         dense
-                        color="green"
+                        :color="themeColor"
                         dark
                         flat
                     >
@@ -201,7 +201,7 @@
                                         dense
                                         subheader
                                     >
-                                        <v-list-item-group color="green">
+                                        <v-list-item-group :color="themeColor">
                                             <v-list-item
                                                 v-for="(item, i) in userData.phones"
                                                 :key="item.id"
@@ -257,8 +257,8 @@
                                                     <div class="row">
                                                         <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 v-model="phoneForm.phone"
                                                                 :label="this.$store.state.lang.lang_map.main.phone"
                                                                 dense
@@ -266,8 +266,8 @@
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
                                                             <v-select
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 item-text="name"
                                                                 item-value="id"
                                                                 v-model="phoneForm.phone_type"
@@ -289,7 +289,7 @@
                                                             right
                                                             bottom
                                                             small
-                                                            color="green"
+                                                            :color="themeColor"
                                                             @click="addPhone"
                                                         >
                                                             <v-icon>mdi-plus</v-icon>
@@ -310,8 +310,8 @@
                                                     <div class="row">
                                                         <v-col cols="md-12" class="pa-1">
                                                             <v-text-field
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 v-model="addressForm.address.address"
                                                                 :label="this.$store.state.lang.lang_map.main.address_line + ' 1'"
                                                                 dense
@@ -319,8 +319,8 @@
                                                         </v-col>
                                                         <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 v-model="addressForm.address.address_line_2"
                                                                 :label="this.$store.state.lang.lang_map.main.address_line + ' 2'"
                                                                 dense
@@ -328,8 +328,8 @@
                                                         </v-col>
                                                         <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 v-model="addressForm.address.postal_code"
                                                                 :label="this.$store.state.lang.lang_map.main.postal_code"
                                                                 dense
@@ -337,8 +337,8 @@
                                                         </v-col>
                                                         <v-col cols="md-3" class="pa-1">
                                                             <v-text-field
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 v-model="addressForm.address.city"
                                                                 :label="this.$store.state.lang.lang_map.main.city"
                                                                 dense
@@ -346,8 +346,8 @@
                                                         </v-col>
                                                         <v-col cols="md-3" class="pa-1">
                                                             <v-select
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 item-text="name"
                                                                 item-value="name"
                                                                 v-model="addressForm.address.country"
@@ -358,8 +358,8 @@
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
                                                             <v-select
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 item-text="name"
                                                                 item-value="id"
                                                                 v-model="addressForm.address_type"
@@ -381,7 +381,7 @@
                                                             right
                                                             bottom
                                                             small
-                                                            color="green"
+                                                            :color="themeColor"
                                                             @click="addAddress"
                                                         >
                                                             <v-icon>mdi-plus</v-icon>
@@ -412,6 +412,7 @@
                 snackbarMessage: '',
                 errors: [],
                 enableToEdit: false,
+                themeColor: this.$store.state.themeColor,
                 langMap: this.$store.state.lang.lang_map,
                 userData: {
                     title: '',
@@ -450,7 +451,7 @@
                 addressTypes: [],
                 languages: [],
                 timezones: [],
-                countries: [],
+                countries: []
             }
         },
         mounted() {

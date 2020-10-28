@@ -14,7 +14,7 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        color="green"
+                        :color="themeColor"
                         dark
                         flat
                     >
@@ -28,7 +28,7 @@
                     <v-card-text>
                         <v-form>
                             <v-text-field
-                                color="green"
+                                :color="themeColor"
                                 :label="langMap.main.name"
                                 name="name"
                                 prepend-icon="mdi-rename-box"
@@ -40,7 +40,7 @@
                                 dense
                             ></v-text-field>
                             <v-text-field
-                                color="green"
+                                :color="themeColor"
                                 :label="langMap.main.description"
                                 name="description"
                                 prepend-icon="mdi-comment-text"
@@ -59,7 +59,7 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        color="green"
+                        :color="themeColor"
                         dark
                         flat
                     >
@@ -89,8 +89,8 @@
                                         <div class="row">
                                             <v-col cols="md-12">
                                                 <v-autocomplete
-                                                    color="green"
-                                                    item-color="green"
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
                                                     item-text="name"
                                                     item-value="id"
                                                     v-model="supplierForm.client_id"
@@ -103,7 +103,7 @@
                                                 fab
                                                 right
                                                 bottom
-                                                color="green"
+                                                :color="themeColor"
                                                 @click="addProductClient"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
@@ -128,6 +128,7 @@
             return {
                 snackbar: false,
                 actionColor: '',
+                themeColor: this.$store.state.themeColor,
                 snackbarMessage: '',
                 enableToEdit: false,
                 errors: [],

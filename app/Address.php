@@ -20,4 +20,5 @@ class Address extends Model
     {
         return $this->hasOne(AddressType::class, 'id', 'address_type');
     }
+
 }

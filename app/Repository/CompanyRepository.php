@@ -76,7 +76,8 @@ class CompanyRepository
             if (!Storage::exists('public/logos')) {
                 Storage::makeDirectory('public/logos');
             }
-            $file = $request->file('logo')->storeAs('public/logos', $company->id . '.' . $extension = $request->file('logo')->extension());
+
+            $file = $request->file('logo')->storeAs('public/logos', $company->id  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
             $company->logo_url = Storage::url($file);
             $company->save();
 
@@ -96,7 +97,8 @@ class CompanyRepository
             if (!Storage::exists('public/logos')) {
                 Storage::makeDirectory('public/logos');
             }
-            $file = $request->file('logo')->storeAs('public/logos',$company->id . '.' . $extension = $request->file('logo')->extension());
+
+            $file = $request->file('logo')->storeAs('public/logos', $company->id  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
             $company->logo_url = Storage::url($file);
         }
 
@@ -209,21 +211,25 @@ class CompanyRepository
             $data['ticket_number_format'] = $request->ticket_number_format;
         }
 
+        if ($request->has('theme_color')) {
+            $data['theme_color'] = $request->theme_color;
+        }
+
         $settings->data = $data;
         $settings->save();
         return true;
     }
 
-    public function updatelogo(Request $request, $id = null)
+    public function updatelogo(Request $request, $companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $company = Company::find($id);
+        $company = Company::findOrFail($companyId);
 
         if (!Storage::exists('public/logos')) {
             Storage::makeDirectory('public/logos');
         }
-        $file = $request->file('logo')->storeAs('public/logos', $companyId . '.' . $extension = $request->file('logo')->extension());
-        $company->logo_url =Storage::url($file);
+        $file = $request->file('logo')->storeAs('public/logos', $companyId  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
+        $company->logo_url = Storage::url($file);
         $company->save();
         return $company;
     }

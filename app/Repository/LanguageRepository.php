@@ -14,14 +14,14 @@ class LanguageRepository
 
     public function getAllLanguages()
     {
-        return Language::select('id', 'name', 'locale')->get();
+        return Language::select(['id', 'name', 'locale'])->orderBy('id', 'ASC')->get();
 
     }
     public function getLanguagesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $companyLangs = CompanyLanguage::where('company_id', $companyId)->pluck('id');
-        return Language::select('id', 'name', 'locale')->whereIn('id', $companyLangs)->get();
+        $companyLangs = CompanyLanguage::where('company_id', $companyId)->pluck('language_id');
+        return Language::select(['id', 'name', 'locale'])->whereIn('id', $companyLangs)->orderBy('id', 'ASC')->get();
     }
 
     public function getCompanyLanguageIds($companyId = null)

@@ -40,38 +40,18 @@ class PhoneController extends Controller
 
     public function addType(Request $request)
     {
-        $type = $this->phoneRepo->createType($request->name, $request->icon);
+        $type = $this->phoneRepo->createType($request->name, $request->name_de, $request->icon);
         return self::showResponse(true, $type);
     }
 
     public function updateType(Request $request, $id)
     {
-        $type = $this->phoneRepo->updateType($id, $request->name, $request->icon);
+        $type = $this->phoneRepo->updateType($id, $request->name, $request->name_de, $request->icon);
         return self::showResponse(true, $type);
     }
 
     public function deleteType($id)
     {
         return self::showResponse($this->phoneRepo->deleteType($id));
-    }
-
-    public function getAllTypes()
-    {
-        return self::showResponse(true, $this->phoneRepo->getAllTypes());
-    }
-
-    public function getCompanyTypes()
-    {
-        return self::showResponse(true, $this->phoneRepo->getCompanyTypeIds());
-    }
-
-    public function addCompanyType(Request $request)
-    {
-        $country = $this->phoneRepo->createCompanyType($request->phone_type_id, $request->company_id);
-        return self::showResponse(true, $country);
-    }
-    public function deleteCompanyType(Request $request, $id)
-    {
-        return self::showResponse($this->phoneRepo->deleteCompanyType($id, $request->company_id));
     }
 }

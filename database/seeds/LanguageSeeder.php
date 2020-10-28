@@ -129,7 +129,8 @@ class LanguageSeeder extends Seeder
     "info": "User info",
     "contact_info": "Contact info",
     "assigned_companies": "Assigned companies",
-    "new_customer": "Assign to Customer"
+    "new_customer": "Assign to Customer",
+    "is_active": "Is active"
   },
   "ticket": {
     "contact_name": "Contact name",
@@ -152,7 +153,7 @@ class LanguageSeeder extends Seeder
     "ticket_answers": "Ticket answers",
     "ticket_actions": "Ticket actions",
     "assign_to": "Assign",
-    "add_internal_note": "Add note",
+    "add_internal_note": "Add",
     "subject": "Subject",
     "internal_notes": "Internal notes",
     "ticket_history": "History",
@@ -161,7 +162,9 @@ class LanguageSeeder extends Seeder
     "availability_description": "Please provide working hours when we can contact you on the submitted issue",
     "ip_description": "IP addresses of your server for remote access if applicable",
     "access_description": "Please provide login details to your server for Teamviewer access, if applicable",
-    "answer_description": "Write you answer here..."
+    "answer_description": "Write you answer here...",
+    "no_assigned": "No agent assigned",
+    "merge": "Merge"
   },
    "main":{
 "create": "create",
@@ -192,6 +195,7 @@ class LanguageSeeder extends Seeder
 "email": "Email",
 "password": "password",
 "name": "Name",
+"name_de": "Name (in German)",
 "description": "Description",
 "new_phone": "New phone",
 "new_address": "New Address",
@@ -280,19 +284,23 @@ class LanguageSeeder extends Seeder
 "link": "Link",
 "none": "None",
 "generic_error": "Something went wrong",
-"name": "Name",
-"icon": "Icon (MD)"
+"icon": "Icon",
+"ticketing": "Ticketing"
 },
   "system_settings": {
     "title": "System settings",
     "display": "Display",
     "navbar_style": "Navigation bar style",
     "navbar_no_logo": "Without company logo",
-    "navbar_logo": "With company logo",
+    "navbar_logo": "With company logo and company name, single line",
+    "navbar_logo_2": "With company logo and company name, two lines",
+    "navbar_only_logo": "Only company logo",
     "ticket_number_format": "Ticket number format",
+    "ticket_number_format_help": "Use %{yy} or %{yyyy} for year (2 or 4 digits), %{mm} - month number, %{dd} - day, %{#} - daily incremental ticket number with leading zero (example: ${##}: 01, ${####} - 0001)",
     "default_timezone": "Default timezone",
     "languages": "Languages",
     "countries": "Countries",
+    "theme_color": "Theme color",
     "phone_types": "Phone types",
     "new_phone_type": "Add new phone type",
     "phone_type_created": "Phone type created",
@@ -391,6 +399,7 @@ class LanguageSeeder extends Seeder
   "company_number": "Firmennummer",
   "registration_date": "datum der registrierung",
   "info":"Firmeninfo",
+  "logo": "Firmenlogo",
   "additional_info":"Zusätzliche Infos",
   "company_contacts": "Unternehmenskontakte",
   "resend_invite": "Einladen",
@@ -425,7 +434,8 @@ class LanguageSeeder extends Seeder
   "info": "Allgemeines",
   "contact_info": "Zusätzliche Infos",
   "assigned_companies": "Kontakte",
-  "new_customer": "Kontakt hinzufügen"
+  "new_customer": "Kontakt hinzufügen",
+  "is_active": "Is active"
   },
   "ticket": {
     "contact_name": "Kontaktname",
@@ -457,7 +467,9 @@ class LanguageSeeder extends Seeder
     "availability_description": "Bitte teilen Sie uns mit, zu welcher Zeit Sie verfügbar sind, damit wir Sie umgehend kontaktieren können.",
     "ip_description": " IP-Adressen Ihres Servers für den Fernzugriff, falls vorhanden.",
     "access_description": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
-    "answer_description": "Schreiben Sie Ihre Antwort hier..."
+    "answer_description": "Schreiben Sie Ihre Antwort hier...",
+    "no_assigned": "No agent assigned",
+    "merge": "Merge"
   },
    "main":{
    "create": "erstellen",
@@ -488,6 +500,7 @@ class LanguageSeeder extends Seeder
 "email": "E-Mail",
 "password": "Kennwort",
 "name": "Name",
+"name_de": "Name (Deutsch)",
 "description": "Beschreibung",
 "new_phone": "Telefon",
 "new_address": "Adresse",
@@ -573,8 +586,44 @@ class LanguageSeeder extends Seeder
 "profile_main": "profile",
 "profile": "Profil",
 "subject": "Gegenstand",
-"link": "Verknüpfung"
+"link": "Verknüpfung",
+"none": "Keiner",
+"generic_error": "Etwas ist schief gelaufen",
+"icon": "Symbol",
+"ticketing": "Buchung"
  },
+  "system_settings": {
+    "title": "Systemeinstellungen",
+    "display": "Anzeige",
+    "navbar_style": "Navigation Sidebar Design",
+    "navbar_no_logo": "Ohne Firmenlogo",
+    "navbar_logo": "Mit Firmenlogo",
+    "navbar_logo": "Mit Firmenlogo und Firmenname, einzeilig",
+    "navbar_logo_2": "Mit Firmenlogo und Firmenname, zwei Zeilen",
+    "navbar_only_logo": "Nur Firmenlogo",
+    "ticket_number_format": "Ticketnummer Format",
+    "ticket_number_format_help": "Use %{yy} or %{yyyy} for year (2 or 4 digits), %{mm} - month number, %{dd} - day, %{#} - daily incremental ticket number with leading zero (example: ${##}: 01, ${####} - 0001)",
+    "default_timezone": "Standard Zeitzone",
+    "languages": "Sprachen",
+    "countries": "Länder",
+    "theme_color": "Theme color",
+    "phone_types": "Telefontypen",
+    "new_phone_type": "Neuen Telefontyp hinzfügen",
+    "phone_type_created": "Phone type created",
+    "phone_type_deleted": "Phone type deleted",
+    "phone_type_updated": "Phone type updated",
+    "social_types": "Soziale Netzweke",
+    "new_social_type": "Neuen sozialen Link hinzfügen",
+    "social_type_created": "Social link type created",
+    "social_type_deleted": "Social link type deleted",
+    "social_type_updated": "Social type updated",
+    "address_types": "Adresstypen",
+    "new_address_type": "Neuen Adresstyp hinzfügen",
+    "address_type_created": "Address type created",
+    "address_type_deleted": "Address type deleted",
+    "address_type_updated": "Address type updated",
+    "update_type_info": "Update information"
+  },
  "exceptions": {
 
  }

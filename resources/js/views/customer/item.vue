@@ -12,7 +12,7 @@
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar
-                        color="green"
+                        :color="themeColor"
                         dense
                         dark
                         flat
@@ -28,7 +28,7 @@
                     <v-card-text>
                         <v-form>
                             <v-text-field
-                                color="green"
+                                :color="themeColor"
                                 :label="langMap.company.name"
                                 name="client_name"
                                 prepend-icon="mdi-rename-box"
@@ -39,7 +39,7 @@
                                 dense
                             ></v-text-field>
                             <v-text-field
-                                color="green"
+                                :color="themeColor"
                                 :label="langMap.company.description"
                                 name="client_description"
                                 prepend-icon="mdi-comment-text"
@@ -58,7 +58,7 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        color="green"
+                        :color="themeColor"
                         dark
                         flat
                     >
@@ -74,7 +74,7 @@
                                         dense
                                         subheader
                                     >
-                                        <v-list-item-group color="green">
+                                        <v-list-item-group :color="themeColor">
                                             <v-list-item
                                                 v-for="(item, i) in client.phones"
                                                 :key="item.id"
@@ -134,8 +134,8 @@
                                                     <div class="row">
                                                         <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 v-model="phoneForm.phone"
                                                                 :label="langMap.main.phone"
                                                                 dense
@@ -143,8 +143,8 @@
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
                                                             <v-select
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 item-text="name"
                                                                 item-value="id"
                                                                 v-model="phoneForm.phone_type"
@@ -176,7 +176,7 @@
                                                             right
                                                             bottom
                                                             small
-                                                            color="green"
+                                                            :color="themeColor"
                                                             @click="submitNewData(client.id, phoneForm, 'addPhone')"
                                                         >
                                                             <v-icon>mdi-plus</v-icon>
@@ -197,8 +197,8 @@
                                                     <div class="row">
                                                         <v-col cols="md-12" class="pa-1">
                                                             <v-text-field
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 v-model="addressForm.address.address"
                                                                 :label="langMap.main.address_line + ' 1'"
                                                                 dense
@@ -206,8 +206,8 @@
                                                         </v-col>
                                                         <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 v-model="addressForm.address.address_line_2"
                                                                 :label="langMap.main.address_line + ' 2'"
                                                                 dense
@@ -215,8 +215,8 @@
                                                         </v-col>
                                                         <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 v-model="addressForm.address.postal_code"
                                                                 :label="langMap.main.postal_code"
                                                                 dense
@@ -224,8 +224,8 @@
                                                         </v-col>
                                                         <v-col cols="md-3" class="pa-1">
                                                             <v-text-field
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 v-model="addressForm.address.city"
                                                                 :label="langMap.main.city"
                                                                 dense
@@ -233,8 +233,8 @@
                                                         </v-col>
                                                         <v-col cols="md-3" class="pa-1">
                                                             <v-select
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 item-text="name"
                                                                 item-value="name"
                                                                 v-model="addressForm.address.country"
@@ -245,8 +245,8 @@
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
                                                             <v-select
-                                                                color="green"
-                                                                item-color="green"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
                                                                 item-text="name"
                                                                 item-value="id"
                                                                 v-model="addressForm.address_type"
@@ -278,7 +278,7 @@
                                                             right
                                                             bottom
                                                             small
-                                                            color="green"
+                                                            :color="themeColor"
                                                             @click="submitNewData(client.id, addressForm, 'addAddress')"
                                                         >
                                                             <v-icon>mdi-plus</v-icon>
@@ -299,7 +299,7 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        color="green"
+                        :color="themeColor"
                         dark
                         flat
                     >
@@ -337,7 +337,7 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        color="green"
+                        :color="themeColor"
                         dark
                         flat
                     >
@@ -461,7 +461,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <v-text-field
-                                                    color="green"
+                                                    :color="themeColor"
                                                     :label="langMap.main.name"
                                                     name="name"
                                                     type="text"
@@ -471,7 +471,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <v-text-field
-                                                    color="green"
+                                                    :color="themeColor"
                                                     :label="langMap.main.email"
                                                     name="email"
                                                     type="text"
@@ -491,7 +491,7 @@
                                                 fab
                                                 right
                                                 bottom
-                                                color="green"
+                                                :color="themeColor"
                                                 @click="addEmployee"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
@@ -509,7 +509,7 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        color="green"
+                        :color="themeColor"
                         dark
                         flat
                     >
@@ -521,7 +521,7 @@
                             dense
                             subheader
                         >
-                            <v-list-item-group color="green">
+                            <v-list-item-group :color="themeColor">
                                 <v-list-item
                                     v-for="(item) in client.socials"
                                     :key="item.id"
@@ -559,8 +559,8 @@
                                         <div class="row">
                                             <v-col cols="md-12" class="pa-1">
                                                 <v-text-field
-                                                    color="green"
-                                                    item-color="green"
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
                                                     v-model="socialForm.social_link"
                                                     :label="langMap.main.link"
                                                     dense
@@ -568,8 +568,8 @@
                                             </v-col>
                                             <v-col cols="12" class="pa-1">
                                                 <v-select
-                                                    color="green"
-                                                    item-color="green"
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
                                                     item-text="name"
                                                     item-value="id"
                                                     v-model="socialForm.social_type"
@@ -601,7 +601,7 @@
                                                 right
                                                 bottom
                                                 small
-                                                color="green"
+                                                :color="themeColor"
                                                 @click="submitNewData(client.id, socialForm, 'addSocial')"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
@@ -625,6 +625,7 @@
         data() {
 
             return {
+                themeColor: this.$store.state.themeColor,
                 langMap: this.$store.state.lang.lang_map,
                 headers: [
                     {text: '', value: 'data-table-expand'},
@@ -759,8 +760,7 @@
                 phoneTypes: [],
                 addressTypes: [],
                 socialTypes: [],
-                countries: [],
-
+                countries: []
             }
         },
         mounted() {
