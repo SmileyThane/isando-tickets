@@ -110,6 +110,7 @@
                     if (response.success === true) {
                         this.$store.state.themeColor = this.themeColor;
                         localStorage.themeColor = this.themeColor;
+                        EventBus.$emit('update-theme-color', this.themeColor);
                         localStorage.themeColorDlg = this.themeColorDlg;
                     } else {
                         this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
