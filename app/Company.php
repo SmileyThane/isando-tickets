@@ -74,7 +74,7 @@ class Company extends Model
 
     public function settings(): HasOne
     {
-        return $this->morphOne(Settings::class, 'entity');
+        return $this->hasOne(CompanySettings::class, 'company_id', 'id');
     }
 
 }
