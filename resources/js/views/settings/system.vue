@@ -905,6 +905,7 @@
                     if (response.success === true) {
                         this.themeColor = this.companySettings.theme_color;
                         this.$store.state.themeColor = this.companySettings.theme_color;
+                        EventBus.$emit('update-theme-color', this.themeColor);
                         EventBus.$emit('update-navbar-style', this.companySettings.navbar_style);
                     } else {
                         this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
