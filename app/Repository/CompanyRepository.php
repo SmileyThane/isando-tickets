@@ -7,7 +7,7 @@ namespace App\Repository;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
-use App\Settings;
+use App\CompanySettings;
 use App\ProductCategory;
 use App\Role;
 use Illuminate\Http\Request;
@@ -190,24 +190,14 @@ class CompanyRepository
     public function getSettings($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $settings = Settings::firstOrCreate([
-            'entity_id' => $companyId,
-            'entity_type' => Company::class
-        ], [
-            'data' => []
-        ]);
+        $settings = CompanySettings::firstOrCreate(['company_id' => $companyId]);
         return $settings->data;
     }
 
     public function updateSettings(Request $request, $companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $settings = Settings::firstOrCreate([
-            'entity_id' => $companyId,
-            'entity_type' => Company::class
-        ], [
-            'data' => []
-        ]);
+        $settings = CompanySettings::firstOrCreate(['company_id' => $companyId]);
         $data = $settings->data;
 
         if ($request->has('imezone')) {
@@ -227,8 +217,7 @@ class CompanyRepository
 
         $settings->data = $data;
         $settings->save();
-
-        return $settings->data;
+        return true;
     }
 
     public function updatelogo(Request $request, $companyId = null)
