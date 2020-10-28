@@ -177,6 +177,7 @@
                             item-value="id"
                             v-model="mergeTicketForm.child_ticket_id"
                             :items="tickets"
+                            multiple
 
                         />
                         <v-textarea
