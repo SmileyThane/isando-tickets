@@ -283,26 +283,37 @@ class TicketRepository
 
     public function addLink(Request $request): bool
     {
-        $ticketMerge = new TicketMerge();
-        $ticketMerge->merged_by_user_id = Auth::id();
-        $ticketMerge->merge_comment = $request->merge_comment;
-        $ticketMerge->parent_ticket_id = $request->parent_ticket_id;
-        $ticketMerge->child_ticket_id = $request->child_ticket_id;
-        $ticketMerge->save();
-        $this->addHistoryItem($request->parent_ticket_id, null, 'ticket_linked');
-        $this->addHistoryItem($request->child_ticket_id, null, 'ticket_linked');
-        return true;
+        if ($request->child_ticket_id) {
+            foreach ($request->child_ticket_id as $ticketId) {
+                $ticketMerge = new TicketMerge();
+                $ticketMerge->merged_by_user_id = Auth::id();
+                $ticketMerge->merge_comment = $request->merge_comment;
+                $ticketMerge->parent_ticket_id = $request->parent_ticket_id;
+                $ticketMerge->child_ticket_id = $ticketId;
+                $ticketMerge->save();
+                $this->addHistoryItem($request->parent_ticket_id, null, 'ticket_linked');
+                $this->addHistoryItem($request->child_ticket_id, null, 'ticket_linked');
+            }
+            return true;
+        }
+        return false;
     }
 
     public function addMerge(Request $request): bool
     {
-        $ticket = Ticket::find($request->child_ticket_id);
-        $ticket->parent_id = $request->parent_ticket_id;
-        $ticket->save();
-        $request->status_id = 5;
-        $this->updateStatus($request, $request->child_ticket_id);
-        $this->addHistoryItem($ticket->id, null, 'ticket_merged');
-        return true;
+        if ($request->child_ticket_id) {
+            foreach ($request->child_ticket_id as $ticketId) {
+                $this->addLink($request);
+                $ticket = Ticket::find($ticketId);
+                $ticket->parent_id = $request->parent_ticket_id;
+                $ticket->save();
+                $request->status_id = 5;
+                $this->updateStatus($request, $ticketId);
+                $this->addHistoryItem($ticket->id, null, 'ticket_merged');
+            }
+            return true;
+        }
+        return false;
     }
 
     public function filterEmployeesByRoles($employees, $roles)
