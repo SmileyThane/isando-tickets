@@ -6,6 +6,8 @@
         <sidebar v-if="isLoaded && isAuthorized === true" v-model="drawer"></sidebar>
         <app-header v-if="isLoaded && isAuthorized === true" v-model="drawer"></app-header>
         <v-content v-if="isLoaded">
+            <speed-panel v-if="isLoaded && isAuthorized === true" v-model="drawer"></speed-panel>
+
             <router-view></router-view>
         </v-content>
         <appFooter></appFooter>
@@ -16,6 +18,7 @@
     import Sidebar from '../components/Sidebar'
     import AppFooter from '../components/AppFooter'
     import Header from '../components/Header'
+    import SpeedPanel from '../components/SpeedPanel';
 
     export default {
         props: {
@@ -29,7 +32,8 @@
         components: {
             'sidebar': Sidebar,
             'appFooter': AppFooter,
-            'appHeader': Header
+            'appHeader': Header,
+            'speedPanel': SpeedPanel
         },
         watch: {
             checkPreloaded(value) {

@@ -17,7 +17,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'surname', 'title_before_name', 'title', 'country_id', 'anredeform', 'language_id', 'timezone_id'
+        'name', 'email', 'surname', 'title_before_name', 'title', 'country_id', 'anredeform', 'language_id', 'timezone_id', 'settings'
     ];
 
     /**
@@ -82,5 +82,8 @@ class User extends Authenticatable
         return $this->name . ' ' . $this->surname;
     }
 
-
+    public function settings(): HasOne
+    {
+        return $this->morphOne(Settings::class, 'entity');
+    }
 }

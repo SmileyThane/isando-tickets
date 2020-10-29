@@ -286,7 +286,8 @@ class LanguageSeeder extends Seeder
 "none": "None",
 "generic_error": "Something went wrong",
 "icon": "Icon",
-"ticketing": "Ticketing"
+"ticketing": "Ticketing",
+"do_not_show_this_again": "Do not show this again"
 },
   "system_settings": {
     "title": "System settings",
@@ -592,7 +593,8 @@ class LanguageSeeder extends Seeder
 "none": "Keiner",
 "generic_error": "Etwas ist schief gelaufen",
 "icon": "Symbol",
-"ticketing": "Buchung"
+"ticketing": "Buchung",
+"do_not_show_this_again": "Diese Mitteilung nicht mehr anzeigen"
  },
   "system_settings": {
     "title": "Systemeinstellungen",
