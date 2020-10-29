@@ -68,7 +68,6 @@
                                 <div class="col-md-12">
                                     <v-file-input
                                         chips
-                                        chips-:color="themeColor"
                                         multiple
                                         :label="langMap.ticket.add_attachments"
                                         :color="themeColor"
@@ -158,7 +157,7 @@
                             item-value="id"
                             v-model="linkTicketForm.child_ticket_id"
                             :items="tickets"
-
+                            multiple
                         />
                         <v-textarea
                             :label="langMap.main.description"
@@ -205,6 +204,7 @@
                             :item-color="themeColor"
                             item-text="name"
                             item-value="id"
+                            multiple
                             v-model="mergeTicketForm.child_ticket_id"
                             :items="tickets"
 
