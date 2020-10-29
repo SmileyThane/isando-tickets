@@ -37,24 +37,7 @@
                                 :readonly="!enableToEdit"
                                 dense
                             ></v-text-field>
-                            <v-row>
-                                <v-col class="col-md-10">
-                                    <v-file-input
-                                        :color="themeColor"
-                                        :label="langMap.company.logo"
-                                        accept="image/*"
-                                        show-size
-                                        prepend-icon="mdi-camera"
-                                        :disabled="!enableToEdit"
-                                        dense
-                                        v-model="company.logo"
-                                    >
-                                    </v-file-input>
-                                </v-col>
-                                <v-col class="col-md-2">
-                                    <v-img contain max-width="50" max-height="50" :src="company.logo_url"></v-img>
-                                </v-col>
-                            </v-row>
+
                             <v-text-field
                                 :color="themeColor"
                                 :label="langMap.company.description"
@@ -1112,7 +1095,6 @@
                 companyIsLoaded: false,
                 company: {
                     name: '',
-                    logo: null,
                     company_number: '',
                     description: '',
                     registration_date: '',
@@ -1233,9 +1215,6 @@
                     response = response.data
                     if (response.success === true) {
                         this.company = response.data;
-                        if (!this.company.logo_url) {
-                            this.company.logo_url = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
-                        }
                     } else {
                         console.log('error')
                     }
@@ -1344,22 +1323,6 @@
                 this.company.employees = null;
                 this.company.clients = null;
                 this.company.teams = null;
-
-                if (this.company.logo) {
-                    let formData = new FormData();
-                    formData.append('logo', this.company.logo);
-                    axios.post(
-                        `/api/company/${this.$route.params.id}/logo`,
-                        formData, {
-                        headers: {'Content-Type': 'multipart/form-data' }}
-                        ).then(response => {
-                        response = response.data;
-                        this.company.logo = null;
-                        if (response.success !== true) {
-                            console.log('error')
-                        }
-                    });
-                }
 
                 axios.post(`/api/company/${this.$route.params.id}`, this.company).then(response => {
                     response = response.data
