@@ -396,6 +396,45 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
+
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-6">
+                    <v-toolbar
+                        dense
+                        :color="themeColor"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>{{langMap.system_settings.theme_color}}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUserSettings">
+                            {{this.langMap.main.update}}
+                        </v-btn>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-color-picker
+                                        dot-size="25"
+                                        mode="hexa"
+                                        v-model="themeColor"
+                                        :disabled="!enableToEdit"
+                                    ></v-color-picker>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-checkbox
+                                        v-model="themeColorDlg"
+                                        :value="1"
+                                        :label="langMap.individuals.show_speed_panel"></v-checkbox>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </v-col>
         </v-row>
     </v-container>
@@ -403,6 +442,8 @@
 </template>
 
 <script>
+
+    import EventBus from "../../components/EventBus";
 
     export default {
         data() {
@@ -451,7 +492,8 @@
                 addressTypes: [],
                 languages: [],
                 timezones: [],
-                countries: []
+                countries: [],
+                themeColorDlg: localStorage.themeColorDlg == 1 ? 0 : 1
             }
         },
         mounted() {
@@ -598,6 +640,26 @@
                         this.snackbar = true;
 
                     }
+                });
+            },
+            updateUserSettings() {
+                this.snackbar = false;
+
+                axios.post('/api/user/settings', {theme_color: this.themeColor}).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.$store.state.themeColor = this.themeColor;
+                        localStorage.themeColor = this.themeColor;
+                        EventBus.$emit('update-theme-color', this.themeColor);
+                        localStorage.themeColorDlg = this.themeColorDlg == 1 ? 0 : 1;
+                        this.enableToEdit = false;
+                        window.location.reload()
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true;
                 });
             },
             // parseErrors(errorTypes) {
