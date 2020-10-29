@@ -9,7 +9,7 @@ export default new Vuex.Store({
         roles: {},
         lang: {},
         pageName: '',
-        themeColor: '#4caf50'
+        themeColor: '#60695D'
     },
     getters: {
         roles: state => [state.roles, state.lang, state.pageName, state.themeColor]
