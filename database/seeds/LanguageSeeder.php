@@ -130,8 +130,9 @@ class LanguageSeeder extends Seeder
     "contact_info": "Contact info",
     "assigned_companies": "Assigned companies",
     "new_customer": "Assign to Customer",
-    "is_active": "Is active",
-    "show_speed_panel": "Display speed panel"
+    "is_active": "System access",
+    "show_speed_panel": "Display speed panel",
+    "status": "Status"
   },
   "ticket": {
     "contact_name": "Contact name",
@@ -437,8 +438,9 @@ class LanguageSeeder extends Seeder
   "contact_info": "Zusätzliche Infos",
   "assigned_companies": "Kontakte",
   "new_customer": "Kontakt hinzufügen",
-  "is_active": "Ist aktiv",
-  "show_speed_panel": "Geschwindigkeitsanzeige anzeigen"
+  "is_active": "Systemzugriff",
+  "show_speed_panel": "Geschwindigkeitsanzeige anzeigen",
+  "status": "Status"
   },
   "ticket": {
     "contact_name": "Kontaktname",
