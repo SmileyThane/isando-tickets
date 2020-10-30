@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Phone extends Model
@@ -18,7 +19,7 @@ class Phone extends Model
         return $this->morphTo();
     }
 
-    public function type()
+    public function type(): HasOne
     {
         return $this->hasOne(PhoneType::class, 'id', 'phone_type');
     }
