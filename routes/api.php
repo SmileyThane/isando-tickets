@@ -37,8 +37,6 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('user/invite', 'API\UserController@sendInvite');
         Route::post('user/is_active', 'API\UserController@changeIsActive');
         Route::get('user/roles/id', 'API\UserController@authorizedRoleIds');
-        Route::get('user/settings', 'API\UserController@getSettings');
-        Route::post('user/settings', 'API\UserController@updateSettings');
 
         //company management
         Route::get('company/{id?}', 'API\CompanyController@find');

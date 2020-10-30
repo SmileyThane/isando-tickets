@@ -58,31 +58,16 @@ export default new Vuex.Store({
         },
         getThemeColor({commit}) {
             return new Promise((resolve, reject) => {
-                if (localStorage.themeColor) {
-                    commit('setThemeColor', localStorage.themeColor);
-                    resolve();
-                } else {
-                    axios.get('/api/user/settings').then(response => {
-                        response = response.data;
-                        if (response.success === true && response.data.theme_color) {
-                            localStorage.themeColor = response.data.theme_color;
-                            commit('setThemeColor', response.data.theme_color);
-                            resolve();
-                        } else {
-                            axios.get('/api/main_company_settings').then(response => {
-                                response = response.data;
-                                if (response.success === true && response.data.theme_color) {
-                                    commit('setThemeColor', response.data.theme_color);
-                                    resolve();
-                                }
-                            }).catch(error => {
-                                reject(error.response && error.response.data.message || 'Error.');
-                            });
-                        }
-                    }).catch(error => {
+                axios.get('/api/main_company_settings')
+                    .then(result => {
+                        if (result.data.success === true && result.data.data.theme_color !== null)
+                            commit('setThemeColor', result.data.data.theme_color);
+                        resolve();
+                    })
+
+                    .catch(error => {
                         reject(error.response && error.response.data.message || 'Error.');
                     });
-                }
             });
         }
     }
