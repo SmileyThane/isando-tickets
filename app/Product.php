@@ -21,7 +21,7 @@ class Product extends Model
 
     public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(ProductCategory::class, 'id', 'category_id');
+        return $this->belongsTo(ProductCategory::class, 'id', 'parent_id');
     }
 
 }

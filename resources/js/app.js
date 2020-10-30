@@ -23,9 +23,9 @@ router.beforeEach((to, from, next) => {
                 localStorage.setItem('auth_token', null)
             }
         });
+
         if (localStorage.getItem('auth_token') === null) {
             next({path: '/login'})
-
         }
         next()
     } else {
@@ -34,6 +34,7 @@ router.beforeEach((to, from, next) => {
 })
 
 const vuetify = new Vuetify();
+
 const app = new Vue({
     el: '#app',
     components: {App},
@@ -44,5 +45,6 @@ const app = new Vue({
         this.$store.state.roles = this.$store.state.lang = null
         store.dispatch('getLanguage');
         store.dispatch('getRoles');
+        store.dispatch('getThemeColor');
     }
 });

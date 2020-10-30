@@ -1,10 +1,11 @@
 <template>
     <v-app-bar
         app
-        color="green"
+        :color="themeColor"
         dark
     >
         <v-app-bar-nav-icon
+            v-show="!localDrawer"
             @click.stop="localDrawer = !localDrawer"
         ></v-app-bar-nav-icon>
         <v-toolbar-title
@@ -88,10 +89,12 @@
 </template>
 
 <script>
+    import EventBus from "./EventBus";
+
     export default {
         name: "Header",
         props: {value: {type: Boolean}},
-        data(){
+        data() {
             return {
                 username: localStorage.getItem('name'),
                 localDrawer: null,
@@ -109,7 +112,8 @@
                         name: 'Contact'
                     }
                 ],
-                searchLabel: this.$store.state.lang.lang_map.main.search
+                searchLabel: this.$store.state.lang.lang_map.main.search,
+                themeColor: this.$store.state.themeColor,
             }
         },
         watch: {
@@ -121,7 +125,11 @@
             }
         },
         mounted() {
-            this.getUsername()
+            this.getUsername();
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             getUsername() {

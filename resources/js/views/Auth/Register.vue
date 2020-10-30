@@ -22,7 +22,7 @@
                     <v-card>
                         <v-toolbar
                             dense
-                            color="green"
+                            :color="themeColor"
                             dark
                             flat
                         >
@@ -36,7 +36,7 @@
                                 <v-col cols="12" md="6">
                                     <v-card-text>
                                         <v-text-field
-                                            color="green"
+                                            :color="themeColor"
                                             label="Company name"
                                             name="company_name"
                                             prepend-icon="mdi-account"
@@ -49,7 +49,7 @@
                                 <v-col cols="12" md="6">
                                     <v-card-text>
                                         <v-text-field
-                                            color="green"
+                                            :color="themeColor"
                                             label="Company number"
                                             name="company_number"
                                             prepend-icon="mdi-account"
@@ -62,7 +62,7 @@
                                 <v-col cols="12" md="4">
                                     <v-card-text>
                                         <v-text-field
-                                            color="green"
+                                            :color="themeColor"
                                             label="Your name"
                                             name="name"
                                             prepend-icon="mdi-account"
@@ -75,7 +75,7 @@
                                 <v-col cols="12" md="4">
                                     <v-card-text>
                                         <v-text-field
-                                            color="green"
+                                            :color="themeColor"
                                             label="Email"
                                             name="email"
                                             prepend-icon="mdi-account"
@@ -89,8 +89,8 @@
                                     <v-card-text>
                                         <v-select
                                             label="Select plan"
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             item-text="name"
                                             item-value="id"
                                             :items="plan"
@@ -103,7 +103,7 @@
 
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="green" style="color: white;" @click="handleSubmit">Register</v-btn>
+                            <v-btn :color="themeColor" style="color: white;" @click="handleSubmit">Register</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -126,7 +126,8 @@
                     plan_id: '',
                     payment_description: 'Free site registration'
                 },
-                plan: []
+                plan: [],
+                themeColor: this.$store.state.themeColor
             }
         },
         mounted() {

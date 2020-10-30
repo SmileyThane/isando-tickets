@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import EventBus from "./components/EventBus";
 
 Vue.use(Vuex);
 
@@ -7,10 +8,11 @@ export default new Vuex.Store({
     state: {
         roles: {},
         lang: {},
-        pageName: ''
+        pageName: '',
+        themeColor: '#60695D'
     },
     getters: {
-        roles: state => [state.roles, state.lang, state.pageName]
+        roles: state => [state.roles, state.lang, state.pageName, state.themeColor]
     },
     mutations: {
         setRoles(state, roles) {
@@ -22,6 +24,10 @@ export default new Vuex.Store({
         setPageName(state, pageName) {
             state.pageName = pageName;
         },
+        setThemeColor(state, themeColor) {
+            state.themeColor = themeColor;
+            EventBus.$emit('update-theme-color', themeColor);
+        }
     },
     actions: {
         getRoles({commit}) {
@@ -50,5 +56,34 @@ export default new Vuex.Store({
                     });
             });
         },
+        getThemeColor({commit}) {
+            return new Promise((resolve, reject) => {
+                if (localStorage.themeColor) {
+                    commit('setThemeColor', localStorage.themeColor);
+                    resolve();
+                } else {
+                    axios.get('/api/user/settings').then(response => {
+                        response = response.data;
+                        if (response.success === true && response.data.theme_color) {
+                            localStorage.themeColor = response.data.theme_color;
+                            commit('setThemeColor', response.data.theme_color);
+                            resolve();
+                        } else {
+                            axios.get('/api/main_company_settings').then(response => {
+                                response = response.data;
+                                if (response.success === true && response.data.theme_color) {
+                                    commit('setThemeColor', response.data.theme_color);
+                                    resolve();
+                                }
+                            }).catch(error => {
+                                reject(error.response && error.response.data.message || 'Error.');
+                            });
+                        }
+                    }).catch(error => {
+                        reject(error.response && error.response.data.message || 'Error.');
+                    });
+                }
+            });
+        }
     }
 })

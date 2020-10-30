@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -16,7 +18,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'surname', 'title_before_name', 'title', 'country_id', 'anredeform', 'language_id', 'timezone_id'
+        'name', 'email', 'surname', 'title_before_name', 'title',
+        'country_id', 'anredeform', 'language_id', 'timezone_id', 'settings'
     ];
 
     /**
@@ -41,19 +44,39 @@ class User extends Authenticatable
         'full_name'
     ];
 
-    public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function employee(): HasOne
     {
         return $this->hasOne(CompanyUser::class, 'user_id', 'id');
     }
 
-    public function phones(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function phones(): MorphMany
     {
         return $this->morphMany(Phone::class, 'entity');
     }
 
-    public function addresses()
+    public function phoneTypes(): MorphMany
+    {
+        return $this->morphMany(PhoneType::class, 'entity');
+    }
+
+    public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'entity');
+    }
+
+    public function addressTypes(): MorphMany
+    {
+        return $this->morphMany(AddressType::class, 'entity');
+    }
+
+    public function socials(): MorphMany
+    {
+        return $this->morphMany(Social::class, 'entity');
+    }
+
+    public function socialTypes(): MorphMany
+    {
+        return $this->morphMany(SocialType::class, 'entity');
     }
 
     public function getFullNameAttribute()
@@ -61,5 +84,8 @@ class User extends Authenticatable
         return $this->name . ' ' . $this->surname;
     }
 
-
+    public function settings(): HasOne
+    {
+        return $this->morphOne(Settings::class, 'entity');
+    }
 }

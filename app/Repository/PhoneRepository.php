@@ -3,8 +3,7 @@
 
 namespace App\Repository;
 
-
-use App\CompanyPhoneType;
+use App\Company;
 use App\Phone;
 use App\PhoneType;
 use Illuminate\Support\Facades\Auth;
@@ -43,20 +42,26 @@ class PhoneRepository
         }
     }
 
-    public function createType($name, $icon): PhoneType
+    public function createType($name, $name_de, $icon, $companyId = null): PhoneType
     {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+
         return PhoneType::firstOrCreate([
-                'name' => $name,
-                'icon' => $icon
+            'entity_type' => Company::class,
+            'entity_id' => $companyId,
+            'name' => $name,
+            'name_de' => $name_de,
+            'icon' => $icon
         ]);
     }
 
-    public function updateType($id, $name, $icon): PhoneType
+    public function updateType($id, $name, $name_de, $icon): PhoneType
     {
         $type = PhoneType::findOrFail($id);
         $type->update([
-                'name' => $name,
-                'icon' => $icon
+            'name' => $name,
+            'name_de' => $name_de,
+            'icon' => $icon
         ]);
         $type->save();
         return $type;
@@ -72,41 +77,9 @@ class PhoneRepository
         }
     }
 
-    public function getAllTypes()
-    {
-        return PhoneType::all();
-
-    }
-
     public function getTypesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $companyTypes = CompanyPhoneType::where('company_id', $companyId)->pluck('id');
-        return PhoneType::whereIn('id', $companyTypes)->get();
-    }
-
-    public function getCompanyTypeIds($companyId = null)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        return CompanyPhoneType::where('company_id', $companyId)->pluck('phone_type_id');
-    }
-
-    public function createCompanyType($phoneTypeId, $companyId = null)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        return CompanyPhoneType::firstOrCreate([
-            'phone_type_id' => $phoneTypeId,
-            'company_id' => $companyId
-        ]);
-    }
-
-    public function deleteCompanyType($phoneTypeId, $companyId = null)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        try {
-            return (bool) CompanyPhoneType::where('phone_type_id', $phoneTypeId)->where('company_id', $companyId)->delete();
-        } catch (\Throwable $throwable) {
-            return false;
-        }
+        return PhoneType::where('entity_type', Company::class)->where('entity_id', $companyId)->get();
     }
 }

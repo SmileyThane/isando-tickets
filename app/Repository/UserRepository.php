@@ -8,7 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
 use App\Role;
 use App\User;
+use App\Settings;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -39,7 +41,7 @@ class UserRepository
 
     public function find($id, $with = [])
     {
-        return User::where('id', $id)->with(array_merge(['phones.type', 'addresses.type'], $with))->first();
+        return User::where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'socials.type'], $with))->first();
     }
 
     public function create(Request $request)
@@ -104,4 +106,38 @@ class UserRepository
         }
         return true;
     }
+
+    public function getSettings($userId = null)
+    {
+        $userId = $userId ?? Auth::user()->id;
+        $settings = Settings::firstOrCreate([
+            'entity_id' => $userId,
+            'entity_type' => User::class
+        ], [
+            'data' => []
+        ]);
+        return $settings->data;
+    }
+
+    public function updateSettings(Request $request, $userId = null)
+    {
+        $userId = $userId ?? Auth::user()->id;
+        $settings = Settings::firstOrCreate([
+            'entity_id' => $userId,
+            'entity_type' => User::class
+        ], [
+            'data' => []
+        ]);
+        $data = $settings->data;
+
+        if ($request->has('theme_color')) {
+            $data['theme_color'] = $request->theme_color;
+        }
+
+        $settings->data = $data;
+        $settings->save();
+
+        return $settings->data;
+    }
+
 }

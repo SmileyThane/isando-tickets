@@ -27,7 +27,7 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <v-text-field
-                                                    color="green"
+                                                    :color="themeColor"
                                                     :label="langMap.main.name"
                                                     name="company_name"
                                                     type="text"
@@ -37,7 +37,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-text-field
-                                                    color="green"
+                                                    :color="themeColor"
                                                     :label="langMap.main.description"
                                                     name="company_description"
                                                     type="text"
@@ -48,8 +48,8 @@
                                             <div class="col-md-4">
                                                 <v-select
                                                     :label="langMap.customer.supplier"
-                                                    color="green"
-                                                    item-color="green"
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
                                                     item-text="name"
                                                     item-value="item"
                                                     v-model="clientForm.supplier_object"
@@ -61,7 +61,7 @@
                                                 fab
                                                 right
                                                 bottom
-                                                color="green"
+                                                :color="themeColor"
                                                 @click="addClient"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
@@ -89,14 +89,14 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getClients" v-model="customersSearch" color="green"
+                                        <v-text-field @input="getClients" v-model="customersSearch" :color="themeColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
                                             class="mx-4"
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             @change="updateItemsCount"
@@ -105,7 +105,7 @@
                                 </v-row>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination color="green"
+                                <v-pagination :color="themeColor"
                                               v-model="options.page"
                                               :length="lastPage"
                                               circle
@@ -180,10 +180,11 @@
             return {
                 snackbar: false,
                 actionColor: '',
+                themeColor: this.$store.state.themeColor,
                 snackbarMessage: '',
                 totalCustomers: 0,
                 lastPage: 0,
-                loading: 'green',
+                loading: this.themeColor,
                 langMap: this.$store.state.lang.lang_map,
                 expanded: [],
                 singleExpand: false,
@@ -218,7 +219,7 @@
                     supplier_type: '',
                     supplier_id: ''
                 },
-                suppliers: [],
+                suppliers: []
             }
         },
         mounted() {
@@ -226,7 +227,7 @@
         },
         methods: {
             getClients() {
-                this.loading = "green"
+                this.loading = this.themeColor
                 // console.log(this.options);
                 if (this.options.sortDesc.length <= 0) {
                     this.options.sortBy[0] = 'id'

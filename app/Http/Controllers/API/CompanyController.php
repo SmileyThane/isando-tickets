@@ -97,7 +97,7 @@ class CompanyController extends Controller
         return self::showResponse($this->companyRepo->updateSettings($request, $id));
    }
 
-   public function updateLogo(Request $request, $id)
+   public function updateLogo(Request $request, $id = null)
    {
        return self::showResponse(true, $this->companyRepo->updateLogo($request, $id));
    }

@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('user/invite', 'API\UserController@sendInvite');
         Route::post('user/is_active', 'API\UserController@changeIsActive');
         Route::get('user/roles/id', 'API\UserController@authorizedRoleIds');
+        Route::get('user/settings', 'API\UserController@getSettings');
+        Route::post('user/settings', 'API\UserController@updateSettings');
 
         //company management
         Route::get('company/{id?}', 'API\CompanyController@find');
@@ -48,6 +50,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::delete('product_category/{id}', 'API\CompanyController@detachProductCategory');
         Route::get('main_company_name', 'API\CompanyController@mainCompanyName');
         Route::get('main_company_logo', 'API\CompanyController@mainCompanyLogo');
+        Route::post('main_company_logo', 'API\CompanyController@updateLogo');
         Route::get('main_company_settings', 'API\CompanyController@getSettings');
         Route::post('main_company_settings', 'API\CompanyController@updateSettings');
         Route::post('company/{id}/settings', 'API\CompanyController@updateSettings');
@@ -66,10 +69,6 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('phone_type', 'API\PhoneController@addType');
         Route::patch('phone_type/{id}', 'API\PhoneController@updateType');
         Route::delete('phone_type/{id}', 'API\PhoneController@deleteType');
-        Route::get('phone_types/all', 'API\PhoneController@getAllTypes');
-        Route::get('phone_types/company/{company_id?}', 'API\PhoneController@getCompanyTypes');
-        Route::post('phone_type/company', 'API\PhoneController@addCompanyType');
-        Route::delete('phone_type/{id}/company/{company_id?}', 'API\PhoneController@deleteCompanyType');
 
         //social management
         Route::get('social_types', 'API\SocialController@getTypes');
@@ -79,10 +78,6 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('social', 'API\SocialController@add');
         Route::patch('social/{id}', 'API\SocialController@update');
         Route::delete('social/{id}', 'API\SocialController@delete');
-        Route::get('social_types/all', 'API\SocialController@getAllTypes');
-        Route::get('social_types/company/{company_id?}', 'API\SocialController@getCompanyTypes');
-        Route::post('social_type/company', 'API\SocialController@addCompanyType');
-        Route::delete('social_type/{id}/company/{company_id?}', 'API\SocialController@deleteCompanyType');
 
         //address management
         Route::get('address_types', 'API\AddressController@getTypes');
@@ -92,10 +87,6 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('address', 'API\AddressController@add');
         Route::patch('address/{id}', 'API\AddressController@update');
         Route::delete('address/{id}', 'API\AddressController@delete');
-        Route::get('address_types/all', 'API\AddressController@getAllTypes');
-        Route::get('address_types/company/{company_id?}', 'API\AddressController@getCompanyTypes');
-        Route::post('address_type/company', 'API\AddressController@addCompanyType');
-        Route::delete('address_type/{id}/company/{company_id?}', 'API\AddressController@deleteCompanyType');
 
         //client management
         Route::get('client', 'API\ClientController@get');

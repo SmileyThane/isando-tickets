@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Company extends Model
@@ -42,9 +43,19 @@ class Company extends Model
         return $this->morphMany(Phone::class, 'entity');
     }
 
+    public function phoneTypes(): MorphMany
+    {
+        return $this->morphMany(PhoneType::class, 'entity');
+    }
+
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'entity');
+    }
+
+    public function addressTypes(): MorphMany
+    {
+        return $this->morphMany(AddressType::class, 'entity');
     }
 
     public function socials(): MorphMany
@@ -52,14 +63,19 @@ class Company extends Model
         return $this->morphMany(Social::class, 'entity');
     }
 
+    public function socialTypes(): MorphMany
+    {
+        return $this->morphMany(SocialType::class, 'entity');
+    }
+
     public function productCategories(): HasMany
     {
         return $this->hasMany(ProductCategory::class,'company_id','id');
     }
 
-    public function settings(): HasOne
+    public function settings(): MorphOne
     {
-        return $this->hasOne(CompanySettings::class, 'company_id', 'id');
+        return $this->morphOne(Settings::class, 'entity');
     }
 
 }

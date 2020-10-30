@@ -7,7 +7,7 @@ namespace App\Repository;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
-use App\CompanySettings;
+use App\Settings;
 use App\ProductCategory;
 use App\Role;
 use Illuminate\Http\Request;
@@ -190,14 +190,24 @@ class CompanyRepository
     public function getSettings($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $settings = CompanySettings::firstOrCreate(['company_id' => $companyId]);
+        $settings = Settings::firstOrCreate([
+            'entity_id' => $companyId,
+            'entity_type' => Company::class
+        ], [
+            'data' => []
+        ]);
         return $settings->data;
     }
 
     public function updateSettings(Request $request, $companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $settings = CompanySettings::firstOrCreate(['company_id' => $companyId]);
+        $settings = Settings::firstOrCreate([
+            'entity_id' => $companyId,
+            'entity_type' => Company::class
+        ], [
+            'data' => []
+        ]);
         $data = $settings->data;
 
         if ($request->has('imezone')) {
@@ -211,15 +221,20 @@ class CompanyRepository
             $data['ticket_number_format'] = $request->ticket_number_format;
         }
 
+        if ($request->has('theme_color')) {
+            $data['theme_color'] = $request->theme_color;
+        }
+
         $settings->data = $data;
         $settings->save();
-        return true;
+
+        return $settings->data;
     }
 
-    public function updatelogo(Request $request, $id = null)
+    public function updatelogo(Request $request, $companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $company = Company::find($id);
+        $company = Company::findOrFail($companyId);
 
         if (!Storage::exists('public/logos')) {
             Storage::makeDirectory('public/logos');

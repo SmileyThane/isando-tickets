@@ -27,7 +27,7 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <v-text-field
-                                                    color="green"
+                                                    :color="themeColor"
                                                     :label="langMap.main.name"
                                                     name="product_name"
                                                     type="text"
@@ -37,7 +37,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <v-text-field
-                                                    color="green"
+                                                    :color="themeColor"
                                                     :label="langMap.main.description"
                                                     name="product_description"
                                                     type="text"
@@ -50,7 +50,7 @@
                                                 fab
                                                 right
                                                 bottom
-                                                color="green"
+                                                :color="themeColor"
                                                 @click="addProduct"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
@@ -78,14 +78,14 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getProducts" v-model="productsSearch" color="green"
+                                        <v-text-field @input="getProducts" v-model="productsSearch" :color="themeColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
                                             class="mx-4"
-                                            color="green"
-                                            item-color="green"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             @change="updateItemsCount"
@@ -94,7 +94,7 @@
                                 </v-row>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination color="green"
+                                <v-pagination :color="themeColor"
                                               v-model="options.page"
                                               :length="lastPage"
                                               circle
@@ -173,10 +173,11 @@
                 snackbarMessage: '',
                 totalProducts: 0,
                 lastPage: 0,
-                loading: 'green',
+                loading: this.themeColor,
                 expanded: [],
                 singleExpand: false,
                 langMap: this.$store.state.lang.lang_map,
+                themeColor: this.$store.state.themeColor,
                 options: {
                     page: 1,
                     sortDesc: [false],
@@ -205,7 +206,7 @@
                 productForm: {
                     product_name: '',
                     product_description: '',
-                },
+                }
             }
         },
         mounted() {
@@ -213,7 +214,7 @@
         },
         methods: {
             getProducts() {
-                this.loading = "green"
+                this.loading = this.themeColor
                 if (this.options.sortDesc.length <= 0) {
                     this.options.sortBy[0] = 'id'
                     this.options.sortDesc[0] = false

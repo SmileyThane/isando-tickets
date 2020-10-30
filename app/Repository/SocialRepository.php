@@ -3,10 +3,9 @@
 
 namespace App\Repository;
 
-
+use App\Company;
 use App\Social;
 use App\SocialType;
-use App\CompanySocialType;
 use Illuminate\Support\Facades\Auth;
 
 class SocialRepository
@@ -43,20 +42,26 @@ class SocialRepository
         }
     }
 
-    public function createType($name, $icon): SocialType
+    public function createType($name, $name_de, $icon, $companyId = null): SocialType
     {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+
         return SocialType::firstOrCreate([
-                'name' => $name,
-                'icon' => $icon
+            'entity_type' => Company::class,
+            'entity_id' => $companyId,
+            'name' => $name,
+            'name_de' => $name_de,
+            'icon' => $icon
         ]);
     }
 
-    public function updateType($id, $name, $icon): SocialType
+    public function updateType($id, $name, $name_de, $icon): SocialType
     {
         $type = SocialType::findOrFail($id);
         $type->update([
-                'name' => $name,
-                'icon' => $icon
+            'name' => $name,
+            'name_de' => $name_de,
+            'icon' => $icon
         ]);
         $type->save();
         return $type;
@@ -72,40 +77,9 @@ class SocialRepository
         }
     }
 
-   public function getAllTypes()
-    {
-        return SocialType::all();
-
-    }
     public function getTypesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $companyTypes = CompanySocialType::where('company_id', $companyId)->pluck('id');
-        return SocialType::whereIn('id', $companyTypes)->get();
-    }
-
-    public function getCompanyTypeIds($companyId = null)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        return CompanySocialType::where('company_id', $companyId)->pluck('social_type_id');
-    }
-
-    public function createCompanyType($socialTypeId, $companyId = null)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        return CompanySocialType::firstOrCreate([
-            'social_type_id' => $socialTypeId,
-            'company_id' => $companyId
-        ]);
-    }
-
-    public function deleteCompanyType($socialTypeId, $companyId = null)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        try {
-            return (bool) CompanySocialType::where('social_type_id', $socialTypeId)->where('company_id', $companyId)->delete();
-        } catch (\Throwable $throwable) {
-            return false;
-        }
+        return SocialType::where('entity_type', Company::class)->where('entity_id', $companyId)->get();
     }
 }
