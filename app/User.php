@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -17,7 +18,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'surname', 'title_before_name', 'title', 'country_id', 'anredeform', 'language_id', 'timezone_id', 'settings'
+        'name', 'email', 'surname', 'title_before_name', 'title',
+        'country_id', 'anredeform', 'language_id', 'timezone_id', 'settings'
     ];
 
     /**
@@ -42,7 +44,7 @@ class User extends Authenticatable
         'full_name'
     ];
 
-    public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function employee(): HasOne
     {
         return $this->hasOne(CompanyUser::class, 'user_id', 'id');
     }
