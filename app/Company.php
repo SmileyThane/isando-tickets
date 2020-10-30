@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Company extends Model
@@ -72,7 +73,7 @@ class Company extends Model
         return $this->hasMany(ProductCategory::class,'company_id','id');
     }
 
-    public function settings(): HasOne
+    public function settings(): MorphOne
     {
         return $this->morphOne(Settings::class, 'entity');
     }
