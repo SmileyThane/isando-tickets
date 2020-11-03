@@ -166,7 +166,8 @@ class LanguageSeeder extends Seeder
     "access_description": "Please provide login details to your server for Teamviewer access, if applicable",
     "answer_description": "Write you answer here...",
     "no_assigned": "No agent assigned",
-    "merge": "Merge"
+    "merge": "Merge",
+    "is_spam": "Marked as Spam"
   },
    "main":{
 "create": "create",
@@ -474,7 +475,8 @@ class LanguageSeeder extends Seeder
     "access_description": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
     "answer_description": "Schreiben Sie Ihre Antwort hier...",
     "no_assigned": "No agent assigned",
-    "merge": "Merge"
+    "merge": "Merge",
+    "is_spam": "Marked as Spam"
   },
    "main":{
    "create": "erstellen",
