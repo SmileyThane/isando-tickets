@@ -17,6 +17,14 @@
             </v-progress-circular>
 
         </v-overlay>
+        <v-snackbar
+            :bottom="true"
+            :right="true"
+            v-model="snackbar"
+            :color="actionColor"
+        >
+            {{ snackbarMessage }}
+        </v-snackbar>
         <template>
             <v-dialog v-model="serverAccessDialog" max-width="480">
                 <v-card outlined dense>
@@ -274,6 +282,7 @@
                         {{langMap.ticket.ticket_history}}
                     </v-btn>
                     <v-btn small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
+                           @click="markAsSpam"
                     >
                         Spam
                     </v-btn>
@@ -429,7 +438,9 @@
                             </v-list-item>
                             <v-list-item
                             >
-                                <v-list-item-title>Spam</v-list-item-title>
+                                <v-list-item-title
+                                    @click="markAsSpam"
+                                >Spam</v-list-item-title>
                             </v-list-item>
 
                             <v-list-item
@@ -1027,6 +1038,9 @@
     export default {
         data() {
             return {
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
                 themeColor: this.$store.state.themeColor,
                 selectionDisabled: false,
                 assignPanel: [],
@@ -1420,6 +1434,18 @@
                         this.mergeTicketForm.parent_ticket_id = null
                         this.mergeTicketForm.child_ticket_id = null
                         this.mergeTicketDialog = false
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
+            markAsSpam() {
+                axios.post('/api/spam/ticket', {'id': this.ticket.id}).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = 'Ticket marked as spam'
+                        this.actionColor = 'alert'
+                        this.snackbar = true;
                     } else {
                         console.log('error')
                     }
