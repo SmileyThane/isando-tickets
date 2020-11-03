@@ -43,11 +43,14 @@
                         ></v-select>
                     </v-col>
                 </v-row>
-                <v-row>
-                    <v-col sm="12" md="2">
-
-                    </v-col>
-                </v-row>
+                <v-col  sm="12" md="12">
+                    <v-checkbox
+                        :color="themeColor"
+                        label="With spam?"
+                        v-model="options.withSpam"
+                    >
+                    </v-checkbox>
+                </v-col>
             </template>
             <template v-slot:footer>
                 <v-pagination :color="themeColor"
@@ -223,7 +226,8 @@
                 options: {
                     page: 1,
                     sortDesc: [true],
-                    sortBy: ['id']
+                    sortBy: ['id'],
+                    withSpam: false
                 },
                 footerProps: {
                     itemsPerPage: 10,
@@ -277,6 +281,7 @@
                 search=${this.ticketsSearch}&
                 sort_by=${this.manageSortableField(this.options.sortBy[0])}&
                 sort_val=${this.options.sortDesc[0]}&
+                with_spam=${this.options.withSpam}&
                 per_page=${this.options.itemsPerPage}&
                 minified=${this.minifiedTickets}&
                 page=${this.options.page}`)
