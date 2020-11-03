@@ -15,13 +15,16 @@ class Ticket extends Model
     use SoftDeletes;
 
     protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
-        'replicated_to_entity_id', 'replicated_to_entity_type'];
+        'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam'];
     protected $appends = ['from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
     protected $hidden = ['to'];
 
     public function getNameAttribute()
     {
-        return $this->parent_id ? $this->attributes['name'] . " [Merged]" : $this->attributes['name'];
+        $name = $this->attributes['name'];
+        $name .= $this->parent_id ? " [Merged]" : "";
+        $name .= $this->is_spam === 1 ? " [SPAM]" : "";
+        return $name;
     }
 
     public function getFromAttribute()
