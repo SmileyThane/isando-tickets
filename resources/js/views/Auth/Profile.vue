@@ -150,7 +150,7 @@
                                 <v-select
                                     :label="this.$store.state.lang.lang_map.main.language"
                                     :color="themeColor"
-                                    class="col-md-4"
+                                    class="col-md-6"
                                     :item-color="themeColor"
                                     name="language"
                                     prepend-icon="mdi-mail"
@@ -275,7 +275,6 @@
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                item-text="name"
                                                                 item-value="id"
                                                                 v-model="phoneForm.phone_type"
                                                                 :items="phoneTypes"
@@ -373,7 +372,6 @@
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                item-text="name"
                                                                 item-value="id"
                                                                 v-model="addressForm.address_type"
                                                                 :items="addressTypes"
