@@ -281,7 +281,7 @@
                     >
                         {{langMap.ticket.ticket_history}}
                     </v-btn>
-                    <v-btn small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
+                    <v-btn small class="ma-2 d-sm-none d-md-flex" :color="this.ticket.is_spam ? 'red' : '#f2f2f2'"
                            @click="markAsSpam"
                     >
                         Spam
@@ -439,6 +439,7 @@
                             <v-list-item
                             >
                                 <v-list-item-title
+                                    :color="this.ticket.is_spam ? 'red' : '#f2f2f2'"
                                     @click="markAsSpam"
                                 >Spam</v-list-item-title>
                             </v-list-item>
@@ -1232,6 +1233,7 @@
                         this.from = {[this.ticket.from_entity_type]: this.ticket.from_entity_id}
                         this.progressBuffer = this.progressBuffer + 40;
                         this.$store.state.pageName = '#' + this.ticket.id + ' ' + this.ticket.name
+                        this.spamButtonColor = this.ticket.is_spam ? 'red' : '#f2f2f2'
                         this.selectTeam();
                         this.getContacts(this.from)
                         if (this.ticket.notices.length > 0) {
@@ -1446,6 +1448,7 @@
                         this.snackbarMessage = 'Ticket marked as spam'
                         this.actionColor = 'alert'
                         this.snackbar = true;
+                        this.getTicket();
                     } else {
                         console.log('error')
                     }
