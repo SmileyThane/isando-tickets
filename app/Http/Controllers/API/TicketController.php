@@ -77,7 +77,7 @@ class TicketController extends Controller
     public function markAsSpam(Request $request)
     {
         $result = $this->ticketRepo->markAsSpam($request->id);
-        return self::showResponse($result);
+        return self::showResponse(true, $result);
     }
 
     public function attachTeam(Request $request, $id)

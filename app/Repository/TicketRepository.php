@@ -244,9 +244,9 @@ class TicketRepository
         $result = false;
         $ticket = Ticket::find($id);
         if ($ticket) {
-            $ticket->is_spam = true;
+            $ticket->is_spam = !$ticket->is_spam;
             $ticket->save();
-            $result = true;
+            $result = $ticket->is_spam;
         }
         return $result;
     }
