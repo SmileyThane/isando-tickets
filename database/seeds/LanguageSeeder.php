@@ -131,7 +131,7 @@ class LanguageSeeder extends Seeder
     "assigned_companies": "Assigned companies",
     "new_customer": "Assign to Customer",
     "is_active": "System access",
-    "show_speed_panel": "Display speed panel",
+    "show_speed_panel": "Show floating gear",
     "status": "Status"
   },
   "ticket": {
@@ -439,7 +439,7 @@ class LanguageSeeder extends Seeder
   "assigned_companies": "Kontakte",
   "new_customer": "Kontakt hinzufügen",
   "is_active": "Systemzugriff",
-  "show_speed_panel": "Geschwindigkeitsanzeige anzeigen",
+  "show_speed_panel": "Schwimmausrüstung anzeigen",
   "status": "Status"
   },
   "ticket": {
@@ -617,7 +617,7 @@ class LanguageSeeder extends Seeder
     "phone_type_created": "Telefontyp erstellt",
     "phone_type_deleted": "Phone type gelöscht",
     "phone_type_updated": "Telefontyp aktualisiert",
-    "social_types": "Soziale Netzweke",
+    "social_types": "Soziale Netzwerke",
     "new_social_type": "Neuen sozialen Link hinzfügen",
     "social_type_created": "Sozialen Link erstellt",
     "social_type_deleted": "Sozialen Link gelöscht",
