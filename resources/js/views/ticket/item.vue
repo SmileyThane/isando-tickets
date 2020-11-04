@@ -1312,8 +1312,10 @@
                 axios.get(`/api/ticket?search=${this.ticketsSearch}&minified=1`)
                     .then(response => {
                         response = response.data
-                        this.mergeParentTickets = response.data.data
-                        this.linkParentTickets = response.data.data
+                        if (this.ticketsSearch === '') {
+                            this.mergeParentTickets = response.data.data
+                            this.linkParentTickets = response.data.data
+                        }
                         this.tickets = response.data.data
                     });
             },
