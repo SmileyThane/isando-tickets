@@ -417,7 +417,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.system_settings.theme_color}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.profile.user_theme_color}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUserSettings">
@@ -428,19 +428,36 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col cols="12">
+                                <v-col cols="6">
                                     <v-color-picker
                                         dot-size="25"
                                         mode="hexa"
-                                        v-model="themeColor"
+                                        v-model="themeColorNew"
                                         :disabled="!enableToEdit"
                                     ></v-color-picker>
                                 </v-col>
-                                <v-col cols="12">
+                                <v-col cols="6">
                                     <v-checkbox
+                                        :color="themeColor"
+                                        :readonly="!enableToEdit"
+                                        v-model="resetThemeColorFlag"
+                                        :value="1"
+                                        @change="resetThemeColor()"
+                                    >
+                                        <template v-slot:label>
+                                            {{ langMap.profile.revert_to_company_theme_color }}
+                                            <v-icon x-large right :color="companyThemeColor">mdi-checkbox-blank</v-icon>
+                                        </template>
+                                    </v-checkbox>
+
+                                    <v-spacer>&nbsp;</v-spacer>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        :readonly="!enableToEdit"
                                         v-model="themeColorDlg"
                                         :value="1"
-                                        :label="langMap.individuals.show_speed_panel"></v-checkbox>
+                                        :label="langMap.profile.show_speed_panel"></v-checkbox>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -504,7 +521,10 @@
                 languages: [],
                 timezones: [],
                 countries: [],
-                themeColorDlg: localStorage.themeColorDlg == 1 ? 0 : 1
+                themeColorNew: this.$store.state.themeColor,
+                themeColorDlg: localStorage.themeColorDlg == 1 ? 0 : 1,
+                companyThemeColor: '',
+                resetThemeColorFlag: 0
             }
         },
         mounted() {
@@ -514,6 +534,7 @@
             this.getLanguages();
             this.getTimeZones();
             this.getCountries();
+            this.getCompanySettings();
         },
         methods: {
             localized(item, field = 'name') {
@@ -660,15 +681,15 @@
             updateUserSettings() {
                 this.snackbar = false;
 
-                axios.post('/api/user/settings', {theme_color: this.themeColor}).then(response => {
+                axios.post('/api/user/settings', {theme_color: this.themeColorNew}).then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        this.$store.state.themeColor = this.themeColor;
-                        localStorage.themeColor = this.themeColor;
-                        EventBus.$emit('update-theme-color', this.themeColor);
+                        this.themeColor = this.themeColorNew;
+                        this.$store.state.themeColor = this.themeColorNew;
+                        localStorage.themeColor = this.themeColorNew;
+                        EventBus.$emit('update-theme-color', this.themeColorNew);
                         localStorage.themeColorDlg = this.themeColorDlg == 1 ? 0 : 1;
                         this.enableToEdit = false;
-                        window.location.reload()
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -677,6 +698,22 @@
                     return true;
                 });
             },
+            getCompanySettings() {
+                axios.get(`/api/main_company_settings`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.companyThemeColor = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
+                    }
+                });
+            },
+            resetThemeColor() {
+                const resetThemeColorFlag = this.resetThemeColorFlag;
+                if (resetThemeColorFlag === 1) {
+                    this.themeColorNew = this.companyThemeColor;
+                } else {
+                    this.themeColorNew = this.$store.state.themeColor;
+                }
+            }
             // parseErrors(errorTypes) {
             //     for (let typeIndex in errorTypes) {
             //         let errorType = [];
