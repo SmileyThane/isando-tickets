@@ -117,13 +117,13 @@
                                                 v-for="(item, i) in company.phones"
                                                 :key="item.id"
                                             >
-                                                <v-list-item-icon>
+                                                <v-list-item-icon v-if="item.type">
                                                     <v-icon v-text="item.type.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle
-                                                        v-text="langMap.phone_types[item.type.name]"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                        v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -138,15 +138,15 @@
                                                 v-for="(item, i) in company.addresses"
                                                 :key="item.id"
                                             >
-                                                <v-list-item-icon>
+                                                <v-list-item-icon v-if="item.type">
                                                     <v-icon v-text="item.type.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">{{item.address}}
                                                         {{item.address_line_2}} {{item.address_line_3}}
                                                     </v-list-item-title>
-                                                    <v-list-item-subtitle
-                                                        v-text="langMap.address_types[item.type.name]"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                        v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -363,14 +363,14 @@
                                     <p v-if="item.user_data.phones.length > 0"><strong>{{langMap.main.phone}}:</strong>
                                     </p>
                                     <p v-if="item.user_data.phones.length > 0"
-                                       v-for="phoneItem in item.user_data.phones"><v-icon small dense left>{{phoneItem.type.icon}}</v-icon> {{ phoneItem.phone }} ({{
-                                        phoneItem.type.name }})</p>
+                                       v-for="phoneItem in item.user_data.phones"><v-icon small dense left v-if="phoneItem.type">{{phoneItem.type.icon}}</v-icon> {{ phoneItem.phone }}
+                                        <span v-if="phoneItem.type">({{phoneItem.type.name }})</span></p>
                                     <p v-if="item.user_data.addresses.length > 0">
                                         <strong>{{langMap.main.address}}:</strong></p>
                                     <p v-if="item.user_data.addresses.length > 0"
-                                       v-for="addressItem in item.user_data.addresses"><v-icon small dense left>{{addressItem.type.icon}}</v-icon> {{ addressItem.address }} {{
-                                        addressItem.address_line_2 }} {{ addressItem.address_line_3 }} ({{
-                                        addressItem.type.name }})</p>
+                                       v-for="addressItem in item.user_data.addresses"><v-icon small dense left v-if="addressItem.type">{{addressItem.type.icon}}</v-icon> {{ addressItem.address }} {{
+                                        addressItem.address_line_2 }} {{ addressItem.address_line_3 }}
+                                        <span v-if="addressItem.type">({{addressItem.type.name }})</span></p>
                                     <p><strong>{{langMap.main.actions}}:</strong></p>
                                     <v-tooltip top>
                                         <template v-slot:activator="{ on, attrs }">
@@ -521,11 +521,11 @@
                                     v-for="(item) in company.socials"
                                     :key="item.id"
                                 >
-                                    <v-list-item-icon><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
+                                    <v-list-item-icon v-if="item.type"><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
                                     <v-list-item-content>
                                         <v-list-item-title
                                             v-text="item.social_link"></v-list-item-title>
-                                        <v-list-item-subtitle
+                                        <v-list-item-subtitle v-if="item.type"
                                             v-text="localized(item.type)"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
@@ -824,11 +824,11 @@
                                                                 v-for="(item, i) in singleUserForm.user.phones"
                                                                 :key="item.id"
                                                             >
-                                                                <v-list-item-icon><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
+                                                                <v-list-item-icon v-if="item.type"><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
                                                                 <v-list-item-content>
                                                                     <v-list-item-title
                                                                         v-text="item.phone"></v-list-item-title>
-                                                                    <v-list-item-subtitle
+                                                                    <v-list-item-subtitle v-if="item.type"
                                                                         v-text="localized(item.type)"></v-list-item-subtitle>
                                                                 </v-list-item-content>
                                                                 <v-list-item-action>
@@ -844,12 +844,12 @@
                                                                 v-for="(item, i) in singleUserForm.user.addresses"
                                                                 :key="item.id"
                                                             >
-                                                                <v-list-item-icon><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
+                                                                <v-list-item-icon v-if="item.type"><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
                                                                 <v-list-item-content>
                                                                     <v-list-item-title v-text="">{{item.address}}
                                                                         {{item.address_line_2}} {{item.address_line_3}}
                                                                     </v-list-item-title>
-                                                                    <v-list-item-subtitle
+                                                                    <v-list-item-subtitle v-if="item.type"
                                                                         v-text="localized(item.type)"></v-list-item-subtitle>
                                                                 </v-list-item-content>
                                                                 <v-list-item-action>
@@ -964,7 +964,7 @@
                                                                                 dense
                                                                             ></v-text-field>
                                                                         </v-col>
-                                                                        <v-col cols="md-5" class="pa-1">
+                                                                        <v-col cols="md-4" class="pa-1">
                                                                             <v-select
                                                                                 :color="themeColor"
                                                                                 :item-color="themeColor"
