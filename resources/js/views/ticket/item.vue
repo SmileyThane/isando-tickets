@@ -1499,12 +1499,8 @@
                 axios.post('/api/merge/ticket', this.mergeTicketForm).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.minifiedTickets = false
                         this.getTickets()
-                        this.mergeTicketForm.merge_comment = null
-                        this.mergeTicketForm.parent_ticket_id = null
-                        this.mergeTicketForm.child_ticket_id = null
-                        this.mergeTicketDialog = false
+                        this.getTicket()
                     } else {
                         console.log('error')
                     }
