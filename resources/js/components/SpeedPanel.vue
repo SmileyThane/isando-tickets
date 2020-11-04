@@ -16,7 +16,7 @@
                 fixed
                 right
                 class="mx-2"
-                style="z-index: 1;"
+                style="z-index: 99;"
                 fab
                 v-show="displayDlg()"
             >
