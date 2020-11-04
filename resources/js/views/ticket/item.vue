@@ -269,8 +269,8 @@
                            @click="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0 ? manageThirdColumn() : linkTicketProcess()"
                     >{{langMap.main.link}}
                     </v-btn>
-                    <v-btn small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
-                           @click="mergeTicketProcess"
+                    <v-btn v-if="ticket.parent_id !== null || ticket.child_tickets !== null" small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
+                           @click="manageThirdColumn"
                     >
                         Merge
                     </v-btn>
@@ -432,7 +432,8 @@
                                 <v-list-item-title>{{langMap.main.link}}</v-list-item-title>
                             </v-list-item>
                             <v-list-item
-                                @click="mergeTicketProcess"
+                                v-if="ticket.parent_id !== null || ticket.child_tickets !== null"
+                                @click="manageThirdColumn"
                             >
                                 <v-list-item-title>Merge</v-list-item-title>
                             </v-list-item>
@@ -441,7 +442,8 @@
                                 <v-list-item-title
                                     :color="this.ticket.is_spam ? 'red' : '#f2f2f2'"
                                     @click="markAsSpam"
-                                >Spam</v-list-item-title>
+                                >Spam
+                                </v-list-item-title>
                             </v-list-item>
 
                             <v-list-item
@@ -960,6 +962,66 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <br>
+                <v-expansion-panels
+                    v-model="thirdColumnPanels"
+                    multiple
+                >
+                    <v-expansion-panel>
+                        <v-expansion-panel-header
+                            style="background:#F0F0F0;"
+                        >
+                            <span>
+                                <strong>Merged tickets</strong>
+                            </span>
+
+                            <template v-slot:actions>
+                                <v-icon @click.native.stop="manageThirdColumn">mdi-close</v-icon>
+                            </template>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <br>
+                            <v-autocomplete
+                                label="Primary ticket"
+                                dense
+                                :color="themeColor"
+                                :item-color="themeColor"
+                                item-text="name"
+                                item-value="id"
+                                v-model="mergeTicketForm.parent_ticket_id"
+                                :items="mergeParentTickets"
+                            />
+                            <v-text-field @input="getTickets" v-model="ticketsSearch" :color="themeColor"
+                                          :label="langMap.main.search"></v-text-field>
+                            <div style="max-height: 200px; overflow-y: auto;">
+                                <v-checkbox v-for="item in tickets"
+                                            :key="item.id"
+                                            v-model="mergeTicketForm.child_ticket_id"
+                                            :value="item.id"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
+                                            :label="item.name"
+                                />
+                            </div>
+                            <v-textarea
+                                :label="langMap.main.description"
+                                v-model="mergeTicketForm.merge_comment"
+                                dense
+                                auto-grow
+                                rows="2"
+                                row-height="25"
+                                shaped
+                                :color="themeColor"
+                            />
+                            <v-spacer></v-spacer>
+                            <v-btn color="red" text @click="mergeTicketDialog = false">{{langMap.main.cancel}}
+                            </v-btn>
+                            <v-btn color="green" text @click="mergeTicket()">
+                                {{langMap.ticket.merge}}
+                            </v-btn>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+                <br>
                 <v-expansion-panels>
                     <v-expansion-panel>
                         <v-expansion-panel-header
@@ -1078,10 +1140,12 @@
                 langMap: this.$store.state.lang.lang_map,
                 mergeTicketDialog: false,
                 tickets: [],
+                mergeParentTickets: [],
+                linkParentTickets: [],
                 ticketsSearch: '',
                 mergeTicketForm: {
                     parent_ticket_id: null,
-                    child_ticket_id: null,
+                    child_ticket_id: [],
                     merge_comment: null
                 },
                 linkTicketForm: {
@@ -1234,6 +1298,7 @@
                         this.progressBuffer = this.progressBuffer + 40;
                         this.$store.state.pageName = '#' + this.ticket.id + ' ' + this.ticket.name
                         this.spamButtonColor = this.ticket.is_spam ? 'red' : '#f2f2f2'
+                        this.mergeTicketForm.parent_ticket_id = this.ticket.id
                         this.selectTeam();
                         this.getContacts(this.from)
                         if (this.ticket.notices.length > 0) {
@@ -1247,6 +1312,8 @@
                 axios.get(`/api/ticket?search=${this.ticketsSearch}&minified=1`)
                     .then(response => {
                         response = response.data
+                        this.mergeParentTickets = response.data.data
+                        this.linkParentTickets = response.data.data
                         this.tickets = response.data.data
                     });
             },
