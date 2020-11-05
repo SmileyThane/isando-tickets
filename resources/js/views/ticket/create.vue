@@ -268,6 +268,8 @@
     </v-container>
 </template>
 <script>
+    import EventBus from "../../components/EventBus";
+
     export default {
         data() {
             return {
@@ -331,6 +333,10 @@
             this.getPriorities()
             this.getCategories()
             // this.getCompany()
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             onInput(val) {

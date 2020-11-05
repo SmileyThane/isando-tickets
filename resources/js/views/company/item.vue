@@ -1048,6 +1048,7 @@
 
 <script>
     import Sidebar from "../../components/Sidebar";
+    import EventBus from "../../components/EventBus";
 
     export default {
 
@@ -1188,6 +1189,10 @@
             this.getProductCategoriesFlat();
             this.productCategoryForm.company_id = this.$route.params.id;
             this.employeeForm.company_id = this.$route.params.id;
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             localized(item, field = 'name') {

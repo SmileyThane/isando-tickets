@@ -568,7 +568,6 @@
             EventBus.$on('update-theme-color', function (color) {
                 that.themeColor = color;
             });
-
         },
         methods: {
             getCompanyLogo() {

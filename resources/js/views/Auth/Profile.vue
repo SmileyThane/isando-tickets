@@ -540,11 +540,6 @@
                 that.themeColor = color;
             });
         },
-        watch: {
-            themeColor: function () {
-                this.themeColor = this.$store.state.themeColor;
-            }
-        },
         methods: {
             localized(item, field = 'name') {
                 let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');

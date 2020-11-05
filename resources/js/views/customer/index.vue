@@ -174,6 +174,8 @@
 
 
 <script>
+    import EventBus from "../../components/EventBus";
+
     export default {
 
         data() {
@@ -223,7 +225,11 @@
             }
         },
         mounted() {
-            this.getSuppliers()
+            this.getSuppliers();
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             getClients() {

@@ -154,6 +154,8 @@
 
 
 <script>
+    import EventBus from "../../components/EventBus";
+
     export default {
 
         data() {
@@ -200,7 +202,11 @@
             }
         },
         mounted() {
-            this.getTeams()
+            this.getTeams();
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             getTeams() {
