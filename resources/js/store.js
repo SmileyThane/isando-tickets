@@ -58,31 +58,38 @@ export default new Vuex.Store({
         },
         getThemeColor({commit}) {
             return new Promise((resolve, reject) => {
-                if (localStorage.themeColor) {
-                    commit('setThemeColor', localStorage.themeColor);
-                    resolve();
-                } else {
-                    axios.get('/api/user/settings').then(response => {
-                        response = response.data;
-                        if (response.success === true && response.data.theme_color) {
-                            localStorage.themeColor = response.data.theme_color;
-                            commit('setThemeColor', response.data.theme_color);
+                let override = false;
+                let color = '';
+                axios.get('/api/main_company_settings').then(response => {
+                    response = response.data;
+                    if (response.success === true && response.data.theme_color) {
+                        color = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
+                        override = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
+
+                        if (override) {
+                            localStorage.themeColor = color;
+                            commit('setThemeColor', color);
                             resolve();
                         } else {
-                            axios.get('/api/main_company_settings').then(response => {
+                            axios.get('/api/user/settings').then(response => {
                                 response = response.data;
-                                if (response.success === true && response.data.theme_color) {
+                                if (response.success === true && response.data.hasOwnProperty('theme_color')) {
+                                    localStorage.themeColor = response.data.theme_color;
                                     commit('setThemeColor', response.data.theme_color);
+                                    resolve();
+                                } else {
+                                    localStorage.themeColor = color;
+                                    commit('setThemeColor', color);
                                     resolve();
                                 }
                             }).catch(error => {
                                 reject(error.response && error.response.data.message || 'Error.');
                             });
                         }
-                    }).catch(error => {
-                        reject(error.response && error.response.data.message || 'Error.');
-                    });
-                }
+                    }
+                }).catch(error => {
+                    reject(error.response && error.response.data.message || 'Error.');
+                });
             });
         }
     }

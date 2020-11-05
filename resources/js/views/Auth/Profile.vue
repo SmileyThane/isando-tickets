@@ -535,6 +535,15 @@
             this.getTimeZones();
             this.getCountries();
             this.getCompanySettings();
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
+        },
+        watch: {
+            themeColor: function () {
+                this.themeColor = this.$store.state.themeColor;
+            }
         },
         methods: {
             localized(item, field = 'name') {
