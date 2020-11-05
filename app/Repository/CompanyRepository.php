@@ -225,6 +225,10 @@ class CompanyRepository
             $data['theme_color'] = $request->theme_color;
         }
 
+        if ($request->has('override_user_theme')) {
+            $data['override_user_theme'] = $request->override_user_theme;
+        }
+
         $settings->data = $data;
         $settings->save();
 

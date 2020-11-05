@@ -58,14 +58,25 @@
 
                         <v-form>
                             <v-row>
-                                <v-col class="col-md-12">
-                                    <v-label>{{langMap.system_settings.theme_color}}</v-label>
+                                <v-col class="col-md-6">
+                                    <v-label>{{langMap.system_settings.company_theme_color}}</v-label>
                                     <v-color-picker
                                         dot-size="25"
                                         mode="hexa"
                                         v-model="companySettings.theme_color"
                                         :disabled="!enableToEdit"
                                     ></v-color-picker>
+                                </v-col>
+                                <v-col class="col-md-6">
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        :readonly="!enableToEdit"
+                                        :label="langMap.system_settings.override_user_theme_color"
+                                        :value="true"
+                                        v-model="companySettings.override_user_theme"
+                                    >
+                                    </v-checkbox>
+                                    <p>{{ langMap.system_settings.override_user_theme_color_hint }}</p>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -534,7 +545,8 @@
                     navbar_style: '',
                     ticket_number_format: '',
                     timezone: '',
-                    theme_color: ''
+                    theme_color: '',
+                    override_user_theme: false
                 },
                 companyLogo: '',
                 companyNewLogo: null,
@@ -552,6 +564,11 @@
             this.getCompanyLanguages();
             this.getCompanySettings();
             this.getTimezones();
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
+
         },
         methods: {
             getCompanyLogo() {
@@ -874,6 +891,7 @@
                         this.companySettings['ticket_number_format'] = response.data.hasOwnProperty('ticket_number_format') ? response.data.ticket_number_format : 'YYMMDDXXXX';
                         this.companySettings['timezone'] = response.data.hasOwnProperty('timezone') ? response.data.timezone : 35;
                         this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
+                        this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
                     }
                 });
             },
@@ -903,10 +921,16 @@
                 axios.post('/api/main_company_settings', this.companySettings).then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        this.themeColor = this.companySettings.theme_color;
-                        this.$store.state.themeColor = this.companySettings.theme_color;
-                        EventBus.$emit('update-theme-color', this.themeColor);
-                        EventBus.$emit('update-navbar-style', this.companySettings.navbar_style);
+                        // if (this.companySettings.override_user_theme) {
+                        //     this.themeColor = this.companySettings.theme_color;
+                        // } else {
+                        //     this.themeColor = this.userSettings.theme_color;
+                        // }
+                        // this.$store.state.themeColor = this.themeColor;
+                        // EventBus.$emit('update-theme-color', this.themeColor);
+                        // EventBus.$emit('update-navbar-style', this.companySettings.navbar_style);
+                        window.location.reload()
+
                     } else {
                         this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                         this.errorType = 'error';
