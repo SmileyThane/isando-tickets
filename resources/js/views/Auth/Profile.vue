@@ -446,7 +446,7 @@
                                     >
                                         <template v-slot:label>
                                             {{ langMap.profile.revert_to_company_theme_color }}
-                                            <v-icon x-large right :color="companyThemeColor">mdi-checkbox-blank</v-icon>
+                                            <v-icon x-large right :color="companySettings.theme_color">mdi-checkbox-blank</v-icon>
                                         </template>
                                     </v-checkbox>
 
@@ -523,7 +523,10 @@
                 countries: [],
                 themeColorNew: this.$store.state.themeColor,
                 themeColorDlg: localStorage.themeColorDlg == 1 ? 0 : 1,
-                companyThemeColor: '',
+                companySettings: {
+                    theme_color: '',
+                    override_user_theme: false
+                },
                 resetThemeColorFlag: 0
             }
         },
@@ -688,10 +691,12 @@
                 axios.post('/api/user/settings', {theme_color: this.themeColorNew}).then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        this.themeColor = this.themeColorNew;
-                        this.$store.state.themeColor = this.themeColorNew;
-                        localStorage.themeColor = this.themeColorNew;
-                        EventBus.$emit('update-theme-color', this.themeColorNew);
+                        if (this.companySettings.override_user_theme !== true) {
+                            this.themeColor = this.themeColorNew;
+                            this.$store.state.themeColor = this.themeColorNew;
+                            localStorage.themeColor = this.themeColorNew;
+                            EventBus.$emit('update-theme-color', this.themeColorNew);
+                        }
                         localStorage.themeColorDlg = this.themeColorDlg == 1 ? 0 : 1;
                         this.enableToEdit = false;
                     } else {
@@ -706,14 +711,15 @@
                 axios.get(`/api/main_company_settings`).then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        this.companyThemeColor = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
+                        this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
+                        this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
                     }
                 });
             },
             resetThemeColor() {
                 const resetThemeColorFlag = this.resetThemeColorFlag;
                 if (resetThemeColorFlag === 1) {
-                    this.themeColorNew = this.companyThemeColor;
+                    this.themeColorNew = this.companySettings.theme_color;
                 } else {
                     this.themeColorNew = this.$store.state.themeColor;
                 }
