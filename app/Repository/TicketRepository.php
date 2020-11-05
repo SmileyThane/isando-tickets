@@ -19,7 +19,6 @@ use App\TicketMerge;
 use App\TicketNotice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -60,33 +59,32 @@ class TicketRepository
         $tickets->where(function ($ticketsQuery) use ($request, $companyUser, $tickets) {
             $ticketsQuery->where('to_company_user_id', $companyUser->id)
                 ->orWhere('contact_company_user_id', $companyUser->id);
-            if ($request->search !== '') {
-                $tickets->where(
-                    function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->search . '%')
-                            ->orWhere('description', 'like', '%' . $request->search . '%');
-                    }
-                );
-            }
         })->select('id');
         if ($tickets) {
             $ticketIds = $tickets->pluck('id')->toArray();
         }
         $ticketResult = Ticket::whereIn('id', $ticketIds);
+        if ($request->search !== '') {
+            $ticketResult->where(
+                static function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
+                }
+            );
+        }
         if ($request->with_spam !== "true") {
             $ticketResult->where('is_spam', 0);
         }
         if ($request->minified && $request->minified === 'true') {
             return $ticketResult->select('id', 'name', 'from_entity_id', 'from_entity_type', 'updated_at')->paginate(count($ticketIds));
         }
-
-        return$ticketResult
+//        dd(DB::getQueryLog());
+        return $ticketResult
             ->with(
                 'creator.userData', 'assignedPerson.userData',
                 'contact.userData', 'product', 'team',
                 'priority', 'status', 'category')
             ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? count($ticketIds));
-//        dd(DB::getQueryLog());
     }
 
     private function ticketRoleFilter($companyUser, $tickets)
@@ -339,7 +337,7 @@ class TicketRepository
                 $ticketMerge->child_ticket_id = $ticketId;
                 $ticketMerge->save();
                 $this->addHistoryItem($request->parent_ticket_id, null, 'ticket_linked');
-                $this->addHistoryItem($request->child_ticket_id, null, 'ticket_linked');
+                $this->addHistoryItem($ticketId, null, 'ticket_linked');
             }
             return true;
         }
