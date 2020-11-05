@@ -24,6 +24,7 @@ class LanguageSeeder extends Seeder
     "products": "Product",
     "teams": "Team",
     "individuals": "Individual",
+    "individual": "Individual",
     "company": "Company",
     "customer": "Customer",
     "product": "Product",
@@ -115,7 +116,8 @@ class LanguageSeeder extends Seeder
     "assigned_companies": "Assigned companies",
     "new_customer": "Assign to Customer",
     "is_active": "System access",
-    "status": "Status"
+    "status": "Status",
+    "social_info": "Social info"
   },
   "ticket": {
     "contact_name": "Contact name",
@@ -330,6 +332,7 @@ class LanguageSeeder extends Seeder
     "products": "Produkte",
     "teams": "Teams",
     "individuals": "Privatpersonen",
+    "individual": "Privatpersonen",
     "contact": "Privatpersonen",
     "company": "Meine Firma",
     "customer": "Firmen",
@@ -430,7 +433,8 @@ class LanguageSeeder extends Seeder
   "assigned_companies": "Kontakte",
   "new_customer": "Kontakt hinzufügen",
   "is_active": "Systemzugriff",
-  "status": "Status"
+  "status": "Status",
+  "social_info": "Soziales Netzwerk"
   },
   "ticket": {
     "contact_name": "Kontaktname",
