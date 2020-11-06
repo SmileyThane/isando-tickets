@@ -52,6 +52,71 @@
             </v-dialog>
         </template>
         <template>
+            <v-dialog v-model="updateDialog" max-width="60%">
+                <v-card outlined dense>
+                    <v-card-title class="headline" style="background-color: #F0F0F0;">
+                        <span class="text-capitalize">{{langMap.main.edit}}</span>
+                        <v-spacer></v-spacer>
+                        <v-btn :color="themeColor" dark @click="updateTicket">{{langMap.main.update}}
+                        </v-btn>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-select
+                                    dense
+                                    label="Product"
+                                    color="green"
+                                    item-color="green"
+                                    item-text="name"
+                                    item-value="id"
+                                    :items="products"
+                                    v-model="ticket.to_product_id"
+                                    @input="getProducts"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-label>
+                                    <strong>{{langMap.main.description}}</strong>
+                                </v-label>
+                                <tiptap-vuetify
+                                    v-model="ticket.description"
+                                    :extensions="extensions"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-label>
+                                    <strong>{{langMap.ticket.availability_description}}</strong>
+                                </v-label>
+                                <tiptap-vuetify
+                                    v-model="ticket.availability"
+                                    :extensions="extensions"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-label>
+                                    <strong>{{langMap.ticket.ip_address}}</strong>
+                                </v-label>
+                                <tiptap-vuetify
+                                    v-model="ticket.connection_details"
+                                    :extensions="extensions"
+                                />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-label>
+                                    <strong>{{langMap.ticket.access_details}}</strong>
+                                </v-label>
+                                <tiptap-vuetify
+                                    v-model="ticket.access_details"
+                                    :extensions="extensions"
+                                />
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-dialog>
+        </template>
+        <template>
             <v-dialog v-model="answerDialog" max-width="480">
                 <v-card outlined dense>
                     <v-card-title class="headline" style="background-color: #F0F0F0;">{{langMap.ticket.create_answer}}
@@ -191,55 +256,6 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="mergeTicketDialog" persistent max-width="480">
-                <v-card>
-                    <v-card-title class="headline">{{langMap.ticket.merge}}</v-card-title>
-                    <v-card-text>
-                        <v-autocomplete
-                            :label="langMap.ticket.subject"
-                            dense
-                            :color="themeColor"
-                            :item-color="themeColor"
-                            item-text="name"
-                            item-value="id"
-                            v-model="mergeTicketForm.parent_ticket_id"
-                            :items="tickets"
-                        />
-                        <v-autocomplete
-                            :label="langMap.ticket.subject"
-                            dense
-                            :color="themeColor"
-                            :item-color="themeColor"
-                            item-text="name"
-                            item-value="id"
-                            multiple
-                            v-model="mergeTicketForm.child_ticket_id"
-                            :items="tickets"
-
-                        />
-                        <v-textarea
-                            :label="langMap.main.description"
-                            v-model="mergeTicketForm.merge_comment"
-                            dense
-                            auto-grow
-                            rows="2"
-                            row-height="25"
-                            shaped
-                            :color="themeColor"
-                        />
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="mergeTicketDialog = false">{{langMap.main.cancel}}
-                        </v-btn>
-                        <v-btn :color="themeColor" darken-1 text @click="mergeTicket()">
-                            {{langMap.ticket.merge}}
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-        </template>
-        <template>
             <v-dialog v-model="removeTicketDialog" persistent max-width="480">
                 <v-card>
                     <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
@@ -269,7 +285,8 @@
                            @click="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0 ? manageThirdColumn() : linkTicketProcess()"
                     >{{langMap.main.link}}
                     </v-btn>
-                    <v-btn v-if="ticket.parent_id !== null || ticket.child_tickets !== null" small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
+                    <v-btn v-if="ticket.parent_id !== null || ticket.child_tickets !== null" small
+                           class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
                            @click="manageThirdColumn"
                     >
                         Merge
@@ -508,6 +525,7 @@
                             <v-btn class="float-md-right"
                                    small color="white"
                                    style="color: black;"
+                                   @click="updateDialog = true"
                             >
                                 <v-icon small>mdi-pencil</v-icon>
                                 {{langMap.main.edit}}
@@ -728,6 +746,7 @@
                             <v-btn class="float-md-right"
                                    small color="white"
                                    style="color: black;"
+                                   @click="updateDialog = true"
                             >
                                 <v-icon small>mdi-pencil</v-icon>
                                 {{langMap.main.edit}}
@@ -802,6 +821,7 @@
                                 <v-btn class="float-md-right"
                                        small color="white"
                                        style="color: black;"
+                                       @click="true"
                                 >
                                     {{langMap.main.edit}}
                                 </v-btn>
@@ -1013,7 +1033,7 @@
                                 :color="themeColor"
                             />
                             <v-spacer></v-spacer>
-                            <v-btn color="red" text @click="mergeTicketDialog = false">{{langMap.main.cancel}}
+                            <v-btn color="red" text>{{langMap.main.cancel}}
                             </v-btn>
                             <v-btn color="green" text @click="mergeTicket()">
                                 {{langMap.ticket.merge}}
@@ -1097,10 +1117,52 @@
 </template>
 
 <script>
+    import {
+        Blockquote,
+        Bold,
+        BulletList,
+        Code,
+        HardBreak,
+        Heading,
+        History,
+        HorizontalRule,
+        Italic,
+        Link,
+        ListItem,
+        OrderedList,
+        Paragraph,
+        Strike,
+        TiptapVuetify,
+        Underline,
+        Image
+    } from 'tiptap-vuetify'
 
     export default {
+        components: {TiptapVuetify},
         data() {
             return {
+                extensions: [
+                    History,
+                    Blockquote,
+                    Link,
+                    Underline,
+                    Strike,
+                    Italic,
+                    ListItem,
+                    BulletList,
+                    OrderedList,
+                    [Heading, {
+                        options: {
+                            levels: [1, 2, 3]
+                        }
+                    }],
+                    Bold,
+                    Code,
+                    HorizontalRule,
+                    Paragraph,
+                    Image,
+                    HardBreak
+                ],
                 snackbar: false,
                 actionColor: '',
                 snackbarMessage: '',
@@ -1116,6 +1178,7 @@
                 rightSidebarClass: 'd-sm-none d-md-flex',
                 ticketLinkDialog: false,
                 serverAccessDialog: false,
+                updateDialog: false,
                 answerDialog: false,
                 noteDialog: false,
                 removeTicketDialog: false,
@@ -1138,7 +1201,6 @@
                 teams: [],
                 from: [],
                 langMap: this.$store.state.lang.lang_map,
-                mergeTicketDialog: false,
                 tickets: [],
                 mergeParentTickets: [],
                 linkParentTickets: [],
@@ -1421,10 +1483,11 @@
                     response = response.data
                     if (response.success === true) {
                         this.getTicket()
+                        this.updateDialog = false
                     } else {
                         console.log('error')
                     }
-                    this.submitEdit = this.fromEdit = this.contactEdit = this.priorityEdit = this.ipEdit = this.detailsEdit = false
+                    // this.submitEdit = this.fromEdit = this.contactEdit = this.priorityEdit = this.ipEdit = this.detailsEdit = false
                 });
             },
             closeTicket() {
@@ -1490,11 +1553,6 @@
                     this.rightSidebarClass = 'd-sm-none d-md-flex'
                 }
             },
-            mergeTicketProcess() {
-                this.mergeTicketForm.parent_ticket_id = this.ticket.id
-                this.mergeTicketDialog = true
-                this.minifiedTickets = true
-            },
             mergeTicket() {
                 axios.post('/api/merge/ticket', this.mergeTicketForm).then(response => {
                     response = response.data
@@ -1526,7 +1584,6 @@
             linkTicketProcess() {
                 this.linkTicketForm.parent_ticket_id = this.ticket.id
                 this.ticketLinkDialog = true
-                this.minifiedTickets = true
             },
             linkTicket() {
                 axios.post('/api/link/ticket', this.mergeTicketForm).then(response => {
