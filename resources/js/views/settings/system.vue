@@ -87,12 +87,69 @@
                             <v-row>
                                 <v-col class="col-md-12">
                                     <v-label>{{langMap.system_settings.ticket_number_format}}</v-label>
-                                    <v-text-field
-                                        :color="themeColor"
-                                        dense
-                                        v-model="companySettings.ticket_number_format"
-                                        :readonly="!enableToEdit"
-                                    ></v-text-field>
+                                    <v-row>
+                                        <v-col class="col-md-3">
+                                            <v-text-field
+                                                :label="langMap.system_settings.ticket_number_format_prefix"
+                                                :color="themeColor"
+                                                dense
+                                                v-model="ticketNumberFormat.prefix"
+                                                :readonly="!enableToEdit"
+                                                counter="6"
+                                                maxlength="6"
+                                                @change="updateTicketNumber()"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col class="col-md-2">
+                                            <v-select
+                                                :label="langMap.system_settings.ticket_number_format_delimiter"
+                                                :color="themeColor"
+                                                dense
+                                                v-model="ticketNumberFormat.delimiter1"
+                                                :items="ticketNumberFormat.delimiters"
+                                                :readonly="!enableToEdit"
+                                                @change="updateTicketNumber()"
+                                            >
+                                            </v-select>
+                                        </v-col>
+                                        <v-col class="col-md-3">
+                                            <v-select
+                                                :label="langMap.system_settings.ticket_number_format_date"
+                                                :color="themeColor"
+                                                dense
+                                                v-model="ticketNumberFormat.date"
+                                                :items="ticketNumberFormat.dates"
+                                                :readonly="!enableToEdit"
+                                                @change="updateTicketNumber()"
+                                            >
+                                            </v-select>
+                                        </v-col>
+                                        <v-col class="col-md-2">
+                                            <v-select
+                                                :label="langMap.system_settings.ticket_number_format_delimiter"
+                                                :color="themeColor"
+                                                dense
+                                                v-model="ticketNumberFormat.delimiter2"
+                                                :items="ticketNumberFormat.delimiters"
+                                                :readonly="!enableToEdit"
+                                                @change="updateTicketNumber()"
+                                            >
+                                            </v-select>
+                                        </v-col>
+                                        <v-col class="col-md-2">
+                                            <v-select
+                                                :label="langMap.system_settings.ticket_number_format_sequence"
+                                                :color="themeColor"
+                                                dense
+                                                v-model="ticketNumberFormat.suffix"
+                                                :items="ticketNumberFormat.suffixes"
+                                                :readonly="!enableToEdit"
+                                                @change="updateTicketNumber()"
+                                            >
+                                            </v-select>
+                                        </v-col>
+                                    </v-row>
+                                    <p>{{langMap.system_settings.ticket_number_example}} <strong>{{ticketNumber}}</strong></p>
                                     <p>{{langMap.system_settings.ticket_number_format_help}}</p>
                                 </v-col>
                             </v-row>
@@ -467,6 +524,7 @@
 
 <script>
     import EventBus from '../../components/EventBus';
+    import moment from 'moment';
 
     export default {
         data() {
@@ -480,6 +538,11 @@
                 errors: [],
                 langMap: this.$store.state.lang.lang_map,
                 themeColor: this.$store.state.themeColor,
+                company: {
+                    name: '',
+                    company_number: '',
+                    description: ''
+                },
                 addressTypeForm: {
                     entity_id: '',
                     entity_type: 'App\\Company',
@@ -550,10 +613,43 @@
                 },
                 companyLogo: '',
                 companyNewLogo: null,
-                timezones:[]
+                timezones:[],
+                ticketNumberFormat: {
+                    prefix: '',
+                    delimiter1: '-',
+                    date: 'YYYYMMDD',
+                    delimiter2: '-',
+                    suffix: '###',
+                    delimiters: [
+                        '', '.', '-', '_', '|', '!', '/', '\\'
+                    ],
+                    dates: [
+                        'YYYYMMDD',
+                        'YYYY-MM-DD',
+                        'YYYY/MM/DD',
+                        'YYYY.MM.DD',
+                        'DD-MM-YYYY',
+                        'DD/MM/YYYY',
+                        'DD.MM.YYYY',
+                        'DD/MM/YYYY',
+                        'MM-DD-YYYY',
+                        'MM/DD/YYYY',
+                        'MM.DD.YYYY'
+                    ],
+                    suffixes: [
+                        '#',
+                        '##',
+                        '###',
+                        '####',
+                        '#####',
+                        '######'
+                    ]
+                },
+                ticketNumber: ''
             }
         },
         mounted() {
+            this.getCompany();
             this.getCompanyLogo();
             this.getPhoneTypes();
             this.getAddressTypes();
@@ -570,6 +666,17 @@
             });
         },
         methods: {
+            getCompany() {
+                axios.get(`/api/company/${this.$route.params.id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.company = response.data;
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
             getCompanyLogo() {
                 axios.get('/api/main_company_logo').then(response => {
                     response = response.data
@@ -887,10 +994,19 @@
                     response = response.data;
                     if (response.success === true) {
                         this.companySettings['navbar_style'] = response.data.hasOwnProperty('navbar_style') ? response.data.navbar_style : 1;
-                        this.companySettings['ticket_number_format'] = response.data.hasOwnProperty('ticket_number_format') ? response.data.ticket_number_format : 'YYMMDDXXXX';
+                        this.companySettings['ticket_number_format'] = response.data.hasOwnProperty('ticket_number_format') ? response.data.ticket_number_format : this.company.name.substr(0, 6)+'｜-｜YYYYMMDD｜-｜###';
                         this.companySettings['timezone'] = response.data.hasOwnProperty('timezone') ? response.data.timezone : 35;
                         this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
                         this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
+
+                        let fmt = this.companySettings.ticket_number_format.split('｜');
+                        let pos = ['prefix', 'delimiter1', 'date', 'delimiter2', 'suffix'];
+                        fmt[0] = fmt[0] ? fmt[0].substr(0, 6) : '';
+                        for (let i = 0; i < fmt.length; i++) {
+                            this.ticketNumberFormat[pos[i]] = fmt[i].toLocaleUpperCase();
+                        }
+
+                        this.updateTicketNumber();
                     }
                 });
             },
@@ -917,17 +1033,14 @@
                         }
                     });
                 }
+
+                this.companySettings.ticket_number_format = this.ticketNumberFormat.prefix.toLocaleUpperCase() + '｜' +
+                    this.ticketNumberFormat.delimiter1 + '｜' + this.ticketNumberFormat.date + '｜' +
+                    this.ticketNumberFormat.delimiter2 + '｜' + this.ticketNumberFormat.suffix;
+
                 axios.post('/api/main_company_settings', this.companySettings).then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        // if (this.companySettings.override_user_theme) {
-                        //     this.themeColor = this.companySettings.theme_color;
-                        // } else {
-                        //     this.themeColor = this.userSettings.theme_color;
-                        // }
-                        // this.$store.state.themeColor = this.themeColor;
-                        // EventBus.$emit('update-theme-color', this.themeColor);
-                        // EventBus.$emit('update-navbar-style', this.companySettings.navbar_style);
                         window.location.reload()
 
                     } else {
@@ -946,6 +1059,11 @@
                         this.timezones = response.data;
                     }
                 });
+            },
+            updateTicketNumber() {
+                this.ticketNumber = this.ticketNumberFormat.prefix.toLocaleUpperCase() +
+                    this.ticketNumberFormat.delimiter1 + moment().format(this.ticketNumberFormat.date) +
+                    this.ticketNumberFormat.delimiter2 + '1'.padStart(this.ticketNumberFormat.suffix.length, '0');
             }
         }
     }

@@ -15,8 +15,8 @@ class Ticket extends Model
     use SoftDeletes;
 
     protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
-        'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam'];
-    protected $appends = ['from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
+        'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence'];
+    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
     protected $hidden = ['to'];
 
     public function getNameAttribute()
@@ -141,5 +141,26 @@ class Ticket extends Model
     {
 //        return self::where('parent_id', $this->id);
         return $this->hasMany(self::class, 'parent_id', 'id');
+    }
+
+    public function getNumberAttribute(): string
+    {
+        // Prefix + Delimiter + creation_date + Delimiter + sequence
+        $owner = $this->to;
+        $settings = $owner->settings;
+        $format = $settings['ticket_number_format'];
+        if (empty($format) || count(explode('｜', $format)) != 5) {
+            $format = strtoupper(substr($owner->name, 0, 6)) . '｜-｜YYYYMMDD｜-｜###';
+        }
+
+        list($prefix, $delim1, $date, $delim2, $suffix) = explode('｜', $format);
+        // prepare date format for PHP
+        $date = str_replace('YYYY', 'Y', $date);
+        $date = str_replace('MM', 'm', $date);
+        $date = str_replace('DD', 'd', $date);
+
+        // prepare suffix for PHP
+        $suffix = '%0' . strlen($suffix) . 'd';
+        return $prefix . $delim1 . date($date) . $delim2 . sprintf($suffix, $this->sequence);
     }
 }

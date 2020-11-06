@@ -285,7 +285,11 @@ class LanguageSeeder extends Seeder
     "navbar_logo_2": "With company logo and company name, two lines",
     "navbar_only_logo": "Only company logo",
     "ticket_number_format": "Ticket number format",
-    "ticket_number_format_help": "Use %{yy} or %{yyyy} for year (2 or 4 digits), %{mm} - month number, %{dd} - day, %{#} - daily incremental ticket number with leading zero (example: ${##}: 01, ${####} - 0001)",
+    "ticket_number_format_help": "Ticket format can be composed from prefix (can be empty, up to 6 chars), delimiters (can be empty), date (in different formats) and daily sequence number",    "ticket_number_format_prefix": "Prefix",
+    "ticket_number_format_delimiter": "Delimiter",
+    "ticket_number_format_date": "Date format",
+    "ticket_number_format_sequence": "Daily sequence number length",
+    "ticket_number_example": "Example: ",
     "default_timezone": "Default timezone",
     "languages": "Languages",
     "countries": "Countries",
@@ -311,7 +315,7 @@ class LanguageSeeder extends Seeder
   },
   "profile": {
     "user_theme_color": "Personal theme color",
-    "show_speed_panel": "Show floating gear",
+    "show_speed_panel": "Show color floating gear",
     "revert_to_company_theme_color": "Revert to company theme color"
   },
   "exceptions": {
@@ -603,7 +607,10 @@ class LanguageSeeder extends Seeder
     "navbar_logo_2": "Mit Firmenlogo und Firmenname, zwei Zeilen",
     "navbar_only_logo": "Nur Firmenlogo",
     "ticket_number_format": "Ticketnummer Format",
-    "ticket_number_format_help": "Verwenden Sie %{yy} oder %{yyyy} für das Jahr (2 oder 4 Ziffern), %{mm} - Monatsnummer, %{dd} - Tag, %{#} - tägliche inkrementelle Ticketnummer mit führender Nummer Null (Beispiel: ${##}: 01, ${####} - 0001) ",
+    "ticket_number_format_help": "Das Ticketformat kann aus Präfix (kann leer sein, bis zu 6 Zeichen), Trennzeichen (kann leer sein), Datum (in verschiedenen Formaten) und täglicher Sequenznummer bestehen",    "ticket_number_format_delimiter": "Delimiter",
+    "ticket_number_format_date": "Datumsformat",
+    "ticket_number_format_sequence": "Tägliche Länge der Sequenznummer",
+    "ticket_number_example": "Exempel: ",
     "default_timezone": "Standard Zeitzone",
     "languages": "Sprachen",
     "countries": "Länder",
@@ -629,7 +636,7 @@ class LanguageSeeder extends Seeder
   },
   "profile": {
     "user_theme_color": "Persönliche Themenfarbe",
-    "show_speed_panel": "Schwimmausrüstung anzeigen",
+    "show_speed_panel": "Colour floating bar anzeigen",
     "revert_to_company_theme_color": "Kehren Sie zur Farbe des Firmenthemas zurück"
   },
  "exceptions": {
