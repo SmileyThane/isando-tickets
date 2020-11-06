@@ -89,6 +89,7 @@
                     <v-spacer>
                         &nbsp;
                     </v-spacer>
+                    <h3>{{ item.number }}</h3>
                     <p><strong>{{langMap.ticket.contact_name}}:</strong> {{ item.contact ? item.contact.user_data.name :
                         '' }}</p>
                     <p><strong>{{langMap.ticket.contact_email}}:</strong> {{ item.contact ? item.contact.user_data.email
@@ -244,6 +245,7 @@
                         sortable: false,
                         value: 'id',
                     },
+                    {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number'},
                     {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
                     {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
