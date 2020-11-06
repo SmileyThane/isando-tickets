@@ -1423,7 +1423,7 @@
                         this.ticket = response.data
                         this.from = {[this.ticket.from_entity_type]: this.ticket.from_entity_id}
                         this.progressBuffer = this.progressBuffer + 40;
-                        this.$store.state.pageName = '#' + this.ticket.id + ' ' + this.ticket.number + ' ' + this.ticket.name
+                        this.$store.state.pageName = '#' + this.ticket.id + ' | ' + this.ticket.number + ' | ' + this.ticket.name
                         this.spamButtonColor = this.ticket.is_spam ? 'red' : '#f2f2f2'
                         this.mergeTicketForm.parent_ticket_id = this.ticket.id
                         this.selectTeam();
