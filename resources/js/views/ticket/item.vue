@@ -103,7 +103,7 @@
                                     v-model="ticket.access_details"
                                     dense
                                 ></v-textarea>
-                             </v-col>
+                            </v-col>
                         </v-row>
                     </v-card-text>
                 </v-card>
@@ -785,17 +785,17 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <br>
-                                <v-select
-                                    dense
-                                    label="Product"
-                                    color="green"
-                                    item-color="green"
-                                    item-text="name"
-                                    item-value="id"
-                                    :items="products"
-                                    v-model="ticket.to_product_id"
-                                    @input="getProducts"
-                                />
+                            <v-select
+                                dense
+                                label="Product"
+                                color="green"
+                                item-color="green"
+                                item-text="name"
+                                item-value="id"
+                                :items="products"
+                                v-model="ticket.to_product_id"
+                                @input="getProducts"
+                            />
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
