@@ -6,6 +6,9 @@ import App from './views/App'
 import Routes from './routes'
 import 'vuetify/dist/vuetify.min.css'
 import store from './store'
+import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
+import 'tiptap-vuetify/dist/main.css'
+import 'vuetify/dist/vuetify.min.css'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
@@ -34,7 +37,10 @@ router.beforeEach((to, from, next) => {
 })
 
 const vuetify = new Vuetify();
-
+Vue.use(TiptapVuetifyPlugin, {
+    vuetify,
+    iconsGroup: 'mdi'
+})
 const app = new Vue({
     el: '#app',
     components: {App},
