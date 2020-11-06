@@ -25,7 +25,7 @@ class Ticket extends Model
             $last = Ticket::where('to_entity_type', $ticket->to_entity_type)
                 ->where('to_entity_id', $ticket->to_entity_id)
                 ->whereDate('created_at', '=', date('Y-m-d'))->max('sequence');
-            $ticket->sequnce = $last+1;
+            $ticket->sequnce = $last + 1;
         });
     }
 
@@ -156,7 +156,14 @@ class Ticket extends Model
     public function getNumberAttribute(): string
     {
         // Prefix + Delimiter + creation_date + Delimiter + sequence
-        $owner = $this->to;
+        try {
+            $owner = $this->to_enity_type === Company::class ?
+                $this->to :
+                $this->to->supplier_type::find($this->to->supplier_id);
+        } catch (\Throwable $th) {
+            $owner = Auth::user()->employee->companyData; // as variant to modification or fix
+        }
+
         $settings = $owner->settings;
         $format = $settings['ticket_number_format'];
         if (empty($format) || count(explode('｜', $format)) != 5) {
