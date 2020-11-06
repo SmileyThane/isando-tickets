@@ -25,7 +25,7 @@ class Ticket extends Model
             $last = Ticket::where('to_entity_type', $ticket->to_entity_type)
                 ->where('to_entity_id', $ticket->to_entity_id)
                 ->whereDate('created_at', '=', date('Y-m-d'))->max('sequence');
-            $ticket->sequnce = $last + 1;
+            $ticket->sequence = $last + 1;
         });
     }
 
