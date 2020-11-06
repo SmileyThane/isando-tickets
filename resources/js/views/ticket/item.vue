@@ -1179,6 +1179,8 @@
         Underline
     } from 'tiptap-vuetify'
 
+    import EventBus from "../../components/EventBus";
+
     export default {
         components: {TiptapVuetify},
         data() {
@@ -1397,6 +1399,10 @@
             // if (localStorage.getticket('auth_token')) {
             //     this.$router.push('tickets')
             // }
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             selectSearchCategory(item) {

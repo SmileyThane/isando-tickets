@@ -595,6 +595,8 @@
 
 
 <script>
+    import EventBus from "../../components/EventBus";
+
     export default {
 
         data() {
@@ -745,7 +747,11 @@
             this.getAddressTypes();
             this.getSocialTypes();
             this.getCountries();
-            this.employeeForm.client_id = this.$route.params.id
+            this.employeeForm.client_id = this.$route.params.id;
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             localized(item, field = 'name') {

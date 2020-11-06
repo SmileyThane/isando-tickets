@@ -120,7 +120,7 @@ export default [
     },
     {
         path: '/employee/:id',
-        name: 'contact',
+        name: 'individual',
         meta: {
             requiresAuth: true,
         },

@@ -195,6 +195,8 @@
 
 
 <script>
+    import EventBus from "../../components/EventBus";
+
     export default {
 
         data() {
@@ -250,8 +252,12 @@
             }
         },
         mounted() {
-            this.getEmployees()
-            this.getClients()
+            this.getEmployees();
+            this.getClients();
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             getEmployees() {

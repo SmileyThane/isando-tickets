@@ -222,7 +222,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.contact_info}}</v-toolbar-title>
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.social_info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -582,6 +582,8 @@
 </template>
 
 <script>
+    import EventBus from "../../components/EventBus";
+
     export default {
         data() {
             return {
@@ -671,6 +673,10 @@
             // if (localStorage.getItem('auth_token')) {
             //     this.$router.push('tickets')
             // }
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             localized(item, field = 'name') {

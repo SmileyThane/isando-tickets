@@ -151,6 +151,8 @@
 
 
 <script>
+    import EventBus from "../../components/EventBus";
+
     export default {
 
         data() {
@@ -218,8 +220,12 @@
             }
         },
         mounted() {
-            this.getTeam()
-            this.employeeForm.team_id = this.$route.params.id
+            this.getTeam();
+            this.employeeForm.team_id = this.$route.params.id;
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             getTeam() {

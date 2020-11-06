@@ -94,7 +94,7 @@ class CompanyController extends Controller
 
    public function updateSettings(Request $request, $id = null): JsonResponse
    {
-        return self::showResponse($this->companyRepo->updateSettings($request, $id));
+        return self::showResponse(true, $this->companyRepo->updateSettings($request, $id));
    }
 
    public function updateLogo(Request $request, $id = null)

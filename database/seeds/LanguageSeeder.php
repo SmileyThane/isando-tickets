@@ -24,6 +24,7 @@ class LanguageSeeder extends Seeder
     "products": "Product",
     "teams": "Team",
     "individuals": "Individual",
+    "individual": "Individual",
     "company": "Company",
     "customer": "Customer",
     "product": "Product",
@@ -66,22 +67,6 @@ class LanguageSeeder extends Seeder
     "regular_user": "Regular user",
     "company_client": "Company client",
     "contact": "Contact"
-  },
-  "phone_types":{
-    "primary": "Primary",
-    "secondary": "Secondary",
-    "other": "Other"
-  },
-  "address_types":{
-    "home": "Home",
-    "work": "Work",
-    "other": "Other"
-  },
-  "social_types":{
-    "website": "Website",
-    "linkedin": "LinkedIn",
-    "facebook": "Facebook",
-    "contact_email": "Contact E-mail"
   },
   "company": {
     "company_number": "Company number",
@@ -131,8 +116,8 @@ class LanguageSeeder extends Seeder
     "assigned_companies": "Assigned companies",
     "new_customer": "Assign to Customer",
     "is_active": "System access",
-    "show_speed_panel": "Show floating gear",
-    "status": "Status"
+    "status": "Status",
+    "social_info": "Social info"
   },
   "ticket": {
     "contact_name": "Contact name",
@@ -304,7 +289,9 @@ class LanguageSeeder extends Seeder
     "default_timezone": "Default timezone",
     "languages": "Languages",
     "countries": "Countries",
-    "theme_color": "Theme color",
+    "company_theme_color": "Company theme color",
+    "override_user_theme_color": "Override personal theme color",
+    "override_user_theme_color_hint": "The change of the company theme color impacts all clients and all company users who did not select personal theme color",
     "phone_types": "Phone types",
     "new_phone_type": "Add new phone type",
     "phone_type_created": "Phone type created",
@@ -321,6 +308,11 @@ class LanguageSeeder extends Seeder
     "address_type_deleted": "Address type deleted",
     "address_type_updated": "Address type updated",
     "update_type_info": "Update information"
+  },
+  "profile": {
+    "user_theme_color": "Personal theme color",
+    "show_speed_panel": "Show floating gear",
+    "revert_to_company_theme_color": "Revert to company theme color"
   },
   "exceptions": {
   }
@@ -340,6 +332,7 @@ class LanguageSeeder extends Seeder
     "products": "Produkte",
     "teams": "Teams",
     "individuals": "Privatpersonen",
+    "individual": "Privatpersonen",
     "contact": "Privatpersonen",
     "company": "Meine Firma",
     "customer": "Firmen",
@@ -440,8 +433,8 @@ class LanguageSeeder extends Seeder
   "assigned_companies": "Kontakte",
   "new_customer": "Kontakt hinzufügen",
   "is_active": "Systemzugriff",
-  "show_speed_panel": "Schwimmausrüstung anzeigen",
-  "status": "Status"
+  "status": "Status",
+  "social_info": "Soziales Netzwerk"
   },
   "ticket": {
     "contact_name": "Kontaktname",
@@ -610,10 +603,13 @@ class LanguageSeeder extends Seeder
     "navbar_logo_2": "Mit Firmenlogo und Firmenname, zwei Zeilen",
     "navbar_only_logo": "Nur Firmenlogo",
     "ticket_number_format": "Ticketnummer Format",
-    "ticket_number_format_help": "Verwenden Sie% {yy} oder% {yyyy} für das Jahr (2 oder 4 Ziffern),% {mm} - Monatsnummer,% {dd} - Tag,% {#} - tägliche inkrementelle Ticketnummer mit führender Nummer Null (Beispiel: $ {##}: 01, $ {####} - 0001) ",    "default_timezone": "Standard Zeitzone",
+    "ticket_number_format_help": "Verwenden Sie %{yy} oder %{yyyy} für das Jahr (2 oder 4 Ziffern), %{mm} - Monatsnummer, %{dd} - Tag, %{#} - tägliche inkrementelle Ticketnummer mit führender Nummer Null (Beispiel: ${##}: 01, ${####} - 0001) ",
+    "default_timezone": "Standard Zeitzone",
     "languages": "Sprachen",
     "countries": "Länder",
-    "theme_color": "Themenfarbe",
+    "company_theme_color": "Firmenmotivfarbe",
+    "override_user_theme_color": "Überschreiben Sie die Farbe des persönlichen Themas",
+    "override_user_theme_color_hint": "Die Änderung der Hintergrundfarbe hat Auswirkungen auf alle Kunden und Firmenbenutzer, die keine persönliche Hintergrundfarbe gewählt haben",
     "phone_types": "Telefontypen",
     "new_phone_type": "Neuen Telefontyp hinzfügen",
     "phone_type_created": "Telefontyp erstellt",
@@ -630,6 +626,11 @@ class LanguageSeeder extends Seeder
     "address_type_deleted": "Adresstyp gelöscht",
     "address_type_updated": "Adresstyp aktualisiert",
     "update_type_info": "Informationen aktualisieren"
+  },
+  "profile": {
+    "user_theme_color": "Persönliche Themenfarbe",
+    "show_speed_panel": "Schwimmausrüstung anzeigen",
+    "revert_to_company_theme_color": "Kehren Sie zur Farbe des Firmenthemas zurück"
   },
  "exceptions": {
 
