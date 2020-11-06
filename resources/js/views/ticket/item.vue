@@ -537,15 +537,6 @@
                                 <span v-if="ticket.contact !== null">
                                     {{ ticket.contact.user_data.email }}
                                 </span>
-
-                                <!--                                    <v-btn-->
-                                <!--                                        text-->
-                                <!--                                        x-small-->
-                                <!--                                        :to="'/individuals/'+ticket.contact.id"-->
-                                <!--                                        style="text-transform: none;"-->
-                                <!--                                    >-->
-                                <!--                                        {{ ticket.contact.user_data.email }}-->
-                                <!--                                    </v-btn>-->
                                 </span>
                             <br>
                             <span>
@@ -553,14 +544,6 @@
                                     {{langMap.ticket.product_name}}:
                                 </v-label>
                                 {{ ticket.product.name }}
-                                <!--                                <v-btn-->
-                                <!--                                    text-->
-                                <!--                                    x-small-->
-                                <!--                                    :to="'/product/'+ticket.product.id"-->
-                                <!--                                    style="text-transform: none;"-->
-                                <!--                                >-->
-                                <!--                                    {{ ticket.product.name }}-->
-                                <!--                                </v-btn>-->
                             </span>
                             <br>
                             <v-label v-if="ticket.availability">
@@ -981,7 +964,7 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-                <br>
+                <br v-if="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0">
                 <v-expansion-panels
                     v-model="thirdColumnPanels"
                     multiple
@@ -999,28 +982,65 @@
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <br>
-                            <v-autocomplete
-                                label="Primary ticket"
-                                dense
-                                :color="themeColor"
-                                :item-color="themeColor"
-                                item-text="name"
-                                item-value="id"
-                                v-model="mergeTicketForm.parent_ticket_id"
-                                :items="mergeParentTickets"
-                            />
                             <v-text-field @input="getTickets" v-model="ticketsSearch" :color="themeColor"
-                                          :label="langMap.main.search"></v-text-field>
+                                          :label="langMap.main.search">
+                                <template slot="append">
+                                    <v-menu
+                                        rounded
+                                        transition="slide-y-transition"
+                                        bottom
+                                    >
+                                        <template v-slot:activator="{ on: menu, attrs }">
+                                            <v-btn
+                                                text
+                                                v-bind="attrs"
+                                                v-on="{...menu}"
+                                            >
+                                                <v-icon>$expand</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <v-list
+                                            dense
+                                        >
+                                            <v-list-item
+                                                link
+                                                v-for="item in searchCategories"
+                                                :key="item.id"
+                                                @click="selectSearchCategory(item)"
+                                            >
+                                                <v-list-item-title>
+                                                    {{ item.name }}
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                                </template>
+                            </v-text-field>
                             <div style="max-height: 200px; overflow-y: auto;">
                                 <v-checkbox v-for="item in tickets"
+                                            dense
                                             :key="item.id"
                                             v-model="mergeTicketForm.child_ticket_id"
                                             :value="item.id"
                                             :color="themeColor"
                                             :item-color="themeColor"
+                                            :disabled="mergeTicketForm.parent_ticket_id === item.id"
                                             :label="item.name"
-                                />
+                                            hide-details
+                                >
+                                    <template slot="append">
+                                        <v-checkbox
+                                            dense
+                                            :key="item.id"
+                                            v-model="mergeTicketForm.parent_ticket_id"
+                                            :value="item.id"
+                                            color="red"
+                                            item-color="red"
+                                            hint="Make primary"
+                                            hide-details
+                                        />
+                                    </template>
+                                </v-checkbox>
                             </div>
                             <v-textarea
                                 :label="langMap.main.description"
@@ -1126,6 +1146,7 @@
         Heading,
         History,
         HorizontalRule,
+        Image,
         Italic,
         Link,
         ListItem,
@@ -1133,8 +1154,7 @@
         Paragraph,
         Strike,
         TiptapVuetify,
-        Underline,
-        Image
+        Underline
     } from 'tiptap-vuetify'
 
     export default {
@@ -1205,6 +1225,20 @@
                 mergeParentTickets: [],
                 linkParentTickets: [],
                 ticketsSearch: '',
+                searchCategories: [
+                    {
+                        id: 1,
+                        name: 'ID'
+                    },
+                    {
+                        id: 2,
+                        name: 'Subject'
+                    },
+                    {
+                        id: 3,
+                        name: 'Contact'
+                    }
+                ],
                 mergeTicketForm: {
                     parent_ticket_id: null,
                     child_ticket_id: [],
@@ -1343,6 +1377,9 @@
             // }
         },
         methods: {
+            selectSearchCategory(item) {
+                this.searchLabel = item.name
+            },
             toggleEdit(edit) {
                 this[edit] = !this[edit]
                 this.submitEdit = this.fromEdit ||
