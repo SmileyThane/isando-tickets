@@ -120,6 +120,7 @@ class LanguageSeeder extends Seeder
     "social_info": "Social info"
   },
   "ticket": {
+    "number": "Number",
     "contact_name": "Contact name",
     "contact_email": "Contact E-mail",
     "due_date": "Due date",
@@ -441,6 +442,7 @@ class LanguageSeeder extends Seeder
   "social_info": "Soziales Netzwerk"
   },
   "ticket": {
+    "number": "Ticketnummer",
     "contact_name": "Kontaktname",
     "contact_email": "Kontakt E-mail",
     "due_date": "Deadline",

@@ -19,6 +19,16 @@ class Ticket extends Model
     protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
     protected $hidden = ['to'];
 
+    protected static function booted()
+    {
+        static::creating(function ($ticket) {
+            $last = Ticket::where('to_entity_type', $ticket->to_entity_type)
+                ->where('to_entity_id', $ticket->to_entity_id)
+                ->whereDate('created_at', '=', date('Y-m-d'))->max('sequence');
+            $ticket->sequnce = $last+1;
+        });
+    }
+
     public function getNameAttribute()
     {
         $name = $this->attributes['name'];
@@ -150,7 +160,7 @@ class Ticket extends Model
         $settings = $owner->settings;
         $format = $settings['ticket_number_format'];
         if (empty($format) || count(explode('｜', $format)) != 5) {
-            $format = strtoupper(substr($owner->name, 0, 6)) . '｜-｜YYYYMMDD｜-｜###';
+            $format = strtoupper(substr(str_replace(' ', '', $owner->name), 0, 6)) . '｜-｜YYYYMMDD｜-｜###';
         }
 
         list($prefix, $delim1, $date, $delim2, $suffix) = explode('｜', $format);
