@@ -117,7 +117,7 @@ class LanguageSeeder extends Seeder
     "new_customer": "Assign to Customer",
     "is_active": "System access",
     "status": "Status",
-    "social_info": "Social info"
+    "social_info": "Social Media"
   },
   "ticket": {
     "number": "Number",
@@ -317,7 +317,7 @@ class LanguageSeeder extends Seeder
   "profile": {
     "user_theme_color": "Personal theme color",
     "show_speed_panel": "Show color floating gear",
-    "revert_to_company_theme_color": "Revert to company theme color"
+    "revert_to_company_theme_color": "Change to default color"
   },
   "exceptions": {
   }
@@ -439,7 +439,7 @@ class LanguageSeeder extends Seeder
   "new_customer": "Kontakt hinzufügen",
   "is_active": "Systemzugriff",
   "status": "Status",
-  "social_info": "Soziales Netzwerk"
+  "social_info": "Social Media"
   },
   "ticket": {
     "number": "Ticketnummer",
@@ -637,9 +637,9 @@ class LanguageSeeder extends Seeder
     "update_type_info": "Informationen aktualisieren"
   },
   "profile": {
-    "user_theme_color": "Persönliche Themenfarbe",
+    "user_theme_color": "Persönliche Hintergrundfarbe",
     "show_speed_panel": "Colour floating bar anzeigen",
-    "revert_to_company_theme_color": "Kehren Sie zur Farbe des Firmenthemas zurück"
+    "revert_to_company_theme_color": "Farbe des Firmenthemas benutzen"
   },
  "exceptions": {
 
