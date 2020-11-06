@@ -994,14 +994,14 @@
                     response = response.data;
                     if (response.success === true) {
                         this.companySettings['navbar_style'] = response.data.hasOwnProperty('navbar_style') ? response.data.navbar_style : 1;
-                        this.companySettings['ticket_number_format'] = response.data.hasOwnProperty('ticket_number_format') ? response.data.ticket_number_format : this.company.name.substr(0, 6)+'｜-｜YYYYMMDD｜-｜###';
+                        this.companySettings['ticket_number_format'] = response.data.hasOwnProperty('ticket_number_format') ? response.data.ticket_number_format : this.company.name.replaceAll(' ', '').substr(0, 6)+'｜-｜YYYYMMDD｜-｜###';
                         this.companySettings['timezone'] = response.data.hasOwnProperty('timezone') ? response.data.timezone : 35;
                         this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
                         this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
 
                         let fmt = this.companySettings.ticket_number_format.split('｜');
                         let pos = ['prefix', 'delimiter1', 'date', 'delimiter2', 'suffix'];
-                        fmt[0] = fmt[0] ? fmt[0].substr(0, 6) : '';
+                        fmt[0] = fmt[0] ? fmt[0].replaceAll(' ', '').substr(0, 6) : '';
                         for (let i = 0; i < fmt.length; i++) {
                             this.ticketNumberFormat[pos[i]] = fmt[i].toLocaleUpperCase();
                         }
