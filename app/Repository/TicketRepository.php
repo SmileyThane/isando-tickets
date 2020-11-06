@@ -231,6 +231,7 @@ class TicketRepository
         $result = false;
         $ticket = Ticket::find($id);
         if ($ticket) {
+            TicketMerge::where('parent_ticket_id', $id)->orWhere('child_ticket_id', $id)->delete();
             $ticket->delete();
             $result = true;
         }
