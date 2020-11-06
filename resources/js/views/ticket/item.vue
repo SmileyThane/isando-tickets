@@ -63,61 +63,54 @@
                     <v-card-text>
                         <v-row>
                             <v-col cols="12">
-                                <v-select
-                                    dense
-                                    label="Product"
-                                    color="green"
-                                    item-color="green"
-                                    item-text="name"
-                                    item-value="id"
-                                    :items="products"
-                                    v-model="ticket.to_product_id"
-                                    @input="getProducts"
-                                />
-                            </v-col>
-                            <v-col cols="12">
-                                <v-label>
-                                    <strong>{{langMap.main.description}}</strong>
-                                </v-label>
-                                <tiptap-vuetify
-                                    v-model="ticket.description"
-                                    :extensions="extensions"
-                                />
-                            </v-col>
-                            <v-col cols="12">
-                                <v-label>
-                                    <strong>{{langMap.ticket.availability_description}}</strong>
-                                </v-label>
-                                <tiptap-vuetify
+                                <v-textarea
+                                    :label="langMap.ticket.availability_description"
+                                    prepend-icon="mdi-text"
+                                    :color="themeColor"
+                                    :item-color="themeColor"
+                                    auto-grow
+                                    rows="1"
+                                    row-height="25"
+                                    shaped
                                     v-model="ticket.availability"
-                                    :extensions="extensions"
-                                />
+                                    dense
+                                ></v-textarea>
                             </v-col>
-                            <v-col cols="12">
-                                <v-label>
-                                    <strong>{{langMap.ticket.ip_address}}</strong>
-                                </v-label>
-                                <tiptap-vuetify
+                            <v-col cols="12" md="6">
+                                <v-textarea
+                                    :label="langMap.ticket.ip_address"
+                                    prepend-icon="mdi-text"
+                                    :color="themeColor"
+                                    :item-color="themeColor"
+                                    auto-grow
+                                    rows="1"
+                                    row-height="25"
+                                    shaped
                                     v-model="ticket.connection_details"
-                                    :extensions="extensions"
-                                />
+                                    dense
+                                ></v-textarea>
                             </v-col>
-                            <v-col cols="12">
-                                <v-label>
-                                    <strong>{{langMap.ticket.access_details}}</strong>
-                                </v-label>
-                                <tiptap-vuetify
+                            <v-col cols="12" md="6">
+                                <v-textarea
+                                    :label="langMap.ticket.access_details"
+                                    prepend-icon="mdi-text"
+                                    :color="themeColor"
+                                    :item-color="themeColor"
+                                    auto-grow
+                                    rows="1"
+                                    row-height="25"
+                                    shaped
                                     v-model="ticket.access_details"
-                                    :extensions="extensions"
-                                />
-                            </v-col>
+                                    dense
+                                ></v-textarea>
+                             </v-col>
                         </v-row>
                     </v-card-text>
                 </v-card>
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="answerDialog" max-width="480">
+            <v-dialog v-model="answerDialog" max-width="50%">
                 <v-card outlined dense>
                     <v-card-title class="headline" style="background-color: #F0F0F0;">{{langMap.ticket.create_answer}}
                     </v-card-title>
@@ -125,18 +118,13 @@
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <v-textarea
-                                        :label="langMap.ticket.answer_description"
-                                        prepend-icon="mdi-text"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
-                                        auto-grow
-                                        rows="1"
-                                        row-height="25"
-                                        shaped
+                                    <v-label>
+                                        <strong>{{langMap.ticket.answer_description}}</strong>
+                                    </v-label>
+                                    <tiptap-vuetify
                                         v-model="ticketAnswer.answer"
-                                        dense
-                                    ></v-textarea>
+                                        :extensions="extensions"
+                                    />
                                 </div>
                                 <div class="col-md-12">
                                     <v-file-input
@@ -777,6 +765,41 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <br>
+                <v-expansion-panels
+                    class="d-sm-none d-md-flex"
+                >
+                    <v-expansion-panel>
+                        <v-expansion-panel-header
+                            style="background:#F0F0F0;"
+                        >
+                            <span>
+                                 <strong>Product: </strong>
+                                 <span v-if="ticket.product !== null" class="float-md-right">
+                                     {{ ticket.product.name}}
+                                  </span>
+                            </span>
+                            <v-spacer></v-spacer>
+                            <template v-slot:actions>
+                                <v-icon>$expand</v-icon>
+                            </template>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <br>
+                                <v-select
+                                    dense
+                                    label="Product"
+                                    color="green"
+                                    item-color="green"
+                                    item-text="name"
+                                    item-value="id"
+                                    :items="products"
+                                    v-model="ticket.to_product_id"
+                                    @input="getProducts"
+                                />
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+                <br>
                 <v-expansion-panels>
                     <v-expansion-panel>
                         <v-expansion-panel-header
@@ -966,7 +989,6 @@
                 </v-expansion-panels>
                 <br v-if="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0">
                 <v-expansion-panels
-                    v-model="thirdColumnPanels"
                     multiple
                 >
                     <v-expansion-panel>
@@ -1036,7 +1058,7 @@
                                             :value="item.id"
                                             color="red"
                                             item-color="red"
-                                            hint="Make primary"
+                                            label="Make primary"
                                             hide-details
                                         />
                                     </template>
