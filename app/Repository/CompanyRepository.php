@@ -7,9 +7,9 @@ namespace App\Repository;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
-use App\Settings;
 use App\ProductCategory;
 use App\Role;
+use App\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -77,7 +77,7 @@ class CompanyRepository
                 Storage::makeDirectory('public/logos');
             }
 
-            $file = $request->file('logo')->storeAs('public/logos', $company->id  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
+            $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
             $company->logo_url = Storage::url($file);
             $company->save();
 
@@ -98,7 +98,7 @@ class CompanyRepository
                 Storage::makeDirectory('public/logos');
             }
 
-            $file = $request->file('logo')->storeAs('public/logos', $company->id  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
+            $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
             $company->logo_url = Storage::url($file);
         }
 
@@ -243,7 +243,7 @@ class CompanyRepository
         if (!Storage::exists('public/logos')) {
             Storage::makeDirectory('public/logos');
         }
-        $file = $request->file('logo')->storeAs('public/logos', $companyId  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
+        $file = $request->file('logo')->storeAs('public/logos', $companyId . '-' . time() . '.' . $extension = $request->file('logo')->extension());
         $company->logo_url = Storage::url($file);
         $company->save();
         return $company;
