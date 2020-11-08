@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
+use App\Notifications\ResetPasswordEmail;
 use App\Role;
 use App\Settings;
 use App\User;
@@ -92,14 +93,16 @@ class UserRepository
 
     public function sendInvite($user, $role, $password = null): bool
     {
-        if ($password === null) {
-            $password = Controller::getRandomString();
-            $user->password = bcrypt($password);
-            $user->save();
-        }
         $from = $role === Role::LICENSE_OWNER ? Config::get('mail.from.name') : $user->employee->companyData->name;
         try {
-            $user->notify(new RegularInviteEmail($from, $user->name, $role, $user->email, $password));
+            if ($password === null) {
+                $password = Controller::getRandomString();
+                $user->password = bcrypt($password);
+                $user->save();
+                $user->notify(new ResetPasswordEmail($from, $user->name, $role, $user->email, $password));
+            } else {
+                $user->notify(new RegularInviteEmail($from, $user->name, $role, $user->email, $password));
+            }
         } catch (\Throwable $throwable) {
             Log::error($throwable);
             //hack for broken notification system
