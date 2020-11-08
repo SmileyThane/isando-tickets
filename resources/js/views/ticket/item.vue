@@ -1039,33 +1039,54 @@
                                 </template>
                             </v-text-field>
                             <div style="max-height: 200px; overflow-y: auto;">
-                                <v-checkbox v-for="item in tickets"
-                                            dense
-                                            :key="item.id"
-                                            v-model="mergeTicketForm.child_ticket_id"
-                                            :value="item.id"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
-                                            :disabled="mergeTicketForm.parent_ticket_id === item.id"
-                                            :label="item.name"
-                                            hide-details
+                                <v-list
+                                    dense
                                 >
-                                    <template slot="append">
-                                        <v-checkbox
-                                            dense
+                                    <v-list-item-group :color="themeColor">
+                                        <v-list-item
+                                            v-for="(item, i) in tickets"
                                             :key="item.id"
-                                            v-model="mergeTicketForm.parent_ticket_id"
-                                            :value="item.id"
-                                            color="red"
-                                            item-color="red"
-                                            label="Make primary"
-                                            hide-details
-                                        />
-                                    </template>
-                                </v-checkbox>
+                                            :color="themeColor"
+                                            @click="showTicket(item.parent_ticket_data.id)"
+                                        >
+                                            <v-list-item-action>
+                                                <v-checkbox
+                                                    dense
+                                                    :key="item.id"
+                                                    v-model="mergeTicketForm.child_ticket_id"
+                                                    :value="item.id"
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
+                                                    :disabled="mergeTicketForm.parent_ticket_id === item.id"
+                                                    hide-details
+                                                />
+
+                                            </v-list-item-action>
+                                            <v-list-item-title>
+                                                <span class="text-left">
+                                                    {{item.name}}
+                                                </span>
+                                                <span class="text-right">
+                                                     <v-btn
+                                                         fab
+                                                         x-small
+                                                         outlined
+                                                         :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeColor"
+                                                         @click="mergeTicketForm.parent_ticket_id = item.id"
+                                                     >
+                                                    <v-icon dark>
+                                                        mdi-medal-outline
+                                                    </v-icon>
+                                                </v-btn>
+                                                </span>
+                                                <v-spacer></v-spacer>
+                                            </v-list-item-title>
+                                        </v-list-item>
+                                    </v-list-item-group>
+                                </v-list>
                             </div>
                             <v-textarea
-                                :label="langMap.main.description"
+                                label="Add a note..."
                                 v-model="mergeTicketForm.merge_comment"
                                 dense
                                 auto-grow
