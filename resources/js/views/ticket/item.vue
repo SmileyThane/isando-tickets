@@ -564,14 +564,14 @@
                                 outlined
                                 dense
                             >
-                                <v-list-item three-line>
+                                <v-list-item>
                                     <v-list-item-content>
-                                        <strong class="text-left">
+                                        <span style="font-weight: bold;" class="text-left">
                                             {{answer.employee.user_data.name}}
                                             {{answer.employee.user_data.surname}}
                                             {{answer.created_at_time !== '' ? answer.created_at_time :
                                             answer.created_at}}:
-                                        </strong>
+                                        </span>
                                         <div v-html="answer.answer"></div>
                                         <v-col cols="12" v-if="answer.attachments.length > 0 ">
                                             <h4>{{langMap.main.attachments}}</h4>
@@ -603,9 +603,10 @@
                             color="#f2f2f2"
 
                         >
-                            <v-list-item three-line>
+                            <v-list-item>
                                 <v-list-item-content>
-                                    <strong>{{ ticket.name }}</strong>
+                                    <span v-text="ticket.merge_comment"></span>
+                                    <span style="font-weight: bold;">{{ ticket.name }}</span>
                                     <div v-html="ticket.description"></div>
                                 </v-list-item-content>
                             </v-list-item>
@@ -626,14 +627,14 @@
                                     outlined
                                     dense
                                 >
-                                    <v-list-item three-line>
+                                    <v-list-item>
                                         <v-list-item-content>
-                                            <strong class="text-left">
+                                            <span style="font-weight: bold;" class="text-left">
                                                 {{answer.employee.user_data.name}}
                                                 {{answer.employee.user_data.surname}}
                                                 {{answer.created_at_time !== '' ? answer.created_at_time :
-                                                answer.created_at}}:
-                                            </strong>
+                                                answer.created_at}} - {{ticket.name}}:
+                                            </span>
                                             <div v-html="answer.answer"></div>
                                             <v-col cols="12" v-if="answer.attachments.length > 0 ">
                                                 <h4>{{langMap.main.attachments}}</h4>
@@ -662,13 +663,11 @@
                                 class="mx-auto"
                                 outlined
                                 dense
-
-
                                 color="#f2f2f2"
                             >
-                                <v-list-item three-line>
+                                <v-list-item>
                                     <v-list-item-content>
-                                        <strong>{{ child_ticket.name }}</strong>
+                                        <span style="font-weight: bold;">{{ child_ticket.name }}</span>
                                         <div v-html="child_ticket.description"></div>
                                     </v-list-item-content>
                                 </v-list-item>
@@ -1335,6 +1334,7 @@
                     availability: '',
                     connection_details: '',
                     access_details: '',
+                    merge_comment:'',
                     answers: [
                         {
                             created_at: '',
