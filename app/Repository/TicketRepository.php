@@ -322,6 +322,9 @@ class TicketRepository
                 $this->updateStatus($request, $ticketId);
                 $this->addHistoryItem($ticket->id, null, 'ticket_merged');
             }
+            $parentTicket = Ticket::find($request->parent_ticket_id);
+            $parentTicket->merge_comment = $request->merge_comment;
+            $parentTicket->save();
             return true;
         }
         return false;
