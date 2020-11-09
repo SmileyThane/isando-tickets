@@ -15,7 +15,7 @@ class Ticket extends Model
     use SoftDeletes;
 
     protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
-        'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence'];
+        'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment'];
     protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
     protected $hidden = ['to'];
 
