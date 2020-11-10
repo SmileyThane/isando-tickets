@@ -165,12 +165,14 @@ class Ticket extends Model
         }
 
         $settings = $owner->settings;
-        $format = $settings['ticket_number_format'];
-        if (empty($format) || count(explode('｜', $format)) != 5) {
+        if (empty($settings->data['ticket_number_format']) || count(explode('｜', $settings->data['ticket_number_format'])) != 5) {
             $format = strtoupper(substr(str_replace(' ', '', $owner->name), 0, 6)) . '｜-｜YYYYMMDD｜-｜###';
+        } else {
+            $format = $settings->data['ticket_number_format'];
         }
 
         list($prefix, $delim1, $date, $delim2, $suffix) = explode('｜', $format);
+
         // prepare date format for PHP
         $date = str_replace('YYYY', 'Y', $date);
         $date = str_replace('MM', 'm', $date);
