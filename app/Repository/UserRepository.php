@@ -6,9 +6,12 @@ namespace App\Repository;
 
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
+use App\Notifications\ResetPasswordEmail;
 use App\Role;
+use App\Settings;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -90,18 +93,54 @@ class UserRepository
 
     public function sendInvite($user, $role, $password = null): bool
     {
-        if ($password === null) {
-            $password = Controller::getRandomString();
-            $user->password = bcrypt($password);
-            $user->save();
-        }
         $from = $role === Role::LICENSE_OWNER ? Config::get('mail.from.name') : $user->employee->companyData->name;
         try {
-            $user->notify(new RegularInviteEmail($from, $user->name, $role, $user->email, $password));
+            if ($password === null) {
+                $password = Controller::getRandomString();
+                $user->password = bcrypt($password);
+                $user->save();
+                $user->notify(new ResetPasswordEmail($from, $user->name, $role, $user->email, $password));
+            } else {
+                $user->notify(new RegularInviteEmail($from, $user->name, $role, $user->email, $password));
+            }
         } catch (\Throwable $throwable) {
             Log::error($throwable);
             //hack for broken notification system
         }
         return true;
     }
+
+    public function getSettings($userId = null)
+    {
+        $userId = $userId ?? Auth::user()->id;
+        $settings = Settings::firstOrCreate([
+            'entity_id' => $userId,
+            'entity_type' => User::class
+        ], [
+            'data' => []
+        ]);
+        return $settings->data;
+    }
+
+    public function updateSettings(Request $request, $userId = null)
+    {
+        $userId = $userId ?? Auth::user()->id;
+        $settings = Settings::firstOrCreate([
+            'entity_id' => $userId,
+            'entity_type' => User::class
+        ], [
+            'data' => []
+        ]);
+        $data = $settings->data;
+
+        if ($request->has('theme_color')) {
+            $data['theme_color'] = $request->theme_color;
+        }
+
+        $settings->data = $data;
+        $settings->save();
+
+        return $settings->data;
+    }
+
 }

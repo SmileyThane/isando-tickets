@@ -43,11 +43,14 @@
                         ></v-select>
                     </v-col>
                 </v-row>
-                <v-row>
-                    <v-col sm="12" md="2">
-
-                    </v-col>
-                </v-row>
+                <v-col  sm="12" md="12">
+                    <v-checkbox
+                        :color="themeColor"
+                        label="With spam?"
+                        v-model="options.withSpam"
+                    >
+                    </v-checkbox>
+                </v-col>
             </template>
             <template v-slot:footer>
                 <v-pagination :color="themeColor"
@@ -86,6 +89,7 @@
                     <v-spacer>
                         &nbsp;
                     </v-spacer>
+                    <h3>{{ item.number }}</h3>
                     <p><strong>{{langMap.ticket.contact_name}}:</strong> {{ item.contact ? item.contact.user_data.name :
                         '' }}</p>
                     <p><strong>{{langMap.ticket.contact_email}}:</strong> {{ item.contact ? item.contact.user_data.email
@@ -206,6 +210,8 @@
 </template>
 
 <script>
+    import EventBus from "../../components/EventBus";
+
     export default {
         data() {
             return {
@@ -223,7 +229,8 @@
                 options: {
                     page: 1,
                     sortDesc: [true],
-                    sortBy: ['id']
+                    sortBy: ['id'],
+                    withSpam: false
                 },
                 footerProps: {
                     itemsPerPage: 10,
@@ -238,6 +245,7 @@
                         sortable: false,
                         value: 'id',
                     },
+                    {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number'},
                     {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
                     {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
@@ -262,6 +270,10 @@
         },
         mounted() {
             // this.getTickets()
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             getTickets() {
@@ -277,6 +289,7 @@
                 search=${this.ticketsSearch}&
                 sort_by=${this.manageSortableField(this.options.sortBy[0])}&
                 sort_val=${this.options.sortDesc[0]}&
+                with_spam=${this.options.withSpam}&
                 per_page=${this.options.itemsPerPage}&
                 minified=${this.minifiedTickets}&
                 page=${this.options.page}`)

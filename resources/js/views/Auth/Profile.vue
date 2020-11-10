@@ -114,11 +114,10 @@
                                 <v-select
                                     :label="this.$store.state.lang.lang_map.main.country"
                                     :color="themeColor"
-                                    class="col-md-4"
+                                    class="col-md-6"
                                     :item-color="themeColor"
                                     name="country"
                                     prepend-icon="mdi-map"
-                                    item-text="name"
                                     item-value="id"
                                     :items="countries"
                                     v-model="userData.country_id"
@@ -126,8 +125,14 @@
                                     lazy-validation
                                     :readonly="!enableToEdit"
                                     required
-                                    dense
-                                />
+                                    dense>
+                                <template slot="selection" slot-scope="data">
+                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                </template>
+                                <template slot="item" slot-scope="data">
+                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                </template>
+                                </v-select>
                                 <v-text-field
                                     :color="themeColor"
                                     label="Anredeform"
@@ -137,7 +142,7 @@
                                     v-model="userData.anredeform"
                                     :error-messages="errors.anredeform"
                                     lazy-validation
-                                    class="col-md-4"
+                                    class="col-md-6"
                                     required
                                     :readonly="!enableToEdit"
                                     dense
@@ -145,7 +150,7 @@
                                 <v-select
                                     :label="this.$store.state.lang.lang_map.main.language"
                                     :color="themeColor"
-                                    class="col-md-4"
+                                    class="col-md-6"
                                     :item-color="themeColor"
                                     name="language"
                                     prepend-icon="mdi-mail"
@@ -206,10 +211,11 @@
                                                 v-for="(item, i) in userData.phones"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-icon v-if="item.type"><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle
-                                                        v-text="langMap.phone_types[item.type.name]"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                        v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -224,12 +230,13 @@
                                                 v-for="(item, i) in userData.addresses"
                                                 :key="item.id"
                                             >
+                                                <v-list-item-icon v-if="item.type"><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">{{item.address}}
                                                         {{item.address_line_2}} {{item.address_line_3}}
                                                     </v-list-item-title>
-                                                    <v-list-item-subtitle
-                                                        v-text="langMap.address_types[item.type.name]"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                        v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -268,7 +275,6 @@
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                item-text="name"
                                                                 item-value="id"
                                                                 v-model="phoneForm.phone_type"
                                                                 :items="phoneTypes"
@@ -276,10 +282,10 @@
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    {{ langMap.phone_types[data.item.name] }}
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    {{ langMap.phone_types[data.item.name] }}
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
@@ -335,7 +341,7 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="md-3" class="pa-1">
+                                                        <v-col cols="md-4" class="pa-1">
                                                             <v-text-field
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -344,23 +350,28 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="md-3" class="pa-1">
+                                                        <v-col cols="md-5" class="pa-1">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                item-text="name"
-                                                                item-value="name"
+                                                                :item-value="item => localized(item)"
                                                                 v-model="addressForm.address.country"
                                                                 :items="countries"
                                                                 :label="this.$store.state.lang.lang_map.main.country"
                                                                 dense
-                                                            ></v-select>
+                                                            >
+                                                                <template slot="selection" slot-scope="data">
+                                                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                                                </template>
+                                                            </v-select>
                                                         </v-col>
-                                                        <v-col cols="6" class="pa-1">
+                                                        <v-col cols="3" class="pa-1">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                item-text="name"
                                                                 item-value="id"
                                                                 v-model="addressForm.address_type"
                                                                 :items="addressTypes"
@@ -368,10 +379,10 @@
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    {{ langMap.address_types[data.item.name] }}
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    {{ langMap.address_types[data.item.name] }}
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
@@ -406,7 +417,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.system_settings.theme_color}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.profile.user_theme_color}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUserSettings">
@@ -417,19 +428,36 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col cols="12">
+                                <v-col cols="6">
                                     <v-color-picker
                                         dot-size="25"
                                         mode="hexa"
-                                        v-model="themeColor"
+                                        v-model="themeColorNew"
                                         :disabled="!enableToEdit"
                                     ></v-color-picker>
                                 </v-col>
-                                <v-col cols="12">
+                                <v-col cols="6">
                                     <v-checkbox
+                                        :color="themeColor"
+                                        :readonly="!enableToEdit"
+                                        v-model="resetThemeColorFlag"
+                                        :value="1"
+                                        @change="resetThemeColor()"
+                                    >
+                                        <template v-slot:label>
+                                            {{ langMap.profile.revert_to_company_theme_color }}
+                                            <v-icon x-large right :color="companySettings.theme_color">mdi-checkbox-blank</v-icon>
+                                        </template>
+                                    </v-checkbox>
+
+                                    <v-spacer>&nbsp;</v-spacer>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        :readonly="!enableToEdit"
                                         v-model="themeColorDlg"
                                         :value="1"
-                                        :label="langMap.individuals.show_speed_panel"></v-checkbox>
+                                        :label="langMap.profile.show_speed_panel"></v-checkbox>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -493,7 +521,13 @@
                 languages: [],
                 timezones: [],
                 countries: [],
-                themeColorDlg: localStorage.themeColorDlg == 1 ? 0 : 1
+                themeColorNew: this.$store.state.themeColor,
+                themeColorDlg: localStorage.themeColorDlg == 1 ? 0 : 1,
+                companySettings: {
+                    theme_color: '',
+                    override_user_theme: false
+                },
+                resetThemeColorFlag: 0
             }
         },
         mounted() {
@@ -503,8 +537,17 @@
             this.getLanguages();
             this.getTimeZones();
             this.getCountries();
+            this.getCompanySettings();
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
+            localized(item, field = 'name') {
+                let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
+                return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
+            },
             getUser() {
                 axios.get('/api/user').then(response => {
                     response = response.data
@@ -645,15 +688,17 @@
             updateUserSettings() {
                 this.snackbar = false;
 
-                axios.post('/api/user/settings', {theme_color: this.themeColor}).then(response => {
+                axios.post('/api/user/settings', {theme_color: this.themeColorNew}).then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        this.$store.state.themeColor = this.themeColor;
-                        localStorage.themeColor = this.themeColor;
-                        EventBus.$emit('update-theme-color', this.themeColor);
+                        if (this.companySettings.override_user_theme !== true) {
+                            this.themeColor = this.themeColorNew;
+                            this.$store.state.themeColor = this.themeColorNew;
+                            localStorage.themeColor = this.themeColorNew;
+                            EventBus.$emit('update-theme-color', this.themeColorNew);
+                        }
                         localStorage.themeColorDlg = this.themeColorDlg == 1 ? 0 : 1;
                         this.enableToEdit = false;
-                        window.location.reload()
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -662,6 +707,23 @@
                     return true;
                 });
             },
+            getCompanySettings() {
+                axios.get(`/api/main_company_settings`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
+                        this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
+                    }
+                });
+            },
+            resetThemeColor() {
+                const resetThemeColorFlag = this.resetThemeColorFlag;
+                if (resetThemeColorFlag === 1) {
+                    this.themeColorNew = this.companySettings.theme_color;
+                } else {
+                    this.themeColorNew = this.$store.state.themeColor;
+                }
+            }
             // parseErrors(errorTypes) {
             //     for (let typeIndex in errorTypes) {
             //         let errorType = [];

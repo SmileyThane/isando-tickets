@@ -7,9 +7,9 @@ namespace App\Repository;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
-use App\CompanySettings;
 use App\ProductCategory;
 use App\Role;
+use App\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -77,7 +77,7 @@ class CompanyRepository
                 Storage::makeDirectory('public/logos');
             }
 
-            $file = $request->file('logo')->storeAs('public/logos', $company->id  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
+            $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
             $company->logo_url = Storage::url($file);
             $company->save();
 
@@ -98,7 +98,7 @@ class CompanyRepository
                 Storage::makeDirectory('public/logos');
             }
 
-            $file = $request->file('logo')->storeAs('public/logos', $company->id  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
+            $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
             $company->logo_url = Storage::url($file);
         }
 
@@ -190,14 +190,24 @@ class CompanyRepository
     public function getSettings($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $settings = CompanySettings::firstOrCreate(['company_id' => $companyId]);
+        $settings = Settings::firstOrCreate([
+            'entity_id' => $companyId,
+            'entity_type' => Company::class
+        ], [
+            'data' => []
+        ]);
         return $settings->data;
     }
 
     public function updateSettings(Request $request, $companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        $settings = CompanySettings::firstOrCreate(['company_id' => $companyId]);
+        $settings = Settings::firstOrCreate([
+            'entity_id' => $companyId,
+            'entity_type' => Company::class
+        ], [
+            'data' => []
+        ]);
         $data = $settings->data;
 
         if ($request->has('imezone')) {
@@ -215,9 +225,14 @@ class CompanyRepository
             $data['theme_color'] = $request->theme_color;
         }
 
+        if ($request->has('override_user_theme')) {
+            $data['override_user_theme'] = $request->override_user_theme;
+        }
+
         $settings->data = $data;
         $settings->save();
-        return true;
+
+        return $settings->data;
     }
 
     public function updatelogo(Request $request, $companyId = null)
@@ -228,7 +243,7 @@ class CompanyRepository
         if (!Storage::exists('public/logos')) {
             Storage::makeDirectory('public/logos');
         }
-        $file = $request->file('logo')->storeAs('public/logos', $companyId  .'-' . time() .'.' . $extension = $request->file('logo')->extension());
+        $file = $request->file('logo')->storeAs('public/logos', $companyId . '-' . time() . '.' . $extension = $request->file('logo')->extension());
         $company->logo_url = Storage::url($file);
         $company->save();
         return $company;

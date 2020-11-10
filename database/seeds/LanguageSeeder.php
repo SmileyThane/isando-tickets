@@ -24,6 +24,7 @@ class LanguageSeeder extends Seeder
     "products": "Product",
     "teams": "Team",
     "individuals": "Individual",
+    "individual": "Individual",
     "company": "Company",
     "customer": "Customer",
     "product": "Product",
@@ -66,22 +67,6 @@ class LanguageSeeder extends Seeder
     "regular_user": "Regular user",
     "company_client": "Company client",
     "contact": "Contact"
-  },
-  "phone_types":{
-    "primary": "Primary",
-    "secondary": "Secondary",
-    "other": "Other"
-  },
-  "address_types":{
-    "home": "Home",
-    "work": "Work",
-    "other": "Other"
-  },
-  "social_types":{
-    "website": "Website",
-    "linkedin": "LinkedIn",
-    "facebook": "Facebook",
-    "contact_email": "Contact E-mail"
   },
   "company": {
     "company_number": "Company number",
@@ -131,10 +116,11 @@ class LanguageSeeder extends Seeder
     "assigned_companies": "Assigned companies",
     "new_customer": "Assign to Customer",
     "is_active": "System access",
-    "show_speed_panel": "Display speed panel",
-    "status": "Status"
+    "status": "Status",
+    "social_info": "Social Media"
   },
   "ticket": {
+    "number": "Number",
     "contact_name": "Contact name",
     "contact_email": "Contact E-mail",
     "due_date": "Due date",
@@ -166,7 +152,8 @@ class LanguageSeeder extends Seeder
     "access_description": "Please provide login details to your server for Teamviewer access, if applicable",
     "answer_description": "Write you answer here...",
     "no_assigned": "No agent assigned",
-    "merge": "Merge"
+    "merge": "Merge",
+    "is_spam": "Marked as Spam"
   },
    "main":{
 "create": "create",
@@ -298,11 +285,17 @@ class LanguageSeeder extends Seeder
     "navbar_logo_2": "With company logo and company name, two lines",
     "navbar_only_logo": "Only company logo",
     "ticket_number_format": "Ticket number format",
-    "ticket_number_format_help": "Use %{yy} or %{yyyy} for year (2 or 4 digits), %{mm} - month number, %{dd} - day, %{#} - daily incremental ticket number with leading zero (example: ${##}: 01, ${####} - 0001)",
+    "ticket_number_format_help": "Ticket format can be composed from prefix (can be empty, up to 6 chars), delimiters (can be empty), date (in different formats) and daily sequence number",    "ticket_number_format_prefix": "Prefix",
+    "ticket_number_format_delimiter": "Delimiter",
+    "ticket_number_format_date": "Date format",
+    "ticket_number_format_sequence": "Daily sequence number length",
+    "ticket_number_example": "Example: ",
     "default_timezone": "Default timezone",
     "languages": "Languages",
     "countries": "Countries",
-    "theme_color": "Theme color",
+    "company_theme_color": "Company theme color",
+    "override_user_theme_color": "Override personal theme color",
+    "override_user_theme_color_hint": "The change of the company theme color impacts all clients and all company users who did not select personal theme color",
     "phone_types": "Phone types",
     "new_phone_type": "Add new phone type",
     "phone_type_created": "Phone type created",
@@ -319,6 +312,11 @@ class LanguageSeeder extends Seeder
     "address_type_deleted": "Address type deleted",
     "address_type_updated": "Address type updated",
     "update_type_info": "Update information"
+  },
+  "profile": {
+    "user_theme_color": "Personal theme color",
+    "show_speed_panel": "Show color floating gear",
+    "revert_to_company_theme_color": "Change to default color"
   },
   "exceptions": {
   }
@@ -338,6 +336,7 @@ class LanguageSeeder extends Seeder
     "products": "Produkte",
     "teams": "Teams",
     "individuals": "Privatpersonen",
+    "individual": "Privatpersonen",
     "contact": "Privatpersonen",
     "company": "Meine Firma",
     "customer": "Firmen",
@@ -438,10 +437,11 @@ class LanguageSeeder extends Seeder
   "assigned_companies": "Kontakte",
   "new_customer": "Kontakt hinzufügen",
   "is_active": "Systemzugriff",
-  "show_speed_panel": "Geschwindigkeitsanzeige anzeigen",
-  "status": "Status"
+  "status": "Status",
+  "social_info": "Social Media"
   },
   "ticket": {
+    "number": "Ticketnummer",
     "contact_name": "Kontaktname",
     "contact_email": "Kontakt E-mail",
     "due_date": "Deadline",
@@ -473,7 +473,8 @@ class LanguageSeeder extends Seeder
     "access_description": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
     "answer_description": "Schreiben Sie Ihre Antwort hier...",
     "no_assigned": "No agent assigned",
-    "merge": "Merge"
+    "merge": "Merge",
+    "is_spam": "Marked as Spam"
   },
    "main":{
    "create": "erstellen",
@@ -606,16 +607,22 @@ class LanguageSeeder extends Seeder
     "navbar_logo_2": "Mit Firmenlogo und Firmenname, zwei Zeilen",
     "navbar_only_logo": "Nur Firmenlogo",
     "ticket_number_format": "Ticketnummer Format",
-    "ticket_number_format_help": "Verwenden Sie% {yy} oder% {yyyy} für das Jahr (2 oder 4 Ziffern),% {mm} - Monatsnummer,% {dd} - Tag,% {#} - tägliche inkrementelle Ticketnummer mit führender Nummer Null (Beispiel: $ {##}: 01, $ {####} - 0001) ",    "default_timezone": "Standard Zeitzone",
+    "ticket_number_format_help": "Das Ticketformat kann aus Präfix (kann leer sein, bis zu 6 Zeichen), Trennzeichen (kann leer sein), Datum (in verschiedenen Formaten) und täglicher Sequenznummer bestehen",    "ticket_number_format_delimiter": "Delimiter",
+    "ticket_number_format_date": "Datumsformat",
+    "ticket_number_format_sequence": "Tägliche Länge der Sequenznummer",
+    "ticket_number_example": "Exempel: ",
+    "default_timezone": "Standard Zeitzone",
     "languages": "Sprachen",
     "countries": "Länder",
-    "theme_color": "Themenfarbe",
+    "company_theme_color": "Firmenmotivfarbe",
+    "override_user_theme_color": "Überschreiben Sie die Farbe des persönlichen Themas",
+    "override_user_theme_color_hint": "Die Änderung der Hintergrundfarbe hat Auswirkungen auf alle Kunden und Firmenbenutzer, die keine persönliche Hintergrundfarbe gewählt haben",
     "phone_types": "Telefontypen",
     "new_phone_type": "Neuen Telefontyp hinzfügen",
     "phone_type_created": "Telefontyp erstellt",
     "phone_type_deleted": "Phone type gelöscht",
     "phone_type_updated": "Telefontyp aktualisiert",
-    "social_types": "Soziale Netzweke",
+    "social_types": "Soziale Netzwerke",
     "new_social_type": "Neuen sozialen Link hinzfügen",
     "social_type_created": "Sozialen Link erstellt",
     "social_type_deleted": "Sozialen Link gelöscht",
@@ -626,6 +633,11 @@ class LanguageSeeder extends Seeder
     "address_type_deleted": "Adresstyp gelöscht",
     "address_type_updated": "Adresstyp aktualisiert",
     "update_type_info": "Informationen aktualisieren"
+  },
+  "profile": {
+    "user_theme_color": "Persönliche Hintergrundfarbe",
+    "show_speed_panel": "Colour floating bar anzeigen",
+    "revert_to_company_theme_color": "Farbe des Firmenthemas benutzen"
   },
  "exceptions": {
 

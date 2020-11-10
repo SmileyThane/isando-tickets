@@ -3,6 +3,14 @@
         <v-overlay :value="overlay">
             <v-progress-circular indeterminate size="64"></v-progress-circular>
         </v-overlay>
+        <v-snackbar
+            :bottom="true"
+            :right="true"
+            v-model="snackbar"
+            :color="actionColor"
+        >
+            {{ snackbarMessage }}
+        </v-snackbar>
         <div>
             <v-row justify="space-around">
                 <v-col cols="12">
@@ -214,7 +222,6 @@
                             <div>
                                 <v-file-input
                                     chips
-                                    chips-:color="themeColor"
                                     multiple
                                     :label="langMap.main.attachments"
                                     :color="themeColor"
@@ -261,11 +268,16 @@
     </v-container>
 </template>
 <script>
+    import EventBus from "../../components/EventBus";
+
     export default {
         data() {
             return {
                 clientId: 6,
                 overlay: false,
+                snackbar: false,
+                actionColor: '',
+                snackbarMessage: '',
                 availabilityTooltip: false,
                 e1: 1,
                 steps: 2,
@@ -321,6 +333,10 @@
             this.getPriorities()
             this.getCategories()
             // this.getCompany()
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
             onInput(val) {
@@ -442,6 +458,10 @@
                     if (response.success === true) {
                         window.open('/tickets', '_self')
                     } else {
+                        this.overlay = false;
+                        this.snackbarMessage = 'Check ticket problems and try again, please!'
+                        this.actionColor = 'error'
+                        this.snackbar = true;
                         console.log('error')
                     }
                 });

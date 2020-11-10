@@ -222,7 +222,7 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.contact_info}}</v-toolbar-title>
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.social_info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -236,13 +236,13 @@
                                     v-for="(item) in userData.socials"
                                     :key="item.id"
                                 >
-                                    <v-list-item-icon>
+                                    <v-list-item-icon v-if="item.type">
                                         <v-icon v-text="item.type.icon"></v-icon>
                                     </v-list-item-icon>
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.social_link"></v-list-item-title>
-                                        <v-list-item-subtitle
-                                            v-text="langMap.social_types[item.type.name]"></v-list-item-subtitle>
+                                        <v-list-item-subtitle v-if="item.type"
+                                            v-text="localized(item.type)"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
                                         <v-icon
@@ -267,7 +267,7 @@
                                 <v-expansion-panel-content>
                                     <v-form>
                                         <div class="row">
-                                            <v-col cols="md-12" class="pa-1">
+                                            <v-col cols="md-6" class="pa-1">
                                                 <v-text-field
                                                     :color="themeColor"
                                                     :item-color="themeColor"
@@ -276,7 +276,7 @@
                                                     dense
                                                 ></v-text-field>
                                             </v-col>
-                                            <v-col cols="12" class="pa-1">
+                                            <v-col cols="6" class="pa-1">
                                                 <v-select
                                                     :color="themeColor"
                                                     :item-color="themeColor"
@@ -288,20 +288,10 @@
                                                     dense
                                                 >
                                                     <template slot="selection" slot-scope="data">
-                                                        <v-list-item-icon>
-                                                            <v-icon v-text="data.item.icon"></v-icon>
-                                                        </v-list-item-icon>
-                                                        <v-list-item-content>
-                                                            {{ langMap.social_types[data.item.name] }}
-                                                        </v-list-item-content>
+                                                        <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                                     </template>
                                                     <template slot="item" slot-scope="data">
-                                                        <v-list-item-icon>
-                                                            <v-icon v-text="data.item.icon"></v-icon>
-                                                        </v-list-item-icon>
-                                                        <v-list-item-content>
-                                                            {{ langMap.social_types[data.item.name] }}
-                                                        </v-list-item-content>
+                                                        <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                                     </template>
                                                 </v-select>
                                             </v-col>
@@ -349,13 +339,13 @@
                                                 v-for="(item, i) in userData.phones"
                                                 :key="item.id"
                                             >
-                                                <v-list-item-icon>
+                                                <v-list-item-icon v-if="item.type">
                                                     <v-icon v-text="item.type.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle
-                                                        v-text="langMap.phone_types[item.type.name]"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                        v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -370,15 +360,15 @@
                                                 v-for="(item, i) in userData.addresses"
                                                 :key="item.id"
                                             >
-                                                <v-list-item-icon>
+                                                <v-list-item-icon v-if="item.type">
                                                     <v-icon v-text="item.type.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">{{item.address}}
                                                         {{item.address_line_2}} {{item.address_line_3}}
                                                     </v-list-item-title>
-                                                    <v-list-item-subtitle
-                                                        v-text="langMap.address_types[item.type.name]"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                        v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -417,7 +407,6 @@
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                item-text="name"
                                                                 item-value="id"
                                                                 v-model="phoneForm.phone_type"
                                                                 :items="phoneTypes"
@@ -425,20 +414,10 @@
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    <v-list-item-icon>
-                                                                        <v-icon v-text="data.item.icon"></v-icon>
-                                                                    </v-list-item-icon>
-                                                                    <v-list-item-content>
-                                                                        {{ langMap.phone_types[data.item.name] }}
-                                                                    </v-list-item-content>
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    <v-list-item-icon>
-                                                                        <v-icon v-text="data.item.icon"></v-icon>
-                                                                    </v-list-item-icon>
-                                                                    <v-list-item-content>
-                                                                        {{ langMap.phone_types[data.item.name] }}
-                                                                    </v-list-item-content>
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
@@ -494,7 +473,7 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="md-3" class="pa-1">
+                                                        <v-col cols="md-5" class="pa-1">
                                                             <v-text-field
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -503,16 +482,25 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="md-3" class="pa-1">
-                                                            <v-text-field
+                                                        <v-col cols="md-4" class="pa-1">
+                                                            <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
+                                                                :item-value="item => localized(item)"
                                                                 v-model="addressForm.address.country"
+                                                                :items="countries"
                                                                 :label="langMap.main.country"
                                                                 dense
-                                                            ></v-text-field>
+                                                            >
+                                                                <template slot="selection" slot-scope="data">
+                                                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                                                </template>
+                                                            </v-select>
                                                         </v-col>
-                                                        <v-col cols="6" class="pa-1">
+                                                        <v-col cols="3" class="pa-1">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -524,20 +512,10 @@
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    <v-list-item-icon>
-                                                                        <v-icon v-text="data.item.icon"></v-icon>
-                                                                    </v-list-item-icon>
-                                                                    <v-list-item-content>
-                                                                        {{ langMap.address_types[data.item.name] }}
-                                                                    </v-list-item-content>
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    <v-list-item-icon>
-                                                                        <v-icon v-text="data.item.icon"></v-icon>
-                                                                    </v-list-item-icon>
-                                                                    <v-list-item-content>
-                                                                        {{ langMap.address_types[data.item.name] }}
-                                                                    </v-list-item-content>
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
@@ -604,6 +582,8 @@
 </template>
 
 <script>
+    import EventBus from "../../components/EventBus";
+
     export default {
         data() {
             return {
@@ -678,10 +658,12 @@
                 addressTypes: [],
                 socialTypes: [],
                 isCustomersLoading: false,
-                customers: []
+                customers: [],
+                countries: []
             }
         },
         mounted() {
+            this.getCountries()
             this.getUser()
             this.getPhoneTypes()
             this.getAddressTypes()
@@ -691,8 +673,28 @@
             // if (localStorage.getItem('auth_token')) {
             //     this.$router.push('tickets')
             // }
+            let that = this;
+            EventBus.$on('update-theme-color', function (color) {
+                that.themeColor = color;
+            });
         },
         methods: {
+            localized(item, field = 'name') {
+                let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
+                return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
+            },
+            getCountries() {
+                axios.get('/api/countries').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.countries = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
+            },
             getUser() {
                 axios.get(`/api/user/find/${this.$route.params.id}`).then(response => {
                     response = response.data
@@ -701,6 +703,10 @@
                         this.companies = this.userData.employee.assigned_to_clients.length > 0 ? this.userData.employee.assigned_to_clients : this.userData.employee.companies
                         // console.log(this.companies);
                         this.employeeForm.company_user_id = this.userData.employee.id
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -729,6 +735,10 @@
                     response = response.data
                     if (response.success === true) {
                         this.phoneTypes = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -737,6 +747,10 @@
                     response = response.data
                     if (response.success === true) {
                         this.addressTypes = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -746,6 +760,9 @@
                     if (response.success === true) {
                         this.socialTypes = response.data
                     } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -828,10 +845,9 @@
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -844,10 +860,9 @@
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -866,6 +881,9 @@
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -886,7 +904,9 @@
                     if (response.success === true) {
                         this.roles.push(response.data[response.data.length - 1])
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
 
                 });
@@ -901,7 +921,9 @@
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
 
                 });
@@ -925,7 +947,9 @@
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
 
                 });

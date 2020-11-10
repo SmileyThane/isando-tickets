@@ -4,8 +4,8 @@
 namespace App\Repository;
 
 
-use App\Language;
 use App\CompanyLanguage;
+use App\Language;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -17,6 +17,7 @@ class LanguageRepository
         return Language::select(['id', 'name', 'locale'])->orderBy('id', 'ASC')->get();
 
     }
+
     public function getLanguagesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
@@ -43,7 +44,7 @@ class LanguageRepository
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         try {
-            return (bool) CompanyLanguage::where('language_id', $languageId)->where('company_id', $companyId)->delete();
+            return (bool)CompanyLanguage::where('language_id', $languageId)->where('company_id', $companyId)->delete();
         } catch (\Throwable $throwable) {
             return false;
         }

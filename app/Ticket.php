@@ -15,13 +15,26 @@ class Ticket extends Model
     use SoftDeletes;
 
     protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
-        'replicated_to_entity_id', 'replicated_to_entity_type'];
-    protected $appends = ['from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
+        'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment'];
+    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
     protected $hidden = ['to'];
+
+    protected static function booted()
+    {
+        static::creating(function ($ticket) {
+            $last = Ticket::where('to_entity_type', $ticket->to_entity_type)
+                ->where('to_entity_id', $ticket->to_entity_id)
+                ->whereDate('created_at', '=', date('Y-m-d'))->max('sequence');
+            $ticket->sequence = $last + 1;
+        });
+    }
 
     public function getNameAttribute()
     {
-        return $this->parent_id ? $this->attributes['name'] . " [Merged]" : $this->attributes['name'];
+        $name = $this->attributes['name'];
+        $name .= $this->parent_id ? " [Merged]" : "";
+        $name .= $this->is_spam === 1 ? " [SPAM]" : "";
+        return $name;
     }
 
     public function getFromAttribute()
@@ -138,5 +151,33 @@ class Ticket extends Model
     {
 //        return self::where('parent_id', $this->id);
         return $this->hasMany(self::class, 'parent_id', 'id');
+    }
+
+    public function getNumberAttribute(): string
+    {
+        // Prefix + Delimiter + creation_date + Delimiter + sequence
+        try {
+            $owner = $this->to_enity_type === Company::class ?
+                $this->to :
+                $this->to->supplier_type::find($this->to->supplier_id);
+        } catch (\Throwable $th) {
+            $owner = Auth::user()->employee->companyData; // as variant to modification or fix
+        }
+
+        $settings = $owner->settings;
+        $format = $settings['ticket_number_format'];
+        if (empty($format) || count(explode('｜', $format)) != 5) {
+            $format = strtoupper(substr(str_replace(' ', '', $owner->name), 0, 6)) . '｜-｜YYYYMMDD｜-｜###';
+        }
+
+        list($prefix, $delim1, $date, $delim2, $suffix) = explode('｜', $format);
+        // prepare date format for PHP
+        $date = str_replace('YYYY', 'Y', $date);
+        $date = str_replace('MM', 'm', $date);
+        $date = str_replace('DD', 'd', $date);
+
+        // prepare suffix for PHP
+        $suffix = '%0' . strlen($suffix) . 'd';
+        return $prefix . $delim1 . date($date) . $delim2 . sprintf($suffix, $this->sequence);
     }
 }
