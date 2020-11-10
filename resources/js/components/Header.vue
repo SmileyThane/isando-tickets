@@ -96,7 +96,7 @@
         props: {value: {type: Boolean}},
         data() {
             return {
-                username: localStorage.getItem('name'),
+                username: localStorage.getItem('name') + ' ' + localStorage.getItem('surname'),
                 localDrawer: null,
                 searchCategories: [
                     {
@@ -136,7 +136,7 @@
                 axios.get('/api/user').then(response => {
                     response = response.data;
                     if (response.success === true) {
-                        this.username = response.data.name;
+                        this.username = response.data.name + ' ' + response.data.surname;
                     }
                 });
             },
