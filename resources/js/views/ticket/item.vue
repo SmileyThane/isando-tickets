@@ -947,6 +947,40 @@
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
+                            <v-text-field @input="getTickets" v-model="ticketsSearch" :color="themeColor"
+                                          :label="langMap.main.search">
+                                <template slot="append">
+                                    <v-menu
+                                        rounded
+                                        transition="slide-y-transition"
+                                        bottom
+                                    >
+                                        <template v-slot:activator="{ on: menu, attrs }">
+                                            <v-btn
+                                                text
+                                                v-bind="attrs"
+                                                v-on="{...menu}"
+                                            >
+                                                <v-icon>$expand</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <v-list
+                                            dense
+                                        >
+                                            <v-list-item
+                                                link
+                                                v-for="item in searchCategories"
+                                                :key="item.id"
+                                                @click="selectSearchCategory(item)"
+                                            >
+                                                <v-list-item-title>
+                                                    {{ item.name }}
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                                </template>
+                            </v-text-field>
                             <v-list
                                 dense
                             >
@@ -960,7 +994,21 @@
                                         @click="showTicket(item.parent_ticket_data.id)"
                                     >
                                         <v-list-item-title>
-                                            <span class="text-left"> {{item.parent_ticket_data.name}}</span>
+                                            <span>
+                                                    {{item.parent_ticket_data.name}}
+                                                </span>
+                                            <br>
+                                            <span style="font-weight: lighter;">
+                                                    {{item.parent_ticket_data.creator !== null && item.parent_ticket_data.creator.user_data !== null ?
+                                                    item.parent_ticket_data.creator.user_data.name + " " +
+                                                    item.parent_ticket_data.creator.user_data.surname : ''}},
+                                                    {{item.parent_ticket_data.from !== null ? item.parent_ticket_data.from.name : ''}}
+                                                </span>
+                                            <br>
+                                            <span style="font-weight: lighter;">
+
+                                                    {{item.parent_ticket_data.last_update}}
+                                                </span>
                                         </v-list-item-title>
                                     </v-list-item>
                                     <!--                                <v-subheader>Child</v-subheader>-->
@@ -971,7 +1019,20 @@
                                         @click="showTicket(item.child_ticket_data.id)"
                                     >
                                         <v-list-item-title>
-                                            {{item.child_ticket_data.name}}
+                                            <span>
+                                                    {{item.child_ticket_data.name}}
+                                                </span>
+                                            <br>
+                                            <span style="font-weight: lighter;">
+                                                    {{item.child_ticket_data.creator !== null && item.child_ticket_data.creator.user_data !== null ?
+                                                    item.child_ticket_data.creator.user_data.name + " " +
+                                                    item.child_ticket_data.creator.user_data.surname : ''}},
+                                                    {{item.child_ticket_data.from !== null ? item.child_ticket_data.from.name : ''}}
+                                            </span>
+                                            <br>
+                                            <span style="font-weight: lighter;">
+                                                    {{item.child_ticket_data.last_update}}
+                                            </span>
                                         </v-list-item-title>
                                     </v-list-item>
                                 </v-list-item-group>
@@ -1048,24 +1109,19 @@
                                             :color="themeColor"
                                             @click="showTicket(item.parent_ticket_data.id)"
                                         >
-                                            <v-list-item-action>
-                                                <v-checkbox
-                                                    dense
-                                                    :key="item.id"
-                                                    v-model="mergeTicketForm.child_ticket_id"
-                                                    :value="item.id"
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
-                                                    :disabled="mergeTicketForm.parent_ticket_id === item.id"
-                                                    hide-details
-                                                />
-
-                                            </v-list-item-action>
                                             <v-list-item-title>
-                                                <span class="text-left">
-                                                    {{item.name}}
-                                                </span>
-                                                <span class="text-right">
+                                                <span>
+                                                    <v-checkbox
+                                                        dense
+                                                        :key="item.id"
+                                                        style="display: inline-block;"
+                                                        v-model="mergeTicketForm.child_ticket_id"
+                                                        :value="item.id"
+                                                        :color="themeColor"
+                                                        :item-color="themeColor"
+                                                        :disabled="mergeTicketForm.parent_ticket_id === item.id"
+                                                        hide-details
+                                                    />
                                                      <v-btn
                                                          fab
                                                          x-small
@@ -1078,7 +1134,20 @@
                                                     </v-icon>
                                                 </v-btn>
                                                 </span>
-                                                <v-spacer></v-spacer>
+                                                <span>
+                                                    {{item.name}}
+                                                </span>
+                                                <br>
+                                                <span style="font-weight: lighter;">
+                                                    {{item.creator !== null && item.creator.user_data !== null ?
+                                                    item.creator.user_data.name + " " +
+                                                    item.creator.user_data.surname : ''}},
+                                                    {{item.from !== null ? item.from.name : ''}}
+                                                </span>
+                                                <br>
+                                                <span style="font-weight: lighter;">
+                                                    {{item.last_update}}
+                                                </span>
                                             </v-list-item-title>
                                         </v-list-item>
                                     </v-list-item-group>
@@ -1334,7 +1403,7 @@
                     availability: '',
                     connection_details: '',
                     access_details: '',
-                    merge_comment:'',
+                    merge_comment: '',
                     answers: [
                         {
                             created_at: '',
