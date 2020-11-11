@@ -950,7 +950,6 @@
                                 >
                                 </v-badge>
                             </span>
-
                             <template v-slot:actions>
                                 <v-icon @click.native.stop="hideLinkBlock">mdi-close</v-icon>
                                 <!--                                <v-icon>$expand</v-icon>-->
@@ -1770,10 +1769,14 @@
                 });
             },
             markAsSpam() {
+                if (this.ticket.is_spam === 0) {
+                    this.snackbarMessage = 'Ticket marked as spam'
+                } else {
+                    this.snackbarMessage = 'Ticket marked as NOT spam'
+                }
                 axios.post('/api/spam/ticket', {'id': this.ticket.id}).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.snackbarMessage = 'Ticket marked as spam'
                         this.actionColor = 'alert'
                         this.snackbar = true;
                         this.getTicket();
