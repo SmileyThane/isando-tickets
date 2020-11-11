@@ -625,16 +625,27 @@
                     ],
                     dates: [
                         'YYYYMMDD',
+                        'YYMMDD',
                         'YYYY-MM-DD',
+                        'YY-MM-DD',
                         'YYYY/MM/DD',
+                        'YY/MM/DD',
                         'YYYY.MM.DD',
+                        'YY.MM.DD',
                         'DD-MM-YYYY',
+                        'DD-MM-YY',
                         'DD/MM/YYYY',
+                        'DD/MM/YY',
                         'DD.MM.YYYY',
+                        'DD.MM.YY',
                         'DD/MM/YYYY',
+                        'DD/MM/YY',
                         'MM-DD-YYYY',
+                        'MM-DD-YY',
                         'MM/DD/YYYY',
-                        'MM.DD.YYYY'
+                        'MM/DD/YY',
+                        'MM.DD.YYYY',
+                        'MM.DD.YY'
                     ],
                     suffixes: [
                         '#',

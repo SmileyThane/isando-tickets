@@ -175,6 +175,7 @@ class Ticket extends Model
 
         // prepare date format for PHP
         $date = str_replace('YYYY', 'Y', $date);
+        $date = str_replace('YY', 'y', $date);
         $date = str_replace('MM', 'm', $date);
         $date = str_replace('DD', 'd', $date);
 
