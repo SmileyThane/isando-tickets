@@ -100,6 +100,7 @@
                                     :color="themeColor"
                                     id="password"
                                     :label="this.$store.state.lang.lang_map.main.password"
+                                    placeholder="********"
                                     name="password"
                                     prepend-icon="mdi-lock"
                                     type="password"
