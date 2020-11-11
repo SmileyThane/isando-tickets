@@ -766,7 +766,7 @@
                                                 ></v-text-field>
                                                 <v-text-field
                                                     :color="themeColor"
-                                                    :label="langMap.main.surname"
+                                                    :label="langMap.main.last_name"
                                                     name="surname"
                                                     prepend-icon="mdi-book-account-outline"
                                                     type="text"
@@ -1024,8 +1024,8 @@
                             </v-expansion-panels>
 
                             <v-checkbox
-                                :label="langMap.main.give_access + '?'"
-                                color="success"
+                                :label="langMap.main.give_access"
+                                :color="themeColor"
                                 :disabled="!checkRoleByIds([1,2,3])"
                                 v-model="singleUserForm.user.is_active"
                                 @change="changeIsActive(singleUserForm.user)"

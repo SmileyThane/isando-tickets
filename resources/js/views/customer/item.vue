@@ -693,7 +693,7 @@
                     phone_type: ''
                 },
                 addressForm: {
-                    id, '',
+                    id: '',
                     entity_id: '',
                     entity_type: 'App\\Client',
                     address: {

@@ -553,7 +553,7 @@ class LanguageSeeder extends Seeder
 "language": "Sprache",
 "postal_code": "Postleitzahl",
 "title": "Titel",
-"title_before_name": "Titel vor Name",
+"title_before_name": "Anrede",
 "loading": "Gib mir eine Sekunde...",
 "search": "Suche...",
 "items_per_page": "Einträge pro Seite",
