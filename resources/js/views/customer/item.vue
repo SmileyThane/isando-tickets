@@ -352,14 +352,14 @@
                                     <p v-if="item.employee.user_data.phones.length > 0">
                                         <strong>{{langMap.main.phone}}:</strong></p>
                                     <p v-for="phoneItem in item.employee.user_data.phones"><v-icon small dense left v-if="phoneItem.type">{{phoneItem.type.icon}}</v-icon> {{ phoneItem.phone }}
-                                        <span v-if="phoneItem.type">({{phoneItem.type.name }})</span></p>
+                                        <span v-if="phoneItem.type">({{ localized(phoneItem.type) }})</span></p>
                                     <!--                                    <p><strong>Lang:</strong></p>-->
                                     <!--                                    <p>{{ item.employee.user_data.lang }}</p>-->
                                     <p v-if="item.employee.user_data.addresses.length > 0"><strong>{{langMap.main.address}}:</strong>
                                     </p>
                                     <p v-for="addressItem in item.employee.user_data.addresses"><v-icon small dense left v-if="addressItem.type">{{addressItem.type.icon}}</v-icon> {{ addressItem.address
                                         }} {{ addressItem.address_line_2 }} {{ addressItem.address_line_3 }}
-                                        <span v-if="addressItem.type">({{addressItem.type.name }})</span></p>
+                                        <span v-if="addressItem.type">({{ localized(addressItem.type) }})</span></p>
                                     <p><strong>{{langMap.main.actions}}:</strong></p>
                                     <v-tooltip top>
                                         <template v-slot:activator="{ on, attrs }">
