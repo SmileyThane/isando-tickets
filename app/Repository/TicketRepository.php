@@ -72,8 +72,8 @@ class TicketRepository
                 }
             );
         }
-        if ($request->with_spam !== "true") {
-            $ticketResult->where('is_spam', 0);
+        if ($request->with_spam === "true") {
+            $ticketResult->where('is_spam', 1);
         }
         if ($request->minified && $request->minified === 'true') {
             return $ticketResult->select('id', 'name', 'from_entity_id', 'from_entity_type', 'updated_at')->paginate(count($ticketIds));

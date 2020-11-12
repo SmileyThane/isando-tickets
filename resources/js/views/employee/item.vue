@@ -99,7 +99,7 @@
                             </v-row>
                         </v-form>
                         <v-checkbox
-                            :label="this.$store.state.lang.lang_map.main.give_access + '?'"
+                            :label="this.$store.state.lang.lang_map.main.give_access"
                             color="success"
                             v-model="userData.is_active"
                             @change="changeIsActive(userData)"

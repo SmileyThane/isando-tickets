@@ -6,11 +6,11 @@
             opacity="0.45"
         >
             <v-progress-circular
+                :color="themeColor"
                 :rotate="360"
                 :size="150"
-                :width="15"
                 :value="progressBuffer"
-                :color="themeColor"
+                :width="15"
             >
                 <span class="white--text">{{ progressBuffer }} %</span>
 
@@ -19,15 +19,15 @@
         </v-overlay>
         <v-snackbar
             :bottom="true"
+            :color="actionColor"
             :right="true"
             v-model="snackbar"
-            :color="actionColor"
         >
             {{ snackbarMessage }}
         </v-snackbar>
         <template>
-            <v-dialog v-model="serverAccessDialog" max-width="480">
-                <v-card outlined dense>
+            <v-dialog max-width="480" v-model="serverAccessDialog">
+                <v-card dense outlined>
                     <v-card-title class="headline" style="background-color: #F0F0F0;">Server access</v-card-title>
                     <v-card-text>
                         <v-label v-if="ticket.connection_details">
@@ -45,63 +45,60 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="serverAccessDialog = false">{{langMap.main.cancel}}
+                        <v-btn @click="serverAccessDialog = false" color="grey darken-1" text>{{langMap.main.cancel}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="updateDialog" max-width="60%">
-                <v-card outlined dense>
+            <v-dialog max-width="60%" v-model="updateDialog">
+                <v-card dense outlined>
                     <v-card-title class="headline" style="background-color: #F0F0F0;">
                         <span class="text-capitalize">{{langMap.main.edit}}</span>
                         <v-spacer></v-spacer>
-                        <v-btn :color="themeColor" dark @click="updateTicket">{{langMap.main.update}}
+                        <v-btn :color="themeColor" @click="updateTicket" dark>{{langMap.main.update}}
                         </v-btn>
                     </v-card-title>
                     <v-card-text>
                         <v-row>
                             <v-col cols="12">
                                 <v-textarea
+                                    :color="themeColor"
+                                    :item-color="themeColor"
                                     :label="langMap.ticket.availability_description"
-                                    prepend-icon="mdi-text"
-                                    :color="themeColor"
-                                    :item-color="themeColor"
                                     auto-grow
-                                    rows="1"
+                                    dense
+                                    prepend-icon="mdi-text"
                                     row-height="25"
-                                    shaped
+                                    rows="1"
                                     v-model="ticket.availability"
-                                    dense
                                 ></v-textarea>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-textarea
+                                    :color="themeColor"
+                                    :item-color="themeColor"
                                     :label="langMap.ticket.ip_address"
-                                    prepend-icon="mdi-text"
-                                    :color="themeColor"
-                                    :item-color="themeColor"
                                     auto-grow
-                                    rows="1"
-                                    row-height="25"
-                                    shaped
-                                    v-model="ticket.connection_details"
                                     dense
+                                    prepend-icon="mdi-text"
+                                    row-height="25"
+                                    rows="1"
+                                    v-model="ticket.connection_details"
                                 ></v-textarea>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-textarea
-                                    :label="langMap.ticket.access_details"
-                                    prepend-icon="mdi-text"
                                     :color="themeColor"
                                     :item-color="themeColor"
+                                    :label="langMap.ticket.access_details"
                                     auto-grow
-                                    rows="1"
-                                    row-height="25"
-                                    shaped
-                                    v-model="ticket.access_details"
                                     dense
+                                    prepend-icon="mdi-text"
+                                    row-height="25"
+                                    rows="1"
+                                    v-model="ticket.access_details"
                                 ></v-textarea>
                             </v-col>
                         </v-row>
@@ -110,8 +107,8 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="answerDialog" max-width="50%">
-                <v-card outlined dense>
+            <v-dialog max-width="50%" v-model="answerDialog">
+                <v-card dense outlined>
                     <v-card-title class="headline" style="background-color: #F0F0F0;">{{langMap.ticket.create_answer}}
                     </v-card-title>
                     <v-card-text>
@@ -122,20 +119,20 @@
                                         <strong>{{langMap.ticket.answer_description}}</strong>
                                     </v-label>
                                     <tiptap-vuetify
-                                        v-model="ticketAnswer.answer"
                                         :extensions="extensions"
+                                        v-model="ticketAnswer.answer"
                                     />
                                 </div>
                                 <div class="col-md-12">
                                     <v-file-input
-                                        chips
-                                        multiple
-                                        :label="langMap.ticket.add_attachments"
                                         :color="themeColor"
                                         :item-color="themeColor"
-                                        prepend-icon="mdi-paperclip"
+                                        :label="langMap.ticket.add_attachments"
                                         :show-size="1000"
+                                        chips
                                         dense
+                                        multiple
+                                        prepend-icon="mdi-paperclip"
                                         v-on:change="onFileChange('ticketAnswer')"
                                     >
                                         <template v-slot:selection="{ index, text }">
@@ -151,17 +148,17 @@
                         </v-form>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="grey darken-1" text @click="answerDialog = false">{{langMap.main.cancel}}
+                        <v-btn @click="answerDialog = false" color="grey darken-1" text>{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn :color="themeColor" dark @click="addTicketAnswer">{{langMap.main.create}}
+                        <v-btn :color="themeColor" @click="addTicketAnswer" dark>{{langMap.main.create}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="noteDialog" max-width="480">
-                <v-card outlined dense>
+            <v-dialog max-width="480" v-model="noteDialog">
+                <v-card dense outlined>
                     <v-card-title class="headline" style="background-color: #F0F0F0;">
                         {{langMap.ticket.add_internal_note}}
                     </v-card-title>
@@ -170,73 +167,71 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <v-textarea
-                                        :label="langMap.ticket.add_internal_note"
-                                        prepend-icon="mdi-text"
                                         :color="themeColor"
                                         :item-color="themeColor"
+                                        :label="langMap.ticket.add_internal_note"
                                         auto-grow
-                                        rows="1"
-                                        row-height="25"
-                                        shaped
-                                        v-model="ticketNotice.notice"
                                         dense
+                                        prepend-icon="mdi-text"
+                                        row-height="25"
+                                        rows="1"
+                                        v-model="ticketNotice.notice"
                                     ></v-textarea>
                                 </div>
                             </div>
                         </v-form>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="grey darken-1" text @click="noteDialog = false">{{langMap.main.cancel}}
+                        <v-btn @click="noteDialog = false" color="grey darken-1" text>{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn :color="themeColor" dark @click="addTicketNotice">{{langMap.main.create}}
+                        <v-btn :color="themeColor" @click="addTicketNotice" dark>{{langMap.main.create}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="ticketLinkDialog" persistent max-width="480">
+            <v-dialog max-width="480" persistent v-model="ticketLinkDialog">
                 <v-card>
                     <v-card-title class="headline">{{langMap.main.link}}</v-card-title>
                     <v-card-text>
                         <v-autocomplete
-                            :label="langMap.ticket.subject"
-                            dense
                             :color="themeColor"
                             :item-color="themeColor"
+                            :items="tickets"
+                            :label="langMap.ticket.subject"
+                            dense
                             item-text="name"
                             item-value="id"
                             v-model="linkTicketForm.parent_ticket_id"
-                            :items="tickets"
                         />
                         <v-autocomplete
-                            :label="langMap.ticket.subject"
-                            dense
                             :color="themeColor"
                             :item-color="themeColor"
+                            :items="tickets"
+                            :label="langMap.ticket.subject"
+                            dense
                             item-text="name"
                             item-value="id"
-                            v-model="linkTicketForm.child_ticket_id"
-                            :items="tickets"
                             multiple
+                            v-model="linkTicketForm.child_ticket_id"
                         />
                         <v-textarea
-                            :label="langMap.main.description"
-                            v-model="linkTicketForm.merge_comment"
-                            dense
-                            auto-grow
-                            rows="2"
-                            row-height="25"
-                            shaped
                             :color="themeColor"
+                            :label="langMap.main.description"
+                            auto-grow
+                            dense
+                            row-height="25"
+                            rows="2"
+                            v-model="linkTicketForm.merge_comment"
                         />
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn :color="themeColor" darken-1 text @click="ticketLinkDialog = false">
+                        <v-btn :color="themeColor" @click="ticketLinkDialog = false" darken-1 text>
                             {{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn :color="themeColor" darken-1 text @click="linkTicket()">
+                        <v-btn :color="themeColor" @click="linkTicket()" darken-1 text>
                             {{langMap.main.link}}
                         </v-btn>
                     </v-card-actions>
@@ -244,14 +239,14 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="removeTicketDialog" persistent max-width="480">
+            <v-dialog max-width="480" persistent v-model="removeTicketDialog">
                 <v-card>
                     <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeTicketDialog = false">{{langMap.main.cancel}}
+                        <v-btn @click="removeTicketDialog = false" color="grey darken-1" text>{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="red darken-1" text @click="deleteTicket()">
+                        <v-btn @click="deleteTicket()" color="red darken-1" text>
                             {{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
@@ -260,58 +255,65 @@
         </template>
         <v-row v-if="isLoaded">
             <v-col
+                :md="firstColumnSize + secondColumnSize + thirdColumnSize"
                 cols="12"
                 sm="12"
-                :md="firstColumnSize + secondColumnSize + thirdColumnSize"
             >
-                <v-toolbar dense color="#F0F0F0" class="rounded-lg elevation-2">
-                    <v-btn small class="ma-2" :color="themeColor" style="color: white;"
-                           @click="answerDialog = true"
+                <v-toolbar class="rounded-lg elevation-2" color="#F0F0F0" dense>
+                    <v-btn :color="themeColor" @click="answerDialog = true" class="ma-2" small
+                           style="color: white;"
                     >{{langMap.ticket.create_answer}}
                     </v-btn>
-                    <v-btn small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
-                           @click="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0 ? manageThirdColumn() : linkTicketProcess()"
-                    >{{langMap.main.link}}
+                    <v-btn :color="!linkBlock ? '#f2f2f2' : themeColor"
+                           :outlined="linkBlock"
+                           @click="showLinkBlock"
+                           class="ma-2 d-sm-none d-md-flex"
+                           small
+                    >
+                        {{langMap.main.link}}
                     </v-btn>
-                    <v-btn v-if="ticket.parent_id !== null || ticket.child_tickets !== null" small
-                           class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
-                           @click="manageThirdColumn"
+                    <v-btn :color="!mergeBlock ? '#f2f2f2' : themeColor" :outlined="mergeBlock"
+                           @click="showMergeBlock"
+                           class="ma-2 d-sm-none d-md-flex"
+                           small
+                           v-if="ticket.parent_id !== null || ticket.child_tickets !== null"
                     >
                         Merge
                     </v-btn>
                     <v-btn
-                        v-show="!thirdColumn"
-                        small class="ma-2" color="#f2f2f2"
                         @click="manageThirdColumn"
+                        class="ma-2" color="#f2f2f2" small
+                        v-show="!thirdColumn"
                     >
                         {{langMap.ticket.ticket_history}}
                     </v-btn>
-                    <v-btn small class="ma-2 d-sm-none d-md-flex" :color="this.ticket.is_spam ? 'red' : '#f2f2f2'"
-                           @click="markAsSpam"
+                    <v-btn :color="this.ticket.is_spam ? 'red' : '#f2f2f2'" @click="markAsSpam"
+                           class="ma-2 d-sm-none d-md-flex"
+                           small
                     >
                         Spam
                     </v-btn>
-                    <v-btn small class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
-                           @click="ticketDeleteProcess"
+                    <v-btn @click="ticketDeleteProcess" class="ma-2 d-sm-none d-md-flex" color="#f2f2f2"
+                           small
                     >
                         Delete
                     </v-btn>
                     <v-spacer></v-spacer>
                     <v-menu
-                        rounded
                         offset-y
+                        rounded
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                small
                                 class="ma-2 float-md-right"
+                                small
                                 v-bind="attrs"
                                 v-on="{...menu}"
                             >
                                 <v-badge
                                     :color="ticket.status.color"
-                                    inline
                                     dot
+                                    inline
                                 >
                                     <strong>{{ langMap.ticket_statuses[ticket.status.name] }}</strong>
                                 </v-badge>
@@ -321,8 +323,8 @@
                             dense
                         >
                             <v-list-item
-                                link
                                 @click="closeTicket"
+                                link
                             >
                                 <v-list-item-title>
                                     <!--                                    {{langMap.ticket_statuses['closed']}}-->
@@ -332,20 +334,20 @@
                         </v-list>
                     </v-menu>
                     <v-menu
-                        rounded
                         offset-y
+                        rounded
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                small
                                 class="ma-2 float-md-right"
+                                small
                                 v-bind="attrs"
                                 v-on="{...menu}"
                             >
                                 <v-badge
                                     :color="ticket.priority.color"
-                                    inline
                                     dot
+                                    inline
                                 >
                                     <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>
                                 </v-badge>
@@ -355,16 +357,16 @@
                             dense
                         >
                             <v-list-item
-                                link
-                                v-for="priority in priorities"
                                 :key="priority.id"
                                 @click="changePriority(priority.id)"
+                                link
+                                v-for="priority in priorities"
                             >
                                 <v-list-item-title>
                                     <v-badge
                                         :color="priority.color"
-                                        inline
                                         dot
+                                        inline
                                     >
                                         <strong>{{ langMap.ticket_priorities[priority.name] }}</strong>
                                     </v-badge>
@@ -373,13 +375,13 @@
                         </v-list>
                     </v-menu>
                     <v-menu
-                        rounded
                         offset-y
+                        rounded
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                small
                                 class="ma-2 float-md-right"
+                                small
                                 v-bind="attrs"
                                 v-on="{...menu}"
                             >
@@ -414,14 +416,14 @@
                         </v-list>
                     </v-menu>
                     <v-menu
-                        rounded
                         offset-y
+                        rounded
                     >
                         <template v-slot:activator="{ on: menu, attrs }">
                             <v-btn
-                                small
                                 class="ma-2 d-sm-flex d-md-none"
                                 color="#f2f2f2"
+                                small
                                 v-bind="attrs"
                                 v-on="{...menu }"
                             >
@@ -432,13 +434,13 @@
                             dense
                         >
                             <v-list-item
-                                @click="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0 ? manageThirdColumn() : linkTicketProcess()"
+                                @click="showLinkBlock"
                             >
                                 <v-list-item-title>{{langMap.main.link}}</v-list-item-title>
                             </v-list-item>
                             <v-list-item
+                                @click="showMergeBlock"
                                 v-if="ticket.parent_id !== null || ticket.child_tickets !== null"
-                                @click="manageThirdColumn"
                             >
                                 <v-list-item-title>Merge</v-list-item-title>
                             </v-list-item>
@@ -452,10 +454,10 @@
                             </v-list-item>
 
                             <v-list-item
-                                link
+                                @click="ticketDeleteProcess"
                                 active-class="red--text"
                                 color="red"
-                                @click="ticketDeleteProcess"
+                                link
                             >
                                 <v-list-item-title>Delete</v-list-item-title>
                             </v-list-item>
@@ -464,9 +466,9 @@
                 </v-toolbar>
             </v-col>
             <v-col
+                :md="firstColumnSize"
                 cols="12"
                 sm="12"
-                :md="firstColumnSize"
             >
                 <v-expansion-panels
                     class="d-sm-flex d-md-none"
@@ -510,10 +512,10 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <br>
-                            <v-btn class="float-md-right"
-                                   small color="white"
+                            <v-btn @click="updateDialog = true"
+                                   class="float-md-right" color="white"
+                                   small
                                    style="color: black;"
-                                   @click="updateDialog = true"
                             >
                                 <v-icon small>mdi-pencil</v-icon>
                                 {{langMap.main.edit}}
@@ -537,13 +539,13 @@
                             <v-label v-if="ticket.availability">
                                 {{langMap.ticket.availability}}:
                             </v-label>
-                            <span v-if="ticket.availability" v-html="ticket.availability">
+                            <span v-html="ticket.availability" v-if="ticket.availability">
                             </span>
                             <br>
-                            <v-btn class="float-md-right"
-                                   small color="#F0"
+                            <v-btn @click="serverAccessDialog = true"
+                                   class="float-md-right" color="#F0"
+                                   small
                                    style="color: black;"
-                                   @click="serverAccessDialog = true"
                             >
                                 <v-icon small>mdi-eye</v-icon>
                                 Server access
@@ -556,17 +558,17 @@
                     outlined
                 >
                     <v-card-text>
-                        <div v-for="answer in ticket.answers"
-                             :key="answer.id"
+                        <div :key="answer.id"
+                             v-for="answer in ticket.answers"
                         >
                             <v-card
                                 class="mx-auto"
-                                outlined
                                 dense
+                                outlined
                             >
                                 <v-list-item>
                                     <v-list-item-content>
-                                        <span style="font-weight: bold;" class="text-left">
+                                        <span class="text-left" style="font-weight: bold;">
                                             {{answer.employee.user_data.name}}
                                             {{answer.employee.user_data.surname}}
                                             {{answer.created_at_time !== '' ? answer.created_at_time :
@@ -579,10 +581,10 @@
                                                 v-for="attachment in answer.attachments"
                                             >
                                                 <v-chip
-                                                    class="ma-2"
                                                     :color="themeColor"
-                                                    text-color="white"
                                                     :href="attachment.link"
+                                                    class="ma-2"
+                                                    text-color="white"
                                                 >
                                                     {{attachment.name}}
                                                 </v-chip>
@@ -597,10 +599,10 @@
                         </div>
                         <v-card
                             class="mx-auto"
-                            outlined
-                            dense
-                            v-if="ticket.description"
                             color="#f2f2f2"
+                            dense
+                            outlined
+                            v-if="ticket.description"
 
                         >
                             <v-list-item>
@@ -614,22 +616,22 @@
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
-                        <div v-if="ticket.child_tickets"
+                        <div :key="child_ticket.id"
                              v-for="child_ticket in ticket.child_tickets"
-                             :key="child_ticket.id"
+                             v-if="ticket.child_tickets"
                         >
-                            <div v-if="child_ticket.answers.length > 0"
+                            <div :key="answer.id"
                                  v-for="answer in child_ticket.answers"
-                                 :key="answer.id"
+                                 v-if="child_ticket.answers.length > 0"
                             >
                                 <v-card
                                     class="mx-auto"
-                                    outlined
                                     dense
+                                    outlined
                                 >
                                     <v-list-item>
                                         <v-list-item-content>
-                                            <span style="font-weight: bold;" class="text-left">
+                                            <span class="text-left" style="font-weight: bold;">
                                                 {{answer.employee.user_data.name}}
                                                 {{answer.employee.user_data.surname}}
                                                 {{answer.created_at_time !== '' ? answer.created_at_time :
@@ -639,14 +641,14 @@
                                             <v-col cols="12" v-if="answer.attachments.length > 0 ">
                                                 <h4>{{langMap.main.attachments}}</h4>
                                                 <div
-                                                    v-if="answer.attachments.length > 0"
                                                     v-for="attachment in answer.attachments"
+                                                    v-if="answer.attachments.length > 0"
                                                 >
                                                     <v-chip
-                                                        class="ma-2"
                                                         :color="themeColor"
-                                                        text-color="white"
                                                         :href="attachment.link"
+                                                        class="ma-2"
+                                                        text-color="white"
                                                     >
                                                         {{attachment.name}}
                                                     </v-chip>
@@ -661,9 +663,9 @@
                             </div>
                             <v-card
                                 class="mx-auto"
-                                outlined
-                                dense
                                 color="#f2f2f2"
+                                dense
+                                outlined
                             >
                                 <v-list-item>
                                     <v-list-item-content>
@@ -683,13 +685,13 @@
 
             </v-col>
             <v-col
+                :md="secondColumnSize"
                 cols="12"
                 sm="12"
-                :md="secondColumnSize"
             >
                 <v-expansion-panels
-                    v-model="assignPanel"
                     class="d-sm-none d-md-flex"
+                    v-model="assignPanel"
                 >
                     <v-expansion-panel>
                         <v-expansion-panel-header
@@ -697,7 +699,7 @@
                         >
                             <span>
                                  <strong>Reported by: </strong>
-                                 <span v-if="ticket.contact !== null" class="float-md-right">
+                                 <span class="float-md-right" v-if="ticket.contact !== null">
                                      {{ ticket.contact.user_data.name}}
                                      {{ ticket.contact.user_data.surname}}
                                   </span>
@@ -713,10 +715,10 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <br>
-                            <v-btn class="float-md-right"
-                                   small color="white"
+                            <v-btn @click="updateDialog = true"
+                                   class="float-md-right" color="white"
+                                   small
                                    style="color: black;"
-                                   @click="updateDialog = true"
                             >
                                 <v-icon small>mdi-pencil</v-icon>
                                 {{langMap.main.edit}}
@@ -748,13 +750,13 @@
                             <v-label v-if="ticket.availability">
                                 {{langMap.ticket.availability}}:
                             </v-label>
-                            <span v-if="ticket.availability" v-html="ticket.availability">
+                            <span v-html="ticket.availability" v-if="ticket.availability">
                             </span>
                             <br>
-                            <v-btn class="float-md-right"
-                                   small color="#F0"
+                            <v-btn @click="serverAccessDialog = true"
+                                   class="float-md-right" color="#F0"
+                                   small
                                    style="color: black;"
-                                   @click="serverAccessDialog = true"
                             >
                                 <v-icon small>mdi-eye</v-icon>
                                 Server access
@@ -773,7 +775,7 @@
                         >
                             <span>
                                  <strong>Product: </strong>
-                                 <span v-if="ticket.product !== null" class="float-md-right">
+                                 <span class="float-md-right" v-if="ticket.product !== null">
                                      {{ ticket.product.name}}
                                   </span>
                             </span>
@@ -785,15 +787,15 @@
                         <v-expansion-panel-content>
                             <br>
                             <v-select
-                                dense
-                                label="Product"
+                                :items="products"
+                                @input="getProducts"
                                 color="green"
+                                dense
                                 item-color="green"
                                 item-text="name"
                                 item-value="id"
-                                :items="products"
+                                label="Product"
                                 v-model="ticket.to_product_id"
-                                @input="getProducts"
                             />
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -823,10 +825,10 @@
                             </span>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
-                                <v-btn class="float-md-right"
-                                       small color="white"
+                                <v-btn @click="true"
+                                       class="float-md-right" color="white"
+                                       small
                                        style="color: black;"
-                                       @click="true"
                                 >
                                     {{langMap.main.edit}}
                                 </v-btn>
@@ -837,38 +839,38 @@
                             <br>
                             <v-form>
                                 <v-autocomplete
-                                    dense
                                     :color="themeColor"
+                                    :disabled="selectionDisabled"
                                     :item-color="themeColor"
+                                    :items="teams"
+                                    :label="langMap.sidebar.team"
+                                    @change="selectTeam"
+                                    dense
                                     item-text="name"
                                     item-value="id"
                                     v-model="ticket.to_team_id"
-                                    :items="teams"
-                                    :label="langMap.sidebar.team"
-                                    :disabled="selectionDisabled"
-                                    @change="selectTeam"
                                 ></v-autocomplete>
                                 <v-autocomplete
-                                    dense
-                                    :disabled="selectionDisabled"
                                     :color="themeColor"
+                                    :disabled="selectionDisabled"
                                     :item-color="themeColor"
+                                    :items="employees"
+                                    :label="langMap.team.members"
+                                    dense
                                     item-text="employee.user_data.email"
                                     item-value="employee.id"
                                     v-model="ticket.to_company_user_id"
-                                    :items="employees"
-                                    :label="langMap.team.members"
                                 ></v-autocomplete>
-                                <v-btn class="ma-2"
-                                       small
-                                       :color="themeColor"
-                                       style="color: white;"
+                                <v-btn :color="themeColor"
                                        @click.native.stop="updateTicket"
+                                       class="ma-2"
+                                       small
+                                       style="color: white;"
                                 >
                                     {{langMap.ticket.assign_to}}
                                 </v-btn>
                                 <v-btn class="ma-2"
-                                       small color="white"
+                                       color="white" small
                                        style="color: black;"
                                 >
                                     Cancel
@@ -878,7 +880,7 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <br>
-                <v-expansion-panels v-model="notesPanel" multiple>
+                <v-expansion-panels multiple v-model="notesPanel">
                     <v-expansion-panel>
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
@@ -888,9 +890,9 @@
                             </span>
                             <template v-slot:actions>
                                 <v-btn
-                                    small color="white"
+                                    @click.native.stop="noteDialog = true" color="white"
+                                    small
                                     style="color: black;"
-                                    @click.native.stop="noteDialog = true"
                                 >
                                     {{langMap.ticket.add_internal_note}}
                                 </v-btn>
@@ -898,13 +900,13 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <br>
-                            <div v-for="noticeItem in ticket.notices"
-                                 :key="noticeItem.id"
+                            <div :key="noticeItem.id"
+                                 v-for="noticeItem in ticket.notices"
                             >
                                 <v-card
                                     class="mx-auto"
-                                    outlined
                                     dense
+                                    outlined
                                 >
                                     <v-list-item three-line>
                                         <v-list-item-content class="custom-small-text">
@@ -924,92 +926,43 @@
 
             </v-col>
             <v-col
-                v-show="thirdColumn"
+                :md="thirdColumnSize"
                 cols="12"
                 sm="12"
-                :md="thirdColumnSize"
+                v-show="thirdColumn"
             >
                 <v-expansion-panels
-                    v-model="thirdColumnPanels"
                     multiple
+                    v-model="thirdColumnPanels"
                 >
-                    <v-expansion-panel v-if="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0">
+                    <v-expansion-panel
+                        v-if="linkBlock">
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
                         >
                             <span>
                                 <strong>Linked tickets</strong>
+                                <v-badge
+                                    v-if="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0"
+                                    color="orange"
+                                    :content="ticket.merged_parent.length+ticket.merged_child.length"
+                                    inline
+                                >
+                                </v-badge>
                             </span>
-
                             <template v-slot:actions>
-                                <v-icon @click.native.stop="manageThirdColumn">mdi-close</v-icon>
+                                <v-icon @click.native.stop="hideLinkBlock">mdi-close</v-icon>
                                 <!--                                <v-icon>$expand</v-icon>-->
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <v-list
-                                dense
-                            >
-                                <v-list-item-group :color="themeColor">
-                                    <!--                                <v-subheader>Parent</v-subheader>-->
-                                    <v-list-item
-                                        v-for="(item, i) in ticket.merged_parent"
-                                        :key="item.id"
-                                        link
-                                        :color="themeColor"
-                                        @click="showTicket(item.parent_ticket_data.id)"
-                                    >
-                                        <v-list-item-title>
-                                            <span class="text-left"> {{item.parent_ticket_data.name}}</span>
-                                        </v-list-item-title>
-                                    </v-list-item>
-                                    <!--                                <v-subheader>Child</v-subheader>-->
-                                    <v-list-item
-                                        v-for="(item, i) in ticket.merged_child"
-                                        :key="item.id"
-                                        link
-                                        @click="showTicket(item.child_ticket_data.id)"
-                                    >
-                                        <v-list-item-title>
-                                            {{item.child_ticket_data.name}}
-                                        </v-list-item-title>
-                                    </v-list-item>
-                                </v-list-item-group>
-                            </v-list>
-                            <v-btn
-                                small
-                                color="#f2f2f2"
-                                @click="linkTicketProcess()"
-                            >
-                                New {{langMap.main.link}}
-                            </v-btn>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
-                <br v-if="ticket.merged_parent.length > 0 || ticket.merged_child.length > 0">
-                <v-expansion-panels
-                    multiple
-                >
-                    <v-expansion-panel>
-                        <v-expansion-panel-header
-                            style="background:#F0F0F0;"
-                        >
-                            <span>
-                                <strong>Merged tickets</strong>
-                            </span>
-
-                            <template v-slot:actions>
-                                <v-icon @click.native.stop="manageThirdColumn">mdi-close</v-icon>
-                            </template>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            <v-text-field @input="getTickets" v-model="ticketsSearch" :color="themeColor"
-                                          :label="langMap.main.search">
+                            <v-text-field :color="themeColor" :label="langMap.main.search" @input="getTickets"
+                                          v-model="ticketsSearch">
                                 <template slot="append">
                                     <v-menu
+                                        bottom
                                         rounded
                                         transition="slide-y-transition"
-                                        bottom
                                     >
                                         <template v-slot:activator="{ on: menu, attrs }">
                                             <v-btn
@@ -1024,10 +977,10 @@
                                             dense
                                         >
                                             <v-list-item
-                                                link
-                                                v-for="item in searchCategories"
                                                 :key="item.id"
                                                 @click="selectSearchCategory(item)"
+                                                link
+                                                v-for="item in searchCategories"
                                             >
                                                 <v-list-item-title>
                                                     {{ item.name }}
@@ -1037,73 +990,212 @@
                                     </v-menu>
                                 </template>
                             </v-text-field>
-                            <div style="max-height: 200px; overflow-y: auto;">
+                            <v-list
+                                dense
+                            >
+                                <v-list-item-group :color="themeColor">
+                                    <!--                                <v-subheader>Parent</v-subheader>-->
+                                    <v-list-item
+                                        :color="themeColor"
+                                        :key="item.id"
+                                        @click="showTicket(item.parent_ticket_data.id)"
+                                        link
+                                        v-for="(item, i) in ticket.merged_parent"
+                                    >
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-list-item-title v-on="on">
+                                            <span>
+                                                {{item.parent_ticket_data.number}}|{{item.parent_ticket_data.name}}
+                                            </span>
+                                                    <br>
+                                                    <span style="font-weight: lighter;">
+                                                    {{item.parent_ticket_data.creator !== null && item.parent_ticket_data.creator.user_data !== null ?
+                                                    item.parent_ticket_data.creator.user_data.name + " " +
+                                                    item.parent_ticket_data.creator.user_data.surname : ''}},
+                                                    {{item.parent_ticket_data.from !== null ? item.parent_ticket_data.from.name : ''}}
+                                            </span>
+                                                    <br>
+                                                    <span style="font-weight: lighter;">
+                                                    {{item.parent_ticket_data.last_update}}
+                                            </span>
+                                                </v-list-item-title>
+                                            </template>
+                                            <span>{{item.parent_ticket_data.number}}|{{item.parent_ticket_data.name}}</span>
+                                        </v-tooltip>
+                                    </v-list-item>
+                                    <!--                                <v-subheader>Child</v-subheader>-->
+                                    <v-list-item
+                                        :key="item.id"
+                                        @click="showTicket(item.child_ticket_data.id)"
+                                        link
+                                        v-for="(item, i) in ticket.merged_child"
+                                    >
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-list-item-title v-on="on">
+                                            <span>
+                                                    {{item.child_ticket_data.number}}|{{item.child_ticket_data.name}}
+                                            </span>
+                                                    <br>
+                                                    <span style="font-weight: lighter;">
+                                                    {{item.child_ticket_data.creator !== null && item.child_ticket_data.creator.user_data !== null ?
+                                                    item.child_ticket_data.creator.user_data.name + " " +
+                                                    item.child_ticket_data.creator.user_data.surname : ''}},
+                                                    {{item.child_ticket_data.from !== null ? item.child_ticket_data.from.name : ''}}
+                                            </span>
+                                                    <br>
+                                                    <span style="font-weight: lighter;">
+                                                    {{item.child_ticket_data.last_update}}
+                                            </span>
+                                                </v-list-item-title>
+                                            </template>
+                                            <span>{{item.child_ticket_data.number}}|{{item.child_ticket_data.name}}</span>
+                                        </v-tooltip>
+
+                                    </v-list-item>
+                                </v-list-item-group>
+                            </v-list>
+                            <v-btn
+                                @click="linkTicketProcess()"
+                                color="#f2f2f2"
+                                small
+                            >
+                                New {{langMap.main.link}}
+                            </v-btn>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+                <br v-if="linkBlock">
+                <v-expansion-panels
+                    multiple
+                >
+                    <v-expansion-panel v-if="mergeBlock">
+                        <v-expansion-panel-header
+                            style="background:#F0F0F0;"
+                        >
+                            <span>
+                                <strong>Merged tickets</strong>
+                            </span>
+
+                            <template v-slot:actions>
+                                <v-icon @click.native.stop="hideMergeBlock">mdi-close</v-icon>
+                            </template>
+                        </v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-text-field :color="themeColor" :label="langMap.main.search" @input="getTickets"
+                                          v-model="ticketsSearch">
+                                <template slot="append">
+                                    <v-menu
+                                        bottom
+                                        rounded
+                                        transition="slide-y-transition"
+                                    >
+                                        <template v-slot:activator="{ on: menu, attrs }">
+                                            <v-btn
+                                                text
+                                                v-bind="attrs"
+                                                v-on="{...menu}"
+                                            >
+                                                <v-icon>$expand</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <v-list
+                                            dense
+                                        >
+                                            <v-list-item
+                                                :key="item.id"
+                                                @click="selectSearchCategory(item)"
+                                                link
+                                                v-for="item in searchCategories"
+                                            >
+                                                <v-list-item-title>
+                                                    {{ item.name }}
+                                                </v-list-item-title>
+                                            </v-list-item>
+                                        </v-list>
+                                    </v-menu>
+                                </template>
+                            </v-text-field>
+                            <div style="max-height: 390px; overflow-y: auto;">
                                 <v-list
                                     dense
                                 >
                                     <v-list-item-group :color="themeColor">
                                         <v-list-item
-                                            v-for="(item, i) in tickets"
-                                            :key="item.id"
                                             :color="themeColor"
+                                            :key="item.id"
                                             @click="showTicket(item.parent_ticket_data.id)"
+                                            v-for="(item, i) in tickets"
                                         >
-                                            <v-list-item-action>
-                                                <v-checkbox
-                                                    dense
-                                                    :key="item.id"
-                                                    v-model="mergeTicketForm.child_ticket_id"
-                                                    :value="item.id"
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
-                                                    :disabled="mergeTicketForm.parent_ticket_id === item.id"
-                                                    hide-details
-                                                />
-
-                                            </v-list-item-action>
-                                            <v-list-item-title>
-                                                <span class="text-left">
-                                                    {{item.name}}
-                                                </span>
-                                                <span class="text-right">
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-list-item-title v-on="on">
+                                                <span>
+                                                    <v-checkbox
+                                                        :color="themeColor"
+                                                        :disabled="mergeTicketForm.parent_ticket_id === item.id"
+                                                        :item-color="themeColor"
+                                                        :key="item.id"
+                                                        :value="item.id"
+                                                        dense
+                                                        hide-details
+                                                        style="display: inline-block;"
+                                                        v-model="mergeTicketForm.child_ticket_id"
+                                                    />
                                                      <v-btn
-                                                         fab
-                                                         x-small
-                                                         outlined
                                                          :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeColor"
                                                          @click="mergeTicketForm.parent_ticket_id = item.id"
+                                                         fab
+                                                         outlined
+                                                         x-small
                                                      >
                                                     <v-icon dark>
                                                         mdi-medal-outline
                                                     </v-icon>
                                                 </v-btn>
                                                 </span>
-                                                <v-spacer></v-spacer>
-                                            </v-list-item-title>
+                                                        <span>
+                                                    {{item.number}}|{{item.name}}
+                                                </span>
+                                                        <br>
+                                                        <span style="font-weight: lighter;">
+                                                    {{item.creator !== null && item.creator.user_data !== null ?
+                                                    item.creator.user_data.name + " " +
+                                                    item.creator.user_data.surname : ''}},
+                                                    {{item.from !== null ? item.from.name : ''}}
+                                                </span>
+                                                        <br>
+                                                        <span style="font-weight: lighter;">
+                                                    {{item.last_update}}
+                                                </span>
+                                                    </v-list-item-title>
+                                                </template>
+                                                <span>{{item.number}}|{{item.name}}</span>
+                                            </v-tooltip>
                                         </v-list-item>
                                     </v-list-item-group>
                                 </v-list>
                             </div>
                             <v-textarea
-                                label="Add a note..."
-                                v-model="mergeTicketForm.merge_comment"
-                                dense
-                                auto-grow
-                                rows="2"
-                                row-height="25"
-                                shaped
                                 :color="themeColor"
+                                auto-grow
+                                dense
+                                label="Add a note..."
+                                row-height="25"
+                                rows="2"
+                                v-model="mergeTicketForm.merge_comment"
                             />
                             <v-spacer></v-spacer>
                             <v-btn color="red" text>{{langMap.main.cancel}}
                             </v-btn>
-                            <v-btn color="green" text @click="mergeTicket()">
+                            <v-btn @click="mergeTicket()" color="green" text>
                                 {{langMap.ticket.merge}}
                             </v-btn>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-                <br>
+                <br v-if="mergeBlock">
                 <v-expansion-panels>
                     <v-expansion-panel>
                         <v-expansion-panel-header
@@ -1120,8 +1212,8 @@
                             <v-list dense>
                                 <v-list-item-group>
                                     <v-list-item
-                                        v-for="(history, i) in ticket.histories"
                                         :key="history.id"
+                                        v-for="(history, i) in ticket.histories"
                                     >
                                         <v-list-item-title>
                                             <strong class="text-left">
@@ -1146,14 +1238,14 @@
             >
                 <v-navigation-drawer
                     absolute
-                    permanent
                     mini-variant
+                    permanent
                     right
                 >
                     <v-divider></v-divider>
                     <v-list
-                        nav
                         dense
+                        nav
                     >
                         <v-list-item link>
                             <v-list-item-icon>
@@ -1235,6 +1327,8 @@
                 assignPanel: [],
                 notesPanel: [],
                 thirdColumn: false,
+                mergeBlock: false,
+                linkBlock: false,
                 thirdColumnPanels: [0],
                 firstColumnSize: 7,
                 secondColumnSize: 4,
@@ -1334,7 +1428,7 @@
                     availability: '',
                     connection_details: '',
                     access_details: '',
-                    merge_comment:'',
+                    merge_comment: '',
                     answers: [
                         {
                             created_at: '',
@@ -1624,6 +1718,30 @@
                 let redirectToEntity = ticket.from_entity_type.substring(ticket.from_entity_type.lastIndexOf("\\") + 1).toLowerCase()
                 return `/${redirectToEntity}/${ticket.from_entity_id}`
             },
+            showMergeBlock() {
+                this.thirdColumn = false
+                this.mergeBlock = !this.mergeBlock
+                this.manageThirdColumn()
+            },
+            showLinkBlock() {
+                this.thirdColumn = false
+                this.linkBlock = !this.linkBlock
+                this.manageThirdColumn()
+            },
+            hideMergeBlock() {
+                // if (this.thirdColumn === true) {
+                //     this.thirdColumn = false
+                // }
+                // this.manageThirdColumn()
+                this.mergeBlock = false
+            },
+            hideLinkBlock() {
+                // if (this.thirdColumn === true) {
+                //     this.thirdColumn = false
+                // }
+                // this.manageThirdColumn()
+                this.linkBlock = false
+            },
             manageThirdColumn() {
                 if (this.thirdColumn === false) {
                     this.firstColumnSize = 6
@@ -1651,10 +1769,14 @@
                 });
             },
             markAsSpam() {
+                if (this.ticket.is_spam === 0) {
+                    this.snackbarMessage = 'Ticket marked as spam'
+                } else {
+                    this.snackbarMessage = 'Ticket marked as NOT spam'
+                }
                 axios.post('/api/spam/ticket', {'id': this.ticket.id}).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.snackbarMessage = 'Ticket marked as spam'
                         this.actionColor = 'alert'
                         this.snackbar = true;
                         this.getTicket();

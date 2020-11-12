@@ -1,5 +1,5 @@
 <template>
-    <v-content>
+    <v-main>
         <v-container
             class="fill-height"
             fluid
@@ -10,76 +10,88 @@
             >
                 <v-col
                     cols="12"
-                    sm="8"
                     md="3"
+                    sm="8"
                 >
                     <v-alert
-                        type="error"
                         :value="alert"
+                        type="error"
                     >
-                            Invalid Username or Password
-                        </v-alert>
-                        <v-card class="elevation-12" >
-                            <v-toolbar
-                                dense
-                                :color="themeColor"
-                                dark
-                                flat
-                            >
-                                <v-toolbar-title>Authorization</v-toolbar-title>
-                                <v-spacer></v-spacer>
-                            </v-toolbar>
-                            <v-card-text>
-                                <v-form>
-                                    <v-text-field
-                                        :color="themeColor"
-                                        label="Login"
-                                        name="email"
-                                        prepend-icon="mdi-account"
-                                        type="text"
-                                        v-model="email"
-                                        required
-                                        autocomplete="new-email"
-                                    ></v-text-field>
+                        Invalid Username or Password
+                    </v-alert>
+                    <v-card class="elevation-12">
+                        <v-toolbar
+                            :color="themeColor"
+                            dark
+                            dense
+                            flat
+                        >
+                            <v-toolbar-title>Authorization</v-toolbar-title>
+                            <v-spacer></v-spacer>
+                        </v-toolbar>
+                        <v-card-text>
+                            <v-form>
+                                <v-text-field
+                                    :color="themeColor"
+                                    autocomplete="new-email"
+                                    label="Login"
+                                    name="email"
+                                    prepend-icon="mdi-account"
+                                    required
+                                    type="text"
+                                    v-model="email"
+                                ></v-text-field>
 
-                                    <v-text-field
-                                        autocomplete="new-password"
-                                        :color="themeColor"
-                                        id="password"
-                                        label="Password"
-                                        name="password"
-                                        prepend-icon="mdi-lock"
-                                        type="password"
-                                        v-model="password"
-                                        required
-                                    ></v-text-field>
+                                <v-text-field
+                                    :color="themeColor"
+                                    autocomplete="new-password"
+                                    id="password"
+                                    label="Password"
+                                    name="password"
+                                    prepend-icon="mdi-lock"
+                                    required
+                                    type="password"
+                                    v-model="password"
+                                ></v-text-field>
+                                <br>
+                                <v-tooltip :key="i"
+                                           bottom
+                                           v-for="i in 3"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            :color="themeColor"
+                                            class="ma-2"
+                                            outlined
+                                            style="max-width: 36px; min-width: 36px;"
 
-                                    <v-tooltip bottom>
-                                        <template v-slot:activator="{ on, attrs }">
+                                        >
                                             <v-icon
-                                                color="grey"
+                                                :color="themeColor"
                                                 dark
                                                 v-bind="attrs"
                                                 v-on="on"
                                             >
                                                 mdi-two-factor-authentication
                                             </v-icon>
-                                        </template>
-                                        <span>Coming soon...</span>
-                                    </v-tooltip>
-                                </v-form>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn :color="themeColor" style="color: white;" @click="handleSubmit">Login</v-btn>
-                            </v-card-actions>
-                        </v-card>
+                                        </v-btn>
+
+                                    </template>
+                                    <span>Coming soon...</span>
+                                </v-tooltip>
+                            </v-form>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn :color="themeColor" @click="handleSubmit" style="color: white;">Login</v-btn>
+                        </v-card-actions>
+                    </v-card>
 
 
                 </v-col>
             </v-row>
         </v-container>
-    </v-content>
+    </v-main>
 </template>
 
 <script>

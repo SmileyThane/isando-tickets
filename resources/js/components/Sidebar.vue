@@ -34,9 +34,6 @@
             </v-list-item-content>
         </v-list-item>
         <v-list-item v-else>
-            <v-list-item-icon>
-                <v-img contain max-height="30" max-width="30" :src="companyLogo" left></v-img>
-            </v-list-item-icon>
             <v-list-item-content>
                 <v-list-item-title class="title">
                     {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}

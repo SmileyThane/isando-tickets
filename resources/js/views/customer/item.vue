@@ -686,12 +686,14 @@
                     }
                 ],
                 phoneForm: {
+                    id: '',
                     entity_id: '',
                     entity_type: 'App\\Client',
                     phone: '',
                     phone_type: ''
                 },
                 addressForm: {
+                    id: '',
                     entity_id: '',
                     entity_type: 'App\\Client',
                     address: {
@@ -705,6 +707,7 @@
                     address_type: ''
                 },
                 socialForm: {
+                    id: '',
                     entity_id: '',
                     entity_type: 'App\\Client',
                     social_link: '',
@@ -879,6 +882,22 @@
                     return true
                 });
             },
+            updatePhone(form) {
+                axios.patch(`/api/phone/${form.id}`, form).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient()
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.errorType = 'error'
+                        this.alert = true;
+
+                    }
+                    return true
+                });
+            },
             deletePhone(id) {
                 axios.delete(`/api/phone/${id}`).then(response => {
                     response = response.data
@@ -897,6 +916,22 @@
             },
             addSocial(form) {
                 axios.post('/api/social', form).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient()
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
+
+                    }
+                });
+            },
+            updateSocial(form) {
+                axios.patch(`/api/social/${form.id}`, form).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getClient()
@@ -934,6 +969,27 @@
                     form.address_line_3 = `${form.address.city}${form.address.country}`
                 }
                 axios.post('/api/address', form).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient()
+                        this.snackbarMessage = 'Update successful'
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.parseErrors(response.error)
+                        this.errorType = 'error'
+                        this.alert = true;
+
+                    }
+                });
+            },
+            updateAddress(form) {
+                if (form.address.city !== '' && form.address.country !== '') {
+                    form.address.address_line_3 = `${form.address.city}, ${form.address.country}`
+                } else {
+                    form.address_line_3 = `${form.address.city}${form.address.country}`
+                }
+                axios.patch(`/api/address/${form.id}`, form).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getClient()
