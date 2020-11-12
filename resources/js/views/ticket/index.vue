@@ -46,7 +46,7 @@
                 <v-col  sm="12" md="12">
                     <v-checkbox
                         :color="themeColor"
-                        label="With spam?"
+                        label="Spam only"
                         v-model="options.withSpam"
                     >
                     </v-checkbox>
