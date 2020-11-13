@@ -188,7 +188,7 @@
                                                     hide-selected
                                                     item-text="name"
                                                     item-value="id"
-                                                    :label="this.$store.state.lang.lang_map.customer.customer"
+                                                    :label="this.$store.state.lang.lang_map.main.company"
                                                     :placeholder="this.$store.state.lang.lang_map.main.search"
                                                 ></v-autocomplete>
                                             </v-col>

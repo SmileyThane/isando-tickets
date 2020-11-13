@@ -125,8 +125,8 @@ class LanguageSeeder extends Seeder
     "add_new": "Add new contact",
     "info": "User info",
     "contact_info": "Contact info",
-    "assigned_companies": "Assigned companies",
-    "new_customer": "Assign to Customer",
+    "assigned_companies": "Linked companies",
+    "new_customer": "Link to company",
     "is_active": "System access",
     "status": "Status",
     "social_info": "Social media"
