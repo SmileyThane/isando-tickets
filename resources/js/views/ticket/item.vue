@@ -1,5 +1,5 @@
 <template>
-    v-container fluid>
+    <v-container fluid>
         <v-overlay
             :value="!isLoaded"
             light

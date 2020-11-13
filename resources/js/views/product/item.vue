@@ -1,5 +1,5 @@
 <template>
-    v-container fluid>
+    <v-container fluid>
 
         <div class="row">
             <v-snackbar
