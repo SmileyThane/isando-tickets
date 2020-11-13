@@ -1273,10 +1273,10 @@
             },
             editAddress(item) {
                 this.updateAddressDlg = true;
+
                 this.addressForm.id = item.id;
                 this.addressForm.address.address = (item.address ? item.address + '\n' : '') + (item.address_line_2 ? item.address_line_2 + '\n' : '') + (item.address_line_3 ? item.address_line_3 : '');
                 this.addressForm.address_type = item.type ? item.type.id : 0;
-
             }
         },
         watch: {
