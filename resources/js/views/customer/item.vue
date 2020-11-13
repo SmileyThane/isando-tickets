@@ -1158,6 +1158,9 @@
                     response = response.data
                     if (response.success === true) {
                         this.addressForm.id = '';
+                        this.addressForm.address.address = '';
+                        this.addressForm.address.address_line_2 = '';
+                        this.addressForm.address.address_line_3 = '';
                         this.getClient()
                         this.snackbarMessage = this.langMap.company.address_updated;
                         this.actionColor = 'success'
