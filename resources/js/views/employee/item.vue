@@ -222,114 +222,6 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.social_info}}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-
-                    <v-card-text>
-                        <v-list
-                            dense
-                            subheader
-                        >
-                            <v-list-item-group :color="themeColor">
-                                <v-list-item
-                                    v-for="(item) in userData.socials"
-                                    :key="item.id"
-                                >
-                                    <v-list-item-icon v-if="item.type">
-                                        <v-icon v-text="item.type.icon"></v-icon>
-                                    </v-list-item-icon>
-                                    <v-list-item-content>
-                                        <v-list-item-title v-text="item.social_link"></v-list-item-title>
-                                        <v-list-item-subtitle v-if="item.type"
-                                            v-text="localized(item.type)"></v-list-item-subtitle>
-                                    </v-list-item-content>
-                                    <v-list-item-action>
-                                        <v-icon
-                                            small
-                                            @click="editSocial(item)"
-                                        >
-                                            mdi-pencil
-                                        </v-icon>
-                                    </v-list-item-action>
-                                    <v-list-item-action>
-                                        <v-icon
-                                            small
-                                            @click="deleteSocial(item.id)"
-                                        >
-                                            mdi-delete
-                                        </v-icon>
-                                    </v-list-item-action>
-                                </v-list-item>
-
-                            </v-list-item-group>
-                        </v-list>
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    {{langMap.company.new_social_item}}
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col cols="md-6" class="pa-1">
-                                                <v-text-field
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
-                                                    v-model="socialForm.social_link"
-                                                    :label="langMap.main.link"
-                                                    dense
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="6" class="pa-1">
-                                                <v-select
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="socialForm.social_type"
-                                                    :items="socialTypes"
-                                                    :label="langMap.main.type"
-                                                    dense
-                                                >
-                                                    <template slot="selection" slot-scope="data">
-                                                        <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
-                                                    </template>
-                                                    <template slot="item" slot-scope="data">
-                                                        <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
-                                                    </template>
-                                                </v-select>
-                                            </v-col>
-                                            <v-btn
-                                                dark
-                                                fab
-                                                right
-                                                bottom
-                                                small
-                                                :color="themeColor"
-                                                @click="submitNewData(userData.id, socialForm, 'addSocial')"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col md="6">
-                <v-card class="elevation-6">
-                    <v-toolbar
-                        dense
-                        :color="themeColor"
-                        dark
-                        flat
-                    >
                         <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.contact_info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
@@ -353,7 +245,7 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
-                                                        v-text="localized(item.type)"></v-list-item-subtitle>
+                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -384,7 +276,7 @@
                                                         {{item.address_line_2}} {{item.address_line_3}}
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
-                                                        v-text="localized(item.type)"></v-list-item-subtitle>
+                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -562,6 +454,114 @@
                                 </v-col>
                             </v-row>
                         </v-form>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col md="6">
+                <v-card class="elevation-6">
+                    <v-toolbar
+                        dense
+                        :color="themeColor"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.social_info}}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-list
+                            dense
+                            subheader
+                        >
+                            <v-list-item-group :color="themeColor">
+                                <v-list-item
+                                    v-for="(item) in userData.socials"
+                                    :key="item.id"
+                                >
+                                    <v-list-item-icon v-if="item.type">
+                                        <v-icon v-text="item.type.icon"></v-icon>
+                                    </v-list-item-icon>
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="item.social_link"></v-list-item-title>
+                                        <v-list-item-subtitle v-if="item.type"
+                                                              v-text="localized(item.type)"></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-icon
+                                            small
+                                            @click="editSocial(item)"
+                                        >
+                                            mdi-pencil
+                                        </v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-action>
+                                        <v-icon
+                                            small
+                                            @click="deleteSocial(item.id)"
+                                        >
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+
+                            </v-list-item-group>
+                        </v-list>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{langMap.company.new_social_item}}
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-6" class="pa-1">
+                                                <v-text-field
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
+                                                    v-model="socialForm.social_link"
+                                                    :label="langMap.main.link"
+                                                    dense
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="6" class="pa-1">
+                                                <v-select
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="socialForm.social_type"
+                                                    :items="socialTypes"
+                                                    :label="langMap.main.type"
+                                                    dense
+                                                >
+                                                    <template slot="selection" slot-scope="data">
+                                                        <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                    </template>
+                                                    <template slot="item" slot-scope="data">
+                                                        <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                    </template>
+                                                </v-select>
+                                            </v-col>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                small
+                                                :color="themeColor"
+                                                @click="submitNewData(userData.id, socialForm, 'addSocial')"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                     </v-card-text>
                 </v-card>
             </v-col>
