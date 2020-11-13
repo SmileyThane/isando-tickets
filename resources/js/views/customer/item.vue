@@ -90,6 +90,14 @@
                                                 <v-list-item-action>
                                                     <v-icon
                                                         small
+                                                        @click="editPhone(item)"
+                                                    >
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
                                                         @click="deletePhone(item.id)"
                                                     >
                                                         mdi-delete
@@ -110,6 +118,14 @@
                                                     <v-list-item-subtitle v-if="item.type"
                                                         v-text="localized(item.type.name)"></v-list-item-subtitle>
                                                 </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="editAddress(item)"
+                                                    >
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
                                                 <v-list-item-action>
                                                     <v-icon
                                                         small
@@ -523,6 +539,14 @@
                                     <v-list-item-action>
                                         <v-icon
                                             small
+                                            @click="editSocial(item)"
+                                        >
+                                            mdi-pencil
+                                        </v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-action>
+                                        <v-icon
+                                            small
                                             @click="deleteSocial(item.id)"
                                         >
                                             mdi-delete
@@ -590,6 +614,124 @@
                 </v-card>
             </div>
         </div>
+
+        <v-row justify="center">
+            <v-dialog v-model="updatePhoneDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_phone}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="phoneForm.phone" :label="langMap.main.phone" dense></v-text-field>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-select :color="themeColor" :item-color="themeColor"
+                                              v-model="phoneForm.phone_type" :items="phoneTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updatePhoneDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updatePhoneDlg=false; updatePhone()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="updateSocialDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_social}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="socialForm.social_link" :label="langMap.main.link" dense></v-text-field>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-select :color="themeColor" :item-color="themeColor"
+                                              v-model="socialForm.social_type" :items="socialTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updateSocialDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateSocialDlg=false; updateSocial()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="updateAddressDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_address}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-textarea
+                                        no-resize rows="3" row-height="15"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        v-model="addressForm.address.address"
+                                        label="langMap.main.address" dense>
+                                    </v-textarea>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-select :color="themeColor" :item-color="themeColor"
+                                              v-model="addressForm.address_type" :items="addressTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updateAddressDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateAddressDlg=false; updateAddress()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+        </v-row>
+
     </v-container>
 </template>
 
@@ -740,7 +882,10 @@
                 phoneTypes: [],
                 addressTypes: [],
                 socialTypes: [],
-                countries: []
+                countries: [],
+                updatePhoneDlg: false,
+                updateAddressDlg: false,
+                updateSocialDlg: false
             }
         },
         mounted() {
@@ -769,7 +914,9 @@
                         this.client.client_name = response.data.name
                         this.client.client_description = response.data.description
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
 
                 });
@@ -781,7 +928,9 @@
                     if (response.success === true) {
                         this.roles.push(response.data[response.data.length - 1])
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
 
                 });
@@ -791,6 +940,10 @@
                     response = response.data
                     if (response.success === true) {
                         this.countries = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -803,7 +956,9 @@
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
 
                 });
@@ -818,7 +973,9 @@
                         this.snackbar = true;
                         this.enableToEdit = false
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
 
                 });
@@ -829,6 +986,9 @@
                     if (response.success === true) {
                         this.phoneTypes = response.data
                     } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -838,6 +998,9 @@
                     if (response.success === true) {
                         this.socialTypes = response.data
                     } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -847,6 +1010,9 @@
                     if (response.success === true) {
                         this.addressTypes = response.data
                     } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -862,7 +1028,9 @@
                         this.actionColor = 'success'
                         this.snackbar = true
                     } else {
-                        this.errors = response.error
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -871,29 +1039,30 @@
                     response = response.data
                     if (response.success === true) {
                         this.getClient()
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.company.phone_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                     return true
                 });
             },
-            updatePhone(form) {
-                axios.patch(`/api/phone/${form.id}`, form).then(response => {
+            updatePhone() {
+                axios.patch(`/api/phone/${this.phoneForm.id}`, this.phoneForm).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.getClient()
-                        this.snackbarMessage = 'Update successful'
-                        this.actionColor = 'success'
+                        this.phoneForm.id = '';
+                        this.getClient();
+                        this.snackbarMessage = this.langMap.company.phone_updated;
+                        this.actionColor = 'success';
                         this.snackbar = true;
                     } else {
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                     return true
                 });
@@ -903,14 +1072,13 @@
                     response = response.data
                     if (response.success === true) {
                         this.getClient()
-                        this.snackbarMessage = 'Delete successful'
+                        this.snackbarMessage = this.langMap.company.phone_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -919,30 +1087,29 @@
                     response = response.data
                     if (response.success === true) {
                         this.getClient()
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.company.social_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
-            updateSocial(form) {
-                axios.patch(`/api/social/${form.id}`, form).then(response => {
+            updateSocial() {
+                axios.patch(`/api/social/${this.socialForm.id}`, this.socialForm).then(response => {
                     response = response.data
                     if (response.success === true) {
+                        this.socialForm.id = '';
                         this.getClient()
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.company.social_updated;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -951,14 +1118,13 @@
                     response = response.data
                     if (response.success === true) {
                         this.getClient()
-                        this.snackbarMessage = 'Delete successful'
+                        this.snackbarMessage = this.langMap.company.social_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -972,35 +1138,34 @@
                     response = response.data
                     if (response.success === true) {
                         this.getClient()
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.company.address_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
-            updateAddress(form) {
-                if (form.address.city !== '' && form.address.country !== '') {
-                    form.address.address_line_3 = `${form.address.city}, ${form.address.country}`
-                } else {
-                    form.address_line_3 = `${form.address.city}${form.address.country}`
-                }
-                axios.patch(`/api/address/${form.id}`, form).then(response => {
+            updateAddress() {
+                let lines = this.addressForm.address.address.split('\n');
+                this.addressForm.address.address = lines.shift();
+                this.addressForm.address.address_line_2 = lines.shift();
+                this.addressForm.address.address_line_3 = lines.join('\n');
+
+                axios.patch(`/api/address/${this.addressForm.id}`, this.addressForm).then(response => {
                     response = response.data
                     if (response.success === true) {
+                        this.addressForm.id = '';
                         this.getClient()
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.company.address_updated;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -1009,14 +1174,13 @@
                     response = response.data
                     if (response.success === true) {
                         this.getClient()
-                        this.snackbarMessage = 'Delete successful'
+                        this.snackbarMessage = this.langMap.company.address_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.parseErrors(response.error)
-                        this.errorType = 'error'
-                        this.alert = true;
-
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -1035,7 +1199,9 @@
                         this.snackbar = true;
                         this.removeEmployeeDialog = false
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
 
                 });
@@ -1058,6 +1224,9 @@
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -1073,6 +1242,9 @@
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -1085,6 +1257,27 @@
                 });
                 return roleExists
             },
+            editPhone(item) {
+                this.updatePhoneDlg = true;
+
+                this.phoneForm.id = item.id;
+                this.phoneForm.phone = item.phone;
+                this.phoneForm.phone_type = item.type ? item.type.id : 0;
+            },
+            editSocial(item) {
+                this.updateSocialDlg = true;
+
+                this.socialForm.id = item.id;
+                this.socialForm.social_link = item.social_link;
+                this.socialForm.social_type = item.type ? item.type.id : 0;
+            },
+            editAddress(item) {
+                this.updateAddressDlg = true;
+                this.addressForm.id = item.id;
+                this.addressForm.address.address = (item.address ? item.address + '\n' : '') + (item.address_line_2 ? item.address_line_2 + '\n' : '') + (item.address_line_3 ? item.address_line_3 : '');
+                this.addressForm.address_type = item.type ? item.type.id : 0;
+
+            }
         },
         watch: {
             clientUpdates(value) {

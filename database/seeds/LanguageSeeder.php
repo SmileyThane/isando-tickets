@@ -89,7 +89,19 @@ class LanguageSeeder extends Seeder
     "delete_product_category": "Delete product category",
     "parent_product_category": "Parent category",
     "product_category_created": "Product category created",
-    "product_category_deleted": "Product category deleted"
+    "product_category_deleted": "Product category deleted",
+    "update_phone": "Update phone",
+    "phone_created": "Phone added",
+    "phone_updated": "Phone updated",
+    "phone_deleted": "Phone deleted",
+    "update_address": "Update address",
+    "address_created": "Address added",
+    "address_updated": "Address updated",
+    "address_deleted": "Address deleted",
+    "update_social": "Update social link",
+    "social_created": "Social link added",
+    "social_updated": "Social link updated",
+    "social_deleted": "Social link deleted"
   },
   "customer": {
     "customer": "Customer",

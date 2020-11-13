@@ -63,7 +63,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         //phone management
         Route::post('phone', 'API\PhoneController@add');
-        Route::patch('phone/{id}', 'API\PhoneController@update');
+        Route::patch('phone/{id}', 'API\PhoneController@edit');
         Route::delete('phone/{id}', 'API\PhoneController@delete');
         Route::get('phone_types', 'API\PhoneController@getTypes');
         Route::post('phone_type', 'API\PhoneController@addType');
@@ -76,7 +76,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('social_type/{id}', 'API\SocialController@updateType');
         Route::delete('social_type/{id}', 'API\SocialController@deleteType');
         Route::post('social', 'API\SocialController@add');
-        Route::patch('social/{id}', 'API\SocialController@update');
+        Route::patch('social/{id}', 'API\SocialController@edit');
         Route::delete('social/{id}', 'API\SocialController@delete');
 
         //address management
@@ -85,7 +85,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('address_type/{id}', 'API\AddressController@updateType');
         Route::delete('address_type/{id}', 'API\AddressController@deleteType');
         Route::post('address', 'API\AddressController@add');
-        Route::patch('address/{id}', 'API\AddressController@update');
+        Route::patch('address/{id}', 'API\AddressController@edit');
         Route::delete('address/{id}', 'API\AddressController@delete');
 
         //client management

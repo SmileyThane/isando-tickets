@@ -26,8 +26,8 @@ class SocialRepository
     public function update($id, $type, $value): Social
     {
         $social = Social::find($id);
-        $social->socialLink = $value;
-        $social->socialType = $type;
+        $social->social_link = $value;
+        $social->social_type = $type;
         $social->save();
         return $social;
     }

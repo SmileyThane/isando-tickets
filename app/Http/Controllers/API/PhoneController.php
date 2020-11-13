@@ -24,7 +24,7 @@ class PhoneController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $phone = $this->phoneRepo->update($id, $request['phone'], $request['phone_type']);
+        $phone = $this->phoneRepo->update($id,$request['phone_type'], $request['phone'],);
         return self::showResponse(true, $phone);
     }
 
