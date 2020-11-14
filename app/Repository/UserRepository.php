@@ -26,7 +26,12 @@ class UserRepository
             'password' => 'sometimes|min:8',
         ];
         if ($new === true && $request['email'] !== '[no_email]') {
-            $params['email'] ='required|unique:users';
+            $params['email'] = [
+                'required',
+                Rule::unique('users')->ignore(
+                    User::where('email', $request['email'])->first()
+                ),
+            ];
         }
         $validator = Validator::make($request->all(), $params);
         if ($validator->fails()) {
