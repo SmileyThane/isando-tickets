@@ -28,9 +28,7 @@ class UserRepository
         if ($new === true && $request['email'] !== '[no_email]') {
             $params['email'] = [
                 'required',
-                Rule::unique('users')->ignore(
-                    User::where('email', $request['email'])->first()
-                ),
+                Rule::unique('users')->ignore(Auth::id()),
             ];
         }
         $validator = Validator::make($request->all(), $params);
@@ -80,13 +78,15 @@ class UserRepository
 
     public function changeIsActive(Request $request): bool
     {
+        $result = false;
         try {
             $user = User::find($request->user_id);
-            $user->is_active = $request->is_active;
-            $user->save();
-            $result = true;
+            if (!($request->is_active === true && User::where([['email', $user->email], ['is_active', true]])->exists())) {
+                $user->is_active = $request->is_active;
+                $user->save();
+                $result = true;
+            }
         } catch (\Throwable $th) {
-            $result = false;
         }
         return $result;
     }
