@@ -38,7 +38,6 @@ class UserController extends Controller
         $success = false;
         $result = null;
         $isValid = $this->userRepo->validate($request, true);
-        dd($isValid);
         if ($isValid === true) {
             $result = $this->userRepo->update($request, $id);
             $success = true;
