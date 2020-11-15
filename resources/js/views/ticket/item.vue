@@ -1231,40 +1231,6 @@
                 </v-expansion-panels>
 
             </v-col>
-            <v-col
-                :class="rightSidebarClass"
-                md="1"
-                v-show="!thirdColumn"
-            >
-                <v-navigation-drawer
-                    absolute
-                    mini-variant
-                    permanent
-                    right
-                >
-                    <v-divider></v-divider>
-                    <v-list
-                        dense
-                        nav
-                    >
-                        <v-list-item link>
-                            <v-list-item-icon>
-                                <v-icon>mdi-folder</v-icon>
-                            </v-list-item-icon>
-                        </v-list-item>
-                        <v-list-item link>
-                            <v-list-item-icon>
-                                <v-icon>mdi-account-multiple</v-icon>
-                            </v-list-item-icon>
-                        </v-list-item>
-                        <v-list-item link>
-                            <v-list-item-icon>
-                                <v-icon>mdi-star</v-icon>
-                            </v-list-item-icon>
-                        </v-list-item>
-                    </v-list>
-                </v-navigation-drawer>
-            </v-col>
         </v-row>
     </v-container>
 
@@ -1333,7 +1299,6 @@
                 firstColumnSize: 7,
                 secondColumnSize: 4,
                 thirdColumnSize: 0,
-                rightSidebarClass: 'd-sm-none d-md-flex',
                 ticketLinkDialog: false,
                 serverAccessDialog: false,
                 updateDialog: false,
@@ -1748,13 +1713,11 @@
                     this.secondColumnSize = 3
                     this.thirdColumnSize = 3
                     this.thirdColumn = true
-                    this.rightSidebarClass = ''
                 } else {
-                    this.firstColumnSize = 7
+                    this.firstColumnSize = 8
                     this.secondColumnSize = 4
                     this.thirdColumnSize = 0
                     this.thirdColumn = false
-                    this.rightSidebarClass = 'd-sm-none d-md-flex'
                 }
             },
             mergeTicket() {
