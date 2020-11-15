@@ -115,12 +115,10 @@
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <v-label>
-                                        <strong>{{langMap.ticket.answer_description}}</strong>
-                                    </v-label>
                                     <tiptap-vuetify
                                         :extensions="extensions"
                                         v-model="ticketAnswer.answer"
+                                        :placeholder="langMap.ticket.answer_description"
                                     />
                                 </div>
                                 <div class="col-md-12">
