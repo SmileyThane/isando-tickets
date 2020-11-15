@@ -1296,7 +1296,7 @@
                 mergeBlock: false,
                 linkBlock: false,
                 thirdColumnPanels: [0],
-                firstColumnSize: 7,
+                firstColumnSize: 8,
                 secondColumnSize: 4,
                 thirdColumnSize: 0,
                 ticketLinkDialog: false,
