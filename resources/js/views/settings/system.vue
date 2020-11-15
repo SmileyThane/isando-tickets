@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-snackbar :bottom="true" :right="true" v-model="snackbar" :color="actionColor">
             {{ snackbarMessage }}
         </v-snackbar>

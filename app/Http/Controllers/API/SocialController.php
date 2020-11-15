@@ -24,7 +24,7 @@ class SocialController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $phone = $this->socialRepo->update($id, $request['phone'], $request['phone_type']);
+        $phone = $this->socialRepo->update($id, $request['social_type'], $request['social_link']);
         return self::showResponse(true, $phone);
     }
 

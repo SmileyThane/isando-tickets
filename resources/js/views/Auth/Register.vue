@@ -1,6 +1,6 @@
 <template>
 
-    <v-main>
+    <v-content>
         <v-container
             class="fill-height"
             fluid
@@ -109,7 +109,7 @@
                 </v-col>
             </v-row>
         </v-container>
-    </v-main>
+    </v-content>
 
 </template>
 

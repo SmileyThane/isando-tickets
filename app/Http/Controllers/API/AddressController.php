@@ -24,7 +24,7 @@ class AddressController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $phone = $this->addressRepo->update($id, $request['address'], $request['address_type']);
+        $phone = $this->addressRepo->update($id, $request['address_type'], $request['address']);
         return self::showResponse(true, $phone);
     }
 

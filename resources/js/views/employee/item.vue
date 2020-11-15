@@ -188,7 +188,7 @@
                                                     hide-selected
                                                     item-text="name"
                                                     item-value="id"
-                                                    :label="this.$store.state.lang.lang_map.customer.customer"
+                                                    :label="this.$store.state.lang.lang_map.main.company"
                                                     :placeholder="this.$store.state.lang.lang_map.main.search"
                                                 ></v-autocomplete>
                                             </v-col>
@@ -222,106 +222,6 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.social_info}}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-
-                    <v-card-text>
-                        <v-list
-                            dense
-                            subheader
-                        >
-                            <v-list-item-group :color="themeColor">
-                                <v-list-item
-                                    v-for="(item) in userData.socials"
-                                    :key="item.id"
-                                >
-                                    <v-list-item-icon v-if="item.type">
-                                        <v-icon v-text="item.type.icon"></v-icon>
-                                    </v-list-item-icon>
-                                    <v-list-item-content>
-                                        <v-list-item-title v-text="item.social_link"></v-list-item-title>
-                                        <v-list-item-subtitle v-if="item.type"
-                                            v-text="localized(item.type)"></v-list-item-subtitle>
-                                    </v-list-item-content>
-                                    <v-list-item-action>
-                                        <v-icon
-                                            small
-                                            @click="deleteSocial(item.id)"
-                                        >
-                                            mdi-delete
-                                        </v-icon>
-                                    </v-list-item-action>
-                                </v-list-item>
-
-                            </v-list-item-group>
-                        </v-list>
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    {{langMap.company.new_social_item}}
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col cols="md-6" class="pa-1">
-                                                <v-text-field
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
-                                                    v-model="socialForm.social_link"
-                                                    :label="langMap.main.link"
-                                                    dense
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col cols="6" class="pa-1">
-                                                <v-select
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="socialForm.social_type"
-                                                    :items="socialTypes"
-                                                    :label="langMap.main.type"
-                                                    dense
-                                                >
-                                                    <template slot="selection" slot-scope="data">
-                                                        <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
-                                                    </template>
-                                                    <template slot="item" slot-scope="data">
-                                                        <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
-                                                    </template>
-                                                </v-select>
-                                            </v-col>
-                                            <v-btn
-                                                dark
-                                                fab
-                                                right
-                                                bottom
-                                                small
-                                                :color="themeColor"
-                                                @click="submitNewData(userData.id, socialForm, 'addSocial')"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col md="6">
-                <v-card class="elevation-6">
-                    <v-toolbar
-                        dense
-                        :color="themeColor"
-                        dark
-                        flat
-                    >
                         <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.contact_info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
@@ -345,8 +245,16 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
-                                                        v-text="localized(item.type)"></v-list-item-subtitle>
+                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="editPhone(item)"
+                                                    >
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
                                                 <v-list-item-action>
                                                     <v-icon
                                                         small
@@ -368,8 +276,16 @@
                                                         {{item.address_line_2}} {{item.address_line_3}}
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
-                                                        v-text="localized(item.type)"></v-list-item-subtitle>
+                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="editAddress(item)"
+                                                    >
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
                                                 <v-list-item-action>
                                                     <v-icon
                                                         small
@@ -541,6 +457,114 @@
                     </v-card-text>
                 </v-card>
             </v-col>
+            <v-col md="6">
+                <v-card class="elevation-6">
+                    <v-toolbar
+                        dense
+                        :color="themeColor"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.social_info}}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-list
+                            dense
+                            subheader
+                        >
+                            <v-list-item-group :color="themeColor">
+                                <v-list-item
+                                    v-for="(item) in userData.socials"
+                                    :key="item.id"
+                                >
+                                    <v-list-item-icon v-if="item.type">
+                                        <v-icon v-text="item.type.icon"></v-icon>
+                                    </v-list-item-icon>
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="item.social_link"></v-list-item-title>
+                                        <v-list-item-subtitle v-if="item.type"
+                                                              v-text="localized(item.type)"></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-icon
+                                            small
+                                            @click="editSocial(item)"
+                                        >
+                                            mdi-pencil
+                                        </v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-action>
+                                        <v-icon
+                                            small
+                                            @click="deleteSocial(item.id)"
+                                        >
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+
+                            </v-list-item-group>
+                        </v-list>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{langMap.company.new_social_item}}
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-6" class="pa-1">
+                                                <v-text-field
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
+                                                    v-model="socialForm.social_link"
+                                                    :label="langMap.main.link"
+                                                    dense
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="6" class="pa-1">
+                                                <v-select
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="socialForm.social_type"
+                                                    :items="socialTypes"
+                                                    :label="langMap.main.type"
+                                                    dense
+                                                >
+                                                    <template slot="selection" slot-scope="data">
+                                                        <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                    </template>
+                                                    <template slot="item" slot-scope="data">
+                                                        <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                    </template>
+                                                </v-select>
+                                            </v-col>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                small
+                                                :color="themeColor"
+                                                @click="submitNewData(userData.id, socialForm, 'addSocial')"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+            </v-col>
         </v-row>
         <v-row justify="center">
             <v-dialog v-model="rolesDialog" persistent max-width="600px">
@@ -573,6 +597,120 @@
                         <v-spacer></v-spacer>
                         <v-btn color="red" text @click="rolesDialog = false">{{langMap.main.cancel}}</v-btn>
                         <v-btn :color="themeColor" text @click="updateRole">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="updatePhoneDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_phone}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="phoneForm.phone" :label="langMap.main.phone" dense></v-text-field>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-select :color="themeColor" :item-color="themeColor"
+                                              v-model="phoneForm.phone_type" :items="phoneTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updatePhoneDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updatePhoneDlg=false; updatePhone()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="updateSocialDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_social}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="socialForm.social_link" :label="langMap.main.link" dense></v-text-field>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-select :color="themeColor" :item-color="themeColor"
+                                              v-model="socialForm.social_type" :items="socialTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updateSocialDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateSocialDlg=false; updateSocial()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="updateAddressDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_address}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-textarea
+                                        no-resize rows="3" row-height="15"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        v-model="addressForm.address.address"
+                                        label="langMap.main.address" dense>
+                                    </v-textarea>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-select :color="themeColor" :item-color="themeColor"
+                                              v-model="addressForm.address_type" :items="addressTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updateAddressDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateAddressDlg=false; updateAddress()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -631,12 +769,14 @@
                     company_user_id: null
                 },
                 phoneForm: {
+                    id: '',
                     entity_id: '',
                     entity_type: 'App\\User',
                     phone: '',
                     phone_type: ''
                 },
                 addressForm: {
+                    id: '',
                     entity_id: '',
                     entity_type: 'App\\User',
                     address: {
@@ -649,6 +789,7 @@
                     address_type: ''
                 },
                 socialForm: {
+                    id: '',
                     entity_id: '',
                     entity_type: 'App\\User',
                     social_link: '',
@@ -659,7 +800,10 @@
                 socialTypes: [],
                 isCustomersLoading: false,
                 customers: [],
-                countries: []
+                countries: [],
+                updatePhoneDlg: false,
+                updateAddressDlg: false,
+                updateSocialDlg: false
             }
         },
         mounted() {
@@ -772,14 +916,31 @@
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.snackbarMessage = 'Phone update successful'
+                        this.snackbarMessage = this.langMap.company.phone_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.snackbarMessage = 'Phone update error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }
+                });
+            },
+            updatePhone() {
+                axios.patch(`/api/phone/${this.phoneForm.id}`, this.phoneForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.phoneForm.id = '';
+                        this.getUser();
+                        this.snackbarMessage = this.langMap.company.phone_updated;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
                 });
             },
             deletePhone(id) {
@@ -788,11 +949,11 @@
                     if (response.success === true) {
                         this.getUser()
                         this.phoneForm.phone = ''
-                        this.snackbarMessage = 'Phone delete successful'
+                        this.snackbarMessage = this.langMap.company.phone_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.snackbarMessage = 'Phone delete error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }
@@ -809,14 +970,38 @@
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.snackbarMessage = 'Address update successful'
+                        this.snackbarMessage = this.langMap.company.address_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.snackbarMessage = 'Address update error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;
 
+                    }
+                });
+            },
+            updateAddress() {
+                let lines = this.addressForm.address.address.split('\n');
+                this.addressForm.address.address = lines.shift();
+                this.addressForm.address.address_line_2 = lines.shift();
+                this.addressForm.address.address_line_3 = lines.join('\n');
+
+                axios.patch(`/api/address/${this.addressForm.id}`, this.addressForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.addressForm.id = '';
+                        this.addressForm.address.address = '';
+                        this.addressForm.address.address_line_2 = '';
+                        this.addressForm.address.address_line_3 = '';
+                        this.getUser()
+                        this.snackbarMessage = this.langMap.company.address_updated;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -825,11 +1010,11 @@
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.error.push('Delete successful')
+                        this.snackbarMessage = this.langMap.company.address_deleted;
                         this.errorType = 'success'
                         this.alert = true;
                     } else {
-                        this.snackbarMessage = 'Address delete error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;
 
@@ -841,7 +1026,23 @@
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.company.social_created;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
+            },
+            updateSocial() {
+                axios.patch(`/api/social/${this.socialForm.id}`, this.socialForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.socialForm.id = '';
+                        this.getUser()
+                        this.snackbarMessage = this.langMap.company.social_updated;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
@@ -856,7 +1057,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.snackbarMessage = 'Delete successful'
+                        this.snackbarMessage = this.langMap.company.social_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
@@ -954,6 +1155,27 @@
 
                 });
             },
+            editPhone(item) {
+                this.updatePhoneDlg = true;
+
+                this.phoneForm.id = item.id;
+                this.phoneForm.phone = item.phone;
+                this.phoneForm.phone_type = item.type ? item.type.id : 0;
+            },
+            editSocial(item) {
+                this.updateSocialDlg = true;
+
+                this.socialForm.id = item.id;
+                this.socialForm.social_link = item.social_link;
+                this.socialForm.social_type = item.type ? item.type.id : 0;
+            },
+            editAddress(item) {
+                this.updateAddressDlg = true;
+
+                this.addressForm.id = item.id;
+                this.addressForm.address.address = (item.address ? item.address + '\n' : '') + (item.address_line_2 ? item.address_line_2 + '\n' : '') + (item.address_line_3 ? item.address_line_3 : '');
+                this.addressForm.address_type = item.type ? item.type.id : 0;
+            }
         }
     }
 </script>

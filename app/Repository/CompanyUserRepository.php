@@ -7,7 +7,7 @@ namespace App\Repository;
 use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
-use App\CompanySettings;
+use App\Settings;
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
@@ -89,7 +89,7 @@ class CompanyUserRepository
         $request['user_id'] = $user->id;
         $isValid = $this->validate($request);
         if ($isValid === true) {
-            $companySettings = CompanySettings::where('company_id', $request['company_id'])->firstOrCreate();
+            $companySettings = Settings::where('company_id', $request['company_id'])->firstOrCreate();
             if (!empty($companySettings->data['timezone'])) {
                 $user->timezone_id = $companySettings->data['timezone'];
                 $user->save();
