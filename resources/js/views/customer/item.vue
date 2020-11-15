@@ -50,6 +50,13 @@
                                 dense
                             ></v-text-field>
                         </v-form>
+                        <v-checkbox
+                            :label="this.$store.state.lang.lang_map.main.give_access"
+                            color="success"
+                            v-model="client.is_active"
+                            @change="changeIsActiveClient(client)"
+                            hide-details
+                        ></v-checkbox>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
@@ -1178,6 +1185,24 @@
                     if (response.success === true) {
                         this.getClient()
                         this.snackbarMessage = this.langMap.company.address_deleted;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
+            },
+            changeIsActiveClient(item) {
+                let request = {}
+                request.id = item.id
+                request.is_active = item.is_active
+                axios.post(`/api/client/is_active`, request).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient()
+                        this.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated'
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
