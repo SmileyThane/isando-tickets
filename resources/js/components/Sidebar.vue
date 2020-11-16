@@ -4,7 +4,7 @@
         :mini-variant="localDrawer"
         app
     >
-        <v-list-item v-if="this.navbarStyle == 2 && this.companyLogo">
+        <v-list-item  class="ml-4" v-if="this.navbarStyle == 2 && this.companyLogo">
             <v-list-item-icon>
                 <v-img contain max-height="3em" max-width="30" :src="companyLogo"></v-img>
             </v-list-item-icon>
@@ -16,7 +16,7 @@
                 </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
-        <v-list-item v-else-if="this.navbarStyle == 3 && this.companyLogo">
+        <v-list-item  class="ml-4" v-else-if="this.navbarStyle == 3 && this.companyLogo">
             <v-list-item-content>
                 <v-list-item-icon>
                     <v-img contain :src="companyLogo"></v-img>
@@ -26,14 +26,14 @@
                 </v-list-item-title>
             </v-list-item-content>
         </v-list-item>
-        <v-list-item v-else-if="this.navbarStyle == 4 && this.companyLogo">
+        <v-list-item  class="ml-4" v-else-if="this.navbarStyle == 4 && this.companyLogo">
             <v-list-item-content>
                 <v-list-item-icon>
                     <v-img contain :src="companyLogo"></v-img>
                 </v-list-item-icon>
             </v-list-item-content>
         </v-list-item>
-        <v-list-item v-else>
+        <v-list-item  class="ml-4" v-else>
             <v-list-item-content>
                 <v-list-item-title class="title">
                     {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
@@ -42,7 +42,7 @@
         </v-list-item>
         <v-divider>&nbsp;</v-divider>
         <v-list dense>
-            <v-list-item v-show="localDrawer"
+            <v-list-item  class="ml-4" v-show="localDrawer"
                          @click.stop="localDrawer = !localDrawer">
                 <v-list-item-action>
                     <v-icon> mdi-menu</v-icon>
@@ -73,7 +73,15 @@
                         <v-list-item-title>{{customers}} - CRM</v-list-item-title>
                     </v-list-item-content>
                 </template>
-                <v-list-item link to="/customer" v-if="checkRoleByIds([1,2,3])">
+                <v-list-item  class="ml-4" link to="/all" v-if="checkRoleByIds([1,2,3])">
+                    <v-list-item-action>
+                        <v-icon>mdi-contacts-outline</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.all}}</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item  class="ml-4" link to="/customer" v-if="checkRoleByIds([1,2,3])">
                     <v-list-item-action>
                         <v-icon>mdi-factory</v-icon>
                     </v-list-item-action>
@@ -81,7 +89,7 @@
                         <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.customers}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/employee" v-if="checkRoleByIds([1,2,3])">
+                <v-list-item  class="ml-4" link to="/employee" v-if="checkRoleByIds([1,2,3])">
                     <v-list-item-action>
                         <v-icon>mdi-badge-account-horizontal-outline</v-icon>
                     </v-list-item-action>
@@ -89,7 +97,7 @@
                         <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.individuals}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/product">
+                <v-list-item  class="ml-4" link to="/product">
                     <v-list-item-action>
                         <v-icon> mdi-monitor-clean</v-icon>
                     </v-list-item-action>
@@ -114,7 +122,7 @@
                         <v-list-item-title>{{ticket}}</v-list-item-title>
                     </v-list-item-content>
                 </template>
-                <v-list-item link to="/tickets">
+                <v-list-item  class="ml-4" link to="/tickets">
                     <v-list-item-action>
                         <v-icon>mdi-format-list-numbered</v-icon>
                     </v-list-item-action>
@@ -124,7 +132,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/ticket_create">
+                <v-list-item  class="ml-4" link to="/ticket_create">
                     <v-list-item-action>
                         <v-icon>mdi-shape-rectangle-plus</v-icon>
                     </v-list-item-action>
@@ -133,7 +141,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/">
+                <v-list-item  class="ml-4" link to="/">
                     <v-list-item-action>
                         <v-icon>mdi-email-send-outline</v-icon>
                     </v-list-item-action>
@@ -143,7 +151,7 @@
                     </v-list-item-content>
                 </v-list-item>
             </v-list-group>
-            <v-list-item link to="/">
+            <v-list-item  class="ml-4" link to="/">
                 <v-list-item-action>
                     <v-icon>mdi-book-open-page-variant</v-icon>
                 </v-list-item-action>
@@ -169,7 +177,7 @@
                         <v-list-item-title>{{settings}}</v-list-item-title>
                     </v-list-item-content>
                 </template>
-                <v-list-item link to="/company">
+                <v-list-item  class="ml-4" link to="/company">
                     <v-list-item-action>
                         <v-icon>mdi-office-building</v-icon>
                     </v-list-item-action>
@@ -177,7 +185,7 @@
                         <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.companies}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/team" v-if="checkRoleByIds([1,2,3])">
+                <v-list-item  class="ml-4" link to="/team" v-if="checkRoleByIds([1,2,3])">
                     <v-list-item-action>
                         <v-icon>mdi-account-box-multiple-outline</v-icon>
                     </v-list-item-action>
@@ -185,7 +193,7 @@
                         <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.teams}}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/settings/system" v-if="checkRoleByIds([1,2,3])">
+                <v-list-item  class="ml-4" link to="/settings/system" v-if="checkRoleByIds([1,2,3])">
                     <v-list-item-action>
                         <v-icon>mdi-folder-cog-outline</v-icon>
                     </v-list-item-action>
@@ -194,7 +202,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-                <v-list-item link to="/" v-if="checkRoleByIds([1,2,3])">
+                <v-list-item  class="ml-4" link to="/" v-if="checkRoleByIds([1,2,3])">
                     <v-list-item-action>
                         <v-icon>mdi-cogs</v-icon>
                     </v-list-item-action>

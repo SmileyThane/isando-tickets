@@ -40,7 +40,8 @@ class LanguageSeeder extends Seeder
     "general_settings": "General settings",
     "home": "Home",
     "profile": "Profile",
-    "logout": "Logout"
+    "logout": "Logout",
+    "all": "All"
   },
   "ticket_statuses": {
     "new" : "New",
@@ -365,7 +366,8 @@ class LanguageSeeder extends Seeder
     "general_settings": "Allgemeine Einstellungen",
     "home": "Home",
     "profile": "Profil",
-    "logout": "Logout"
+    "logout": "Logout",
+    "all": "Alle"
   },
   "ticket_statuses": {
   "new" : "Neu",
@@ -408,7 +410,19 @@ class LanguageSeeder extends Seeder
   "new_social_item": "Neuer Eintrag",
   "update_info": "Updateinformation",
   "user_info": "Benutzerinformation",
-  "user": "Benutzer"
+  "user": "Benutzer",
+  "update_phone": "Telefon aktualisieren",
+     "phone_created": "Telefon hinzugefügt",
+     "phone_updated": "Telefon aktualisiert",
+     "phone_deleted": "Telefon gelöscht",
+     "update_address": "Update address",
+     "address_created": "Adresse hinzugefügt",
+     "address_updated": "Adresse aktualisiert",
+     "address_deleted": "Adresse gelöscht",
+     "update_social": "Social Link aktualisieren",
+     "social_created": "Social Link hinzugefügt",
+     "social_updated": "Social Link aktualisiert",
+     "social_deleted": "Sozialer Link gelöscht"
   },
   "customer": {
   "customer": "Firma",
