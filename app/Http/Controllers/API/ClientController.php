@@ -104,4 +104,10 @@ class ClientController extends Controller
         $result = $this->clientRepo->detach($id);
         return self::showResponse($result);
     }
+
+    public function changeIsActive(Request $request)
+    {
+        $result = $this->clientRepo->changeIsActive($request);
+        return self::showResponse($result);
+    }
 }

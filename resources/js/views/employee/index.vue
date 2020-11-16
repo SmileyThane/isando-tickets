@@ -2,9 +2,9 @@
     <v-container fluid>
         <v-snackbar
             :bottom="true"
+            :color="actionColor"
             :right="true"
             v-model="snackbar"
-            :color="actionColor"
         >
             {{ snackbarMessage }}
         </v-snackbar>
@@ -25,46 +25,46 @@
                                         <div class="col-md-4">
                                             <v-text-field
                                                 :color="themeColor"
+                                                :error-messages="employeeErrors.name"
                                                 :label="langMap.main.name"
                                                 name="name"
+                                                required
                                                 type="text"
                                                 v-model="employeeForm.name"
-                                                :error-messages="employeeErrors.name"
-                                                required
                                             ></v-text-field>
                                         </div>
                                         <div class="col-md-4">
                                             <v-text-field
                                                 :color="themeColor"
+                                                :error-messages="employeeErrors.email"
                                                 :label="langMap.main.email"
                                                 name="email"
+                                                required
                                                 type="email"
                                                 v-model="employeeForm.email"
-                                                :error-messages="employeeErrors.email"
-                                                required
                                             ></v-text-field>
                                         </div>
                                         <div class="col-md-4">
                                             <v-autocomplete
-                                                v-model="employeeForm.client_id"
-                                                :items="customers"
-                                                :error-messages="employeeErrors.client_id"
                                                 :color="themeColor"
+                                                :error-messages="employeeErrors.client_id"
+                                                :items="customers"
+                                                :label="langMap.customer.customer"
+                                                :placeholder="this.$store.state.lang.lang_map.main.search"
                                                 hide-no-data
                                                 hide-selected
                                                 item-text="name"
                                                 item-value="id"
-                                                :label="langMap.customer.customer"
-                                                :placeholder="this.$store.state.lang.lang_map.main.search"
+                                                v-model="employeeForm.client_id"
                                             ></v-autocomplete>
                                         </div>
                                         <v-btn
+                                            :color="themeColor"
+                                            @click="addEmployee"
+                                            bottom
                                             dark
                                             fab
                                             right
-                                            bottom
-                                            :color="themeColor"
-                                            @click="addEmployee"
                                         >
                                             <v-icon>mdi-plus</v-icon>
                                         </v-btn>
@@ -77,45 +77,46 @@
 
                     <div class="card-body">
                         <v-data-table
-                            show-expand
+                            :expanded.sync="expanded"
+                            :footer-props="footerProps"
                             :headers="headers"
                             :items="contacts"
-                            :single-expand="singleExpand"
-                            :expanded.sync="expanded"
+                            :loading="loading"
+                            :loading-text="langMap.main.loading"
                             :options.sync="options"
                             :server-items-length="totalEmployees"
-                            :loading="loading"
-                            :footer-props="footerProps"
+                            :single-expand="singleExpand"
+                            @click:row="showItem"
                             class="elevation-1"
                             hide-default-footer
-                            :loading-text="langMap.main.loading"
-                            @click:row="showItem"
+                            show-expand
                         >
                             <template v-slot:top>
                                 <v-row>
-                                    <v-col sm="12" md="10">
-                                        <v-text-field @input="getEmployees" v-model="employeesSearch" :color="themeColor"
-                                                      :label="langMap.main.search" class="mx-4"></v-text-field>
+                                    <v-col md="10" sm="12">
+                                        <v-text-field :color="themeColor" :label="langMap.main.search"
+                                                      @input="getEmployees"
+                                                      class="mx-4" v-model="employeesSearch"></v-text-field>
                                     </v-col>
-                                    <v-col sm="12" md="2">
+                                    <v-col md="2" sm="12">
                                         <v-select
-                                            class="mx-4"
                                             :color="themeColor"
                                             :item-color="themeColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             @change="updateItemsCount"
+                                            class="mx-4"
                                         ></v-select>
                                     </v-col>
                                 </v-row>
                             </template>
                             <template v-slot:footer>
                                 <v-pagination :color="themeColor"
-                                              v-model="options.page"
                                               :length="lastPage"
-                                              circle
                                               :page="options.page"
                                               :total-visible="5"
+                                              circle
+                                              v-model="options.page"
                                 >
                                 </v-pagination>
                             </template>
@@ -126,14 +127,22 @@
                                 </div>
                             </template>
                             <template v-slot:item.employee.user_data.is_active="{ item }">
-                                <div @click="showItem(item)" class="justify-center" v-if="item">{{
-                                    item.employee.user_data.is_active === 1 ? 'yes' : 'no' }}
-                                </div>
+                                <v-icon @click="showItem(item)" class="justify-center" v-if="item">
+                                    {{
+                                    item.employee.user_data.is_active === 1 ?
+                                    'mdi-check-circle-outline' :
+                                    'mdi-cancel'
+                                    }}
+                                </v-icon>
                             </template>
                             <template v-slot:item.employee.user_data.status="{ item }">
-                                <div @click="showItem(item)" class="justify-center" v-if="item">{{
-                                    item.employee.user_data.status === 1 ? 'Active' : 'Inactive' }}
-                                </div>
+                                <v-icon @click="showItem(item)" class="justify-center" v-if="item">
+                                    {{
+                                        item.employee.user_data.status === 1 ?
+                                        'mdi-check-circle-outline' :
+                                        'mdi-cancel'
+                                    }}
+                                </v-icon>
                             </template>
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
@@ -143,9 +152,9 @@
                                     <p><strong> {{langMap.main.actions}}:</strong></p>
                                     <p>
                                         <v-btn
+                                            @click="showItem(item)"
                                             color="grey"
                                             dark
-                                            @click="showItem(item)"
                                             fab
                                             x-small
                                         >
@@ -156,11 +165,11 @@
                                         </v-btn>
 
                                         <v-btn
+                                            @click="removeEmployeeProcess(item)"
                                             color="error"
                                             dark
                                             fab
                                             x-small
-                                            @click="removeEmployeeProcess(item)"
                                         >
                                             <v-icon>
                                                 mdi-delete
@@ -175,15 +184,15 @@
             </div>
         </div>
         <template>
-            <v-dialog v-model="removeEmployeeDialog" persistent max-width="480">
+            <v-dialog max-width="480" persistent v-model="removeEmployeeDialog">
                 <v-card>
                     <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
+                        <v-btn @click="removeEmployeeDialog = false" color="grey darken-1" text>
                             {{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">
+                        <v-btn @click="removeEmployee(selectedEmployeeId)" color="red darken-1" text>
                             {{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
@@ -233,7 +242,10 @@
                     },
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'employee.user_data.name'},
                     {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
-                    {text: `${this.$store.state.lang.lang_map.individuals.is_active}`, value: 'employee.user_data.is_active'},
+                    {
+                        text: `${this.$store.state.lang.lang_map.individuals.is_active}`,
+                        value: 'employee.user_data.is_active'
+                    },
                     {text: `${this.$store.state.lang.lang_map.individuals.status}`, value: 'employee.user_data.status'},
                     {text: `${this.$store.state.lang.lang_map.main.client}`, value: 'clients.name'},
                 ],

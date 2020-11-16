@@ -196,4 +196,16 @@ class ClientRepository
         return $result->paginate($request->per_page ?? $result->count());
     }
 
+    public function changeIsActive(Request $request): bool
+    {
+        $result = false;
+        try {
+            $client = Client::find($request->id);
+            $client->is_active = $request->is_active;
+            $client->save();
+            $result = true;
+        } catch (\Throwable $th) {
+        }
+        return $result;
+    }
 }

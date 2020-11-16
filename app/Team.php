@@ -17,6 +17,6 @@ class Team extends Model
 
     public function employees()
     {
-        return $this->hasMany(TeamCompanyUser::class, 'team_id', 'id');
+        return $this->hasMany(TeamCompanyUser::class, 'team_id', 'id')->has('employee.userData');
     }
 }

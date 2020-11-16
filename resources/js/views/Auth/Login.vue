@@ -54,14 +54,12 @@
                                     v-model="password"
                                 ></v-text-field>
                                 <br>
-                                <v-tooltip :key="i"
-                                           bottom
-                                           v-for="i in 3"
+                                <v-tooltip
+                                    bottom
                                 >
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn
                                             :color="themeColor"
-                                            class="ma-2"
                                             outlined
                                             style="max-width: 36px; min-width: 36px;"
 
