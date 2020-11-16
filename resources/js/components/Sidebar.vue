@@ -47,6 +47,9 @@
                 <v-list-item-action>
                     <v-icon> mdi-menu</v-icon>
                 </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title></v-list-item-title>
+                </v-list-item-content>
             </v-list-item>
             <v-list-item link to="/home">
                 <v-list-item-action>
@@ -57,7 +60,7 @@
                 </v-list-item-content>
             </v-list-item>
             <v-divider>&nbsp;</v-divider>
-            <v-list-group class="ml-2"
+            <v-list-group
                           prepend-icon="mdi-account"
                           :value="sidebarGroups"
                           :color="themeColor"
@@ -98,7 +101,7 @@
         </v-list>
         <v-divider>&nbsp;</v-divider>
         <v-list dense>
-            <v-list-group class="ml-2"
+            <v-list-group
                           prepend-icon="mdi-ticket-account"
                           :value="sidebarGroups"
                           :color="themeColor"
@@ -151,7 +154,7 @@
         </v-list>
         <v-divider>&nbsp;</v-divider>
         <v-list dense>
-            <v-list-group class="ml-2"
+            <v-list-group
                           prepend-icon="mdi-cog"
                           :value="sidebarGroups"
                           :color="themeColor"
