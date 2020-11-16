@@ -24,9 +24,21 @@ class ClientController extends Controller
         $this->companyUserRepo = $companyUserRepository;
     }
 
+    public function all(Request $request)
+    {
+        $all = $this->clientRepo->all($request);
+        return self::showResponse(true, $all);
+    }
+
+    public function clients(Request $request)
+    {
+        $clients = $this->clientRepo->clients($request);
+        return self::showResponse(true, $clients);
+    }
+
     public function get(Request $request)
     {
-        $clients = $this->clientRepo->all($request);
+        $clients = $this->clientRepo->clients($request);
         return self::showResponse(true, $clients);
     }
 

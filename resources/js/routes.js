@@ -15,7 +15,7 @@ import Login from './views/Auth/Login'
 import Register from './views/Auth/Register'
 import Profile from './views/Auth/Profile'
 import SystemSettings from './views/settings/system'
-
+import AllCustomers from './views/customer/all'
 
 export default [
     {
@@ -93,6 +93,14 @@ export default [
             requiresAuth: true,
         },
         component: Customer
+    },
+    {
+        path: '/all',
+        name: 'all',
+        meta: {
+            requiresAuth: true,
+        },
+        component: AllCustomers
     },
     {
         path: '/team',

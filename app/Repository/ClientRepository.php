@@ -17,6 +17,13 @@ use Illuminate\Validation\Rule;
 class ClientRepository
 {
 
+    protected $companyUserRepo;
+
+    public function __construct(CompanyUserRepository $companyUserRepository)
+    {
+        $this->companyUserRepo = $companyUserRepository;
+    }
+
     public function validate($request, $new = true)
     {
         $params = [
@@ -40,7 +47,7 @@ class ClientRepository
         return true;
     }
 
-    public function all($request)
+    public function clients($request, $forceReturnAll = false)
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
@@ -50,15 +57,20 @@ class ClientRepository
         } else {
             $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
         }
-        if ($request->search !== '') {
+        if ($request->search) {
             $clients->where(
                 function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('description', 'like', '%' . $request->search . '%');
+                    $query->where('name', 'like', $request->search . '%')
+                        ->orWhere('description', 'like', $request->search . '%');
                 }
             );
         }
-        return $clients->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $clients->count());
+        $clients = $clients->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
+        if ($forceReturnAll) {
+            return $clients->get();
+        } else {
+            return $clients->paginate($request->per_page ?? $clients->count());
+        }
     }
 
     public function suppliers()
@@ -141,5 +153,47 @@ class ClientRepository
         return $result;
     }
 
+    public function all($request)
+    {
+        $clients = $this->clients($request, true);
+        $employee = $this->companyUserRepo->all($request, true);
+
+        $result = $clients->merge($employee);
+
+        $sort = function ($item, $key) use ($request) {
+            $field = $request->sort_by ?? 'name';
+            if ($item instanceof Client) {
+                switch ($field) {
+                    case 'id':
+                        return $item->id;
+                    case 'name':
+                        return $item->name;
+                    case 'description':
+                        return $item->description;
+                    case 'email':
+                        return '';
+                }
+            } else {
+                switch ($field) {
+                    case 'id':
+                        return $item->employee->userData->id;
+                    case 'name':
+                        return $item->employee->userData->full_name;
+                    case 'description':
+                        return $item->clients->name;
+                    case 'email':
+                        return $item->employee->userData->email;
+                }
+            }
+        };
+
+        if ($request->sort_val === 'false') {
+            $result = $result->sortBy($sort);
+        } else {
+            $result = $result->sortByDesc($sort);
+        }
+
+        return $result->paginate($request->per_page ?? $result->count());
+    }
 
 }

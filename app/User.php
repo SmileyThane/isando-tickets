@@ -81,7 +81,7 @@ class User extends Authenticatable
 
     public function getFullNameAttribute()
     {
-        return $this->name . ' ' . $this->surname;
+        return trim($this->name . ' ' . $this->surname);
     }
 
     public function settings(): HasOne
