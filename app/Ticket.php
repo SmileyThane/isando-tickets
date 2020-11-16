@@ -24,7 +24,7 @@ class Ticket extends Model
         static::creating(function ($ticket) {
             $last = Ticket::where('to_entity_type', $ticket->to_entity_type)
                 ->where('to_entity_id', $ticket->to_entity_id)
-                ->whereDate('created_at', '=', date('Y-m-d'))->max('sequence');
+                ->whereDate('created_at', date('Y-m-d'))->count();
             $ticket->sequence = $last + 1;
         });
     }

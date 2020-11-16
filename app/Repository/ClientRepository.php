@@ -155,15 +155,16 @@ class ClientRepository
 
     public function all($request)
     {
+        $orderBy = $request->sort_by ?? 'name';
+        $request->sort_by = null;
         $clients = $this->clients($request, true);
         $employee = $this->companyUserRepo->all($request, true);
 
         $result = $clients->merge($employee);
 
-        $sort = function ($item, $key) use ($request) {
-            $field = $request->sort_by ?? 'name';
+        $orderFunc = function ($item, $key) use ($orderBy) {
             if ($item instanceof Client) {
-                switch ($field) {
+                switch ($orderBy) {
                     case 'id':
                         return $item->id;
                     case 'name':
@@ -174,7 +175,7 @@ class ClientRepository
                         return '';
                 }
             } else {
-                switch ($field) {
+                switch ($orderBy) {
                     case 'id':
                         return $item->employee->userData->id;
                     case 'name':
@@ -188,9 +189,9 @@ class ClientRepository
         };
 
         if ($request->sort_val === 'false') {
-            $result = $result->sortBy($sort);
+            $result = $result->sortBy($orderFunc);
         } else {
-            $result = $result->sortByDesc($sort);
+            $result = $result->sortByDesc($orderFunc);
         }
 
         return $result->paginate($request->per_page ?? $result->count());
