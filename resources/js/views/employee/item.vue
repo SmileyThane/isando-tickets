@@ -192,6 +192,14 @@
                                                     :placeholder="this.$store.state.lang.lang_map.main.search"
                                                 ></v-autocomplete>
                                             </v-col>
+                                            <v-text-field
+                                                :color="themeColor"
+                                                :label="this.$store.state.lang.lang_map.main.description"
+                                                type="text"
+                                                v-model="employeeForm.description"
+                                                class="col-md-12"
+                                                dense
+                                            ></v-text-field>
                                             <v-btn
                                                 dark
                                                 fab
@@ -729,6 +737,7 @@
                 headers: [
                     {text: '', value: 'data-table-expand'},
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'clients.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description' },
                     // {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
                 footerProps: {
@@ -766,7 +775,8 @@
                 rolesDialog: false,
                 employeeForm: {
                     client_id: null,
-                    company_user_id: null
+                    company_user_id: null,
+                    description: ''
                 },
                 phoneForm: {
                     id: '',
