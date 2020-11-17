@@ -134,7 +134,9 @@ class ClientRepository
     {
         ClientCompanyUser::firstOrCreate(
             ['client_id' => $request->client_id,
-                'company_user_id' => $request->company_user_id]
+                'company_user_id' => $request->company_user_id
+            ],
+            ['description' => $request->description]
         );
         return true;
     }
