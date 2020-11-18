@@ -147,11 +147,12 @@ class CompanyUserRepository
         return true;
     }
 
-    public function create($companyId, $userId): CompanyUser
+    public function create($companyId, $userId, $description = null): CompanyUser
     {
         $companyUser = new CompanyUser();
         $companyUser->user_id = $userId;
         $companyUser->company_id = $companyId;
+        $companyUser->description = $description;
         $companyUser->save();
         return $companyUser;
     }
