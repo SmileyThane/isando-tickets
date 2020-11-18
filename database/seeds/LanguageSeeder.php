@@ -40,7 +40,8 @@ class LanguageSeeder extends Seeder
     "general_settings": "General settings",
     "home": "Home",
     "profile": "Profile",
-    "logout": "Logout"
+    "logout": "Logout",
+    "all": "All"
   },
   "ticket_statuses": {
     "new" : "New",
@@ -107,6 +108,7 @@ class LanguageSeeder extends Seeder
     "customer": "Customer",
     "add_new": "Add new customer",
     "supplier": "Supplier",
+    "active": "Active",
     "product_info": "Product info",
     "show_product": "Show product"
   },
@@ -124,6 +126,7 @@ class LanguageSeeder extends Seeder
   "individuals": {
     "add_new": "Add new contact",
     "info": "User info",
+    "active": "Active",
     "contact_info": "Contact info",
     "assigned_companies": "Linked companies",
     "new_customer": "Link to company",
@@ -364,7 +367,8 @@ class LanguageSeeder extends Seeder
     "general_settings": "Allgemeine Einstellungen",
     "home": "Home",
     "profile": "Profil",
-    "logout": "Logout"
+    "logout": "Logout",
+    "all": "Alle"
   },
   "ticket_statuses": {
   "new" : "Neu",
@@ -407,12 +411,25 @@ class LanguageSeeder extends Seeder
   "new_social_item": "Neuer Eintrag",
   "update_info": "Updateinformation",
   "user_info": "Benutzerinformation",
-  "user": "Benutzer"
+  "user": "Benutzer",
+  "update_phone": "Telefon aktualisieren",
+     "phone_created": "Telefon hinzugefügt",
+     "phone_updated": "Telefon aktualisiert",
+     "phone_deleted": "Telefon gelöscht",
+     "update_address": "Update address",
+     "address_created": "Adresse hinzugefügt",
+     "address_updated": "Adresse aktualisiert",
+     "address_deleted": "Adresse gelöscht",
+     "update_social": "Social Link aktualisieren",
+     "social_created": "Social Link hinzugefügt",
+     "social_updated": "Social Link aktualisiert",
+     "social_deleted": "Sozialer Link gelöscht"
   },
   "customer": {
   "customer": "Firma",
   "add_new": "Neuer Kunden hinzufügen",
   "supplier": "Lieferant",
+  "active": "Aktiv",
   "show_product": "Produkt anzeigen"
   },
   "product": {
@@ -429,6 +446,7 @@ class LanguageSeeder extends Seeder
   "individuals": {
   "add_new": "Neuen Kontakt hinzufügen",
   "info": "Allgemeines",
+  "active": "Aktiv",
   "contact_info": "Zusätzliche Infos",
   "assigned_companies": "Kontakte",
   "new_customer": "Kontakt hinzufügen",

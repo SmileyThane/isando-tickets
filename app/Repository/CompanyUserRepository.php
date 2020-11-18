@@ -31,7 +31,7 @@ class CompanyUserRepository
         $this->roleRepo = $roleRepository;
     }
 
-    public function all(Request $request)
+    public function all(Request $request, $forceReturnAll = false)
     {
         $employee = Auth::user()->employee;
         $clientIds = $employee->hasRole(Role::COMPANY_CLIENT) ? null :
@@ -40,20 +40,30 @@ class CompanyUserRepository
                 'supplier_id' => $employee->company_id
             ])->get()->pluck('id')->toArray();
         $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds);
-        if ($request->search !== '') {
+        if ($request->search) {
             $clientCompanyUsers->whereHas(
                 'employee.userData',
                 function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('surname', 'like', '%' . $request->search . '%')
-                        ->orWhere('email', 'like', '%' . $request->search . '%');
+                    $query->where('name', 'like', $request->search . '%')
+                        ->orWhere('surname', 'like', $request->search . '%')
+                        ->orWhere('email', 'like', $request->search . '%');
                 }
             );
         }
-        return $clientCompanyUsers
-            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
-            ->with('employee.userData', 'clients')
-            ->paginate($request->per_page ?? $clientCompanyUsers->count());
+
+        if ($request->sort_by && strpos($request->sort_by, '.')) {
+            $request->sort_by = substr($request->sort_by,strrpos($request->sort_by, '.') + 1);
+        }
+        $clientCompanyUsers = $clientCompanyUsers->with(['employee.userData' => function ($query) use ($request) {
+            $query->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
+            },
+            'clients']);
+
+        if ($forceReturnAll) {
+            return $clientCompanyUsers->get();
+        } else {
+            return $clientCompanyUsers->paginate($request->per_page ?? $clientCompanyUsers->count());
+        }
     }
 
     public function find($id)
@@ -137,11 +147,12 @@ class CompanyUserRepository
         return true;
     }
 
-    public function create($companyId, $userId): CompanyUser
+    public function create($companyId, $userId, $description = null): CompanyUser
     {
         $companyUser = new CompanyUser();
         $companyUser->user_id = $userId;
         $companyUser->company_id = $companyId;
+        $companyUser->description = $description;
         $companyUser->save();
         return $companyUser;
     }

@@ -26,9 +26,10 @@ class UserRepository
             'password' => 'sometimes|min:8',
         ];
         if ($new === true && $request['email'] !== '[no_email]') {
+            $user = User::where(['email' => $request['email'], 'is_active' => 1])->first();
             $params['email'] = [
                 'required',
-                Rule::unique('users')->ignore(Auth::id()),
+                Rule::unique('users')->ignore($user ? $user->id : null),
             ];
         }
         $validator = Validator::make($request->all(), $params);

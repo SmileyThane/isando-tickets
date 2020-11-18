@@ -567,8 +567,7 @@
                                 <v-list-item>
                                     <v-list-item-content>
                                         <span class="text-left" style="font-weight: bold;">
-                                            {{answer.employee.user_data.name}}
-                                            {{answer.employee.user_data.surname}}
+                                            {{answer.employee.user_data.full_name}}
                                             {{answer.created_at_time !== '' ? answer.created_at_time :
                                             answer.created_at}}:
                                         </span>
@@ -630,8 +629,7 @@
                                     <v-list-item>
                                         <v-list-item-content>
                                             <span class="text-left" style="font-weight: bold;">
-                                                {{answer.employee.user_data.name}}
-                                                {{answer.employee.user_data.surname}}
+                                                {{answer.employee.user_data.full_name}}
                                                 {{answer.created_at_time !== '' ? answer.created_at_time :
                                                 answer.created_at}} - {{ticket.name}}:
                                             </span>
@@ -698,8 +696,7 @@
                             <span>
                                  <strong>Reported by: </strong>
                                  <span class="float-md-right" v-if="ticket.contact !== null">
-                                     {{ ticket.contact.user_data.name}}
-                                     {{ ticket.contact.user_data.surname}}
+                                     {{ ticket.contact.user_data.full_name}}
                                   </span>
                                 <br v-if="ticket.contact !== null">
                                   <span class="float-md-right">
@@ -816,8 +813,7 @@
                                 <span v-if="ticket.assigned_person !== null">
                                 <strong>{{langMap.team.members}}: </strong>
                                     <span class="float-md-right">
-                                        {{ ticket.assigned_person.user_data.name}}
-                                        {{ ticket.assigned_person.user_data.surname}}
+                                        {{ ticket.assigned_person.user_data.full_name}}
                                     </span>
                                 </span>
                             </span>
@@ -855,10 +851,16 @@
                                     :items="employees"
                                     :label="langMap.team.members"
                                     dense
-                                    item-text="employee.user_data.email"
                                     item-value="employee.id"
                                     v-model="ticket.to_company_user_id"
-                                ></v-autocomplete>
+                                >
+                                    <template v-slot:selection="data">
+                                        {{data.item.employee.user_data.full_name}} ({{data.item.employee.user_data.email}})
+                                    </template>
+                                    <template v-slot:item="data">
+                                        {{data.item.employee.user_data.full_name}} ({{data.item.employee.user_data.email}})
+                                    </template>
+                                </v-autocomplete>
                                 <v-btn :color="themeColor"
                                        @click.native.stop="updateTicket"
                                        class="ma-2"

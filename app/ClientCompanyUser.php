@@ -9,7 +9,7 @@ class ClientCompanyUser extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['id', 'client_id', 'company_user_id'];
+    protected $fillable = ['id', 'client_id', 'company_user_id', 'description'];
     protected $hidden = ['updated_at', 'created_at'];
 
     public function clients()

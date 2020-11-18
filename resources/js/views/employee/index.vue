@@ -240,7 +240,7 @@
                         align: 'start',
                         value: 'id',
                     },
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'employee'},
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'employee.user_data.name'},
                     {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
                     {
                         text: `${this.$store.state.lang.lang_map.individuals.is_active}`,

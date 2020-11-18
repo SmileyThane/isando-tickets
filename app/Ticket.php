@@ -21,11 +21,12 @@ class Ticket extends Model
 
     protected static function booted()
     {
-        static::creating(function ($ticket) {
+        static::created(function ($ticket) {
             $last = Ticket::where('to_entity_type', $ticket->to_entity_type)
                 ->where('to_entity_id', $ticket->to_entity_id)
-                ->whereDate('created_at', '=', date('Y-m-d'))->max('sequence');
-            $ticket->sequence = $last + 1;
+                ->whereDate('created_at', date('Y-m-d'))->count();
+            $ticket->sequence = $last;
+            $ticket->save();
         });
     }
 
@@ -181,6 +182,6 @@ class Ticket extends Model
 
         // prepare suffix for PHP
         $suffix = '%0' . strlen($suffix) . 'd';
-        return $prefix . $delim1 . date($date) . $delim2 . sprintf($suffix, $this->sequence);
+        return $prefix . $delim1 . date($date, strtotime($this->attributes['created_at'])) . $delim2 . sprintf($suffix, $this->sequence);
     }
 }

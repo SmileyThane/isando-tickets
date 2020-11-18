@@ -77,8 +77,7 @@
             </template>
             <template v-slot:item.assigned_person="{ item }">
                 <div @click="showItem(item)" class="justify-center" v-if="item.assigned_person">{{
-                    item.assigned_person.user_data.name }} {{
-                    item.assigned_person.user_data.surname }}
+                    item.assigned_person.user_data.full_name }}
                 </div>
             </template>
 <!--            <template v-slot:item.actions="{ item }">-->
@@ -90,7 +89,7 @@
                         &nbsp;
                     </v-spacer>
                     <h3>{{ item.number }}</h3>
-                    <p><strong>{{langMap.ticket.contact_name}}:</strong> {{ item.contact ? item.contact.user_data.name :
+                    <p><strong>{{langMap.ticket.contact_name}}:</strong> {{ item.contact ? item.contact.user_data.full_name :
                         '' }}</p>
                     <p><strong>{{langMap.ticket.contact_email}}:</strong> {{ item.contact ? item.contact.user_data.email
                         : '' }}</p>

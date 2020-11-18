@@ -96,15 +96,24 @@
                                     readonly
                                     dense
                                 ></v-text-field>
+                                <v-checkbox
+                                    class="col-md-6"
+                                    :label="this.$store.state.lang.lang_map.individuals.active"
+                                    color="success"
+                                    v-model="userData.status"
+                                    @change="updateUser"
+                                    hide-details
+                                />
+                                <v-checkbox
+                                    class="col-md-6"
+                                    :label="this.$store.state.lang.lang_map.main.give_access"
+                                    color="success"
+                                    v-model="userData.is_active"
+                                    @change="changeIsAcccesed(userData)"
+                                    hide-details
+                                />
                             </v-row>
                         </v-form>
-                        <v-checkbox
-                            :label="this.$store.state.lang.lang_map.main.give_access"
-                            color="success"
-                            v-model="userData.is_active"
-                            @change="changeIsActive(userData)"
-                            hide-details
-                        ></v-checkbox>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -192,6 +201,14 @@
                                                     :placeholder="this.$store.state.lang.lang_map.main.search"
                                                 ></v-autocomplete>
                                             </v-col>
+                                            <v-text-field
+                                                :color="themeColor"
+                                                :label="this.$store.state.lang.lang_map.main.description"
+                                                type="text"
+                                                v-model="employeeForm.description"
+                                                class="col-md-12"
+                                                dense
+                                            ></v-text-field>
                                             <v-btn
                                                 dark
                                                 fab
@@ -729,6 +746,7 @@
                 headers: [
                     {text: '', value: 'data-table-expand'},
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'clients.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description' },
                     // {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
                 footerProps: {
@@ -755,7 +773,8 @@
                     email: "",
                     password: "",
                     phones: [],
-                    addresses: []
+                    addresses: [],
+                    status:''
                 },
                 singleUserForm: {
                     user: '',
@@ -766,7 +785,8 @@
                 rolesDialog: false,
                 employeeForm: {
                     client_id: null,
-                    company_user_id: null
+                    company_user_id: null,
+                    description: ''
                 },
                 phoneForm: {
                     id: '',
@@ -854,8 +874,7 @@
                     }
                 });
             },
-            updateUser(e) {
-                e.preventDefault()
+            updateUser() {
                 this.snackbar = false;
                 axios.post('/api/user', this.userData).then(response => {
                     response = response.data
@@ -1070,7 +1089,7 @@
             showCompany(item) {
                 this.$router.push(`/customer/${item.clients.id}`)
             },
-            changeIsActive(item) {
+            changeIsAcccesed(item) {
                 let request = {}
                 request.user_id = item.id
                 request.is_active = item.is_active
