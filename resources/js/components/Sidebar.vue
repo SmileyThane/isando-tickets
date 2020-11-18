@@ -55,6 +55,7 @@
                 </v-list-item-content>
             </v-list-item>
             <v-list-item
+                dense
                 :style="'background-color:' + themeColor + ';'"
                 link to="/home">
                 <v-list-item-action>
@@ -196,6 +197,7 @@
         <v-divider></v-divider>
         <v-list dense>
             <v-list-item
+                dense
                 :style="'background-color:' + themeColor + ';'"
                 link
                 to="/">
