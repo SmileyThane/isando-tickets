@@ -183,11 +183,18 @@ class ClientRepository
         $clients = $clients->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country'])->get();
 
         $clientCompanyUsers = $clientCompanyUsers->with(['employee.userData' => function ($query) use ($request) {
-            $query->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country'])->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
+            $query->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country']);
         }])->get();
 
         $result = $clients->merge($clientCompanyUsers);
-
+        $result = $result->unique(function ($item) {
+            if ($item instanceof Client) {
+                return 'C' . $item->id;
+            } else {
+                return 'U' . $item->employee->userData->id;
+            }
+        });
+        
         $orderFunc = function ($item, $key) use ($orderBy) {
             if ($item instanceof Client) {
                 switch ($orderBy) {
