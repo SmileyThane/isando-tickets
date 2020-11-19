@@ -39,6 +39,10 @@
                                     </v-col>
                                 </v-row>
                             </template>
+                            <template v-slot:item.id="{item}">
+                                <span v-if="item.employee">{{item.employee.user_data.id}}</span>
+                                <span v-else>{{item.id}}</span>
+                            </template>
                             <template v-slot:item.type="{item}">
                                 <span v-if="item.employee">{{langMap.main.individual}}</span>
                                 <span v-else>{{langMap.main.customer}}</span>
@@ -149,7 +153,7 @@
                         });
             },
             showItem(item) {
-                if (item.employee.user_data) {
+                if (item.employee) {
                     this.$router.push(`/employee/${item.employee.user_data.id}`);
                 } else {
                     this.$router.push(`/customer/${item.id}`);
