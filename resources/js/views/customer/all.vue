@@ -44,8 +44,8 @@
                                 <span v-else>{{item.id}}</span>
                             </template>
                             <template v-slot:item.type="{item}">
-                                <span v-if="item.employee">{{langMap.main.individual}}</span>
-                                <span v-else>{{langMap.main.customer}}</span>
+                                <v-icon v-if="item.employee" :title="langMap.main.individual">mdi-account</v-icon>
+                                <v-icon v-else :title="langMap.main.customer">mdi-office-building-outline</v-icon>
                             </template>
                             <template v-slot:item.name="{item}">
                                 <span v-if="item.employee">{{item.employee.user_data.full_name}}</span>
@@ -55,9 +55,44 @@
                                 <span v-if="item.employee">{{item.employee.user_data.email}}</span>
                                 <span v-else>&nbsp;</span>
                             </template>
-                            <template v-slot:item.description="{item}">
-                                <span v-if="item.clients">{{item.clients.name}}</span>
-                                <span v-else>{{item.description}}</span>
+                            <template v-slot:item.phone="{item}">
+                                <span v-if="item.employee && item.employee.user_data.phones && item.employee.user_data.phones.length > 0">
+                                    <v-icon v-if="item.employee.user_data.phones[0].type" x-small dense v-text="item.employee.user_data.phones[0].type.icon" :title="localized(item.employee.user_data.phones[0].type)"></v-icon>
+                                    {{item.employee.user_data.phones[0].phone}}
+                                </span>
+                                <span v-else-if="item.phones && item.phones.length > 0">
+                                    <v-icon v-if="item.phones[0].type" x-small dense v-text="item.phones[0].type.icon" :title="localized(item.phones[0].type)"></v-icon>
+                                    {{item.phones[0].phone}}
+                                </span>
+                                <span v-else>&nbsp;</span>
+                            </template>
+                            <template v-slot:item.city="{item}">
+                                <span v-if="item.employee && item.employee.user_data.addresses && item.employee.user_data.addresses.length > 0">
+                                    <v-icon v-if="item.employee.user_data.addresses[0].type" x-small dense v-text="item.employee.user_data.addresses[0].type.icon" :title="localized(item.employee.user_data.addresses[0].type)"></v-icon>
+                                    {{item.employee.user_data.addresses[0].city}}
+                                </span>
+                                <span v-else-if="item.addresses && item.addresses.length > 0">
+                                    <v-icon v-if="item.addresses[0].type" x-small dense v-text="item.addresses[0].type.icon" :title="localized(item.addresses[0].type)"></v-icon>
+                                    {{item.addresses[0].city}}
+                                </span>
+                                <span v-else>&nbsp;</span>
+                            </template>
+                            <template v-slot:item.country="{item}">
+                                <span v-if="item.employee && item.employee.user_data.addresses && item.employee.user_data.addresses.length > 0 && item.employee.user_data.addresses[0].country" :title="localized(item.employee.user_data.addresses[0].country)">
+                                    {{item.employee.user_data.addresses[0].country.iso_3166_2}}
+                                </span>
+                                <span v-else-if="item.addresses && item.addresses.length > 0 && item.addresses[0].country" :title="localized(item.addresses[0].country)">
+                                    {{item.addresses[0].country.iso_3166_2}}
+                                </span>
+                                <span v-else>&nbsp;</span>
+                            </template>
+                            <template v-slot:item.is_active="{item}">
+                                <v-icon v-if="item.employee" class="justify-center">
+                                    {{item.employee.user_data.is_active === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel'}}
+                                </v-icon>
+                                <v-icon v-else class="justify-center">
+                                    {{item.is_active === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel'}}
+                                </v-icon>
                             </template>
                             <template v-slot:footer>
                                 <v-pagination :color="themeColor"
@@ -108,7 +143,10 @@
                     {text: this.$store.state.lang.lang_map.main.type, value: 'type', sortable: false},
                     {text: this.$store.state.lang.lang_map.main.name, value: 'name'},
                     {text: this.$store.state.lang.lang_map.main.email, value: 'email'},
-                    {text: this.$store.state.lang.lang_map.main.description, value: 'description'}
+                    {text: this.$store.state.lang.lang_map.main.phone, value: 'phone'},
+                    {text: this.$store.state.lang.lang_map.main.city, value: 'city'},
+                    {text: this.$store.state.lang.lang_map.main.country, value: 'country'},
+                    {text: this.$store.state.lang.lang_map.main.status, value: 'is_active'}
                 ],
                 customersSearch: '',
                 customers: []
@@ -121,6 +159,10 @@
             });
         },
         methods: {
+            localized(item, field = 'name') {
+                let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
+                return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
+            },
             getCustomers() {
                 this.loading = this.themeColor;
                 if (this.options.sortDesc.length <= 0) {
