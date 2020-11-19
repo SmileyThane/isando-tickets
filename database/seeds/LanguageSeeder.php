@@ -108,6 +108,7 @@ class LanguageSeeder extends Seeder
     "customer": "Customer",
     "add_new": "Add new customer",
     "supplier": "Supplier",
+    "active": "Active",
     "product_info": "Product info",
     "show_product": "Show product"
   },
@@ -125,6 +126,7 @@ class LanguageSeeder extends Seeder
   "individuals": {
     "add_new": "Add new contact",
     "info": "User info",
+    "active": "Active",
     "contact_info": "Contact info",
     "assigned_companies": "Linked companies",
     "new_customer": "Link to company",
@@ -430,6 +432,7 @@ class LanguageSeeder extends Seeder
   "customer": "Firma",
   "add_new": "Neuer Kunden hinzufügen",
   "supplier": "Lieferant",
+  "active": "Aktiv",
   "show_product": "Produkt anzeigen"
   },
   "product": {
@@ -446,6 +449,7 @@ class LanguageSeeder extends Seeder
   "individuals": {
   "add_new": "Neuen Kontakt hinzufügen",
   "info": "Allgemeines",
+  "active": "Aktiv",
   "contact_info": "Zusätzliche Infos",
   "assigned_companies": "Kontakte",
   "new_customer": "Kontakt hinzufügen",

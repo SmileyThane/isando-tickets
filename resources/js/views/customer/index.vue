@@ -114,6 +114,15 @@
                                 >
                                 </v-pagination>
                             </template>
+                            <template v-slot:item.is_active="{ item }">
+                                <v-icon @click="showItem(item)" class="justify-center" v-if="item">
+                                    {{
+                                    item.is_active === 1 ?
+                                    'mdi-check-circle-outline' :
+                                    'mdi-cancel'
+                                    }}
+                                </v-icon>
+                            </template>
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <v-spacer>
@@ -209,6 +218,7 @@
                     },
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
                     {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
+                    {text: `${this.$store.state.lang.lang_map.customer.active}`, value: 'is_active'},
                 ],
                 customersSearch: '',
                 customers: [],

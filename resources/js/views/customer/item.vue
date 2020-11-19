@@ -51,7 +51,7 @@
                             ></v-text-field>
                         </v-form>
                         <v-checkbox
-                            :label="this.$store.state.lang.lang_map.main.give_access"
+                            :label="this.$store.state.lang.lang_map.customer.active"
                             color="success"
                             v-model="client.is_active"
                             @change="changeIsActiveClient(client)"
