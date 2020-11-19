@@ -198,25 +198,25 @@ class ClientRepository
                     case 'email':
                         return '';
                     case 'phone':
-                        if ($item->phones) {
+                        if ($item->phones->isNotEmpty()) {
                             return $item->phones->first()->phone;
                         } else {
                             return '';
                         }
                     case 'city':
-                        if ($item->addresses) {
+                        if ($item->addresses->isNotEmpty()) {
                             return $item->addresses->first()->city;
                         } else {
                             return '';
                         }
                     case 'country':
-                        if ($item->addresses) {
+                        if ($item->addresses->isNotEmpty()) {
                             return $item->addresses->first()->country ? $item->addresses->first()->country->iso_3166_2 : '';
                         } else {
                             return '';
                         }
                     case 'is_active':
-                        return $item->is_active;
+                        return $item->is_active ? 1 : 0;
                 }
             } else {
                 switch ($orderBy) {
@@ -227,25 +227,25 @@ class ClientRepository
                     case 'email':
                         return $item->employee->userData->email;
                     case 'phone':
-                        if ($item->employee->userData->phones) {
+                        if ($item->employee->userData->phones->isNotEmpty()) {
                             return $item->employee->userData->phones->first()->phone;
                         } else {
                             return '';
                         }
                     case 'city':
-                        if ($item->employee->userData->addresses) {
+                        if ($item->employee->userData->addresses->isNotEmpty()) {
                             return $item->employee->userData->addresses->first()->city;
                         } else {
                             return '';
                         }
                     case 'country':
-                        if ($item->employee->userData->addresses) {
+                        if ($item->employee->userData->addresses->isNotEmpty()) {
                             return $item->employee->userData->addresses->first()->country ? $item->employee->userData->addresses->first()->country->iso_3166_2 : '';
                         } else {
                             return '';
                         }
                     case 'is_active':
-                        return $item->employee->userData->is_active;
+                        return $item->employee->userData->is_active ? 1 : 0;
                 }
             }
         };
