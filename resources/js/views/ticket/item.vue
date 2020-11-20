@@ -13,7 +13,6 @@
                 :width="15"
             >
                 <span class="white--text">{{ progressBuffer }} %</span>
-
             </v-progress-circular>
 
         </v-overlay>
@@ -62,6 +61,29 @@
                     </v-card-title>
                     <v-card-text>
                         <v-row>
+                            <v-col cols="12">
+                                <v-autocomplete
+                                    :color="themeColor"
+                                    :item-color="themeColor"
+                                    :items="suppliers"
+                                    :label="langMap.ticket.company_from"
+                                    dense
+                                    item-text="name"
+                                    item-value="item"
+                                    v-model="from"
+                                    @input="getContacts"
+                                />
+                                <v-autocomplete
+                                    :color="themeColor"
+                                    :item-color="themeColor"
+                                    :label="langMap.ticket.contact_email"
+                                    dense
+                                    item-text="user_data.email"
+                                    item-value="id"
+                                    v-model="ticket.contact_company_user_id"
+                                    :items="contacts"
+                                />
+                            </v-col>
                             <v-col cols="12">
                                 <v-textarea
                                     :color="themeColor"
