@@ -383,32 +383,20 @@
                                 v-bind="attrs"
                                 v-on="{...menu}"
                             >
-                                <strong>Question</strong>
+                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>
                             </v-btn>
-
                         </template>
                         <v-list
                             dense
                         >
                             <v-list-item
+                                :key="type.id"
+                                @click="changeType(type.id)"
                                 link
+                                v-for="type in types"
                             >
                                 <v-list-item-title>
-                                    Question
-                                </v-list-item-title>
-                            </v-list-item>
-                            <v-list-item
-                                link
-                            >
-                                <v-list-item-title>
-                                    Issue
-                                </v-list-item-title>
-                            </v-list-item>
-                            <v-list-item
-                                link
-                            >
-                                <v-list-item-title>
-                                    Quote request
+                                        <strong>{{ langMap.ticket_types[type.name] }}</strong>
                                 </v-list-item-title>
                             </v-list-item>
                         </v-list>
@@ -527,8 +515,8 @@
                                 </span>
                                 </span>
                             <br>
-                            <span>
-                                <v-label v-if="ticket.product">
+                            <span v-if="ticket.product !== null">
+                                <v-label>
                                     {{langMap.ticket.product_name}}:
                                 </v-label>
                                 {{ ticket.product.name }}
@@ -727,8 +715,8 @@
                                 </span>
                                 </span>
                             <br>
-                            <span>
-                                <v-label v-if="ticket.product">
+                            <span v-if="ticket.product !== null">
+                                <v-label >
                                     {{langMap.ticket.product_name}}:
                                 </v-label>
                                 {{ ticket.product.name }}
@@ -764,13 +752,13 @@
                 <v-expansion-panels
                     class="d-sm-none d-md-flex"
                 >
-                    <v-expansion-panel>
+                    <v-expansion-panel v-if="ticket.product !== null">
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
                         >
                             <span>
                                  <strong>Product: </strong>
-                                 <span class="float-md-right" v-if="ticket.product !== null">
+                                 <span class="float-md-right">
                                      {{ ticket.product.name}}
                                   </span>
                             </span>
@@ -795,7 +783,7 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-                <br>
+                <br v-if="ticket.product !== null">
                 <v-expansion-panels>
                     <v-expansion-panel>
                         <v-expansion-panel-header
@@ -1319,6 +1307,7 @@
                 suppliers: [],
                 products: [],
                 priorities: [],
+                types: [],
                 employees: [],
                 contacts: [],
                 teams: [],
@@ -1474,6 +1463,7 @@
             this.getSuppliers()
             this.getProducts()
             this.getPriorities()
+            this.getTypes()
             this.getTeams()
             this.getTickets()
             // if (localStorage.getticket('auth_token')) {
@@ -1554,7 +1544,19 @@
                     response = response.data
                     if (response.success === true) {
                         this.priorities = response.data
-                        this.progressBuffer = this.progressBuffer + 20;
+                        this.progressBuffer = this.progressBuffer + 10;
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            getTypes() {
+                axios.get('/api/ticket_types').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.types = response.data
+                        this.progressBuffer = this.progressBuffer + 10;
                     } else {
                         console.log('error')
                     }
@@ -1750,6 +1752,10 @@
             },
             changePriority(id) {
                 this.ticket.priority_id = id
+                this.updateTicket()
+            },
+            changeType(id) {
+                this.ticket.ticket_type_id = id
                 this.updateTicket()
             },
             linkTicketProcess() {
