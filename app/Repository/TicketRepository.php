@@ -185,6 +185,7 @@ class TicketRepository
             $ticket->to_team_id = $request->to_team_id;
             $ticket->due_date = $request->due_date;
             $ticket->priority_id = $request->priority_id;
+            $ticket->ticket_type_id = $request->ticket_type_id;
             $ticket->from_entity_id = $request->from_entity_id;
             $ticket->from_entity_type = $request->from_entity_type;
             $ticket->access_details = $request->access_details;
