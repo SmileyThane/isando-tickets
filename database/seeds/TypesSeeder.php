@@ -11,13 +11,13 @@ class TypesSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('address_types')->updateOrInsert(
+        DB::table('social_types')->updateOrInsert(
             ['id' => 1],
             [
                 'name' => 'Home'
             ]
         );
-        DB::table('phone_types')->updateOrInsert(
+        DB::table('social_types')->updateOrInsert(
             ['id' => 2],
             [
                 'name' => 'Mobile'

@@ -11,19 +11,19 @@ class TicketTypesSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('address_types')->updateOrInsert(
+        DB::table('ticket_types')->updateOrInsert(
             ['id' => 1],
             [
                 'name' => 'question'
             ]
         );
-        DB::table('phone_types')->updateOrInsert(
+        DB::table('ticket_types')->updateOrInsert(
             ['id' => 2],
             [
                 'name' => 'issue'
             ]
         );
-        DB::table('social_types')->updateOrInsert(
+        DB::table('ticket_types')->updateOrInsert(
             ['id' => 3],
             [
                 'name' => 'quote_request'
