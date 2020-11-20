@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TicketPrioritySeeder::class);
         $this->call(TicketStatusSeeder::class);
         $this->call(TypesSeeder::class);
+        $this->call(TicketTypesSeeder::class);
         $this->call(LanguageSeeder::class);
         $this->call(CountriesTableSeeder::class);
         $this->call(TimeZonesTableSeeder::class);
