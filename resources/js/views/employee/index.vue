@@ -121,10 +121,16 @@
                                 </v-pagination>
                             </template>
                             <template v-slot:item.employee="{ item }">
-                                <div @click="showItem(item)" class="justify-center" v-if="item">{{
-                                    item.employee.user_data.name }} {{
-                                    item.employee.user_data.surname }}
+                                <div @click="showItem(item)" class="justify-center" v-if="item">
+                                    {{item.employee.user_data.full_name }}
                                 </div>
+                            </template>
+                            <template v-slot:item.email="{item}">
+                                <span v-if="item.employee.user_data.contact_email && item.employee.user_data.contact_email.email">
+                                    <v-icon v-if="item.employee.user_data.contact_email.type" x-small dense v-text="item.employee.user_data.contact_email.type.icon" :title="localized(item.employee.user_data.contact_email.type)"></v-icon>
+                                    {{item.employee.user_data.contact_email.email}}
+                                </span>
+                                <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.employee.user_data.is_active="{ item }">
                                 <v-icon @click="showItem(item)" class="justify-center" v-if="item">
@@ -272,6 +278,10 @@
             });
         },
         methods: {
+            localized(item, field = 'name') {
+                let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
+                return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
+            },
             getEmployees() {
                 this.loading = this.themeColor
                 // console.log(this.options);
