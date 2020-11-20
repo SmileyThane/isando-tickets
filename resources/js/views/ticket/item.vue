@@ -13,7 +13,6 @@
                 :width="15"
             >
                 <span class="white--text">{{ progressBuffer }} %</span>
-
             </v-progress-circular>
 
         </v-overlay>
