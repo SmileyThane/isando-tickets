@@ -102,7 +102,11 @@ class LanguageSeeder extends Seeder
     "update_social": "Update social link",
     "social_created": "Social link added",
     "social_updated": "Social link updated",
-    "social_deleted": "Social link deleted"
+    "social_deleted": "Social link deleted",
+    "update_email": "Update email",
+    "email_created": "Email added",
+    "email_updated": "Email updated",
+    "email_deleted": "Email deleted"
   },
   "customer": {
     "customer": "Customer",
@@ -204,6 +208,7 @@ class LanguageSeeder extends Seeder
 "description": "Description",
 "new_phone": "New phone",
 "new_address": "New address",
+"new_email": "New email",
 "actions": "Actions",
 "action": "Action",
 "item": "Item",
@@ -424,14 +429,18 @@ class LanguageSeeder extends Seeder
      "phone_created": "Telefon hinzugefügt",
      "phone_updated": "Telefon aktualisiert",
      "phone_deleted": "Telefon gelöscht",
-     "update_address": "Update address",
+     "update_address": "Adresse aktualisieren",
      "address_created": "Adresse hinzugefügt",
      "address_updated": "Adresse aktualisiert",
      "address_deleted": "Adresse gelöscht",
      "update_social": "Social Link aktualisieren",
      "social_created": "Social Link hinzugefügt",
      "social_updated": "Social Link aktualisiert",
-     "social_deleted": "Sozialer Link gelöscht"
+     "social_deleted": "Sozialer Link gelöscht",
+     "update_email": "E-Mail aktualisieren",
+     "email_created": "E-Mail hinzugefügt",
+     "email_updated": "E-Mail aktualisiert",
+     "email_deleted": "E-Mail gelöscht"
   },
   "customer": {
   "customer": "Firma",
@@ -532,6 +541,7 @@ class LanguageSeeder extends Seeder
 "description": "Beschreibung",
 "new_phone": "Telefon",
 "new_address": "Adresse",
+"new_email": "E-Mail",
 "actions": "Aktionen",
 "action": "Aktion",
 "item": "element",

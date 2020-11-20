@@ -125,7 +125,7 @@
                                     {{item.employee.user_data.full_name }}
                                 </div>
                             </template>
-                            <template v-slot:item.email="{item}">
+                            <template v-slot:item.employee.user_data.email="{item}">
                                 <span v-if="item.employee.user_data.contact_email && item.employee.user_data.contact_email.email">
                                     <v-icon v-if="item.employee.user_data.contact_email.type" x-small dense v-text="item.employee.user_data.contact_email.type.icon" :title="localized(item.employee.user_data.contact_email.type)"></v-icon>
                                     {{item.employee.user_data.contact_email.email}}
