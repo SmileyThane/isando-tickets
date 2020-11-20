@@ -18,13 +18,13 @@ class TypesSeeder extends Seeder
             ]
         );
         DB::table('phone_types')->updateOrInsert(
-            ['id' => 1],
+            ['id' => 2],
             [
                 'name' => 'Mobile'
             ]
         );
         DB::table('social_types')->updateOrInsert(
-            ['id' => 1],
+            ['id' => 3],
             [
                 'name' => 'Website'
             ]
