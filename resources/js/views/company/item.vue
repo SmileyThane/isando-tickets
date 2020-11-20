@@ -114,6 +114,35 @@
                                     >
                                         <v-list-item-group :color="themeColor">
                                             <v-list-item
+                                                v-for="(item, i) in company.emails"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-icon v-if="item.type">
+                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                </v-list-item-icon>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="item.email"></v-list-item-title>
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="editEmail(item)"
+                                                    >
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="deleteEmail(item.id)"
+                                                    >
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                            <v-list-item
                                                 v-for="(item, i) in company.phones"
                                                 :key="item.id"
                                             >
@@ -180,6 +209,59 @@
                                     <v-expansion-panels
                                         multiple
                                     >
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{this.$store.state.lang.lang_map.main.new_email}}
+                                                <template v-slot:actions>
+                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col cols="md-6" class="pa-1">
+                                                            <v-text-field
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
+                                                                v-model="emailForm.email"
+                                                                :label="langMap.main.email"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="6" class="pa-1">
+                                                            <v-select
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
+                                                                item-value="id"
+                                                                v-model="emailForm.email_type"
+                                                                :items="emailTypes"
+                                                                :label="langMap.main.type"
+                                                                dense
+                                                            >
+                                                                <template slot="selection" slot-scope="data">
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                </template>
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn
+                                                            dark
+                                                            fab
+                                                            right
+                                                            bottom
+                                                            small
+                                                            :color="themeColor"
+                                                            @click="submitNewData(company.id, emailForm, 'addEmail')"
+                                                        >
+                                                            <v-icon>mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{langMap.main.new_phone}}
@@ -369,8 +451,15 @@
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <p></p>
-                                    <p v-if="item.user_data.email"><strong>{{langMap.main.email}}:</strong> {{
-                                        item.user_data.email }}
+                                    <p v-if="item.user_data.emails.length > 0 || (item.user_data.contact_email && item.user_data.contact_email.email)">
+                                        <strong>{{langMap.main.email}}:</strong>
+                                    </p>
+                                    <p v-if="item.user_data.emails.length > 0"
+                                       v-for="emailItem in item.user_data.emails"><v-icon small dense left v-if="emailItem.type">{{emailItem.type.icon}}</v-icon> {{ emailItem.email }}
+                                        <span v-if="emailItem.type">({{ localized(emailItem.type) }})</span></p>
+                                    <p v-else-if="item.user_data.contact_email && item.user_data.contact_email.email">
+                                        <v-icon v-if="item.user_data.contact_email.type" small dense :title="localized(item.user_data.contact_email.type)">{{item.user_data.contact_email.type.icon}}</v-icon>
+                                        {{item.user_data.contact_email.email}}
                                     </p>
                                     <p v-if="item.user_data.phones.length > 0"><strong>{{langMap.main.phone}}:</strong>
                                     </p>
@@ -427,8 +516,8 @@
                                 </td>
                             </template>
                             <template v-slot:item.user_data="{ item }">
-                                <div class="justify-center" v-if="item.user_data">{{ item.user_data.name }} {{
-                                    item.user_data.surname }}
+                                <div class="justify-center" v-if="item.user_data">
+                                    {{ item.user_data.fill_name }}
                                 </div>
                             </template>
                             <template v-slot:item.actions="{ item }">
@@ -843,6 +932,35 @@
                                                     >
                                                         <v-list-item-group :color="themeColor">
                                                             <v-list-item
+                                                                v-for="(item, i) in singleUserForm.user.emails"
+                                                                :key="item.id"
+                                                            >
+                                                                <v-list-item-icon v-if="item.type">
+                                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                                </v-list-item-icon>
+                                                                <v-list-item-content>
+                                                                    <v-list-item-title v-text="item.email"></v-list-item-title>
+                                                                    <v-list-item-subtitle v-if="item.type"
+                                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
+                                                                </v-list-item-content>
+                                                                <v-list-item-action>
+                                                                    <v-icon
+                                                                        small
+                                                                        @click="editEmail(item)"
+                                                                    >
+                                                                        mdi-pencil
+                                                                    </v-icon>
+                                                                </v-list-item-action>
+                                                                <v-list-item-action>
+                                                                    <v-icon
+                                                                        small
+                                                                        @click="deleteEmail(item.id)"
+                                                                    >
+                                                                        mdi-delete
+                                                                    </v-icon>
+                                                                </v-list-item-action>
+                                                            </v-list-item>
+                                                            <v-list-item
                                                                 v-for="(item, i) in singleUserForm.user.phones"
                                                                 :key="item.id"
                                                             >
@@ -853,6 +971,14 @@
                                                                     <v-list-item-subtitle v-if="item.type"
                                                                         v-text="localized(item.type)"></v-list-item-subtitle>
                                                                 </v-list-item-content>
+                                                                <v-list-item-action>
+                                                                    <v-icon
+                                                                        small
+                                                                        @click="editPhone(item)"
+                                                                    >
+                                                                        mdi-pencil
+                                                                    </v-icon>
+                                                                </v-list-item-action>
                                                                 <v-list-item-action>
                                                                     <v-icon
                                                                         small
@@ -879,6 +1005,14 @@
                                                                 <v-list-item-action>
                                                                     <v-icon
                                                                         small
+                                                                        @click="editAddress(item)"
+                                                                    >
+                                                                        mdi-pencil
+                                                                    </v-icon>
+                                                                </v-list-item-action>
+                                                                <v-list-item-action>
+                                                                    <v-icon
+                                                                        small
                                                                         @click="deleteAddress(item.id)"
                                                                     >
                                                                         mdi-delete
@@ -890,6 +1024,59 @@
                                                 </v-col>
                                                 <v-col class="col-md-12">
                                                     <v-expansion-panels>
+                                                        <v-expansion-panel>
+                                                            <v-expansion-panel-header>
+                                                                {{this.$store.state.lang.lang_map.main.new_email}}
+                                                                <template v-slot:actions>
+                                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                                </template>
+                                                            </v-expansion-panel-header>
+                                                            <v-expansion-panel-content>
+                                                                <v-form>
+                                                                    <div class="row">
+                                                                        <v-col cols="md-6" class="pa-1">
+                                                                            <v-text-field
+                                                                                :color="themeColor"
+                                                                                :item-color="themeColor"
+                                                                                v-model="userEmailForm.email"
+                                                                                :label="langMap.main.email"
+                                                                                dense
+                                                                            ></v-text-field>
+                                                                        </v-col>
+                                                                        <v-col cols="6" class="pa-1">
+                                                                            <v-select
+                                                                                :color="themeColor"
+                                                                                :item-color="themeColor"
+                                                                                item-value="id"
+                                                                                v-model="userEmailForm.email_type"
+                                                                                :items="emailTypes"
+                                                                                :label="langMap.main.type"
+                                                                                dense
+                                                                            >
+                                                                                <template slot="selection" slot-scope="data">
+                                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                                </template>
+                                                                                <template slot="item" slot-scope="data">
+                                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                                </template>
+                                                                            </v-select>
+                                                                        </v-col>
+                                                                        <v-btn
+                                                                            dark
+                                                                            fab
+                                                                            right
+                                                                            bottom
+                                                                            small
+                                                                            :color="themeColor"
+                                                                            @click="submitNewData(singleUserForm.user.id, userEmailForm, 'addEmail')"
+                                                                        >
+                                                                            <v-icon>mdi-plus</v-icon>
+                                                                        </v-btn>
+                                                                    </div>
+                                                                </v-form>
+                                                            </v-expansion-panel-content>
+                                                        </v-expansion-panel>
+
                                                         <v-expansion-panel>
                                                             <v-expansion-panel-header>
                                                                 {{langMap.main.new_phone}}
@@ -914,7 +1101,7 @@
                                                                                 :color="themeColor"
                                                                                 :item-color="themeColor"
                                                                                 item-value="id"
-                                                                                v-model="phoneForm.phone_type"
+                                                                                v-model="userPhoneForm.phone_type"
                                                                                 :items="phoneTypes"
                                                                                 :label="langMap.main.type"
                                                                                 dense
@@ -1216,6 +1403,43 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+
+            <v-dialog v-model="updateEmailDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_email}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="emailForm.email" :label="langMap.main.email" dense></v-text-field>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-select :color="themeColor" :item-color="themeColor"
+                                              v-model="emailForm.email_type" :items="emailTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
+                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updateEmailDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateEmailDlg=false; updateEmail()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
         </v-row>
     </v-container>
 </template>
@@ -1258,6 +1482,7 @@
                     phones: [],
                     addresses: [],
                     socials: [],
+                    emails: [],
                     employees: [
                         {
                             user_id: '',
@@ -1287,7 +1512,10 @@
                 singleUserForm: {
                     user: '',
                     role_ids: [],
-                    company_user_id: ''
+                    company_user_id: '',
+                    phones: [],
+                    addresses: [],
+                    emails: []
                 },
                 phoneForm: {
                     id: '',
@@ -1315,6 +1543,12 @@
                     social_link: '',
                     social_type: ''
                 },
+                emailForm: {
+                    entity_id: '',
+                    entity_type: 'App\\Company',
+                    email: '',
+                    email_type: ''
+                },
                 userPhoneForm: {
                     entity_id: '',
                     entity_type: 'App\\User',
@@ -1338,6 +1572,12 @@
                     social_link: '',
                     social_type: ''
                 },
+                userEmailForm: {
+                    entity_id: '',
+                    entity_type: 'App\\User',
+                    email: '',
+                    email_type: ''
+                },
                 productCategoryForm: {
                     name: '',
                     company_id: '',
@@ -1346,13 +1586,15 @@
                 phoneTypes: [],
                 addressTypes: [],
                 socialTypes: [],
+                emailTypes: [],
                 countries: [],
                 productCategoriesFlat: [],
                 productCategoriesTree: [],
                 selectedProductCategoryId: null,
                 updatePhoneDlg: false,
                 updateAddressDlg: false,
-                updateSocialDlg: false
+                updateSocialDlg: false,
+                updateEmailDlg: false
             }
         },
         mounted() {
@@ -1361,6 +1603,7 @@
             this.getPhoneTypes();
             this.getAddressTypes();
             this.getSocialTypes();
+            this.getEmailTypes();
             this.getCountries();
             this.getProductCategoriesTree();
             this.getProductCategoriesFlat();
@@ -1837,6 +2080,73 @@
                 this.addressForm.address.city = item.city;
                 this.addressForm.address.country_id = item.country ? item.country.id : 0;
                 this.addressForm.address_type = item.type ? item.type.id : 0;
+            },
+            getEmailTypes() {
+                axios.get(`/api/email_types`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.emailTypes = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
+            },
+            addEmail(form) {
+                axios.post('/api/email', form).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.snackbarMessage = this.langMap.company.email_created;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            },
+            updateEmail() {
+                axios.patch(`/api/email/${this.emailForm.id}`, this.emailForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.emailForm.id = '';
+                        this.getCompany();
+                        this.snackbarMessage = this.langMap.company.email_updated;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
+                });
+            },
+            deleteEmail(id) {
+                axios.delete(`/api/email/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.emailForm.email = ''
+                        this.snackbarMessage = this.langMap.company.email_deleted;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            },
+            editEmail(item) {
+                this.updateEmailDlg = true;
+
+                this.emailForm.id = item.id;
+                this.emailForm.email = item.email;
+                this.emailForm.email_type = item.type ? item.type.id : 0;
             }
         },
         watch: {
