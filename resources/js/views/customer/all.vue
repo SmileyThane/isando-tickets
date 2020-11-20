@@ -45,24 +45,31 @@
                             </template>
                             <template v-slot:item.type="{item}">
                                 <v-icon v-if="item.employee" :title="langMap.main.individual">mdi-account</v-icon>
-                                <v-icon v-else :title="langMap.main.customer">mdi-office-building-outline</v-icon>
+                                <v-icon v-else :title="langMap.main.customer">mdi-factory</v-icon>
                             </template>
                             <template v-slot:item.name="{item}">
                                 <span v-if="item.employee">{{item.employee.user_data.full_name}}</span>
                                 <span v-else>{{item.name}}</span>
                             </template>
                             <template v-slot:item.email="{item}">
-                                <span v-if="item.employee">{{item.employee.user_data.email}}</span>
+                                <span v-if="item.employee && item.employee.user_data.contact_email && item.employee.user_data.contact_email.email">
+                                    <v-icon v-if="item.employee.user_data.contact_email.type" x-small dense v-text="item.employee.user_data.contact_email.type.icon" :title="localized(item.employee.user_data.contact_email.type)"></v-icon>
+                                    {{item.employee.user_data.contact_email.email}}
+                                </span>
+                                <span v-else-if="item.contact_email && item.contact_email.email">
+                                    <v-icon v-if="item.contact_email.type" x-small dense v-text="item.contact_email.type.icon" :title="localized(item.contact_email.type)"></v-icon>
+                                    {{item.contact_email.email}}
+                                </span>
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.phone="{item}">
-                                <span v-if="item.employee && item.employee.user_data.phones && item.employee.user_data.phones.length > 0">
-                                    <v-icon v-if="item.employee.user_data.phones[0].type" x-small dense v-text="item.employee.user_data.phones[0].type.icon" :title="localized(item.employee.user_data.phones[0].type)"></v-icon>
-                                    {{item.employee.user_data.phones[0].phone}}
+                                <span v-if="item.employee && item.employee.user_data.contact_phone && item.employee.user_data.contact_phone.phone">
+                                    <v-icon v-if="item.employee.user_data.contact_phone.type" x-small dense v-text="item.employee.user_data.contact_phone.type.icon" :title="localized(item.employee.user_data.contact_phone.type)"></v-icon>
+                                    {{item.employee.user_data.contact_phone.phone}}
                                 </span>
-                                <span v-else-if="item.phones && item.phones.length > 0">
-                                    <v-icon v-if="item.phones[0].type" x-small dense v-text="item.phones[0].type.icon" :title="localized(item.phones[0].type)"></v-icon>
-                                    {{item.phones[0].phone}}
+                                <span v-else-if="item.contact_phone && item.contact_phone.phone">
+                                    <v-icon v-if="item.contact_phone.type" x-small dense v-text="item.contact_phone.type.icon" :title="localized(item.contact_phone.type)"></v-icon>
+                                    {{item.contact_phone.phone}}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>

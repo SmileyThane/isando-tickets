@@ -194,7 +194,7 @@ class ClientRepository
                 return 'U' . $item->employee->userData->id;
             }
         });
-        
+
         $orderFunc = function ($item, $key) use ($orderBy) {
             if ($item instanceof Client) {
                 switch ($orderBy) {
@@ -203,13 +203,11 @@ class ClientRepository
                     case 'name':
                         return $item->name;
                     case 'email':
-                        return '';
+                        $email = $item->contact_email;
+                        return $email ? $email->email : '';
                     case 'phone':
-                        if ($item->phones->isNotEmpty()) {
-                            return $item->phones->first()->phone;
-                        } else {
-                            return '';
-                        }
+                        $phone = $item->contact_phone;
+                        return $phone ? $phone->phone : '';
                     case 'city':
                         if ($item->addresses->isNotEmpty()) {
                             return $item->addresses->first()->city;
@@ -232,13 +230,11 @@ class ClientRepository
                     case 'name':
                         return $item->employee->userData->full_name;
                     case 'email':
-                        return $item->employee->userData->email;
+                        $email = $item->employee->userData->contact_email;
+                        return $email ? $email->email : '';
                     case 'phone':
-                        if ($item->employee->userData->phones->isNotEmpty()) {
-                            return $item->employee->userData->phones->first()->phone;
-                        } else {
-                            return '';
-                        }
+                        $phone = $item->employee->userData->contact_phone;
+                        return $phone ? $phone->phone : '';
                     case 'city':
                         if ($item->employee->userData->addresses->isNotEmpty()) {
                             return $item->employee->userData->addresses->first()->city;

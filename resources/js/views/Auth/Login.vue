@@ -69,7 +69,7 @@
                                                 v-bind="attrs"
                                                 v-on="on"
                                                 :color="themeColor"
-                                                dark
+                                  na.              dark
                                             >
                                                 mdi-two-factor-authentication
                                             </v-icon>

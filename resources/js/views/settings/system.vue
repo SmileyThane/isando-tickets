@@ -476,6 +476,85 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar dense :color="themeColor" dark flat>
+                        <v-toolbar-title>{{langMap.system_settings.email_types}}</v-toolbar-title>
+
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-list dense subheader>
+                                        <v-list-item-group :color="themeColor">
+                                            <v-list-item
+                                                v-for="(item, i) in emailTypes"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-icon>
+                                                    <v-icon left v-text="item.icon"></v-icon>
+                                                </v-list-item-icon>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                </v-list-item-content>
+                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                    <v-icon small @click="showUpdateTypeDialog(item, emailIcons,'updateEmailType')">
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                    <v-icon small @click="deleteEmailType(item.id)">
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                    <v-expansion-panels multiple v-if="checkRoleByIds([1, 2, 3])">
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{langMap.system_settings.new_email_type}}
+                                                <template v-slot:actions>
+                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col cols="md-5" class="pa-1">
+                                                            <v-text-field :color="themeColor" :item-color="themeColor" v-model="emailTypeForm.name" :label="langMap.main.name" dense></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="md-5" class="pa-1">
+                                                            <v-text-field :color="themeColor" :item-color="themeColor" v-model="emailTypeForm.name_de" :label="langMap.main.name_de" dense></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="md-2" class="pa-1">
+                                                            <v-select :color="themeColor" :item-color="themeColor"
+                                                                      v-model="emailTypeForm.icon" :items="emailIcons"
+                                                                      dense :label="langMap.main.icon">
+                                                                <template slot="selection" slot-scope="data">
+                                                                    <v-icon small v-text="data.item"></v-icon>
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    <v-icon small v-text="data.item"></v-icon>
+                                                                </template>
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn dark fab right bottom small :color="themeColor" @click="submitNewData(emailTypeForm, 'addEmailType')">
+                                                            <v-icon>mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </div>
         </div>
 
@@ -590,6 +669,26 @@
                     'mdi-web',
                     'mdi-email'
                 ],
+                emailTypeForm: {
+                    entity_id: '',
+                    entity_type: 'App\\Company',
+                    name: '',
+                    name_de: '',
+                    icon: 'mdi-email'
+                },
+                emailIcons: [
+                    'mdi-email',
+                    'mdi-email-alert',
+                    'mdi-email-box',
+                    'mdi-email-check',
+                    'mdi-email-lock',
+                    'mdi-email-mark-as-unread',
+                    'mdi-email-multiple',
+                    'mdi-email-newsletter',
+                    'mdi-email-open',
+                    'mdi-email-outline',
+                    'mdi-email-variant'
+                ],
                 updateTypeForm: {
                     entity_id: this.$route.params.id,
                     entity_type: 'App\\Company',
@@ -600,6 +699,7 @@
                 phoneTypes: [],
                 addressTypes: [],
                 socialTypes: [],
+                emailTypes: [],
                 countries: [],
                 companyCountries:[],
                 languages: [],
@@ -665,6 +765,7 @@
             this.getPhoneTypes();
             this.getAddressTypes();
             this.getSocialTypes();
+            this.getEmailTypes();
             this.getCountries();
             this.getCompanyCountries();
             this.getLanguages();
@@ -974,6 +1075,68 @@
                     if (response.success === true) {
                         this.getAddressTypes();
                         this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.address_type_deleted}`;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+
+                    }
+                });
+            },
+            getEmailTypes() {
+                axios.get(`/api/email_types`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.emailTypes = response.data
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+                    }
+                });
+            },
+            addEmailType(form) {
+                axios.post('/api/email_type', form).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.getEmailTypes();
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.email_type_created}`;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+
+                    }
+                    return true
+                });
+            },
+            updateEmailType(form) {
+                axios.patch(`/api/email_type/${form.id}`, form).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.getEmailTypes();
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.email_type_updated}`;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+
+                    }
+                    return true
+                });
+            },
+            deleteEmailType(id) {
+                axios.delete(`/api/email_type/${id}`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.getEmailTypes();
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.emailz_type_deleted}`;
                         this.actionColor = 'success';
                         this.snackbar = true;
                     } else {

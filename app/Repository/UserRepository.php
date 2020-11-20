@@ -41,7 +41,7 @@ class UserRepository
 
     public function find($id, $with = [])
     {
-        return User::where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type'], $with))->first();
+        return User::where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type'], $with))->first();
     }
 
     public function create(Request $request)
