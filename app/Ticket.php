@@ -9,14 +9,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use App\TicketType;
 
 class Ticket extends Model
 {
     use SoftDeletes;
 
     protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
-        'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment'];
-    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
+        'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment', 'ticket_type_id'];
+    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to', 'ticket_type'];
     protected $hidden = ['to'];
 
     protected static function booted()
@@ -183,5 +184,10 @@ class Ticket extends Model
         // prepare suffix for PHP
         $suffix = '%0' . strlen($suffix) . 'd';
         return $prefix . $delim1 . date($date, strtotime($this->attributes['created_at'])) . $delim2 . sprintf($suffix, $this->sequence);
+    }
+
+    public function getTicketTypeAttribute()
+    {
+        return TicketType::find($this->ticket_type_id);
     }
 }
