@@ -196,6 +196,7 @@ class LanguageSeeder extends Seeder
 "type": "Type",
 "city": "City",
 "country": "Country",
+"street": "Street",
 "email": "Email",
 "password": "Password",
 "name": "Name",
@@ -290,7 +291,8 @@ class LanguageSeeder extends Seeder
 "generic_error": "Something went wrong",
 "icon": "Icon",
 "ticketing": "Ticketing",
-"do_not_show_this_again": "Do not show this again"
+"do_not_show_this_again": "Do not show this again",
+"update_successful": "Update successful"
 },
   "system_settings": {
     "title": "System settings",
@@ -517,6 +519,7 @@ class LanguageSeeder extends Seeder
 "type": "Wahlen sie",
 "city": "Stadt",
 "country": "Land",
+"street": "Straße",
 "email": "E-Mail",
 "password": "Kennwort",
 "name": "Name",
@@ -611,7 +614,8 @@ class LanguageSeeder extends Seeder
 "generic_error": "Etwas ist schief gelaufen",
 "icon": "Symbol",
 "ticketing": "Buchung",
-"do_not_show_this_again": "Diese Mitteilung nicht mehr anzeigen"
+"do_not_show_this_again": "Diese Mitteilung nicht mehr anzeigen",
+"update_successful": "Aktualisierung erfolgreich"
  },
   "system_settings": {
     "title": "Systemeinstellungen",

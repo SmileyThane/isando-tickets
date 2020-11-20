@@ -16,14 +16,6 @@ use Illuminate\Validation\Rule;
 
 class ClientRepository
 {
-
-    protected $companyUserRepo;
-
-    public function __construct(CompanyUserRepository $companyUserRepository)
-    {
-        $this->companyUserRepo = $companyUserRepository;
-    }
-
     public function validate($request, $new = true)
     {
         $params = [
@@ -47,7 +39,7 @@ class ClientRepository
         return true;
     }
 
-    public function clients($request, $forceReturnAll = false)
+    public function clients($request)
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
@@ -66,11 +58,7 @@ class ClientRepository
             );
         }
         $clients = $clients->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
-        if ($forceReturnAll) {
-            return $clients->get();
-        } else {
-            return $clients->paginate($request->per_page ?? $clients->count());
-        }
+        return $clients->paginate($request->per_page ?? $clients->count());
     }
 
     public function suppliers()
@@ -93,7 +81,7 @@ class ClientRepository
     public function find($id)
     {
         return Client::where('id', $id)
-            ->with('teams', 'employees.employee.userData.phones.type', 'employees.employee.userData.addresses.type', 'clients', 'products.productData', 'phones.type', 'addresses.type', 'socials.type')
+            ->with('teams', 'employees.employee.userData.phones.type', 'employees.employee.userData.addresses.type', 'employees.employee.userData.addresses.country', 'clients', 'products.productData', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type')
             ->first();
     }
 
@@ -159,11 +147,54 @@ class ClientRepository
     {
         $orderBy = $request->sort_by ?? 'name';
         $request->sort_by = null;
-        $clients = $this->clients($request, true);
-        $employee = $this->companyUserRepo->all($request, true);
 
-        $result = $clients->merge($employee);
+        $employee = Auth::user()->employee;
+        $companyId = $employee->company_id;
+        $clientIds = [];
+        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
+            $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
+            $clients = Client::where('id', $clientCompanyUser->client_id);
+        } else {
+            $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
+            $clientIds = Client::where([
+                'supplier_type' => Company::class,
+                'supplier_id' => $employee->company_id
+            ])->get()->pluck('id')->toArray();
+        }
 
+        $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds);
+        if ($request->search) {
+            $clients->where(
+                function ($query) use ($request) {
+                    $query->where('name', 'like', $request->search . '%')
+                        ->orWhere('description', 'like', $request->search . '%');
+                }
+            );
+
+            $clientCompanyUsers->whereHas(
+                'employee.userData',
+                function ($query) use ($request) {
+                    $query->where('name', 'like', $request->search . '%')
+                        ->orWhere('surname', 'like', $request->search . '%')
+                        ->orWhere('email', 'like', $request->search . '%');
+                }
+            );
+        }
+        $clients = $clients->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country'])->get();
+
+        $clientCompanyUsers = $clientCompanyUsers->with(['employee.userData' => function ($query) use ($request) {
+            $query->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country']);
+        }])->get();
+
+        $result = $clients->merge($clientCompanyUsers);
+        $result = $result->unique(function ($item) {
+            if ($item instanceof Client) {
+                return 'C' . $item->id;
+            } else {
+                return 'U' . $item->employee->userData->id;
+            }
+        });
+        
         $orderFunc = function ($item, $key) use ($orderBy) {
             if ($item instanceof Client) {
                 switch ($orderBy) {
@@ -171,10 +202,28 @@ class ClientRepository
                         return $item->id;
                     case 'name':
                         return $item->name;
-                    case 'description':
-                        return $item->description;
                     case 'email':
                         return '';
+                    case 'phone':
+                        if ($item->phones->isNotEmpty()) {
+                            return $item->phones->first()->phone;
+                        } else {
+                            return '';
+                        }
+                    case 'city':
+                        if ($item->addresses->isNotEmpty()) {
+                            return $item->addresses->first()->city;
+                        } else {
+                            return '';
+                        }
+                    case 'country':
+                        if ($item->addresses->isNotEmpty()) {
+                            return $item->addresses->first()->country ? $item->addresses->first()->country->iso_3166_2 : '';
+                        } else {
+                            return '';
+                        }
+                    case 'is_active':
+                        return $item->is_active ? 1 : 0;
                 }
             } else {
                 switch ($orderBy) {
@@ -182,10 +231,28 @@ class ClientRepository
                         return $item->employee->userData->id;
                     case 'name':
                         return $item->employee->userData->full_name;
-                    case 'description':
-                        return $item->clients->name;
                     case 'email':
                         return $item->employee->userData->email;
+                    case 'phone':
+                        if ($item->employee->userData->phones->isNotEmpty()) {
+                            return $item->employee->userData->phones->first()->phone;
+                        } else {
+                            return '';
+                        }
+                    case 'city':
+                        if ($item->employee->userData->addresses->isNotEmpty()) {
+                            return $item->employee->userData->addresses->first()->city;
+                        } else {
+                            return '';
+                        }
+                    case 'country':
+                        if ($item->employee->userData->addresses->isNotEmpty()) {
+                            return $item->employee->userData->addresses->first()->country ? $item->employee->userData->addresses->first()->country->iso_3166_2 : '';
+                        } else {
+                            return '';
+                        }
+                    case 'is_active':
+                        return $item->employee->userData->is_active ? 1 : 0;
                 }
             }
         };
@@ -198,6 +265,8 @@ class ClientRepository
 
         return $result->paginate($request->per_page ?? $result->count());
     }
+
+
 
     public function changeIsActive(Request $request): bool
     {
