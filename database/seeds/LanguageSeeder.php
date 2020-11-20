@@ -60,6 +60,11 @@ class LanguageSeeder extends Seeder
     "notification": "Notification",
     "internal": "Internal"
   },
+  "ticket_types": {
+    "question" : "Question",
+    "issue" : "Issue",
+    "quote_request" : "Quote request"
+  },
   "roles": {
     "superadmin": "Superadmin",
     "license_owner": "License owner",
@@ -389,6 +394,11 @@ class LanguageSeeder extends Seeder
   "client": "Kunde",
   "notification": "Benachrichtigung",
   "internal": "Intern"
+  },
+  "ticket_types": {
+    "question" : "Question",
+    "issue" : "Issue",
+    "quote_request" : "Quote request"
   },
   "roles": {
   "superadmin": "Höchster Vorgesetzter",
