@@ -88,6 +88,15 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('address/{id}', 'API\AddressController@edit');
         Route::delete('address/{id}', 'API\AddressController@delete');
 
+        //email management
+        Route::get('email_types', 'API\EmailController@getTypes');
+        Route::post('email_type', 'API\EmailController@addType');
+        Route::patch('email_type/{id}', 'API\EmailController@updateType');
+        Route::delete('email_type/{id}', 'API\EmailController@deleteType');
+        Route::post('email', 'API\EmailController@add');
+        Route::patch('email/{id}', 'API\EmailController@edit');
+        Route::delete('email/{id}', 'API\EmailController@delete');
+
         //client management
         Route::get('client', 'API\ClientController@get');
         Route::get('supplier', 'API\ClientController@suppliers');

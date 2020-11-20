@@ -42,7 +42,7 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'full_name'
+        'full_name', 'contact_phone', 'contact_email'
     ];
 
     public function employee(): HasOne
@@ -80,6 +80,16 @@ class User extends Authenticatable
         return $this->morphMany(SocialType::class, 'entity');
     }
 
+    public function emails(): MorphMany
+    {
+        return $this->morphMany(Email::class, 'entity');
+    }
+
+    public function emailTypes(): MorphMany
+    {
+        return $this->morphMany(EmailType::class, 'entity');
+    }
+
     public function getFullNameAttribute()
     {
         return trim($this->name . ' ' . $this->surname);
@@ -89,8 +99,26 @@ class User extends Authenticatable
     {
         return $this->morphOne(Settings::class, 'entity');
     }
+
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class, 'country_id', 'id');
     }
+
+    public function getContactPhoneAttribute()
+    {
+        return $this->phones()->with('type')->first();
+    }
+
+    public function getContactEmailAttribute()
+    {
+        $email = $this->emails()->with('type')->first();
+        return $email ? $email : (new Email([
+            'entity_type' => User::class,
+            'entity_id' => $this->attributes['id'],
+            'email' => $this->attributes['email'],
+            'email_type' => 0
+        ]));
+    }
+
 }

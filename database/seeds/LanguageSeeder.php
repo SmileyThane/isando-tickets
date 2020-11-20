@@ -329,6 +329,11 @@ class LanguageSeeder extends Seeder
     "address_type_created": "Address type created",
     "address_type_deleted": "Address type deleted",
     "address_type_updated": "Address type updated",
+    "email_types": "Email types",
+    "new_email_type": "Add new email type",
+    "email_type_created": "Email type created",
+    "email_type_deleted": "Email type deleted",
+    "email_type_updated": "Email type updated",
     "update_type_info": "Update information"
   },
   "profile": {
@@ -652,6 +657,11 @@ class LanguageSeeder extends Seeder
     "address_type_created": "Adresstyp erstellt",
     "address_type_deleted": "Adresstyp gelöscht",
     "address_type_updated": "Adresstyp aktualisiert",
+    "email_types": "E-Mail-Typen",
+    "new_email_type": "Neuen E-Mail-Typ hinzufügen",
+    "email_type_created": "E-Mail-Typ erstellt",
+    "email_type_deleted": "E-Mail-Typ gelöscht",
+    "email_type_updated": "E-Mail-Typ aktualisiert",
     "update_type_info": "Informationen aktualisieren"
   },
   "profile": {

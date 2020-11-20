@@ -13,6 +13,10 @@ class Client extends Model
 {
     use SoftDeletes;
 
+    protected $appends = [
+        'contact_phone', 'contact_email'
+    ];
+
     public function clientable(): MorphTo
     {
         return $this->morphTo();
@@ -53,6 +57,11 @@ class Client extends Model
         return $this->morphMany(Social::class, 'entity');
     }
 
+    public function emails(): MorphMany
+    {
+        return $this->morphMany(Email::class, 'entity');
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(ProductClient::class, 'client_id', 'id');
@@ -61,5 +70,15 @@ class Client extends Model
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class, 'country_id', 'id');
+    }
+
+    public function getContactPhoneAttribute()
+    {
+        return $this->phones()->with('type')->first();
+    }
+
+    public function getContactEmailAttribute()
+    {
+        return $this->emails()->with('type')->first();
     }
 }

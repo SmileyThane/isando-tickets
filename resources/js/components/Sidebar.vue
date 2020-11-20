@@ -73,7 +73,7 @@
                 :value="sidebarGroups"
                 color="white"
                 multiple
-                prepend-icon="mdi-account"
+                prepend-icon="mdi-badge-account-horizontal-outline"
             >
                 <template
                     v-slot:activator
@@ -115,7 +115,7 @@
                     v-if="checkRoleByIds([1,2,3,4,5])"
                 >
                     <v-list-item-action>
-                        <v-icon>mdi-badge-account-horizontal-outline</v-icon>
+                        <v-icon>mdi-account</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.individuals}}</v-list-item-title>
