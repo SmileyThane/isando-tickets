@@ -11,6 +11,7 @@ use App\Team;
 use App\Ticket;
 use App\TicketCategory;
 use App\TicketPriority;
+use App\TicketType;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -36,6 +37,11 @@ class TicketController extends Controller
     public function categories()
     {
         return self::showResponse(true, TicketCategory::all());
+    }
+
+    public function types()
+    {
+        return self::showResponse(true, TicketType::all());
     }
 
     public function find($id)
