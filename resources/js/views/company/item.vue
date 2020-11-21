@@ -451,10 +451,10 @@
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <p></p>
-                                    <p v-if="item.user_data.emails.length > 0 || (item.user_data.contact_email && item.user_data.contact_email.email)">
+                                    <p v-if="(item.user_data.emails && item.user_data.emails.length > 0) || (item.user_data.contact_email && item.user_data.contact_email.email)">
                                         <strong>{{langMap.main.email}}:</strong>
                                     </p>
-                                    <p v-if="item.user_data.emails.length > 0"
+                                    <p v-if="item.user_data.emails && item.user_data.emails.length > 0"
                                        v-for="emailItem in item.user_data.emails"><v-icon small dense left v-if="emailItem.type">{{emailItem.type.icon}}</v-icon> {{ emailItem.email }}
                                         <span v-if="emailItem.type">({{ localized(emailItem.type) }})</span></p>
                                     <p v-else-if="item.user_data.contact_email && item.user_data.contact_email.email">
@@ -517,7 +517,7 @@
                             </template>
                             <template v-slot:item.user_data="{ item }">
                                 <div class="justify-center" v-if="item.user_data">
-                                    {{ item.user_data.fill_name }}
+                                    {{ item.user_data.full_name }}
                                 </div>
                             </template>
                             <template v-slot:item.actions="{ item }">
