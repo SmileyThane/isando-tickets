@@ -406,9 +406,9 @@ class LanguageSeeder extends Seeder
   "internal": "Intern"
   },
   "ticket_types": {
-    "question" : "Question",
-    "issue" : "Issue",
-    "quote_request" : "Quote request"
+    "question" : "Frage",
+    "issue" : "Problem",
+    "quote_request" : "Angebotsanfrage"
   },
   "roles": {
   "superadmin": "Höchster Vorgesetzter",
