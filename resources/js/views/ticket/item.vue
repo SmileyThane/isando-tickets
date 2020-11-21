@@ -756,21 +756,6 @@
                                 </span>
                                 </span>
                             <br>
-                            <span v-if="ticket.product !== null">
-                                <v-label>
-                                    {{ langMap.ticket.product_name }}:
-                                </v-label>
-                                {{ ticket.product.name }}
-                                <!--                                <v-btn-->
-                                <!--                                    text-->
-                                <!--                                    x-small-->
-                                <!--                                    :to="'/product/'+ticket.product.id"-->
-                                <!--                                    style="text-transform: none;"-->
-                                <!--                                >-->
-                                <!--                                    {{ ticket.product.name }}-->
-                                <!--                                </v-btn>-->
-                            </span>
-                            <br>
                             <v-label v-if="ticket.availability">
                                 {{ langMap.ticket.availability }}:
                             </v-label>
@@ -793,19 +778,25 @@
                 <v-expansion-panels
                     class="d-sm-none d-md-flex"
                 >
-                    <v-expansion-panel v-if="ticket.product !== null">
+                    <v-expansion-panel>
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
                         >
                             <span>
                                  <strong>Product: </strong>
-                                 <span class="float-md-right">
+                                 <span v-if="ticket.product !== null" class="float-md-right">
                                      {{ ticket.product.name }}
                                   </span>
                             </span>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
-                                <v-icon>$expand</v-icon>
+                                <v-btn class="float-md-right"
+                                       color="white" small
+                                       style="color: black;"
+                                       @click="true"
+                                >
+                                    {{ langMap.main.edit }}
+                                </v-btn>
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
@@ -819,12 +810,12 @@
                                 item-text="name"
                                 item-value="id"
                                 label="Product"
-                                @input="getProducts"
+                                @input="updateTicket"
                             />
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-                <br v-if="ticket.product !== null">
+                <br>
                 <v-expansion-panels>
                     <v-expansion-panel>
                         <v-expansion-panel-header
