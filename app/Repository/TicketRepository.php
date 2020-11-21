@@ -193,7 +193,7 @@ class TicketRepository
             $ticket->access_details = $request->access_details;
             $ticket->connection_details = $request->connection_details;
             $ticket->category_id = $request->category_id;
-//            $ticket->save();
+            $ticket->save();
 //            $request->status_id = 2;
             foreach($attributesToUpdate as $attribute) {
                 $this->addHistoryItem($ticket->id, null, $attribute . '_updated');
