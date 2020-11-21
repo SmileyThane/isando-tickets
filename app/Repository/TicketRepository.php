@@ -188,16 +188,17 @@ class TicketRepository
             $ticket->priority_id = $request->priority_id;
             $ticket->ticket_type_id = $request->ticket_type_id;
             $ticket->from_entity_id = $request->from_entity_id;
+            $ticket->to_product_id = $request->to_product_id;
             $ticket->from_entity_type = $request->from_entity_type;
             $ticket->access_details = $request->access_details;
             $ticket->connection_details = $request->connection_details;
             $ticket->category_id = $request->category_id;
 //            $ticket->save();
-            $request->status_id = 2;
+//            $request->status_id = 2;
             foreach($attributesToUpdate as $attribute) {
                 $this->addHistoryItem($ticket->id, null, $attribute . '_updated');
             }
-            $this->updateStatus($request, $id);
+//            $this->updateStatus($request, $id);
         }
         return $ticket;
     }
