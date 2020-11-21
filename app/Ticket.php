@@ -17,7 +17,7 @@ class Ticket extends Model
 
     protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
         'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment', 'ticket_type_id'];
-    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to', 'ticket_type'];
+    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to', 'ticket_type', 'created_at_time'];
     protected $hidden = ['to'];
 
     protected static function booted()
@@ -72,6 +72,21 @@ class Ticket extends Model
         $locale = Language::find(Auth::user()->language_id)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+    }
+
+    public function getCreatedAtAttribute()
+    {
+        $locale = Language::find(Auth::user()->language_id)->locale;
+        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+        return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+    }
+
+    public function getCreatedAtTimeAttribute()
+    {
+        $locale = Language::find(Auth::user()->language_id)->locale;
+        $createdAt = Carbon::parse($this->attributes['created_at']);
+        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+        return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
     }
 
     public function creator(): HasOne
