@@ -129,7 +129,7 @@ class TicketRepository
     public function find($id)
     {
         return Ticket::where('id', $id)
-            ->with('creator', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'category',
+            ->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'category',
                 'priority', 'status', 'answers.employee.userData', 'answers.attachments', 'mergedChild',
                 'childTickets.answers.employee.userData', 'childTickets.notices.employee.userData', 'childTickets.answers.attachments',
                 'histories.employee.userData', 'notices.employee.userData', 'attachments', 'mergedParent')->first()->makeVisible(['to']);
