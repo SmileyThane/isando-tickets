@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Settings extends Model
+class CompanySettings extends Model
 {
-    protected $fillable = ['entity_type', 'entity_id', 'data'];
+    protected $fillable = ['company_id', 'data'];
 
     public function getDataAttribute(): array
     {
