@@ -60,6 +60,7 @@
                         </v-btn>
                     </v-card-title>
                     <v-card-text>
+
                         <v-row>
                             <v-col cols="12">
                                 <v-autocomplete
