@@ -148,19 +148,19 @@
                                     </div>
                                     <div class="col-md-3">
                                         <v-select
-                                            :label="langMap.main.category"
+                                            label="Type"
                                             :color="themeColor"
                                             :item-color="themeColor"
                                             item-text="name"
                                             item-value="id"
-                                            :items="categories"
-                                            v-model="ticketForm.category_id"
+                                            :items="types"
+                                            v-model="ticketForm.ticket_type_id"
                                         >
                                             <template slot="selection" slot-scope="data">
-                                                {{ langMap.ticket_categories[data.item.name] }}
+                                                {{ langMap.ticket_types[data.item.name] }}
                                             </template>
                                             <template slot="item" slot-scope="data">
-                                                {{ langMap.ticket_categories[data.item.name] }}
+                                                {{ langMap.ticket_types[data.item.name] }}
                                             </template>
                                         </v-select>
                                     </div>
@@ -297,6 +297,7 @@
                     to_product_id: '',
                     priority_id: '',
                     category_id: '',
+                    ticket_type_id:'',
                     name: '',
                     description: '',
                     availability: '',
@@ -307,7 +308,7 @@
                 suppliers: [],
                 products: [],
                 priorities: [],
-                categories: [],
+                types: [],
                 employees: [],
                 onFileChange(form) {
                     this[form].files = null;
@@ -331,7 +332,7 @@
             this.getSuppliers()
             this.getProducts()
             this.getPriorities()
-            this.getCategories()
+            this.getTypes()
             // this.getCompany()
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
@@ -394,11 +395,11 @@
 
                 });
             },
-            getCategories() {
-                axios.get('/api/ticket_categories').then(response => {
+            getTypes() {
+                axios.get('/api/ticket_types').then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.categories = response.data
+                        this.types = response.data
                     } else {
                         console.log('error')
                     }
