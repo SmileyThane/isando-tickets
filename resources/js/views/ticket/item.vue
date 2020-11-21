@@ -56,6 +56,8 @@
                     <v-card-title class="headline" style="background-color: #F0F0F0;">
                         <span class="text-capitalize">{{langMap.main.edit}}</span>
                         <v-spacer></v-spacer>
+                        <v-btn :color="themeColor" @click="updateDialog = false" darken-1 text>{{langMap.main.cancel}}
+                        </v-btn>
                         <v-btn :color="themeColor" @click="updateTicket" dark>{{langMap.main.update}}
                         </v-btn>
                     </v-card-title>
