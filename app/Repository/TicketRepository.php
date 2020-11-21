@@ -156,7 +156,7 @@ class TicketRepository
         $ticket->access_details = $request->access_details;
         $ticket->category_id = $request->category_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, $employeeId, 'Ticket created');
+        $this->addHistoryItem($ticket->id, $employeeId, 'ticket_created');
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
         foreach ($files as $file) {
             $this->fileRepo->store($file, $ticket->id, Ticket::class);
@@ -180,6 +180,7 @@ class TicketRepository
         if ($request->status_id !== $ticket->status_id) {
             $this->updateStatus($request, $id);
         } else {
+            $attributesToUpdate = $this->checkAttributesUpdating($ticket, $request);
             $ticket->contact_company_user_id = $request->contact_company_user_id;
             $ticket->to_company_user_id = $request->to_company_user_id;
             $ticket->to_team_id = $request->to_team_id;
@@ -191,12 +192,27 @@ class TicketRepository
             $ticket->access_details = $request->access_details;
             $ticket->connection_details = $request->connection_details;
             $ticket->category_id = $request->category_id;
-            $ticket->save();
+//            $ticket->save();
             $request->status_id = 2;
+            foreach($attributesToUpdate as $attribute) {
+                $this->addHistoryItem($ticket->id, null, $attribute . '_updated');
+            }
             $this->updateStatus($request, $id);
-            $this->addHistoryItem($ticket->id, null, 'Ticket updated');
         }
         return $ticket;
+    }
+
+    private function checkAttributesUpdating($ticket, $request): array
+    {
+        $updatedShortCodes = [];
+        foreach($ticket->getFillable() as $ticketColumn)
+        {
+            if (isset($request->$ticketColumn) && $ticket->$ticketColumn !== $request->$ticketColumn)
+            {
+                $updatedShortCodes[] = $ticketColumn;
+            }
+        }
+        return $updatedShortCodes;
     }
 
     public function updateStatus(Request $request, $id, $employeeId = null): bool
@@ -205,7 +221,7 @@ class TicketRepository
         $ticket->status_id = $request->status_id;
         $ticket->save();
         $this->emailEmployees([$ticket->creator], $ticket, ChangedTicketStatus::class);
-        $this->addHistoryItem($ticket->id, $employeeId, 'Status updated');
+        $this->addHistoryItem($ticket->id, $employeeId, 'status_updated');
         return true;
     }
 
@@ -256,7 +272,7 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->team_id = $request->team_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, null, 'Team attached');
+        $this->addHistoryItem($ticket->id, null, 'team_attached');
         return true;
     }
 
@@ -265,7 +281,7 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->to_company_user_id = $request->to_company_user_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, null, 'Employee attached');
+        $this->addHistoryItem($ticket->id, null, 'employee_attached');
         return true;
     }
 
@@ -274,7 +290,7 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->contact_company_user_id = $request->contact_company_user_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, null, 'Contact person updated');
+        $this->addHistoryItem($ticket->id, null, 'contact_person_updated');
         return true;
     }
 
@@ -296,7 +312,7 @@ class TicketRepository
             $request->status_id = 4;
         }
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId);
-        $this->addHistoryItem($ticketAnswer->ticket_id, $employeeId, 'Answer added');
+        $this->addHistoryItem($ticketAnswer->ticket_id, $employeeId, 'answer_added');
         return true;
     }
 
@@ -307,7 +323,7 @@ class TicketRepository
         $ticketNotice->notice = $request->notice;
         $ticketNotice->ticket_id = $id;
         $ticketNotice->save();
-        $this->addHistoryItem($ticketNotice->ticket_id, null, 'Notice added');
+        $this->addHistoryItem($ticketNotice->ticket_id, null, 'notice_added');
         return true;
     }
 
