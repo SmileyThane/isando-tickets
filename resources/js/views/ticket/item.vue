@@ -1249,7 +1249,7 @@
                                                 {{ history.employee.user_data.surname }}
                                                 {{ history.created_at }}:
                                             </strong>
-                                            <span>{{ history.description }}</span>
+                                            <p>{{ history.description }}</p>
                                         </v-list-item-title>
                                     </v-list-item>
                                 </v-list-item-group>
