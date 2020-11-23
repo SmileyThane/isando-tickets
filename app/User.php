@@ -19,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'surname', 'title_before_name', 'title',
+        'name', 'surname', 'title_before_name', 'title',
         'country_id', 'anredeform', 'language_id', 'timezone_id', 'settings', 'status'
    ];
 
@@ -42,7 +42,7 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'full_name', 'contact_phone', 'contact_email'
+        'full_name', 'contact_phone', 'contact_email', 'email'
     ];
 
     public function employee(): HasOne
@@ -110,14 +110,14 @@ class User extends Authenticatable
         return $this->phones()->with('type')->first();
     }
 
+    public function getEmailAttribute()
+    {
+        $email = $this->getContactEmailAttribute();
+        return $email ? $email->email : null;
+    }
+
     public function getContactEmailAttribute()
     {
-        $email = $this->emails()->with('type')->first();
-        return $email ? $email : (new Email([
-            'entity_type' => User::class,
-            'entity_id' => $this->attributes['id'],
-            'email' => $this->attributes['email'],
-            'email_type' => 0
-        ]));
+        return $email = $this->emails()->with('type')->first();
     }
 }

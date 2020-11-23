@@ -13,6 +13,7 @@ use App\Notifications\RegularInviteEmail;
 use App\Role;
 use App\Settings;
 use App\User;
+use App\Email;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -45,8 +46,7 @@ class CompanyUserRepository
                 'employee.userData',
                 function ($query) use ($request) {
                     $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('surname', 'like', $request->search . '%')
-                        ->orWhere('email', 'like', $request->search . '%');
+                        ->orWhere('surname', 'like', $request->search . '%');
                 }
             );
         }
@@ -82,15 +82,16 @@ class CompanyUserRepository
     {
         $isNew = false;
         $request['password'] = Controller::getRandomString();
-        $user = User::where(['is_active' => true, 'email' => $request['email']])->first();
-        if (!$user) {
+        $email = Email::where('entity_type', User::class)->where('email', $request['email'])->first();
+        if ($email) {
+            $user = User::find($email->entity_id);
+        } else {
             $isValid = $this->userRepo->validate($request, $new = true);
             if ($isValid !== true) {
                 return Controller::showResponse(false, $isValid);
             }
             $user = $this->userRepo->create($request);
             $isNew = true;
-
         }
         $request['user_id'] = $user->id;
         $isValid = $this->validate($request);
