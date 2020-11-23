@@ -926,6 +926,7 @@
                     password: "",
                     phones: [],
                     addresses: [],
+                    emails: [],
                     status:''
                 },
                 singleUserForm: {
