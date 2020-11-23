@@ -10,7 +10,6 @@ use App\Notifications\ResetPasswordEmail;
 use App\Role;
 use App\Settings;
 use App\User;
-use App\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
