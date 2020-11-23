@@ -81,7 +81,7 @@ class ClientRepository
     public function find($id)
     {
         return Client::where('id', $id)
-            ->with('teams', 'employees.employee.userData.phones.type', 'employees.employee.userData.addresses.type', 'employees.employee.userData.addresses.country', 'clients', 'products.productData', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails.type')
+            ->with('teams', 'employees.employee.userData.phones.type', 'employees.employee.userData.addresses.type', 'employees.employee.userData.addresses.country', 'employees.employee.userData.emails.type', 'clients','products.productData', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails.type')
             ->first();
     }
 

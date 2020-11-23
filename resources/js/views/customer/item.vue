@@ -446,15 +446,12 @@
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <p></p>
-                                    <p v-if="(item.user_data.emails && item.user_data.emails.length > 0) || (item.user_data.contact_email && item.user_data.contact_email.email)">
+                                    <p v-if="item.employee.user_data.contact_email && item.employee.user_data.contact_email.email">
                                         <strong>{{langMap.main.email}}:</strong>
                                     </p>
-                                    <p v-if="item.user_data.emails && item.user_data.emails.length > 0"
-                                       v-for="emailItem in item.user_data.emails"><v-icon small dense left v-if="emailItem.type">{{emailItem.type.icon}}</v-icon> {{ emailItem.email }}
-                                        <span v-if="emailItem.type">({{ localized(emailItem.type) }})</span></p>
-                                    <p v-else-if="item.user_data.contact_email && item.user_data.contact_email.email">
-                                        <v-icon v-if="item.user_data.contact_email.type" small dense :title="localized(item.user_data.contact_email.type)">{{item.user_data.contact_email.type.icon}}</v-icon>
-                                        {{item.user_data.contact_email.email}}
+                                    <p v-if="item.employee.user_data.contact_email && item.employee.user_data.contact_email.email">
+                                        <v-icon v-if="item.employee.user_data.contact_email.type" small dense :title="localized(item.employee.user_data.contact_email.type)">{{item.employee.user_data.contact_email.type.icon}}</v-icon>
+                                        {{item.employee.user_data.contact_email.email}}
                                     </p>
                                     <p v-if="item.employee.user_data.phones.length > 0">
                                         <strong>{{langMap.main.phone}}:</strong></p>
@@ -517,12 +514,10 @@
 
                             </template>
                             <template v-slot:item.user_data="{ item }">
-                                <div class="justify-center" v-if="item.employee.user_data">{{
-                                    item.employee.user_data.name }} {{
-                                    item.employee.user_data.surname }}
+                                <div class="justify-center" v-if="item.employee.user_data">
+                                    {{item.employee.user_data.full_name }}
                                 </div>
                             </template>
-
                         </v-data-table>
                         <template>
                             <v-dialog v-model="removeEmployeeDialog" persistent max-width="480">
