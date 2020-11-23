@@ -85,7 +85,7 @@ class Company extends Model
 
     public function settings(): MorphOne
     {
-        return $this->hasOne(CompanySettings::class, 'company_id', 'id');
+        return $this->morphOne(Settings::class, 'entity');
     }
 
     public function getContactPhoneAttribute()

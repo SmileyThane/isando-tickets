@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
+use App\Settings;
 use App\ProductCategory;
 use App\Role;
 use App\Settings;

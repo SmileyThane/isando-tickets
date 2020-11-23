@@ -1216,8 +1216,7 @@
                     response = response.data;
                     if (response.success === true) {
                         window.location.reload()
-
-                    } else {
+                } else {
                         this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                         this.errorType = 'error';
                         this.alert = true;
