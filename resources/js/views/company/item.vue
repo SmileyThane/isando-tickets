@@ -261,7 +261,6 @@
                                                 </v-form>
                                             </v-expansion-panel-content>
                                         </v-expansion-panel>
-
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{langMap.main.new_phone}}
@@ -325,7 +324,6 @@
                                                 </v-form>
                                             </v-expansion-panel-content>
                                         </v-expansion-panel>
-
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{langMap.main.new_address}}
@@ -1263,12 +1261,10 @@
                                               v-model="phoneForm.phone_type" :items="phoneTypes" item-value="id"
                                               dense :label="langMap.main.type">
                                         <template slot="selection" slot-scope="data">
-                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
-                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
-                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1299,12 +1295,10 @@
                                               v-model="socialForm.social_type" :items="socialTypes" item-value="id"
                                               dense :label="langMap.main.type">
                                         <template slot="selection" slot-scope="data">
-                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
-                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
-                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1420,12 +1414,10 @@
                                               v-model="emailForm.email_type" :items="emailTypes" item-value="id"
                                               dense :label="langMap.main.type">
                                         <template slot="selection" slot-scope="data">
-                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
-                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            <v-list-item-icon><v-icon small left v-text="data.item.icon"></v-icon></v-list-item-icon>
-                                            <v-list-item-content v-text="localized(data.item)"></v-list-item-content>
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
