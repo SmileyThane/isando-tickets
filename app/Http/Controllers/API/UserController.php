@@ -9,7 +9,6 @@ use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Role;
 use App\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -79,15 +78,6 @@ class UserController extends Controller
         return self::showResponse($success);
     }
 
-    public function getSettings(Request $request, $id = null): JsonResponse
-    {
-        return self::showResponse(true, $this->userRepo->getSettings($id));
-    }
-
-    public function updateSettings(Request $request, $id = null): JsonResponse
-    {
-        return self::showResponse(true, $this->userRepo->updateSettings($request, $id));
-    }
 }
 
 
