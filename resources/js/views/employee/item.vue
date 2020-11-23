@@ -84,7 +84,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.email"
+                                    :label="this.$store.state.lang.lang_map.profile.login_email"
                                     name="email"
                                     prepend-icon="mdi-mail"
                                     type="text"

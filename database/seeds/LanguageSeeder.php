@@ -349,7 +349,8 @@ class LanguageSeeder extends Seeder
   "profile": {
     "user_theme_color": "Personal theme color",
     "show_speed_panel": "Show color floating gear",
-    "revert_to_company_theme_color": "Change to default color"
+    "revert_to_company_theme_color": "Change to default color",
+    "login_email": "Login Email"
   },
   "exceptions": {
   }
@@ -687,7 +688,8 @@ class LanguageSeeder extends Seeder
   "profile": {
     "user_theme_color": "Persönliche Hintergrundfarbe",
     "show_speed_panel": "Colour floating bar anzeigen",
-    "revert_to_company_theme_color": "Farbe des Firmenthemas benutzen"
+    "revert_to_company_theme_color": "Farbe des Firmenthemas benutzen",
+    "login_email": "Einloggen E-Mail"
   },
  "exceptions": {
 
