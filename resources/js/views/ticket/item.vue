@@ -81,9 +81,9 @@
                                     :color="themeColor"
                                     :item-color="themeColor"
                                     :items="contacts"
-                                    :label="langMap.ticket.contact_email"
+                                    :label="langMap.ticket.company_contact"
                                     dense
-                                    item-text="user_data.email"
+                                    item-text="user_data.full_name"
                                     item-value="id"
                                 />
                             </v-col>
