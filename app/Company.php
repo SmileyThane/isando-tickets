@@ -68,6 +68,16 @@ class Company extends Model
         return $this->morphMany(SocialType::class, 'entity');
     }
 
+    public function emails(): MorphMany
+    {
+        return $this->morphMany(Email::class, 'entity');
+    }
+
+    public function emailTypes(): MorphMany
+    {
+        return $this->morphMany(EmailType::class, 'entity');
+    }
+
     public function productCategories(): HasMany
     {
         return $this->hasMany(ProductCategory::class,'company_id','id');
@@ -75,7 +85,16 @@ class Company extends Model
 
     public function settings(): MorphOne
     {
-        return $this->hasOne(CompanySettings::class, 'company_id', 'id');
+        return $this->morphOne(Settings::class, 'entity');
     }
 
+    public function getContactPhoneAttribute()
+    {
+        return $this->phones()->with('type')->first();
+    }
+
+    public function getContactEmailAttribute()
+    {
+        return $this->emails()->with('type')->first();
+    }
 }

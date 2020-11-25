@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -20,7 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'email', 'surname', 'title_before_name', 'title',
         'country_id', 'anredeform', 'language_id', 'timezone_id', 'settings', 'status'
-    ];
+   ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -41,7 +42,7 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'full_name'
+        'full_name', 'contact_phone', 'contact_email'
     ];
 
     public function employee(): HasOne
@@ -79,6 +80,16 @@ class User extends Authenticatable
         return $this->morphMany(SocialType::class, 'entity');
     }
 
+    public function emails(): MorphMany
+    {
+        return $this->morphMany(Email::class, 'entity');
+    }
+
+    public function emailTypes(): MorphMany
+    {
+        return $this->morphMany(EmailType::class, 'entity');
+    }
+
     public function getFullNameAttribute()
     {
         return trim($this->name . ' ' . $this->surname);
@@ -87,5 +98,26 @@ class User extends Authenticatable
     public function settings(): HasOne
     {
         return $this->morphOne(Settings::class, 'entity');
+    }
+
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class, 'country_id', 'id');
+    }
+
+    public function getContactPhoneAttribute()
+    {
+        return $this->phones()->with('type')->first();
+    }
+
+    public function getContactEmailAttribute()
+    {
+        $email = $this->emails()->with('type')->first();
+        return $email ? $email : (new Email([
+            'entity_type' => User::class,
+            'entity_id' => $this->attributes['id'],
+            'email' => $this->attributes['email'],
+            'email_type' => 0
+        ]));
     }
 }

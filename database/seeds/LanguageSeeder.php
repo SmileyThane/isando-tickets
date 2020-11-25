@@ -60,6 +60,30 @@ class LanguageSeeder extends Seeder
     "notification": "Notification",
     "internal": "Internal"
   },
+  "ticket_types": {
+    "question" : "Question",
+    "issue" : "Issue",
+    "quote_request" : "Quote request"
+  },
+  "history_actions": {
+    "ticket_created" : "Ticket created",
+    "status_updated" : "Status updated to ",
+    "ticket_deleted" : "Ticket deleted",
+    "answer_added" : "Responded",
+    "notice_added" : "Internal note added",
+    "ticket_merged" : "Ticket merged",
+    "ticket_linked" : "Ticket linked",
+    "contact_attached" : "Contact updated to ",
+    "team_attached" : "Team updated to ",
+    "due_date_updated" : "Due date updated to ",
+    "employee_attached" : "Assigned to ",
+    "product_updated" : "Product updated to",
+    "access_details_updated" : "Access details updated to ",
+    "conn_details_updated" : "Connection details updated to ",
+    "category_updated" : "Category updated to ",
+    "company_updated" : "Company updated to",
+    "ticket_type_updated" : "Type updated to "
+  },
   "roles": {
     "superadmin": "Superadmin",
     "license_owner": "License owner",
@@ -102,7 +126,11 @@ class LanguageSeeder extends Seeder
     "update_social": "Update social link",
     "social_created": "Social link added",
     "social_updated": "Social link updated",
-    "social_deleted": "Social link deleted"
+    "social_deleted": "Social link deleted",
+    "update_email": "Update email",
+    "email_created": "Email added",
+    "email_updated": "Email updated",
+    "email_deleted": "Email deleted"
   },
   "customer": {
     "customer": "Customer",
@@ -139,7 +167,7 @@ class LanguageSeeder extends Seeder
     "contact_name": "Contact name",
     "contact_email": "Contact E-mail",
     "due_date": "Due date",
-    "access_details": "Access details",
+    "access_details": "Server access details",
     "status": "Status",
     "priority": "Priority",
     "company_from": "From company",
@@ -162,7 +190,7 @@ class LanguageSeeder extends Seeder
     "ticket_history": "History",
     "access_data": "Access data",
     "merged_tickets": "Merged tickets",
-    "availability_description": "Please provide working hours when we can contact you on the submitted issue",
+    "availability_description": "Working hours",
     "ip_description": "IP addresses of your server for remote access if applicable",
     "access_description": "Please provide login details to your server for Teamviewer access, if applicable",
     "answer_description": "Write you answer here...",
@@ -196,6 +224,7 @@ class LanguageSeeder extends Seeder
 "type": "Type",
 "city": "City",
 "country": "Country",
+"street": "Street",
 "email": "Email",
 "password": "Password",
 "name": "Name",
@@ -203,6 +232,7 @@ class LanguageSeeder extends Seeder
 "description": "Description",
 "new_phone": "New phone",
 "new_address": "New address",
+"new_email": "New email",
 "actions": "Actions",
 "action": "Action",
 "item": "Item",
@@ -289,7 +319,9 @@ class LanguageSeeder extends Seeder
 "none": "None",
 "generic_error": "Something went wrong",
 "icon": "Icon",
-"ticketing": "Ticketing"
+"ticketing": "Ticketing",
+"do_not_show_this_again": "Do not show this again",
+"update_successful": "Update successful"
 },
   "system_settings": {
     "title": "System settings",
@@ -326,12 +358,18 @@ class LanguageSeeder extends Seeder
     "address_type_created": "Address type created",
     "address_type_deleted": "Address type deleted",
     "address_type_updated": "Address type updated",
+    "email_types": "Email types",
+    "new_email_type": "Add new email type",
+    "email_type_created": "Email type created",
+    "email_type_deleted": "Email type deleted",
+    "email_type_updated": "Email type updated",
     "update_type_info": "Update information"
   },
   "profile": {
     "user_theme_color": "Personal theme color",
     "show_speed_panel": "Show color floating gear",
-    "revert_to_company_theme_color": "Change to default color"
+    "revert_to_company_theme_color": "Change to default color",
+    "login_email": "Login Email"
   },
   "exceptions": {
   }
@@ -387,6 +425,30 @@ class LanguageSeeder extends Seeder
   "notification": "Benachrichtigung",
   "internal": "Intern"
   },
+  "ticket_types": {
+    "question" : "Frage",
+    "issue" : "Problem",
+    "quote_request" : "Angebotsanfrage"
+  },
+  "history_actions": {
+    "ticket_created" : "Ticket erstellt",
+    "status_updated" : "Status aktualisiert auf ",
+    "ticket_deleted" : "Ticket gelöscht",
+    "answer_added" : "Antwortete",
+    "notice_added" : "Interne Notiz hinzugefügt",
+    "ticket_merged" : "Ticket verschmolzen",
+    "ticket_linked" : "Ticket verknüpft",
+    "contact_attached" : "Kontakt aktualisiert zu ",
+    "team_attached" : "Team aktualisiert zu ",
+    "due_date_updated" : "Fälligkeitsdatum aktualisiert auf ",
+    "employee_attached" : "Zugewiesen an ",
+    "product_updated" : "Produkt aktualisiert zu ",
+    "access_details_updated" : "Zugangsdetails aktualisiert auf ",
+    "conn_details_updated" : "Verbindungsdetails aktualisiert auf ",
+    "category_updated" : "Kategorie aktualisiert auf ",
+    "company_updated" : "Firma aktualisiert auf ",
+    "ticket_type_updated" : "Typ aktualisiert zu "
+  },
   "roles": {
   "superadmin": "Höchster Vorgesetzter",
   "license_owner": "Lizenzinhaber",
@@ -416,14 +478,18 @@ class LanguageSeeder extends Seeder
      "phone_created": "Telefon hinzugefügt",
      "phone_updated": "Telefon aktualisiert",
      "phone_deleted": "Telefon gelöscht",
-     "update_address": "Update address",
+     "update_address": "Adresse aktualisieren",
      "address_created": "Adresse hinzugefügt",
      "address_updated": "Adresse aktualisiert",
      "address_deleted": "Adresse gelöscht",
      "update_social": "Social Link aktualisieren",
      "social_created": "Social Link hinzugefügt",
      "social_updated": "Social Link aktualisiert",
-     "social_deleted": "Sozialer Link gelöscht"
+     "social_deleted": "Sozialer Link gelöscht",
+     "update_email": "E-Mail aktualisieren",
+     "email_created": "E-Mail hinzugefügt",
+     "email_updated": "E-Mail aktualisiert",
+     "email_deleted": "E-Mail gelöscht"
   },
   "customer": {
   "customer": "Firma",
@@ -459,7 +525,7 @@ class LanguageSeeder extends Seeder
     "contact_name": "Kontaktname",
     "contact_email": "Kontakt E-mail",
     "due_date": "Deadline",
-    "access_details": "Zugangsdaten",
+    "access_details": "Server Zugangsdaten",
     "status": "Status",
     "priority": "Priorität",
     "company_from": "Firma von",
@@ -482,7 +548,7 @@ class LanguageSeeder extends Seeder
     "subject": "Betreff",
     "access_data": "Zugangsdaten",
     "merged_tickets": "Zusammengeführte Tickets",
-    "availability_description": "Bitte teilen Sie uns mit, zu welcher Zeit Sie verfügbar sind, damit wir Sie umgehend kontaktieren können.",
+    "availability_description": "Besprechungszeiten.",
     "ip_description": " IP-Adressen Ihres Servers für den Fernzugriff, falls vorhanden.",
     "access_description": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
     "answer_description": "Schreiben Sie Ihre Antwort hier...",
@@ -516,6 +582,7 @@ class LanguageSeeder extends Seeder
 "type": "Wahlen sie",
 "city": "Stadt",
 "country": "Land",
+"street": "Straße",
 "email": "E-Mail",
 "password": "Kennwort",
 "name": "Name",
@@ -523,6 +590,7 @@ class LanguageSeeder extends Seeder
 "description": "Beschreibung",
 "new_phone": "Telefon",
 "new_address": "Adresse",
+"new_email": "E-Mail",
 "actions": "Aktionen",
 "action": "Aktion",
 "item": "element",
@@ -609,7 +677,9 @@ class LanguageSeeder extends Seeder
 "none": "Keiner",
 "generic_error": "Etwas ist schief gelaufen",
 "icon": "Symbol",
-"ticketing": "Buchung"
+"ticketing": "Buchung",
+"do_not_show_this_again": "Diese Mitteilung nicht mehr anzeigen",
+"update_successful": "Aktualisierung erfolgreich"
  },
   "system_settings": {
     "title": "Systemeinstellungen",
@@ -646,12 +716,18 @@ class LanguageSeeder extends Seeder
     "address_type_created": "Adresstyp erstellt",
     "address_type_deleted": "Adresstyp gelöscht",
     "address_type_updated": "Adresstyp aktualisiert",
+    "email_types": "E-Mail-Typen",
+    "new_email_type": "Neuen E-Mail-Typ hinzufügen",
+    "email_type_created": "E-Mail-Typ erstellt",
+    "email_type_deleted": "E-Mail-Typ gelöscht",
+    "email_type_updated": "E-Mail-Typ aktualisiert",
     "update_type_info": "Informationen aktualisieren"
   },
   "profile": {
     "user_theme_color": "Persönliche Hintergrundfarbe",
     "show_speed_panel": "Colour floating bar anzeigen",
-    "revert_to_company_theme_color": "Farbe des Firmenthemas benutzen"
+    "revert_to_company_theme_color": "Farbe des Firmenthemas benutzen",
+    "login_email": "Einloggen E-Mail"
   },
  "exceptions": {
 

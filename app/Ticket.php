@@ -9,14 +9,20 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use App\TicketType;
 
 class Ticket extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
-        'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment'];
-    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to'];
+    protected $fillable = [
+        'id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
+        'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment',
+        'ticket_type_id', 'description', 'name', 'contact_company_user_id', 'to_company_user_id', 'to_team_id',
+        'to_product_id', 'priority_id', 'status_id', 'due_date', 'connection_details', 'access_details', 'availability',
+        'category_id', 'parent_id'
+    ];
+    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to', 'ticket_type', 'created_at_time'];
     protected $hidden = ['to'];
 
     protected static function booted()
@@ -71,6 +77,21 @@ class Ticket extends Model
         $locale = Language::find(Auth::user()->language_id)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+    }
+
+    public function getCreatedAtAttribute()
+    {
+        $locale = Language::find(Auth::user()->language_id)->locale;
+        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+        return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+    }
+
+    public function getCreatedAtTimeAttribute()
+    {
+        $locale = Language::find(Auth::user()->language_id)->locale;
+        $createdAt = Carbon::parse($this->attributes['created_at']);
+        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+        return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
     }
 
     public function creator(): HasOne
@@ -183,5 +204,10 @@ class Ticket extends Model
         // prepare suffix for PHP
         $suffix = '%0' . strlen($suffix) . 'd';
         return $prefix . $delim1 . date($date, strtotime($this->attributes['created_at'])) . $delim2 . sprintf($suffix, $this->sequence);
+    }
+
+    public function getTicketTypeAttribute()
+    {
+        return TicketType::find($this->ticket_type_id);
     }
 }

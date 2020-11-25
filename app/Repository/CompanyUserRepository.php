@@ -31,7 +31,7 @@ class CompanyUserRepository
         $this->roleRepo = $roleRepository;
     }
 
-    public function all(Request $request, $forceReturnAll = false)
+    public function all(Request $request)
     {
         $employee = Auth::user()->employee;
         $clientIds = $employee->hasRole(Role::COMPANY_CLIENT) ? null :
@@ -59,11 +59,7 @@ class CompanyUserRepository
             },
             'clients']);
 
-        if ($forceReturnAll) {
-            return $clientCompanyUsers->get();
-        } else {
-            return $clientCompanyUsers->paginate($request->per_page ?? $clientCompanyUsers->count());
-        }
+        return $clientCompanyUsers->paginate($request->per_page ?? $clientCompanyUsers->count());
     }
 
     public function find($id)

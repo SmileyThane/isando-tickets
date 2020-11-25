@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('user/invite', 'API\UserController@sendInvite');
         Route::post('user/is_active', 'API\UserController@changeIsActive');
         Route::get('user/roles/id', 'API\UserController@authorizedRoleIds');
+        Route::get('user/settings', 'API\UserController@getSettings');
+        Route::post('user/settings', 'API\UserController@updateSettings');
 
         //company management
         Route::get('company/{id?}', 'API\CompanyController@find');
@@ -86,6 +88,15 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('address/{id}', 'API\AddressController@edit');
         Route::delete('address/{id}', 'API\AddressController@delete');
 
+        //email management
+        Route::get('email_types', 'API\EmailController@getTypes');
+        Route::post('email_type', 'API\EmailController@addType');
+        Route::patch('email_type/{id}', 'API\EmailController@updateType');
+        Route::delete('email_type/{id}', 'API\EmailController@deleteType');
+        Route::post('email', 'API\EmailController@add');
+        Route::patch('email/{id}', 'API\EmailController@edit');
+        Route::delete('email/{id}', 'API\EmailController@delete');
+
         //client management
         Route::get('client', 'API\ClientController@get');
         Route::get('supplier', 'API\ClientController@suppliers');
@@ -130,6 +141,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('ticket/{id}/answer', 'API\TicketController@addAnswer');
         Route::post('ticket/{id}/notice', 'API\TicketController@addNotice');
         Route::get('ticket_priorities', 'API\TicketController@priorities');
+        Route::get('ticket_types', 'API\TicketController@types');
         Route::get('ticket_categories', 'API\TicketController@categories');
         Route::post('merge/ticket', 'API\TicketController@addMerge');
         Route::post('link/ticket', 'API\TicketController@addLink');

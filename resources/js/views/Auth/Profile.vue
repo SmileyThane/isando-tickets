@@ -1,6 +1,4 @@
 <template>
-
-
     <v-container fluid>
         <v-row>
             <v-snackbar
@@ -84,7 +82,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.email"
+                                    :label="this.$store.state.lang.lang_map.profile.login_email"
                                     name="email"
                                     prepend-icon="mdi-mail"
                                     type="text"
@@ -209,6 +207,36 @@
                                     >
                                         <v-list-item-group :color="themeColor">
                                             <v-list-item
+                                                v-for="(item, i) in userData.emails"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-icon v-if="item.type">
+                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                </v-list-item-icon>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="item.email"></v-list-item-title>
+                                                    <v-list-item-subtitle v-if="item.type"
+                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="editEmail(item)"
+                                                    >
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="deleteEmail(item.id)"
+                                                    >
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+
+                                            <v-list-item
                                                 v-for="(item, i) in userData.phones"
                                                 :key="item.id"
                                             >
@@ -218,6 +246,14 @@
                                                     <v-list-item-subtitle v-if="item.type"
                                                         v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="editPhone(item)"
+                                                    >
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
                                                 <v-list-item-action>
                                                     <v-icon
                                                         small
@@ -233,12 +269,21 @@
                                             >
                                                 <v-list-item-icon v-if="item.type"><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="">{{item.address}}
-                                                        {{item.address_line_2}} {{item.address_line_3}}
+                                                    <v-list-item-title v-text="">{{item.street}}
+                                                        {{item.postal_code}} {{item.city}}
+                                                        <span v-if="item.country">{{localized(item.country)}}</span>
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
                                                         v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="editAddress(item)"
+                                                    >
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
                                                 <v-list-item-action>
                                                     <v-icon
                                                         small
@@ -253,6 +298,58 @@
                                 </v-col>
                                 <v-col class="col-md-12">
                                     <v-expansion-panels>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{this.$store.state.lang.lang_map.main.new_email}}
+                                                <template v-slot:actions>
+                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col cols="md-6" class="pa-1">
+                                                            <v-text-field
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
+                                                                v-model="emailForm.email"
+                                                                :label="langMap.main.email"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="6" class="pa-1">
+                                                            <v-select
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
+                                                                item-value="id"
+                                                                v-model="emailForm.email_type"
+                                                                :items="emailTypes"
+                                                                :label="langMap.main.type"
+                                                                dense
+                                                            >
+                                                                <template slot="selection" slot-scope="data">
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                </template>
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn
+                                                            dark
+                                                            fab
+                                                            right
+                                                            bottom
+                                                            small
+                                                            :color="themeColor"
+                                                            @click="addEmail"
+                                                        >
+                                                            <v-icon>mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{this.$store.state.lang.lang_map.main.phone}}
@@ -316,49 +413,42 @@
                                                 <v-form>
                                                     <div class="row">
                                                         <v-col cols="md-12" class="pa-1">
-                                                            <v-text-field
+                                                            <v-textarea
+                                                                no-resize
+                                                                rows="3"
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                v-model="addressForm.address.address"
-                                                                :label="this.$store.state.lang.lang_map.main.address_line + ' 1'"
+                                                                v-model="addressForm.address.street"
+                                                                :label="langMap.main.street"
                                                                 dense
-                                                            ></v-text-field>
-                                                        </v-col>
-                                                        <v-col cols="md-6" class="pa-1">
-                                                            <v-text-field
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                v-model="addressForm.address.address_line_2"
-                                                                :label="this.$store.state.lang.lang_map.main.address_line + ' 2'"
-                                                                dense
-                                                            ></v-text-field>
+                                                            ></v-textarea>
                                                         </v-col>
                                                         <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
                                                                 v-model="addressForm.address.postal_code"
-                                                                :label="this.$store.state.lang.lang_map.main.postal_code"
+                                                                :label="langMap.main.postal_code"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="md-4" class="pa-1">
+                                                        <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
                                                                 v-model="addressForm.address.city"
-                                                                :label="this.$store.state.lang.lang_map.main.city"
+                                                                :label="langMap.main.city"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="md-5" class="pa-1">
+                                                        <v-col cols="md-6" class="pa-1">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                :item-value="item => localized(item)"
-                                                                v-model="addressForm.address.country"
+                                                                item-value="id"
+                                                                v-model="addressForm.address.country_id"
                                                                 :items="countries"
-                                                                :label="this.$store.state.lang.lang_map.main.country"
+                                                                :label="langMap.main.country"
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
@@ -369,14 +459,14 @@
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
-                                                        <v-col cols="3" class="pa-1">
+                                                        <v-col cols="6" class="pa-1">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
                                                                 item-value="id"
                                                                 v-model="addressForm.address_type"
                                                                 :items="addressTypes"
-                                                                :label="this.$store.state.lang.lang_map.main.type"
+                                                                :label="langMap.main.type"
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
@@ -466,6 +556,162 @@
                 </v-card>
             </v-col>
         </v-row>
+
+        <v-row justify="center">
+            <v-dialog v-model="updatePhoneDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_phone}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="phoneForm.phone" :label="langMap.main.phone" dense></v-text-field>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-select :color="themeColor" :item-color="themeColor"
+                                              v-model="phoneForm.phone_type" :items="phoneTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updatePhoneDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updatePhoneDlg=false; updatePhone()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="updateAddressDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_address}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-12" class="pa-1">
+                                    <v-textarea
+                                        no-resize
+                                        rows="3"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        v-model="addressForm.address.street"
+                                        :label="langMap.main.street"
+                                        dense
+                                    ></v-textarea>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-text-field
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        v-model="addressForm.address.postal_code"
+                                        :label="langMap.main.postal_code"
+                                        dense
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-text-field
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        v-model="addressForm.address.city"
+                                        :label="langMap.main.city"
+                                        dense
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-select
+                                        :rules="['Required']"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        item-value="id"
+                                        v-model="addressForm.address.country_id"
+                                        :items="countries"
+                                        :label="langMap.main.country"
+                                        dense
+                                    >
+                                        <template slot="selection" slot-scope="data">
+                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                                <v-col cols="6" class="pa-1">
+                                    <v-select
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        item-value="id"
+                                        v-model="addressForm.address_type"
+                                        :items="addressTypes"
+                                        :label="langMap.main.type"
+                                        dense
+                                    >
+                                        <template slot="selection" slot-scope="data">
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updateAddressDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateAddressDlg=false; updateAddress()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="updateEmailDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_email}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="emailForm.email" :label="langMap.main.email" dense></v-text-field>
+                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-select :color="themeColor" :item-color="themeColor"
+                                              v-model="emailForm.email_type" :items="emailTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                        </template>
+                                    </v-select>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updateEmailDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateEmailDlg=false; updateEmail()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+        </v-row>
     </v-container>
 
 </template>
@@ -496,6 +742,7 @@
                     password: "",
                     phones: [],
                     addresses: [],
+                    emails: [],
                     language_id: '',
                     timezone_id: ''
                 },
@@ -509,16 +756,22 @@
                     entity_id: '',
                     entity_type: 'App\\User',
                     address: {
-                        address: '',
-                        address_line_2: '',
-                        address_line_3: '',
+                        street: '',
+                        postal_code: '',
                         city: '',
-                        country: ''
+                        country_id: ''
                     },
                     address_type: ''
                 },
+                emailForm: {
+                    entity_id: '',
+                    entity_type: 'App\\User',
+                    email: '',
+                    email_type: ''
+                },
                 phoneTypes: [],
                 addressTypes: [],
+                emailTypes: [],
                 languages: [],
                 timezones: [],
                 countries: [],
@@ -528,13 +781,17 @@
                     theme_color: '',
                     override_user_theme: false
                 },
-                resetThemeColorFlag: 0
+                resetThemeColorFlag: 0,
+                updatePhoneDlg: false,
+                updateAddressDlg: false,
+                updateEmailDlg: false
             }
         },
         mounted() {
             this.getUser();
             this.getPhoneTypes();
             this.getAddressTypes();
+            this.getEmailTypes();
             this.getLanguages();
             this.getTimeZones();
             this.getCountries();
@@ -555,6 +812,10 @@
                     if (response.success === true) {
                         this.userData = response.data
                         // console.log(this.userData);
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -563,6 +824,10 @@
                     response = response.data
                     if (response.success === true) {
                         this.languages = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -571,6 +836,10 @@
                     response = response.data
                     if (response.success === true) {
                         this.timezones = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -579,6 +848,10 @@
                     response = response.data
                     if (response.success === true) {
                         this.countries = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -590,13 +863,15 @@
                     if (response.success === true) {
                         this.userData.password = ''
                         this.getUser()
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.main.update_successful;
                         this.actionColor = 'success'
                         this.snackbar = true
                         this.enableToEdit = false
                         window.location.reload()
                     } else {
-                        this.errors = response.error
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -605,6 +880,10 @@
                     response = response.data
                     if (response.success === true) {
                         this.phoneTypes = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -613,23 +892,46 @@
                     response = response.data
                     if (response.success === true) {
                         this.addressTypes = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
             addPhone() {
                 this.phoneForm.entity_id = this.userData.id
+
                 axios.post('/api/phone', this.phoneForm).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.snackbarMessage = 'Phone update successful'
+                        this.snackbarMessage = this.langMap.company.phone_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.snackbarMessage = 'Phone update error'
-                        this.actionColor = 'error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
                         this.snackbar = true;
                     }
+                    return true
+                });
+            },
+            updatePhone() {
+                axios.patch(`/api/phone/${this.phoneForm.id}`, this.phoneForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.phoneForm.id = '';
+                        this.getUser();
+                        this.snackbarMessage = this.langMap.company.phone_updated;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
                 });
             },
             deletePhone(id) {
@@ -637,36 +939,50 @@
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.phoneForm.phone = ''
-                        this.snackbarMessage = 'Phone delete successful'
+                        this.snackbarMessage = this.langMap.company.phone_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.snackbarMessage = 'Phone delete error'
-                        this.actionColor = 'error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
                         this.snackbar = true;
                     }
                 });
             },
             addAddress() {
                 this.addressForm.entity_id = this.userData.id
-                if (this.addressForm.address.city !== '' && this.addressForm.address.country !== '') {
-                    this.addressForm.address.address_line_3 = `${this.addressForm.address.city}, ${this.addressForm.address.country}`
-                } else {
-                    this.addressForm.address.address_line_3 = `${this.addressForm.address.city}${this.addressForm.address.country}`
-                }
+
                 axios.post('/api/address', this.addressForm).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.snackbarMessage = 'Address update successful'
+                        this.snackbarMessage = this.langMap.company.address_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.snackbarMessage = 'Address update error'
-                        this.actionColor = 'error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
                         this.snackbar = true;
-
+                    }
+                });
+            },
+            updateAddress() {
+                axios.patch(`/api/address/${this.addressForm.id}`, this.addressForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.addressForm.id = '';
+                        this.addressForm.address.street = '';
+                        this.addressForm.address.postal_code = '';
+                        this.addressForm.address.city = '';
+                        this.addressForm.address.country_id = '';
+                        this.getUser()
+                        this.snackbarMessage = this.langMap.company.address_updated;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -675,14 +991,13 @@
                     response = response.data
                     if (response.success === true) {
                         this.getUser()
-                        this.error.push('Delete successful')
-                        this.errorType = 'success'
-                        this.alert = true;
-                    } else {
-                        this.snackbarMessage = 'Address delete error'
-                        this.actionColor = 'error'
+                        this.snackbarMessage = this.langMap.company.address_deleted;
+                        this.actionColor = 'success'
                         this.snackbar = true;
-
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -714,6 +1029,10 @@
                     if (response.success === true) {
                         this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
                         this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },
@@ -724,20 +1043,91 @@
                 } else {
                     this.themeColorNew = this.$store.state.themeColor;
                 }
+            },
+            editPhone(item) {
+                this.updatePhoneDlg = true;
+
+                this.phoneForm.id = item.id;
+                this.phoneForm.phone = item.phone;
+                this.phoneForm.phone_type = item.type ? item.type.id : 0;
+            },
+            editAddress(item) {
+                this.updateAddressDlg = true;
+
+                this.addressForm.id = item.id;
+                this.addressForm.address.street = item.street;
+                this.addressForm.address.postal_code = item.postal_code;
+                this.addressForm.address.city = item.city;
+                this.addressForm.address.country_id = item.country ? item.country.id : 0;
+            },
+            getEmailTypes() {
+                axios.get(`/api/email_types`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.emailTypes = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
+            },
+            addEmail() {
+                this.emailForm.entity_id = this.userData.id
+                axios.post('/api/email', this.emailForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.snackbarMessage = this.langMap.company.email_created;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            },
+            updateEmail() {
+                axios.patch(`/api/email/${this.emailForm.id}`, this.emailForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.emailForm.id = '';
+                        this.getUser();
+                        this.snackbarMessage = this.langMap.company.email_updated;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
+                });
+            },
+            deleteEmail(id) {
+                axios.delete(`/api/email/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.emailForm.email = ''
+                        this.snackbarMessage = this.langMap.company.email_deleted;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            },
+            editEmail(item) {
+                this.updateEmailDlg = true;
+
+                this.emailForm.id = item.id;
+                this.emailForm.email = item.email;
+                this.emailForm.email_type = item.type ? item.type.id : 0;
             }
-            // parseErrors(errorTypes) {
-            //     for (let typeIndex in errorTypes) {
-            //         let errorType = [];
-            //         if (errorTypes.hasOwnProperty(typeIndex)){
-            //             errorType = errorTypes[typeIndex]
-            //         }
-            //         for (let errorIndex in errorType) {
-            //             if (errorType.hasOwnProperty(errorIndex)){
-            //                 this.error.push(errorType[errorIndex])
-            //             }
-            //         }
-            //     }
-            // }
         }
     }
 </script>

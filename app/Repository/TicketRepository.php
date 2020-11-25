@@ -14,7 +14,6 @@ use App\Role;
 use App\TeamCompanyUser;
 use App\Ticket;
 use App\TicketAnswer;
-use App\TicketHistory;
 use App\TicketMerge;
 use App\TicketNotice;
 use Illuminate\Http\Request;
@@ -26,10 +25,12 @@ class TicketRepository
 {
 
     protected $fileRepo;
+    protected $ticketUpdateRepo;
 
-    public function __construct(FileRepository $fileRepository)
+    public function __construct(FileRepository $fileRepository, TicketUpdateRepository $ticketUpdateRepository)
     {
         $this->fileRepo = $fileRepository;
+        $this->ticketUpdateRepo = $ticketUpdateRepository;
     }
 
     public function validate($request)
@@ -129,7 +130,7 @@ class TicketRepository
     public function find($id)
     {
         return Ticket::where('id', $id)
-            ->with('creator', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'category',
+            ->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'category',
                 'priority', 'status', 'answers.employee.userData', 'answers.attachments', 'mergedChild',
                 'childTickets.answers.employee.userData', 'childTickets.notices.employee.userData', 'childTickets.answers.attachments',
                 'histories.employee.userData', 'notices.employee.userData', 'attachments', 'mergedParent')->first()->makeVisible(['to']);
@@ -156,22 +157,13 @@ class TicketRepository
         $ticket->access_details = $request->access_details;
         $ticket->category_id = $request->category_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, $employeeId, 'Ticket created');
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
         foreach ($files as $file) {
             $this->fileRepo->store($file, $ticket->id, Ticket::class);
         }
+        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_created');
+        $this->ticketUpdateRepo->addHistoryItem($ticket->id, $employeeId, $historyDescription);
         return $ticket;
-    }
-
-    private function addHistoryItem($ticketId, $companyUserId = null, $description = null): bool
-    {
-        $ticketHistory = new TicketHistory();
-        $ticketHistory->company_user_id = $companyUserId ?? Auth::user()->employee->id;
-        $ticketHistory->ticket_id = $ticketId;
-        $ticketHistory->description = $description;
-        $ticketHistory->save();
-        return true;
     }
 
     public function update(Request $request, $id)
@@ -180,31 +172,54 @@ class TicketRepository
         if ($request->status_id !== $ticket->status_id) {
             $this->updateStatus($request, $id);
         } else {
-            $ticket->contact_company_user_id = $request->contact_company_user_id;
-            $ticket->to_company_user_id = $request->to_company_user_id;
-            $ticket->to_team_id = $request->to_team_id;
-            $ticket->due_date = $request->due_date;
-            $ticket->priority_id = $request->priority_id;
+            $ticket->contact_company_user_id = $this->ticketUpdateRepo->setContactCompanyUserId(
+                $ticket->contact_company_user_id,
+                $request->contact_company_user_id,
+                $ticket->id
+            );
+            $ticket->to_company_user_id = $this->ticketUpdateRepo->setCompanyUserId(
+                $ticket->to_company_user_id,
+                $request->to_company_user_id,
+                $ticket->id
+            );
+            $this->ticketUpdateRepo->setFrom(
+                $ticket->from_entity_type,
+                $request->from_entity_type,
+                $ticket->from_entity_id,
+                $request->from_entity_id,
+                $ticket->id);
             $ticket->from_entity_id = $request->from_entity_id;
             $ticket->from_entity_type = $request->from_entity_type;
-            $ticket->access_details = $request->access_details;
-            $ticket->connection_details = $request->connection_details;
-            $ticket->category_id = $request->category_id;
+            $ticket->to_team_id = $this->ticketUpdateRepo->setTeamId($ticket->to_team_id, $request->to_team_id, $ticket->id);
+            $ticket->due_date = $this->ticketUpdateRepo->setDueDate($ticket->due_date, $request->due_date, $ticket->id);
+            $ticket->priority_id = $this->ticketUpdateRepo->setPriorityId($ticket->priority_id, $request->priority_id, $ticket->id);
+            $ticket->ticket_type_id = $this->ticketUpdateRepo->setTicketTypeId($ticket->ticket_type_id, $request->ticket_type_id, $ticket->id);
+            $ticket->to_product_id = $this->ticketUpdateRepo->setProductId($ticket->to_product_id, $request->to_product_id, $ticket->id);
+            $ticket->access_details = $this->ticketUpdateRepo->setAccessDetails($ticket->access_details, $request->access_details, $ticket->id);
+            $ticket->connection_details = $this->ticketUpdateRepo->setConnectionDetails($ticket->connection_details, $request->connection_details, $ticket->id);
+            $ticket->category_id = $this->ticketUpdateRepo->setCategoryId($ticket->category_id, $request->category_id, $ticket->id);
             $ticket->save();
             $request->status_id = 2;
-            $this->updateStatus($request, $id);
-            $this->addHistoryItem($ticket->id, null, 'Ticket updated');
+            $this->updateStatus($request, $id, null, false);
         }
         return $ticket;
     }
 
-    public function updateStatus(Request $request, $id, $employeeId = null): bool
+    public function updateStatus(Request $request, $id, $employeeId = null, $withHistory = true): bool
     {
         $ticket = Ticket::find($id);
         $ticket->status_id = $request->status_id;
         $ticket->save();
         $this->emailEmployees([$ticket->creator], $ticket, ChangedTicketStatus::class);
-        $this->addHistoryItem($ticket->id, $employeeId, 'Status updated');
+        if ($withHistory === true) {
+            $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription(
+                'status_updated',
+                $ticket->status->name,
+                true,
+                'ticket_statuses'
+            );
+            $this->ticketUpdateRepo->addHistoryItem($ticket->id, $employeeId, $historyDescription);
+        }
         return true;
     }
 
@@ -235,6 +250,8 @@ class TicketRepository
             $ticket->delete();
             $result = true;
         }
+        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_deleted');
+        $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
         return $result;
     }
 
@@ -247,24 +264,26 @@ class TicketRepository
             $ticket->save();
             $result = $ticket->is_spam;
         }
+//        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_spam');
+//        $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
         return $result;
     }
 
-    public function attachTeam(Request $request, $id)
+    public function attachTeam(Request $request, $id): bool
     {
         $ticket = Ticket::find($id);
         $ticket->team_id = $request->team_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, null, 'Team attached');
+        $this->ticketUpdateRepo->setTeamId($ticket->team_id, $request->team_id, $ticket->id);
         return true;
     }
 
-    public function attachEmployee(Request $request, $id)
+    public function attachEmployee(Request $request, $id): bool
     {
         $ticket = Ticket::find($id);
         $ticket->to_company_user_id = $request->to_company_user_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, null, 'Employee attached');
+        $this->ticketUpdateRepo->setCompanyUserId($ticket->to_company_user_id, $request->to_company_user_id, $ticket->id);
         return true;
     }
 
@@ -273,11 +292,11 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->contact_company_user_id = $request->contact_company_user_id;
         $ticket->save();
-        $this->addHistoryItem($ticket->id, null, 'Contact person updated');
+        $this->ticketUpdateRepo->setContactCompanyUserId($ticket->contact_company_user_id, $request->contact_company_user_id, $ticket->id);
         return true;
     }
 
-    public function addAnswer(Request $request, $id, $employeeId = null)
+    public function addAnswer(Request $request, $id, $employeeId = null): bool
     {
         $ticketAnswer = new TicketAnswer();
         $ticketAnswer->ticket_id = $id;
@@ -294,19 +313,21 @@ class TicketRepository
         } else {
             $request->status_id = 4;
         }
-        $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId);
-        $this->addHistoryItem($ticketAnswer->ticket_id, $employeeId, 'Answer added');
+        $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
+        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_added');
+        $this->ticketUpdateRepo->addHistoryItem($ticketAnswer->ticket_id, null, $historyDescription);
         return true;
     }
 
-    public function addNotice(Request $request, $id)
+    public function addNotice(Request $request, $id): bool
     {
         $ticketNotice = new TicketNotice;
         $ticketNotice->company_user_id = Auth::user()->employee->id;
         $ticketNotice->notice = $request->notice;
         $ticketNotice->ticket_id = $id;
         $ticketNotice->save();
-        $this->addHistoryItem($ticketNotice->ticket_id, null, 'Notice added');
+        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('notice_added');
+        $this->ticketUpdateRepo->addHistoryItem($ticketNotice->ticket_id, null, $historyDescription);
         return true;
     }
 
@@ -319,8 +340,9 @@ class TicketRepository
                 $ticket->parent_id = $request->parent_ticket_id;
                 $ticket->save();
                 $request->status_id = 5;
-                $this->updateStatus($request, $ticketId);
-                $this->addHistoryItem($ticket->id, null, 'ticket_merged');
+                $this->updateStatus($request, $ticketId, null, false);
+                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged');
+                $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
             }
             $parentTicket = Ticket::find($request->parent_ticket_id);
             $parentTicket->merge_comment = $request->merge_comment;
@@ -340,8 +362,10 @@ class TicketRepository
                 $ticketMerge->parent_ticket_id = $request->parent_ticket_id;
                 $ticketMerge->child_ticket_id = $ticketId;
                 $ticketMerge->save();
-                $this->addHistoryItem($request->parent_ticket_id, null, 'ticket_linked');
-                $this->addHistoryItem($ticketId, null, 'ticket_linked');
+                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
+                $this->ticketUpdateRepo->addHistoryItem($ticketId, null, $historyDescription);
+                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
+                $this->ticketUpdateRepo->addHistoryItem($request->parent_ticket_id, null, $historyDescription);
             }
             return true;
         }
