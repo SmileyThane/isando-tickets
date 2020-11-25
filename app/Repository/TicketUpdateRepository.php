@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\CompanyUser;
 use App\Product;
+use App\Team;
 use App\TicketCategory;
 use App\TicketHistory;
 use App\TicketPriority;
