@@ -76,7 +76,7 @@ class TicketUpdateRepository
     public function setPriorityId($oldValue, $value, $ticketId, $companyUserId = null)
     {
         if ($oldValue !== $value) {
-            $name = TicketPriority::find($value)->userData->name;
+            $name = TicketPriority::find($value)->name;
             $historyItem = $this->makeHistoryDescription('employee_attached', $name, true, 'ticket_priorities');
             $this->addHistoryItem($ticketId, $companyUserId, $historyItem);
         }
