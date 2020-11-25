@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TicketHistory extends Model
 {
-    use SoftDeletes;
+//    use SoftDeletes;
 
     protected $fillable = ['description', 'id', 'company_user_id', 'ticket_id'];
 
