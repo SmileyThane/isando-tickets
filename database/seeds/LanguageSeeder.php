@@ -65,6 +65,25 @@ class LanguageSeeder extends Seeder
     "issue" : "Issue",
     "quote_request" : "Quote request"
   },
+  "history_actions": {
+    "ticket_created" : "Ticket created",
+    "status_updated" : "Status updated to ",
+    "ticket_deleted" : "Ticket deleted",
+    "answer_added" : "Responded",
+    "notice_added" : "Internal note added",
+    "ticket_merged" : "Ticket merged",
+    "ticket_linked" : "Ticket linked",
+    "contact_attached" : "Contact updated to ",
+    "team_attached" : "Team updated to ",
+    "due_date_updated" : "Due date updated to ",
+    "employee_attached" : "Assigned to ",
+    "product_updated" : "Product updated to",
+    "access_details_updated" : "Access details updated to ",
+    "conn_details_updated" : "Connection details updated to ",
+    "category_updated" : "Category updated to ",
+    "company_updated" : "Company updated to",
+    "ticket_type_updated" : "Type updated to "
+  },
   "roles": {
     "superadmin": "Superadmin",
     "license_owner": "License owner",
@@ -410,6 +429,25 @@ class LanguageSeeder extends Seeder
     "question" : "Frage",
     "issue" : "Problem",
     "quote_request" : "Angebotsanfrage"
+  },
+  "history_actions": {
+    "ticket_created" : "Ticket erstellt",
+    "status_updated" : "Status aktualisiert auf ",
+    "ticket_deleted" : "Ticket gelöscht",
+    "answer_added" : "Antwortete",
+    "notice_added" : "Interne Notiz hinzugefügt",
+    "ticket_merged" : "Ticket verschmolzen",
+    "ticket_linked" : "Ticket verknüpft",
+    "contact_attached" : "Kontakt aktualisiert zu ",
+    "team_attached" : "Team aktualisiert zu ",
+    "due_date_updated" : "Fälligkeitsdatum aktualisiert auf ",
+    "employee_attached" : "Zugewiesen an ",
+    "product_updated" : "Produkt aktualisiert zu ",
+    "access_details_updated" : "Zugangsdetails aktualisiert auf ",
+    "conn_details_updated" : "Verbindungsdetails aktualisiert auf ",
+    "category_updated" : "Kategorie aktualisiert auf ",
+    "company_updated" : "Firma aktualisiert auf ",
+    "ticket_type_updated" : "Typ aktualisiert zu "
   },
   "roles": {
   "superadmin": "Höchster Vorgesetzter",
