@@ -446,20 +446,15 @@
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <p></p>
-                                    <p v-if="item.employee.user_data.contact_email && item.employee.user_data.contact_email.email">
-                                        <strong>{{langMap.main.email}}:</strong>
-                                    </p>
-                                    <p v-if="item.employee.user_data.contact_email && item.employee.user_data.contact_email.email">
-                                        <v-icon v-if="item.employee.user_data.contact_email.type" small dense :title="localized(item.employee.user_data.contact_email.type)">{{item.employee.user_data.contact_email.type.icon}}</v-icon>
-                                        {{item.employee.user_data.contact_email.email}}
-                                    </p>
-                                    <p v-if="item.employee.user_data.phones.length > 0">
+                                    <p v-if="item.employee.user_data.emails && item.employee.user_data.emails.length > 0">
+                                        <strong>{{langMap.main.email}}:</strong></p>
+                                    <p v-for="emailItem in item.employee.user_data.emails"><v-icon small dense left v-if="emailItem.type">{{emailItem.type.icon}}</v-icon> {{ emailItem.email }}
+                                        <span v-if="emailItem.type">({{ localized(emailItem.type) }})</span></p>
+                                    <p v-if="item.employee.user_data.phones && item.employee.user_data.phones.length > 0">
                                         <strong>{{langMap.main.phone}}:</strong></p>
                                     <p v-for="phoneItem in item.employee.user_data.phones"><v-icon small dense left v-if="phoneItem.type">{{phoneItem.type.icon}}</v-icon> {{ phoneItem.phone }}
                                         <span v-if="phoneItem.type">({{ localized(phoneItem.type) }})</span></p>
-                                    <!--                                    <p><strong>Lang:</strong></p>-->
-                                    <!--                                    <p>{{ item.employee.user_data.lang }}</p>-->
-                                    <p v-if="item.employee.user_data.addresses.length > 0"><strong>{{langMap.main.address}}:</strong>
+                                    <p v-if="item.employee.user_data.addresses && item.employee.user_data.addresses.length > 0"><strong>{{langMap.main.address}}:</strong>
                                     </p>
                                     <p v-for="addressItem in item.employee.user_data.addresses"><v-icon small dense left v-if="addressItem.type">{{addressItem.type.icon}}</v-icon>
                                         {{addressItem.street}}

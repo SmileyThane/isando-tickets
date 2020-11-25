@@ -449,21 +449,19 @@
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
                                     <p></p>
-                                    <p v-if="item.user_data.contact_email && item.user_data.contact_email.email">
-                                        <strong>{{langMap.main.email}}:</strong>
+                                    <p v-if="item.user_data.emails && item.user_data.emails.length > 0"><strong>{{langMap.main.email}}:</strong>
                                     </p>
-                                    <p v-if="item.user_data.contact_email && item.user_data.contact_email.email">
-                                        <v-icon v-if="item.user_data.contact_email.type" small dense :title="localized(item.user_data.contact_email.type)">{{item.user_data.contact_email.type.icon}}</v-icon>
-                                        {{item.user_data.contact_email.email}}
+                                    <p v-if="item.user_data.emails && item.user_data.emails.length > 0"
+                                       v-for="emailItem in item.user_data.emails"><v-icon small dense left v-if="emailItem.type">{{emailItem.type.icon}}</v-icon> {{ emailItem.email }}
+                                        <span v-if="emailItem.type">({{ localized(emailItem.type) }})</span></p>
+                                    <p v-if="iitem.user_data.phones && tem.user_data.phones.length > 0"><strong>{{langMap.main.phone}}:</strong>
                                     </p>
-                                    <p v-if="item.user_data.phones.length > 0"><strong>{{langMap.main.phone}}:</strong>
-                                    </p>
-                                    <p v-if="item.user_data.phones.length > 0"
+                                    <p v-if="item.user_data.phones && item.user_data.phones.length > 0"
                                        v-for="phoneItem in item.user_data.phones"><v-icon small dense left v-if="phoneItem.type">{{phoneItem.type.icon}}</v-icon> {{ phoneItem.phone }}
                                         <span v-if="phoneItem.type">({{ localized(phoneItem.type) }})</span></p>
-                                    <p v-if="item.user_data.addresses.length > 0">
+                                    <p v-if="item.user_data.addresses && item.user_data.addresses.length > 0">
                                         <strong>{{langMap.main.address}}:</strong></p>
-                                    <p v-if="item.user_data.addresses.length > 0"
+                                    <p v-if="item.user_data.addresses && item.user_data.addresses.length > 0"
                                        v-for="addressItem in item.user_data.addresses"><v-icon small dense left v-if="addressItem.type">{{addressItem.type.icon}}</v-icon>
                                         {{ addressItem.street }}
                                         {{addressItem.postal_code }} {{ addressItem.city }}
@@ -882,19 +880,6 @@
                                                     class="col-md-6"
                                                     dense
                                                 ></v-text-field>
-                                                <v-text-field
-                                                    :color="themeColor"
-                                                    :label="langMap.main.email"
-                                                    name="email"
-                                                    prepend-icon="mdi-mail"
-                                                    type="text"
-                                                    v-model="singleUserForm.user.email"
-                                                    required
-                                                    :error-messages="errors.email"
-                                                    lazy-validation
-                                                    class="col-md-12"
-                                                    dense
-                                                ></v-text-field>
                                                 <v-btn
                                                     dark
                                                     fab
@@ -946,11 +931,13 @@
                                                                         mdi-pencil
                                                                     </v-icon>
                                                                 </v-list-item-action>
-                                                                <v-list-item-action>
-                                                                    <v-icon
-                                                                        small
-                                                                        @click="deleteEmail(item.id)"
-                                                                    >
+                                                                <v-list-item-action v-if="i == 0">
+                                                                    <v-icon small :title="langMap.profile.login_email">
+                                                                        mdi-lock
+                                                                    </v-icon>
+                                                                </v-list-item-action>
+                                                                <v-list-item-action v-else>
+                                                                    <v-icon small @click="deleteEmail(item.id)">
                                                                         mdi-delete
                                                                     </v-icon>
                                                                 </v-list-item-action>

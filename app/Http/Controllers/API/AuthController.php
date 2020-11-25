@@ -12,6 +12,8 @@ use App\Repository\PlanRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Role;
+use App\Email;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,7 +49,8 @@ class AuthController extends Controller
     {
         $result = false;
         $tokenData = null;
-        if (Auth::guard('web')->attempt(['email' => $request->email, 'password' => $request->password, 'is_active' => true])) {
+        $email = Email::where('entity_type', User::class)->where('email', $request->email)->first();
+        if (Auth::guard('web')->attempt(['id' => $email ? $email->entity_id : null, 'password' => $request->password, 'is_active' => true])) {
             $user = Auth::guard('web')->user();
             if ($user) {
                 $tokenResult = $user->createToken('web');

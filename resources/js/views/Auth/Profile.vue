@@ -82,20 +82,6 @@
                                 ></v-text-field>
                                 <v-text-field
                                     :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.profile.login_email"
-                                    name="email"
-                                    prepend-icon="mdi-mail"
-                                    type="text"
-                                    v-model="userData.email"
-                                    required
-                                    :error-messages="errors.email"
-                                    lazy-validation
-                                    class="col-md-6"
-                                    :readonly="!enableToEdit"
-                                    dense
-                                ></v-text-field>
-                                <v-text-field
-                                    :color="themeColor"
                                     id="password"
                                     :label="this.$store.state.lang.lang_map.main.password"
                                     placeholder="********"
@@ -226,11 +212,13 @@
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="deleteEmail(item.id)"
-                                                    >
+                                                <v-list-item-action v-if="i == 0">
+                                                    <v-icon small :title="langMap.profile.login_email">
+                                                        mdi-lock
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action v-else>
+                                                    <v-icon small @click="deleteEmail(item.id)">
                                                         mdi-delete
                                                     </v-icon>
                                                 </v-list-item-action>

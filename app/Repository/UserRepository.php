@@ -10,6 +10,8 @@ use App\Notifications\ResetPasswordEmail;
 use App\Role;
 use App\Settings;
 use App\User;
+use App\Email;
+use App\Repository\EmailRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -19,6 +21,13 @@ use Illuminate\Validation\Rule;
 
 class UserRepository
 {
+    protected $emailRepo;
+
+    public function __construct(EmailRepository $emailRepository)
+    {
+        $this->emailRepo = $emailRepository;
+    }
+
     public function validate($request, $new = true)
     {
         $params = [
@@ -26,10 +35,15 @@ class UserRepository
             'password' => 'sometimes|min:8',
         ];
         if ($new === true && $request['email'] !== '[no_email]') {
-            $user = User::where(['email' => $request['email'], 'is_active' => 1])->first();
+            $email = Email::where([
+                'entity_type' => User::class,
+                'email' => $request['email'],
+            ])->first();
             $params['email'] = [
                 'required',
-                Rule::unique('users')->ignore($user ? $user->id : null),
+                Rule::unique('emails')->ignore($email ? $email->entity_id : null)->where(function ($query) {
+                    return $query->where('entity_type', User::class);
+                }),
             ];
         }
         $validator = Validator::make($request->all(), $params);
@@ -48,10 +62,17 @@ class UserRepository
     {
         $user = new User();
         $user->name = $request->name;
-        $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->is_active = $request->is_active;
         $user->save();
+
+        if ($request['email'] && $request['email'] !== '[no_email]') {
+            $emailTypes = $this->emailRepo->getTypesInCompanyContext();
+            $emailType = $emailTypes->isNotEmpty() ? $emailTypes->first()->email_type : 0;
+
+            $this->emailRepo->create($user->id, User::class, $request['email'], $emailType);
+        }
+
         return $user;
     }
 
@@ -59,7 +80,7 @@ class UserRepository
     {
         $user = User::find($id);
         $user->update($request->toArray());
-        if (isset($request->password) && $request->password !== '') {
+        if (isset($request->password) && !empty($request->password)) {
             $user->password = bcrypt($request->password);
             $user->save();
         }
@@ -82,11 +103,9 @@ class UserRepository
         $result = false;
         try {
             $user = User::find($request->user_id);
-            if (!($request->is_active === true && User::where([['email', $user->email], ['is_active', true]])->exists())) {
-                $user->is_active = $request->is_active;
-                $user->save();
-                $result = true;
-            }
+            $user->is_active = $request->is_active;
+            $user->save();
+            $result = true;
         } catch (\Throwable $th) {
         }
         return $result;
