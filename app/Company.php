@@ -97,4 +97,15 @@ class Company extends Model
     {
         return $this->emails()->with('type')->first();
     }
+
+    public function emailSignatures(): MorphMany
+    {
+        return $this->morphMany(EmailSignature::class, 'entity');
+    }
+
+    public function notificationTemplates(): MorphMany
+    {
+        return $this->morphMany(NotificationTemplate::class, 'entity');
+    }
+
 }

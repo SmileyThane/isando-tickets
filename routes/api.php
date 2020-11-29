@@ -146,6 +146,21 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('merge/ticket', 'API\TicketController@addMerge');
         Route::post('link/ticket', 'API\TicketController@addLink');
         Route::post('spam/ticket', 'API\TicketController@markAsSpam');
+
+        //notifications management
+        Route::get('notification_types', 'API\NotificationController@getTypes');
+        Route::post('notification_type', 'API\NotificationController@addType');
+        Route::patch('notification_type/{id}', 'API\NotificationController@updateType');
+        Route::delete('notification_type/{id}', 'API\NotificationController@deleteType');
+        Route::post('notification', 'API\NotificationController@add');
+        Route::patch('notification/{id}', 'API\NotificationController@edit');
+        Route::delete('notification/{id}', 'API\NotificationController@delete');
+
+        //email signatures management
+        Route::get('email_signatures', 'API\EmailSignatureController@get');
+        Route::post('email_signature', 'API\EmailSignatureController@add');
+        Route::patch('email_signature/{id}', 'API\EmailSignatureController@update');
+        Route::delete('email_signature/{id}', 'API\EmailSignatureController@delete');
     });
 
     //language management

@@ -182,7 +182,7 @@
                 <v-list-item
                     :color="themeColor" link
                     style="background-color:white;"
-                    to="/"
+                    to="/notify"
                 >
                     <v-list-item-action>
                         <v-icon>mdi-email-send-outline</v-icon>
