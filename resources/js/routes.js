@@ -16,7 +16,8 @@ import Register from './views/Auth/Register'
 import Profile from './views/Auth/Profile'
 import SystemSettings from './views/settings/system'
 import AllCustomers from './views/customer/all'
-import NotifyCustomers from './views/notify/index'
+import Notifications from './views/notify/index'
+import SingleNotification from './views/notify/item'
 
 export default [
     {
@@ -169,10 +170,18 @@ export default [
     },
     {
         path: '/notify',
-        name: 'notify_customers',
+        name: 'notifications',
         meta: {
             requiresAuth: true,
         },
-        component: NotifyCustomers
+        component: Notifications
+    },
+    {
+        path: '/notify/:id',
+        name: 'notification',
+        meta: {
+            requiresAuth: true,
+        },
+        component: SingleNotification
     }
 ];

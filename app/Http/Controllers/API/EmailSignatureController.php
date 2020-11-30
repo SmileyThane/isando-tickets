@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Repository\EmailRepository;
+use App\Repository\EmailSignatureRepository;
 use Illuminate\Http\Request;
 
 class EmailSignatureController extends Controller
@@ -12,18 +12,18 @@ class EmailSignatureController extends Controller
 
     public function __construct(EmailSignatureRepository $emailsignatureRepository)
     {
-        $this->emailSignatureRepo = $emailSignatureRepository;
+        $this->emailSignatureRepo = $emailsignatureRepository;
     }
 
     public function add(Request $request)
     {
-        $signature = $this->emailSignatureRepo->create($request['entity_id'], $request['entity_type'], $request['signature']);
+        $signature = $this->emailSignatureRepo->create($request['entity_id'], $request['entity_type'], $request['name'], $request['signature']);
         return self::showResponse(true, $signature);
     }
 
-    public function edit(Request $request, $id)
+    public function update(Request $request, $id)
     {
-        $signature = $this->emailSignatureRepo->update($id, $request['signature'],);
+        $signature = $this->emailSignatureRepo->update($id, $request['name'], $request['signature']);
         return self::showResponse(true, $signature);
     }
 
@@ -32,7 +32,7 @@ class EmailSignatureController extends Controller
         return self::showResponse($this->emailSignatureRepo->delete($id));
     }
 
-    public function get()
+    public function get(Request $request)
     {
         $signatures = $this->emailSignatureRepo->get($request['entity_id'], $request['entity_type']);
         return self::showResponse(true, $signatures);

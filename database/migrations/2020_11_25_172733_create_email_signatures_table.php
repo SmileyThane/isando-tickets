@@ -17,7 +17,8 @@ class CreateEmailSignaturesTable extends Migration
             $table->id();
             $table->string('entity_type');
             $table->unsignedBigInteger('entity_id');
-            $table->text('signature');
+            $table->string('name');
+            $table->text('signature')->nullable();
             $table->timestamps();
         });
     }

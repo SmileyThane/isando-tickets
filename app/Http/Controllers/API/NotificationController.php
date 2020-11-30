@@ -15,21 +15,26 @@ class NotificationController extends Controller
         $this->notificationRepo = $notificationRepository;
     }
 
+    public function get(Request $request)
+    {
+        return self::showResponse(true, $this->notificationRepo->getTemplatesInCompanyContext($request));
+    }
+
     public function add(Request $request)
     {
-        $notification = $this->notificationRepo->create($request['entity_id'], $request['entity_type'], $request['notification_type'], $request['name'], $request['description'], $request['text'], $request['priority']);
+        $notification = $this->notificationRepo->createTemplate($request['entity_id'], $request['entity_type'], $request['notification_type'], $request['name'], $request['description'], $request['text'], $request['priority']);
         return self::showResponse(true, $notification);
     }
 
     public function edit(Request $request, $id)
     {
-        $notification = $this->notificationRepo->update($id,$request['notification_type'], $request['name'], $request['description'], $request['text'], $request['priority']); 
+        $notification = $this->notificationRepo->updateTemplate($id,$request['notification_type'], $request['name'], $request['description'], $request['text'], $request['priority']);
         return self::showResponse(true, $notification);
     }
 
     public function delete($id)
     {
-        return self::showResponse($this->notificationRepo->delete($id));
+        return self::showResponse($this->notificationRepo->deleteTemplate($id));
     }
 
     public function getTypes()

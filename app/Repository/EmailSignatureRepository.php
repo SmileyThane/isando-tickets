@@ -10,22 +10,24 @@ use Illuminate\Support\Facades\Auth;
 class EmailSignatureRepository
 {
 
-    public function create($entityId, $entityType, $signature): EmailSignature
+    public function create($entityId, $entityType, $name, $signature): EmailSignature
     {
         return EmailSignature::firstOrCreate(
             [
                 'entity_id' => $entityId,
                 'entity_type' => $entityType,
+                'name' => $name,
                 'signature' => $signature
             ]
         );
     }
 
-    public function update($id, $value): EmailSignature
+    public function update($id, $name, $value): EmailSignature
     {
         $signature = EmailSignature::find($id);
         $signature->update(
             [
+                'name' => $name,
                 'signature' => $value
             ]
         );
@@ -42,7 +44,7 @@ class EmailSignatureRepository
         }
     }
 
-    public function get($entityId = null, $entityType = null;)
+    public function get($entityId = null, $entityType = null)
     {
         $entityId = $entityId ?? Auth::user()->id;
         $entityType = $entityType ?? User::class;

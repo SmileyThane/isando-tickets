@@ -4,16 +4,49 @@
 namespace App\Repository;
 
 use App\Company;
-use App\Notification;
+use App\NotificationTemplate;
 use App\NotificationType;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class NotificationRepository
 {
 
-    public function create($entityId, $entityType, $type, $name, $description, $text, $priority): Notification
+    public function getTemplatesInCompanyContext(Request $request)
     {
-        return Notification::firstOrCreate(
+        $companyId = $request['company_id'] ?? Auth::user()->employee->companyData->id;
+        $notifications = NotificationTemplate::where('entity_type', Company::class)->where('entity_id', $companyId)->with('type')->get();
+
+        $orderBy = $request->sort_by ?? 'name';
+        $request->sort_by = null;
+
+        $orderFunc = function ($item, $key) use ($orderBy) {
+            switch ($orderBy) {
+                case 'id':
+                    return $item->id;
+                case 'type':
+                    return $item->type ? $item->type->name : '';
+                case 'priority':
+                    return $item->priority;
+                case 'name':
+                    return $item->name;
+                case 'description':
+                    return $item->description;
+            }
+        };
+
+        if ($request->sort_val === 'false') {
+            $notifications = $notifications->sortBy($orderFunc);
+        } else {
+            $notifications = $notifications->sortByDesc($orderFunc);
+        }
+
+        return $notifications->paginate($request->per_page ?? $notifications->count());
+    }
+
+    public function createTemplate($entityId, $entityType, $type, $name, $description, $text, $priority): Notification
+    {
+        return NotificationTemplate::firstOrCreate(
             [
                 'entity_id' => $entityId,
                 'entity_type' => $entityType,
@@ -26,9 +59,9 @@ class NotificationRepository
         );
     }
 
-    public function update($id, $type, $name, $description, $text, $priority): Notification
+    public function updateTemplate($id, $type, $name, $description, $text, $priority): Notification
     {
-        $notification = Notification::find($id);
+        $notification = NotificationTemplate::find($id);
         $notification->update(
             [
                 'notification_type_id' => $type,
@@ -41,17 +74,17 @@ class NotificationRepository
         return $notification;
     }
 
-    public function delete($id): ?bool
+    public function deleteTemplate($id): ?bool
     {
         try {
-            Notification::where('id', $id)->delete();
+            NotificationTemplate::where('id', $id)->delete();
             return true;
         } catch (\Throwable $throwable) {
             return false;
         }
     }
 
-    public function createType($name, $name_de, $icon, $entityId = null $entityType = null): NotificationType
+    public function createType($name, $name_de, $icon, $entityId = null, $entityType = null): NotificationType
     {
         $entityId = $entityId ?? Auth::user()->employee->companyData->id;
         $entityType = $entityType ?? Company::class;

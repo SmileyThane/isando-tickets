@@ -20,7 +20,7 @@ class CreateNotificationTemplatesTable extends Migration
             $table->string('name');
             $table->string('description');
             $table->longText('text');
-            $table->foreignId('email_type_id')->constrained('email_types');
+            $table->foreignId('notification_type_id')->constrained('notification_types');
             $table->unsignedInteger('priority')->default(2);
             $table->timestamps();
         });

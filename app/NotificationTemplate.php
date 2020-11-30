@@ -11,7 +11,7 @@ class NotificationTemplate extends Model
 
     public function type(): HasOne
     {
-        return $this->hasOne(NotificationType::class, 'notification_type_id', 'id');
-    } 
-    
+        return $this->hasOne(NotificationType::class, 'id', 'notification_type_id');
+    }
+
 }

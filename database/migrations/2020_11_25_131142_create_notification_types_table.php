@@ -17,7 +17,7 @@ class CreateNotificationTypesTable extends Migration
             $table->id();
             $table->string('entity_type');
             $table->unsignedBigInteger('entity_id');
-            $table->string('name_en');
+            $table->string('name');
             $table->string('name_de')->nullable();
             $table->string('icon')->nullable();
             $table->timestamps();
