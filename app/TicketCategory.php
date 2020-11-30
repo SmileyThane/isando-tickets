@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class TicketCategory extends Model
 {
-    //
+    const INTERNAL = 3;
 }
