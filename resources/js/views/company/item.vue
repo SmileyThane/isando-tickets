@@ -454,7 +454,7 @@
                                     <p v-if="item.user_data.emails && item.user_data.emails.length > 0"
                                        v-for="emailItem in item.user_data.emails"><v-icon small dense left v-if="emailItem.type">{{emailItem.type.icon}}</v-icon> {{ emailItem.email }}
                                         <span v-if="emailItem.type">({{ localized(emailItem.type) }})</span></p>
-                                    <p v-if="iitem.user_data.phones && tem.user_data.phones.length > 0"><strong>{{langMap.main.phone}}:</strong>
+                                    <p v-if="item.user_data.phones && item.user_data.phones.length > 0"><strong>{{langMap.main.phone}}:</strong>
                                     </p>
                                     <p v-if="item.user_data.phones && item.user_data.phones.length > 0"
                                        v-for="phoneItem in item.user_data.phones"><v-icon small dense left v-if="phoneItem.type">{{phoneItem.type.icon}}</v-icon> {{ phoneItem.phone }}

@@ -196,7 +196,8 @@ class LanguageSeeder extends Seeder
     "answer_description": "Write you answer here...",
     "no_assigned": "No agent assigned",
     "merge": "Merge",
-    "is_spam": "Marked as Spam"
+    "is_spam": "Marked as Spam",
+    "reported_by": "Reported by"
   },
    "main":{
 "create": "Create",
@@ -552,9 +553,10 @@ class LanguageSeeder extends Seeder
     "ip_description": " IP-Adressen Ihres Servers für den Fernzugriff, falls vorhanden.",
     "access_description": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
     "answer_description": "Schreiben Sie Ihre Antwort hier...",
-    "no_assigned": "No agent assigned",
-    "merge": "Merge",
-    "is_spam": "Marked as Spam"
+    "no_assigned": "Kein Agent zugewiesen",
+    "merge": "Zusammengeführen",
+    "is_spam": "Marked as Spam",
+    "reported_by": "Erstellt volt"
   },
    "main":{
    "create": "erstellen",
@@ -673,7 +675,7 @@ class LanguageSeeder extends Seeder
 "profile_main": "profile",
 "profile": "Profil",
 "subject": "Gegenstand",
-"link": "Verknüpfung",
+"link": "Verknüpfen",
 "none": "Keiner",
 "generic_error": "Etwas ist schief gelaufen",
 "icon": "Symbol",
