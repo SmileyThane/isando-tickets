@@ -13,6 +13,7 @@ use App\TicketCategory;
 use App\TicketPriority;
 use App\TicketType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TicketController extends Controller
 {
@@ -36,7 +37,12 @@ class TicketController extends Controller
 
     public function categories()
     {
-        return self::showResponse(true, TicketCategory::all());
+        $categories = TicketCategory::where('name', '!=', null);
+        if ($companyUser = Auth::user()->employee->hasRole(Role::COMPANY_CLIENT))
+        {
+            $categories->where('id', '!=', TicketCategory::INTERNAL);
+        }
+        return self::showResponse(true, $categories->get());
     }
 
     public function types()
