@@ -5,12 +5,12 @@
         v-model="drawer"
     >
         <v-list-item v-if="this.navbarStyle === 2 && this.companyLogo">
-            <v-list-item-icon>
-                <v-img :src="companyLogo" contain></v-img>
-            </v-list-item-icon>
             <v-list-item-content>
-<!--                <v-list-item-title class="title">-->
-<!--                </v-list-item-title>-->
+                <v-list-item-icon>
+                    <v-img :src="companyLogo" contain></v-img>
+                </v-list-item-icon>
+                <v-list-item-title class="title">
+                </v-list-item-title>
                 <v-list-item-subtitle>
                     {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
                 </v-list-item-subtitle>
