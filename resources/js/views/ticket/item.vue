@@ -301,7 +301,7 @@
                            small
                            @click="showMergeBlock"
                     >
-                        Merge
+                        {{langMap.ticket.merge}}
                     </v-btn>
                     <v-btn
                         v-show="!thirdColumn"
@@ -319,7 +319,7 @@
                     <v-btn class="ma-2 d-sm-none d-md-flex" color="#f2f2f2" small
                            @click="ticketDeleteProcess"
                     >
-                        Delete
+                        {{langMap.main.delete}}
                     </v-btn>
                     <v-spacer></v-spacer>
                     <v-menu
@@ -453,7 +453,7 @@
                                 v-if="ticket.parent_id !== null || ticket.child_tickets !== null"
                                 @click="showMergeBlock"
                             >
-                                <v-list-item-title>Merge</v-list-item-title>
+                                <v-list-item-title>{{ langMap.ticket.megre }}</v-list-item-title>
                             </v-list-item>
                             <v-list-item
                             >
@@ -470,7 +470,7 @@
                                 link
                                 @click="ticketDeleteProcess"
                             >
-                                <v-list-item-title>Delete</v-list-item-title>
+                                <v-list-item-title>{{langMap.main.delete}}</v-list-item-title>
                             </v-list-item>
                         </v-list>
                     </v-menu>
@@ -490,7 +490,7 @@
                             style="background:#F0F0F0;"
                         >
                                         <span>
-                                            <strong>Reported by: </strong>
+                                            <strong>{{langMap.ticket.reported_by}}: </strong>
                                             <span v-if="ticket.contact !== null">
                                                 {{ ticket.contact.user_data.name }}
                                                 {{ ticket.contact.user_data.surname }}
@@ -723,7 +723,7 @@
                             style="background:#F0F0F0;"
                         >
                             <span>
-                                 <strong>Reported by: </strong>
+                                 <strong>{{langMap.ticket.reported_by}}: </strong>
                                  <span v-if="ticket.contact !== null" class="float-md-right">
                                      {{ ticket.contact.user_data.full_name }}
                                   </span>
@@ -783,7 +783,7 @@
                             style="background:#F0F0F0;"
                         >
                             <span>
-                                 <strong>Product: </strong>
+                                 <strong>{{langMap.sidebar.product}}: </strong>
                                  <span v-if="ticket.product !== null" class="float-md-right">
                                      {{ ticket.product.name }}
                                   </span>
@@ -809,7 +809,7 @@
                                 item-color="green"
                                 item-text="name"
                                 item-value="id"
-                                label="Product"
+                                :label="langMap.sidebar.product"
                                 @input="updateTicket"
                             />
                         </v-expansion-panel-content>
