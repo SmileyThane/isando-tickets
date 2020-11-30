@@ -37,6 +37,11 @@ class NotificationController extends Controller
         return self::showResponse($this->notificationRepo->deleteTemplate($id));
     }
 
+    public function find($id)
+    {
+        return self::showResponse(true, $this->notificationRepo->findTemplate($id));
+    }
+
     public function getTypes()
     {
         return self::showResponse(true, $this->notificationRepo->getTypesInCompanyContext());

@@ -307,6 +307,8 @@ class LanguageSeeder extends Seeder
     "information": "Information",
     "user": "User",
     "save": "Save",
+    "save_as": "Save as...",
+    "send": "Send",
     "continue": "Continue",
     "supplier": "Supplier",
     "responded": "responded",
@@ -385,6 +387,25 @@ class LanguageSeeder extends Seeder
     "email_signature_created": "Email signature created",
     "email_signature_deleted": "Email signature deleted",
     "email_signature_updated": "Email signature updated"
+  },
+  "notification": {
+    "template": "Template",
+    "new_template": "New template",
+    "select_template": "Select other template",
+    "recipients": "Recipients",
+    "new_email": "Add manually",
+    "new_customer": "Add customer",
+    "select_customer": "Select customer",
+    "new_employee": "Add individual",
+    "select_employee": "Select individual",
+    "attributes": "Attributes",
+    "due_date": "Due date",
+    "priority": "Priority",
+    "notification_type", "Notification type",
+    "details": "Details",
+    "subject": "Subject line",
+    "text": "Text",
+    "signature": "Signature"
   },
   "exceptions": {
 
@@ -681,6 +702,8 @@ class LanguageSeeder extends Seeder
     "information": "information",
     "user": "benutzer",
     "save": "spare",
+    "save_as": "speichern als",
+    "send": "senden",
     "continue": "fortsetzen",
     "supplier": "lieferant",
     "responded": "antwortete",
@@ -758,6 +781,25 @@ class LanguageSeeder extends Seeder
     "email_signature_created": "E-Mail-Signatur erstellt",
     "email_signature_deleted": "E-Mail-Signatur gelöscht",
     "email_signature_updated": "E-Mail-Signatur aktualisiert"
+  },
+  "notification": {
+    "template": "Vorlage",
+    "new_template": "Neue Vorlage",
+    "select_template": "Andere Vorlage auswählen",
+    "recipients": "Empfänger",
+    "new_email": "Manuell hinzufügen",
+    "new_customer": "Kunde hinzufügen",
+    "select_customer": "Kunde auswählen",
+    "new_employee": "Person hinzufügen",
+    "select_employee": "Einzelperson auswählen",
+    "attributes": "Attribute",
+    "due_date": "Fälligkeitsdatum",
+    "priority": "Priorität",
+    "notification_type", "Mitteilungstyp",
+    "details": "Details",
+    "subject": "Betreffzeile",
+    "text": "Text",
+    "signature": "Unterschrift"
   },
   "exceptions": {
 

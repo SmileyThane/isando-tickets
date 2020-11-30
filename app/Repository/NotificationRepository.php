@@ -84,6 +84,11 @@ class NotificationRepository
         }
     }
 
+    public function findTemplate($id): ?NotificationTemplate
+    {
+        return NotificationTemplate::find($id);
+    }
+
     public function createType($name, $name_de, $icon, $entityId = null, $entityType = null): NotificationType
     {
         $entityId = $entityId ?? Auth::user()->employee->companyData->id;

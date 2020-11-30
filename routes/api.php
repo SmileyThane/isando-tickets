@@ -153,6 +153,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('notification_type/{id}', 'API\NotificationController@updateType');
         Route::delete('notification_type/{id}', 'API\NotificationController@deleteType');
         Route::get('notifications', 'API\NotificationController@get');
+        Route::get('notification/{id}', 'API\NotificationController@find');
         Route::post('notification', 'API\NotificationController@add');
         Route::patch('notification/{id}', 'API\NotificationController@edit');
         Route::delete('notification/{id}', 'API\NotificationController@delete');
