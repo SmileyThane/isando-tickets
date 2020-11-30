@@ -264,7 +264,7 @@
         <template>
             <v-dialog v-model="removeTicketDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="headline">{{ langMap.main.delete_selected }}?</v-card-title>
+                    <v-card-title>{{ langMap.main.delete_selected }}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeTicketDialog = false">{{ langMap.main.cancel }}

@@ -517,7 +517,7 @@
                         <template>
                             <v-dialog v-model="removeEmployeeDialog" persistent max-width="480">
                                 <v-card>
-                                    <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
+                                    <v-card-title>{{langMap.main.delete_selected}}?</v-card-title>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
