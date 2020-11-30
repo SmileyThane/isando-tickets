@@ -4,32 +4,32 @@
         app
         v-model="drawer"
     >
-        <v-list-item v-if="this.navbarStyle == 2 && this.companyLogo">
+        <v-list-item v-if="this.navbarStyle === 2 && this.companyLogo">
             <v-list-item-icon>
                 <v-img :src="companyLogo" contain></v-img>
             </v-list-item-icon>
             <v-list-item-content>
-                <v-list-item-title class="title">
-                    {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
-                </v-list-item-title>
+<!--                <v-list-item-title class="title">-->
+<!--                </v-list-item-title>-->
                 <v-list-item-subtitle>
+                    {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
                 </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
-        <v-list-item v-else-if="this.navbarStyle == 3 && this.companyLogo">
+        <v-list-item v-else-if="this.navbarStyle === 3 && this.companyLogo">
             <v-list-item-content>
                 <v-list-item-icon>
                     <v-img :src="companyLogo" contain></v-img>
                 </v-list-item-icon>
                 <v-list-item-title class="title">
-                    {{ this.$store.state.lang.lang_map.main.ticketing }}
+                    {{ companyName }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                    {{ companyName }}
+                    {{ this.$store.state.lang.lang_map.main.ticketing }}
                 </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
-        <v-list-item v-else-if="this.navbarStyle == 4 && this.companyLogo">
+        <v-list-item v-else-if="this.navbarStyle === 4 && this.companyLogo">
             <v-list-item-content>
                 <v-list-item-icon>
                     <v-img :src="companyLogo" contain></v-img>
