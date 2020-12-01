@@ -192,21 +192,21 @@
                                                 :label="this.$store.state.lang.lang_map.main.description"
                                                 type="text"
                                                 v-model="employeeForm.description"
-                                                class="col-md-12"
+                                                class="pa-1"
                                                 dense
                                             ></v-text-field>
-                                            <v-btn
-                                                dark
-                                                fab
-                                                right
-                                                bottom
-                                                small
-                                                :color="themeColor"
-                                                @click="addEmployee"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
                                         </div>
+                                        <v-btn
+                                            dark
+                                            fab
+                                            right
+                                            bottom
+                                            small
+                                            :color="themeColor"
+                                            @click="addEmployee"
+                                        >
+                                            <v-icon>mdi-plus</v-icon>
+                                        </v-btn>
                                     </v-form>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
