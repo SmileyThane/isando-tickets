@@ -295,13 +295,14 @@
                     >
                         {{ langMap.main.link }}
                     </v-btn>
-                    <v-btn v-if="ticket.parent_id !== null || ticket.child_tickets !== null" :color="!mergeBlock ? '#f2f2f2' : themeColor"
+                    <v-btn v-if="ticket.parent_id !== null || ticket.child_tickets !== null"
+                           :color="!mergeBlock ? '#f2f2f2' : themeColor"
                            :outlined="mergeBlock"
                            class="ma-2 d-sm-none d-md-flex"
                            small
                            @click="showMergeBlock"
                     >
-                        {{langMap.ticket.merge}}
+                        {{ langMap.ticket.merge }}
                     </v-btn>
                     <v-btn
                         v-show="!thirdColumn"
@@ -319,7 +320,7 @@
                     <v-btn class="ma-2 d-sm-none d-md-flex" color="#f2f2f2" small
                            @click="ticketDeleteProcess"
                     >
-                        {{langMap.main.delete}}
+                        {{ langMap.main.delete }}
                     </v-btn>
                     <v-spacer></v-spacer>
                     <v-menu
@@ -350,8 +351,7 @@
                                 @click="closeTicket"
                             >
                                 <v-list-item-title>
-                                    <!--                                    {{langMap.ticket_statuses['closed']}}-->
-                                    Close ticket
+                                    {{ langMap.ticket.close_ticket }}
                                 </v-list-item-title>
                             </v-list-item>
                         </v-list>
@@ -470,7 +470,7 @@
                                 link
                                 @click="ticketDeleteProcess"
                             >
-                                <v-list-item-title>{{langMap.main.delete}}</v-list-item-title>
+                                <v-list-item-title>{{ langMap.main.delete }}</v-list-item-title>
                             </v-list-item>
                         </v-list>
                     </v-menu>
@@ -490,7 +490,7 @@
                             style="background:#F0F0F0;"
                         >
                                         <span>
-                                            <strong>{{langMap.ticket.reported_by}}: </strong>
+                                            <strong>{{ langMap.ticket.reported_by }}: </strong>
                                             <span v-if="ticket.contact !== null">
                                                 {{ ticket.contact.user_data.name }}
                                                 {{ ticket.contact.user_data.surname }}
@@ -723,7 +723,7 @@
                             style="background:#F0F0F0;"
                         >
                             <span>
-                                 <strong>{{langMap.ticket.reported_by}}: </strong>
+                                 <strong>{{ langMap.ticket.reported_by }}: </strong>
                                  <span v-if="ticket.contact !== null" class="float-md-right">
                                      {{ ticket.contact.user_data.full_name }}
                                   </span>
@@ -783,7 +783,7 @@
                             style="background:#F0F0F0;"
                         >
                             <span>
-                                 <strong>{{langMap.sidebar.product}}: </strong>
+                                 <strong>{{ langMap.sidebar.product }}: </strong>
                                  <span v-if="ticket.product !== null" class="float-md-right">
                                      {{ ticket.product.name }}
                                   </span>
@@ -804,12 +804,12 @@
                             <v-select
                                 v-model="ticket.to_product_id"
                                 :items="products"
+                                :label="langMap.sidebar.product"
                                 color="green"
                                 dense
                                 item-color="green"
                                 item-text="name"
                                 item-value="id"
-                                :label="langMap.sidebar.product"
                                 @input="updateTicket"
                             />
                         </v-expansion-panel-content>
@@ -1037,7 +1037,9 @@
                                                                 item.parent_ticket_data.creator.user_data.name + " " +
                                                                 item.parent_ticket_data.creator.user_data.surname : ''
                                                         }},
-                                                    {{ item.parent_ticket_data.from !== null ? item.parent_ticket_data.from.name : '' }}
+                                                    {{
+                                                            item.parent_ticket_data.from !== null ? item.parent_ticket_data.from.name : ''
+                                                        }}
                                             </span>
                                                     <br>
                                                     <span style="font-weight: lighter;">
@@ -1045,7 +1047,9 @@
                                             </span>
                                                 </v-list-item-title>
                                             </template>
-                                            <span>{{ item.parent_ticket_data.number }}|{{ item.parent_ticket_data.name }}</span>
+                                            <span>{{ item.parent_ticket_data.number }}|{{
+                                                    item.parent_ticket_data.name
+                                                }}</span>
                                         </v-tooltip>
                                     </v-list-item>
                                     <!--                                <v-subheader>Child</v-subheader>-->
@@ -1059,7 +1063,9 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-list-item-title v-on="on">
                                             <span>
-                                                    {{ item.child_ticket_data.number }}|{{ item.child_ticket_data.name }}
+                                                    {{ item.child_ticket_data.number }}|{{
+                                                    item.child_ticket_data.name
+                                                }}
                                             </span>
                                                     <br>
                                                     <span style="font-weight: lighter;">
@@ -1068,7 +1074,9 @@
                                                                 item.child_ticket_data.creator.user_data.name + " " +
                                                                 item.child_ticket_data.creator.user_data.surname : ''
                                                         }},
-                                                    {{ item.child_ticket_data.from !== null ? item.child_ticket_data.from.name : '' }}
+                                                    {{
+                                                            item.child_ticket_data.from !== null ? item.child_ticket_data.from.name : ''
+                                                        }}
                                             </span>
                                                     <br>
                                                     <span style="font-weight: lighter;">
@@ -1076,7 +1084,9 @@
                                             </span>
                                                 </v-list-item-title>
                                             </template>
-                                            <span>{{ item.child_ticket_data.number }}|{{ item.child_ticket_data.name }}</span>
+                                            <span>{{ item.child_ticket_data.number }}|{{
+                                                    item.child_ticket_data.name
+                                                }}</span>
                                         </v-tooltip>
 
                                     </v-list-item>
