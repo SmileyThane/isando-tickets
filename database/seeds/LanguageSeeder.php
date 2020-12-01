@@ -158,6 +158,7 @@ class LanguageSeeder extends Seeder
     "contact_info": "Contact info",
     "assigned_companies": "Linked companies",
     "new_customer": "Link to company",
+    "update_link": "Update link",
     "is_active": "System access",
     "status": "Status",
     "social_info": "Social media"
@@ -518,6 +519,7 @@ class LanguageSeeder extends Seeder
   "contact_info": "Zusätzliche Infos",
   "assigned_companies": "Kontakte",
   "new_customer": "Kontakt hinzufügen",
+  "update_link": "Link aktualisieren",
   "is_active": "Systemzugriff",
   "status": "Status",
   "social_info": "Social Media"
