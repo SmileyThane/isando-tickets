@@ -197,7 +197,8 @@ class LanguageSeeder extends Seeder
     "no_assigned": "No agent assigned",
     "merge": "Merge",
     "is_spam": "Marked as Spam",
-    "reported_by": "Reported by"
+    "reported_by": "Reported by",
+    "close_ticket":"Close ticket"
   },
    "main":{
 "create": "Create",
@@ -556,7 +557,8 @@ class LanguageSeeder extends Seeder
     "no_assigned": "Kein Agent zugewiesen",
     "merge": "Zusammengeführen",
     "is_spam": "Marked as Spam",
-    "reported_by": "Erstellt volt"
+    "reported_by": "Erstellt von",
+    "close_ticket":"Ticket schliessen"
   },
    "main":{
    "create": "erstellen",
