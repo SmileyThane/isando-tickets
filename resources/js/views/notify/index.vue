@@ -92,7 +92,7 @@
                         <v-btn color="grey darken-1" text @click="removeNotificationDialog = false">
                             {{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="red darken-1" text @click="deleteNotification(selectedNotificationId)">
+                        <v-btn color="red darken-1" text @click="removeNotificationDialog = false; deleteNotification(selectedNotificationId)">
                             {{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
@@ -192,7 +192,6 @@ export default {
                     this.snackbarMessage = this.langMap.company.notification_template_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
-                    this.removeNotificationDialog = false
                     this.selectedNotificationId = null
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;

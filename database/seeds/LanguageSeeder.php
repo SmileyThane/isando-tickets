@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class LanguageSeeder extends Seeder
 {
+
     /**
      * Run the database seeds.
      *
@@ -34,6 +36,7 @@ class LanguageSeeder extends Seeder
     "ticket_list": "Ticket list",
     "create_ticket": "Create ticket",
     "notify_customers": "Notify customers",
+    "notification": "Notification",
     "knowledge_base": "Knowledge base",
     "settings": "Settings",
     "system_settings": "System settings",
@@ -409,7 +412,16 @@ class LanguageSeeder extends Seeder
     "details": "Details",
     "subject": "Subject line",
     "text": "Text",
-    "signature": "Signature"
+    "signature": "Signature",
+    "priority_high": "High",
+    "priority_medium": "Medium",
+    "priority_low": "Low",
+    "template_saved": "Template saved",
+    "template_deleted": "Template deleted",
+    "attachments": "Attachments",
+    "new_attachment": "Add attachment",
+    "select_file": "Select file",
+    "delete_template": "Delete template?"
   },
   "exceptions": {
 
@@ -440,6 +452,7 @@ class LanguageSeeder extends Seeder
     "ticket_list": "Ticket Liste",
     "create_ticket": "Neues Ticket",
     "notify_customers": "Kontakte benachrichtigen",
+    "notification": "Benachrichtigung",
     "knowledge_base": "Wissensdatenbank",
     "settings": "Die Einstellungen",
     "system_settings": "Systemeinstellungen",
@@ -806,7 +819,16 @@ class LanguageSeeder extends Seeder
     "details": "Details",
     "subject": "Betreffzeile",
     "text": "Text",
-    "signature": "Unterschrift"
+    "signature": "Unterschrift",
+    "priority_high": "Hoch",
+    "priority_medium": "Mittel",
+    "priority_low": "Niedrig",
+    "template_saved": "Vorlage aktualisiert",
+    "template_deleted": "Vorlage gelöscht",
+    "attachments": "Anhänge",
+    "new_attachment": "Anhang hinzufügen",
+    "select_file": "Datei aussuchen",
+    "delete_template": "Vorlage löschen?"
   },
   "exceptions": {
 
