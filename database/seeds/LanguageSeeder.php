@@ -421,7 +421,8 @@ class LanguageSeeder extends Seeder
     "attachments": "Attachments",
     "new_attachment": "Add attachment",
     "select_file": "Select file",
-    "delete_template": "Delete template?"
+    "delete_template": "Delete template?",
+    "notification_sent": "Notification sent"
   },
   "exceptions": {
 
@@ -830,7 +831,8 @@ class LanguageSeeder extends Seeder
     "attachments": "Anhänge",
     "new_attachment": "Anhang hinzufügen",
     "select_file": "Datei aussuchen",
-    "delete_template": "Vorlage löschen?"
+    "delete_template": "Vorlage löschen?",
+    "notification_sent": "Mitteilung gesendet"
   },
   "exceptions": {
 

@@ -413,7 +413,7 @@
                                     </v-list>
                                     <v-expansion-panels>
                                         <v-expansion-panel>
-                                            <v-expansion-panel-header>
+                                            <v-expansion-panel-header @click.native.stop="attachments.push({})">
                                                 {{langMap.notification.new_attachment}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit" @click="attachments.push({})">mdi-plus</v-icon>
@@ -757,7 +757,6 @@
                         this.snackbarMessage = this.langMap.notification.template_saved;
                         this.actionColor = 'success';
                         this.snackbar = true;
-                        this.getTemplate();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -784,7 +783,44 @@
                 });
             },
             send() {
+                let recipients = [];
+                this.recipients.forEach(function (item) {
+                    if (item.email) {
+                        recipients.push(item.email);
+                    }
+                })
 
+                let that = this;
+                let signature  = this.signatures.find(function (item) {
+                    return item.id === that.selectedSignatureId;
+                });
+
+                let formData = new FormData();
+                formData.append('subject', this.template.name);
+                formData.append('body', this.template.text + '\n' + signature);
+                formData.append('recipients', recipients.join(','));
+
+                this.attachments.forEach(function (item, i) {
+                    formData.append('attachment_'+i, item);
+                });
+                axios.post('/api/notification/send', formData,{
+                    headers:{
+                        'content-type': 'multipart/form-data'
+                    }
+                }).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.notification.notification_sent;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                        this.cancel();
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
+                });
             },
             cancel() {
                 this.$router.push('/notify');

@@ -1353,7 +1353,7 @@
                     axios.post(
                         '/api/main_company_logo',
                         formData, {
-                            headers: {'Content-Type': 'multipart/form-data' }}
+                            headers: {'content-type': 'multipart/form-data' }}
                     ).then(response => {
                         this.companyNewLogo = null;
 
