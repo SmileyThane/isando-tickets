@@ -44,7 +44,7 @@ class NotificationRepository
         return $notifications->paginate($request->per_page ?? $notifications->count());
     }
 
-    public function createTemplate($entityId, $entityType, $type, $name, $description, $text, $priority): Notification
+    public function createTemplate($entityId, $entityType, $type, $name, $description, $text, $priority): NotificationTemplate
     {
         return NotificationTemplate::firstOrCreate(
             [
@@ -59,7 +59,7 @@ class NotificationRepository
         );
     }
 
-    public function updateTemplate($id, $type, $name, $description, $text, $priority): Notification
+    public function updateTemplate($id, $type, $name, $description, $text, $priority): NotificationTemplate
     {
         $notification = NotificationTemplate::find($id);
         $notification->update(

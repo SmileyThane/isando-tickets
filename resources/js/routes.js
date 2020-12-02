@@ -170,7 +170,7 @@ export default [
     },
     {
         path: '/notify',
-        name: 'notifications',
+        name: 'notify_customers',
         meta: {
             requiresAuth: true,
         },

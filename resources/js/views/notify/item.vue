@@ -445,33 +445,32 @@
                                     :color="themeColor"
                                     dark
                                     @click="saveAsDlg = true"
+                                    class="mr-3"
                                 >
                                     {{langMap.main.save_as}}
                                 </v-btn>
-
-                                <v-spacer></v-spacer>
 
                                 <v-btn
                                     :color="themeColor"
                                     dark
                                     @click="send()"
+                                    class="mr-3"
+
                                 >
                                     {{langMap.main.send}}
                                 </v-btn>
 
-                                <v-spacer></v-spacer>
-
                                 <v-btn
                                     @click="cancel()"
+                                    class="mr-3"
+                                    color="grey"
                                 >
                                     {{langMap.main.cancel}}
                                 </v-btn>
 
-                                <v-spacer></v-spacer>
-
                                 <v-btn
-                                    color="red"
-                                    @click="deleteDlg = true;"
+                                    color="red lighten-4"
+                                    @click="deleteDlg = true"
                                 >
                                     {{langMap.main.delete}}
                                 </v-btn>
@@ -503,21 +502,21 @@
                     <v-card-actions>
 
                         <v-btn color="red" text @click="saveAsDlg=false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn :color="themeColor" text @click="saveAsDlg=false; saveTemplate()">{{langMap.main.save}}</v-btn>
+                        <v-btn :color="themeColor" text @click="saveAsDlg=false; saveAsTemplate()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
 
             <v-dialog v-model="deleteDlg" persistent max-width="480">
             <v-card>
-                <v-card-title class="headline">{{langMap.notification.delete_template}}?</v-card-title>
+                <v-card-title class="headline">{{langMap.notification.delete_template}}</v-card-title>
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="grey darken-1" text @click="deleteDlg = false">
                         {{langMap.main.cancel}}
                     </v-btn>
                     <v-btn color="red darken-1" text @click="deleteTemplate()">
-                        {{langMap.main.delete}}
+                        {{langMap.main.deletee}}
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -749,14 +748,14 @@
             deleteRecipient(item) {
                 this.recipients.splice(this.recipients.indexOf(item), 1);
             },
-            updateTemplate() {
+            saveAsTemplate() {
                 axios.post('/api/notification', this.template).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.getTemplate();
                         this.snackbarMessage = this.langMap.notification.template_saved;
                         this.actionColor = 'success';
                         this.snackbar = true;
+                        this.getTemplate();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
