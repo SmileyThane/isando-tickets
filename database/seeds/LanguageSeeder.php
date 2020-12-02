@@ -19,7 +19,7 @@ class LanguageSeeder extends Seeder
                 'locale' => 'en_US',
                 'lang_map' => '{
   "sidebar": {
-    "companies": "Company",
+    "companies": "My Company",
     "customers": "Customer",
     "products": "Product",
     "teams": "Team",
