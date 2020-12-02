@@ -203,6 +203,7 @@ export default {
         removeNotification(item) {
             this.selectedNotificationId = item.id;
             this.removeNotificationDialog = true;
+            this.getNotifications();
         },
         showNotification(item) {
             this.$router.push(`/notify/${item.id}`);

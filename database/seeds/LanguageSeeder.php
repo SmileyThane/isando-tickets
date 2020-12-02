@@ -545,10 +545,10 @@ class LanguageSeeder extends Seeder
     "email_created": "E-Mail hinzugefügt",
     "email_updated": "E-Mail aktualisiert",
     "email_deleted": "E-Mail gelöscht",
-    "new_notification_template": "Add new notification template",
-    "notification_template_created": "Notification template created",
-    "notification_template_deleted": "Notification template deleted",
-    "notification_template_updated": "Notification template updated"
+    "new_notification_template": "Neuen Mitteilungsvorlage hinzufügen",
+    "notification_template_created": "Mitteilungsvorlage erstellt",
+    "notification_template_deleted": "Mitteilungsvorlage gelöscht",
+    "notification_template_updated": "Mitteilungsvorlage aktualisiert"
   },
   "customer": {
     "customer": "Firma",
@@ -724,6 +724,8 @@ class LanguageSeeder extends Seeder
 "information": "information",
 "user": "benutzer",
 "save": "spare",
+"save_as": "Speichern als...",
+"send": "Senden",
 "continue": "fortsetzen",
 "supplier": "lieferant",
 "responded": "antwortete",
@@ -784,10 +786,10 @@ class LanguageSeeder extends Seeder
     "email_type_updated": "E-Mail-Typ aktualisiert",
     "update_type_info": "Informationen aktualisieren",
     "notification_types": "Mitteilungstypen",
-    "new_notification_template": "Neuen Mitteilungsvorlage hinzufügen",
-    "notification_template_created": "Mitteilungsvorlage erstellt",
-    "notification_template_deleted": "Mitteilungsvorlage gelöscht",
-    "notification_template_updated": "Mitteilungsvorlage aktualisiert"
+    "new_notification_type": "Neuen Mitteilungstyp hinzufügen",
+    "notification_type_created": "Mitteilungstyp erstellt",
+    "notification_type_deleted": "Mitteilungstyp gelöscht",
+    "notification_type_updated": "Mitteilungstyp aktualisiert"
   },
   "profile": {
     "user_theme_color": "Persönliche Hintergrundfarbe",

@@ -37,6 +37,7 @@ class UserController extends Controller
         $id = $request->id ?? Auth::id();
         $success = false;
         $result = null;
+        $request['email'] = '[no_email]';
         $isValid = $this->userRepo->validate($request, true);
         if ($isValid === true) {
             $result = $this->userRepo->update($request, $id);

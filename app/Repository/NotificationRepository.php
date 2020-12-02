@@ -46,6 +46,9 @@ class NotificationRepository
 
     public function createTemplate($entityId, $entityType, $type, $name, $description, $text, $priority): NotificationTemplate
     {
+        $entityId = $entityId ?? Auth::user()->employee->companyData->id;
+        $entityType = $entityType ?? Company::class;
+
         return NotificationTemplate::firstOrCreate(
             [
                 'entity_id' => $entityId,
