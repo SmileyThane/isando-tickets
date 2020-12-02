@@ -518,7 +518,7 @@
                         {{langMap.main.cancel}}
                     </v-btn>
                     <v-btn color="red darken-1" text @click="deleteTemplate()">
-                        {{langMap.main.deletee}}
+                        {{langMap.main.delete}}
                     </v-btn>
                 </v-card-actions>
             </v-card>
