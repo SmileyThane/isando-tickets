@@ -168,6 +168,105 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
+
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-6">
+                    <v-toolbar
+                        dense
+                        :color="themeColor"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>
+                            {{langMap.profile.email_signatures}}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-list
+                                        dense
+                                        subheader
+                                    >
+                                        <v-list-item-group :color="themeColor">
+                                            <v-list-item
+                                                v-for="(item, i) in userData.email_signatures"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="item.name"></v-list-item-title>
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon
+                                                        small
+                                                        @click="editEmailSignature(item)"
+                                                    >
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action>
+                                                    <v-icon small @click="deleteEmailSignature(item.id)">
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                </v-col>
+                                <v-col class="col-md-12">
+                                    <v-expansion-panels>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{langMap.profile.new_email_signature}}
+                                                <template v-slot:actions>
+                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col cols="12" class="pa-1">
+                                                            <v-text-field
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
+                                                                v-model="emailSignatureForm.name"
+                                                                :label="langMap.main.name"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="12" class="pa-1">
+                                                            <v-textarea
+                                                                rows="5"
+                                                                :color="themeColor"
+                                                                v-model="emailSignatureForm.signature"
+                                                                :label="langMap.profile.signature"
+                                                            ></v-textarea>
+                                                        </v-col>
+                                                        <v-btn
+                                                            dark
+                                                            fab
+                                                            right
+                                                            bottom
+                                                            small
+                                                            :color="themeColor"
+                                                            @click="addEmailSignature"
+                                                        >
+                                                            <v-icon>mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </v-col>
             <v-col class="col-md-6">
                 <v-card class="elevation-6">
@@ -699,6 +798,40 @@
                 </v-card>
             </v-dialog>
 
+            <v-dialog v-model="updateEmailSignatureDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.profile.update_email_signature}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-text-field
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        v-model="emailSignatureForm.name"
+                                        :label="langMap.main.name"
+                                        dense
+                                    ></v-text-field>                                </v-col>
+                                <v-col cols="md-6" class="pa-1">
+                                    <v-textarea
+                                        rows="5"
+                                        :color="themeColor"
+                                        v-model="emailSignatureForm.signature"
+                                        :label="langMap.profile.signature"
+                                    ></v-textarea>                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updateEmailSignatureDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateEmailSignatureDlg=false; updateEmailSignature()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
         </v-row>
     </v-container>
 
@@ -757,6 +890,12 @@
                     email: '',
                     email_type: ''
                 },
+                emailSignatureForm: {
+                    entity_id: '',
+                    entity_type: 'App\\User',
+                    name: '',
+                    signature: ''
+                },
                 phoneTypes: [],
                 addressTypes: [],
                 emailTypes: [],
@@ -772,7 +911,8 @@
                 resetThemeColorFlag: 0,
                 updatePhoneDlg: false,
                 updateAddressDlg: false,
-                updateEmailDlg: false
+                updateEmailDlg: false,
+                updateEmailSignatureDlg: false
             }
         },
         mounted() {
@@ -1115,6 +1255,63 @@
                 this.emailForm.id = item.id;
                 this.emailForm.email = item.email;
                 this.emailForm.email_type = item.type ? item.type.id : 0;
+            },
+            addEmailSignature() {
+                this.emailSignatureForm.entity_id = this.userData.id
+                axios.post('/api/email_signature', this.emailSignatureForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.snackbarMessage = this.langMap.profile.email_signature_created;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            },
+            updateEmailSignature() {
+                axios.patch(`/api/email_signature/${this.emailSignatureForm.id}`, this.emailSignatureForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.emailSignatureForm.id = '';
+                        this.getUser();
+                        this.snackbarMessage = this.langMap.profile.email_signature_updated;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
+                });
+            },
+            deleteEmailSignature(id) {
+                axios.delete(`/api/email_signature/${id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.emailSignatureForm.name = ''
+                        this.emailSignatureForm.signature = ''
+                        this.snackbarMessage = this.langMap.profile.email_signature_deleted;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            },
+            editEmailSignature(item) {
+                this.updateEmailSignatureDlg = true;
+
+                this.emailSignatureForm.id = item.id;
+                this.emailSignatureForm.name = item.name;
+                this.emailSignatureForm.signature = item.signature;
             }
         }
     }
