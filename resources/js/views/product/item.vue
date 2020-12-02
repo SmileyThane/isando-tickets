@@ -204,7 +204,7 @@
                 });
             },
             getSuppliers() {
-                axios.get('/api/client').then(response => {
+                axios.get('/api/client?sort_by=name&sort_val=false').then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.suppliers = response.data.data
