@@ -48,7 +48,7 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col md="12">
+                                <v-col cols="12">
                                     <v-list
                                         dense
                                         subheader
@@ -94,7 +94,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <v-row>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-text-field
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -103,7 +103,7 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-btn
                                                             dark
                                                             fab
@@ -130,7 +130,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <v-row>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -150,7 +150,7 @@
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                                 <v-btn
                                                             dark
                                                             fab
@@ -177,7 +177,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <v-row>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -197,7 +197,7 @@
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-btn
                                                                 dark
                                                                 fab
@@ -236,7 +236,7 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
 
                                     <v-menu
                                         ref="menu1"
@@ -267,7 +267,7 @@
                                         ></v-date-picker>
                                     </v-menu>
                                 </v-col>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <v-select
                                         :color="themeColor"
                                         :item-color="themeColor"
@@ -280,7 +280,7 @@
                                     >
                                     </v-select>
                                 </v-col>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <v-select
                                         :color="themeColor"
                                         :item-color="themeColor"
@@ -317,7 +317,7 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
 
                                     <v-text-field
                                         :color="themeColor"
@@ -327,7 +327,7 @@
                                     >
                                     </v-text-field>
                                 </v-col>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <tiptap-vuetify
                                         aria-rowcount="20"
                                         :color="themeColor"
@@ -337,7 +337,7 @@
                                     ></tiptap-vuetify>
                                     <v-spacer>&nbsp;</v-spacer>
                                 </v-col>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <v-select
                                         :color="themeColor"
                                         :item-color="themeColor"
@@ -442,7 +442,7 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-row>
-                            <v-col cols="12" class="pa-1">
+                            <v-col cols="12" class="pa-3">
                                 <v-btn
                                     :color="themeColor"
                                     dark
@@ -492,10 +492,10 @@
                     <v-card-text>
                         <v-container>
                             <div class="row">
-                                <v-col cols="md-6" class="pa-1">
+                                <v-col cols="6" class="pa-3">
                                     <v-text-field :color="themeColor" :item-color="themeColor" v-model="template.name" :label="langMap.main.name" dense></v-text-field>
                                 </v-col>
-                                <v-col cols="md-6" class="pa-1">
+                                <v-col cols="6" class="pa-3">
                                     <v-text-field :color="themeColor" :item-color="themeColor" v-model="template.description" :label="langMap.main.description" dense></v-text-field>
                                 </v-col>
                             </div>
