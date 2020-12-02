@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Repository\NotificationRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Notification;
+use Illuminate\Http\UploadedFile;
 
 class NotificationController extends Controller
 {
@@ -44,13 +47,24 @@ class NotificationController extends Controller
 
     public function send(Request $request)
     {
+        $attachments = [];
+        foreach ($request->files as $file) {
+            $attachments[] = [
+                'data' => $file->get(),
+                'name' => $file->getClientOriginalName()
+            ];
+        }
+
         $x = [
             'subject' => $request['subject'],
             'body' => $request['body'],
             'recipients' => $request['recipients'],
-            'attachments'=>$request->files->count()
-         ];
+            'attachments'=>$attachments
+        ];
         return self::showResponse(true, $x);
+
+        Mail::send(new Notification($request['recipients'], $request['subject'], $request['body'], $attachments));
+        return self::showResponse(true);
     }
 
     public function getTypes()
