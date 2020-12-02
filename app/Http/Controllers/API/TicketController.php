@@ -37,17 +37,18 @@ class TicketController extends Controller
 
     public function categories()
     {
-        $categories = TicketCategory::where('name', '!=', null);
-        if ($companyUser = Auth::user()->employee->hasRole(Role::COMPANY_CLIENT))
-        {
-            $categories->where('id', '!=', TicketCategory::INTERNAL);
-        }
-        return self::showResponse(true, $categories->get());
+        return self::showResponse(true, TicketCategory::all());
+
     }
 
     public function types()
     {
-        return self::showResponse(true, TicketType::all());
+        $types = TicketType::where('name', '!=', null);
+        if ($companyUser = Auth::user()->employee->hasRole(Role::COMPANY_CLIENT))
+        {
+            $types->where('id', '!=', TicketType::INTERNAL);
+        }
+        return self::showResponse(true, $types->get());
     }
 
     public function find($id)

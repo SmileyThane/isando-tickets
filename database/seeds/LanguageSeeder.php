@@ -19,7 +19,7 @@ class LanguageSeeder extends Seeder
                 'locale' => 'en_US',
                 'lang_map' => '{
   "sidebar": {
-    "companies": "Company",
+    "companies": "My Company",
     "customers": "Customer",
     "products": "Product",
     "teams": "Team",
@@ -63,7 +63,8 @@ class LanguageSeeder extends Seeder
   "ticket_types": {
     "question" : "Question",
     "issue" : "Issue",
-    "quote_request" : "Quote request"
+    "quote_request" : "Quote request",
+  "internal": "Internal"
   },
   "history_actions": {
     "ticket_created" : "Ticket created",
@@ -158,6 +159,7 @@ class LanguageSeeder extends Seeder
     "contact_info": "Contact info",
     "assigned_companies": "Linked companies",
     "new_customer": "Link to company",
+    "update_link": "Update link",
     "is_active": "System access",
     "status": "Status",
     "social_info": "Social media"
@@ -197,7 +199,8 @@ class LanguageSeeder extends Seeder
     "no_assigned": "No agent assigned",
     "merge": "Merge",
     "is_spam": "Marked as Spam",
-    "reported_by": "Reported by"
+    "reported_by": "Reported by",
+    "close_ticket":"Close ticket"
   },
    "main":{
 "create": "Create",
@@ -429,7 +432,8 @@ class LanguageSeeder extends Seeder
   "ticket_types": {
     "question" : "Frage",
     "issue" : "Problem",
-    "quote_request" : "Angebotsanfrage"
+    "quote_request" : "Angebotsanfrage",
+  "internal": "Intern"
   },
   "history_actions": {
     "ticket_created" : "Ticket erstellt",
@@ -517,6 +521,7 @@ class LanguageSeeder extends Seeder
   "contact_info": "Zusätzliche Infos",
   "assigned_companies": "Kontakte",
   "new_customer": "Kontakt hinzufügen",
+  "update_link": "Link aktualisieren",
   "is_active": "Systemzugriff",
   "status": "Status",
   "social_info": "Social Media"
@@ -556,7 +561,8 @@ class LanguageSeeder extends Seeder
     "no_assigned": "Kein Agent zugewiesen",
     "merge": "Zusammengeführen",
     "is_spam": "Marked as Spam",
-    "reported_by": "Erstellt volt"
+    "reported_by": "Erstellt von",
+    "close_ticket":"Ticket schliessen"
   },
    "main":{
    "create": "erstellen",
