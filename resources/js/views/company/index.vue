@@ -98,7 +98,7 @@
         <template>
             <v-dialog v-model="removeCompanyDialog" persistent max-width="480">
                 <v-card>
-                    <v-card-title class="headline">{{langMap.main.delete_selected}} {{langMap.main.company}}?
+                    <v-card-title>{{langMap.main.delete_selected}} {{langMap.main.company}}?
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>

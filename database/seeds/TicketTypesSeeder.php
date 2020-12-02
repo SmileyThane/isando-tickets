@@ -29,5 +29,13 @@ class TicketTypesSeeder extends Seeder
                 'name' => 'quote_request'
             ]
         );
+        DB::table('ticket_types')->updateOrInsert(
+            ['id' => 4],
+            [
+                'name' => 'internal'
+            ]
+        );
+
+
     }
 }

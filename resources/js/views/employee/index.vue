@@ -192,7 +192,7 @@
         <template>
             <v-dialog max-width="480" persistent v-model="removeEmployeeDialog">
                 <v-card>
-                    <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
+                    <v-card-title>{{langMap.main.delete_selected}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn @click="removeEmployeeDialog = false" color="grey darken-1" text>
@@ -247,6 +247,7 @@
                         value: 'id',
                     },
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'employee.user_data.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.last_name}`, value: 'employee.user_data.surname'},
                     {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
                     {
                         text: `${this.$store.state.lang.lang_map.individuals.is_active}`,
