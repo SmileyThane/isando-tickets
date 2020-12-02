@@ -72,6 +72,7 @@ class CompanyUserRepository
         $result = false;
         $companyUser = CompanyUser::find($id);
         if ($companyUser && !$companyUser->hasRole(Role::LICENSE_OWNER)) {
+            User::where('id', $companyUser->user_id)->delete();
             $companyUser->delete();
             $result = true;
         }
