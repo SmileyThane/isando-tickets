@@ -42,6 +42,17 @@ class NotificationController extends Controller
         return self::showResponse(true, $this->notificationRepo->findTemplate($id));
     }
 
+    public function send(Request $request)
+    {
+        $x = [
+            'subject' => $request['subject'],
+            'body' => $request['body'],
+            'recipients' => $request['recipients'],
+            'attachments'=>$request->files->count()
+         ];
+        return self::showResponse(true, $x);
+    }
+
     public function getTypes()
     {
         return self::showResponse(true, $this->notificationRepo->getTypesInCompanyContext());

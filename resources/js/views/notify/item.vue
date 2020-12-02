@@ -48,7 +48,7 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col md="12">
+                                <v-col cols="12">
                                     <v-list
                                         dense
                                         subheader
@@ -94,7 +94,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <v-row>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-text-field
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -103,7 +103,7 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-btn
                                                             dark
                                                             fab
@@ -130,7 +130,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <v-row>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -150,7 +150,7 @@
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                                 <v-btn
                                                             dark
                                                             fab
@@ -177,7 +177,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <v-row>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -197,7 +197,7 @@
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-btn
                                                                 dark
                                                                 fab
@@ -236,7 +236,7 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
 
                                     <v-menu
                                         ref="menu1"
@@ -267,7 +267,7 @@
                                         ></v-date-picker>
                                     </v-menu>
                                 </v-col>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <v-select
                                         :color="themeColor"
                                         :item-color="themeColor"
@@ -280,7 +280,7 @@
                                     >
                                     </v-select>
                                 </v-col>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <v-select
                                         :color="themeColor"
                                         :item-color="themeColor"
@@ -317,7 +317,7 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
 
                                     <v-text-field
                                         :color="themeColor"
@@ -327,7 +327,7 @@
                                     >
                                     </v-text-field>
                                 </v-col>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <tiptap-vuetify
                                         aria-rowcount="20"
                                         :color="themeColor"
@@ -337,7 +337,7 @@
                                     ></tiptap-vuetify>
                                     <v-spacer>&nbsp;</v-spacer>
                                 </v-col>
-                                <v-col cols="12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <v-select
                                         :color="themeColor"
                                         :item-color="themeColor"
@@ -413,7 +413,7 @@
                                     </v-list>
                                     <v-expansion-panels>
                                         <v-expansion-panel>
-                                            <v-expansion-panel-header>
+                                            <v-expansion-panel-header @click.native.stop="attachments.push({})">
                                                 {{langMap.notification.new_attachment}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit" @click="attachments.push({})">mdi-plus</v-icon>
@@ -442,7 +442,7 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-row>
-                            <v-col cols="12" class="pa-1">
+                            <v-col cols="12" class="pa-3">
                                 <v-btn
                                     :color="themeColor"
                                     dark
@@ -492,10 +492,10 @@
                     <v-card-text>
                         <v-container>
                             <div class="row">
-                                <v-col cols="md-6" class="pa-1">
+                                <v-col cols="6" class="pa-3">
                                     <v-text-field :color="themeColor" :item-color="themeColor" v-model="template.name" :label="langMap.main.name" dense></v-text-field>
                                 </v-col>
-                                <v-col cols="md-6" class="pa-1">
+                                <v-col cols="6" class="pa-3">
                                     <v-text-field :color="themeColor" :item-color="themeColor" v-model="template.description" :label="langMap.main.description" dense></v-text-field>
                                 </v-col>
                             </div>
@@ -518,7 +518,7 @@
                         {{langMap.main.cancel}}
                     </v-btn>
                     <v-btn color="red darken-1" text @click="deleteTemplate()">
-                        {{langMap.main.deletee}}
+                        {{langMap.main.delete}}
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -757,7 +757,6 @@
                         this.snackbarMessage = this.langMap.notification.template_saved;
                         this.actionColor = 'success';
                         this.snackbar = true;
-                        this.getTemplate();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -784,7 +783,44 @@
                 });
             },
             send() {
+                let recipients = [];
+                this.recipients.forEach(function (item) {
+                    if (item.email) {
+                        recipients.push(item.email);
+                    }
+                })
 
+                let that = this;
+                let signature  = this.signatures.find(function (item) {
+                    return item.id === that.selectedSignatureId;
+                });
+
+                let formData = new FormData();
+                formData.append('subject', this.template.name);
+                formData.append('body', this.template.text + '\n' + signature);
+                formData.append('recipients', recipients.join(','));
+
+                this.attachments.forEach(function (item, i) {
+                    formData.append('attachment_'+i, item);
+                });
+                axios.post('/api/notification/send', formData,{
+                    headers:{
+                        'content-type': 'multipart/form-data'
+                    }
+                }).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.notification.notification_sent;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                        this.cancel();
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
+                });
             },
             cancel() {
                 this.$router.push('/notify');

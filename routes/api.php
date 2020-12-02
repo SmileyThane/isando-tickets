@@ -157,6 +157,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('notification', 'API\NotificationController@add');
         Route::patch('notification/{id}', 'API\NotificationController@edit');
         Route::delete('notification/{id}', 'API\NotificationController@delete');
+        Route::post('notification/send', 'API\NotificationController@send');
 
         //email signatures management
         Route::get('email_signatures', 'API\EmailSignatureController@get');
