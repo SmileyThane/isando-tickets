@@ -95,7 +95,7 @@
                             </template>
                             <template v-slot:item.is_active="{item}">
                                 <v-icon v-if="item.employee" class="justify-center">
-                                    {{item.employee.user_data.is_active === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel'}}
+                                    {{item.employee.user_data.status === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel'}}
                                 </v-icon>
                                 <v-icon v-else class="justify-center">
                                     {{item.is_active === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel'}}
