@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class LanguageSeeder extends Seeder
 {
@@ -401,11 +402,19 @@ class LanguageSeeder extends Seeder
     "attributes": "Attributes",
     "due_date": "Due date",
     "priority": "Priority",
-    "notification_type", "Notification type",
+    "notification_type": "Notification type",
     "details": "Details",
     "subject": "Subject line",
     "text": "Text",
-    "signature": "Signature"
+    "signature": "Signature",
+    "priority_high": "High",
+    "priority_medium": "Medium",
+    "priority_low": "Low",
+    "template_saved": "Template saved",
+    "template_saved": "Template deleted",
+    "attachments": "Attachments",
+    "new_attachment": "Add attachment",
+    "select_file": "Select file"
   },
   "exceptions": {
 
@@ -795,11 +804,19 @@ class LanguageSeeder extends Seeder
     "attributes": "Attribute",
     "due_date": "Fälligkeitsdatum",
     "priority": "Priorität",
-    "notification_type", "Mitteilungstyp",
+    "notification_type": "Mitteilungstyp",
     "details": "Details",
     "subject": "Betreffzeile",
     "text": "Text",
-    "signature": "Unterschrift"
+    "signature": "Unterschrift",
+    "priority_high": "Hoch",
+    "priority_medium": "Mittel",
+    "priority_low": "Niedrig",
+    "template_saved": "Vorlage aktualisiert",
+    "template_saved": "Vorlage gelöscht",
+    "attachments": "Anhänge",
+    "new_attachment": "Anhang hinzufügen",
+    "select_file": "Datei aussuchen"
   },
   "exceptions": {
 
