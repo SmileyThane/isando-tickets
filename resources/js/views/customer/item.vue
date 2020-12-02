@@ -537,7 +537,7 @@
                         <template>
                             <v-dialog v-if="contactInfoForm !== null" v-model="contactInfoModal" max-width="480">
                                 <v-card>
-                                    <v-card-title>{{ langMap.individuals.contact_info }}?</v-card-title>
+                                    <v-card-title>{{ langMap.individuals.contact_info }}</v-card-title>
                                     <v-card-text>
                                         <v-row>
                                             <span
