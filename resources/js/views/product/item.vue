@@ -91,6 +91,7 @@
                                                 <v-autocomplete
                                                     :color="themeColor"
                                                     :item-color="themeColor"
+                                                    aria-sort="ascending"
                                                     item-text="name"
                                                     item-value="id"
                                                     v-model="supplierForm.client_id"
