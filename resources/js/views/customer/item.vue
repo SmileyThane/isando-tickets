@@ -553,6 +553,8 @@
                                                 </strong>
                                                 <br>
                                                 <br>
+                                                <br>
+                                                <br>
                                                 <span>
                                                     {{ langMap.main.email }}
                                                 </span>
@@ -581,6 +583,14 @@
                                                     {{ contactInfoForm.employee.user_data.full_name }}
                                                 </strong>
                                                 <br>
+                                                <span>
+                                                    {{ langMap.main.description }}
+                                                </span>
+                                                <br>
+                                                <strong >
+                                                    {{ contactInfoForm.description }}
+                                                </strong>
+                                                <v-divider>&nbsp;</v-divider>
                                                 <br>
                                                 <span>
                                                     {{ langMap.main.email }}
@@ -1183,7 +1193,6 @@ export default {
             });
         },
         showContactInfo(item) {
-            console.log(item);
             this.contactInfoForm = item
             this.contactInfoModal = true
         },
