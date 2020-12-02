@@ -63,7 +63,8 @@ class LanguageSeeder extends Seeder
   "ticket_types": {
     "question" : "Question",
     "issue" : "Issue",
-    "quote_request" : "Quote request"
+    "quote_request" : "Quote request",
+  "internal": "Internal"
   },
   "history_actions": {
     "ticket_created" : "Ticket created",
@@ -431,7 +432,8 @@ class LanguageSeeder extends Seeder
   "ticket_types": {
     "question" : "Frage",
     "issue" : "Problem",
-    "quote_request" : "Angebotsanfrage"
+    "quote_request" : "Angebotsanfrage",
+  "internal": "Intern"
   },
   "history_actions": {
     "ticket_created" : "Ticket erstellt",
