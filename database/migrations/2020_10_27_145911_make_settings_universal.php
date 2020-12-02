@@ -15,7 +15,7 @@ class MakeSettingsUniversal extends Migration
     public function up()
     {
         Schema::table('company_settings', static function (Blueprint $table) {
-            //$table->dropForeign(['company_id']);
+            $table->dropForeign(['company_id']);
             $table->string('entity_type')->nullable();
             $table->renameColumn('company_id', 'entity_id');
         });

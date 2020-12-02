@@ -555,6 +555,85 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar dense :color="themeColor" dark flat>
+                        <v-toolbar-title>{{langMap.system_settings.notification_types}}</v-toolbar-title>
+
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-list dense subheader>
+                                        <v-list-item-group :color="themeColor">
+                                            <v-list-item
+                                                v-for="(item, i) in notificationTypes"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-icon>
+                                                    <v-icon left v-text="item.icon"></v-icon>
+                                                </v-list-item-icon>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                </v-list-item-content>
+                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                    <v-icon small @click="showUpdateTypeDialog(item, notificationIcons,'updateNotificationType')">
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                    <v-icon small @click="deleteNotificationType(item.id)">
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                    <v-expansion-panels multiple v-if="checkRoleByIds([1, 2, 3])">
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{langMap.system_settings.new_notification_type}}
+                                                <template v-slot:actions>
+                                                    <v-icon color="submit">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col cols="md-5" class="pa-1">
+                                                            <v-text-field :color="themeColor" :item-color="themeColor" v-model="notificationTypeForm.name" :label="langMap.main.name" dense></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="md-5" class="pa-1">
+                                                            <v-text-field :color="themeColor" :item-color="themeColor" v-model="notificationTypeForm.name_de" :label="langMap.main.name_de" dense></v-text-field>
+                                                        </v-col>
+                                                        <v-col cols="md-2" class="pa-1">
+                                                            <v-select :color="themeColor" :item-color="themeColor"
+                                                                      v-model="notificationTypeForm.icon" :items="notificationIcons"
+                                                                      dense :label="langMap.main.icon">
+                                                                <template slot="selection" slot-scope="data">
+                                                                    <v-icon small v-text="data.item"></v-icon>
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    <v-icon small v-text="data.item"></v-icon>
+                                                                </template>
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn dark fab right bottom small :color="themeColor" @click="submitNewData(notificationTypeForm, 'addNotificationType')">
+                                                            <v-icon>mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </div>
         </div>
 
@@ -689,6 +768,24 @@
                     'mdi-email-outline',
                     'mdi-email-variant'
                 ],
+                notificationTypeForm: {
+                    entity_id: '',
+                    entity_type: 'App\\Company',
+                    name: '',
+                    name_de: '',
+                    icon: 'mdi-alert'
+                },
+                notificationIcons: [
+                    'mdi-alert',
+                    'mdi-alert-decagram',
+                    'mdi-information',
+                    'mdi-information-variant',
+                    'mdi-email-newsletter',
+                    'mdi-email-outline',
+                    'mdi-message',
+                    'mdi-bell',
+                    'mdi-calendar'
+                ],
                 updateTypeForm: {
                     entity_id: this.$route.params.id,
                     entity_type: 'App\\Company',
@@ -700,6 +797,7 @@
                 addressTypes: [],
                 socialTypes: [],
                 emailTypes: [],
+                notificationTypes: [],
                 countries: [],
                 companyCountries:[],
                 languages: [],
@@ -766,6 +864,7 @@
             this.getAddressTypes();
             this.getSocialTypes();
             this.getEmailTypes();
+            this.getNotificationTypes();
             this.getCountries();
             this.getCompanyCountries();
             this.getLanguages();
@@ -1136,7 +1235,69 @@
                     response = response.data;
                     if (response.success === true) {
                         this.getEmailTypes();
-                        this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.emailz_type_deleted}`;
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.email_type_deleted}`;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+
+                    }
+                });
+            },
+            getNotificationTypes() {
+                axios.get(`/api/notification_types`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.notificationTypes = response.data
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+                    }
+                });
+            },
+            addNotificationType(form) {
+                axios.post('/api/notification_type', form).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.getNotificationTypes();
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.notification_type_created}`;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+
+                    }
+                    return true
+                });
+            },
+            updateNotificationType(form) {
+                axios.patch(`/api/notification_type/${form.id}`, form).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.getNotificationTypes();
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.notification_type_updated}`;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+
+                    }
+                    return true
+                });
+            },
+            deleteNotificationType(id) {
+                axios.delete(`/api/notification_type/${id}`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.getNotificationTypes();
+                        this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.notification_type_deleted}`;
                         this.actionColor = 'success';
                         this.snackbar = true;
                     } else {
