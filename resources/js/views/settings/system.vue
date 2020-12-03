@@ -27,6 +27,28 @@
                                         <v-radio :color="themeColor" :label="langMap.system_settings.navbar_only_logo" :value="4"></v-radio>
                                     </v-radio-group>
                                 </v-col>
+                                <v-col cols="12">
+                                    <v-text-field
+                                        :label="langMap.system_settings.ticket_number_format_prefix"
+                                        :color="themeColor"
+                                        dense
+                                        v-model="company.first_alias"
+                                        :readonly="!enableToEdit"
+                                        counter="15"
+                                        maxlength="20"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field
+                                        :label="langMap.system_settings.ticket_number_format_prefix"
+                                        :color="themeColor"
+                                        dense
+                                        v-model="company.second_alias"
+                                        :readonly="!enableToEdit"
+                                        counter="15"
+                                        maxlength="20"
+                                    ></v-text-field>
+                                </v-col>
                             </v-row>
                         </v-form>
 
@@ -697,9 +719,12 @@
                 langMap: this.$store.state.lang.lang_map,
                 themeColor: this.$store.state.themeColor,
                 company: {
+                    id: '',
                     name: '',
                     company_number: '',
-                    description: ''
+                    description: '',
+                    first_alias: '',
+                    second_alias: ''
                 },
                 addressTypeForm: {
                     entity_id: '',
@@ -878,7 +903,7 @@
         },
         methods: {
             getCompany() {
-                axios.get(`/api/company/${this.$route.params.id}`).then(response => {
+                axios.get(`/api/main_company_name`).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.company = response.data;
@@ -886,6 +911,22 @@
                         console.log('error')
                     }
 
+                });
+            },
+            updateCompany() {
+                axios.post(`/api/company/${this.company.id}`, this.company).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        // this.getCompany();
+                        // this.snackbarMessage = 'Update successful'
+                        // this.actionColor = 'success'
+                        // this.snackbar = true;
+                        // this.enableToEdit = false
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
                 });
             },
             getCompanyLogo() {
@@ -1372,7 +1413,7 @@
                 this.companySettings.ticket_number_format = this.ticketNumberFormat.prefix.toLocaleUpperCase() + '｜' +
                     this.ticketNumberFormat.delimiter1 + '｜' + this.ticketNumberFormat.date + '｜' +
                     this.ticketNumberFormat.delimiter2 + '｜' + this.ticketNumberFormat.suffix;
-
+                this.updateCompany()
                 axios.post('/api/main_company_settings', this.companySettings).then(response => {
                     response = response.data;
                     if (response.success === true) {
