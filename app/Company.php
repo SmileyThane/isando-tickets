@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Company extends Model
 {
     use SoftDeletes;
+
+    protected $fillable = ['id', 'name', 'company_number', 'photo', 'description',
+        'registration_date', 'is_validated', 'logo_url', 'first_alias', 'second_alias'];
 
     public function getRegistrationDateAttribute()
     {
@@ -107,5 +111,16 @@ class Company extends Model
     {
         return $this->morphMany(NotificationTemplate::class, 'entity');
     }
+
+    public function getFirstAliasAttribute()
+    {
+        return $this->attributes['first_alias'] ?? $this->attributes['name'];
+    }
+
+    public function getSecondAliasAttribute()
+    {
+        return $this->attributes['second_alias']  ?? Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
+    }
+
 
 }
