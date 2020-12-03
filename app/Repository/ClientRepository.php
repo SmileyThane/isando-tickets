@@ -7,7 +7,6 @@ namespace App\Repository;
 use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
-use App\CompanyUser;
 use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -81,7 +80,7 @@ class ClientRepository
     public function find($id)
     {
         return Client::where('id', $id)
-            ->with('teams', 'employees.employee.userData.phones.type', 'employees.employee.userData.addresses.type', 'employees.employee.userData.addresses.country', 'employees.employee.userData.emails.type', 'clients','products.productData', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails.type')
+            ->with('teams', 'employees.employee.userData.phones.type', 'employees.employee.userData.addresses.type', 'employees.employee.userData.addresses.country', 'employees.employee.userData.emails.type', 'clients', 'products.productData', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails.type')
             ->first();
     }
 
@@ -135,7 +134,10 @@ class ClientRepository
         $client = ClientCompanyUser::find($id);
         if ($client) {
             if (ClientCompanyUser::where('company_user_id', $client->company_user_id)->count() === 1) {
-                CompanyUser::where('id', $client->company_user_id)->delete();
+                (new CompanyUserRepository(
+                    new UserRepository(new EmailRepository()),
+                    new RoleRepository())
+                )->delete($client->company_user_id);
             }
             $client->delete();
             $result = true;
@@ -261,7 +263,6 @@ class ClientRepository
 
         return $result->paginate($request->per_page ?? $result->count());
     }
-
 
 
     public function changeIsActive(Request $request): bool

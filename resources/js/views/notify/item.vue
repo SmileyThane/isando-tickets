@@ -9,7 +9,7 @@
             {{ snackbarMessage }}
         </v-snackbar>
         <v-row>
-            <v-col cols="6">
+            <v-col cols="4">
                 <v-card class="elevation-12">
                     <v-toolbar
                         :color="themeColor"
@@ -21,16 +21,13 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
-                            <h2 v-if="templateId === 'create'">{{langMap.notification.new_template}}</h2>
+                            <h3 v-if="templateId === 'create'">{{langMap.notification.new_template}}</h3>
                             <div v-else>
-                                <h2>{{template.name}}</h2>
+                                <h3>{{template.name}}</h3>
                                 <p>{{template.description}}</p>
                             </div>
 
-                            <v-btn
-                                :color="themeColor"
-                                @click="cancel()"
-                            >{{langMap.notification.select_template}}</v-btn>
+                            <a href="#" @click="cancel">{{langMap.notification.select_template}}</a>
                         </v-form>
                     </v-card-text>
                 </v-card>
@@ -51,7 +48,7 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col md="12">
+                                <v-col cols="12">
                                     <v-list
                                         dense
                                         subheader
@@ -80,7 +77,7 @@
                                                         :color="themeColor"
                                                         @click="deleteRecipient(item)"
                                                     >
-                                                        <v-icon>mdi-delete</v-icon>
+                                                        <v-icon x-small>mdi-delete</v-icon>
                                                     </v-btn>
                                                 </v-list-item-action>
                                             </v-list-item>
@@ -97,7 +94,7 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <v-row>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-text-field
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -106,7 +103,7 @@
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-btn
                                                             dark
                                                             fab
@@ -114,7 +111,7 @@
                                                             bottom
                                                             small
                                                             :color="themeColor"
-                                                            @click="addRecipient('e', Date.now(), email, email)"
+                                                            @click="addRecipient('e', email)"
                                                         >
                                                             <v-icon>mdi-plus</v-icon>
                                                         </v-btn>
@@ -133,28 +130,27 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <v-row>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                item-text="name"
                                                                 item-value="id"
-                                                                v-model="selectedCustomer"
+                                                                v-model="selectedCustomerId"
                                                                 :items="customers"
                                                                 :label="langMap.notification.select_customer"
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    <v-list-item-title v-text="item.name"></v-list-item-title>
-                                                                    <v-list-item-subtitle v-text="item.contact_email"></v-list-item-subtitle>
+                                                                    <span>{{data.item.name}}</span>
+                                                                    <span v-if="data.item.contact_email"> - {{data.item.contact_email.email}}</span>
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    <v-list-item-title v-text="item.name"></v-list-item-title>
-                                                                    <v-list-item-subtitle v-text="item.contact_email"></v-list-item-subtitle>
+                                                                    <span>{{data.item.name}}</span>
+                                                                    <span v-if="data.item.contact_email"> - {{data.item.contact_email.email}}</span>
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                                 <v-btn
                                                             dark
                                                             fab
@@ -162,7 +158,7 @@
                                                             bottom
                                                             small
                                                             :color="themeColor"
-                                                            @click="addRecipient('c', selectedCustomer.id, selectedCustomer.name, selectedCustomer.contact_email)"
+                                                            @click="addRecipient('c', selectedCustomerId)"
                                                         >
                                                             <v-icon>mdi-plus</v-icon>
                                                         </v-btn>
@@ -173,7 +169,7 @@
                                         </v-expansion-panel>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
-                                                {{langMap.main.new_employee}}
+                                                {{langMap.notification.new_employee}}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -181,27 +177,27 @@
                                             <v-expansion-panel-content>
                                                 <v-form>
                                                     <v-row>
-                                                        <v-col cols=12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-select
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
                                                                 item-value="id"
-                                                                v-model="selectedEmployee"
+                                                                v-model="selectedEmployeeId"
                                                                 :items="employees"
                                                                 :label="langMap.notification.select_employee"
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    <v-list-item-title v-text="item.full_name"></v-list-item-title>
-                                                                    <v-list-item-subtitle v-text="item.contact_email"></v-list-item-subtitle>
+                                                                    <span>{{data.item.employee.user_data.full_name}}</span>
+                                                                    <span v-if="data.item.employee.user_data.contact_email"> - {{data.item.employee.user_data.contact_email.email}}</span>
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    <v-list-item-title v-text="item.full_name"></v-list-item-title>
-                                                                    <v-list-item-subtitle v-text="item.contact_email"></v-list-item-subtitle>
+                                                                    <span>{{data.item.employee.user_data.full_name}}</span>
+                                                                    <span v-if="data.item.employee.user_data.contact_email"> - {{data.item.employee.user_data.contact_email.email}}</span>
                                                                 </template>
                                                             </v-select>
                                                         </v-col>
-                                                        <v-col cols=12" class="pa-1">
+                                                        <v-col cols="12" class="pa-3">
                                                             <v-btn
                                                                 dark
                                                                 fab
@@ -209,7 +205,7 @@
                                                                 bottom
                                                                 small
                                                                 :color="themeColor"
-                                                                @click="addRecipient('i', selectedEmployee.id, selectedEmployee.name, selectedEmployee.contact_email)"
+                                                                @click="addRecipient('i', selectedEmployeeId)"
                                                             >
                                                                 <v-icon>mdi-plus</v-icon>
                                                             </v-btn>
@@ -240,17 +236,38 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col cols=12" class="pa-1">
-                                    <v-date-picker
-                                        :color="themeColor"
-                                        :item-color="themeColor"
-                                        v-model="dueDate"
-                                        :label="langMap.notification.due_date"
-                                        dense
+                                <v-col cols="12" class="pa-3">
+
+                                    <v-menu
+                                        ref="menu1"
+                                        v-model="datepickerMenu"
+                                        :close-on-content-click="false"
+                                        transition="scale-transition"
+                                        offset-y
+                                        max-width="290px"
+                                        min-width="290px"
                                     >
-                                    </v-date-picker>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-text-field
+                                                :color="themeColor"
+                                                dense
+                                                v-model="dueDate"
+                                                :label="langMap.notification.due_date"
+                                                persistent-hint
+                                                append-icon="mdi-calendar"
+                                                v-bind="attrs"
+                                                v-on="on"
+                                            ></v-text-field>
+                                        </template>
+                                        <v-date-picker
+                                            :color="themeColor"
+                                            v-model="dueDate"
+                                            no-title
+                                            @input="datepickerMenu = false"
+                                        ></v-date-picker>
+                                    </v-menu>
                                 </v-col>
-                                <v-col cols=12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <v-select
                                         :color="themeColor"
                                         :item-color="themeColor"
@@ -263,7 +280,7 @@
                                     >
                                     </v-select>
                                 </v-col>
-                                <v-col cols=12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <v-select
                                         :color="themeColor"
                                         :item-color="themeColor"
@@ -274,10 +291,10 @@
                                         dense
                                     >
                                         <template slot="selection" slot-scope="data">
-                                            {{localized(item)}}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            {{localized(item)}}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -286,7 +303,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="8">
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
@@ -300,40 +317,48 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col cols=12" class="pa-1">
-                                    <v-date-picker
+                                <v-col cols="12" class="pa-3">
+
+                                    <v-text-field
                                         :color="themeColor"
-                                        :item-color="themeColor"
                                         v-model="template.name"
                                         :label="langMap.notification.subject"
                                         dense
                                     >
-                                    </v-date-picker>
+                                    </v-text-field>
                                 </v-col>
-                                <v-col cols=12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <tiptap-vuetify
+                                        aria-rowcount="20"
                                         :color="themeColor"
                                         v-model="template.text"
                                         :extensions="extensions"
                                         :placeholder="langMap.notification.text"
                                     ></tiptap-vuetify>
+                                    <v-spacer>&nbsp;</v-spacer>
                                 </v-col>
-                                <v-col cols=12" class="pa-1">
+                                <v-col cols="12" class="pa-3">
                                     <v-select
                                         :color="themeColor"
                                         :item-color="themeColor"
-                                        v-model="selectedSignature"
+                                        v-model="selectedSignatureId"
                                         :items="signatures"
                                         :label="langMap.notification.signature"
                                         item-value="id"
                                         item-text="name"
                                         dense
-                                    ></v-select>
+                                    >
+                                        <template slot="selection" slot-scope="data">
+                                            <pre>{{data.item.signature}}</pre>
+                                        </template>
+                                    </v-select>
                                 </v-col>
                             </v-row>
                         </v-form>
                     </v-card-text>
                 </v-card>
+
+                <v-spacer>&nbsp;</v-spacer>
 
                 <v-card class="elevation-12">
                     <v-toolbar
@@ -342,35 +367,163 @@
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.notification.details}}</v-toolbar-title>
+                        <v-toolbar-title>{{langMap.notification.attachments}}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn
-                            :color="themeColor"
-                            fab
-                            @click="saveAs()"
-                        >
-                            {{langMap.main.save_as}}
-                        </v-btn>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col md="12">
+                                    <v-list
+                                        dense
+                                        subheader
+                                    >
+                                        <v-list-item-group :color="themeColor">
+                                            <v-list-item
+                                                v-for="(item, i) in attachments"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-content>
+                                                    <v-file-input
+                                                        dense
+                                                        :color="themeColor"
+                                                        v-model="attachments[i]"
+                                                        :label="langMap.notification.select_file"
+                                                        show-size
+                                                    >
+                                                    </v-file-input>
+
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-btn
+                                                        dark
+                                                        fab
+                                                        right
+                                                        bottom
+                                                        small
+                                                        :color="themeColor"
+                                                        @click="attachments.splice(i, 1)"
+                                                    >
+                                                        <v-icon x-small>mdi-delete</v-icon>
+                                                    </v-btn>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                    <v-expansion-panels>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header @click.native.stop="attachments.push({})">
+                                                {{langMap.notification.new_attachment}}
+                                                <template v-slot:actions>
+                                                    <v-icon color="submit" @click="attachments.push({})">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+
+                <v-spacer>&nbsp;</v-spacer>
+
+
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        dense
+                        :color="themeColor"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>{{langMap.main.actions}}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn
-                            :color="themeColor"
-                            fab
-                            @click="send()"
-                        >
-                            {{langMap.main.send}}
-                        </v-btn>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            fab
-                            @click="cancel()"
-                        >
-                            {{langMap.main.cancel}}
-                        </v-btn>
                     </v-toolbar>
                     <v-card-text>
+                        <v-row>
+                            <v-col cols="12" class="pa-3">
+                                <v-btn
+                                    :color="themeColor"
+                                    dark
+                                    @click="saveAsDlg = true"
+                                    class="mr-3"
+                                >
+                                    {{langMap.main.save_as}}
+                                </v-btn>
+
+                                <v-btn
+                                    :color="themeColor"
+                                    dark
+                                    @click="send()"
+                                    class="mr-3"
+
+                                >
+                                    {{langMap.main.send}}
+                                </v-btn>
+
+                                <v-btn
+                                    @click="cancel()"
+                                    class="mr-3"
+                                    color="grey"
+                                >
+                                    {{langMap.main.cancel}}
+                                </v-btn>
+
+                                <v-btn
+                                    color="red lighten-4"
+                                    @click="deleteDlg = true"
+                                >
+                                    {{langMap.main.delete}}
+                                </v-btn>
+                            </v-col>
+                        </v-row>
                     </v-card-text>
                 </v-card>
             </v-col>
+        </v-row>
+
+        <v-row justify="center">
+            <v-dialog v-model="saveAsDlg" persistent max-width="600px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.main.save_as}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="6" class="pa-3">
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="template.name" :label="langMap.main.name" dense></v-text-field>
+                                </v-col>
+                                <v-col cols="6" class="pa-3">
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="template.description" :label="langMap.main.description" dense></v-text-field>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="saveAsDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="saveAsDlg=false; saveAsTemplate()">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="deleteDlg" persistent max-width="480">
+            <v-card>
+                <v-card-title class="headline">{{langMap.notification.delete_template}}</v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="grey darken-1" text @click="deleteDlg = false">
+                        {{langMap.main.cancel}}
+                    </v-btn>
+                    <v-btn color="red darken-1" text @click="deleteTemplate()">
+                        {{langMap.main.delete}}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+            </v-dialog>
+
         </v-row>
     </v-container>
 </template>
@@ -401,7 +554,6 @@
         components: {TiptapVuetify},
 
         data() {
-
             return {
                 themeColor: this.$store.state.themeColor,
                 langMap: this.$store.state.lang.lang_map,
@@ -417,17 +569,22 @@
                     notification_type_id: '',
                     priority: ''
                 },
+                datepickerMenu: false,
                 email: '',
-                selectedCustomer: null,
-                selectedEmployee: null,
-                selectedSignature: null,
+                selectedCustomerId: null,
+                selectedEmployeeId: null,
+                selectedSignatureId: null,
+                saveAsDlg: false,
+                deleteDlg: false,
+                dueDate: '',
+                attachments: [],
                 recipients: [],
                 notificationTypes: [],
                 signatures: [],
                 customers: [],
                 employees: [],
                 priorities: [
-                    {id: 1, name: this.$store.state.lang.lang_map.notification.priority_hight},
+                    {id: 1, name: this.$store.state.lang.lang_map.notification.priority_high},
                     {id: 2, name: this.$store.state.lang.lang_map.notification.priority_medium},
                     {id: 3, name: this.$store.state.lang.lang_map.notification.priority_low}
                 ],
@@ -479,7 +636,7 @@
                 axios.get(`/api/notification/${this.$route.params.id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.notification = response.data;
+                        this.template = response.data;
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -513,12 +670,12 @@
                 });
             },
             getCustomers() {
-                axios.get('api/client', {
+                axios.get('/api/client', {
                     params: {
                         search: '',
                         sort_by: 'name',
                         sort_val: false,
-                        per_page: -1,
+                        per_page: 1000,
                         page: 1
                     }
                 }).then(response => {
@@ -533,12 +690,12 @@
                 });
             },
             getEmployees() {
-                axios.get('api/employee', {
+                axios.get('/api/employee', {
                     params: {
                         search: '',
                         sort_by: 'name',
                         sort_val: false,
-                        per_page: -1,
+                        per_page: 1000,
                         page: 1
                     }
                 }).then(response => {
@@ -552,22 +709,117 @@
                     }
                 });
             },
-            addRecipient(type, id, name, email) {
-                this.recipients.push({
-                    'type': type,
-                    'id': id,
-                    'name': name,
-                    'email': email
-                });
+            addRecipient(type, id) {
+                switch (type) {
+                    case 'e':
+                        this.recipients.push({
+                            'type': type,
+                            'id': Date.now(),
+                            'name': id,
+                            'email': id
+                        });
+                        break;
+
+                    case 'c':
+                        let customer = this.customers.find(function (item) {
+                            return item.id === id;
+                        });
+
+                        this.recipients.push({
+                            'type': type,
+                            'id': customer.id,
+                            'name': customer.name,
+                            'email': customer.contact_email ? customer.contact_email.email : ''
+                        });
+                        break;
+
+                    case 'i':
+                        let employee  = this.employees.find(function (item) {
+                            return item.id === id;
+                        });
+
+                        this.recipients.push({
+                            'type': type,
+                            'id': employee.id,
+                            'name': employee.employee.user_data.full_name,
+                            'email': employee.employee.user_data.contact_email ? employee.employee.user_data.contact_email.email : ''
+                        });
+                        break;
+                }
             },
             deleteRecipient(item) {
                 this.recipients.splice(this.recipients.indexOf(item), 1);
             },
-            saveAs() {
-
+            saveAsTemplate() {
+                axios.post('/api/notification', this.template).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.notification.template_saved;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
+                });
+            },
+            deleteTemplate() {
+                axios.delete(`/api/notification/${this.template.id}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getTemplate();
+                        this.snackbarMessage = this.langMap.notification.template_deleted;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                        this.cancel();
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
+                });
             },
             send() {
+                let recipients = [];
+                this.recipients.forEach(function (item) {
+                    if (item.email) {
+                        recipients.push(item.email);
+                    }
+                })
 
+                let that = this;
+                let signature  = this.signatures.find(function (item) {
+                    return item.id === that.selectedSignatureId;
+                });
+
+                let formData = new FormData();
+                formData.append('subject', this.template.name);
+                formData.append('body', this.template.text + '\n' + signature);
+                formData.append('recipients', recipients.join(','));
+
+                this.attachments.forEach(function (item, i) {
+                    formData.append('attachment_'+i, item);
+                });
+                axios.post('/api/notification/send', formData,{
+                    headers:{
+                        'content-type': 'multipart/form-data'
+                    }
+                }).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.notification.notification_sent;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true
+                });
             },
             cancel() {
                 this.$router.push('/notify');

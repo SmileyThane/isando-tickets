@@ -16,7 +16,7 @@
                     <div class="card-body">
                         <v-expansion-panels>
                             <v-expansion-panel>
-                                <v-expansion-panel-header>
+                                <v-expansion-panel-header @click.native.stop="addNotification()">
                                     {{langMap.company.new_notification_template}}
                                     <template v-slot:actions>
                                         <v-icon color="submit" @click="addNotification()">mdi-plus</v-icon>
@@ -34,6 +34,7 @@
                             class="elevation-1"
                             hide-default-footer
                             :loading-text="langMap.main.loading"
+                            @click:row="showNotification"
                         >
                             <template v-slot:top>
                                 <v-row>
@@ -52,21 +53,12 @@
                                     </v-col>
                                 </v-row>
                             </template>
-                            <template v-slot:item.id="{item}">
-                                <span @click="showNotification(item)">{{item.id}}</span>
-                            </template>
                             <template v-slot:item.type="{item}">
-                                <v-icon v-if="item.type" left :title="localized(item.type)" v-text="item.type.icon" @click="showNotification(item)"></v-icon>
-                                <span v-if="item.type" @click="showNotification(item)">{{localized(item.type)}}</span>
-                            </template>
-                            <template v-slot:item.name="{item}">
-                                <span @click="showNotification(item)">{{item.name}}</span>
-                            </template>
-                            <template v-slot:item.description="{item}">
-                                <span @click="showNotification(item)">{{item.description}}</span>
+                                <v-icon v-if="item.type" left :title="localized(item.type)" v-text="item.type.icon"></v-icon>
+                                <span v-if="item.type">{{localized(item.type)}}</span>
                             </template>
                             <template v-slot:item.action="{item}">
-                                <v-icon small :title="langMap.main.delete" @click="removeNotification(item)">mdi-delete</v-icon>
+                                <v-icon small :title="langMap.main.delete" @click.native.stop="removeNotification(item)">mdi-delete</v-icon>
                             </template>
                             <template v-slot:footer>
                                 <v-pagination :color="themeColor"
@@ -92,7 +84,7 @@
                         <v-btn color="grey darken-1" text @click="removeNotificationDialog = false">
                             {{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="red darken-1" text @click="deleteNotification(selectedNotificationId)">
+                        <v-btn color="red darken-1" text @click="removeNotificationDialog = false; deleteNotification(selectedNotificationId)">
                             {{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
@@ -192,7 +184,6 @@ export default {
                     this.snackbarMessage = this.langMap.company.notification_template_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
-                    this.removeNotificationDialog = false
                     this.selectedNotificationId = null
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
@@ -204,6 +195,7 @@ export default {
         removeNotification(item) {
             this.selectedNotificationId = item.id;
             this.removeNotificationDialog = true;
+            this.getNotifications();
         },
         showNotification(item) {
             this.$router.push(`/notify/${item.id}`);
