@@ -40,10 +40,14 @@ class CompanyUserRepository
                 'supplier_type' => Company::class,
                 'supplier_id' => $employee->company_id
             ])->get()->pluck('id')->toArray();
-        $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds);
+        $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds)->get()->pluck('company_user_id')->toArray();
+        $freeCompanyUsers = CompanyUser::where([['company_id', $employee->company_id], ['is_clientable', true]])->get()->pluck('id')->toArray();
+//        dd($clientCompanyUsers);
+//        dd($freeCompanyUsers);
+        $companyUsers = CompanyUser::whereIn('id', array_merge($clientCompanyUsers, $freeCompanyUsers));
         if ($request->search) {
-            $clientCompanyUsers->whereHas(
-                'employee.userData',
+            $companyUsers->whereHas(
+                'userData',
                 function ($query) use ($request) {
                     $query->where('name', 'like', $request->search . '%')
                         ->orWhere('surname', 'like', $request->search . '%');
@@ -54,12 +58,12 @@ class CompanyUserRepository
         if ($request->sort_by && strpos($request->sort_by, '.')) {
             $request->sort_by = substr($request->sort_by,strrpos($request->sort_by, '.') + 1);
         }
-        $clientCompanyUsers = $clientCompanyUsers->with(['employee.userData' => function ($query) use ($request) {
+        $companyUsers = $companyUsers->with(['userData' => function ($query) use ($request) {
             $query->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
             },
-            'clients']);
+            'assignedToClients.clients']);
 
-        return $clientCompanyUsers->paginate($request->per_page ?? $clientCompanyUsers->count());
+        return $companyUsers->paginate($request->per_page ?? $companyUsers->count());
     }
 
     public function find($id)
@@ -81,6 +85,7 @@ class CompanyUserRepository
 
     public function invite(Request $request)
     {
+        $isClientable =  $request['is_clientable'] ?? false;
         $isNew = false;
         $request['password'] = Controller::getRandomString();
         $email = Email::where('entity_type', User::class)->where('email', $request['email'])->first();
@@ -107,7 +112,7 @@ class CompanyUserRepository
                 $user->timezone_id = $companySettings->data['timezone'];
                 $user->save();
             }
-            $companyUser = $this->create($request['company_id'], $request['user_id']);
+            $companyUser = $this->create($request['company_id'], $request['user_id'], $isClientable);
             if ($user->is_active) {
                 $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
                 if ($isNew === true) {
@@ -145,11 +150,12 @@ class CompanyUserRepository
         return true;
     }
 
-    public function create($companyId, $userId, $description = null): CompanyUser
+    public function create($companyId, $userId, $isClientable, $description = null): CompanyUser
     {
         $companyUser = new CompanyUser();
         $companyUser->user_id = $userId;
         $companyUser->company_id = $companyId;
+        $companyUser->is_clientable = $isClientable;
         $companyUser->description = $description;
         $companyUser->save();
         return $companyUser;
