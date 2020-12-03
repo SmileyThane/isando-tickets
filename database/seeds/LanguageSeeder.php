@@ -138,7 +138,9 @@ class LanguageSeeder extends Seeder
     "new_notification_template": "Add new notification template",
     "notification_template_created": "Notification template created",
     "notification_template_deleted": "Notification template deleted",
-    "notification_template_updated": "Notification template updated"
+    "notification_template_updated": "Notification template updated",
+    "first_alias": "First line",
+    "second_alias": "Second line"
   },
   "customer": {
     "customer": "Customer",
@@ -549,7 +551,9 @@ class LanguageSeeder extends Seeder
     "new_notification_template": "Neuen Mitteilungsvorlage hinzufügen",
     "notification_template_created": "Mitteilungsvorlage erstellt",
     "notification_template_deleted": "Mitteilungsvorlage gelöscht",
-    "notification_template_updated": "Mitteilungsvorlage aktualisiert"
+    "notification_template_updated": "Mitteilungsvorlage aktualisiert",
+    "first_alias": "First line",
+    "second_alias": "Second line"
   },
   "customer": {
     "customer": "Firma",
