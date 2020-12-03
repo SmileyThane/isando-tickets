@@ -813,7 +813,6 @@
                         this.snackbarMessage = this.langMap.notification.notification_sent;
                         this.actionColor = 'success';
                         this.snackbar = true;
-                        this.cancel();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
