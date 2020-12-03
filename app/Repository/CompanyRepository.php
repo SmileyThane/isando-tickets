@@ -88,10 +88,14 @@ class CompanyRepository
     public function update(Request $request, $id)
     {
         $company = Company::where('id', $id)->with('employees.userData', 'clients', 'teams')->first();
-        $company->name = $request->name;
-        $company->company_number = $request->company_number;
-        $company->description = $request->description;
+        $company->name = $request->name ?? $company->name;
+        $company->company_number = $request->company_number ?? $company->company_number;
+        $company->description = $request->description ?? $company->description;
         $company->registration_date = $request->registration_date ?? now();
+
+        //aliases
+        $company->first_alias = $request->first_alias ?? $company->first_alias;
+        $company->second_alias = $request->second_alias ?? $company->second_alias;
 
         if ($request->hasFile('logo')) {
             if (!Storage::exists('public/logos')) {
