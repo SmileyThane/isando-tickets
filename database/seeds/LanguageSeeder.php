@@ -600,7 +600,7 @@ class LanguageSeeder extends Seeder
     "active": "Aktiv",
     "show_product": "Produkt anzeigen",
     "delete_product": "Produkt löschen",
-    "product_deleted": "Produkt gelöscht",
+    "product_deleted": "Produkt gelöscht"
   },
   "product": {
     "add_new": "Neues Produkt hinzufügen",
