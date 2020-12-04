@@ -272,42 +272,56 @@ export default {
             if (this.totalEmployees < this.options.itemsPerPage) {
                 this.options.page = 1
             }
-            axios.get(`api/employee?
-                    search=${this.employeesSearch}&
-                    sort_by=${this.options.sortBy[0]}&
-                    sort_val=${this.options.sortDesc[0]}&
-                    per_page=${this.options.itemsPerPage}&
-                    page=${this.options.page}`)
-                .then(
-                    response => {
-                        response = response.data
+            axios.get('api/employee', {
+                params: {
+                    search: this.employeesSearch,
+                    sort_by: this.options.sortBy[0],
+                    sort_val: this.options.sortDesc[0],
+                    per_page: this.options.itemsPerPage,
+                    page: this.options.page
+                }
+            }).then(
+                response => {
+                    this.loading = false
+                    response = response.data
+                    if (response.success === true) {
                         this.contacts = response.data.data
                         this.totalEmployees = response.data.total
                         this.lastPage = response.data.last_page
-                        this.loading = false
-                    });
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.errorType = 'error';
+                        this.snackbar = true;
+                    }
+                });
         },
         getClients() {
             this.isLoading = true
             axios.get(`/api/client`)
-                .then(
-                    response => {
-                        response = response.data
+                .then(response => {
+                    response = response.data
+                    if (response.success === true) {
                         this.customers = response.data.data
                         this.isLoading = false
-                    });
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.errorType = 'error';
+                        this.snackbar = true;
+                    }
+                });
         },
         addEmployee() {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getEmployees()
-                    this.snackbarMessage = 'Contact was added successfully'
+                    this.snackbarMessage = this.langMap.company.employee_created
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
-                    console.log('error')
-                    this.employeeErrors = response.error
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.snackbar = true;
                 }
 
             });
@@ -322,14 +336,15 @@ export default {
                 if (response.success === true) {
                     this.getEmployees()
                     this.rolesDialog = false
-                    // this.snackbarMessage = 'Contact was removed'
+                    this.snackbarMessage = this.langMap.company.employee_deleted
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.removeEmployeeDialog = false
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.snackbar = true;
                 }
-
             });
         },
         showItem(item) {
@@ -338,14 +353,14 @@ export default {
         updateItemsCount(value) {
             this.options.itemsPerPage = value
             this.options.page = 1
-        },
+        }
     },
     watch: {
         options: {
             handler() {
                 this.getEmployees()
             },
-            deep: true,
+            deep: true
         },
     },
 }

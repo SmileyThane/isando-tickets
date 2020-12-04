@@ -1201,7 +1201,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = 'Contact was added successfully'
+                    this.snackbarMessage = this.langMap.company.employee_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1217,7 +1217,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = 'Update successful'
+                    this.snackbarMessage = this.langMap.company.customer_updated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.enableToEdit = false
@@ -1273,7 +1273,7 @@ export default {
             axios.post('/api/user', this.singleUserForm.user).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.snackbarMessage = 'Update successful'
+                    this.snackbarMessage = this.langMap.company.user_updated;
                     this.actionColor = 'success'
                     this.snackbar = true
                 } else {
@@ -1435,7 +1435,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated'
+                    this.snackbarMessage = item.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1455,7 +1455,7 @@ export default {
                 if (response.success === true) {
                     this.getClient()
                     this.rolesDialog = false
-                    this.snackbarMessage = 'Contact was removed'
+                    this.snackbarMessage = this.langMap.company.employee_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.removeEmployeeDialog = false
@@ -1481,7 +1481,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated'
+                    this.snackbarMessage = item.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1499,7 +1499,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = 'Invite sent'
+                    this.snackbarMessage = this.langMap.company.invitation_sent;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
