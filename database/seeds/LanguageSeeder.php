@@ -166,7 +166,9 @@ class LanguageSeeder extends Seeder
     "supplier": "Supplier",
     "active": "Active",
     "product_info": "Product info",
-    "show_product": "Show product"
+    "show_product": "Show product",
+    "delete_product": "Delete product",
+    "product_deleted": "Product deleted"
   },
   "product": {
     "add_new": "Add new product",
@@ -596,7 +598,9 @@ class LanguageSeeder extends Seeder
     "add_new": "Neuer Kunden hinzufügen",
     "supplier": "Lieferant",
     "active": "Aktiv",
-    "show_product": "Produkt anzeigen"
+    "show_product": "Produkt anzeigen",
+    "delete_product": "Produkt löschen",
+    "product_deleted": "Produkt gelöscht",
   },
   "product": {
     "add_new": "Neues Produkt hinzufügen",
