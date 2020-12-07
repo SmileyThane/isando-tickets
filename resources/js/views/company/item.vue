@@ -467,45 +467,6 @@
                                         {{addressItem.postal_code }} {{ addressItem.city }}
                                         <span v-if="addressItem.country">{{localized(addressItem.country)}}</span>
                                         <span v-if="addressItem.type">({{ localized(addressItem.type) }})</span></p>
-                                    <p><strong>{{langMap.main.actions}}:</strong></p>
-                                    <v-tooltip top>
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn :disabled="!item.user_data.is_active" @click="sendInvite(item)" icon
-                                                   v-bind="attrs" v-on="on">
-                                                <v-icon
-                                                    small
-                                                >
-                                                    mdi-email-alert
-                                                </v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <span>{{langMap.company.resend_invite}}</span>
-                                    </v-tooltip>
-                                    <v-tooltip top>
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn @click="showRolesModal(item)" icon v-bind="attrs" v-on="on">
-                                                <v-icon
-                                                    small
-                                                >
-                                                    mdi-pencil
-                                                </v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <span>{{langMap.company.edit_contact}}</span>
-                                    </v-tooltip>
-                                    <v-tooltip top>
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn :disabled="checkEmployeeRoleByIds(item, [2])"
-                                                   @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
-                                                <v-icon
-                                                    small
-                                                >
-                                                    mdi-delete
-                                                </v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <span>{{langMap.company.delete_contact}}</span>
-                                    </v-tooltip>
                                 </td>
                             </template>
                             <template v-slot:item.user_data="{ item }">
@@ -514,7 +475,44 @@
                                 </div>
                             </template>
                             <template v-slot:item.actions="{ item }">
-
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn :disabled="!item.user_data.is_active" @click.native.stop="sendInvite(item)" icon
+                                               v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-email-alert
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{langMap.company.resend_invite}}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click.native.stop="showRolesModal(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-pencil
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{langMap.company.edit_contact}}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn :disabled="checkEmployeeRoleByIds(item, [2])"
+                                               @click.native.stop="showRemoveEmployeeDlg(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{langMap.company.delete_contact}}</span>
+                                </v-tooltip>
                             </template>
 
                         </v-data-table>
@@ -1525,6 +1523,20 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+            <v-dialog v-model="removeEmployeeDlg" persistent max-width="480">
+                <v-card>
+                    <v-card-title>{{langMap.main.delete_selected}}?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeEmployeeDlg = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="removeEmployeeDlg = false; removeEmployee(selectedEmployee)">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
 
         </v-row>
     </v-container>
@@ -1697,7 +1709,9 @@
                 updatePhoneDlg: false,
                 updateAddressDlg: false,
                 updateSocialDlg: false,
-                updateEmailDlg: false
+                updateEmailDlg: false,
+                removeEmployeeDlg: false,
+                selectedEmployee: null
             }
         },
         mounted() {
@@ -1928,6 +1942,11 @@
                     }
 
                 });
+            },
+            showRemoveEmployeeDlg(item)
+            {
+                this.selectedEmployee = item;
+                this.removeEmployeeDlg = true;
             },
             removeEmployee(item) {
                 axios.delete(`/api/company/employee/${item.id}`).then(response => {
