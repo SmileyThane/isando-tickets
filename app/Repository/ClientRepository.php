@@ -49,10 +49,11 @@ class ClientRepository
             $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
         }
         if ($request->search) {
+            $request['page'] = 1;
             $clients->where(
                 function ($query) use ($request) {
-                    $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('description', 'like', $request->search . '%');
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
         }

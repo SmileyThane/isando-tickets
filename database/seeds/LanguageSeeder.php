@@ -158,7 +158,8 @@ class LanguageSeeder extends Seeder
     "company_deleted": "Company deleted",
     "role_created": "Role created",
     "role_updated": "Role updated",
-    "role_deleted": "Role deleted"
+    "role_deleted": "Role deleted",
+    "delete_employee_msg": "Are you sure that you want to delete this user? All information relating to this user will be lost after you confirm the deletion."
   },
   "customer": {
     "customer": "Customer",
@@ -591,7 +592,8 @@ class LanguageSeeder extends Seeder
     "company_deleted": "Firma gelöscht",
     "role_created": "Rolle erstellt",
     "role_updated": "Rolle aktualisiert",
-    "role_deleted": "Rolle gelöscht"
+    "role_deleted": "Rolle gelöscht",
+     "delete_employee_msg": "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten? Alle Informationen zu diesem Benutzer gehen verloren, wenn Sie die Löschung bestätigen."
   },
   "customer": {
     "customer": "Firma",

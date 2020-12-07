@@ -467,45 +467,6 @@
                                         {{addressItem.postal_code }} {{ addressItem.city }}
                                         <span v-if="addressItem.country">{{localized(addressItem.country)}}</span>
                                         <span v-if="addressItem.type">({{ localized(addressItem.type) }})</span></p>
-                                    <p><strong>{{langMap.main.actions}}:</strong></p>
-                                    <v-tooltip top>
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn :disabled="!item.user_data.is_active" @click="sendInvite(item)" icon
-                                                   v-bind="attrs" v-on="on">
-                                                <v-icon
-                                                    small
-                                                >
-                                                    mdi-email-alert
-                                                </v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <span>{{langMap.company.resend_invite}}</span>
-                                    </v-tooltip>
-                                    <v-tooltip top>
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn @click="showRolesModal(item)" icon v-bind="attrs" v-on="on">
-                                                <v-icon
-                                                    small
-                                                >
-                                                    mdi-pencil
-                                                </v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <span>{{langMap.company.edit_contact}}</span>
-                                    </v-tooltip>
-                                    <v-tooltip top>
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn :disabled="checkEmployeeRoleByIds(item, [2])"
-                                                   @click="removeEmployee(item)" icon v-bind="attrs" v-on="on">
-                                                <v-icon
-                                                    small
-                                                >
-                                                    mdi-delete
-                                                </v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <span>{{langMap.company.delete_contact}}</span>
-                                    </v-tooltip>
                                 </td>
                             </template>
                             <template v-slot:item.user_data="{ item }">
@@ -514,7 +475,44 @@
                                 </div>
                             </template>
                             <template v-slot:item.actions="{ item }">
-
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn :disabled="!item.user_data.is_active" @click.native.stop="sendInvite(item)" icon
+                                               v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-email-alert
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{langMap.company.resend_invite}}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click.native.stop="showRolesModal(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-pencil
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{langMap.company.edit_contact}}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn :disabled="checkEmployeeRoleByIds(item, [2])"
+                                               @click.native.stop="showRemoveEmployeeDlg(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{langMap.company.delete_contact}}</span>
+                                </v-tooltip>
                             </template>
 
                         </v-data-table>
@@ -702,8 +700,104 @@
                 </v-card>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
+        <v-row>
+            <v-col md="6">
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title>{{ langMap.product.info }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.product.add_new }}
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    :color="themeColor"
+                                                    :label="langMap.main.name"
+                                                    name="product_name"
+                                                    type="text"
+                                                    v-model="productForm.product_name"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    :color="themeColor"
+                                                    :label="langMap.main.description"
+                                                    name="product_description"
+                                                    type="text"
+                                                    v-model="productForm.product_description"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                :color="themeColor"
+                                                @click="addProduct"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="productHeaders"
+                            :items="company.products"
+                            class="elevation-1"
+                            dense
+                            item-key="id"
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showProduct(item.product_data)">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-eye
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.show_product }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteProductDlg(item)">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.delete_product }}</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col md="6">
                 <v-spacer></v-spacer>
                 <v-card class="elevation-12">
                     <v-toolbar dense :color="themeColor" dark flat>
@@ -791,8 +885,8 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
-            </div>
-        </div>
+            </v-col>
+        </v-row>
         <v-row justify="center">
             <v-dialog v-model="rolesDialog" persistent max-width="600px">
                 <v-card>
@@ -1415,6 +1509,34 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+            <v-dialog v-model="deleteProductDlg" persistent max-width="480">
+                <v-card>
+                    <v-card-title>{{langMap.customer.delete_product}}?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="deleteProductDlg = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="deleteProductDlg = false; deleteProduct(selectedProductId)">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog v-model="removeEmployeeDlg" persistent max-width="480">
+                <v-card>
+                    <v-card-title>{{langMap.company.delete_employee_msg}}</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeEmployeeDlg = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="removeEmployeeDlg = false; removeEmployee(selectedEmployee)">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
 
         </v-row>
     </v-container>
@@ -1449,6 +1571,23 @@
                     {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'role_names'},
                     {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
+                productForm: {
+                    product_name: '',
+                    product_description: '',
+                },
+                productHeaders: [
+                    {
+                        text: 'ID',
+                        align: 'start',
+                        sortable: false,
+                        value: 'product_data.id',
+                    },
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'product_data.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
+                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+                ],
+                deleteProductDlg: false,
+                selectedProductId: null,
                 companyIsLoaded: false,
                 company: {
                     name: '',
@@ -1570,7 +1709,9 @@
                 updatePhoneDlg: false,
                 updateAddressDlg: false,
                 updateSocialDlg: false,
-                updateEmailDlg: false
+                updateEmailDlg: false,
+                removeEmployeeDlg: false,
+                selectedEmployee: null
             }
         },
         mounted() {
@@ -1700,6 +1841,42 @@
                 });
 
             },
+            addProduct() {
+                // console.log(this.productForm)
+                axios.post('/api/product', this.productForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
+            showProduct(item) {
+                this.$router.push(`/product/${item.id}`)
+            },
+            showDeleteProductDlg(item)
+            {
+                this.selectedProductId = item.id;
+                this.deleteProductDlg = true;
+            },
+            deleteProduct(productId)
+            {
+                axios.delete(`/api/product/${productId}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                        this.selectedProductId = null;
+                        this.snackbarMessage = this.langMap.customer.product_deleted;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            },
             addEmployee() {
                 axios.post(`/api/company/${this.$route.params.id}/employee`, this.employeeForm).then(response => {
                     response = response.data
@@ -1765,6 +1942,11 @@
                     }
 
                 });
+            },
+            showRemoveEmployeeDlg(item)
+            {
+                this.selectedEmployee = item;
+                this.removeEmployeeDlg = true;
             },
             removeEmployee(item) {
                 axios.delete(`/api/company/employee/${item.id}`).then(response => {
