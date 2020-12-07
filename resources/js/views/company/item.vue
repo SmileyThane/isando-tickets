@@ -702,8 +702,58 @@
                 </v-card>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
+        <v-row>
+            <v-col md="6">
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title>{{ langMap.product.info }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="productHeaders"
+                            :items="company.products"
+                            class="elevation-1"
+                            dense
+                            item-key="id"
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showProduct(item.product_data)">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-eye
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.show_product }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteProductDlg(item)">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.delete_product }}</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col md="6">
                 <v-spacer></v-spacer>
                 <v-card class="elevation-12">
                     <v-toolbar dense :color="themeColor" dark flat>
@@ -791,8 +841,8 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
-            </div>
-        </div>
+            </v-col>
+        </v-row>
         <v-row justify="center">
             <v-dialog v-model="rolesDialog" persistent max-width="600px">
                 <v-card>
@@ -1415,6 +1465,20 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+            <v-dialog v-model="deleteProductDlg" persistent max-width="480">
+                <v-card>
+                    <v-card-title>{{langMap.customer.delete_product}}?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="deleteProductDlg = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="deleteProductDlg = false; deleteProduct(selectedProductId)">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
 
         </v-row>
     </v-container>
@@ -1449,6 +1513,19 @@
                     {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'role_names'},
                     {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
+                productHeaders: [
+                    {
+                        text: 'ID',
+                        align: 'start',
+                        sortable: false,
+                        value: 'product_data.id',
+                    },
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'product_data.name'},
+                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
+                    {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+                ],
+                deleteProductDlg: false,
+                selectedProductId: null,
                 companyIsLoaded: false,
                 company: {
                     name: '',
@@ -1699,6 +1776,31 @@
                     }
                 });
 
+            },
+            showProduct(item) {
+                this.$router.push(`/product/${item.id}`)
+            },
+            showDeleteProductDlg(item)
+            {
+                this.selectedProductId = item.id;
+                this.deleteProductDlg = true;
+            },
+            deleteProduct(productId)
+            {
+                axios.delete(`/api/product/client/${productId}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getClient()
+                        this.selectedProductId = null;
+                        this.snackbarMessage = this.langMap.customer.product_deleted;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
             },
             addEmployee() {
                 axios.post(`/api/company/${this.$route.params.id}/employee`, this.employeeForm).then(response => {
