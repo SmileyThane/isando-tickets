@@ -137,7 +137,9 @@
                 </v-list-item>
             </v-list-group>
         </v-list>
-        <v-divider>&nbsp;</v-divider>
+        <v-divider
+            v-if="checkRoleByIds([1,2,3,4,5])"
+        >&nbsp;</v-divider>
         <v-list dense>
             <v-list-group
                 :style="'background-color: ' + themeColor + ';'"
