@@ -95,6 +95,7 @@ class ProductRepository
     public function delete($id)
     {
         $result = false;
+        CompanyProduct::where('product_id', $id)->delete();
         $product = Product::find($id);
         if ($product) {
             $product->delete();
