@@ -252,21 +252,27 @@
                 if (this.totalCustomers < this.options.itemsPerPage) {
                     this.options.page = 1
                 }
-                axios.get(`api/client?
-                    search=${this.customersSearch}&
-                    sort_by=${this.options.sortBy[0]}&
-                    sort_val=${this.options.sortDesc[0]}&
-                    per_page=${this.options.itemsPerPage}&
-                    page=${this.options.page}`)
-                    .then(
-                        response => {
-                            response = response.data
-                            this.customers = response.data.data
-                            // console.log(this.customers);
-                            this.totalCustomers = response.data.total
-                            this.lastPage = response.data.last_page
-                            this.loading = false
-                        });
+                axios.get('api/client', {
+                    params: {
+                        search: this.customersSearch,
+                        sort_by: this.options.sortBy[0],
+                        sort_val: this.options.sortDesc[0],
+                        per_page: this.options.itemsPerPage,
+                        page: this.options.page
+                    }
+                }).then(response => {
+                    this.loading = false
+                    response = response.data
+                    if (response.success === true) {
+                        this.customers = response.data.data
+                        this.totalCustomers = response.data.total
+                        this.lastPage = response.data.last_page
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
             },
             addClient() {
                 this.clientForm.supplier_type = Object.keys(this.clientForm.supplier_object.item)[0]
@@ -276,7 +282,9 @@
                     if (response.success === true) {
                         this.getClients()
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
                     }
                 });
                 // console.log(this.clientForm);
@@ -288,7 +296,9 @@
                         this.suppliers = response.data
                         this.clientForm.supplier_object = this.suppliers[0]
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
                     }
                 });
             },
@@ -304,12 +314,12 @@
                     response = response.data
                     if (response.success === true) {
                         this.getClients()
-                        this.snackbarMessage = 'Company was deleted '
+                        this.snackbarMessage = this.langMap.company.company_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                         this.removeCustomerDialog = false
                     } else {
-                        this.snackbarMessage = 'Company delete error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }

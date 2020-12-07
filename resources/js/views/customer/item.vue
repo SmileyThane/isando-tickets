@@ -423,6 +423,18 @@
                                     </template>
                                     <span>{{ langMap.customer.show_product }}</span>
                                 </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteProductDlg(item)">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.delete_product }}</span>
+                                </v-tooltip>
                             </template>
                         </v-data-table>
                     </v-card-text>
@@ -998,6 +1010,21 @@
                 </v-card>
             </v-dialog>
 
+            <v-dialog v-model="deleteProductDlg" persistent max-width="480">
+                <v-card>
+                    <v-card-title>{{langMap.customer.delete_product}}?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="deleteProductDlg = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="deleteProductDlg = false; deleteProduct(selectedProductId)">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
         </v-row>
 
     </v-container>
@@ -1129,7 +1156,9 @@ export default {
             updateAddressDlg: false,
             updateSocialDlg: false,
             updateEmailDlg: false,
-            contactInfoForm: null
+            contactInfoForm: null,
+            deleteProductDlg: false,
+            selectedProductId: null
         }
     },
     mounted() {
@@ -1201,7 +1230,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = 'Contact was added successfully'
+                    this.snackbarMessage = this.langMap.company.employee_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1217,7 +1246,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = 'Update successful'
+                    this.snackbarMessage = this.langMap.company.customer_updated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.enableToEdit = false
@@ -1273,7 +1302,7 @@ export default {
             axios.post('/api/user', this.singleUserForm.user).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.snackbarMessage = 'Update successful'
+                    this.snackbarMessage = this.langMap.company.user_updated;
                     this.actionColor = 'success'
                     this.snackbar = true
                 } else {
@@ -1435,7 +1464,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated'
+                    this.snackbarMessage = item.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1455,7 +1484,7 @@ export default {
                 if (response.success === true) {
                     this.getClient()
                     this.rolesDialog = false
-                    this.snackbarMessage = 'Contact was removed'
+                    this.snackbarMessage = this.langMap.company.employee_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.removeEmployeeDialog = false
@@ -1481,7 +1510,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated'
+                    this.snackbarMessage = item.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1499,7 +1528,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = 'Invite sent'
+                    this.snackbarMessage = this.langMap.company.invitation_sent;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1608,6 +1637,28 @@ export default {
             this.emailForm.id = item.id;
             this.emailForm.email = item.email;
             this.emailForm.email_type = item.type ? item.type.id : 0;
+        },
+        showDeleteProductDlg(item)
+        {
+            this.selectedProductId = item.id;
+            this.deleteProductDlg = true;
+        },
+        deleteProduct(productId)
+        {
+            axios.delete(`/api/product/client/${productId}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient()
+                    this.selectedProductId = null;
+                    this.snackbarMessage = this.langMap.customer.product_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
         }
     },
     watch: {

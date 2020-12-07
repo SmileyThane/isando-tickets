@@ -5,27 +5,25 @@
         v-model="drawer"
     >
         <v-list-item v-if="this.navbarStyle === 2 && this.companyLogo">
+            <v-list-item-icon>
+                <v-img :src="companyLogo" contain max-height="3em" max-width="30"></v-img>
+            </v-list-item-icon>
             <v-list-item-content>
-                <v-list-item-icon>
-                    <v-img :src="companyLogo" contain></v-img>
-                </v-list-item-icon>
                 <v-list-item-title class="title">
+                    {{ firstAlias }}
                 </v-list-item-title>
-                <v-list-item-subtitle>
-                    {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
-                </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
         <v-list-item v-else-if="this.navbarStyle === 3 && this.companyLogo">
+            <v-list-item-icon>
+                <v-img :src="companyLogo" contain max-height="3em" max-width="30"></v-img>
+            </v-list-item-icon>
             <v-list-item-content>
-                <v-list-item-icon>
-                    <v-img :src="companyLogo" contain></v-img>
-                </v-list-item-icon>
                 <v-list-item-title class="title">
-                    {{ companyName }}
+                    {{ firstAlias }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                    {{ this.$store.state.lang.lang_map.main.ticketing }}
+                    {{ secondAlias }}
                 </v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
@@ -39,7 +37,7 @@
         <v-list-item v-else>
             <v-list-item-content>
                 <v-list-item-title class="title">
-                    {{ companyName }} | {{ this.$store.state.lang.lang_map.main.ticketing }}
+                    {{ firstAlias }} | {{ secondAlias }}
                 </v-list-item-title>
             </v-list-item-content>
         </v-list-item>
@@ -298,7 +296,8 @@
         props: {value: {type: Boolean}},
         data() {
             return {
-                companyName: '',
+                firstAlias: '',
+                secondAlias: '',
                 companyLogo: '',
                 navbarStyle: 1,
                 localDrawer: null,
@@ -359,7 +358,8 @@
                 axios.get(`/api/main_company_name`)
                     .then(
                         response => {
-                            this.companyName = response.data.data
+                            this.firstAlias = response.data.data.first_alias
+                            this.secondAlias = response.data.data.second_alias
                             this.changeAppTitle();
                         });
             },
@@ -381,8 +381,9 @@
             },
             changeAppTitle() {
                 this.$store.state.pageName = this.$store.state.lang.lang_map.sidebar[this.$route.name]
-                document.title = this.companyName + ' | ' + this.$store.state.lang.lang_map.sidebar[this.$route.name]
+                document.title = this.firstAlias + ' | ' + this.$store.state.lang.lang_map.sidebar[this.$route.name]
             }
         }
     }
 </script>
+/

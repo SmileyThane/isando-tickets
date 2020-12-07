@@ -188,12 +188,12 @@
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    <span>{{data.item.employee.user_data.full_name}}</span>
-                                                                    <span v-if="data.item.employee.user_data.contact_email"> - {{data.item.employee.user_data.contact_email.email}}</span>
+                                                                    <span>{{data.item.user_data.full_name}}</span>
+                                                                    <span v-if="data.item.user_data.contact_email"> - {{data.item.user_data.contact_email.email}}</span>
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    <span>{{data.item.employee.user_data.full_name}}</span>
-                                                                    <span v-if="data.item.employee.user_data.contact_email"> - {{data.item.employee.user_data.contact_email.email}}</span>
+                                                                    <span>{{data.item.user_data.full_name}}</span>
+                                                                    <span v-if="data.item.user_data.contact_email"> - {{data.item.user_data.contact_email.email}}</span>
                                                                 </template>
                                                             </v-select>
                                                         </v-col>

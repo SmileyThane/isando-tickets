@@ -86,6 +86,7 @@ class ClientController extends Controller
     {
         $request['role_id'] = Role::COMPANY_CLIENT;
         $request['company_id'] = Auth::user()->employee->company_id;
+        $request['is_clientable'] = true;
         if (!$request->company_user_id) {
             $inviteResponse = $this->companyUserRepo->invite($request);
             $inviteResult = $inviteResponse->getOriginalContent();

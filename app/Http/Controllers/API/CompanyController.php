@@ -26,7 +26,12 @@ class CompanyController extends Controller
 
     public function mainCompanyName(): JsonResponse
     {
-        return self::showResponse(true, Auth::user()->employee->companyData->name);
+        return self::showResponse(true,
+            [
+                'id' => Auth::user()->employee->companyData->id,
+                'first_alias' => Auth::user()->employee->companyData->first_alias,
+                'second_alias' => Auth::user()->employee->companyData->second_alias
+            ]);
     }
 
     public function mainCompanyLogo(): JsonResponse
@@ -92,13 +97,13 @@ class CompanyController extends Controller
         return self::showResponse(true, $this->companyRepo->getSettings($id));
     }
 
-   public function updateSettings(Request $request, $id = null): JsonResponse
-   {
+    public function updateSettings(Request $request, $id = null): JsonResponse
+    {
         return self::showResponse(true, $this->companyRepo->updateSettings($request, $id));
-   }
+    }
 
-   public function updateLogo(Request $request, $id = null)
-   {
-       return self::showResponse(true, $this->companyRepo->updateLogo($request, $id));
-   }
+    public function updateLogo(Request $request, $id = null)
+    {
+        return self::showResponse(true, $this->companyRepo->updateLogo($request, $id));
+    }
 }

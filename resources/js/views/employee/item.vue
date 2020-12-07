@@ -659,20 +659,20 @@
             </v-col>
         </v-row>
         <v-row justify="center">
-                <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
-                    <v-card>
-                        <v-card-title>{{ langMap.main.delete_selected }}?</v-card-title>
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
-                                {{ langMap.main.cancel }}
-                            </v-btn>
-                            <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">
-                                {{ langMap.main.delete }}
-                            </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
+            <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
+                <v-card>
+                    <v-card-title>{{ langMap.main.delete_selected }}?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">
+                            {{ langMap.main.delete }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
             <v-dialog v-model="rolesDialog" max-width="600px" persistent>
                 <v-card>
                     <v-card-title>
@@ -1073,13 +1073,14 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = 'Update successful'
+                    this.snackbarMessage = this.langMap.company.user_updated;
                     this.actionColor = 'success'
                     this.snackbar = true
                     this.enableToEdit = false
                 } else {
-                    this.errors = response.error
-                }
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;                }
             });
         },
         submitNewData(id, data, method) {
@@ -1166,7 +1167,7 @@ export default {
                 if (response.success === true) {
                     this.getUser()
                     this.rolesDialog = false
-                    this.snackbarMessage = 'Link was removed'
+                    this.snackbarMessage = this.langMap.company.employee_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.removeEmployeeDialog = false
@@ -1304,7 +1305,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated'
+                    this.snackbarMessage = item.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1344,7 +1345,7 @@ export default {
                 if (response.success === true) {
                     this.getClient()
                     this.rolesDialog = false
-                    this.snackbarMessage = 'Update successful'
+                    this.snackbarMessage = this.langMap.company.role_updated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1352,25 +1353,30 @@ export default {
                     this.actionColor = 'error';
                     this.snackbar = true;
                 }
-
             });
         },
         getClients() {
             this.isCustomersLoading = true
             axios.get(`/api/client`)
-                .then(
-                    response => {
-                        response = response.data
+                .then(response => {
+                    response = response.data
+                    this.isCustomersLoading = false
+
+                    if (response.success === true) {
                         this.customers = response.data.data
-                        this.isCustomersLoading = false
-                    });
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
         },
         addEmployee() {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = 'Customer was attached successfully'
+                    this.snackbarMessage = this.langMap.company.employee_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
