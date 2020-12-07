@@ -34,6 +34,13 @@ class CompanyUserRepository
 
     public function all(Request $request)
     {
+        if ($request->sort_by && strpos($request->sort_by, '.')) {
+            $request->sort_by = substr($request->sort_by, strrpos($request->sort_by, '.') + 1);
+        }
+
+        $orderBy = $request->sort_by ?? 'name';
+        $request->sort_by = null;
+
         $employee = Auth::user()->employee;
         $clientIds = $employee->hasRole(Role::COMPANY_CLIENT) ? null :
             Client::where([
@@ -42,8 +49,7 @@ class CompanyUserRepository
             ])->get()->pluck('id')->toArray();
         $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds)->get()->pluck('company_user_id')->toArray();
         $freeCompanyUsers = CompanyUser::where([['company_id', $employee->company_id], ['is_clientable', true]])->get()->pluck('id')->toArray();
-//        dd($clientCompanyUsers);
-//        dd($freeCompanyUsers);
+
         $companyUsers = CompanyUser::whereIn('id', array_merge($clientCompanyUsers, $freeCompanyUsers));
         if ($request->search) {
             $companyUsers->whereHas(
@@ -55,13 +61,37 @@ class CompanyUserRepository
             );
         }
 
-        if ($request->sort_by && strpos($request->sort_by, '.')) {
-            $request->sort_by = substr($request->sort_by,strrpos($request->sort_by, '.') + 1);
+        $companyUsers = $companyUsers->with(['assignedToClients.clients', 'userData'])->get();
+
+        $orderFunc = function ($item, $key) use ($orderBy) {
+            switch ($orderBy) {
+                case 'id':
+                    return $item->userData->id;
+                case 'name':
+                    return $item->userData->name;
+                case 'surname':
+                    return $item->userData->surname;
+                case 'email':
+                    $email = $item->userData->contact_email;
+                    return $email ? $email->email : '';
+                case 'is_active':
+                    return $item->userData->is_active ? 1 : 0;
+                case 'status':
+                    return $item->userData->status ? 1 : 0;
+                case 'clients':
+                    if ($item->assignedToClients) {
+                        return $item->assignedToClients[0]->clients->name;
+                    } else {
+                        return '';
+                    }
+            }
+        };
+
+        if ($request->sort_val === 'false') {
+            $companyUsers = $companyUsers->sortBy($orderFunc);
+        } else {
+            $companyUsers = $companyUsers->sortByDesc($orderFunc);
         }
-        $companyUsers = $companyUsers->with(['userData' => function ($query) use ($request) {
-            $query->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
-            },
-            'assignedToClients.clients']);
 
         return $companyUsers->paginate($request->per_page ?? $companyUsers->count());
     }
