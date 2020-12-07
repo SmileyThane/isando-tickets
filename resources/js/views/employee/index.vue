@@ -119,9 +119,9 @@
                                 >
                                 </v-pagination>
                             </template>
-                            <template v-slot:item.employee="{ item }">
+                            <template v-slot:item.id="{ item }">
                                 <div v-if="item" class="justify-center" @click="showItem(item)">
-                                    {{ item.user_data.full_name }}
+                                    {{ item.user_data.id }}
                                 </div>
                             </template>
                             <template v-slot:item.user_data.email="{item}">
