@@ -56,7 +56,7 @@ class CompanyRepository
             }
             return $result->get();
         }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type', 'employees.userData.emails.type', 'clients',
-            'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type'])
+            'products.productData', 'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type'])
             ->first() : $company->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $company->count());
     }
 
