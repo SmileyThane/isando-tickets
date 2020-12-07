@@ -52,8 +52,8 @@ class ClientRepository
             $request['page'] = 1;
             $clients->where(
                 function ($query) use ($request) {
-                    $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('description', 'like', $request->search . '%');
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
         }
