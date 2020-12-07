@@ -75,6 +75,7 @@
                 color="white"
                 multiple
                 prepend-icon="mdi-badge-account-horizontal-outline"
+                v-if="checkRoleByIds([1,2,3,4,5])"
             >
                 <template
                     v-slot:activator
@@ -87,7 +88,6 @@
                     :color="themeColor" link
                     style="background-color:white;"
                     to="/all"
-                    v-if="checkRoleByIds([1,2,3,4,5])"
                 >
                     <v-list-item-action>
                         <v-icon>mdi-contacts-outline</v-icon>
