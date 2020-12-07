@@ -429,7 +429,7 @@
                                             <v-icon
                                                 small
                                             >
-                                                mdi-delete
+                                                mdi-unlink
                                             </v-icon>
                                         </v-btn>
                                     </template>
