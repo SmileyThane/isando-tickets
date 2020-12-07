@@ -429,7 +429,7 @@
                                             <v-icon
                                                 small
                                             >
-                                                mdi-unlink
+                                                mdi-link-off
                                             </v-icon>
                                         </v-btn>
                                     </template>
