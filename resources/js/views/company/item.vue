@@ -715,6 +715,52 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.product.add_new }}
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    :color="themeColor"
+                                                    :label="langMap.main.name"
+                                                    name="product_name"
+                                                    type="text"
+                                                    v-model="productForm.product_name"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    :color="themeColor"
+                                                    :label="langMap.main.description"
+                                                    name="product_description"
+                                                    type="text"
+                                                    v-model="productForm.product_description"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                :color="themeColor"
+                                                @click="addProduct"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                         <v-data-table
                             :footer-props="footerProps"
                             :headers="productHeaders"
@@ -1513,6 +1559,10 @@
                     {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'role_names'},
                     {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
                 ],
+                productForm: {
+                    product_name: '',
+                    product_description: '',
+                },
                 productHeaders: [
                     {
                         text: 'ID',
@@ -1777,6 +1827,17 @@
                 });
 
             },
+            addProduct() {
+                // console.log(this.productForm)
+                axios.post('/api/product', this.productForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getCompany()
+                    } else {
+                        console.log('error')
+                    }
+                });
+            },
             showProduct(item) {
                 this.$router.push(`/product/${item.id}`)
             },
@@ -1787,10 +1848,10 @@
             },
             deleteProduct(productId)
             {
-                axios.delete(`/api/product/client/${productId}`).then(response => {
+                axios.delete(`/api/product/${productId}`).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.getClient()
+                        this.getCompany()
                         this.selectedProductId = null;
                         this.snackbarMessage = this.langMap.customer.product_deleted;
                         this.actionColor = 'success'
