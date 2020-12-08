@@ -96,21 +96,8 @@
                                     class="col-md-6"
                                     color="success"
                                     hide-details
-                                    @change="changeIsAcccesed(userData)"
+                                    @change="showIsAccessedModal(userData)"
                                 />
-                                <v-col cols="6">
-                                    <v-btn :color="themeColor"
-                                           dark
-                                           small
-                                           @click="showRolesModal()"
-                                    >
-                                        {{langMap.main.roles}}
-                                        <v-icon small>
-                                            mdi-pencil
-                                        </v-icon>
-                                    </v-btn>
-
-                                </v-col>
                             </v-row>
                         </v-form>
                     </v-card-text>
@@ -706,6 +693,21 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+            <v-dialog v-model="isAccessedDialog" max-width="600px" persistent>
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.company.update_info}}: {{userData.name}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        {{this.$store.state.lang.lang_map.main.give_access}}
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="red" text @click="isAccessedDialog = false; userData.is_active = !userData.is_active">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="changeIsAccessed">{{langMap.main.save}}</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
 
             <v-dialog v-model="updatePhoneDlg" max-width="600px" persistent>
                 <v-card>
@@ -1015,7 +1017,9 @@ export default {
             updateSocialDlg: false,
             updateEmailDlg: false,
             removeEmployeeDialog: false,
-            selectedEmployeeId: null
+            selectedEmployeeId: null,
+            isAccessedDialog: false,
+            selectedIsAccessedItem: null
         }
     },
     mounted() {
@@ -1297,15 +1301,19 @@ export default {
         showCompany(item) {
             this.$router.push(`/customer/${item.clients.id}`)
         },
-        changeIsAcccesed(item) {
+        changeIsAccessed() {
             let request = {}
-            request.user_id = item.id
-            request.is_active = item.is_active
+            request.user_id = this.selectedIsAccessedItem.id
+            request.is_active = this.selectedIsAccessedItem.is_active
+            this.singleUserForm.role_ids = this.selectedIsAccessedItem.is_active == true ? [6] : [];
+            this.singleUserForm.user = this.userData
+            this.singleUserForm.company_user_id = this.userData.employee.id
             axios.post(`/api/user/is_active`, request).then(response => {
                 response = response.data
+                this.isAccessedDialog = false
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = item.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
+                    this.snackbarMessage = this.selectedIsAccessedItem.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1314,6 +1322,12 @@ export default {
                     this.snackbar = true;
                 }
             });
+            this.updateRole()
+        },
+        showIsAccessedModal(item)
+        {
+            this.selectedIsAccessedItem = item
+            this.isAccessedDialog = true
         },
         showRolesModal() {
             this.rolesDialog = true
@@ -1343,15 +1357,15 @@ export default {
             axios.patch(`/api/roles`, this.singleUserForm).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.getClient()
-                    this.rolesDialog = false
-                    this.snackbarMessage = this.langMap.company.role_updated;
-                    this.actionColor = 'success'
-                    this.snackbar = true;
+                    // this.getClient()
+                    // this.rolesDialog = false
+                    // this.snackbarMessage = this.langMap.company.role_updated;
+                    // this.actionColor = 'success'
+                    // this.snackbar = true;
                 } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
+                    // this.snackbarMessage = this.langMap.main.generic_error;
+                    // this.actionColor = 'error';
+                    // this.snackbar = true;
                 }
             });
         },
