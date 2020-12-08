@@ -52,6 +52,7 @@ class CompanyUserRepository
 
         $companyUsers = CompanyUser::whereIn('id', array_merge($clientCompanyUsers, $freeCompanyUsers));
         if ($request->search) {
+            $request['page'] = 1;
             $companyUsers->whereHas(
                 'userData',
                 function ($query) use ($request) {

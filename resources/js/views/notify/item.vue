@@ -277,6 +277,7 @@
                                         item-value="id"
                                         item-text="name"
                                         dense
+                                        :rules="['Required']"
                                     >
                                     </v-select>
                                 </v-col>
@@ -289,6 +290,7 @@
                                         :label="langMap.notification.notification_type"
                                         item-value="id"
                                         dense
+                                        :rules="['Required']"
                                     >
                                         <template slot="selection" slot-scope="data">
                                             <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
@@ -334,6 +336,7 @@
                                         v-model="template.text"
                                         :extensions="extensions"
                                         :placeholder="langMap.notification.text"
+                                        :rules="['Required']"
                                     ></tiptap-vuetify>
                                     <v-spacer>&nbsp;</v-spacer>
                                 </v-col>
@@ -741,8 +744,8 @@
                         this.recipients.push({
                             'type': type,
                             'id': employee.id,
-                            'name': employee.employee.user_data.full_name,
-                            'email': employee.employee.user_data.contact_email ? employee.employee.user_data.contact_email.email : ''
+                            'name': employee.user_data.full_name,
+                            'email': employee.user_data.contact_email ? employee.user_data.contact_email.email : ''
                         });
                         break;
                 }

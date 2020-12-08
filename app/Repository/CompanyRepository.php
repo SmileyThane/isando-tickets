@@ -44,8 +44,9 @@ class CompanyRepository
         if ($request->search !== '') {
             $company->where(
                 function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('description', 'like', '%' . $request->search . '%');
+                    $query->where('name', 'like', $request->search . '%')
+                        ->orWhere('name', 'like', ' %' . $request->search . '%');
+                        $query->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
         }
@@ -56,7 +57,7 @@ class CompanyRepository
             }
             return $result->get();
         }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type', 'employees.userData.emails.type', 'clients',
-            'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type'])
+            'products.productData', 'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type'])
             ->first() : $company->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $company->count());
     }
 
