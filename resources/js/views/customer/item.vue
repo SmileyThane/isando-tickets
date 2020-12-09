@@ -1231,6 +1231,7 @@ export default {
                     this.client = response.data
                     this.client.client_name = response.data.name
                     this.client.client_description = response.data.description
+                    this.$store.state.pageName = this.client.client_name
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
