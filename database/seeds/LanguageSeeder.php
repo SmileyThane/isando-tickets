@@ -178,6 +178,7 @@ class LanguageSeeder extends Seeder
   },
   "team": {
     "add_new": "Add new team",
+    "team_deleted": "Team deleted",
     "info": "Team info",
     "members": "Agent",
     "new_member": "New team member"
@@ -613,6 +614,7 @@ class LanguageSeeder extends Seeder
   },
   "team": {
     "add_new": "Neues Team hinzufügen",
+    "team_deleted": "Team gelöscht",
     "info": "Teaminfo",
     "members": "Teammitglieder",
     "new_member": "Neues Teammitglied"
