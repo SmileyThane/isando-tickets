@@ -228,7 +228,7 @@
                 if (this.totalProducts < this.options.itemsPerPage) {
                     this.options.page = 1
                 }
-                axios.get(`api/product?
+                axios.get(`/api/product?
                     search=${this.productsSearch}&
                     sort_by=${this.options.sortBy[0]}&
                     sort_val=${this.options.sortDesc[0]}&
@@ -248,7 +248,7 @@
             },
             addProduct() {
                 // console.log(this.productForm)
-                axios.post('api/product', this.productForm).then(response => {
+                axios.post('/api/product', this.productForm).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getProducts()
