@@ -1049,7 +1049,7 @@
 
             <v-dialog v-model="deleteProductDlg" persistent max-width="480">
                 <v-card>
-                    <v-card-title>{{langMap.customer.unlink_product}}?</v-card-title>
+                    <v-card-title>{{langMap.product.unlink_product}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="deleteProductDlg = false">
