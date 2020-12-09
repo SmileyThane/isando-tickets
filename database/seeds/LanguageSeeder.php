@@ -581,7 +581,7 @@ class LanguageSeeder extends Seeder
     "employee_deleted": "Mitarbeiter gelöscht",
     "employee_updated": "Mitarbeiter aktualisiert",
     "employee_activated": "Mitarbeiter aktiviert",
-    "employee_deactivated": "Employee deaktiviert",
+    "employee_deactivated": "Mitarbeiter deaktiviert",
     "customer_created": "Kunde erstellt",
     "customer_updated": "Kunde aktualisiert",
     "customer_deleted": "Kunde gelöscht",
