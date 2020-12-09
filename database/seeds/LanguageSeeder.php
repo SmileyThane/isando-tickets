@@ -22,10 +22,10 @@ class LanguageSeeder extends Seeder
                 'lang_map' => '{
   "sidebar": {
     "companies": "My Company",
-    "customers": "Company",
+    "customers": "Companies",
     "products": "Product",
     "teams": "Team",
-    "individuals": "Individual",
+    "individuals": "Individuals",
     "individual": "Individual",
     "company": "Company",
     "customer": "Customer",

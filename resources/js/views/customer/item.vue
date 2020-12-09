@@ -695,6 +695,26 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <v-text-field
+                                                    v-model="employeeForm.middle_name"
+                                                    :color="themeColor"
+                                                    :label="langMap.main.middle_name"
+                                                    name="name"
+                                                    required
+                                                    type="text"
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    v-model="employeeForm.surname"
+                                                    :color="themeColor"
+                                                    :label="langMap.main.last_name"
+                                                    name="name"
+                                                    required
+                                                    type="text"
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-text-field
                                                     v-model="employeeForm.email"
                                                     :color="themeColor"
                                                     :label="langMap.main.email"
@@ -1231,6 +1251,7 @@ export default {
                     this.client = response.data
                     this.client.client_name = response.data.name
                     this.client.client_description = response.data.description
+                    this.$store.state.pageName = this.client.client_name
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1508,7 +1529,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = item.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
+                    this.snackbarMessage = item.is_active === true ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {

@@ -70,6 +70,19 @@
                                     type="text"
                                 ></v-text-field>
                                 <v-text-field
+                                    v-model="userData.middle_name"
+                                    :color="themeColor"
+                                    :error-messages="errors.middle_name"
+                                    :label="this.$store.state.lang.lang_map.main.middle_name"
+                                    :readonly="!enableToEdit"
+                                    class="col-md-6"
+                                    dense
+                                    lazy-validation
+                                    name="middle_name"
+                                    prepend-icon="mdi-book-account-outline"
+                                    type="text"
+                                ></v-text-field>
+                                <v-text-field
                                     v-model="userData.surname"
                                     :color="themeColor"
                                     :error-messages="errors.surname"
@@ -82,13 +95,16 @@
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
                                 ></v-text-field>
+                                <v-col md="6">
+                                    <v-spacer></v-spacer>
+                                </v-col>
                                 <v-checkbox
                                     v-model="userData.status"
                                     :label="this.$store.state.lang.lang_map.individuals.active"
                                     class="col-md-6"
                                     color="success"
                                     hide-details
-                                    @change="updateUser"
+                                    @change="updateStatus"
                                 />
                                 <v-checkbox
                                     v-model="userData.is_active"
@@ -1082,6 +1098,21 @@ export default {
                     this.getUser()
                     this.snackbarMessage = this.langMap.company.user_updated;
                     this.actionColor = 'success'
+                    this.snackbar = true
+                    this.enableToEdit = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;                }
+            });
+        },
+        updateStatus() {
+            this.snackbar = false;
+            axios.post('/api/user', this.userData).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.userData.status ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;                    this.actionColor = 'success'
                     this.snackbar = true
                     this.enableToEdit = false
                 } else {

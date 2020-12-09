@@ -69,12 +69,12 @@
                                 ></v-text-field>
                                 <v-text-field
                                     :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.last_name"
-                                    name="surname"
+                                    :label="this.$store.state.lang.lang_map.main.middle_name"
+                                    name="middle_name"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
-                                    v-model="userData.surname"
-                                    :error-messages="errors.surname"
+                                    v-model="userData.middle_name"
+                                    :error-messages="errors.middle_name"
                                     lazy-validation
                                     class="col-md-6"
                                     :readonly="!enableToEdit"
@@ -82,12 +82,12 @@
                                 ></v-text-field>
                                 <v-text-field
                                     :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.middle_name"
-                                    name="middle_name"
+                                    :label="this.$store.state.lang.lang_map.main.last_name"
+                                    name="surname"
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
-                                    v-model="userData.middle_name"
-                                    :error-messages="errors.middle_name"
+                                    v-model="userData.surname"
+                                    :error-messages="errors.surname"
                                     lazy-validation
                                     class="col-md-6"
                                     :readonly="!enableToEdit"

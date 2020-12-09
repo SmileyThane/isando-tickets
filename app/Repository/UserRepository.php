@@ -62,6 +62,8 @@ class UserRepository
     {
         $user = new User();
         $user->name = $request->name;
+        $user->middle_name = $request->middle_name;
+        $user->surname = $request->surname;
         $user->password = bcrypt($request->password);
         $user->is_active = $request->is_active;
         $user->save();
