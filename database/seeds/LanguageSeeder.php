@@ -174,7 +174,8 @@ class LanguageSeeder extends Seeder
   "product": {
     "add_new": "Add new product",
     "info": "Product info",
-    "product_clients": "Product clients"
+    "product_clients": "Product clients",
+    "unlink_product": "Unlink product"
   },
   "team": {
     "add_new": "Add new team",
@@ -610,7 +611,8 @@ class LanguageSeeder extends Seeder
   "product": {
     "add_new": "Neues Produkt hinzufügen",
     "info": "Produktinfo",
-    "product_clients": "Produktkunden"
+    "product_clients": "Produktkunden",
+    "unlink_product": "Produktverknüpfung löschen"
   },
   "team": {
     "add_new": "Neues Team hinzufügen",
