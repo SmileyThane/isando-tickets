@@ -699,7 +699,10 @@
                         <span class="headline">{{langMap.company.update_info}}: {{userData.name}}</span>
                     </v-card-title>
                     <v-card-text>
-                        {{this.$store.state.lang.lang_map.main.give_access}}
+                        {{userData.is_active === true ?
+                        this.$store.state.lang.lang_map.main.give_access :
+                        this.$store.state.lang.lang_map.main.remove_access
+                        }}
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
