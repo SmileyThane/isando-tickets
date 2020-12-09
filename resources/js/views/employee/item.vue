@@ -88,7 +88,7 @@
                                     class="col-md-6"
                                     color="success"
                                     hide-details
-                                    @change="updateUser"
+                                    @change="updateStatus"
                                 />
                                 <v-checkbox
                                     v-model="userData.is_active"
@@ -1082,6 +1082,21 @@ export default {
                     this.getUser()
                     this.snackbarMessage = this.langMap.company.user_updated;
                     this.actionColor = 'success'
+                    this.snackbar = true
+                    this.enableToEdit = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;                }
+            });
+        },
+        updateStatus() {
+            this.snackbar = false;
+            axios.post('/api/user', this.userData).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.userData.status ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;                    this.actionColor = 'success'
                     this.snackbar = true
                     this.enableToEdit = false
                 } else {
