@@ -82,19 +82,6 @@
                                 ></v-text-field>
                                 <v-text-field
                                     :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.middle_name"
-                                    name="middle_name"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                    v-model="userData.middle_name"
-                                    :error-messages="errors.middle_name"
-                                    lazy-validation
-                                    class="col-md-6"
-                                    :readonly="!enableToEdit"
-                                    dense
-                                ></v-text-field>
-                                <v-text-field
-                                    :color="themeColor"
                                     id="password"
                                     :label="this.$store.state.lang.lang_map.main.password"
                                     placeholder="********"
@@ -106,6 +93,19 @@
                                     lazy-validation
                                     class="col-md-6"
                                     required
+                                    :readonly="!enableToEdit"
+                                    dense
+                                ></v-text-field>
+                                <v-text-field
+                                    :color="themeColor"
+                                    :label="this.$store.state.lang.lang_map.main.middle_name"
+                                    name="middle_name"
+                                    prepend-icon="mdi-book-account-outline"
+                                    type="text"
+                                    v-model="userData.middle_name"
+                                    :error-messages="errors.middle_name"
+                                    lazy-validation
+                                    class="col-md-6"
                                     :readonly="!enableToEdit"
                                     dense
                                 ></v-text-field>
