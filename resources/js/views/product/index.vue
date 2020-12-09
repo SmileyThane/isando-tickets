@@ -269,12 +269,12 @@
                     response = response.data
                     if (response.success === true) {
                         this.getProducts()
-                        this.snackbarMessage = 'Product was deleted '
+                        this.snackbarMessage = this.langMap.customer.product_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                         this.removeProductDialog = false
                     } else {
-                        this.snackbarMessage = 'Product delete error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }
