@@ -695,6 +695,26 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <v-text-field
+                                                    v-model="employeeForm.middle_name"
+                                                    :color="themeColor"
+                                                    :label="langMap.main.middle_name"
+                                                    name="name"
+                                                    required
+                                                    type="text"
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    v-model="employeeForm.surname"
+                                                    :color="themeColor"
+                                                    :label="langMap.main.last_name"
+                                                    name="name"
+                                                    required
+                                                    type="text"
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-text-field
                                                     v-model="employeeForm.email"
                                                     :color="themeColor"
                                                     :label="langMap.main.email"
