@@ -1509,7 +1509,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = item.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
+                    this.snackbarMessage = item.is_active === true ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
