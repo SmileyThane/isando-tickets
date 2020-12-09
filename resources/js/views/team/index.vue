@@ -249,12 +249,12 @@
                     response = response.data
                     if (response.success === true) {
                         this.getTeams()
-                        this.snackbarMessage = 'Team was deleted '
+                        this.snackbarMessage = this.langMap.team.team_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                         this.removeTeamDialog = false
                     } else {
-                        this.snackbarMessage = 'Team delete error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }

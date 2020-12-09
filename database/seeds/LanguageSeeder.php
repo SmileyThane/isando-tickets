@@ -22,7 +22,7 @@ class LanguageSeeder extends Seeder
                 'lang_map' => '{
   "sidebar": {
     "companies": "My Company",
-    "customers": "Customer",
+    "customers": "Company",
     "products": "Product",
     "teams": "Team",
     "individuals": "Individual",
@@ -174,10 +174,12 @@ class LanguageSeeder extends Seeder
   "product": {
     "add_new": "Add new product",
     "info": "Product info",
-    "product_clients": "Product clients"
+    "product_clients": "Product clients",
+    "unlink_product": "Unlink product"
   },
   "team": {
     "add_new": "Add new team",
+    "team_deleted": "Team deleted",
     "info": "Team info",
     "members": "Agent",
     "new_member": "New team member"
@@ -322,6 +324,7 @@ class LanguageSeeder extends Seeder
     "person": "person",
     "first_name": "Name",
     "last_name": "Surname",
+    "middle_name": "Middle name",
     "language": "language",
     "postal_code": "Postcode",
     "title_before_name": "Title before name",
@@ -334,6 +337,7 @@ class LanguageSeeder extends Seeder
     "resend": "Resend",
     "invite": "Invite",
     "give_access": "Give access to the system?",
+    "remove_access": "Remove access to the system?",
     "information": "Information",
     "user": "User",
     "save": "Save",
@@ -579,7 +583,7 @@ class LanguageSeeder extends Seeder
     "employee_deleted": "Mitarbeiter gelöscht",
     "employee_updated": "Mitarbeiter aktualisiert",
     "employee_activated": "Mitarbeiter aktiviert",
-    "employee_deactivated": "Employee deaktiviert",
+    "employee_deactivated": "Mitarbeiter deaktiviert",
     "customer_created": "Kunde erstellt",
     "customer_updated": "Kunde aktualisiert",
     "customer_deleted": "Kunde gelöscht",
@@ -607,10 +611,12 @@ class LanguageSeeder extends Seeder
   "product": {
     "add_new": "Neues Produkt hinzufügen",
     "info": "Produktinfo",
-    "product_clients": "Produktkunden"
+    "product_clients": "Produktkunden",
+    "unlink_product": "Produktverknüpfung löschen"
   },
   "team": {
     "add_new": "Neues Team hinzufügen",
+    "team_deleted": "Team gelöscht",
     "info": "Teaminfo",
     "members": "Teammitglieder",
     "new_member": "Neues Teammitglied"
@@ -756,6 +762,7 @@ class LanguageSeeder extends Seeder
 "person": "person",
 "first_name": "Vorname",
 "last_name": "Nachname",
+"middle_name": "Mittlerer Name",
 "language": "Sprache",
 "postal_code": "Postleitzahl",
 "title_before_name": "Anrede",
@@ -768,6 +775,7 @@ class LanguageSeeder extends Seeder
 "resend": "erneut senden",
 "invite": "einladen",
 "give_access": "Berechtigung zum System erteilen?",
+"remove_access": "Zugriff auf das System entfernen?",
 "information": "information",
 "user": "benutzer",
 "save": "spare",

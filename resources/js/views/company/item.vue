@@ -1882,7 +1882,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.snackbarMessage = 'Contact was added successfully'
+                        this.snackbarMessage = this.langMap.company.customer_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
@@ -1905,7 +1905,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany();
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.company.company_updated;
                         this.actionColor = 'success'
                         this.snackbar = true;
                         this.enableToEdit = false
@@ -1932,7 +1932,7 @@
                     if (response.success === true) {
                         this.getCompany()
                         this.rolesDialog = false
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.company.role_updated;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
@@ -1954,7 +1954,7 @@
                     if (response.success === true) {
                         this.getCompany()
                         this.rolesDialog = false
-                        this.snackbarMessage = 'Contact was removed'
+                        this.snackbarMessage = this.langMap.company.employee_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
@@ -2171,7 +2171,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.snackbarMessage = item.is_active ? 'Contact activated' : 'Contact deactivated'
+                        this.snackbarMessage = item.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
@@ -2186,7 +2186,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompany()
-                        this.snackbarMessage = 'Invite sent'
+                        this.snackbarMessage = this.langMap.company.invitation_sent
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {

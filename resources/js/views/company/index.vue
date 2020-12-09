@@ -198,12 +198,12 @@
                     response = response.data
                     if (response.success === true) {
                         this.getCompanies()
-                        this.snackbarMessage = 'Company was deleted '
+                        this.snackbarMessage = this.langMap.company.company_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
                         this.removeCompanyDialog = false
                     } else {
-                        this.snackbarMessage = 'Company delete error'
+                        this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }

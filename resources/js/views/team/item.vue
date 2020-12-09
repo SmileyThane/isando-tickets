@@ -277,7 +277,7 @@
                     if (response.success === true) {
                         this.getTeam()
                         this.rolesDialog = false
-                        this.snackbarMessage = 'Contact was removed'
+                        this.snackbarMessage = this.langMap.company.employee_deleted
                         this.actionColor = 'success'
                         this.snackbar = true;
                         this.removeEmployeeDialog = false
@@ -294,7 +294,7 @@
                         this.team.team_name = response.data.name
                         this.team.team_description = response.data.description
                         this.enableToEdit = false
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.main.update_successful
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {

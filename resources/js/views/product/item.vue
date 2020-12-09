@@ -193,7 +193,7 @@
                     if (response.success === true) {
                         this.product.product_name = response.data.name
                         this.product.product_description = response.data.description
-                        this.snackbarMessage = 'Update successful'
+                        this.snackbarMessage = this.langMap.main.update_successful
                         this.actionColor = 'success'
                         this.snackbar = true;
                         this.enableToEdit = false

@@ -402,6 +402,43 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.product.add_new }}
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col cols="md-12">
+                                                <v-autocomplete
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="supplierForm.product_id"
+                                                    :items="products"
+                                                    :label="langMap.main.products"
+                                                ></v-autocomplete>
+                                            </v-col>
+                                            <v-btn
+                                                dark
+                                                fab
+                                                right
+                                                bottom
+                                                :color="themeColor"
+                                                @click="addProductClient"
+                                            >
+                                                <v-icon>mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                         <v-data-table
                             :footer-props="footerProps"
                             :headers="productHeaders"
@@ -433,7 +470,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{ langMap.customer.delete_product }}</span>
+                                    <span>{{ langMap.product.unlink_product }}</span>
                                 </v-tooltip>
                             </template>
                         </v-data-table>
@@ -533,7 +570,7 @@
                         <template>
                             <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
                                 <v-card>
-                                    <v-card-title>{{ langMap.main.delete_selected }}?</v-card-title>
+                                    <v-card-title>{{langMap.company.delete_employee_msg}}</v-card-title>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
@@ -1012,7 +1049,7 @@
 
             <v-dialog v-model="deleteProductDlg" persistent max-width="480">
                 <v-card>
-                    <v-card-title>{{langMap.customer.delete_product}}?</v-card-title>
+                    <v-card-title>{{langMap.product.unlink_product}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="deleteProductDlg = false">
@@ -1147,6 +1184,12 @@ export default {
                 email: '',
                 email_type: ''
             },
+            supplierForm: {
+                client_id: null,
+                product_id: null
+            },
+            productsSearch: '',
+            products:[],
             phoneTypes: [],
             addressTypes: [],
             socialTypes: [],
@@ -1169,6 +1212,7 @@ export default {
         this.getSocialTypes();
         this.getEmailTypes();
         this.getCountries();
+        this.getProducts();
         this.employeeForm.client_id = this.$route.params.id;
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
@@ -1642,6 +1686,37 @@ export default {
         {
             this.selectedProductId = item.id;
             this.deleteProductDlg = true;
+        },
+        getProducts() {
+            axios.get(`/api/product?
+                    search=${this.productsSearch}&
+                    sort_by=name&
+                    sort_val=false&
+                    `).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.products = response.data.data
+                    this.totalProducts = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.loading = false
+                } else {
+                    console.log('error')
+                }
+
+            });
+        },
+        addProductClient() {
+            console.log(this.client.id);
+            this.supplierForm.client_id = this.client.id
+            axios.post(`/api/product/client`, this.supplierForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient()
+                } else {
+                    console.log('error')
+                }
+
+            });
         },
         deleteProduct(productId)
         {
