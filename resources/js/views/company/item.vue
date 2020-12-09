@@ -1742,6 +1742,7 @@
                     response = response.data
                     if (response.success === true) {
                         this.company = response.data;
+                        this.$store.state.pageName = this.company.name
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
