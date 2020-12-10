@@ -91,10 +91,10 @@ class LanguageSeeder extends Seeder
   "roles": {
     "superadmin": "Superadmin",
     "license_owner": "License owner",
-    "company_admin": "Company admin",
-    "company_manager": "Company manager",
+    "company_admin": "Admin",
+    "company_manager": "Manager",
     "regular_user": "Regular user",
-    "company_client": "Company client",
+    "company_client": "Client",
     "contact": "Contact"
   },
   "company": {
@@ -533,12 +533,12 @@ class LanguageSeeder extends Seeder
     "ticket_type_updated": "Typ aktualisiert zu "
   },
   "roles": {
-    "superadmin": "Höchster Vorgesetzter",
+    "superadmin": "Superadmin",
     "license_owner": "Lizenzinhaber",
-    "company_admin": "Unternehmensadmin",
-    "company_manager": "Firmenleiter",
-    "regular_user": "Stammbenutzer",
-    "company_client": "Firmenkunde",
+    "company_admin": "Admin",
+    "company_manager": "Manager",
+    "regular_user": "Benutzer",
+    "company_client": "Kunde",
     "contact": "Kontakt"
   },
   "company": {
