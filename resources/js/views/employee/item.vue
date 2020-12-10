@@ -712,7 +712,7 @@
             <v-dialog v-model="isAccessedDialog" max-width="600px" persistent>
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{langMap.company.update_info}}: {{userData.name}}</span>
+                        <span class="headline">{{langMap.company.update_info}}: {{userData.full_name}}</span>
                     </v-card-title>
                     <v-card-text>
                         {{userData.is_active === true ?
