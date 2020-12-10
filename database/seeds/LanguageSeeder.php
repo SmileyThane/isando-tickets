@@ -83,7 +83,7 @@ class LanguageSeeder extends Seeder
     "employee_attached": "Assigned to ",
     "product_updated": "Product updated to",
     "access_details_updated": "Access details updated to ",
-    "access_details_updated_msg": "Access details was updated ",
+    "access_details_updated_msg": "Access details were updated ",
     "conn_details_updated": "Connection details updated to ",
     "category_updated": "Category updated to ",
     "company_updated": "Company updated to",
