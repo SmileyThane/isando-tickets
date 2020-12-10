@@ -1347,7 +1347,7 @@ export default {
                 this.isAccessedDialog = false
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = this.selectedIsAccessedItem.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
+                    this.snackbarMessage = this.selectedIsAccessedItem.is_active ? this.langMap.history_actions.access_details_updated_msg : this.langMap.history_actions.access_details_updated_msg;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
