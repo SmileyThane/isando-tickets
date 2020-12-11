@@ -415,21 +415,21 @@
                                         <div class="row">
                                             <v-col cols="md-12">
                                                 <v-autocomplete
+                                                    v-model="supplierForm.product_id"
                                                     :color="themeColor"
                                                     :item-color="themeColor"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="supplierForm.product_id"
                                                     :items="products"
                                                     :label="langMap.main.products"
+                                                    item-text="name"
+                                                    item-value="id"
                                                 ></v-autocomplete>
                                             </v-col>
                                             <v-btn
+                                                :color="themeColor"
+                                                bottom
                                                 dark
                                                 fab
                                                 right
-                                                bottom
-                                                :color="themeColor"
                                                 @click="addProductClient"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
@@ -564,13 +564,15 @@
                             <template v-slot:item.user_data="{ item }">
                                 <div v-if="item.employee.user_data" class="justify-center">
                                     {{ item.employee.user_data.full_name }}
+                                    <p v-if="item.description" class="caption" style="color: darkgrey;">
+                                        {{ item.description }}</p>
                                 </div>
                             </template>
                         </v-data-table>
                         <template>
                             <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
                                 <v-card>
-                                    <v-card-title>{{langMap.company.delete_employee_msg}}</v-card-title>
+                                    <v-card-title>{{ langMap.company.delete_employee_msg }}</v-card-title>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
@@ -636,7 +638,7 @@
                                                     {{ langMap.main.description }}
                                                 </span>
                                                 <br>
-                                                <strong >
+                                                <strong>
                                                     {{ contactInfoForm.description }}
                                                 </strong>
                                                 <v-divider>&nbsp;</v-divider>
@@ -1067,16 +1069,17 @@
                 </v-card>
             </v-dialog>
 
-            <v-dialog v-model="deleteProductDlg" persistent max-width="480">
+            <v-dialog v-model="deleteProductDlg" max-width="480" persistent>
                 <v-card>
-                    <v-card-title>{{langMap.product.unlink_product}}?</v-card-title>
+                    <v-card-title>{{ langMap.product.unlink_product }}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="deleteProductDlg = false">
-                            {{langMap.main.cancel}}
+                            {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn color="red darken-1" text @click="deleteProductDlg = false; deleteProduct(selectedProductId)">
-                            {{langMap.main.delete}}
+                        <v-btn color="red darken-1" text
+                               @click="deleteProductDlg = false; deleteProduct(selectedProductId)">
+                            {{ langMap.main.delete }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -1209,7 +1212,7 @@ export default {
                 product_id: null
             },
             productsSearch: '',
-            products:[],
+            products: [],
             phoneTypes: [],
             addressTypes: [],
             socialTypes: [],
@@ -1703,8 +1706,7 @@ export default {
             this.emailForm.email = item.email;
             this.emailForm.email_type = item.type ? item.type.id : 0;
         },
-        showDeleteProductDlg(item)
-        {
+        showDeleteProductDlg(item) {
             this.selectedProductId = item.id;
             this.deleteProductDlg = true;
         },
@@ -1739,8 +1741,7 @@ export default {
 
             });
         },
-        deleteProduct(productId)
-        {
+        deleteProduct(productId) {
             axios.delete(`/api/product/client/${productId}`).then(response => {
                 response = response.data
                 if (response.success === true) {
