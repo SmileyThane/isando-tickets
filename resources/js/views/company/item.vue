@@ -819,7 +819,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{ langMap.customer.delete_product }}</span>
+                                    <span>{{ langMap.customer.unlink_product }}</span>
                                 </v-tooltip>
                             </template>
                         </v-data-table>
@@ -1540,7 +1540,7 @@
             </v-dialog>
             <v-dialog v-model="deleteProductDlg" persistent max-width="480">
                 <v-card>
-                    <v-card-title>{{langMap.customer.delete_product}}?</v-card-title>
+                    <v-card-title>{{langMap.customer.unlink_product}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="deleteProductDlg = false">
