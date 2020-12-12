@@ -582,7 +582,7 @@ class LanguageSeeder extends Seeder
     "first_alias": "Erste Zeile",
     "second_alias": "Zweite Zeile",
     "employee_created": "Mitarbeiter hinzugefügt",
-    "employee_deleted": "Mitarbeiter gelöscht",
+    "employee_deleted": "Der Kontact wurde entfernt",
     "employee_updated": "Mitarbeiter aktualisiert",
     "employee_activated": "Mitarbeiter aktiviert",
     "employee_deactivated": "Mitarbeiter deaktiviert",
