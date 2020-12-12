@@ -612,7 +612,7 @@
                                                 <strong v-for="email in client.emails">
                                                     <span>
                                                         {{ email.email }}
-                                                        <v-icon v-if="contactInfoEdit == true"
+                                                        <v-icon v-if="contactInfoEditBtn == true"
                                                                 small
                                                                 @click="deleteEmail(email.id)"
                                                         >
@@ -629,7 +629,7 @@
                                                     <span>
                                                         {{ phone.phone }}
                                                         <v-icon
-                                                            v-if="contactInfoEdit == true"
+                                                            v-if="contactInfoEditBtn == true"
                                                             small
                                                             @click="deletePhone(phone.id)"
                                                         >
@@ -646,7 +646,7 @@
                                                 mdi-card-account-details-outline
                                             </v-icon>
                                                 <br>
-                                            <!--                                            <span v-if="contactInfoEdit === false">-->
+                                            <!--                                            <span v-if="contactInfoEditBtn === false">-->
                                             <!--                                                <span>-->
                                             <!--                                                    {{ langMap.main.description }}-->
                                             <!--                                                </span>-->
@@ -662,7 +662,7 @@
                                                     :color="themeColor"
                                                     v-model="contactInfoForm.description"
                                                     :label="langMap.main.description"
-                                                    :readonly="contactInfoEdit === false"
+                                                    :readonly="contactInfoEditBtn === false"
                                                     dense
                                                     reverse
                                                     size="9"
@@ -680,7 +680,7 @@
                                                     <span>
                                                         {{ email.email }}
                                                         <v-icon
-                                                            v-if="contactInfoEdit == true"
+                                                            v-if="contactInfoEditBtn == true"
                                                             small
                                                             @click="deleteEmail(email.id)"
                                                         >
@@ -697,7 +697,7 @@
                                                     <span>
                                                         {{ phone.phone }}
                                                         <v-icon
-                                                            v-if="contactInfoEdit == true"
+                                                            v-if="contactInfoEditBtn == true"
                                                             small
                                                             @click="deletePhone(phone.id)"
                                                         >
@@ -710,13 +710,9 @@
                                 </v-card-text>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" text @click="
-                                        contactInfoEdit === true ?
-                                        contactInfoEdit = false  :
-                                        contactInfoEdit = true">
+                                    <v-btn color="green darken-1" text @click="editContactInfo">
                                         {{
-
-                                            contactInfoEdit === true ?
+                                            contactInfoEditBtn === true ?
                                                 langMap.main.save :
                                                 langMap.individuals.update_link
 
@@ -1216,6 +1212,8 @@ export default {
                 ]
             },
             employeeForm: {
+                company_user_id: null,
+                description: '',
                 name: '',
                 email: '',
                 client_id: '',
@@ -1224,7 +1222,7 @@ export default {
             selectedEmployeeId: null,
             removeEmployeeDialog: false,
             contactInfoModal: false,
-            contactInfoEdit: false,
+            contactInfoEditBtn: false,
             roles: [
                 {
                     id: '',
@@ -1366,6 +1364,21 @@ export default {
 
             });
         },
+        editContactInfo() {
+            if (this.contactInfoEditBtn === true) {
+                this.employeeForm.client_id = this.contactInfoForm.client_id
+                this.employeeForm.company_user_id = this.contactInfoForm.company_user_id
+                this.employeeForm.description = this.contactInfoForm.description
+                this.addEmployee();
+                this.contactInfoModal = false
+                this.contactInfoEditBtn = false
+                this.getClient()
+
+            } else {
+                this.contactInfoEditBtn = true
+            }
+            console.log(this.employeeForm.client_id);
+        },
         updateClient() {
             axios.patch(`/api/client/${this.$route.params.id}`, this.client).then(response => {
                 response = response.data
@@ -1478,6 +1491,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.phone_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.contactInfoModal = false
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
