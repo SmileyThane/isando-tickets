@@ -780,7 +780,7 @@ class LanguageSeeder extends Seeder
 "remove_access": "Zugriff auf das System entfernen?",
 "information": "information",
 "user": "benutzer",
-"save": "spare",
+"save": "speichern",
 "save_as": "Speichern als...",
 "send": "Senden",
 "continue": "fortsetzen",
