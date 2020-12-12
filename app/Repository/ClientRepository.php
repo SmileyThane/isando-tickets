@@ -10,6 +10,7 @@ use App\Company;
 use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -120,12 +121,25 @@ class ClientRepository
 
     public function attach(Request $request): bool
     {
+        Log::info('attached_c_cu_d:' . $request->client_id . '_' . $request->company_user_id . '_' . $request->description);
         ClientCompanyUser::firstOrCreate(
-            ['client_id' => $request->client_id,
+            [
+                'client_id' => $request->client_id,
                 'company_user_id' => $request->company_user_id
             ],
             ['description' => $request->description]
         );
+        return true;
+    }
+
+    public function updateDescription(Request $request): bool
+    {
+        ClientCompanyUser::where(
+            [
+                'client_id' => $request->client_id,
+                'company_user_id' => $request->company_user_id
+            ]
+        )->update(['description' => $request->description]);
         return true;
     }
 
