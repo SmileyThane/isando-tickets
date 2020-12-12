@@ -83,6 +83,7 @@ class LanguageSeeder extends Seeder
     "employee_attached": "Assigned to ",
     "product_updated": "Product updated to",
     "access_details_updated": "Access details updated to ",
+    "access_details_updated_msg": "Access details were updated ",
     "conn_details_updated": "Connection details updated to ",
     "category_updated": "Category updated to ",
     "company_updated": "Company updated to",
@@ -91,10 +92,10 @@ class LanguageSeeder extends Seeder
   "roles": {
     "superadmin": "Superadmin",
     "license_owner": "License owner",
-    "company_admin": "Company admin",
-    "company_manager": "Company manager",
+    "company_admin": "Admin",
+    "company_manager": "Manager",
     "regular_user": "Regular user",
-    "company_client": "Company client",
+    "company_client": "Client",
     "contact": "Contact"
   },
   "company": {
@@ -527,18 +528,19 @@ class LanguageSeeder extends Seeder
     "employee_attached": "Zugewiesen an ",
     "product_updated": "Produkt aktualisiert zu ",
     "access_details_updated": "Zugangsdetails aktualisiert auf ",
+    "access_details_updated_msg": "Zugangsdetails aktualisiert",
     "conn_details_updated": "Verbindungsdetails aktualisiert auf ",
     "category_updated": "Kategorie aktualisiert auf ",
     "company_updated": "Firma aktualisiert auf ",
     "ticket_type_updated": "Typ aktualisiert zu "
   },
   "roles": {
-    "superadmin": "Höchster Vorgesetzter",
+    "superadmin": "Superadmin",
     "license_owner": "Lizenzinhaber",
-    "company_admin": "Unternehmensadmin",
-    "company_manager": "Firmenleiter",
-    "regular_user": "Stammbenutzer",
-    "company_client": "Firmenkunde",
+    "company_admin": "Admin",
+    "company_manager": "Manager",
+    "regular_user": "Benutzer",
+    "company_client": "Kunde",
     "contact": "Kontakt"
   },
   "company": {

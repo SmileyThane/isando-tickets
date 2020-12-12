@@ -415,21 +415,21 @@
                                         <div class="row">
                                             <v-col cols="md-12">
                                                 <v-autocomplete
+                                                    v-model="supplierForm.product_id"
                                                     :color="themeColor"
                                                     :item-color="themeColor"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="supplierForm.product_id"
                                                     :items="products"
                                                     :label="langMap.main.products"
+                                                    item-text="name"
+                                                    item-value="id"
                                                 ></v-autocomplete>
                                             </v-col>
                                             <v-btn
+                                                :color="themeColor"
+                                                bottom
                                                 dark
                                                 fab
                                                 right
-                                                bottom
-                                                :color="themeColor"
                                                 @click="addProductClient"
                                             >
                                                 <v-icon>mdi-plus</v-icon>
@@ -564,13 +564,15 @@
                             <template v-slot:item.user_data="{ item }">
                                 <div v-if="item.employee.user_data" class="justify-center">
                                     {{ item.employee.user_data.full_name }}
+                                    <p v-if="item.description" class="caption" style="color: darkgrey;">
+                                        {{ item.description }}</p>
                                 </div>
                             </template>
                         </v-data-table>
                         <template>
                             <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
                                 <v-card>
-                                    <v-card-title>{{langMap.company.delete_employee_msg}}</v-card-title>
+                                    <v-card-title>{{ langMap.company.delete_employee_msg }}</v-card-title>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
@@ -583,12 +585,11 @@
                                 </v-card>
                             </v-dialog>
                         </template>
-                        <template>
-                            <v-dialog v-if="contactInfoForm !== null" v-model="contactInfoModal" max-width="480">
-                                <v-card>
-                                    <v-card-title>{{ langMap.individuals.contact_info }}</v-card-title>
-                                    <v-card-text>
-                                        <v-row>
+                        <v-dialog v-if="contactInfoForm !== null" v-model="contactInfoModal" max-width="600">
+                            <v-card>
+                                <v-card-title>{{ langMap.individuals.contact_info }}</v-card-title>
+                                <v-card-text>
+                                    <v-row>
                                             <span
                                                 class="col-md-6 pa-4 text-left"
                                             >
@@ -609,7 +610,15 @@
                                                 </span>
                                                 <br>
                                                 <strong v-for="email in client.emails">
-                                                    {{ email.email }}
+                                                    <span>
+                                                        {{ email.email }}
+                                                        <v-icon v-if="contactInfoEditBtn == true"
+                                                                small
+                                                                @click="deleteEmail(email.id)"
+                                                        >
+                                                            mdi-backspace-outline
+                                                        </v-icon>
+                                                    </span>
                                                 </strong>
                                                 <v-divider>&nbsp;</v-divider>
                                                 <span>
@@ -617,36 +626,67 @@
                                                 </span>
                                                 <br>
                                                 <strong v-for="phone in client.phones">
-                                                    {{ phone.phone }}
+                                                    <span>
+                                                        {{ phone.phone }}
+                                                        <v-icon
+                                                            v-if="contactInfoEditBtn == true"
+                                                            small
+                                                            @click="deletePhone(phone.id)"
+                                                        >
+                                                            mdi-backspace-outline
+                                                        </v-icon>
+                                                    </span>
                                                 </strong>
                                             </span>
-                                            <v-spacer></v-spacer>
-                                            <span
-                                                class="col-md-6 pa-4  text-right"
-                                            >
-                                                <v-icon x-large>
-                                                    mdi-card-account-details-outline
-                                                </v-icon>
+                                        <v-spacer></v-spacer>
+                                        <span
+                                            class="col-md-6 pa-4  text-right"
+                                        >
+                                            <v-icon x-large>
+                                                mdi-card-account-details-outline
+                                            </v-icon>
                                                 <br>
-                                                <strong>
-                                                    {{ contactInfoForm.employee.user_data.full_name }}
-                                                </strong>
+                                            <!--                                            <span v-if="contactInfoEditBtn === false">-->
+                                            <!--                                                <span>-->
+                                            <!--                                                    {{ langMap.main.description }}-->
+                                            <!--                                                </span>-->
+                                            <!--                                                <br>-->
+                                            <!--                                                <strong>-->
+                                            <!--                                                    {{ contactInfoForm.description }}-->
+                                            <!--                                                </strong>-->
+                                            <!--                                                <v-divider>&nbsp;</v-divider>-->
+                                            <!--                                            </span>-->
+                                            <span>
                                                 <br>
-                                                <span>
-                                                    {{ langMap.main.description }}
-                                                </span>
-                                                <br>
-                                                <strong >
-                                                    {{ contactInfoForm.description }}
-                                                </strong>
-                                                <v-divider>&nbsp;</v-divider>
+                                                <v-text-field
+                                                    :color="themeColor"
+                                                    v-model="contactInfoForm.description"
+                                                    :label="langMap.main.description"
+                                                    :readonly="contactInfoEditBtn === false"
+                                                    dense
+                                                    reverse
+                                                    size="9"
+                                                    style="text-align: right;"
+                                                >
+                                                </v-text-field>
+                                            </span>
+
                                                 <br>
                                                 <span>
                                                     {{ langMap.main.email }}
                                                 </span>
                                                 <br>
                                                 <strong v-for="email in contactInfoForm.employee.user_data.emails">
-                                                    {{ email.email }}
+                                                    <span>
+                                                        {{ email.email }}
+                                                        <v-icon
+                                                            v-if="contactInfoEditBtn == true"
+                                                            small
+                                                            @click="deleteEmail(email.id)"
+                                                        >
+                                                            mdi-backspace-outline
+                                                        </v-icon>
+                                                    </span>
                                                 </strong>
                                                 <v-divider>&nbsp;</v-divider>
                                                 <span>
@@ -654,21 +694,34 @@
                                                 </span>
                                                 <br>
                                                 <strong v-for="phone in contactInfoForm.employee.user_data.phones">
-                                                    {{ phone.phone }}
+                                                    <span>
+                                                        {{ phone.phone }}
+                                                        <v-icon
+                                                            v-if="contactInfoEditBtn == true"
+                                                            small
+                                                            @click="deletePhone(phone.id)"
+                                                        >
+                                                            mdi-backspace-outline
+                                                        </v-icon>
+                                                    </span>
                                                 </strong>
                                             </span>
-                                        </v-row>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn color="green darken-1" text @click="showUser(contactInfoForm)">
-                                            {{ langMap.individuals.update_link }}
-                                        </v-btn>
-                                        <v-spacer></v-spacer>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
-                        </template>
+                                    </v-row>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="green darken-1" text @click="editContactInfo">
+                                        {{
+                                            contactInfoEditBtn === true ?
+                                                langMap.main.save :
+                                                langMap.individuals.update_link
+
+                                        }}
+                                    </v-btn>
+                                    <v-spacer></v-spacer>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
@@ -1067,16 +1120,17 @@
                 </v-card>
             </v-dialog>
 
-            <v-dialog v-model="deleteProductDlg" persistent max-width="480">
+            <v-dialog v-model="deleteProductDlg" max-width="480" persistent>
                 <v-card>
-                    <v-card-title>{{langMap.product.unlink_product}}?</v-card-title>
+                    <v-card-title>{{ langMap.product.unlink_product }}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="deleteProductDlg = false">
-                            {{langMap.main.cancel}}
+                            {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn color="red darken-1" text @click="deleteProductDlg = false; deleteProduct(selectedProductId)">
-                            {{langMap.main.delete}}
+                        <v-btn color="red darken-1" text
+                               @click="deleteProductDlg = false; deleteProduct(selectedProductId)">
+                            {{ langMap.main.delete }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -1158,6 +1212,8 @@ export default {
                 ]
             },
             employeeForm: {
+                company_user_id: null,
+                description: '',
                 name: '',
                 email: '',
                 client_id: '',
@@ -1166,6 +1222,7 @@ export default {
             selectedEmployeeId: null,
             removeEmployeeDialog: false,
             contactInfoModal: false,
+            contactInfoEditBtn: false,
             roles: [
                 {
                     id: '',
@@ -1209,7 +1266,7 @@ export default {
                 product_id: null
             },
             productsSearch: '',
-            products:[],
+            products: [],
             phoneTypes: [],
             addressTypes: [],
             socialTypes: [],
@@ -1289,6 +1346,7 @@ export default {
         showContactInfo(item) {
             this.contactInfoForm = item
             this.contactInfoModal = true
+
         },
         addEmployee() {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
@@ -1305,6 +1363,21 @@ export default {
                 }
 
             });
+        },
+        editContactInfo() {
+            if (this.contactInfoEditBtn === true) {
+                this.employeeForm.client_id = this.contactInfoForm.client_id
+                this.employeeForm.company_user_id = this.contactInfoForm.company_user_id
+                this.employeeForm.description = this.contactInfoForm.description
+                this.addEmployee();
+                this.contactInfoModal = false
+                this.contactInfoEditBtn = false
+                this.getClient()
+
+            } else {
+                this.contactInfoEditBtn = true
+            }
+            console.log(this.employeeForm.client_id);
         },
         updateClient() {
             axios.patch(`/api/client/${this.$route.params.id}`, this.client).then(response => {
@@ -1418,6 +1491,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.phone_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.contactInfoModal = false
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1689,6 +1763,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.email_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.contactInfoModal = false;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -1703,8 +1778,7 @@ export default {
             this.emailForm.email = item.email;
             this.emailForm.email_type = item.type ? item.type.id : 0;
         },
-        showDeleteProductDlg(item)
-        {
+        showDeleteProductDlg(item) {
             this.selectedProductId = item.id;
             this.deleteProductDlg = true;
         },
@@ -1739,8 +1813,7 @@ export default {
 
             });
         },
-        deleteProduct(productId)
-        {
+        deleteProduct(productId) {
             axios.delete(`/api/product/client/${productId}`).then(response => {
                 response = response.data
                 if (response.success === true) {

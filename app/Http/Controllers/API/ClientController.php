@@ -96,7 +96,12 @@ class ClientController extends Controller
                 return $inviteResponse;
             }
         }
-        $result = $this->clientRepo->attach($request);
+        if ($request->company_user_id && $request->description) {
+            $result = $this->clientRepo->updateDescription($request);
+        } else {
+            $result = $this->clientRepo->attach($request);
+        }
+
         return self::showResponse($result);
     }
 

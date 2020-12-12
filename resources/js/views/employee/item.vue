@@ -712,7 +712,7 @@
             <v-dialog v-model="isAccessedDialog" max-width="600px" persistent>
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{langMap.company.update_info}}: {{userData.name}}</span>
+                        <span class="headline">{{langMap.company.update_info}}: {{userData.full_name}}</span>
                     </v-card-title>
                     <v-card-text>
                         {{userData.is_active === true ?
@@ -1347,7 +1347,7 @@ export default {
                 this.isAccessedDialog = false
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = this.selectedIsAccessedItem.is_active ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
+                    this.snackbarMessage = this.selectedIsAccessedItem.is_active ? this.langMap.history_actions.access_details_updated_msg : this.langMap.history_actions.access_details_updated_msg;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
