@@ -5,7 +5,7 @@
         v-model="drawer"
     >
         <v-list-item v-if="this.navbarStyle === 2 && this.companyLogo">
-            <v-list-item-icon>
+            <v-list-item-icon style="margin-right: 16px!important;">
                 <v-img :src="companyLogo" contain max-height="3em" max-width="30"></v-img>
             </v-list-item-icon>
             <v-list-item-content>
@@ -15,7 +15,7 @@
             </v-list-item-content>
         </v-list-item>
         <v-list-item v-else-if="this.navbarStyle === 3 && this.companyLogo">
-            <v-list-item-icon>
+            <v-list-item-icon style="margin-right: 16px!important;">
                 <v-img :src="companyLogo" contain max-height="3em" max-width="30"></v-img>
             </v-list-item-icon>
             <v-list-item-content>

@@ -530,34 +530,62 @@
                                 <v-expansion-panel-content>
                                     <v-form>
                                         <div class="row">
-                                            <div class="col-md-4">
                                                 <v-text-field
+                                                    class="col-md-4"
                                                     :color="themeColor"
                                                     :label="langMap.main.name"
                                                     name="name"
                                                     type="text"
                                                     v-model="employeeForm.name"
                                                     required
+                                                    dense
+                                                    hide-details
                                                 ></v-text-field>
-                                            </div>
-                                            <div class="col-md-4">
+                                            <v-text-field
+                                                v-model="employeeForm.middle_name"
+                                                :color="themeColor"
+                                                :error-messages="errors.middle_name"
+                                                :label="this.$store.state.lang.lang_map.main.middle_name"
+                                                class="col-md-4"
+                                                dense
+                                                lazy-validation
+                                                name="middle_name"
+                                                type="text"
+                                                hide-details
+                                            ></v-text-field>
+                                            <v-text-field
+                                                v-model="employeeForm.surname"
+                                                :color="themeColor"
+                                                :error-messages="errors.surname"
+                                                :label="this.$store.state.lang.lang_map.main.last_name"
+                                                class="col-md-4"
+                                                dense
+                                                lazy-validation
+                                                name="surname"
+                                                type="text"
+                                                hide-details
+                                            ></v-text-field>
                                                 <v-text-field
+                                                    class="col-md-6"
                                                     :color="themeColor"
                                                     :label="langMap.main.email"
                                                     name="email"
                                                     type="text"
+                                                    dense
                                                     v-model="employeeForm.email"
                                                     required
+                                                    hide-details
                                                 ></v-text-field>
-                                            </div>
-                                            <div class="col-md-4">
                                                 <v-select
+                                                    class="col-md-6"
                                                     :label="langMap.main.roles"
                                                     :color="themeColor"
                                                     :item-color="themeColor"
                                                     item-value="id"
                                                     :items="roles"
+                                                    dense
                                                     v-model="employeeForm.role_id"
+                                                    hide-details
                                                 >
                                                     <template slot="selection" slot-scope="data">
                                                         {{ langMap.roles[data.item.name] }}
@@ -567,24 +595,25 @@
                                                     </template>
                                                 </v-select>
                                                 <v-checkbox
+                                                    style="margin-top: 0!important;"
+                                                    class="col-md-6"
                                                     :label="langMap.main.give_access + '?'"
                                                     color="success"
                                                     :disabled="!checkRoleByIds([1,2,3])"
                                                     v-model="employeeForm.is_active"
                                                     hide-details
                                                 ></v-checkbox>
-                                            </div>
-                                            <v-btn
-                                                dark
-                                                fab
-                                                right
-                                                bottom
-                                                :color="themeColor"
-                                                @click="addEmployee"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
                                         </div>
+                                        <v-btn
+                                            dark
+                                            fab
+                                            right
+                                            bottom
+                                            :color="themeColor"
+                                            @click="addEmployee"
+                                        >
+                                            <v-icon>mdi-plus</v-icon>
+                                        </v-btn>
                                     </v-form>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
@@ -790,7 +819,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{ langMap.customer.delete_product }}</span>
+                                    <span>{{ langMap.customer.unlink_product }}</span>
                                 </v-tooltip>
                             </template>
                         </v-data-table>
@@ -1511,7 +1540,7 @@
             </v-dialog>
             <v-dialog v-model="deleteProductDlg" persistent max-width="480">
                 <v-card>
-                    <v-card-title>{{langMap.customer.delete_product}}?</v-card-title>
+                    <v-card-title>{{langMap.customer.unlink_product}}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="deleteProductDlg = false">

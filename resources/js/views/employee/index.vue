@@ -22,8 +22,8 @@
                             <v-expansion-panel-content>
                                 <v-form>
                                     <div class="row">
-                                        <div class="col-md-4">
                                             <v-text-field
+                                                class="col-md-4"
                                                 v-model="employeeForm.name"
                                                 :color="themeColor"
                                                 :error-messages="employeeErrors.name"
@@ -31,21 +31,43 @@
                                                 name="name"
                                                 required
                                                 type="text"
+                                                dense
                                             ></v-text-field>
-                                        </div>
-                                        <div class="col-md-4">
+                                        <v-text-field
+                                            v-model="employeeForm.middle_name"
+                                            :color="themeColor"
+                                            :error-messages="employeeErrors.middle_name"
+                                            :label="this.$store.state.lang.lang_map.main.middle_name"
+                                            class="col-md-4"
+                                            dense
+                                            lazy-validation
+                                            name="middle_name"
+                                            type="text"
+                                        ></v-text-field>
+                                        <v-text-field
+                                            v-model="employeeForm.surname"
+                                            :color="themeColor"
+                                            :error-messages="employeeErrors.surname"
+                                            :label="this.$store.state.lang.lang_map.main.last_name"
+                                            class="col-md-4"
+                                            dense
+                                            lazy-validation
+                                            name="surname"
+                                            type="text"
+                                        ></v-text-field>
                                             <v-text-field
+                                                class="col-md-6"
                                                 v-model="employeeForm.email"
                                                 :color="themeColor"
                                                 :error-messages="employeeErrors.email"
                                                 :label="langMap.main.email"
                                                 name="email"
                                                 required
+                                                dense
                                                 type="email"
                                             ></v-text-field>
-                                        </div>
-                                        <div class="col-md-4">
                                             <v-autocomplete
+                                                class="col-md-6"
                                                 v-model="employeeForm.client_id"
                                                 :color="themeColor"
                                                 :error-messages="employeeErrors.client_id"
@@ -54,10 +76,10 @@
                                                 :placeholder="this.$store.state.lang.lang_map.main.search"
                                                 hide-no-data
                                                 hide-selected
+                                                dense
                                                 item-text="name"
                                                 item-value="id"
                                             ></v-autocomplete>
-                                        </div>
                                         <v-btn
                                             :color="themeColor"
                                             bottom

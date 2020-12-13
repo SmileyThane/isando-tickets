@@ -34,50 +34,58 @@
                                 </v-col>
                             </v-row>
                         </v-form>
-                        <v-spacer>&nbsp;</v-spacer>
-                        <v-form >
-                            <v-file-input
-                                v-show="companySettings.navbar_style !== 1"
-                                v-model="companyNewLogo"
-                                :color="themeColor"
-                                :disabled="!enableToEdit"
-                                accept="image/*"
-                                dense
-                                hide-input
-                                :placeholder="langMap.company.logo"
-                                prepend-icon="mdi-camera"
-                                show-size
-                            >
-                            </v-file-input>
+                        <v-spacer v-if="companySettings.navbar_style !== 1">&nbsp;</v-spacer>
+                        <v-form>
+
                             <v-row>
                                 <v-col v-show="companySettings.navbar_style !== 1"
                                        :class="companySettings.navbar_style === 4 ? 'col-md-12' : 'col-md-4'"
                                 >
-                                    <v-img max-height="15em" v-if="companyLogo" :src="companyLogo" contain></v-img>
+                                    <v-file-input
+                                        v-show="companySettings.navbar_style !== 1"
+                                        v-model="companyNewLogo"
+                                        :color="themeColor"
+                                        :disabled="!enableToEdit"
+                                        accept="image/*"
+                                        dense
+                                        prepend-icon="mdi-camera"
+                                        style="z-index: 2; max-width: 1em;"
+                                    >
+                                    </v-file-input>
+                                    <v-img
+                                        v-if="companyLogo"
+                                        :src="companyLogo"
+                                        contain
+                                        max-height="15em"
+                                        style="z-index: 0"
+                                    >
+                                    </v-img>
                                     <v-label v-else>{{ langMap.company.logo }}</v-label>
                                 </v-col>
-                                <v-col v-show="companySettings.navbar_style !== 4" class="col-md-8">
-                                    <br>
-                                    <br>
+                                <v-col v-show="companySettings.navbar_style !== 4" class="col-md-4">
+                                    <span v-if="companySettings.navbar_style !== 1">
+                                        <br>
+                                        <br>
+                                    </span>
                                     <v-text-field
                                         v-model="company.first_alias"
                                         :color="themeColor"
-                                        :label="langMap.system_settings.ticket_number_format_prefix"
+                                        :label="langMap.system_settings.text"
                                         :readonly="!enableToEdit"
-                                        counter="15"
+                                        counter="25"
                                         dense
-                                        maxlength="20"
+                                        maxlength="30"
                                     ></v-text-field>
-                                            <v-text-field
-                                                v-show="companySettings.navbar_style !== 2"
-                                                v-model="company.second_alias"
-                                                :color="themeColor"
-                                                :label="langMap.system_settings.ticket_number_format_prefix"
-                                                :readonly="!enableToEdit"
-                                                counter="15"
-                                                dense
-                                                maxlength="20"
-                                            ></v-text-field>
+                                    <v-text-field
+                                        v-show="companySettings.navbar_style === 3"
+                                        v-model="company.second_alias"
+                                        :color="themeColor"
+                                        :label="langMap.system_settings.text + ' 2'"
+                                        :readonly="!enableToEdit"
+                                        counter="25"
+                                        dense
+                                        maxlength="30"
+                                    ></v-text-field>
                                 </v-col>
                             </v-row>
                         </v-form>
