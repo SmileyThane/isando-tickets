@@ -43,178 +43,44 @@
                     >
                         <v-toolbar-title>{{langMap.notification.recipients}}</v-toolbar-title>
                         <v-spacer></v-spacer>
+                        <v-btn color="white" style="color: black;" @click="addRecipient(); updateRecipientsDlg = true">
+                            {{langMap.main.update}}
+                        </v-btn>
                     </v-toolbar>
 
                     <v-card-text>
                         <v-form>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-list
-                                        dense
-                                        subheader
-                                    >
-                                        <v-list-item-group :color="themeColor">
-                                            <v-list-item
-                                                v-for="(item, i) in recipients"
-                                                :key="item.type+item.id"
-                                            >
-                                                <v-list-item-icon>
-                                                    <v-icon v-if="item.type === 'e'" left small>mdi-email</v-icon>
-                                                    <v-icon v-if="item.type === 'c'" left small>mdi-factory</v-icon>
-                                                    <v-icon v-if="item.type === 'i'" left small>mdi-account</v-icon>
-                                                </v-list-item-icon>
-                                                <v-list-item-content>
-                                                    <v-list-item-title v-text="item.name"></v-list-item-title>
-                                                    <v-list-item-subtitle v-text="item.email"></v-list-item-subtitle>
-                                                </v-list-item-content>
-                                                <v-list-item-action>
-                                                    <v-btn
-                                                        dark
-                                                        fab
-                                                        right
-                                                        bottom
-                                                        small
-                                                        :color="themeColor"
-                                                        @click="deleteRecipient(item)"
-                                                    >
-                                                        <v-icon x-small>mdi-delete</v-icon>
-                                                    </v-btn>
-                                                </v-list-item-action>
-                                            </v-list-item>
-                                        </v-list-item-group>
-                                    </v-list>
-                                    <v-expansion-panels>
-                                        <v-expansion-panel>
-                                            <v-expansion-panel-header>
-                                                {{langMap.notification.new_email}}
-                                                <template v-slot:actions>
-                                                    <v-icon color="submit">mdi-plus</v-icon>
-                                                </template>
-                                            </v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                <v-form>
-                                                    <v-row>
-                                                        <v-col cols="12" class="pa-3">
-                                                            <v-text-field
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                v-model="email"
-                                                                :label="langMap.main.email"
-                                                                dense
-                                                            ></v-text-field>
-                                                        </v-col>
-                                                        <v-col cols="12" class="pa-3">
-                                                            <v-btn
-                                                            dark
-                                                            fab
-                                                            right
-                                                            bottom
-                                                            small
-                                                            :color="themeColor"
-                                                            @click="addRecipient('e', email)"
-                                                        >
-                                                            <v-icon>mdi-plus</v-icon>
-                                                        </v-btn>
-                                                        </v-col>
-                                                    </v-row>
-                                                </v-form>
-                                            </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                        <v-expansion-panel>
-                                            <v-expansion-panel-header>
-                                                {{langMap.notification.new_customer}}
-                                                <template v-slot:actions>
-                                                    <v-icon color="submit">mdi-plus</v-icon>
-                                                </template>
-                                            </v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                <v-form>
-                                                    <v-row>
-                                                        <v-col cols="12" class="pa-3">
-                                                            <v-select
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                item-value="id"
-                                                                v-model="selectedCustomerId"
-                                                                :items="customers"
-                                                                :label="langMap.notification.select_customer"
-                                                                dense
-                                                            >
-                                                                <template slot="selection" slot-scope="data">
-                                                                    <span>{{data.item.name}}</span>
-                                                                    <span v-if="data.item.contact_email"> - {{data.item.contact_email.email}}</span>
-                                                                </template>
-                                                                <template slot="item" slot-scope="data">
-                                                                    <span>{{data.item.name}}</span>
-                                                                    <span v-if="data.item.contact_email"> - {{data.item.contact_email.email}}</span>
-                                                                </template>
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-col cols="12" class="pa-3">
-                                                                <v-btn
-                                                            dark
-                                                            fab
-                                                            right
-                                                            bottom
-                                                            small
-                                                            :color="themeColor"
-                                                            @click="addRecipient('c', selectedCustomerId)"
-                                                        >
-                                                            <v-icon>mdi-plus</v-icon>
-                                                        </v-btn>
-                                                        </v-col>
-                                                    </v-row>
-                                                </v-form>
-                                            </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                        <v-expansion-panel>
-                                            <v-expansion-panel-header>
-                                                {{langMap.notification.new_employee}}
-                                                <template v-slot:actions>
-                                                    <v-icon color="submit">mdi-plus</v-icon>
-                                                </template>
-                                            </v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                <v-form>
-                                                    <v-row>
-                                                        <v-col cols="12" class="pa-3">
-                                                            <v-select
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                item-value="id"
-                                                                v-model="selectedEmployeeId"
-                                                                :items="employees"
-                                                                :label="langMap.notification.select_employee"
-                                                                dense
-                                                            >
-                                                                <template slot="selection" slot-scope="data">
-                                                                    <span>{{data.item.user_data.full_name}}</span>
-                                                                    <span v-if="data.item.user_data.contact_email"> - {{data.item.user_data.contact_email.email}}</span>
-                                                                </template>
-                                                                <template slot="item" slot-scope="data">
-                                                                    <span>{{data.item.user_data.full_name}}</span>
-                                                                    <span v-if="data.item.user_data.contact_email"> - {{data.item.user_data.contact_email.email}}</span>
-                                                                </template>
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-col cols="12" class="pa-3">
-                                                            <v-btn
-                                                                dark
-                                                                fab
-                                                                right
-                                                                bottom
-                                                                small
-                                                                :color="themeColor"
-                                                                @click="addRecipient('i', selectedEmployeeId)"
-                                                            >
-                                                                <v-icon>mdi-plus</v-icon>
-                                                            </v-btn>
-                                                        </v-col>
-                                                    </v-row>
-                                                </v-form>
-                                            </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                    </v-expansion-panels>
+                                    <perfect-scrollbar>
+                                        <v-treeview
+                                            ref="tree1"
+                                            :items="template.recipients"
+                                            dense
+                                            :color="themeColor"
+                                        >
+                                            <template v-slot:prepend="{ item }">
+                                                <v-icon v-if="item.entity_type === 'App\\Client'">
+                                                    mdi-factory
+                                                </v-icon>
+                                                <v-icon v-if="item.entity_type === 'App\\User'">
+                                                    mdi-account
+                                                </v-icon>
+                                                <v-icon v-if="item.entity_type === 'App\\Email' && item.type">
+                                                    {{ item.type.icon }}
+                                                </v-icon>
+                                                <v-icon v-else-if="item.entity_type === 'App\\Email' && !item.type">
+                                                    mdi-email
+                                                </v-icon>
+                                            </template>
+                                            <template v-slot:label="{ item }">
+                                                {{ item.name }}
+                                                <small v-if="item.type">
+                                                    <br/>{{ localized(item.type) }}
+                                                </small>
+                                            </template>
+                                        </v-treeview>
+                                    </perfect-scrollbar>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -269,6 +135,7 @@
                                 </v-col>
                                 <v-col cols="12" class="pa-3">
                                     <v-select
+                                        ref="priority"
                                         :color="themeColor"
                                         :item-color="themeColor"
                                         v-model="template.priority"
@@ -277,12 +144,13 @@
                                         item-value="id"
                                         item-text="name"
                                         dense
-                                        :rules="['Required']"
+                                        required
                                     >
                                     </v-select>
                                 </v-col>
                                 <v-col cols="12" class="pa-3">
                                     <v-select
+                                        ref="type"
                                         :color="themeColor"
                                         :item-color="themeColor"
                                         v-model="template.notification_type_id"
@@ -290,7 +158,7 @@
                                         :label="langMap.notification.notification_type"
                                         item-value="id"
                                         dense
-                                        :rules="['Required']"
+                                        required
                                     >
                                         <template slot="selection" slot-scope="data">
                                             <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
@@ -322,21 +190,24 @@
                                 <v-col cols="12" class="pa-3">
 
                                     <v-text-field
+                                        red="subject"
                                         :color="themeColor"
                                         v-model="template.name"
                                         :label="langMap.notification.subject"
                                         dense
+                                        required
                                     >
                                     </v-text-field>
                                 </v-col>
                                 <v-col cols="12" class="pa-3">
                                     <tiptap-vuetify
+                                        ref="body"
                                         aria-rowcount="20"
                                         :color="themeColor"
                                         v-model="template.text"
                                         :extensions="extensions"
                                         :placeholder="langMap.notification.text"
-                                        :rules="['Required']"
+                                        required
                                     ></tiptap-vuetify>
                                     <v-spacer>&nbsp;</v-spacer>
                                 </v-col>
@@ -513,319 +384,530 @@
             </v-dialog>
 
             <v-dialog v-model="deleteDlg" persistent max-width="480">
-            <v-card>
-                <v-card-title class="headline">{{langMap.notification.delete_template}}</v-card-title>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="grey darken-1" text @click="deleteDlg = false">
-                        {{langMap.main.cancel}}
-                    </v-btn>
-                    <v-btn color="red darken-1" text @click="deleteTemplate()">
-                        {{langMap.main.delete}}
-                    </v-btn>
-                </v-card-actions>
-            </v-card>
+                <v-card>
+                    <v-card-title class="headline">{{langMap.notification.delete_template}}</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="deleteDlg = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="deleteTemplate()">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+            <v-dialog v-model="updateRecipientsDlg" persistent max-width="800px">
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{langMap.notification.recipients}}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <div class="row">
+                                <v-col cols="5" class="pa-3">
+                                    <h3>{{langMap.notification.select_recipient}}</h3>
+                                    <v-spacer>&nbsp;</v-spacer>
+
+                                    <v-text-field
+                                        v-model="srcSearch"
+                                        :label="langMap.main.search"
+                                        dense
+                                        hide-details
+                                        clearable
+                                        clear-icon="mdi-close-circle-outline"
+                                        :color="themeColor"
+                                        class="pa-3"
+                                    ></v-text-field>
+                                    <perfect-scrollbar>
+                                        <v-treeview
+                                            :items="recipients"
+                                            v-model="toAdd"
+                                            :search="srcSearch"
+                                            hoverable
+                                            selectable
+                                            open-on-click
+                                            item-disabled="disabled"
+                                            dense
+                                            :color="themeColor"
+                                            :selected-color="themeColor"
+                                        >
+                                            <template v-slot:prepend="{ item }">
+                                                <v-icon v-if="item.entity_type === 'App\\Client'">
+                                                    mdi-factory
+                                                </v-icon>
+                                                <v-icon v-if="item.entity_type === 'App\\User'">
+                                                    mdi-account
+                                                </v-icon>
+                                                <v-icon v-if="item.entity_type === 'App\\Email' && item.type">
+                                                    {{ item.type.icon }}
+                                                </v-icon>
+                                                <v-icon v-else-if="item.entity_type === 'App\\Email' && !item.type">
+                                                    mdi-email
+                                                </v-icon>
+                                            </template>
+                                            <template v-slot:label="{ item }">
+                                                {{ item.name }}
+                                                <small v-if="item.type">
+                                                    <br/>{{ localized(item.type) }}
+                                                </small>
+                                            </template>
+                                        </v-treeview>
+                                    </perfect-scrollbar>
+                                </v-col>
+                                <v-col cols="2">
+                                    <v-spacer>&nbsp;</v-spacer>
+
+                                    <v-btn
+                                        style="color: white;"
+                                        :color="themeColor"
+                                        :title="langMap.notification.add_selected"
+                                        class="pa-3 mt-10"
+                                        @click="addRecipient"
+                                    >
+                                        &gt;&gt;
+                                    </v-btn>
+                                    <v-spacer>&nbsp;</v-spacer>
+                                    <v-btn
+                                        style="color: white;"
+                                        :color="themeColor"
+                                        :title="langMap.notification.delete_selected"
+                                        class="pa-3"
+                                        @click="deleteRecipient"
+                                    >
+                                        &lt;&lt;
+                                    </v-btn>
+                                </v-col>
+                                <v-col cols="5" class="pa-3">
+                                    <h3>{{langMap.notification.selected_recipients}}</h3>
+                                    <v-spacer>&nbsp;</v-spacer>
+                                    <v-text-field
+                                        v-model="dstSearch"
+                                        :label="langMap.main.search"
+                                        dense
+                                        hide-details
+                                        clearable
+                                        clear-icon="mdi-close-circle-outline"
+                                        :color="themeColor"
+                                        class="pa-3"
+                                    ></v-text-field>
+                                    <perfect-scrollbar>
+                                        <v-treeview
+                                            ref="tree2"
+                                            :items="newRecipients"
+                                            v-model="toDelete"
+                                            selectable
+                                            open-all
+                                            :search="dstSearch"
+                                            item-disabled="locked"
+                                            dense
+                                            :color="themeColor"
+                                            :selected-color="themeColor"
+                                        >
+                                            <template v-slot:prepend="{ item }">
+                                                <v-icon v-if="item.entity_type === 'App\\Client'">
+                                                    mdi-factory
+                                                </v-icon>
+                                                <v-icon v-if="item.entity_type === 'App\\User'">
+                                                    mdi-account
+                                                </v-icon>
+                                                <v-icon v-if="item.entity_type === 'App\\Email' && item.type">
+                                                    {{ item.type.icon }}
+                                                </v-icon>
+                                                <v-icon v-else-if="item.entity_type === 'App\\Email' && !item.type">
+                                                    mdi-email
+                                                </v-icon>
+                                            </template>
+                                            <template v-slot:label="{ item }">
+                                                {{ item.name }}
+                                                <small v-if="item.type">
+                                                    <br/>{{ localized(item.type) }}
+                                                </small>
+                                            </template>
+                                        </v-treeview>
+                                    </perfect-scrollbar>
+                                </v-col>
+                            </div>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="red" text @click="updateRecipientsDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateRecipientsDlg=false; updateRecipients()">{{langMap.main.update}}</v-btn>
+                    </v-card-actions>
+                </v-card>
             </v-dialog>
 
         </v-row>
     </v-container>
 </template>
+<style scoped>
+>>>.ps {
+    max-height: 300px;
+}
+</style>
+<style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
 
 <script>
-    import EventBus from "../../components/EventBus";
-    import {
-        Blockquote,
-        Bold,
-        BulletList,
-        Code,
-        HardBreak,
-        Heading,
-        History,
-        HorizontalRule,
-        Image,
-        Italic,
-        Link,
-        ListItem,
-        OrderedList,
-        Paragraph,
-        Strike,
+import EventBus from "../../components/EventBus";
+import {
+    Blockquote,
+    Bold,
+    BulletList,
+    Code,
+    HardBreak,
+    Heading,
+    History,
+    HorizontalRule,
+    Image,
+    Italic,
+    Link,
+    ListItem,
+    OrderedList,
+    Paragraph,
+    Strike,
+    TiptapVuetify,
+    Underline
+} from 'tiptap-vuetify';
+import { PerfectScrollbar } from 'vue2-perfect-scrollbar';
+
+export default {
+    components: {
         TiptapVuetify,
-        Underline
-    } from 'tiptap-vuetify';
+        PerfectScrollbar
+    },
 
-    export default {
-        components: {TiptapVuetify},
+    data() {
+        return {
+            themeColor: this.$store.state.themeColor,
+            langMap: this.$store.state.lang.lang_map,
+            templateId: this.$route.params.id,
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            template: {
+                id: '',
+                name: '',
+                description: '',
+                text: '',
+                notification_type_id: '',
+                priority: '',
+                recipients: []
+            },
+            datepickerMenu: false,
+            selectedSignatureId: null,
+            saveAsDlg: false,
+            deleteDlg: false,
+            updateRecipientsDlg: false,
+            dueDate: '',
+            attachments: [],
+            notificationTypes: [],
+            signatures: [],
+            recipients: [],
+            newRecipients: [],
+            priorities: [
+                {id: 1, name: this.$store.state.lang.lang_map.notification.priority_high},
+                {id: 2, name: this.$store.state.lang.lang_map.notification.priority_medium},
+                {id: 3, name: this.$store.state.lang.lang_map.notification.priority_low}
+            ],
+            extensions: [
+                History,
+                Blockquote,
+                Link,
+                Underline,
+                Strike,
+                Italic,
+                ListItem,
+                BulletList,
+                OrderedList,
+                [Heading, {
+                    options: {
+                        levels: [1, 2, 3]
+                    }
+                }],
+                Bold,
+                Code,
+                HorizontalRule,
+                Paragraph,
+                Image,
+                HardBreak
+            ],
+            srcSearch: '',
+            dstSearch: '',
+            toAdd: [],
+            toDelete: []
+        }
+    },
+    mounted() {
+        this.getTemplate();
+        this.getNotificationTypes();
+        this.getSignatures();
+        this.getRecipients();
 
-        data() {
-            return {
-                themeColor: this.$store.state.themeColor,
-                langMap: this.$store.state.lang.lang_map,
-                templateId: this.$route.params.id,
-                snackbar: false,
-                actionColor: '',
-                snackbarMessage: '',
-                template: {
-                    id: '',
-                    name: '',
-                    description: '',
-                    text: '',
-                    notification_type_id: '',
-                    priority: ''
-                },
-                datepickerMenu: false,
-                email: '',
-                selectedCustomerId: null,
-                selectedEmployeeId: null,
-                selectedSignatureId: null,
-                saveAsDlg: false,
-                deleteDlg: false,
-                dueDate: '',
-                attachments: [],
-                recipients: [],
-                notificationTypes: [],
-                signatures: [],
-                customers: [],
-                employees: [],
-                priorities: [
-                    {id: 1, name: this.$store.state.lang.lang_map.notification.priority_high},
-                    {id: 2, name: this.$store.state.lang.lang_map.notification.priority_medium},
-                    {id: 3, name: this.$store.state.lang.lang_map.notification.priority_low}
-                ],
-                extensions: [
-                    History,
-                    Blockquote,
-                    Link,
-                    Underline,
-                    Strike,
-                    Italic,
-                    ListItem,
-                    BulletList,
-                    OrderedList,
-                    [Heading, {
-                        options: {
-                            levels: [1, 2, 3]
-                        }
-                    }],
-                    Bold,
-                    Code,
-                    HorizontalRule,
-                    Paragraph,
-                    Image,
-                    HardBreak
-                ],
-            }
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeColor = color;
+        });
+    },
+    methods: {
+        localized(item, field = 'name') {
+            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
+            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
         },
-        mounted() {
-            this.getTemplate();
-            this.getNotificationTypes();
-            this.getSignatures();
-            this.getCustomers();
-            this.getEmployees();
+        getTemplate() {
+            if (this.$route.params.id === 'create') {
+                return;
+            }
+            axios.get(`/api/notification/${this.$route.params.id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.template = response.data;
+                    let that = this;
+                    let check = function(item) {
+                        if (item.entity_type === 'App\\Email') {
+                            that.toAdd.push(item.id);
+                        }
+                        if (item.children) {
+                            item.children.forEach(check);
+                        }
+                    }
+                    this.template.recipients.forEach(check);
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
 
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeColor = color;
             });
         },
-        methods: {
-            localized(item, field = 'name') {
-                let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-                return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-            },
-            getTemplate() {
-                if (this.$route.params.id === 'create') {
-                    return;
+        getSignatures() {
+            axios.get('/api/email_signatures').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.signatures = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
                 }
-                axios.get(`/api/notification/${this.$route.params.id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.template = response.data;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-
-                });
-            },
-            getSignatures() {
-                axios.get('/api/email_signatures').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.signatures = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getNotificationTypes() {
-                axios.get(`/api/notification_types`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.notificationTypes = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getCustomers() {
-                axios.get('/api/client', {
-                    params: {
-                        search: '',
-                        sort_by: 'name',
-                        sort_val: false,
-                        per_page: 1000,
-                        page: 1
-                    }
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.customers = response.data.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getEmployees() {
-                axios.get('/api/employee', {
-                    params: {
-                        search: '',
-                        sort_by: 'name',
-                        sort_val: false,
-                        per_page: 1000,
-                        page: 1
-                    }
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.employees = response.data.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            addRecipient(type, id) {
-                switch (type) {
-                    case 'e':
-                        this.recipients.push({
-                            'type': type,
-                            'id': Date.now(),
-                            'name': id,
-                            'email': id
-                        });
-                        break;
-
-                    case 'c':
-                        let customer = this.customers.find(function (item) {
-                            return item.id === id;
-                        });
-
-                        this.recipients.push({
-                            'type': type,
-                            'id': customer.id,
-                            'name': customer.name,
-                            'email': customer.contact_email ? customer.contact_email.email : ''
-                        });
-                        break;
-
-                    case 'i':
-                        let employee  = this.employees.find(function (item) {
-                            return item.id === id;
-                        });
-
-                        this.recipients.push({
-                            'type': type,
-                            'id': employee.id,
-                            'name': employee.user_data.full_name,
-                            'email': employee.user_data.contact_email ? employee.user_data.contact_email.email : ''
-                        });
-                        break;
+            });
+        },
+        getNotificationTypes() {
+            axios.get(`/api/notification_types`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.notificationTypes = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
                 }
-            },
-            deleteRecipient(item) {
-                this.recipients.splice(this.recipients.indexOf(item), 1);
-            },
-            saveAsTemplate() {
-                axios.post('/api/notification', this.template).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.snackbarMessage = this.langMap.notification.template_saved;
-                        this.actionColor = 'success';
-                        this.snackbar = true;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
+            });
+        },
+        getRecipients() {
+            axios.get('/api/recipients').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.recipients = response.data;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateRecipients() {
+            this.template.recipients = this.newRecipients;
+        },
+        addRecipient() {
+            let that = this;
+            let disable = function(items) {
+                items.forEach(function (item) {
+                    if (that.toAdd.includes(item.id)) {
+                        item.disabled = true;
                     }
-                    return true
+                    if (item.children) {
+                        disable(item.children);
+                    }
                 });
-            },
-            deleteTemplate() {
-                axios.delete(`/api/notification/${this.template.id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getTemplate();
-                        this.snackbarMessage = this.langMap.notification.template_deleted;
-                        this.actionColor = 'success';
-                        this.snackbar = true;
-                        this.cancel();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                    return true
-                });
-            },
-            send() {
-                let recipients = [];
-                this.recipients.forEach(function (item) {
-                    if (item.email) {
-                        recipients.push(item.email);
-                    }
-                })
+            }
+            disable(this.recipients);
 
-                let that = this;
-                let signature  = this.signatures.find(function (item) {
-                    return item.id === that.selectedSignatureId;
-                });
-
-                let formData = new FormData();
-                formData.append('subject', this.template.name);
-                formData.append('body', this.template.text + '\n' + signature);
-                formData.append('recipients', recipients.join(','));
-
-                this.attachments.forEach(function (item, i) {
-                    formData.append('attachment_'+i, item);
-                });
-                axios.post('/api/notification/send', formData,{
-                    headers:{
-                        'content-type': 'multipart/form-data'
+            let clear = function (items) {
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].children) {
+                        clear(items[i].children)
                     }
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.snackbarMessage = this.langMap.notification.notification_sent;
-                        this.actionColor = 'success';
-                        this.snackbar = true;
+                    if (items[i].entity_type === 'App\\Email') {
+                        if (items[i].disabled !== true) {
+                            items.splice(i, 1);
+                            i--;
+                        }
                     } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
+                        if (!items[i].children || items[i].children.length === 0) {
+                            items.splice(i, 1);
+                            i--;
+                        }
                     }
-                    return true
+
+                }
+            }
+
+            this.newRecipients = JSON.parse(JSON.stringify(this.recipients));
+            clear(this.newRecipients);
+            this.toAdd = [];
+        },
+        deleteRecipient() {
+            let that = this;
+
+            let enable = function(items) {
+                items.forEach(function (item) {
+                    if (that.toDelete.includes(item.id)) {
+                        item.disabled = false;
+                    }
+                    if (item.children) {
+                        enable(item.children);
+                    }
                 });
-            },
-            cancel() {
-                this.$router.push('/notify');
-            }}
+            }
+            enable(this.recipients);
+
+            let clear = function (items) {
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].children) {
+                        clear(items[i].children)
+                    }
+                    if (items[i].entity_type === 'App\\Email') {
+                        if (that.toDelete.includes(items[i].id)) {
+                            items.splice(i, 1);
+                            i--;
+                        }
+                    } else {
+                        if (!items[i].children || items[i].children.length === 0) {
+                            items.splice(i, 1);
+                            i--;
+                        }
+                    }
+                }
+            }
+
+            clear(this.newRecipients);
+            this.toDelete = [];
+        },
+        saveAsTemplate() {
+            if (!this.template.notification_type_id) {
+                this.snackbarMessage = this.langMap.notification.type_required;
+                this.actionColor = 'error';
+                this.snackbar = true;
+                this.$refs.type.focus();
+                return false;
+            }
+            if (!this.template.priority) {
+                this.snackbarMessage = this.langMap.notification.priority_required;
+                this.actionColor = 'error';
+                this.snackbar = true;
+                this.$refs.priority.focus();
+                return false;
+            }
+            if (!this.template.text) {
+                this.snackbarMessage = this.langMap.notification.text_required;
+                this.actionColor = 'error';
+                this.snackbar = true;
+                this.$refs.body.focus();
+                return false;
+            }
+            if (!this.template.name) {
+                this.snackbarMessage = this.langMap.notification.name_required;
+                this.actionColor = 'error';
+                this.snackbar = true;
+                this.$refs.subject.focus();
+                return false;
+            }
+            if (!this.template.description) {
+                this.snackbarMessage = this.langMap.notification.description_required;
+                this.actionColor = 'error';
+                this.snackbar = true;
+                this.$refs.subject.focus();
+                return false;
+            }
+            axios.post('/api/notification', this.template).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.notification.template_saved;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
+        deleteTemplate() {
+            axios.delete(`/api/notification/${this.template.id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTemplate();
+                    this.snackbarMessage = this.langMap.notification.template_deleted;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                    this.cancel();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
+        send() {
+            let that = this;
+
+            let recipients = [];
+            let extract = function(item) {
+                if (item.entity_type === 'App\\Email') {
+                    recipients.push(item.name);
+                }
+                if (item.children) {
+                    item.children.forEach(extract);
+                }
+            }
+            this.template.recipients.forEach(extract);
+
+            let signature  = this.signatures.find(function (item) {
+                return item.id === that.selectedSignatureId;
+            });
+
+            let formData = new FormData();
+            formData.append('subject', this.template.name);
+            formData.append('body', this.template.text + (signature ? '\n' + signature.signature : ''));
+            formData.append('recipients', recipients.join(','));
+
+            this.attachments.forEach(function (item, i) {
+                formData.append('attachment_'+i, item);
+            });
+            axios.post('/api/notification/send', formData,{
+                headers:{
+                    'content-type': 'multipart/form-data'
+                }
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.notification.notification_sent;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
+        cancel() {
+            this.$router.push('/notify');
+        }
     }
+}
 </script>

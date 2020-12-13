@@ -72,7 +72,23 @@
                             :items="product.clients"
                             :footer-props="footerProps"
                             class="elevation-1"
-                        ></v-data-table>
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteCustomerDlg(item)">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-link-off
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.product.unlink_product }}</span>
+                                </v-tooltip>
+                            </template>
+
+                        </v-data-table>
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
@@ -117,6 +133,24 @@
                 </v-card>
             </div>
         </div>
+
+        <v-row justify="center">
+            <v-dialog v-model="deleteCustomerDlg" persistent max-width="480">
+                <v-card>
+                    <v-card-title>{{langMap.product.unlink_product}}?</v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="deleteCustomerDlg = false">
+                            {{langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn color="red darken-1" text @click="deleteCustomerDlg = false; deleteProductClient(clientProductId)">
+                            {{langMap.main.delete}}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+        </v-row>
     </v-container>
 </template>
 
@@ -161,7 +195,9 @@
                 supplierForm: {
                     client_id: null,
                     product_id: null
-                }
+                },
+                deleteCustomerDlg: false,
+                clientProductId: null
             }
         },
         mounted() {
@@ -182,7 +218,9 @@
                         this.product.product_name = response.data.name
                         this.product.product_description = response.data.description
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
                     }
 
                 });
@@ -198,7 +236,9 @@
                         this.snackbar = true;
                         this.enableToEdit = false
                     } else {
-                        this.errors = response.error
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
                     }
 
                 });
@@ -209,7 +249,9 @@
                     if (response.success === true) {
                         this.suppliers = response.data.data
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
                     }
                 });
             },
@@ -218,12 +260,37 @@
                     response = response.data
                     if (response.success === true) {
                         this.getProduct()
+                        this.snackbarMessage = this.langMap.customer.product_added;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
                     }
-
                 });
             },
+            showDeleteCustomerDlg(item)
+            {
+                this.clientProductId = item.id;
+                this.deleteCustomerDlg = true;
+            },
+            deleteProductClient(productId) {
+                axios.delete(`/api/product/client/${productId}`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getProduct()
+                        this.clientProductId = null;
+                        this.snackbarMessage = this.langMap.customer.product_deleted;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            }
         }
     }
 </script>

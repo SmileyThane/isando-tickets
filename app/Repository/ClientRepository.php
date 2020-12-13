@@ -7,7 +7,9 @@ namespace App\Repository;
 use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
+use App\Email;
 use App\Role;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -274,5 +276,70 @@ class ClientRepository
         } catch (\Throwable $th) {
         }
         return $result;
+    }
+
+    public function getClientsAsRecipientsTree(Request $request)
+    {
+        $employee = Auth::user()->employee;
+        $companyId = $employee->company_id;
+        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
+            $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
+            $clients = Client::where('id', $clientCompanyUser->client_id);
+        } else {
+            $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
+        }
+
+        $clients = $clients->with('employees.employee.userData.emails.type', 'clients', 'emails.type')->orderBy('name', 'asc')->get();
+
+        $results = [];
+        foreach ($clients as $client) {
+            $clientData = [
+                'id' => $client->id,
+                'entity_type' => Client::class,
+                'entity_id' => $client->id,
+                'name' => $client->name,
+                'children' => []
+            ];
+            foreach ($client->emails as $email) {
+                if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
+                    array_push($clientData['children'], [
+                        'id' => $clientData['id'] . '-0-' . $email->id,
+                        'entity_type' => Email::class,
+                        'entity_id' => $email->id,
+                        'name' => $email->email,
+                        'type' => $email->type
+                    ]);
+                }
+            }
+
+            foreach ($client->employees as $employee) {
+                $employeeData = [
+                    'id' => $clientData['id'] . '-' . $employee->employee->userData->id,
+                    'entity_type' => User::class,
+                    'entity_id' => $employee->employee->userData->id,
+                    'name' => $employee->employee->userData->full_name,
+                    'children' => []
+                ];
+                foreach ($employee->employee->userData->emails as $email) {
+                    if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
+                        array_push($employeeData['children'], [
+                            'id' => $employeeData['id'] . '-' . $email->id,
+                            'entity_type' => Email::class,
+                            'entity_id' => $email->id,
+                            'name' => $email->email,
+                            'type' => $email->type
+                        ]);
+                    }
+                }
+                if ($employeeData['children']) {
+                    array_push($clientData['children'], $employeeData);
+                }
+            }
+
+            if ($clientData['children']) {
+                array_push($results, $clientData);
+            }
+        }
+        return $results;
     }
 }

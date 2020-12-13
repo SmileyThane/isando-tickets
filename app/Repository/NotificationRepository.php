@@ -44,7 +44,7 @@ class NotificationRepository
         return $notifications->paginate($request->per_page ?? $notifications->count());
     }
 
-    public function createTemplate($entityId, $entityType, $type, $name, $description, $text, $priority): NotificationTemplate
+    public function createTemplate($entityId, $entityType, $type, $name, $description, $text, $priority, $recipients): NotificationTemplate
     {
         $entityId = $entityId ?? Auth::user()->employee->companyData->id;
         $entityType = $entityType ?? Company::class;
@@ -57,12 +57,13 @@ class NotificationRepository
                 'name' => $name,
                 'description' => $description,
                 'text' => $text,
-                'priority' => $priority
+                'priority' => $priority,
+                'recipients' => $recipients
             ]
         );
     }
 
-    public function updateTemplate($id, $type, $name, $description, $text, $priority): NotificationTemplate
+    public function updateTemplate($id, $type, $name, $description, $text, $priority, $recipients): NotificationTemplate
     {
         $notification = NotificationTemplate::find($id);
         $notification->update(
@@ -71,7 +72,8 @@ class NotificationRepository
                 'name' => $name,
                 'description' => $description,
                 'text' => $text,
-                'priority' => $priority
+                'priority' => $priority,
+                'recipients' => $recipients
             ]
         );
         return $notification;

@@ -837,7 +837,6 @@ export default {
                 'mdi-email-alert',
                 'mdi-email-box',
                 'mdi-email-check',
-                'mdi-email-lock',
                 'mdi-email-mark-as-unread',
                 'mdi-email-multiple',
                 'mdi-email-newsletter',

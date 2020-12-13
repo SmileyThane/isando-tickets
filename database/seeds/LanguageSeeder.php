@@ -449,7 +449,16 @@ class LanguageSeeder extends Seeder
     "new_attachment": "Add attachment",
     "select_file": "Select file",
     "delete_template": "Delete template?",
-    "notification_sent": "Notification sent"
+    "notification_sent": "Notification sent",
+    "select_recipient": "Select recipient",
+    "selected_recipients": "Selected recipients",
+    "add_selected": "Add selected",
+    "delete_selected": "Remove selected",
+    "type_required": "Please, specify the type",
+    "priority_required": "Please, specify the priority",
+    "text_required": "Text is required",
+    "name_required": "Name is required",
+    "description_required": "Description is required"
   },
   "exceptions": {
 
@@ -886,7 +895,16 @@ class LanguageSeeder extends Seeder
     "new_attachment": "Anhang hinzufügen",
     "select_file": "Datei aussuchen",
     "delete_template": "Vorlage löschen?",
-    "notification_sent": "Mitteilung gesendet"
+    "notification_sent": "Mitteilung gesendet",
+    "select_recipient": "Empfänger auswählen",
+    "selected_recipients": "Ausgewählte Empfänger",
+    "add_selected": "Add selected",
+    "delete_selected": "Ausgewählte entfernen",
+    "type_required": "Bitte geben Sie den Typ an",
+    "priority_required": "Bitte geben Sie die Priorität an",
+    "text_required": "Text ist erforderlich",
+    "name_required": "Name ist erforderlich",
+    "description_required": "Beschreibung ist erforderlich"
   },
   "exceptions": {
 

@@ -111,4 +111,10 @@ class ClientController extends Controller
         $result = $this->clientRepo->changeIsActive($request);
         return self::showResponse($result);
     }
+
+    public function recipientsTree(Request $request)
+    {
+        $result = $this->clientRepo->getClientsAsRecipientsTree($request);
+        return self::showResponse(true, $result);
+    }
 }

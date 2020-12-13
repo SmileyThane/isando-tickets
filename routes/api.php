@@ -108,6 +108,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::delete('client/employee/{id}', 'API\ClientController@detach');
         Route::get('all', 'API\ClientController@all');
         Route::post('client/is_active', 'API\ClientController@changeIsActive');
+        Route::get('recipients', 'API\ClientController@recipientsTree');
 
         //team management
         Route::get('team', 'API\TeamController@get');
