@@ -299,11 +299,23 @@ class ClientRepository
         if ($employee->hasRole(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
+            $company = $clientCompanyUser->clients()->with('employees.employee.userData');
         } else {
             $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
+            $company = Company::where('id', $companyId);
         }
 
         $clients = $clients->with('employees.employee.userData.emails.type', 'clients', 'emails.type')->orderBy('name', 'asc')->get();
+
+        $company = $company->with(['employees' => function ($query) {
+            $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
+            if (Auth::user()->employee->hasAnyRole(Role::COMPANY_CLIENT, Role::USER)) {
+                $result->where('user_id', Auth::id());
+            }
+            return $result->get();
+        }, 'employees.userData.emails.type', 'emails.type'])->first();
+
+        $clients = $clients->prepend($company);
 
         $results = [];
         foreach ($clients as $client) {
@@ -327,14 +339,17 @@ class ClientRepository
             }
 
             foreach ($client->employees as $employee) {
+                if ($employee->employee) {
+                    $employee = $employee->employee;
+                }
                 $employeeData = [
-                    'id' => $clientData['id'] . '-' . $employee->employee->userData->id,
+                    'id' => $clientData['id'] . '-' . $employee->userData->id,
                     'entity_type' => User::class,
-                    'entity_id' => $employee->employee->userData->id,
-                    'name' => $employee->employee->userData->full_name,
+                    'entity_id' => $employee->userData->id,
+                    'name' => $employee->userData->full_name,
                     'children' => []
                 ];
-                foreach ($employee->employee->userData->emails as $email) {
+                foreach ($employee->userData->emails as $email) {
                     if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
                         array_push($employeeData['children'], [
                             'id' => $employeeData['id'] . '-' . $email->id,

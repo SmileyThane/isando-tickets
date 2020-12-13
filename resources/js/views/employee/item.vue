@@ -260,7 +260,7 @@
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="i == 0">
+                                                <v-list-item-action v-if="item.email_type === 1">
                                                     <v-icon :title="langMap.profile.login_email" small>
                                                         mdi-lock
                                                     </v-icon>

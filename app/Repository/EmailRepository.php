@@ -25,11 +25,18 @@ class EmailRepository
 
     public function update($id, $type, $value): Email
     {
-        $email = Email::find($id);
-        $email->email = $value;
-        $email->email_type = $type;
-        $email->save();
-        return $email;
+            $email = Email::find($id);
+            $email->update([
+                'email' => $value,
+                'email_type' => $type
+            ]);
+
+            if ($type === 1) {
+                $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+                $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
+                Email::where('id', '<>', $id)->where('email_type', 1)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+            }
+            return $email;
     }
 
     public function delete($id): ?bool
@@ -58,19 +65,23 @@ class EmailRepository
     public function updateType($id, $name, $name_de, $icon): EmailType
     {
         $type = EmailType::findOrFail($id);
-        $type->update([
-            'name' => $name,
-            'name_de' => $name_de,
-            'icon' => $icon
-        ]);
-        $type->save();
+        if ($id !== 1) {
+            $type->update([
+                'name' => $name,
+                'name_de' => $name_de,
+                'icon' => $icon
+            ]);
+            $type->save();
+        }
         return $type;
     }
 
     public function deleteType($id): ?bool
     {
         try {
-            EmailType::where('id', $id)->delete();
+            if ($id !== 1) {
+                EmailType::where('id', $id)->delete();
+            }
             return true;
         } catch (\Throwable $throwable) {
             return false;
@@ -80,6 +91,9 @@ class EmailRepository
     public function getTypesInCompanyContext($companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-        return EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->get();
+
+
+        $types = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->get();
+        return $types->prepend(EmailType::find(1));
     }
 }

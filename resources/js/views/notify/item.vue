@@ -76,7 +76,7 @@
                                             <template v-slot:label="{ item }">
                                                 {{ item.name }}
                                                 <small v-if="item.type">
-                                                    <br/>{{ localized(item.type) }}
+                                                    ({{ localized(item.type) }})
                                                 </small>
                                             </template>
                                         </v-treeview>
@@ -450,7 +450,7 @@
                                             <template v-slot:label="{ item }">
                                                 {{ item.name }}
                                                 <small v-if="item.type">
-                                                    <br/>{{ localized(item.type) }}
+                                                    ({{ localized(item.type) }})
                                                 </small>
                                             </template>
                                         </v-treeview>
@@ -522,7 +522,7 @@
                                             <template v-slot:label="{ item }">
                                                 {{ item.name }}
                                                 <small v-if="item.type">
-                                                    <br/>{{ localized(item.type) }}
+                                                    ({{ localized(item.type) }})
                                                 </small>
                                             </template>
                                         </v-treeview>
