@@ -719,6 +719,17 @@
                         this.$store.state.lang.lang_map.main.give_access :
                         this.$store.state.lang.lang_map.main.remove_access
                         }}
+                        <v-select
+                            class="mx-4"
+                            v-model="primaryEmailId"
+                            :color="themeColor"
+                            item-value="id"
+                            item-text="email"
+                            :item-color="themeColor"
+                            :items="userData.emails"
+                            :label="langMap.main.email"
+                        ></v-select>
+
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -1038,7 +1049,8 @@ export default {
             removeEmployeeDialog: false,
             selectedEmployeeId: null,
             isAccessedDialog: false,
-            selectedIsAccessedItem: null
+            selectedIsAccessedItem: null,
+            primaryEmailId: null
         }
     },
     mounted() {
@@ -1080,6 +1092,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.userData = response.data
+                    this.primaryEmailId = this.userData.email_id
                     this.companies = this.userData.employee.assigned_to_clients.length > 0 ? this.userData.employee.assigned_to_clients : this.userData.employee.companies
                     // console.log(this.companies);
                     this.employeeForm.company_user_id = this.userData.employee.id
@@ -1338,6 +1351,8 @@ export default {
         changeIsAccessed() {
             let request = {}
             request.user_id = this.selectedIsAccessedItem.id
+            request.email_id = this.primaryEmailId
+            console.log(this.primaryEmailId);
             request.is_active = this.selectedIsAccessedItem.is_active
             this.singleUserForm.role_ids = this.selectedIsAccessedItem.is_active == true ? [6] : [];
             this.singleUserForm.user = this.userData
