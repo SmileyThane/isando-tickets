@@ -43,7 +43,7 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'full_name', 'contact_phone', 'contact_email', 'email'
+        'full_name', 'contact_phone', 'contact_email', 'email', 'email_id'
     ];
 
     public function employee(): HasOne
@@ -115,6 +115,12 @@ class User extends Authenticatable
     {
         $email = $this->emails()->where('email_type', 1)->first();
         return $email ? $email->email : null;
+    }
+
+    public function getEmailIdAttribute()
+    {
+        $email = $this->emails()->where('email_type', 1)->first();
+        return $email ? $email->id : null;
     }
 
     public function getContactEmailAttribute()
