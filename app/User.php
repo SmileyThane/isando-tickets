@@ -113,7 +113,7 @@ class User extends Authenticatable
 
     public function getEmailAttribute()
     {
-        $email = $this->getContactEmailAttribute();
+        $email = $this->emails()->where('email_type', 1)->first();
         return $email ? $email->email : null;
     }
 

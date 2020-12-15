@@ -7,7 +7,9 @@ namespace App\Repository;
 use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
+use App\Email;
 use App\Role;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -288,5 +290,85 @@ class ClientRepository
         } catch (\Throwable $th) {
         }
         return $result;
+    }
+
+    public function getClientsAsRecipientsTree(Request $request)
+    {
+        $employee = Auth::user()->employee;
+        $companyId = $employee->company_id;
+        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
+            $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
+            $clients = Client::where('id', $clientCompanyUser->client_id);
+            $company = $clientCompanyUser->clients()->with('employees.employee.userData');
+        } else {
+            $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
+            $company = Company::where('id', $companyId);
+        }
+
+        $clients = $clients->with('employees.employee.userData.emails.type', 'clients', 'emails.type')->orderBy('name', 'asc')->get();
+
+        $company = $company->with(['employees' => function ($query) {
+            $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
+            if (Auth::user()->employee->hasAnyRole(Role::COMPANY_CLIENT, Role::USER)) {
+                $result->where('user_id', Auth::id());
+            }
+            return $result->get();
+        }, 'employees.userData.emails.type', 'emails.type'])->first();
+
+        $clients = $clients->prepend($company);
+
+        $results = [];
+        foreach ($clients as $client) {
+            $clientData = [
+                'id' => $client->id,
+                'entity_type' => Client::class,
+                'entity_id' => $client->id,
+                'name' => $client->name,
+                'children' => []
+            ];
+            foreach ($client->emails as $email) {
+                if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
+                    array_push($clientData['children'], [
+                        'id' => $clientData['id'] . '-0-' . $email->id,
+                        'entity_type' => Email::class,
+                        'entity_id' => $email->id,
+                        'name' => $email->email,
+                        'type' => $email->type
+                    ]);
+                }
+            }
+
+            foreach ($client->employees as $employee) {
+                if ($employee->employee) {
+                    $employee = $employee->employee;
+                }
+                $employeeData = [
+                    'id' => $clientData['id'] . '-' . $employee->userData->id,
+                    'entity_type' => User::class,
+                    'entity_id' => $employee->userData->id,
+                    'name' => $employee->userData->full_name,
+                    'children' => []
+                ];
+                foreach ($employee->userData->emails as $email) {
+                    if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
+                        array_push($employeeData['children'], [
+                            'id' => $employeeData['id'] . '-' . $email->id,
+                            'entity_type' => Email::class,
+                            'entity_id' => $email->id,
+                            'name' => $email->email,
+                            'type' => $email->type
+                        ]);
+                    }
+                }
+                if ($employeeData['children']) {
+                    array_push($clientData['children'], $employeeData);
+                }
+            }
+
+            if ($clientData['children']) {
+                array_push($results, $clientData);
+            }
+        }
+        return $results;
     }
 }

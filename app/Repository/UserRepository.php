@@ -69,10 +69,7 @@ class UserRepository
         $user->save();
 
         if ($request['email'] && $request['email'] !== '[no_email]') {
-            $emailTypes = $this->emailRepo->getTypesInCompanyContext();
-            $emailType = $emailTypes->isNotEmpty() ? $emailTypes->first()->email_type : 0;
-
-            $this->emailRepo->create($user->id, User::class, $request['email'], $emailType);
+            $this->emailRepo->create($user->id, User::class, $request['email'], 1);
         }
 
         return $user;
