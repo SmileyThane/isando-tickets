@@ -719,6 +719,16 @@
                         this.$store.state.lang.lang_map.main.give_access :
                         this.$store.state.lang.lang_map.main.remove_access
                         }}
+                        <v-select
+                            class="mx-4"
+                            :color="themeColor"
+                            id="id"
+                            item-text="email"
+                            :item-color="themeColor"
+                            :items="userData.emails"
+                            :label="langMap.main.email"
+                        ></v-select>
+
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
