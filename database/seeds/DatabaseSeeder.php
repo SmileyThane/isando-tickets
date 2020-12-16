@@ -17,16 +17,16 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(TicketPrioritySeeder::class);
         $this->call(TicketStatusSeeder::class);
-        $this->call(TypesSeeder::class);
         $this->call(TicketTypesSeeder::class);
         $this->call(LanguageSeeder::class);
         $this->call(CountriesTableSeeder::class);
         $this->call(TimeZonesTableSeeder::class);
         $this->call(LanguagesTableSeeder::class);
-        $this->call(AddressTypeSeeder::class);
-        $this->call(PhoneTypeSeeder::class);
-        $this->call(SocialTypeSeeder::class);
         $this->call(CategorySeeder::class);
+//        $this->call(AddressTypeSeeder::class);
+//        $this->call(PhoneTypeSeeder::class);
+//        $this->call(SocialTypeSeeder::class);
+//        $this->call(TypesSeeder::class);
 
     }
 }
