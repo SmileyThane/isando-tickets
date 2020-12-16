@@ -83,7 +83,7 @@ class AuthController extends Controller
             $license = $this->licenseRepo->create($request);
             $request->password = Controller::getRandomString();
             $user = $this->userRepo->create($request);
-            $companyUser = $this->companyUserRepo->create($company->id, $user->id);
+            $companyUser = $this->companyUserRepo->create($company->id, $user->id, false);
             $this->roleRepo->attach($companyUser->id, CompanyUser::class, Role::LICENSE_OWNER);
             $this->userRepo->sendInvite($user, Role::LICENSE_OWNER, $request->password);
             return self::showResponse(true);
