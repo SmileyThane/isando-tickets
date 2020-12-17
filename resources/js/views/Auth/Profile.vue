@@ -252,12 +252,15 @@
                                                             ></v-text-field>
                                                         </v-col>
                                                         <v-col cols="12" class="pa-1">
-                                                            <v-textarea
-                                                                rows="5"
+                                                            <tiptap-vuetify
+                                                                ref="body"
+                                                                aria-rowcount="7"
                                                                 :color="themeColor"
                                                                 v-model="emailSignatureForm.signature"
+                                                                :extensions="extensions"
+                                                                :placeholder="langMap.profile.signature"
                                                                 :label="langMap.profile.signature"
-                                                            ></v-textarea>
+                                                            ></tiptap-vuetify>
                                                         </v-col>
                                                         <v-btn
                                                             dark
@@ -789,7 +792,17 @@
                                     <v-text-field :color="themeColor" :item-color="themeColor" v-model="emailForm.email" :label="langMap.main.email" dense></v-text-field>
                                 </v-col>
                                 <v-col cols="md-6" class="pa-1">
-                                    <v-select :color="themeColor" :item-color="themeColor"
+                                    <v-select v-if="emailForm.email_type === 1" readonly :color="themeColor" :item-color="themeColor"
+                                              v-model="emailForm.email_type" :items="emailTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                        </template>
+                                    </v-select>
+                                    <v-select v-else :color="themeColor" :item-color="themeColor"
                                               v-model="emailForm.email_type" :items="emailTypes" item-value="id"
                                               dense :label="langMap.main.type">
                                         <template slot="selection" slot-scope="data">
@@ -819,7 +832,7 @@
                     <v-card-text>
                         <v-container>
                             <div class="row">
-                                <v-col cols="md-6" class="pa-1">
+                                <v-col cols="12" class="pa-1">
                                     <v-text-field
                                         :color="themeColor"
                                         :item-color="themeColor"
@@ -827,13 +840,17 @@
                                         :label="langMap.main.name"
                                         dense
                                     ></v-text-field>                                </v-col>
-                                <v-col cols="md-6" class="pa-1">
-                                    <v-textarea
-                                        rows="5"
+                                <v-col cols="12" class="pa-1">
+                                    <tiptap-vuetify
+                                        ref="body"
+                                        aria-rowcount="7"
                                         :color="themeColor"
                                         v-model="emailSignatureForm.signature"
+                                        :extensions="extensions"
+                                        :placeholder="langMap.profile.signature"
                                         :label="langMap.profile.signature"
-                                    ></v-textarea>                                </v-col>
+                                    ></tiptap-vuetify>
+                                </v-col>
                             </div>
                         </v-container>
                     </v-card-text>
@@ -853,8 +870,30 @@
 <script>
 
     import EventBus from "../../components/EventBus";
+    import {
+        Blockquote,
+        Bold,
+        BulletList,
+        Code,
+        HardBreak,
+        Heading,
+        History,
+        HorizontalRule,
+        Image,
+        Italic,
+        Link,
+        ListItem,
+        OrderedList,
+        Paragraph,
+        Strike,
+        TiptapVuetify,
+        Underline
+    } from 'tiptap-vuetify';
 
     export default {
+        components: {
+            TiptapVuetify
+        },
         data() {
             return {
                 snackbar: false,
@@ -925,7 +964,29 @@
                 updatePhoneDlg: false,
                 updateAddressDlg: false,
                 updateEmailDlg: false,
-                updateEmailSignatureDlg: false
+                updateEmailSignatureDlg: false,
+                extensions: [
+                    History,
+                    Blockquote,
+                    Link,
+                    Underline,
+                    Strike,
+                    Italic,
+                    ListItem,
+                    BulletList,
+                    OrderedList,
+                    [Heading, {
+                        options: {
+                            levels: [1, 2, 3]
+                        }
+                    }],
+                    Bold,
+                    Code,
+                    HorizontalRule,
+                    Paragraph,
+                    Image,
+                    HardBreak
+                ]
             }
         },
         mounted() {
