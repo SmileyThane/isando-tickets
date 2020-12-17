@@ -537,13 +537,15 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-
         </v-row>
     </v-container>
 </template>
 <style scoped>
 >>>.ps {
     max-height: 300px;
+}
+>>>.v-treeview-node__root {
+    max-height: 1.1em;
 }
 </style>
 <style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
