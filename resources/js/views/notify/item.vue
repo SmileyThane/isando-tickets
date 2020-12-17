@@ -223,7 +223,7 @@
                                         dense
                                     >
                                         <template slot="selection" slot-scope="data">
-                                            <div v-html="data.item.signature"></div>
+                                            <div class="text--black mt-3" v-html="data.item.signature"></div>
                                         </template>
                                     </v-select>
                                 </v-col>

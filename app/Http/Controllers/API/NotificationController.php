@@ -54,15 +54,7 @@ class NotificationController extends Controller
                 'name' => $file->getClientOriginalName()
             ];
         }
-
-        $x = [
-            'subject' => $request['subject'],
-            'body' => $request['body'],
-            'recipients' => $request['recipients'],
-            'attachments'=>$attachments
-        ];
-        return self::showResponse(true, $x);
-
+        
         Mail::send(new Notification($request['recipients'], $request['subject'], $request['body'], $attachments));
         return self::showResponse(true);
     }
