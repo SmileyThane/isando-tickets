@@ -37,7 +37,7 @@
         <v-list-item v-else>
             <v-list-item-content>
                 <v-list-item-title class="title">
-                    {{ firstAlias }} | {{ secondAlias }}
+                    {{ firstAlias }}
                 </v-list-item-title>
             </v-list-item-content>
         </v-list-item>
