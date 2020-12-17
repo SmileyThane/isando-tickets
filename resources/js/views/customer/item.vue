@@ -496,6 +496,8 @@
                             class="elevation-1"
                             dense
                             item-key="id"
+                            align="center"
+                            justify="center"
                             @click:row="showUser"
                         >
                             <template v-slot:item.actions="{ item }">
@@ -562,10 +564,11 @@
                                 </v-tooltip>
                             </template>
                             <template v-slot:item.user_data="{ item }">
-                                <div v-if="item.employee.user_data" class="justify-center">
+                                <div v-if="item.employee.user_data"
+                                     class="text-xs-center">
                                     {{ item.employee.user_data.full_name }}
-                                    <p v-if="item.description" class="caption" style="color: darkgrey;">
-                                        {{ item.description }}</p>
+                                    <span v-if="item.description" class="caption" style="color: darkgrey;">
+                                        {{ item.description }}</span>
                                 </div>
                             </template>
                         </v-data-table>
@@ -709,14 +712,39 @@
                                     </v-row>
                                 </v-card-text>
                                 <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn color="green darken-1" text @click="editContactInfo">
+                                    <v-spacer> </v-spacer>
+                                    <v-btn
+                                        color="grey darken-1" text
+                                        @click="contactInfoEditBtn = false; contactInfoModal = false"
+                                    >
+                                        {{langMap.main.cancel}}
+                                    </v-btn>
+                                    <v-btn
+                                        color="red darken-1" text
+                                        @click="removeEmployeeProcess(contactInfoForm.employee)"
+                                    >
+                                        <v-icon small>
+                                            mdi-delete
+                                        </v-icon>
+                                        {{langMap.main.delete}}
+                                    </v-btn>
+
+                                    <v-btn color="green darken-1" text
+                                           @click="editContactInfo"
+                                    >
+                                        <v-icon small>
+                                            {{contactInfoEditBtn === false ?
+                                            'mdi-pencil' :
+                                            ''}}
+                                        </v-icon>
+
                                         {{
                                             contactInfoEditBtn === true ?
                                                 langMap.main.save :
                                                 langMap.individuals.update_link
 
                                         }}
+
                                     </v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
@@ -794,6 +822,58 @@
                                                 <v-icon>mdi-plus</v-icon>
                                             </v-btn>
                                         </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                        <v-spacer>
+
+                        </v-spacer>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{this.$store.state.lang.lang_map.individuals.new_customer}}
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col class="pa-1" cols="md-12">
+                                                <v-autocomplete
+                                                    v-model="employeeForm.company_user_id"
+                                                    :color="themeColor"
+                                                    :error-messages="employeeForm.id"
+                                                    :items="employees"
+                                                    :label="this.$store.state.lang.lang_map.individuals.info"
+                                                    :placeholder="this.$store.state.lang.lang_map.main.search"
+                                                    hide-no-data
+                                                    hide-selected
+                                                    item-text="user_data.full_name"
+                                                    item-value="id"
+                                                ></v-autocomplete>
+                                            </v-col>
+                                            <v-text-field
+                                                v-model="employeeForm.description"
+                                                :color="themeColor"
+                                                :label="this.$store.state.lang.lang_map.main.description"
+                                                class="pa-1"
+                                                dense
+                                                type="text"
+                                            ></v-text-field>
+                                        </div>
+                                        <v-btn
+                                            :color="themeColor"
+                                            bottom
+                                            dark
+                                            fab
+                                            right
+                                            small
+                                            @click="addEmployee"
+                                        >
+                                            <v-icon>mdi-plus</v-icon>
+                                        </v-btn>
                                     </v-form>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
@@ -1185,6 +1265,7 @@ export default {
                 company_user_id: ''
             },
             clientIsLoaded: false,
+            employees: [],
             client: {
                 client_name: '',
                 client_description: '',
@@ -1290,6 +1371,7 @@ export default {
         this.getEmailTypes();
         this.getCountries();
         this.getProducts();
+        this.getEmployees();
         this.employeeForm.client_id = this.$route.params.id;
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
@@ -1347,6 +1429,20 @@ export default {
             this.contactInfoForm = item
             this.contactInfoModal = true
 
+        },
+        getEmployees() {
+            axios.get('/api/employee').then(
+                response => {
+                    this.loading = false
+                    response = response.data
+                    if (response.success === true) {
+                        this.employees = response.data.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.errorType = 'error';
+                        this.snackbar = true;
+                    }
+                });
         },
         addEmployee() {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
