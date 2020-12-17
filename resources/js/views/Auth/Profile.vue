@@ -372,9 +372,10 @@
                                             >
                                                 <v-list-item-icon v-if="item.type"><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="">{{item.street}}
-                                                        {{item.postal_code}} {{item.city}}
-                                                        <span v-if="item.country">{{localized(item.country)}}</span>
+                                                    <v-list-item-title v-text="" style="white-space: pre-line;">
+                                                        <span v-if="item.street.split('\n')[0]">{{item.street.split('\n')[0]}}</span> <span>{{item.postal_code}} {{item.city}} <span v-if="item.country">{{localized(item.country)}}</span></span>
+                                                        <span v-if="item.street.split('\n')[1]"><br>{{item.street.split('\n')[1]}}</span>
+                                                        <span v-if="item.street.split('\n')[2]"><br>{{item.street.split('\n')[2]}}</span>
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
                                                         v-text="localized(item.type)"></v-list-item-subtitle>
