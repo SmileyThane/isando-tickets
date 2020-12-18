@@ -22,17 +22,17 @@
                             <v-expansion-panel-content>
                                 <v-form>
                                     <div class="row">
-                                            <v-text-field
-                                                class="col-md-4"
-                                                v-model="employeeForm.name"
-                                                :color="themeColor"
-                                                :error-messages="employeeErrors.name"
-                                                :label="langMap.main.name"
-                                                name="name"
-                                                required
-                                                type="text"
-                                                dense
-                                            ></v-text-field>
+                                        <v-text-field
+                                            v-model="employeeForm.name"
+                                            :color="themeColor"
+                                            :error-messages="employeeErrors.name"
+                                            :label="langMap.main.name"
+                                            class="col-md-4"
+                                            dense
+                                            name="name"
+                                            required
+                                            type="text"
+                                        ></v-text-field>
                                         <v-text-field
                                             v-model="employeeForm.middle_name"
                                             :color="themeColor"
@@ -55,31 +55,31 @@
                                             name="surname"
                                             type="text"
                                         ></v-text-field>
-                                            <v-text-field
-                                                class="col-md-6"
-                                                v-model="employeeForm.email"
-                                                :color="themeColor"
-                                                :error-messages="employeeErrors.email"
-                                                :label="langMap.main.email"
-                                                name="email"
-                                                required
-                                                dense
-                                                type="email"
-                                            ></v-text-field>
-                                            <v-autocomplete
-                                                class="col-md-6"
-                                                v-model="employeeForm.client_id"
-                                                :color="themeColor"
-                                                :error-messages="employeeErrors.client_id"
-                                                :items="customers"
-                                                :label="langMap.customer.customer"
-                                                :placeholder="this.$store.state.lang.lang_map.main.search"
-                                                hide-no-data
-                                                hide-selected
-                                                dense
-                                                item-text="name"
-                                                item-value="id"
-                                            ></v-autocomplete>
+                                        <v-text-field
+                                            v-model="employeeForm.email"
+                                            :color="themeColor"
+                                            :error-messages="employeeErrors.email"
+                                            :label="langMap.main.email"
+                                            class="col-md-6"
+                                            dense
+                                            name="email"
+                                            required
+                                            type="email"
+                                        ></v-text-field>
+                                        <v-autocomplete
+                                            v-model="employeeForm.client_id"
+                                            :color="themeColor"
+                                            :error-messages="employeeErrors.client_id"
+                                            :items="customers"
+                                            :label="langMap.customer.customer"
+                                            :placeholder="this.$store.state.lang.lang_map.main.search"
+                                            class="col-md-6"
+                                            dense
+                                            hide-no-data
+                                            hide-selected
+                                            item-text="name"
+                                            item-value="id"
+                                        ></v-autocomplete>
                                         <v-btn
                                             :color="themeColor"
                                             bottom
@@ -175,12 +175,15 @@
                                 </v-icon>
                             </template>
                             <template v-slot:item.assigned_to_clients.clients="{ item }">
-                                <span v-if="" v-for="clientItem in item.assigned_to_clients"
+                                <span v-for="clientItem in item.assigned_to_clients"
                                       @click="showItem(item)">
-                                    {{ clientItem.clients.name }}
+                                    <span v-if="clientItem.clients">
+                                        {{ clientItem.clients.name }}
+                                    </span>
                                     <br>
                                 </span>
-                                <v-icon v-if="item.assigned_to_clients.length === 0" class="justify-center" @click="showItem(item)">
+                                <v-icon v-if="item.assigned_to_clients.length === 0" class="justify-center"
+                                        @click="showItem(item)">
                                     mdi-cancel
                                 </v-icon>
                             </template>
