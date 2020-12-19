@@ -1517,7 +1517,17 @@
                                     <v-text-field :color="themeColor" :item-color="themeColor" v-model="emailForm.email" :label="langMap.main.email" dense></v-text-field>
                                 </v-col>
                                 <v-col cols="md-6" class="pa-1">
-                                    <v-select :color="themeColor" :item-color="themeColor"
+                                    <v-select v-if="emailForm.email_type === 1" readonly :color="themeColor" :item-color="themeColor"
+                                              v-model="emailForm.email_type" :items="emailTypes" item-value="id"
+                                              dense :label="langMap.main.type">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                        </template>
+                                    </v-select>
+                                    <v-select v-else :color="themeColor" :item-color="themeColor"
                                               v-model="emailForm.email_type" :items="emailTypes" item-value="id"
                                               dense :label="langMap.main.type">
                                         <template slot="selection" slot-scope="data">

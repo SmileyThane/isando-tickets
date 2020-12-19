@@ -920,7 +920,19 @@
                                                   :label="langMap.main.email" dense></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-select v-model="emailForm.email_type" :color="themeColor"
+                                    <v-select v-if="emailForm.email_type === 1" readonly v-model="emailForm.email_type" :color="themeColor"
+                                              :item-color="themeColor" :items="emailTypes" :label="langMap.main.type"
+                                              dense item-value="id">
+                                        <template slot="selection" slot-scope="data">
+                                            <v-icon left small v-text="data.item.icon"></v-icon>
+                                            {{ localized(data.item) }}
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            <v-icon left small v-text="data.item.icon"></v-icon>
+                                            {{ localized(data.item) }}
+                                        </template>
+                                    </v-select>
+                                    <v-select v-else v-model="emailForm.email_type" :color="themeColor"
                                               :item-color="themeColor" :items="emailTypes" :label="langMap.main.type"
                                               dense item-value="id">
                                         <template slot="selection" slot-scope="data">

@@ -566,9 +566,10 @@
                             <template v-slot:item.user_data="{ item }">
                                 <div v-if="item.employee.user_data"
                                      class="text-xs-center">
+                                    <br v-if="item.description"/>
                                     {{ item.employee.user_data.full_name }}
-                                    <span v-if="item.description" class="caption" style="color: darkgrey;">
-                                        {{ item.description }}</span>
+                                    <p v-if="item.description" class="caption" style="color: darkgrey;">
+                                        {{ item.description }}</p>
                                 </div>
                             </template>
                         </v-data-table>
@@ -721,7 +722,7 @@
                                     </v-btn>
                                     <v-btn
                                         color="red darken-1" text
-                                        @click="removeEmployeeProcess(contactInfoForm.employee)"
+                                        @click="removeEmployeeProcess(contactInfoForm)"
                                     >
                                         <v-icon small>
                                             mdi-delete
@@ -1262,7 +1263,7 @@ export default {
             singleUserForm: {
                 user: '',
                 role_ids: [],
-                company_user_id: ''
+                company_user_id: 0
             },
             clientIsLoaded: false,
             employees: [],
@@ -1293,11 +1294,11 @@ export default {
                 ]
             },
             employeeForm: {
-                company_user_id: null,
+                company_user_id: 0,
                 description: '',
                 name: '',
                 email: '',
-                client_id: '',
+                client_id: 0,
                 is_active: false
             },
             selectedEmployeeId: null,
@@ -1372,7 +1373,7 @@ export default {
         this.getCountries();
         this.getProducts();
         this.getEmployees();
-        this.employeeForm.client_id = this.$route.params.id;
+        this.employeeForm.client_id = parseInt(this.$route.params.id);
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
@@ -1473,7 +1474,6 @@ export default {
             } else {
                 this.contactInfoEditBtn = true
             }
-            console.log(this.employeeForm.client_id);
         },
         updateClient() {
             axios.patch(`/api/client/${this.$route.params.id}`, this.client).then(response => {
@@ -1710,6 +1710,7 @@ export default {
             });
         },
         removeEmployeeProcess(item) {
+            console.log(item);
             this.selectedEmployeeId = item.id
             this.removeEmployeeDialog = true
         },
@@ -1723,6 +1724,7 @@ export default {
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.removeEmployeeDialog = false
+                    this.contactInfoModal = false
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';

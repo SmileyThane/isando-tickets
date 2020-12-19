@@ -115,6 +115,7 @@ class ClientRepository
         $result = false;
         $client = Client::find($id);
         if ($client) {
+            ClientCompanyUser::where('client_id', $id)->delete();
             $client->delete();
             $result = true;
         }

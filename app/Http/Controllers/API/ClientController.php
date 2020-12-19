@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\ClientCompanyUser;
 use App\Http\Controllers\Controller;
 use App\Repository\ClientRepository;
 use App\Repository\CompanyUserRepository;
@@ -96,7 +97,8 @@ class ClientController extends Controller
                 return $inviteResponse;
             }
         }
-        if ($request->company_user_id && $request->description) {
+        $existingClient = ClientCompanyUser::where(['client_id' => $request->client_id, 'company_user_id' => $request->company_user_id])->exists();
+        if ($existingClient && $request->description !== null) {
             $result = $this->clientRepo->updateDescription($request);
         } else {
             $result = $this->clientRepo->attach($request);

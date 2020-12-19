@@ -39,19 +39,7 @@
 
                             <v-row>
                                 <v-col v-show="companySettings.navbar_style !== 1"
-                                       :class="companySettings.navbar_style === 4 ? 'col-md-12' : 'col-md-4'"
-                                >
-                                    <v-file-input
-                                        v-show="companySettings.navbar_style !== 1"
-                                        v-model="companyNewLogo"
-                                        :color="themeColor"
-                                        :disabled="!enableToEdit"
-                                        accept="image/*"
-                                        dense
-                                        prepend-icon="mdi-camera"
-                                        style="z-index: 2; max-width: 1em;"
-                                    >
-                                    </v-file-input>
+                                       :class="companySettings.navbar_style === 4 ? 'col-md-12' : 'col-md-4'">
                                     <v-img
                                         v-if="companyLogo"
                                         :src="companyLogo"
@@ -59,6 +47,17 @@
                                         max-height="15em"
                                         style="z-index: 0"
                                     >
+                                        <v-file-input
+                                            v-show="companySettings.navbar_style !== 1"
+                                            v-model="companyNewLogo"
+                                            :color="themeColor"
+                                            :disabled="!enableToEdit"
+                                            accept="image/*"
+                                            dense
+                                            prepend-icon="mdi-camera"
+                                            style="z-index: 2; max-width: 1em;"
+                                        >
+                                        </v-file-input>
                                     </v-img>
                                     <v-label v-else>{{ langMap.company.logo }}</v-label>
                                 </v-col>
@@ -959,6 +958,14 @@ export default {
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
         });
+    },
+
+    watch: {
+        companyNewLogo(val) {
+            if (this.companyNewLogo !== null) {
+                this.companyLogo = URL.createObjectURL(this.companyNewLogo)
+            }
+        }
     },
     methods: {
         getCompany() {

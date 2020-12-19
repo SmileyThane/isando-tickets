@@ -13,7 +13,7 @@ class EmailRepository
 
     public function create($entityId, $entityType, $emailValue, $emailType): Email
     {
-        return Email::firstOrCreate(
+        $email = Email::firstOrCreate(
             [
                 'entity_id' => $entityId,
                 'entity_type' => $entityType,
@@ -21,6 +21,13 @@ class EmailRepository
                 'email_type' => $emailType
             ]
         );
+
+        if ($emailType === 1) {
+            $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+            $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
+            Email::where('id', '<>', $email->id)->where('email_type', 1)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+        }
+        return $email;
     }
 
     public function update($id, $type, $value): Email
