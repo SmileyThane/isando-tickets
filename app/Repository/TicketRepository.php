@@ -57,7 +57,7 @@ class TicketRepository
         $companyUser = Auth::user()->employee;
         $tickets = Ticket::where('from_company_user_id', $companyUser->id);
         $tickets = $this->ticketRoleFilter($companyUser, $tickets);
-        $tickets->where(function ($ticketsQuery) use ($request, $companyUser, $tickets) {
+        $tickets->where(function ($ticketsQuery) use ($companyUser) {
             $ticketsQuery->where('to_company_user_id', $companyUser->id)
                 ->orWhere('contact_company_user_id', $companyUser->id);
         })->select('id');
@@ -90,6 +90,9 @@ class TicketRepository
 
     private function ticketRoleFilter($companyUser, $tickets)
     {
+        if (!$companyUser->hasRole(Role::COMPANY_CLIENT)) {
+            $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
+        }
         if ($companyUser->hasRole(Role::LICENSE_OWNER) || $companyUser->hasRole(Role::ADMIN)) {
             $products = ProductCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($products) {
@@ -98,7 +101,7 @@ class TicketRepository
                     $tickets->orWhereIn('to_product_id', $productsIds);
                 }
             }
-            $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
+
         }
         if ($companyUser->hasRole(Role::MANAGER)) {
             $teams = TeamCompanyUser::where('company_user_id', $companyUser->id)->get();
