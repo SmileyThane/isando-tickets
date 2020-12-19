@@ -566,9 +566,10 @@
                             <template v-slot:item.user_data="{ item }">
                                 <div v-if="item.employee.user_data"
                                      class="text-xs-center">
+                                    <br v-if="item.description"/>
                                     {{ item.employee.user_data.full_name }}
-                                    <span v-if="item.description" class="caption" style="color: darkgrey;">
-                                        {{ item.description }}</span>
+                                    <p v-if="item.description" class="caption" style="color: darkgrey;">
+                                        {{ item.description }}</p>
                                 </div>
                             </template>
                         </v-data-table>
