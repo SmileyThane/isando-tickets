@@ -105,7 +105,7 @@ class UserRepository
             $user->is_active = $request->is_active;
             $user->save();
 //            Email::where(['entity_id' => $user->id, 'entity_type' => User::class])
-            if ($user->is_active === 1) {
+            if ($user->is_active === true) {
                 $email = Email::find($request->email_id);
                 $email->email_type = 1;
                 $email->save();
