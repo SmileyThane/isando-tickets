@@ -1263,7 +1263,7 @@ export default {
             singleUserForm: {
                 user: '',
                 role_ids: [],
-                company_user_id: ''
+                company_user_id: 0
             },
             clientIsLoaded: false,
             employees: [],
@@ -1294,11 +1294,11 @@ export default {
                 ]
             },
             employeeForm: {
-                company_user_id: null,
+                company_user_id: 0,
                 description: '',
                 name: '',
                 email: '',
-                client_id: '',
+                client_id: 0,
                 is_active: false
             },
             selectedEmployeeId: null,
@@ -1373,7 +1373,7 @@ export default {
         this.getCountries();
         this.getProducts();
         this.getEmployees();
-        this.employeeForm.client_id = this.$route.params.id;
+        this.employeeForm.client_id = parseInt(this.$route.params.id);
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
@@ -1474,7 +1474,6 @@ export default {
             } else {
                 this.contactInfoEditBtn = true
             }
-            console.log(this.employeeForm.client_id);
         },
         updateClient() {
             axios.patch(`/api/client/${this.$route.params.id}`, this.client).then(response => {
