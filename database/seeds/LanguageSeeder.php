@@ -194,6 +194,7 @@ class LanguageSeeder extends Seeder
     "new_customer": "Link to company",
     "update_link": "Update link",
     "is_active": "System access",
+    "unlink": "Are you sure that you want to unlink this user from this company? ",
     "status": "Status",
     "social_info": "Social media"
   },
@@ -642,6 +643,7 @@ class LanguageSeeder extends Seeder
   "new_customer": "Kontakt hinzufügen",
   "update_link": "Link aktualisieren",
   "is_active": "Systemzugriff",
+  "unlink": "Sind Sie sicher, dass Sie den Link löschen wollen?",
   "status": "Status",
   "social_info": "Social Media"
   },
