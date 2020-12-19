@@ -720,6 +720,7 @@
                         this.$store.state.lang.lang_map.main.remove_access
                         }}
                         <v-select
+                            :disabled="userData.is_active === true"
                             class="mx-4"
                             v-model="primaryEmailId"
                             :color="themeColor"
