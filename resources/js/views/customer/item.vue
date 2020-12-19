@@ -721,7 +721,7 @@
                                     </v-btn>
                                     <v-btn
                                         color="red darken-1" text
-                                        @click="removeEmployeeProcess(contactInfoForm.employee)"
+                                        @click="removeEmployeeProcess(contactInfoForm)"
                                     >
                                         <v-icon small>
                                             mdi-delete
@@ -1710,6 +1710,7 @@ export default {
             });
         },
         removeEmployeeProcess(item) {
+            console.log(item);
             this.selectedEmployeeId = item.id
             this.removeEmployeeDialog = true
         },
@@ -1723,6 +1724,7 @@ export default {
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.removeEmployeeDialog = false
+                    this.contactInfoModal = false
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
