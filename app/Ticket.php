@@ -22,7 +22,7 @@ class Ticket extends Model
         'to_product_id', 'priority_id', 'status_id', 'due_date', 'connection_details', 'access_details', 'availability',
         'category_id', 'parent_id'
     ];
-    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to', 'ticket_type', 'created_at_time'];
+    protected $appends = ['number', 'from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to', 'ticket_type', 'created_at_time'];
     protected $hidden = ['to'];
 
     protected static function booted()
@@ -47,6 +47,14 @@ class Ticket extends Model
     public function getFromAttribute()
     {
         return $this->attributes['from_entity_type']::find($this->attributes['from_entity_id']);
+    }
+
+    public function getFromCompanyNameAttribute()
+    {
+        if ($this->from) {
+            return $this->from->name;
+        }
+        return null;
     }
 
     public function getToAttribute()
