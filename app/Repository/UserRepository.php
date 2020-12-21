@@ -4,6 +4,8 @@
 namespace App\Repository;
 
 
+use App\Company;
+use App\EmailType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
 use App\Notifications\ResetPasswordEmail;
@@ -91,6 +93,8 @@ class UserRepository
         $result = false;
         $user = User::find($id);
         if ($user) {
+            Email::where('entity_type', User::class)->where('entity_id', $id)->delete();
+
             $user->delete();
             $result = true;
         }
@@ -106,7 +110,13 @@ class UserRepository
             $user->save();
 //            Email::where(['entity_id' => $user->id, 'entity_type' => User::class])
                 $email = Email::find($request->email_id);
-                $email->email_type = $user->is_active === true ? 1 : 2;
+
+                if ($user->is_active === true) {
+                    $email->email_type = 1;
+                } else {
+                    $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $user->employee->companyData->id)->first();
+                    $email->email_type = $secondaryType ? $secondaryType->id : 1;
+                }
                 $email->save();
             $result = true;
         } catch (\Throwable $th) {

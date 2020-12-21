@@ -56,6 +56,7 @@ class EmailRepository
         }
     }
 
+
     public function createType($name, $name_de, $icon, $companyId = null): EmailType
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
