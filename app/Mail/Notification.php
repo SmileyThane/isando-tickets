@@ -30,14 +30,29 @@ class Notification extends Mailable
             $this->attachData($file['data'], $file['name']);
         }
 
-        if (is_string($recipients) && strpos($recipients, ',') !== false) {
-            $recipients = explode(',', $recipients);
+        if (is_string($recipients)) {
+            if (strpos($recipients, ',') !== false) {
+                $recipients = explode(',', $recipients);
+            } else {
+                $recipients = [$recipients];
+            }
         }
+
         foreach ($recipients as $email) {
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->bcc($email);
             }
         }
+
     }
 
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
+    public function build()
+    {
+        return $this;
+    }
 }
