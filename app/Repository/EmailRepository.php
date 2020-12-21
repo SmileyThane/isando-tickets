@@ -13,6 +13,11 @@ class EmailRepository
 
     public function create($entityId, $entityType, $emailValue, $emailType): Email
     {
+        $emails = Email::where('entity_type', $entityType)->where('entity_id', $entityId)->get()->count();
+        if (!$emails) {
+            $emailType = 1;
+        }
+
         $email = Email::firstOrCreate(
             [
                 'entity_id' => $entityId,
