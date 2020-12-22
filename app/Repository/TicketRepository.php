@@ -66,11 +66,11 @@ class TicketRepository
             $ticketIds = $tickets->pluck('id')->toArray();
         }
         $ticketResult = Ticket::whereIn('id', $ticketIds);
-        if ($request->search !== '') {
+        if ($request->has('search') && trim($request->search)) {
             $ticketResult->where(
                 static function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('description', 'like', '%' . $request->search . '%');
+                    $query->where('name', 'like', '%' . trim($request->search) . '%')
+                            ->orWhere('description', 'like', '%' . trim($request->search) . '%');
                 }
             );
         }
@@ -81,12 +81,24 @@ class TicketRepository
             return $ticketResult->select('id', 'name', 'from_entity_id', 'from_entity_type', 'updated_at')->paginate(count($ticketIds));
         }
 //        dd(DB::getQueryLog());
-        return $ticketResult
+        $ticketResult
             ->with(
                 'creator.userData', 'assignedPerson.userData',
                 'contact.userData', 'product', 'team',
-                'priority', 'status', 'category')
-            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? count($ticketIds));
+                'priority', 'status', 'category');
+        $orderedField = $request->sort_by ?? 'id';
+        $orderedDirection = $request->sort_val === 'false' ? 'asc' : 'desc';
+        if ($orderedField === 'from_entity_id') {
+            $ticketResult = $ticketResult->get();
+            if ($orderedDirection === 'asc') {
+                $ticketResult = $ticketResult->sortBy('from_company_name', SORT_NATURAL, false);
+            } else {
+                $ticketResult = $ticketResult->sortByDesc('from_company_name', SORT_NATURAL, true);
+            }
+        } else {
+            $ticketResult = $ticketResult->orderBy($orderedField, $orderedDirection);
+        }
+        return $ticketResult = $ticketResult->paginate($request->per_page ?? count($ticketIds));
     }
 
     private function ticketRoleFilter($companyUser, $tickets)
