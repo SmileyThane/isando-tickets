@@ -234,7 +234,8 @@ class LanguageSeeder extends Seeder
     "merge": "Merge",
     "is_spam": "Marked as Spam",
     "reported_by": "Reported by",
-    "close_ticket":"Close ticket"
+    "close_ticket":"Close ticket",
+    "ticket_merge_comment_prefix": "This ticket was merged with a ticket No. "
   },
   "main": {
     "create": "Create",
@@ -361,7 +362,9 @@ class LanguageSeeder extends Seeder
     "icon": "Icon",
     "ticketing": "Ticketing",
     "do_not_show_this_again": "Do not show this again",
-    "update_successful": "Update successful"
+    "update_successful": "Update successful",
+    "on": " on ",
+    "by": " by "
   },
   "system_settings": {
     "title": "System settings",
@@ -683,7 +686,8 @@ class LanguageSeeder extends Seeder
     "merge": "Zusammengeführen",
     "is_spam": "Marked as Spam",
     "reported_by": "Erstellt von",
-    "close_ticket":"Ticket schliessen"
+    "close_ticket":"Ticket schliessen",
+    "ticket_merge_comment_prefix": "Dieses Ticket wurde mit der Ticket-Nr. "
   },
 
    "main":{
@@ -811,7 +815,9 @@ class LanguageSeeder extends Seeder
 "icon": "Symbol",
 "ticketing": "Buchung",
 "do_not_show_this_again": "Diese Mitteilung nicht mehr anzeigen",
-"update_successful": "Aktualisierung erfolgreich"
+"update_successful": "Aktualisierung erfolgreich",
+"on": " von ",
+"by": " zusammengeführt "
  },
   "system_settings": {
     "title": "Systemeinstellungen",
