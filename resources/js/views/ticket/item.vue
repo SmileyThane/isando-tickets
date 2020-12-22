@@ -568,7 +568,9 @@
                 <v-card
                     outlined
                 >
+
                     <v-card-text>
+                        <p v-text="ticket.merge_info"></p>
                         <div v-for="answer in ticket.answers"
                              :key="answer.id"
                         >
