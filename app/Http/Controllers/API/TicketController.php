@@ -132,6 +132,12 @@ class TicketController extends Controller
         return self::showResponse($result);
     }
 
+    public function removeMerge($id)
+    {
+        $result = $this->ticketRepo->removeMerge($id);
+        return self::showResponse($result);
+    }
+
     public function addLink(Request $request)
     {
         $result = $this->ticketRepo->addLink($request);
