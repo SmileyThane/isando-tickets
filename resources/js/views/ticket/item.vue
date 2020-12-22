@@ -994,7 +994,10 @@
                                                 v-on="{...menu}"
                                                 text
                                             >
-                                                <v-icon>$expand</v-icon>
+                                                <span v-if="searchLabel !== ''">
+                                                    {{ searchLabel }}
+                                                </span>
+                                                <v-icon v-else>$expand</v-icon>
                                             </v-btn>
                                         </template>
                                         <v-list
@@ -1135,7 +1138,10 @@
                                                 v-on="{...menu}"
                                                 text
                                             >
-                                                <v-icon>$expand</v-icon>
+                                                <span v-if="searchLabel !== ''">
+                                                    {{ searchLabel }}
+                                                </span>
+                                                <v-icon v-else>$expand</v-icon>
                                             </v-btn>
                                         </template>
                                         <v-list
@@ -1369,6 +1375,7 @@ export default {
             mergeParentTickets: [],
             linkParentTickets: [],
             ticketsSearch: '',
+            searchLabel: '',
             searchCategories: [
                 {
                     id: 1,
@@ -1558,7 +1565,7 @@ export default {
             });
         },
         getTickets() {
-            axios.get(`/api/ticket?search=${this.ticketsSearch}&minified=1`)
+            axios.get(`/api/ticket?search_param=${this.searchLabel}&search=${this.ticketsSearch}&minified=1`)
                 .then(response => {
                     response = response.data
                     if (this.ticketsSearch === '') {
