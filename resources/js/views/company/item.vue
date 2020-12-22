@@ -20,6 +20,9 @@
                         <v-toolbar-title>{{langMap.company.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateCompany">
+                            {{langMap.main.cancel}}
+                        </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompany">
                             {{langMap.main.update}}
                         </v-btn>
@@ -1955,6 +1958,10 @@
                         this.snackbar = true;
                     }
                 });
+            },
+            cancelUpdateCompany () {
+                this.getCompany();
+                this.enableToEdit = false;
             },
             showRolesModal(item) {
                 this.rolesDialog = true
