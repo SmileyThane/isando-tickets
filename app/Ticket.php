@@ -95,15 +95,16 @@ class Ticket extends Model
         return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }
 
-    public function getMergedAtAttribute()
-    {
-        if ($this->merged_at) {
-            $locale = Language::find(Auth::user()->language_id)->locale;
-            $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
-            return Carbon::parse($this->attributes['merged_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
-        }
-        return null;
-    }
+//    public function getMergedAtAttribute()
+//    {
+//        dd($this->attributes);
+//        if ($this->attributes['merged_at']) {
+//            $locale = Language::find(Auth::user()->language_id)->locale;
+//            $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+//            return Carbon::parse($this->attributes['merged_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+//        }
+//        return null;
+//    }
 
     public function getCreatedAtTimeAttribute()
     {
