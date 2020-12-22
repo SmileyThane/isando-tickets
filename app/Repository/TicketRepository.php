@@ -8,6 +8,7 @@ use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyUser;
+use App\Language;
 use App\Notifications\ChangedTicketStatus;
 use App\ProductCompanyUser;
 use App\Role;
@@ -338,7 +339,7 @@ class TicketRepository
     {
         if ($request->child_ticket_id) {
             foreach ($request->child_ticket_id as $ticketId) {
-                $this->addLink($request);
+                $this->addLink($request, false);
                 $ticket = Ticket::find($ticketId);
                 $ticket->parent_id = $request->parent_ticket_id;
                 $ticket->save();
@@ -348,14 +349,15 @@ class TicketRepository
                 $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
             }
             $parentTicket = Ticket::find($request->parent_ticket_id);
-            $parentTicket->merge_comment = $request->merge_comment;
+            $parentTicket->unifier_id = Auth::id();
+            $parentTicket->merged_at = now();
             $parentTicket->save();
             return true;
         }
         return false;
     }
 
-    public function addLink(Request $request): bool
+    public function addLink(Request $request, $wihHistory = true): bool
     {
         if ($request->child_ticket_id) {
             foreach ($request->child_ticket_id as $ticketId) {
@@ -365,10 +367,12 @@ class TicketRepository
                 $ticketMerge->parent_ticket_id = $request->parent_ticket_id;
                 $ticketMerge->child_ticket_id = $ticketId;
                 $ticketMerge->save();
-                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
-                $this->ticketUpdateRepo->addHistoryItem($ticketId, null, $historyDescription);
-                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
-                $this->ticketUpdateRepo->addHistoryItem($request->parent_ticket_id, null, $historyDescription);
+                if ($wihHistory === true) {
+                    $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
+                    $this->ticketUpdateRepo->addHistoryItem($ticketId, null, $historyDescription);
+                    $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
+                    $this->ticketUpdateRepo->addHistoryItem($request->parent_ticket_id, null, $historyDescription);
+                }
             }
             return true;
         }
