@@ -1126,6 +1126,46 @@
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
+                            <v-list
+                                dense
+                            >
+                                <v-list-item-group :color="themeColor">
+                                    <v-list-item
+
+                                        v-for="(item, i) in ticket.child_tickets"
+                                        v-if="ticket.child_tickets"
+                                        :key="item.id"
+                                        :color="themeColor"
+                                    >
+                                        <v-list-item-title>
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                        <span v-on="on">
+                                                    {{ item.number }}|{{ item.name }}
+                                                </span>
+                                                </template>
+                                                <span>{{ item.number }}|{{ item.name }}</span>
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                                <template v-slot:activator="{ on, attrs }">
+
+                                                    <v-icon v-on="on"
+                                                            color="red"
+                                                            small
+                                                            style="float: right"
+                                                            @click="removeMerge(item.id)"
+                                                    >
+                                                        mdi-cancel
+                                                    </v-icon>
+                                                </template>
+                                                <span>{{ langMap.main.cancel }}</span>
+                                            </v-tooltip>
+
+                                        </v-list-item-title>
+
+                                    </v-list-item>
+                                </v-list-item-group>
+                            </v-list>
                             <v-text-field v-model="ticketsSearch" :color="themeColor" :label="langMap.main.search"
                                           @input="getTickets">
                                 <template slot="append">
@@ -1174,53 +1214,57 @@
                                             :color="themeColor"
                                             @click="showTicket(item.parent_ticket_data.id)"
                                         >
-                                            <v-tooltip bottom>
-                                                <template v-slot:activator="{ on, attrs }">
-                                                    <v-list-item-title v-on="on">
+                                            <v-list-item-title>
                                                 <span>
                                                     <v-checkbox
                                                         :key="item.id"
                                                         v-model="mergeTicketForm.child_ticket_id"
                                                         :color="themeColor"
-                                                        :disabled="mergeTicketForm.parent_ticket_id === item.id"
+                                                        :disabled="item.parent_id !== null"
                                                         :item-color="themeColor"
                                                         :value="item.id"
                                                         dense
                                                         hide-details
-                                                        style="display: inline-block;"
+                                                        style="display: inline-block; margin-top: 0!important"
                                                     />
-                                                     <v-btn
-                                                         :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeColor"
-                                                         fab
-                                                         outlined
-                                                         x-small
-                                                         @click="mergeTicketForm.parent_ticket_id = item.id"
-                                                     >
-                                                    <v-icon dark>
-                                                        mdi-medal-outline
-                                                    </v-icon>
-                                                </v-btn>
+                                                    <v-tooltip bottom>
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <span v-on="on">
+                                                            {{ item.number }}|{{ item.name }}
+                                                        </span>
+                                                    </template>
+                                                    <span>{{ item.number }}|{{ item.name }}</span>
+                                                </v-tooltip>
+                                                <v-tooltip top>
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-icon v-on="on"
+                                                                :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeColor"
+                                                                dark
+                                                                style="float: right"
+                                                                @click="mergeTicketForm.parent_ticket_id = item.id"
+                                                        >
+                                                            mdi-medal-outline
+                                                        </v-icon>
+                                                    </template>
+                                                    <span>{{ langMap.main.primary }}</span>
+                                                </v-tooltip>
                                                 </span>
-                                                        <span>
-                                                    {{ item.number }}|{{ item.name }}
-                                                </span>
-                                                        <br>
-                                                        <span style="font-weight: lighter;">
+
+                                                <br>
+                                                <span style="font-weight: lighter;">
                                                     {{
-                                                                item.creator !== null && item.creator.user_data !== null ?
-                                                                    item.creator.user_data.name + " " +
-                                                                    item.creator.user_data.surname : ''
-                                                            }},
+                                                        item.creator !== null && item.creator.user_data !== null ?
+                                                            item.creator.user_data.name + " " +
+                                                            item.creator.user_data.surname : ''
+                                                    }},
                                                     {{ item.from !== null ? item.from.name : '' }}
                                                 </span>
-                                                        <br>
-                                                        <span style="font-weight: lighter;">
+                                                <br>
+                                                <span style="font-weight: lighter;">
                                                     {{ item.last_update }}
                                                 </span>
-                                                    </v-list-item-title>
-                                                </template>
-                                                <span>{{ item.number }}|{{ item.name }}</span>
-                                            </v-tooltip>
+                                            </v-list-item-title>
+
                                         </v-list-item>
                                     </v-list-item-group>
                                 </v-list>
@@ -1786,6 +1830,17 @@ export default {
         },
         mergeTicket() {
             axios.post('/api/merge/ticket', this.mergeTicketForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTickets()
+                    this.getTicket()
+                } else {
+                    console.log('error')
+                }
+            });
+        },
+        removeMerge(id) {
+            axios.delete(`/api/merge/ticket/${id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getTickets()
