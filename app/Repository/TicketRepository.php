@@ -8,7 +8,6 @@ use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyUser;
-use App\Language;
 use App\Notifications\ChangedTicketStatus;
 use App\ProductCompanyUser;
 use App\Role;
@@ -69,8 +68,13 @@ class TicketRepository
         if ($request->has('search') && trim($request->search)) {
             $ticketResult->where(
                 static function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . trim($request->search) . '%')
+                    if ($request->has('search_param')) {
+                        $key = $request->search_param === 'ID' ? 'id' : 'name';
+                        $query->where($key, 'like', '%' . trim($request->search) . '%');
+                    } else {
+                        $query->where('name', 'like', '%' . trim($request->search) . '%')
                             ->orWhere('description', 'like', '%' . trim($request->search) . '%');
+                    }
                 }
             );
         }
