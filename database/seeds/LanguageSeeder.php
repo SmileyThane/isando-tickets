@@ -364,7 +364,8 @@ class LanguageSeeder extends Seeder
     "do_not_show_this_again": "Do not show this again",
     "update_successful": "Update successful",
     "on": " on ",
-    "by": " by "
+    "by": " by ",
+    "primary": "Primary"
   },
   "system_settings": {
     "title": "System settings",
@@ -817,7 +818,8 @@ class LanguageSeeder extends Seeder
 "do_not_show_this_again": "Diese Mitteilung nicht mehr anzeigen",
 "update_successful": "Aktualisierung erfolgreich",
 "on": " von ",
-"by": " zusammengeführt "
+"by": " zusammengeführt ",
+"primary": "Primär"
  },
   "system_settings": {
     "title": "Systemeinstellungen",
