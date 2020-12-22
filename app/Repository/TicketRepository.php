@@ -395,6 +395,14 @@ class TicketRepository
         return false;
     }
 
+    public function removeMerge($id): bool
+    {
+        $ticket = Ticket::find($id);
+        $ticket->parent_id = null;
+        $ticket->save();
+        return true;
+    }
+
     public function filterEmployeesByRoles($employees, $roles)
     {
         return $employees->filter(function ($item) use ($roles) {
