@@ -239,6 +239,7 @@
                             item-value="id"
                             multiple
                         />
+                        <br>
                         <v-textarea
                             v-model="linkTicketForm.merge_comment"
                             :color="themeColor"
@@ -1097,6 +1098,7 @@
                                     </v-list-item>
                                 </v-list-item-group>
                             </v-list>
+                            <br>
                             <v-btn
                                 color="#f2f2f2"
                                 small
@@ -1223,6 +1225,7 @@
                                     </v-list-item-group>
                                 </v-list>
                             </div>
+                            <br>
                             <v-textarea
                                 v-model="mergeTicketForm.merge_comment"
                                 :color="themeColor"
