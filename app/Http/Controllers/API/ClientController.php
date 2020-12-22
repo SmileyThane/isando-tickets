@@ -98,7 +98,7 @@ class ClientController extends Controller
             }
         }
         $existingClient = ClientCompanyUser::where(['client_id' => $request->client_id, 'company_user_id' => $request->company_user_id])->exists();
-        if ($existingClient && $request->description !== null) {
+        if ($existingClient) {
             $result = $this->clientRepo->updateDescription($request);
         } else {
             $result = $this->clientRepo->attach($request);

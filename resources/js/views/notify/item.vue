@@ -544,10 +544,17 @@
 >>>.ps {
     max-height: 300px;
 }
->>>.v-treeview-node__root {
-    max-height: 1.1em;
+>>>.v-treeview--dense .v-treeview-node__root {
+    min-height: 1.1em;
+}
+>>>.v-treeview-node__root .v-icon {
+    font-size: 20px;
+}
+>>>.v-treeview-node__checkbox {
+    margin-left: 0px !important;
 }
 </style>
+
 <style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
 
 <script>

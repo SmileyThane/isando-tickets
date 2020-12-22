@@ -194,6 +194,7 @@ class LanguageSeeder extends Seeder
     "new_customer": "Link to company",
     "update_link": "Update link",
     "is_active": "System access",
+    "unlink": "Are you sure that you want to unlink this user from this company? ",
     "status": "Status",
     "social_info": "Social media"
   },
@@ -233,7 +234,8 @@ class LanguageSeeder extends Seeder
     "merge": "Merge",
     "is_spam": "Marked as Spam",
     "reported_by": "Reported by",
-    "close_ticket":"Close ticket"
+    "close_ticket":"Close ticket",
+    "ticket_merge_comment_prefix": "This ticket was merged with a ticket No. "
   },
   "main": {
     "create": "Create",
@@ -360,7 +362,10 @@ class LanguageSeeder extends Seeder
     "icon": "Icon",
     "ticketing": "Ticketing",
     "do_not_show_this_again": "Do not show this again",
-    "update_successful": "Update successful"
+    "update_successful": "Update successful",
+    "on": " on ",
+    "by": " by ",
+    "primary": "Primary"
   },
   "system_settings": {
     "title": "System settings",
@@ -642,6 +647,7 @@ class LanguageSeeder extends Seeder
   "new_customer": "Kontakt hinzufügen",
   "update_link": "Link aktualisieren",
   "is_active": "Systemzugriff",
+  "unlink": "Sind Sie sicher, dass Sie den Link löschen wollen?",
   "status": "Status",
   "social_info": "Social Media"
   },
@@ -681,7 +687,8 @@ class LanguageSeeder extends Seeder
     "merge": "Zusammengeführen",
     "is_spam": "Marked as Spam",
     "reported_by": "Erstellt von",
-    "close_ticket":"Ticket schliessen"
+    "close_ticket":"Ticket schliessen",
+    "ticket_merge_comment_prefix": "Dieses Ticket wurde mit der Ticket-Nr. "
   },
 
    "main":{
@@ -809,7 +816,10 @@ class LanguageSeeder extends Seeder
 "icon": "Symbol",
 "ticketing": "Buchung",
 "do_not_show_this_again": "Diese Mitteilung nicht mehr anzeigen",
-"update_successful": "Aktualisierung erfolgreich"
+"update_successful": "Aktualisierung erfolgreich",
+"on": " von ",
+"by": " zusammengeführt ",
+"primary": "Primär"
  },
   "system_settings": {
     "title": "Systemeinstellungen",

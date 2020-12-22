@@ -65,11 +65,16 @@ class TicketRepository
             $ticketIds = $tickets->pluck('id')->toArray();
         }
         $ticketResult = Ticket::whereIn('id', $ticketIds);
-        if ($request->search !== '') {
+        if ($request->has('search') && trim($request->search)) {
             $ticketResult->where(
                 static function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('description', 'like', '%' . $request->search . '%');
+                    if ($request->has('search_param')) {
+                        $key = $request->search_param === 'ID' ? 'id' : 'name';
+                        $query->where($key, 'like', '%' . trim($request->search) . '%');
+                    } else {
+                        $query->where('name', 'like', '%' . trim($request->search) . '%')
+                            ->orWhere('description', 'like', '%' . trim($request->search) . '%');
+                    }
                 }
             );
         }
@@ -80,12 +85,24 @@ class TicketRepository
             return $ticketResult->select('id', 'name', 'from_entity_id', 'from_entity_type', 'updated_at')->paginate(count($ticketIds));
         }
 //        dd(DB::getQueryLog());
-        return $ticketResult
+        $ticketResult
             ->with(
                 'creator.userData', 'assignedPerson.userData',
                 'contact.userData', 'product', 'team',
-                'priority', 'status', 'category')
-            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? count($ticketIds));
+                'priority', 'status', 'category');
+        $orderedField = $request->sort_by ?? 'id';
+        $orderedDirection = $request->sort_val === 'false' ? 'asc' : 'desc';
+        if ($orderedField === 'from_entity_id') {
+            $ticketResult = $ticketResult->get();
+            if ($orderedDirection === 'asc') {
+                $ticketResult = $ticketResult->sortBy('from_company_name', SORT_NATURAL, false);
+            } else {
+                $ticketResult = $ticketResult->sortByDesc('from_company_name', SORT_NATURAL, true);
+            }
+        } else {
+            $ticketResult = $ticketResult->orderBy($orderedField, $orderedDirection);
+        }
+        return $ticketResult = $ticketResult->paginate($request->per_page ?? count($ticketIds));
     }
 
     private function ticketRoleFilter($companyUser, $tickets)
@@ -338,7 +355,7 @@ class TicketRepository
     {
         if ($request->child_ticket_id) {
             foreach ($request->child_ticket_id as $ticketId) {
-                $this->addLink($request);
+                $this->addLink($request, false);
                 $ticket = Ticket::find($ticketId);
                 $ticket->parent_id = $request->parent_ticket_id;
                 $ticket->save();
@@ -348,14 +365,15 @@ class TicketRepository
                 $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
             }
             $parentTicket = Ticket::find($request->parent_ticket_id);
-            $parentTicket->merge_comment = $request->merge_comment;
+            $parentTicket->unifier_id = Auth::id();
+            $parentTicket->merged_at = now();
             $parentTicket->save();
             return true;
         }
         return false;
     }
 
-    public function addLink(Request $request): bool
+    public function addLink(Request $request, $wihHistory = true): bool
     {
         if ($request->child_ticket_id) {
             foreach ($request->child_ticket_id as $ticketId) {
@@ -365,14 +383,24 @@ class TicketRepository
                 $ticketMerge->parent_ticket_id = $request->parent_ticket_id;
                 $ticketMerge->child_ticket_id = $ticketId;
                 $ticketMerge->save();
-                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
-                $this->ticketUpdateRepo->addHistoryItem($ticketId, null, $historyDescription);
-                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
-                $this->ticketUpdateRepo->addHistoryItem($request->parent_ticket_id, null, $historyDescription);
+                if ($wihHistory === true) {
+                    $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
+                    $this->ticketUpdateRepo->addHistoryItem($ticketId, null, $historyDescription);
+                    $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_linked');
+                    $this->ticketUpdateRepo->addHistoryItem($request->parent_ticket_id, null, $historyDescription);
+                }
             }
             return true;
         }
         return false;
+    }
+
+    public function removeMerge($id): bool
+    {
+        $ticket = Ticket::find($id);
+        $ticket->parent_id = null;
+        $ticket->save();
+        return true;
     }
 
     public function filterEmployeesByRoles($employees, $roles)

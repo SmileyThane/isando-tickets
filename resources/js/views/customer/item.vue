@@ -489,90 +489,199 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
-                        <v-data-table
-                            :footer-props="footerProps"
-                            :headers="headers"
-                            :items="client.employees"
-                            class="elevation-1"
-                            dense
-                            item-key="id"
-                            align="center"
-                            justify="center"
-                            @click:row="showUser"
-                        >
-                            <template v-slot:item.actions="{ item }">
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs"
-                                               v-on="on"
-                                               :disabled="!item.employee.user_data.is_active" icon
-                                               @click.native.stop="sendInvite(item.employee)">
-                                            <v-icon
-                                                small
-                                            >
-                                                mdi-email-alert
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.company.resend_invite }}</span>
-                                </v-tooltip>
-                                <!--                                <v-tooltip top>-->
-                                <!--                                    <template v-slot:activator="{ on, attrs }">-->
-                                <!--                                        <v-btn @click.native.stop="showUser(item)" icon v-bind="attrs" v-on="on">-->
-                                <!--                                            <v-icon-->
-                                <!--                                                small-->
-                                <!--                                            >-->
-                                <!--                                                mdi-pencil-->
-                                <!--                                            </v-icon>-->
-                                <!--                                        </v-btn>-->
-                                <!--                                    </template>-->
-                                <!--                                    <span>{{langMap.company.edit_contact}}</span>-->
-                                <!--                                </v-tooltip>-->
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            icon
-                                            @click.native.stop="removeEmployeeProcess(item)">
-                                            <v-icon
-                                                small
 
-                                            >
-                                                mdi-delete
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.company.delete_contact }}</span>
-                                </v-tooltip>
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            icon
-                                            @click.native.stop="showContactInfo(item)">
-                                            <v-icon
-                                                small
+                        <v-container fluid>
+                            <v-row dense>
+                                <v-col
+                                    v-for="clientEmployee in client.employees"
+                                    :key="clientEmployee.id"
+                                    :cols="clientEmployee.flex"
+                                    class="ma-2"
+                                    color="lightgrey"
 
-                                            >
-                                                mdi-account-switch-outline
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.individuals.contact_info }}</span>
-                                </v-tooltip>
-                            </template>
-                            <template v-slot:item.user_data="{ item }">
-                                <div v-if="item.employee.user_data"
-                                     class="text-xs-center">
-                                    <br v-if="item.description"/>
-                                    {{ item.employee.user_data.full_name }}
-                                    <p v-if="item.description" class="caption" style="color: darkgrey;">
-                                        {{ item.description }}</p>
-                                </div>
-                            </template>
-                        </v-data-table>
+                                >
+                                    <v-card
+                                        height="90"
+                                        min-width="150"
+                                        @click="showUser(clientEmployee)"
+                                    >
+                                        <v-card-text style="padding: 5px 10px ;">
+                                            <v-tooltip top>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <span
+                                                        v-on="on"
+                                                    >
+                                                    {{ clientEmployee.employee.user_data.full_name }}
+                                                    <p class="caption"
+                                                       style="
+                                                        color: darkgrey;
+                                                        margin: 0;
+                                                        width: 100px;
+                                                        text-overflow: ellipsis;
+                                                        overflow: hidden;
+                                                        white-space: nowrap;">
+                                                        {{
+                                                            clientEmployee.description ?
+                                                                clientEmployee.description :
+                                                                '&nbsp;'
+                                                        }}
+                                                    </p>
+                                                    </span>
+
+                                                </template>
+                                                <span>
+                                                    {{ langMap.company.user }}:
+                                                    {{ clientEmployee.employee.user_data.full_name }}
+                                                    <p
+                                                        v-if="clientEmployee.description"
+                                                        class="caption"
+                                                        style="color: darkgrey;">
+                                                        {{ clientEmployee.description }}
+                                                    </p>
+                                                    <br v-else>
+                                                    {{ langMap.main.roles }}:
+                                                    {{ clientEmployee.employee.role_names }}
+
+                                                </span>
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                        :disabled="!clientEmployee.employee.user_data.is_active" icon
+                                                        @click.native.stop="sendInvite(clientEmployee.employee)">
+                                                        <v-icon
+                                                            small
+                                                        >
+                                                            mdi-email-alert
+                                                        </v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>{{ langMap.company.resend_invite }}</span>
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                        icon
+                                                        @click.native.stop="removeEmployeeProcess(clientEmployee)">
+                                                        <v-icon
+                                                            small
+
+                                                        >
+                                                            mdi-delete
+                                                        </v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>{{ langMap.company.delete_contact }}</span>
+                                            </v-tooltip>
+                                            <v-tooltip top>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                        icon
+                                                        @click.native.stop="showContactInfo(clientEmployee)">
+                                                        <v-icon
+                                                            small
+
+                                                        >
+                                                            mdi-account-switch-outline
+                                                        </v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>{{ langMap.individuals.contact_info }}</span>
+                                            </v-tooltip>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                        <!--                        <v-data-table-->
+                        <!--                            :footer-props="footerProps"-->
+                        <!--                            :headers="headers"-->
+                        <!--                            :items="client.employees"-->
+                        <!--                            align="center"-->
+                        <!--                            class="elevation-1"-->
+                        <!--                            dense-->
+                        <!--                            item-key="id"-->
+                        <!--                            justify="center"-->
+                        <!--                            @click:row="showUser"-->
+                        <!--                        >-->
+                        <!--                            <template v-slot:item.actions="{ item }">-->
+                        <!--                                <v-tooltip top>-->
+                        <!--                                    <template v-slot:activator="{ on, attrs }">-->
+                        <!--                                        <v-btn v-bind="attrs"-->
+                        <!--                                               v-on="on"-->
+                        <!--                                               :disabled="!item.employee.user_data.is_active" icon-->
+                        <!--                                               @click.native.stop="sendInvite(item.employee)">-->
+                        <!--                                            <v-icon-->
+                        <!--                                                small-->
+                        <!--                                            >-->
+                        <!--                                                mdi-email-alert-->
+                        <!--                                            </v-icon>-->
+                        <!--                                        </v-btn>-->
+                        <!--                                    </template>-->
+                        <!--                                    <span>{{ langMap.company.resend_invite }}</span>-->
+                        <!--                                </v-tooltip>-->
+                        <!--                                &lt;!&ndash;                                <v-tooltip top>&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                    <template v-slot:activator="{ on, attrs }">&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                        <v-btn @click.native.stop="showUser(item)" icon v-bind="attrs" v-on="on">&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                            <v-icon&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                                small&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                            >&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                                mdi-pencil&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                            </v-icon>&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                        </v-btn>&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                    </template>&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                    <span>{{langMap.company.edit_contact}}</span>&ndash;&gt;-->
+                        <!--                                &lt;!&ndash;                                </v-tooltip>&ndash;&gt;-->
+                        <!--                                <v-tooltip top>-->
+                        <!--                                    <template v-slot:activator="{ on, attrs }">-->
+                        <!--                                        <v-btn-->
+                        <!--                                            v-bind="attrs"-->
+                        <!--                                            v-on="on"-->
+                        <!--                                            icon-->
+                        <!--                                            @click.native.stop="removeEmployeeProcess(item)">-->
+                        <!--                                            <v-icon-->
+                        <!--                                                small-->
+
+                        <!--                                            >-->
+                        <!--                                                mdi-delete-->
+                        <!--                                            </v-icon>-->
+                        <!--                                        </v-btn>-->
+                        <!--                                    </template>-->
+                        <!--                                    <span>{{ langMap.company.delete_contact }}</span>-->
+                        <!--                                </v-tooltip>-->
+                        <!--                                <v-tooltip top>-->
+                        <!--                                    <template v-slot:activator="{ on, attrs }">-->
+                        <!--                                        <v-btn-->
+                        <!--                                            v-bind="attrs"-->
+                        <!--                                            v-on="on"-->
+                        <!--                                            icon-->
+                        <!--                                            @click.native.stop="showContactInfo(item)">-->
+                        <!--                                            <v-icon-->
+                        <!--                                                small-->
+
+                        <!--                                            >-->
+                        <!--                                                mdi-account-switch-outline-->
+                        <!--                                            </v-icon>-->
+                        <!--                                        </v-btn>-->
+                        <!--                                    </template>-->
+                        <!--                                    <span>{{ langMap.individuals.contact_info }}</span>-->
+                        <!--                                </v-tooltip>-->
+                        <!--                            </template>-->
+                        <!--                            <template v-slot:item.user_data="{ item }">-->
+                        <!--                                <div v-if="item.employee.user_data"-->
+                        <!--                                     class="text-xs-center">-->
+                        <!--                                    {{ item.employee.user_data.full_name }}-->
+                        <!--                                    <p v-if="item.description" class="caption" style="color: darkgrey;">-->
+                        <!--                                        {{ item.description }}</p>-->
+                        <!--                                </div>-->
+                        <!--                            </template>-->
+                        <!--                        </v-data-table>-->
                         <template>
                             <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
                                 <v-card>
@@ -663,8 +772,8 @@
                                             <span>
                                                 <br>
                                                 <v-text-field
-                                                    :color="themeColor"
                                                     v-model="contactInfoForm.description"
+                                                    :color="themeColor"
                                                     :label="langMap.main.description"
                                                     :readonly="contactInfoEditBtn === false"
                                                     dense
@@ -713,12 +822,12 @@
                                     </v-row>
                                 </v-card-text>
                                 <v-card-actions>
-                                    <v-spacer> </v-spacer>
+                                    <v-spacer></v-spacer>
                                     <v-btn
                                         color="grey darken-1" text
                                         @click="contactInfoEditBtn = false; contactInfoModal = false"
                                     >
-                                        {{langMap.main.cancel}}
+                                        {{ langMap.main.cancel }}
                                     </v-btn>
                                     <v-btn
                                         color="red darken-1" text
@@ -727,16 +836,18 @@
                                         <v-icon small>
                                             mdi-delete
                                         </v-icon>
-                                        {{langMap.main.delete}}
+                                        {{ langMap.main.delete }}
                                     </v-btn>
 
                                     <v-btn color="green darken-1" text
                                            @click="editContactInfo"
                                     >
                                         <v-icon small>
-                                            {{contactInfoEditBtn === false ?
-                                            'mdi-pencil' :
-                                            ''}}
+                                            {{
+                                                contactInfoEditBtn === false ?
+                                                    'mdi-pencil' :
+                                                    ''
+                                            }}
                                         </v-icon>
 
                                         {{
@@ -833,7 +944,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{this.$store.state.lang.lang_map.individuals.new_customer}}
+                                    {{ this.$store.state.lang.lang_map.individuals.new_customer }}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>

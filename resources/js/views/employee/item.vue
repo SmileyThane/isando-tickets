@@ -717,9 +717,10 @@
                     <v-card-text>
                         {{userData.is_active === true ?
                         this.$store.state.lang.lang_map.main.give_access :
-                        this.$store.state.lang.lang_map.main.remove_access
+                        this.$store.state.lang.lang_map.individuals.unlink
                         }}
                         <v-select
+                            :readonly="userData.is_active === false"
                             class="mx-4"
                             v-model="primaryEmailId"
                             :color="themeColor"
