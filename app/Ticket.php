@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use App\TicketType;
 
 class Ticket extends Model
 {
@@ -20,9 +19,10 @@ class Ticket extends Model
         'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment',
         'ticket_type_id', 'description', 'name', 'contact_company_user_id', 'to_company_user_id', 'to_team_id',
         'to_product_id', 'priority_id', 'status_id', 'due_date', 'connection_details', 'access_details', 'availability',
-        'category_id', 'parent_id'
+        'category_id', 'parent_id', 'unifier_id', 'merged_at'
     ];
-    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered', 'replicated_to', 'ticket_type', 'created_at_time'];
+    protected $appends = ['number', 'from', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
+        'replicated_to', 'ticket_type', 'created_at_time', 'merge_info'];
     protected $hidden = ['to'];
 
     protected static function booted()
@@ -84,6 +84,16 @@ class Ticket extends Model
         $locale = Language::find(Auth::user()->language_id)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+    }
+
+    public function getMergedAtAttribute()
+    {
+        if ($this->attributes['merged_at']) {
+            $locale = Language::find(Auth::user()->language_id)->locale;
+            $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+            return Carbon::parse($this->attributes['merged_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+        }
+        return null;
     }
 
     public function getCreatedAtTimeAttribute()
@@ -167,6 +177,23 @@ class Ticket extends Model
     {
         return $this->hasMany(TicketMerge::class, 'parent_ticket_id', 'id')
             ->with('childTicketData');
+    }
+
+    public function getMergeInfoAttribute(): string
+    {
+        $childTickets = $this->childTickets()->get();
+        if (count($childTickets)) {
+            $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
+            $mergeCommentPrefix = $translationsArray->ticket->ticket_merge_comment_prefix;
+            foreach ($childTickets as $key => $ticket) {
+                $comma = $key !== count($childTickets) - 1 ? ', ' : '';
+                $mergeCommentPrefix .= $ticket->number . $comma;
+            }
+            $merged = $this->merged_at ? $translationsArray->main->on . $this->merged_at : '';
+            $unifier = $this->unifier_id ? $translationsArray->main->by . User::find($this->unifier_id)->full_name : '';
+            return $mergeCommentPrefix . $merged . $unifier;
+        }
+        return '';
     }
 
     public function childTickets(): HasMany
