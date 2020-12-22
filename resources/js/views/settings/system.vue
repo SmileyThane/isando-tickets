@@ -5,7 +5,7 @@
         </v-snackbar>
         <div class="row">
             <div class="col-md-6">
-                <v-card class="elevation-12">
+                <v-card class="elevation-12 without-bottom">
                     <v-toolbar :color="themeColor" dark dense flat>
                         <v-toolbar-title>{{ langMap.system_settings.display }}</v-toolbar-title>
                         <v-spacer></v-spacer>

@@ -12,7 +12,7 @@
                 {{ snackbarMessage }}
             </v-snackbar>
             <v-col class="col-md-6">
-                <v-card class="elevation-6">
+                <v-card class="elevation-6 without-bottom">
                     <v-toolbar
                         :color="themeColor"
                         dark
@@ -223,7 +223,7 @@
                 </v-spacer>
             </v-col>
             <v-col md="6">
-                <v-card class="elevation-6">
+                <v-card class="elevation-6 without-bottom">
                     <v-toolbar
                         :color="themeColor"
                         dark
