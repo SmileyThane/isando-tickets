@@ -502,18 +502,48 @@
                                 >
                                     <v-card
                                         height="90"
+                                        min-width="150"
                                         @click="showUser(clientEmployee)"
                                     >
-                                        <v-card-text style="padding: 5px 20px ;">
-                                            {{ clientEmployee.employee.user_data.full_name }}
-                                            <p class="caption"
-                                               style="color: darkgrey; margin: 0;">
-                                                {{
-                                                    clientEmployee.description ?
-                                                        clientEmployee.description :
-                                                        '&nbsp;'
-                                                }}
-                                            </p>
+                                        <v-card-text style="padding: 5px 10px ;">
+                                            <v-tooltip top>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <span
+                                                        v-on="on"
+                                                    >
+                                                    {{ clientEmployee.employee.user_data.full_name }}
+                                                    <p class="caption"
+                                                       style="
+                                                        color: darkgrey;
+                                                        margin: 0;
+                                                        width: 100px;
+                                                        text-overflow: ellipsis;
+                                                        overflow: hidden;
+                                                        white-space: nowrap;">
+                                                        {{
+                                                            clientEmployee.description ?
+                                                                clientEmployee.description :
+                                                                '&nbsp;'
+                                                        }}
+                                                    </p>
+                                                    </span>
+
+                                                </template>
+                                                <span>
+                                                    {{ langMap.company.user }}:
+                                                    {{ clientEmployee.employee.user_data.full_name }}
+                                                    <p
+                                                        v-if="clientEmployee.description"
+                                                        class="caption"
+                                                        style="color: darkgrey;">
+                                                        {{ clientEmployee.description }}
+                                                    </p>
+                                                    <br v-else>
+                                                    {{ langMap.main.roles }}:
+                                                    {{ clientEmployee.employee.role_names }}
+
+                                                </span>
+                                            </v-tooltip>
                                             <v-tooltip top>
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-btn
