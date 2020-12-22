@@ -8,6 +8,7 @@ import store from './store'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import 'tiptap-vuetify/dist/main.css'
 import 'vuetify/dist/vuetify.min.css'
+import '../css/custom.css'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
