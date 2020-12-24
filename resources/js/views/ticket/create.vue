@@ -50,6 +50,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <v-select
+
                                             :label="langMap.ticket.company_from"
                                             :color="themeColor"
                                             :item-color="themeColor"
