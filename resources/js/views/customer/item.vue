@@ -152,8 +152,10 @@
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">
-                                                        {{ item.street }}
-                                                        {{ item.postal_code }} {{ item.city }}
+                                                        <span v-if="item.street">{{item.street}}, </span>
+                                                        <span v-if="item.street2">{{item.street2}}, </span>
+                                                        <span v-if="item.street3">{{item.street3}}</span>
+                                                        <br>{{item.postal_code}}&nbsp;&nbsp;{{item.city}},
                                                         <span v-if="item.country">{{ localized(item.country) }}</span>
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
@@ -299,15 +301,33 @@
                                                 <v-form>
                                                     <div class="row">
                                                         <v-col class="pa-1" cols="md-12">
-                                                            <v-textarea
+                                                            <v-text-field
                                                                 v-model="addressForm.address.street"
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                :label="langMap.main.street"
+                                                                :label="langMap.main.address_line"
                                                                 dense
                                                                 no-resize
                                                                 rows="3"
-                                                            ></v-textarea>
+                                                            ></v-text-field>
+                                                            <v-text-field
+                                                                v-model="addressForm.address.street2"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
+                                                                :label="langMap.main.address_line"
+                                                                dense
+                                                                no-resize
+                                                                rows="3"
+                                                            ></v-text-field>
+                                                            <v-text-field
+                                                                v-model="addressForm.address.street3"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
+                                                                :label="langMap.main.address_line"
+                                                                dense
+                                                                no-resize
+                                                                rows="3"
+                                                            ></v-text-field>
                                                         </v-col>
                                                         <v-col class="pa-1" cols="md-6">
                                                             <v-text-field
@@ -1196,15 +1216,33 @@
                         <v-container>
                             <v-row>
                                 <v-col class="pa-1" cols="md-12">
-                                    <v-textarea
+                                    <v-text-field
                                         v-model="addressForm.address.street"
                                         :color="themeColor"
                                         :item-color="themeColor"
-                                        :label="langMap.main.street"
+                                        :label="langMap.main.address_line"
                                         dense
                                         no-resize
                                         rows="3"
-                                    ></v-textarea>
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="addressForm.address.street2"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        :label="langMap.main.address_line"
+                                        dense
+                                        no-resize
+                                        rows="3"
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="addressForm.address.street3"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        :label="langMap.main.address_line"
+                                        dense
+                                        no-resize
+                                        rows="3"
+                                    ></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
                                     <v-text-field
@@ -1438,6 +1476,8 @@ export default {
                 entity_type: 'App\\Client',
                 address: {
                     street: '',
+                    street2: '',
+                    street3: '',
                     postal_code: '',
                     city: '',
                     country_id: ''
@@ -1780,6 +1820,8 @@ export default {
                 if (response.success === true) {
                     this.addressForm.id = '';
                     this.addressForm.address.street = '';
+                    this.addressForm.address.street2 = '';
+                    this.addressForm.address.street3 = '';
                     this.addressForm.address.postal_code = '';
                     this.addressForm.address.city = '';
                     this.addressForm.address.country_id = '';
@@ -1921,6 +1963,8 @@ export default {
 
             this.addressForm.id = item.id;
             this.addressForm.address.street = item.street;
+            this.addressForm.address.street2 = item.street2;
+            this.addressForm.address.street3 = item.street3;
             this.addressForm.address.postal_code = item.postal_code;
             this.addressForm.address.city = item.city;
             this.addressForm.address.country_id = item.country ? item.country.id : 0;
