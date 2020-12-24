@@ -1153,9 +1153,9 @@
                                                             color="red"
                                                             small
                                                             style="float: right"
-                                                            @click="removeMerge(item.id)"
+                                                            @click="mergeTicketForm.parent_ticket_id === item.id ? null: removeMerge(item.id)"
                                                     >
-                                                        mdi-cancel
+                                                        {{mergeTicketForm.parent_ticket_id === item.id ? 'mdi-medal-outline' : 'mdi-cancel' }}
                                                     </v-icon>
                                                 </template>
                                                 <span>{{ langMap.main.cancel }}</span>
@@ -1238,6 +1238,7 @@
                                                 <v-tooltip top>
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-icon v-on="on"
+                                                                :disabled="!mergeTicketForm.child_ticket_id.includes(item.id)"
                                                                 :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeColor"
                                                                 dark
                                                                 style="float: right"
@@ -1829,11 +1830,18 @@ export default {
             }
         },
         mergeTicket() {
+            const index = this.mergeTicketForm.child_ticket_id.indexOf(this.mergeTicketForm.parent_ticket_id);
+            if (index > -1) {
+                this.mergeTicketForm.child_ticket_id.splice(index, 1);
+            }
             axios.post('/api/merge/ticket', this.mergeTicketForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getTickets()
                     this.getTicket()
+                    this.mergeTicketForm.child_ticket_id = []
+                    this.mergeTicketForm.parent_ticket_id = null
+                    this.mergeTicketForm.merge_comment = null
                 } else {
                     console.log('error')
                 }
