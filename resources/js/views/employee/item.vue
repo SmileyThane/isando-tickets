@@ -12,7 +12,7 @@
                 {{ snackbarMessage }}
             </v-snackbar>
             <v-col class="col-md-6">
-                <v-card class="elevation-6">
+                <v-card class="elevation-6 without-bottom">
                     <v-toolbar
                         :color="themeColor"
                         dark
@@ -22,6 +22,9 @@
                         <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateUser">
+                            {{this.$store.state.lang.lang_map.main.cancel}}
+                        </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">
                             {{this.$store.state.lang.lang_map.main.update}}
                         </v-btn>
@@ -220,7 +223,7 @@
                 </v-spacer>
             </v-col>
             <v-col md="6">
-                <v-card class="elevation-6">
+                <v-card class="elevation-6 without-bottom">
                     <v-toolbar
                         :color="themeColor"
                         dark
@@ -1131,6 +1134,10 @@ export default {
                     this.actionColor = 'error';
                     this.snackbar = true;                }
             });
+        },
+        cancelUpdateUser() {
+            this.getUser();
+            this.enableToEdit = false;
         },
         updateStatus() {
             this.snackbar = false;

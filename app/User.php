@@ -125,7 +125,7 @@ class User extends Authenticatable
 
     public function getContactEmailAttribute()
     {
-        return $email = $this->emails()->with('type')->first();
+        return $email = $this->emails()->where('email_type', 1)->with('type')->first();
     }
 
     public function emailSignatures(): MorphMany
