@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class Company extends Model
 {
@@ -24,7 +25,8 @@ class Company extends Model
 
     public function employees(): HasMany
     {
-        return $this->hasMany(CompanyUser::class, 'company_id', 'id');
+        return $this->hasMany(CompanyUser::class, 'company_id', 'id')
+            ->has('userData');
     }
 
     public function products(): HasMany
