@@ -1155,7 +1155,9 @@
                                                             style="float: right"
                                                             @click="mergeTicketForm.parent_ticket_id === item.id ? null: removeMerge(item.id)"
                                                     >
-                                                        {{mergeTicketForm.parent_ticket_id === item.id ? 'mdi-medal-outline' : 'mdi-cancel' }}
+                                                        {{
+                                                            mergeTicketForm.parent_ticket_id === item.id ? 'mdi-medal-outline' : 'mdi-cancel'
+                                                        }}
                                                     </v-icon>
                                                 </template>
                                                 <span>{{ langMap.main.cancel }}</span>
@@ -1238,8 +1240,8 @@
                                                 <v-tooltip top>
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-icon v-on="on"
-                                                                :disabled="!mergeTicketForm.child_ticket_id.includes(item.id)"
                                                                 :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeColor"
+                                                                :disabled="!mergeTicketForm.child_ticket_id.includes(item.id)"
                                                                 dark
                                                                 style="float: right"
                                                                 @click="mergeTicketForm.parent_ticket_id = item.id"
@@ -1616,11 +1618,23 @@ export default {
             axios.get(`/api/ticket?search_param=${this.searchLabel}&search=${this.ticketsSearch}&minified=1`)
                 .then(response => {
                     response = response.data
-                    if (this.ticketsSearch === '') {
-                        this.mergeParentTickets = response.data.data
-                        this.linkParentTickets = response.data.data
+                    let result = response.data.data
+                    if (result.length > 1) {
+                        let elementPos = result.map(function (x) {
+                            return x.id;
+                        }).indexOf(this.ticket.id);
+                        if (elementPos !== -1) {
+                            let temp = result[0]
+                            result[0] = result[elementPos]
+                            result[elementPos] = temp
+                        }
                     }
-                    this.tickets = response.data.data
+                    console.log(result);
+                    if (this.ticketsSearch === '') {
+                        this.mergeParentTickets = result
+                        this.linkParentTickets = result
+                    }
+                    this.tickets = result
                 });
         },
         getSuppliers() {
