@@ -88,11 +88,11 @@
                                         <v-autocomplete
                                             :color="themeColor"
                                             :item-color="themeColor"
-                                            item-text="user_data.email"
+                                            item-text="user_data.full_name"
                                             item-value="id"
                                             v-model="ticketForm.contact_company_user_id"
                                             :items="employees"
-                                            :label="langMap.ticket.contact_email"
+                                            :label="langMap.ticket.contact_name"
                                         ></v-autocomplete>
                                     </v-col>
                                     <v-col cols="12">
