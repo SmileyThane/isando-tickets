@@ -962,12 +962,12 @@
                             </v-expansion-panel>
                         </v-expansion-panels>
                         <v-spacer>
-
+                            &nbsp;
                         </v-spacer>
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{ this.$store.state.lang.lang_map.individuals.new_customer }}
+                                    {{ this.$store.state.lang.lang_map.individuals.new_employee }}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -1586,7 +1586,7 @@ export default {
 
         },
         getEmployees() {
-            axios.get('/api/employee').then(
+            axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
                 response => {
                     this.loading = false
                     response = response.data
