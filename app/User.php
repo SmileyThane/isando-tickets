@@ -125,7 +125,7 @@ class User extends Authenticatable
 
     public function getContactEmailAttribute()
     {
-        return $email = $this->emails()->with('type')->first();
+        return $email = $this->emails()->where('email_type', 1)->with('type')->first();
     }
 
     public function emailSignatures(): MorphMany
@@ -136,5 +136,10 @@ class User extends Authenticatable
     public function notificationTemplates(): MorphMany
     {
         return $this->morphMany(NotificationTemplate::class, 'entity');
+    }
+
+    public function language(): HasOne
+    {
+        return $this->hasOne(Language::class, 'language_id', 'id');
     }
 }

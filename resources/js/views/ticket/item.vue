@@ -571,7 +571,25 @@
                 >
 
                     <v-card-text>
-                        <p v-text="ticket.merge_info"></p>
+                        <div v-if="ticket.child_tickets.length > 0">
+                            <v-card
+                                class="mx-auto"
+                                dense
+                                outlined
+                            >
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <span class="text-left" style="font-weight: bold;">
+                                            {{ ticket.merge_info }}
+                                        </span>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-card>
+                            <v-spacer>
+                                &nbsp;
+                            </v-spacer>
+                        </div>
+
                         <div v-for="answer in ticket.answers"
                              :key="answer.id"
                         >
@@ -983,7 +1001,7 @@
                         <v-expansion-panel-content>
                             <v-text-field v-model="ticketsSearch" :color="themeColor" :label="langMap.main.search"
                                           @input="getTickets">
-                                <template slot="append">
+                                <template slot="prepend">
                                     <v-menu
                                         bottom
                                         rounded
@@ -1153,9 +1171,11 @@
                                                             color="red"
                                                             small
                                                             style="float: right"
-                                                            @click="removeMerge(item.id)"
+                                                            @click="mergeTicketForm.parent_ticket_id === item.id ? null: removeMerge(item.id)"
                                                     >
-                                                        mdi-cancel
+                                                        {{
+                                                            mergeTicketForm.parent_ticket_id === item.id ? 'mdi-medal-outline' : 'mdi-cancel'
+                                                        }}
                                                     </v-icon>
                                                 </template>
                                                 <span>{{ langMap.main.cancel }}</span>
@@ -1168,7 +1188,7 @@
                             </v-list>
                             <v-text-field v-model="ticketsSearch" :color="themeColor" :label="langMap.main.search"
                                           @input="getTickets">
-                                <template slot="append">
+                                <template slot="prepend">
                                     <v-menu
                                         bottom
                                         rounded
@@ -1239,6 +1259,7 @@
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-icon v-on="on"
                                                                 :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeColor"
+                                                                :disabled="!mergeTicketForm.child_ticket_id.includes(item.id)"
                                                                 dark
                                                                 style="float: right"
                                                                 @click="mergeTicketForm.parent_ticket_id = item.id"
@@ -1615,11 +1636,24 @@ export default {
             axios.get(`/api/ticket?search_param=${this.searchLabel}&search=${this.ticketsSearch}&minified=1`)
                 .then(response => {
                     response = response.data
-                    if (this.ticketsSearch === '') {
-                        this.mergeParentTickets = response.data.data
-                        this.linkParentTickets = response.data.data
+                    let result = response.data.data
+                    if (result.length > 1) {
+                        let elementPos = result.map(function (x) {
+                            return x.id;
+                        }).indexOf(this.ticket.id);
+                        if (elementPos !== -1) {
+                            let temp = result[0]
+                            result[0] = result[elementPos]
+                            result[elementPos] = temp
+                        }
                     }
-                    this.tickets = response.data.data
+                    console.log(result);
+                    if (this.ticketsSearch === '') {
+                        this.mergeParentTickets = result
+                        this.linkParentTickets = result
+                    }
+                    this.mergeTicketForm.child_ticket_id = [this.ticket.id]
+                    this.tickets = result
                 });
         },
         getSuppliers() {
@@ -1829,11 +1863,18 @@ export default {
             }
         },
         mergeTicket() {
+            const index = this.mergeTicketForm.child_ticket_id.indexOf(this.mergeTicketForm.parent_ticket_id);
+            if (index > -1) {
+                this.mergeTicketForm.child_ticket_id.splice(index, 1);
+            }
             axios.post('/api/merge/ticket', this.mergeTicketForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getTickets()
                     this.getTicket()
+                    this.mergeTicketForm.child_ticket_id = []
+                    this.mergeTicketForm.parent_ticket_id = null
+                    this.mergeTicketForm.merge_comment = null
                 } else {
                     console.log('error')
                 }

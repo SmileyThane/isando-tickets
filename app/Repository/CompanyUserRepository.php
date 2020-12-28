@@ -62,7 +62,7 @@ class CompanyUserRepository
             );
         }
 
-        $companyUsers = $companyUsers->with(['assignedToClients.clients', 'userData'])->get();
+        $companyUsers = $companyUsers->with(['assignedToClients.clients', 'userData.emails.type'])->get();
 
         $orderFunc = function ($item, $key) use ($orderBy) {
             switch ($orderBy) {
@@ -149,7 +149,7 @@ class CompanyUserRepository
                 if ($isNew === true) {
                     try {
                         @$user->notify(
-                            new RegularInviteEmail($companyUser->companyData->name, $request['name'], $request['role_id'], $request['email'], $request['password'])
+                            new RegularInviteEmail($companyUser->companyData->name, $user->full_name, $request['role_id'], $request['email'], $request['password'], $user->language->short_code)
                         );
                     } catch (\Throwable $throwable) {
                         Log::error($throwable);

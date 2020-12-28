@@ -20,6 +20,8 @@ class AddressRepository
                 'entity_type' => $entityType,
                 'address_type' => $addressType,
                 'street' => $addressValue['street'],
+                'street2' => $addressValue['street2'],
+                'street3' => $addressValue['street3'],
                 'city' => $addressValue['city'],
                 'postal_code' => $addressValue['postal_code'],
                 'country_id' => $addressValue['country_id']
@@ -33,6 +35,8 @@ class AddressRepository
         $address->update([
             'address_type' => $addressType,
             'street' => $addressValue['street'],
+            'street2' => $addressValue['street2'],
+            'street3' => $addressValue['street3'],
             'city' => $addressValue['city'],
             'postal_code' => $addressValue['postal_code'],
             'country_id' => $addressValue['country_id']

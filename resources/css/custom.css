@@ -1,0 +1,21 @@
+/*
+ Custom styles
+*/
+
+.v-input--is-readonly.theme--light.v-text-field>.v-input__control>.v-input__slot:before {
+    border: none;
+}
+
+.without-bottom .v-card__subtitle, .without-bottom .v-card__text, .without-bottom .v-card__title {
+    padding-bottom: 4px;
+}
+
+.v-text-field.v-input--is-readonly > .v-input__control > .v-input__slot * {
+    cursor: default;
+}
+.v-text-field.v-input--is-readonly>.v-input__control>.v-input__slot:after {
+    border: none;
+}
+.v-text-field.v-input--is-readonly>.v-input__control>.v-input__slot .v-input__append-inner {
+    display: none;
+}

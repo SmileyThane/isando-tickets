@@ -20,6 +20,9 @@
                         <v-toolbar-title>{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateClient">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateClient">
                             {{ langMap.main.update }}
                         </v-btn>
@@ -149,8 +152,10 @@
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">
-                                                        {{ item.street }}
-                                                        {{ item.postal_code }} {{ item.city }}
+                                                        <span v-if="item.street">{{item.street}}, </span>
+                                                        <span v-if="item.street2">{{item.street2}}, </span>
+                                                        <span v-if="item.street3">{{item.street3}}</span>
+                                                        <br>{{item.postal_code}}&nbsp;&nbsp;{{item.city}},
                                                         <span v-if="item.country">{{ localized(item.country) }}</span>
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
@@ -296,15 +301,33 @@
                                                 <v-form>
                                                     <div class="row">
                                                         <v-col class="pa-1" cols="md-12">
-                                                            <v-textarea
+                                                            <v-text-field
                                                                 v-model="addressForm.address.street"
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                :label="langMap.main.street"
+                                                                :label="langMap.main.address_line"
                                                                 dense
                                                                 no-resize
                                                                 rows="3"
-                                                            ></v-textarea>
+                                                            ></v-text-field>
+                                                            <v-text-field
+                                                                v-model="addressForm.address.street2"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
+                                                                :label="langMap.main.address_line"
+                                                                dense
+                                                                no-resize
+                                                                rows="3"
+                                                            ></v-text-field>
+                                                            <v-text-field
+                                                                v-model="addressForm.address.street3"
+                                                                :color="themeColor"
+                                                                :item-color="themeColor"
+                                                                :label="langMap.main.address_line"
+                                                                dense
+                                                                no-resize
+                                                                rows="3"
+                                                            ></v-text-field>
                                                         </v-col>
                                                         <v-col class="pa-1" cols="md-6">
                                                             <v-text-field
@@ -503,6 +526,7 @@
                                     <v-card
                                         height="90"
                                         min-width="150"
+                                        max-width="150"
                                         @click="showUser(clientEmployee)"
                                     >
                                         <v-card-text style="padding: 5px 10px ;">
@@ -939,12 +963,12 @@
                             </v-expansion-panel>
                         </v-expansion-panels>
                         <v-spacer>
-
+                            &nbsp;
                         </v-spacer>
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{ this.$store.state.lang.lang_map.individuals.new_customer }}
+                                    {{ this.$store.state.lang.lang_map.individuals.new_employee }}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -1193,15 +1217,33 @@
                         <v-container>
                             <v-row>
                                 <v-col class="pa-1" cols="md-12">
-                                    <v-textarea
+                                    <v-text-field
                                         v-model="addressForm.address.street"
                                         :color="themeColor"
                                         :item-color="themeColor"
-                                        :label="langMap.main.street"
+                                        :label="langMap.main.address_line"
                                         dense
                                         no-resize
                                         rows="3"
-                                    ></v-textarea>
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="addressForm.address.street2"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        :label="langMap.main.address_line"
+                                        dense
+                                        no-resize
+                                        rows="3"
+                                    ></v-text-field>
+                                    <v-text-field
+                                        v-model="addressForm.address.street3"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        :label="langMap.main.address_line"
+                                        dense
+                                        no-resize
+                                        rows="3"
+                                    ></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
                                     <v-text-field
@@ -1435,6 +1477,8 @@ export default {
                 entity_type: 'App\\Client',
                 address: {
                     street: '',
+                    street2: '',
+                    street3: '',
                     postal_code: '',
                     city: '',
                     country_id: ''
@@ -1543,7 +1587,7 @@ export default {
 
         },
         getEmployees() {
-            axios.get('/api/employee').then(
+            axios.get('/api/employee?sort_by=user_data.name&sort_val=false').then(
                 response => {
                     this.loading = false
                     response = response.data
@@ -1602,6 +1646,10 @@ export default {
                 }
 
             });
+        },
+        cancelUpdateClient() {
+            this.getClient();
+            this.enableToEdit = false;
         },
         getPhoneTypes() {
             axios.get(`/api/phone_types`).then(response => {
@@ -1773,6 +1821,8 @@ export default {
                 if (response.success === true) {
                     this.addressForm.id = '';
                     this.addressForm.address.street = '';
+                    this.addressForm.address.street2 = '';
+                    this.addressForm.address.street3 = '';
                     this.addressForm.address.postal_code = '';
                     this.addressForm.address.city = '';
                     this.addressForm.address.country_id = '';
@@ -1914,6 +1964,8 @@ export default {
 
             this.addressForm.id = item.id;
             this.addressForm.address.street = item.street;
+            this.addressForm.address.street2 = item.street2;
+            this.addressForm.address.street3 = item.street3;
             this.addressForm.address.postal_code = item.postal_code;
             this.addressForm.address.city = item.city;
             this.addressForm.address.country_id = item.country ? item.country.id : 0;

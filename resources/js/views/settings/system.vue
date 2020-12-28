@@ -5,11 +5,14 @@
         </v-snackbar>
         <div class="row">
             <div class="col-md-6">
-                <v-card class="elevation-12">
+                <v-card class="elevation-12 without-bottom">
                     <v-toolbar :color="themeColor" dark dense flat>
                         <v-toolbar-title>{{ langMap.system_settings.display }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateCompanySettings">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompanySettings">
                             {{ langMap.main.update }}
                         </v-btn>
@@ -92,7 +95,28 @@
                         <v-spacer>&nbsp;</v-spacer>
 
                         <v-form>
-
+                            <v-row>
+                                <v-col class="col-md-6">
+                                    <v-label>{{langMap.system_settings.company_theme_color}}</v-label>
+                                    <v-color-picker
+                                        dot-size="25"
+                                        mode="hexa"
+                                        v-model="companySettings.theme_color"
+                                        :disabled="!enableToEdit"
+                                    ></v-color-picker>
+                                </v-col>
+                                <v-col class="col-md-6">
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        :readonly="!enableToEdit"
+                                        :label="langMap.system_settings.override_user_theme_color"
+                                        :value="true"
+                                        v-model="companySettings.override_user_theme"
+                                    >
+                                    </v-checkbox>
+                                    <p>{{ langMap.system_settings.override_user_theme_color_hint }}</p>
+                                </v-col>
+                            </v-row>
                         </v-form>
 
                         <v-spacer>&nbsp;</v-spacer>
@@ -1484,6 +1508,7 @@ export default {
             axios.post('/api/main_company_settings', this.companySettings).then(response => {
                 response = response.data;
                 if (response.success === true) {
+                    localStorage.removeItem('themeColor');
                     window.location.reload()
                 } else {
                     this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
@@ -1493,6 +1518,11 @@ export default {
                 }
                 return true;
             });
+        },
+        cancelUpdateCompanySettings() {
+            this.getCompany();
+            this.getCompanySettings();
+            this.enableToEdit = false;
         },
         getTimezones() {
             axios.get(`/api/time_zones`).then(response => {
