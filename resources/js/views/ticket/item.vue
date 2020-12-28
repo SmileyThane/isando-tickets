@@ -571,7 +571,25 @@
                 >
 
                     <v-card-text>
-                        <p v-text="ticket.merge_info"></p>
+                        <div v-if="ticket.child_tickets.length > 0">
+                            <v-card
+                                class="mx-auto"
+                                dense
+                                outlined
+                            >
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <span class="text-left" style="font-weight: bold;">
+                                            {{ ticket.merge_info }}
+                                        </span>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-card>
+                            <v-spacer>
+                                &nbsp;
+                            </v-spacer>
+                        </div>
+
                         <div v-for="answer in ticket.answers"
                              :key="answer.id"
                         >
