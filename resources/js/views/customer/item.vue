@@ -526,6 +526,7 @@
                                     <v-card
                                         height="90"
                                         min-width="150"
+                                        max-width="150"
                                         @click="showUser(clientEmployee)"
                                     >
                                         <v-card-text style="padding: 5px 10px ;">
