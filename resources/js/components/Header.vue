@@ -143,6 +143,7 @@
             logout(e) {
                 e.preventDefault()
                 localStorage.removeItem('auth_token')
+                localStorage.removeItem('themeColor')
                 window.open('/login', '_self')
             },
             selectSearchCategory(item) {
