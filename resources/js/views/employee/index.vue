@@ -146,14 +146,16 @@
                                     {{ item.user_data.id }}
                                 </div>
                             </template>
-                            <template v-slot:item.user_data.email="{item}">
-                                <span v-if="item.user_data.contact_email && item.user_data.contact_email.email">
-                                    <v-icon v-if="item.user_data.contact_email.type"
-                                            :title="localized(item.user_data.contact_email.type)" dense
+                            <template v-slot:item.user_data.emails="{item}">
+                                <span v-if="item.user_data.emails.length > 0" v-for="email in item.user_data.emails">
+                                    <v-icon v-if="email.type"
+                                            :title="localized(email.type)" dense
                                             x-small
-                                            v-text="item.user_data.contact_email.type.icon"></v-icon>
-                                    {{ item.user_data.contact_email.email }}
+                                            v-text="email.type.icon"></v-icon>
+                                    {{ email.email }}
+                                    <br>
                                 </span>
+
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.user_data.is_active="{ item }">
@@ -252,7 +254,7 @@ export default {
                 },
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'user_data.name'},
                 {text: `${this.$store.state.lang.lang_map.main.last_name}`, value: 'user_data.surname'},
-                {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'user_data.email'},
+                {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'user_data.emails'},
                 {
                     text: `${this.$store.state.lang.lang_map.individuals.is_active}`,
                     value: 'user_data.is_active'
