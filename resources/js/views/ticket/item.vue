@@ -1634,6 +1634,7 @@ export default {
                         this.mergeParentTickets = result
                         this.linkParentTickets = result
                     }
+                    this.mergeTicketForm.child_ticket_id = [this.ticket.id]
                     this.tickets = result
                 });
         },
