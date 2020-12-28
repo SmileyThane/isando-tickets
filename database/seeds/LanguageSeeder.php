@@ -646,7 +646,7 @@ class LanguageSeeder extends Seeder
   "contact_info": "Zusätzliche Infos",
   "assigned_companies": "Kontakte",
   "new_customer": "Kontakt hinzufügen",
-  "new_employee": "Mitarbeiter hinzufügen"
+  "new_employee": "Mitarbeiter hinzufügen",
   "update_link": "Link aktualisieren",
   "is_active": "Systemzugriff",
   "unlink": "Sind Sie sicher, dass Sie den Link löschen wollen?",
