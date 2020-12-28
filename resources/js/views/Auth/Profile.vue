@@ -20,6 +20,9 @@
                         <v-toolbar-title>{{this.$store.state.lang.lang_map.main.profile}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="cancelUpdateUser">
+                            {{this.$store.state.lang.lang_map.main.cancel}}
+                        </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">
                             {{this.$store.state.lang.lang_map.main.update}}
                         </v-btn>
@@ -635,6 +638,9 @@
                         <v-toolbar-title>{{langMap.profile.user_theme_color}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="cancelUpdateUserSettings">
+                            {{this.$store.state.lang.lang_map.main.cancel}}
+                        </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUserSettings">
                             {{this.langMap.main.update}}
                         </v-btn>
@@ -1121,6 +1127,10 @@
                     }
                 });
             },
+            cancelUpdateUser() {
+                this.enableToEdit = false;
+                this.getUser();
+            },
             getPhoneTypes() {
                 axios.get(`/api/phone_types`).then(response => {
                     response = response.data
@@ -1249,6 +1259,27 @@
                     }
                 });
             },
+            getUserSettings() {
+                this.snackbar = false;
+
+                axios.get('/api/user/settings').then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        if (this.companySettings.override_user_theme !== true) {
+                            this.themeColor = response.data.theme_color;
+                            this.$store.state.themeColor = response.data.theme_color;
+                            localStorage.themeColor = response.data.theme_color;
+                            EventBus.$emit('update-theme-color', response.data.theme_color);
+                        }
+                        this.enableToEdit = false;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                    return true;
+                });
+            },
             updateUserSettings() {
                 this.snackbar = false;
 
@@ -1270,6 +1301,14 @@
                     }
                     return true;
                 });
+            },
+            cancelUpdateUserSettings() {
+                this.enableToEdit = false;
+                this.getUser();
+                this.getCompanySettings();
+                if (!this.companySettings.override_user_theme) {
+                    this.getUserSettings();
+                }
             },
             getCompanySettings() {
                 axios.get(`/api/main_company_settings`).then(response => {
