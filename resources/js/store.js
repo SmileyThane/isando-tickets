@@ -60,6 +60,10 @@ export default new Vuex.Store({
             return new Promise((resolve, reject) => {
                 let override = false;
                 let color = '';
+                if (localStorage.themeColor) {
+                    commit('setThemeColor', color);
+                    resolve();
+                }
                 axios.get('/api/main_company_settings').then(response => {
                     response = response.data;
                     if (response.success === true && response.data.theme_color) {

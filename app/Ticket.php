@@ -194,7 +194,7 @@ class Ticket extends Model
         $childTickets = $this->childTickets()->get();
         if (count($childTickets)) {
             $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
-            $mergeCommentPrefix = $translationsArray->ticket->ticket_merge_comment_prefix;
+            $mergeCommentPrefix = $translationsArray->ticket->m;
             foreach ($childTickets as $key => $ticket) {
                 $comma = $key !== count($childTickets) - 1 ? ', ' : '';
                 $mergeCommentPrefix .= $ticket->number . $comma;
