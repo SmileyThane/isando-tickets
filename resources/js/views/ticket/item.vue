@@ -983,7 +983,7 @@
                         <v-expansion-panel-content>
                             <v-text-field v-model="ticketsSearch" :color="themeColor" :label="langMap.main.search"
                                           @input="getTickets">
-                                <template slot="append">
+                                <template slot="prepend">
                                     <v-menu
                                         bottom
                                         rounded
@@ -1170,7 +1170,7 @@
                             </v-list>
                             <v-text-field v-model="ticketsSearch" :color="themeColor" :label="langMap.main.search"
                                           @input="getTickets">
-                                <template slot="append">
+                                <template slot="prepend">
                                     <v-menu
                                         bottom
                                         rounded
