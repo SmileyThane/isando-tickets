@@ -62,7 +62,7 @@ class CompanyUserRepository
             );
         }
 
-        $companyUsers = $companyUsers->with(['assignedToClients.clients', 'userData'])->get();
+        $companyUsers = $companyUsers->with(['assignedToClients.clients', 'userData.emails.type'])->get();
 
         $orderFunc = function ($item, $key) use ($orderBy) {
             switch ($orderBy) {
