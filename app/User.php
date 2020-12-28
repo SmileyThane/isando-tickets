@@ -137,4 +137,9 @@ class User extends Authenticatable
     {
         return $this->morphMany(NotificationTemplate::class, 'entity');
     }
+
+    public function language(): HasOne
+    {
+        return $this->hasOne(Language::class, 'language_id', 'id');
+    }
 }
