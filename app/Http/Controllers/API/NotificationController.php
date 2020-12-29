@@ -48,15 +48,19 @@ class NotificationController extends Controller
     public function send(Request $request)
     {
         $attachments = [];
+        $attachmentNames = [];
         foreach ($request->files as $file) {
             $attachments[] = [
                 'data' => $file->get(),
                 'name' => $file->getClientOriginalName()
             ];
+            $attachmentNames[] = $file->getClientOriginalName();
         }
 
-        Mail::send(new Notification($request['recipients'], $request['subject'], $request['body'], $attachments));
-        return self::showResponse(true);
+        $notification = new Notification($request['recipients'], $request['subject'], $request['body'], $attachments);
+      //  Mail::send($notification);
+        $history = $this->notificationRepo->addHistory($request['subject'], $request['body'], $request['notification_type'], $request['priority'], $notification->bcc, $attachmentNames);
+        return self::showResponse(true, $history);
     }
 
     public function getTypes()
@@ -79,5 +83,15 @@ class NotificationController extends Controller
     public function deleteType($id)
     {
         return self::showResponse($this->notificationRepo->deleteType($id));
+    }
+
+    public function history(Request $request)
+    {
+        return self::showResponse(true, $this->notificationRepo->getHistoryInCompanyContext($request));
+    }
+
+    public function historyDetails($id)
+    {
+        return self::showResponse(true, $this->notificationRepo->findHistory($id));
     }
 }

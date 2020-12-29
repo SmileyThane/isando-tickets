@@ -787,7 +787,6 @@
 
 <script>
 import EventBus from '../../components/EventBus';
-import moment from 'moment';
 
 export default {
     data() {
@@ -1534,7 +1533,7 @@ export default {
         },
         updateTicketNumber() {
             this.ticketNumber = this.ticketNumberFormat.prefix.toLocaleUpperCase() +
-                this.ticketNumberFormat.delimiter1 + moment().format(this.ticketNumberFormat.date) +
+                this.ticketNumberFormat.delimiter1 + this.moment().format(this.ticketNumberFormat.date) +
                 this.ticketNumberFormat.delimiter2 + '1'.padStart(this.ticketNumberFormat.suffix.length, '0');
         }
     }

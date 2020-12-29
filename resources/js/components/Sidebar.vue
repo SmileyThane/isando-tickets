@@ -182,6 +182,24 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+            </v-list-group>
+        </v-list>
+        <v-divider></v-divider>
+        <v-list dense>
+            <v-list-group
+                :style="'background-color: ' + themeColor + ';'"
+                :value="sidebarGroups"
+                color="white"
+                multiple
+                prepend-icon="mdi-email-alert-outline"
+            >
+                <template
+                    v-slot:activator
+                >
+                    <v-list-item-content>
+                        <v-list-item-title>{{notifications}}</v-list-item-title>
+                    </v-list-item-content>
+                </template>
                 <v-list-item
                     :color="themeColor" link
                     style="background-color:white;"
@@ -192,6 +210,19 @@
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.notify_customers}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item
+                    :color="themeColor" link
+                    style="background-color:white;"
+                    to="/notify_history"
+                >
+                    <v-list-item-action>
+                        <v-icon>mdi-history</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.notifications_history}}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -308,6 +339,7 @@
                 ticket: '',
                 customers: '',
                 settings: '',
+                notifications: '',
                 sidebarGroups: [],
                 themeColor: this.$store.state.themeColor
             }
@@ -321,20 +353,18 @@
             },
             $route(to, from) {
                 this.changeAppTitle();
-            },
-            ticket: function () {
-                this.ticket = this.$store.state.lang.lang_map.sidebar.ticket
-                this.customers = this.$store.state.lang.lang_map.sidebar.customers
-                this.settings = this.$store.state.lang.lang_map.sidebar.settings
             }
         },
         mounted() {
             this.getCompanyName();
             this.getCompanyLogo();
             this.getCompanySettings();
+
             this.ticket = this.$store.state.lang.lang_map.sidebar.ticket;
-            this.customers = this.$store.state.lang.lang_map.sidebar.customers;
-            this.settings = this.$store.state.lang.lang_map.sidebar.settings;
+            this.customers = this.$store.state.lang.lang_map.sidebar.customers
+            this.notifications = this.$store.state.lang.lang_map.sidebar.notifications
+            this.settings = this.$store.state.lang.lang_map.sidebar.settings
+
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
                 that.themeColor = color;
@@ -388,4 +418,3 @@
         }
     }
 </script>
-/

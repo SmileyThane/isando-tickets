@@ -6,6 +6,7 @@ namespace App\Repository;
 use App\Company;
 use App\NotificationTemplate;
 use App\NotificationType;
+use App\SentNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -135,4 +136,63 @@ class NotificationRepository
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         return NotificationType::where('entity_type', Company::class)->where('entity_id', $companyId)->get();
     }
+
+    public function getHistoryInCompanyContext(Request $request)
+    {
+        $companyId = $request['company_id'] ?? Auth::user()->employee->companyData->id;
+        $notifications = SentNotification::where('entity_type', Company::class)->where('entity_id', $companyId)->with(['type', 'sender'])->get();
+
+        $orderBy = $request->sort_by ?? 'created_at';
+        $request->sort_by = null;
+
+        $orderFunc = function ($item, $key) use ($orderBy) {
+            switch ($orderBy) {
+                case 'id':
+                    return $item->id;
+                case 'type':
+                    return $item->type ? $item->type->name : '';
+                case 'priority':
+                    return $item->priority;
+                case 'subject':
+                    return $item->subject;
+                case 'sender':
+                    return $item->sender->full_name;
+                case 'created_at':
+                    return $item->created_at;
+            }
+        };
+
+        if ($request->sort_val === 'false') {
+            $notifications = $notifications->sortBy($orderFunc);
+        } else {
+            $notifications = $notifications->sortByDesc($orderFunc);
+        }
+
+        return $notifications->paginate($request->per_page ?? $notifications->count());
+    }
+
+    public function addHistory($subject, $text, $typeId, $priority, $recipients, $attachmnentNames, $userId = null, $entityId = null, $entityType = null)
+    {
+        $entityId = $entityId ?? Auth::user()->employee->companyData->id;
+        $entityType = $entityType ?? Company::class;
+        $userId = $userId ?? Auth::user()->id;
+        return SentNotification::create([
+            'entity_type' => $entityType,
+            'entity_id' => $entityId,
+
+            'subject' => $subject,
+            'text' => $text,
+            'notification_type_id' => $typeId,
+            'priority' => $priority,
+            'recipients' => $recipients,
+            'attachments' => $attachmnentNames,
+            'user_id' => $userId
+        ]);
+    }
+
+    public function findHistory($id)
+    {
+        return SentNotification::with(['type', 'sender'])->find($id);
+    }
+
 }
