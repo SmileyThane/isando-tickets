@@ -16,6 +16,7 @@ use App\Ticket;
 use App\TicketAnswer;
 use App\TicketMerge;
 use App\TicketNotice;
+use App\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -399,6 +400,7 @@ class TicketRepository
     {
         $ticket = Ticket::find($id);
         $ticket->parent_id = null;
+        $ticket->status_id = TicketStatus::OPEN;
         $ticket->save();
         return true;
     }
