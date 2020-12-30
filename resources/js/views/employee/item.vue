@@ -468,7 +468,7 @@
                                                                 v-model="addressForm.address.street"
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                :label="langMap.main.address_line"
+                                                                :label="langMap.main.address_line1"
                                                                 dense
                                                                 no-resize
                                                                 rows="3"
@@ -477,7 +477,7 @@
                                                                 v-model="addressForm.address.street2"
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                :label="langMap.main.address_line"
+                                                                :label="langMap.main.address_line2"
                                                                 dense
                                                                 no-resize
                                                                 rows="3"
@@ -486,7 +486,7 @@
                                                                 v-model="addressForm.address.street3"
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                :label="langMap.main.address_line"
+                                                                :label="langMap.main.address_line3"
                                                                 dense
                                                                 no-resize
                                                                 rows="3"
@@ -855,7 +855,7 @@
                                         v-model="addressForm.address.street"
                                         :color="themeColor"
                                         :item-color="themeColor"
-                                        :label="langMap.main.address_line"
+                                        :label="langMap.main.address_line1"
                                         dense
                                         no-resize
                                         rows="3"
@@ -864,7 +864,7 @@
                                         v-model="addressForm.address.street2"
                                         :color="themeColor"
                                         :item-color="themeColor"
-                                        :label="langMap.main.address_line"
+                                        :label="langMap.main.address_line2"
                                         dense
                                         no-resize
                                         rows="3"
@@ -873,7 +873,7 @@
                                         v-model="addressForm.address.street3"
                                         :color="themeColor"
                                         :item-color="themeColor"
-                                        :label="langMap.main.address_line"
+                                        :label="langMap.main.address_line3"
                                         dense
                                         no-resize
                                         rows="3"

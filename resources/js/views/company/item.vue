@@ -346,7 +346,7 @@
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
                                                                 v-model="addressForm.address.street"
-                                                                :label="langMap.main.address_line"
+                                                                :label="langMap.main.address_line1"
                                                                 dense
                                                             ></v-text-field>
                                                             <v-text-field
@@ -355,7 +355,7 @@
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
                                                                 v-model="addressForm.address.street2"
-                                                                :label="langMap.main.address_line"
+                                                                :label="langMap.main.address_line2"
                                                                 dense
                                                             ></v-text-field>
                                                             <v-text-field
@@ -364,7 +364,7 @@
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
                                                                 v-model="addressForm.address.street3"
-                                                                :label="langMap.main.address_line"
+                                                                :label="langMap.main.address_line3"
                                                                 dense
                                                             ></v-text-field>
                                                         </v-col>
@@ -1278,7 +1278,7 @@
                                                                                 :color="themeColor"
                                                                                 :item-color="themeColor"
                                                                                 v-model="userAddressForm.address.street"
-                                                                                :label="langMap.main.address_line"
+                                                                                :label="langMap.main.address_line1"
                                                                                 dense
                                                                             ></v-text-field>
                                                                             <v-text-field
@@ -1287,7 +1287,7 @@
                                                                                 :color="themeColor"
                                                                                 :item-color="themeColor"
                                                                                 v-model="userAddressForm.address.street2"
-                                                                                :label="langMap.main.address_line"
+                                                                                :label="langMap.main.address_line2"
                                                                                 dense
                                                                             ></v-text-field>
                                                                             <v-text-field
@@ -1296,7 +1296,7 @@
                                                                                 :color="themeColor"
                                                                                 :item-color="themeColor"
                                                                                 v-model="userAddressForm.address.street3"
-                                                                                :label="langMap.main.address_line"
+                                                                                :label="langMap.main.address_line3"
                                                                                 dense
                                                                             ></v-text-field>
                                                                         </v-col>
@@ -1480,7 +1480,7 @@
                                         :color="themeColor"
                                         :item-color="themeColor"
                                         v-model="addressForm.address.street"
-                                        :label="langMap.main.address_line"
+                                        :label="langMap.main.address_line1"
                                         dense
                                     ></v-text-field>
                                     <v-text-field
@@ -1489,7 +1489,7 @@
                                         :color="themeColor"
                                         :item-color="themeColor"
                                         v-model="addressForm.address.street2"
-                                        :label="langMap.main.address_line"
+                                        :label="langMap.main.address_line2"
                                         dense
                                     ></v-text-field>
                                     <v-text-field
@@ -1498,7 +1498,7 @@
                                         :color="themeColor"
                                         :item-color="themeColor"
                                         v-model="addressForm.address.street3"
-                                        :label="langMap.main.address_line"
+                                        :label="langMap.main.address_line3"
                                         dense
                                     ></v-text-field>
                                 </v-col>
