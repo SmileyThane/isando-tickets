@@ -192,13 +192,18 @@ class Ticket extends Model
     public function getMergeInfoAttribute(): string
     {
         $childTickets = $this->childTickets()->get();
-        if (count($childTickets)) {
+        if ($this->parent_id !== null || count($childTickets)) {
             $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
             $mergeCommentPrefix = $translationsArray->ticket->ticket_merge_comment_prefix;
-            foreach ($childTickets as $key => $ticket) {
-                $comma = $key !== count($childTickets) - 1 ? ', ' : '';
-                $mergeCommentPrefix .= $ticket->number . $comma;
+            if ($this->parent_id === null) {
+                foreach ($childTickets as $key => $ticket) {
+                    $comma = $key !== count($childTickets) - 1 ? ', ' : '';
+                    $mergeCommentPrefix .= $ticket->number . $comma;
+                }
+            } else {
+                $mergeCommentPrefix .= Ticket::find($this->parent_id)->number;
             }
+
             $merged = $this->merged_at ? $translationsArray->main->on . $this->merged_at : '';
             $unifier = $this->unifier_id ? $translationsArray->main->by . User::find($this->unifier_id)->full_name : '';
             $postfix = $this->merged_at ?  $translationsArray->main->and_it_was_closed : '';
