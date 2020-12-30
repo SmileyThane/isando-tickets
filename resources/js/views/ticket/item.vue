@@ -571,7 +571,7 @@
                 >
 
                     <v-card-text>
-                        <div v-if="ticket.child_tickets.length > 0">
+                        <div v-if="ticket.merge_info.length > 0">
                             <v-card
                                 class="mx-auto"
                                 dense
