@@ -16,6 +16,7 @@ use App\Ticket;
 use App\TicketAnswer;
 use App\TicketMerge;
 use App\TicketNotice;
+use App\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -358,6 +359,8 @@ class TicketRepository
                 $this->addLink($request, false);
                 $ticket = Ticket::find($ticketId);
                 $ticket->parent_id = $request->parent_ticket_id;
+                $ticket->unifier_id = Auth::id();
+                $ticket->merged_at = now();
                 $ticket->save();
                 $request->status_id = 5;
                 $this->updateStatus($request, $ticketId, null, false);
@@ -367,6 +370,8 @@ class TicketRepository
             $parentTicket = Ticket::find($request->parent_ticket_id);
             $parentTicket->unifier_id = Auth::id();
             $parentTicket->merged_at = now();
+            $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged');
+            $this->ticketUpdateRepo->addHistoryItem($parentTicket->id, null, $historyDescription);
             $parentTicket->save();
             return true;
         }
@@ -399,6 +404,7 @@ class TicketRepository
     {
         $ticket = Ticket::find($id);
         $ticket->parent_id = null;
+        $ticket->status_id = TicketStatus::OPEN;
         $ticket->save();
         return true;
     }

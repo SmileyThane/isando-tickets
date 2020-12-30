@@ -892,6 +892,8 @@ export default {
             formData.append('subject', this.template.name);
             formData.append('body', this.template.text + (signature ? '\n' + signature.signature : ''));
             formData.append('recipients', recipients.join(','));
+            formData.append('notification_type', this.template.notification_type_id);
+            formData.append('priority', this.template.priority);
 
             this.attachments.forEach(function (item, i) {
                 formData.append('attachment_'+i, item);

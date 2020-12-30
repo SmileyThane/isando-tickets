@@ -35,8 +35,11 @@ class LanguageSeeder extends Seeder
     "ticket": "Ticket",
     "ticket_list": "Ticket list",
     "create_ticket": "Create ticket",
+    "notifications": "Notifications",
     "notify_customers": "Notify customers",
     "notification": "Notification",
+    "notifications_history": "Notifications history",
+    "notification_history_single": "Notification history",
     "knowledge_base": "Knowledge base",
     "settings": "Settings",
     "system_settings": "System settings",
@@ -366,6 +369,7 @@ class LanguageSeeder extends Seeder
     "update_successful": "Update successful",
     "on": " on ",
     "by": " by ",
+    "and_it_was_closed": " and it was closed.",
     "primary": "Primary"
   },
   "system_settings": {
@@ -466,7 +470,10 @@ class LanguageSeeder extends Seeder
     "priority_required": "Please, specify the priority",
     "text_required": "Text is required",
     "name_required": "Name is required",
-    "description_required": "Description is required"
+    "description_required": "Description is required",
+    "history": "History",
+    "sender": "Sender",
+    "sent_at": "Sent at"
   },
   "exceptions": {
 
@@ -496,8 +503,11 @@ class LanguageSeeder extends Seeder
     "ticket": "Ticket",
     "ticket_list": "Ticket Liste",
     "create_ticket": "Neues Ticket",
+    "notifications": "Benachrichtigungen",
     "notify_customers": "Kontakte benachrichtigen",
     "notification": "Benachrichtigung",
+    "notifications_history": "Benachrichtigungsverlauf",
+    "notification_history_single": "Benachrichtigungsverlauf",
     "knowledge_base": "Wissensdatenbank",
     "settings": "Die Einstellungen",
     "system_settings": "Systemeinstellungen",
@@ -821,6 +831,7 @@ class LanguageSeeder extends Seeder
 "update_successful": "Aktualisierung erfolgreich",
 "on": " von ",
 "by": " zusammengeführt ",
+"and_it_was_closed": " and it was closed.",
 "primary": "Primär"
  },
   "system_settings": {
@@ -920,7 +931,10 @@ class LanguageSeeder extends Seeder
     "priority_required": "Bitte geben Sie die Priorität an",
     "text_required": "Text ist erforderlich",
     "name_required": "Name ist erforderlich",
-    "description_required": "Beschreibung ist erforderlich"
+    "description_required": "Beschreibung ist erforderlich",
+    "history": "Geschichte",
+    "sender": "Absender",
+    "sent_at": "Gesendet an"
   },
   "exceptions": {
 

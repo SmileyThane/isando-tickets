@@ -571,7 +571,7 @@
                 >
 
                     <v-card-text>
-                        <div v-if="ticket.child_tickets.length > 0">
+                        <div v-if="ticket.merge_info.length > 0">
                             <v-card
                                 class="mx-auto"
                                 dense
@@ -837,7 +837,9 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <br>
-                <v-expansion-panels>
+                <v-expansion-panels
+                v-model="teamAssignPanel"
+                >
                     <v-expansion-panel>
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
@@ -897,11 +899,11 @@
                                 >
                                     <template v-slot:selection="data">
                                         {{ data.item.employee.user_data.full_name }}
-                                        ({{ data.item.employee.user_data.email }})
+<!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                     <template v-slot:item="data">
                                         {{ data.item.employee.user_data.full_name }}
-                                        ({{ data.item.employee.user_data.email }})
+<!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                 </v-autocomplete>
                                 <v-btn :color="themeColor"
@@ -915,6 +917,7 @@
                                 <v-btn class="ma-2"
                                        color="white" small
                                        style="color: black;"
+                                       @click="teamAssignPanel = []"
                                 >
                                     Cancel
                                 </v-btn>
@@ -1406,6 +1409,7 @@ export default {
             selectionDisabled: false,
             assignPanel: [],
             notesPanel: [],
+            teamAssignPanel: [],
             thirdColumn: false,
             mergeBlock: false,
             linkBlock: false,
@@ -1771,6 +1775,7 @@ export default {
                 if (response.success === true) {
                     this.getTicket()
                     this.updateDialog = false
+                    this.teamAssignPanel = []
                 } else {
                     console.log('error')
                 }

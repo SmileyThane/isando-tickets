@@ -6,12 +6,14 @@ import App from './views/App'
 import Routes from './routes'
 import store from './store'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
+import moment from 'moment'
 import 'tiptap-vuetify/dist/main.css'
 import 'vuetify/dist/vuetify.min.css'
 import '../css/custom.css'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
+Vue.prototype.moment = moment
 
 const router = new VueRouter({
     mode: 'history',

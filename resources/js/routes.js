@@ -18,6 +18,8 @@ import SystemSettings from './views/settings/system'
 import AllCustomers from './views/customer/all'
 import Notifications from './views/notify/index'
 import SingleNotification from './views/notify/item'
+import NotificationsHistory from './views/notify/history'
+import SingleNotificationHistory from './views/notify/sent'
 
 export default [
     {
@@ -183,5 +185,21 @@ export default [
             requiresAuth: true,
         },
         component: SingleNotification
+    },
+    {
+        path: '/notify_history',
+        name: 'notifications_history',
+        meta: {
+            requiresAuth: true,
+        },
+        component: NotificationsHistory
+    },
+    {
+        path: '/notify_history/:id',
+        name: 'notification_history_single',
+        meta: {
+            requiresAuth: true,
+        },
+        component: SingleNotificationHistory
     }
 ];
