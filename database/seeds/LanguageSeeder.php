@@ -369,6 +369,7 @@ class LanguageSeeder extends Seeder
     "update_successful": "Update successful",
     "on": " on ",
     "by": " by ",
+    "and_it_was_closed": " and it was closed.",
     "primary": "Primary"
   },
   "system_settings": {
@@ -830,6 +831,7 @@ class LanguageSeeder extends Seeder
 "update_successful": "Aktualisierung erfolgreich",
 "on": " von ",
 "by": " zusammengeführt ",
+"and_it_was_closed": " and it was closed.",
 "primary": "Primär"
  },
   "system_settings": {
