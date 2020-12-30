@@ -20,7 +20,8 @@
                         <v-toolbar-title>{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateClient">
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
+                               @click="cancelUpdateClient">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateClient">
@@ -152,10 +153,10 @@
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">
-                                                        <span v-if="item.street">{{item.street}}, </span>
-                                                        <span v-if="item.street2">{{item.street2}}, </span>
-                                                        <span v-if="item.street3">{{item.street3}}</span>
-                                                        <br>{{item.postal_code}}&nbsp;&nbsp;{{item.city}},
+                                                        <span v-if="item.street">{{ item.street }}, </span>
+                                                        <span v-if="item.street2">{{ item.street2 }}, </span>
+                                                        <span v-if="item.street3">{{ item.street3 }}</span>
+                                                        <br>{{ item.postal_code }}&nbsp;&nbsp;{{ item.city }},
                                                         <span v-if="item.country">{{ localized(item.country) }}</span>
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
@@ -525,12 +526,14 @@
                                 >
                                     <v-card
                                         height="90"
-                                        min-width="150"
                                         max-width="150"
+                                        min-width="150"
                                         @click="showUser(clientEmployee)"
                                     >
                                         <v-card-text style="padding: 5px 10px ;">
-                                            <v-tooltip top>
+                                            <v-tooltip top
+
+                                            >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <span
                                                         v-on="on"
@@ -559,7 +562,7 @@
                                                     <p
                                                         v-if="clientEmployee.description"
                                                         class="caption"
-                                                        style="color: darkgrey;">
+                                                    >
                                                         {{ clientEmployee.description }}
                                                     </p>
                                                     <br v-else>
