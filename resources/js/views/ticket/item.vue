@@ -897,11 +897,11 @@
                                 >
                                     <template v-slot:selection="data">
                                         {{ data.item.employee.user_data.full_name }}
-                                        ({{ data.item.employee.user_data.email }})
+<!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                     <template v-slot:item="data">
                                         {{ data.item.employee.user_data.full_name }}
-                                        ({{ data.item.employee.user_data.email }})
+<!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                 </v-autocomplete>
                                 <v-btn :color="themeColor"
