@@ -201,7 +201,8 @@ class Ticket extends Model
             }
             $merged = $this->merged_at ? $translationsArray->main->on . $this->merged_at : '';
             $unifier = $this->unifier_id ? $translationsArray->main->by . User::find($this->unifier_id)->full_name : '';
-            return $mergeCommentPrefix . $merged . $unifier;
+            $postfix = $this->merged_at ?  $translationsArray->main->and_it_was_closed : '';
+            return $mergeCommentPrefix . $merged . $unifier . $postfix;
         }
         return '';
     }
