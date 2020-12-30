@@ -837,7 +837,9 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <br>
-                <v-expansion-panels>
+                <v-expansion-panels
+                v-model="teamAssignPanel"
+                >
                     <v-expansion-panel>
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
@@ -915,6 +917,7 @@
                                 <v-btn class="ma-2"
                                        color="white" small
                                        style="color: black;"
+                                       @click="teamAssignPanel = []"
                                 >
                                     Cancel
                                 </v-btn>
@@ -1406,6 +1409,7 @@ export default {
             selectionDisabled: false,
             assignPanel: [],
             notesPanel: [],
+            teamAssignPanel: [],
             thirdColumn: false,
             mergeBlock: false,
             linkBlock: false,
@@ -1771,6 +1775,7 @@ export default {
                 if (response.success === true) {
                     this.getTicket()
                     this.updateDialog = false
+                    this.teamAssignPanel = []
                 } else {
                     console.log('error')
                 }
