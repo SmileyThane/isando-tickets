@@ -359,6 +359,8 @@ class TicketRepository
                 $this->addLink($request, false);
                 $ticket = Ticket::find($ticketId);
                 $ticket->parent_id = $request->parent_ticket_id;
+                $ticket->unifier_id = Auth::id();
+                $ticket->merged_at = now();
                 $ticket->save();
                 $request->status_id = 5;
                 $this->updateStatus($request, $ticketId, null, false);
