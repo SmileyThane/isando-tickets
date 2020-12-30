@@ -368,6 +368,8 @@ class TicketRepository
             $parentTicket = Ticket::find($request->parent_ticket_id);
             $parentTicket->unifier_id = Auth::id();
             $parentTicket->merged_at = now();
+            $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged');
+            $this->ticketUpdateRepo->addHistoryItem($parentTicket->id, null, $historyDescription);
             $parentTicket->save();
             return true;
         }
