@@ -233,12 +233,16 @@ class TicketRepository
         $ticket->save();
         $this->emailEmployees([$ticket->creator], $ticket, ChangedTicketStatus::class);
         if ($withHistory === true) {
-            $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription(
-                'status_updated',
-                $ticket->status->name,
-                true,
-                'ticket_statuses'
-            );
+            if ($request->status_id === TicketStatus::CLOSED) {
+                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_closed');
+            } else {
+                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription(
+                    'status_updated',
+                    $ticket->status->name,
+                    true,
+                    'ticket_statuses'
+                );
+            }
             $this->ticketUpdateRepo->addHistoryItem($ticket->id, $employeeId, $historyDescription);
         }
         return true;
