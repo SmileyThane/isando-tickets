@@ -985,7 +985,6 @@
                                                     :color="themeColor"
                                                     :error-messages="employeeForm.id"
                                                     :items="employees"
-                                                    :label="this.$store.state.lang.lang_map.individuals.info"
                                                     :placeholder="this.$store.state.lang.lang_map.main.search"
                                                     hide-no-data
                                                     hide-selected
