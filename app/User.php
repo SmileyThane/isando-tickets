@@ -140,6 +140,6 @@ class User extends Authenticatable
 
     public function language(): HasOne
     {
-        return $this->hasOne(Language::class, 'language_id', 'id');
+        return $this->hasOne(Language::class, 'id', 'language_id');
     }
 }
