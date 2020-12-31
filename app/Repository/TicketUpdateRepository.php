@@ -77,7 +77,7 @@ class TicketUpdateRepository
     {
         if ($oldValue !== $value) {
             $name = TicketPriority::find($value)->name;
-            $historyItem = $this->makeHistoryDescription('employee_attached', $name, true, 'ticket_priorities');
+            $historyItem = $this->makeHistoryDescription('priority_updated', $name, true, 'ticket_priorities');
             $this->addHistoryItem($ticketId, $companyUserId, $historyItem);
         }
         return $value;

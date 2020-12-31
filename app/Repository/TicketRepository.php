@@ -233,12 +233,16 @@ class TicketRepository
         $ticket->save();
         $this->emailEmployees([$ticket->creator], $ticket, ChangedTicketStatus::class);
         if ($withHistory === true) {
-            $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription(
-                'status_updated',
-                $ticket->status->name,
-                true,
-                'ticket_statuses'
-            );
+            if ($request->status_id === TicketStatus::CLOSED) {
+                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_closed');
+            } else {
+                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription(
+                    'status_updated',
+                    $ticket->status->name,
+                    true,
+                    'ticket_statuses'
+                );
+            }
             $this->ticketUpdateRepo->addHistoryItem($ticket->id, $employeeId, $historyDescription);
         }
         return true;
@@ -355,6 +359,8 @@ class TicketRepository
     public function addMerge(Request $request): bool
     {
         if ($request->child_ticket_id) {
+            $childNumbers = '';
+            $parentTicket = Ticket::find($request->parent_ticket_id);
             foreach ($request->child_ticket_id as $ticketId) {
                 $this->addLink($request, false);
                 $ticket = Ticket::find($ticketId);
@@ -364,13 +370,13 @@ class TicketRepository
                 $ticket->save();
                 $request->status_id = 5;
                 $this->updateStatus($request, $ticketId, null, false);
-                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged');
+                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged', $parentTicket->number);
                 $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
+                $childNumbers .= $ticket->number . ' ';
             }
-            $parentTicket = Ticket::find($request->parent_ticket_id);
             $parentTicket->unifier_id = Auth::id();
             $parentTicket->merged_at = now();
-            $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged');
+            $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged', $childNumbers);
             $this->ticketUpdateRepo->addHistoryItem($parentTicket->id, null, $historyDescription);
             $parentTicket->save();
             return true;

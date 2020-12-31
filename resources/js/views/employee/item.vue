@@ -468,7 +468,7 @@
                                                                 v-model="addressForm.address.street"
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                :label="langMap.main.address_line"
+                                                                :label="langMap.main.address_line1"
                                                                 dense
                                                                 no-resize
                                                                 rows="3"
@@ -477,7 +477,7 @@
                                                                 v-model="addressForm.address.street2"
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                :label="langMap.main.address_line"
+                                                                :label="langMap.main.address_line2"
                                                                 dense
                                                                 no-resize
                                                                 rows="3"
@@ -486,7 +486,7 @@
                                                                 v-model="addressForm.address.street3"
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
-                                                                :label="langMap.main.address_line"
+                                                                :label="langMap.main.address_line3"
                                                                 dense
                                                                 no-resize
                                                                 rows="3"
@@ -687,7 +687,7 @@
         <v-row justify="center">
             <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title>{{ langMap.main.delete_selected }}?</v-card-title>
+                    <v-card-title>{{ langMap.individuals.unlink }}?</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
@@ -855,7 +855,7 @@
                                         v-model="addressForm.address.street"
                                         :color="themeColor"
                                         :item-color="themeColor"
-                                        :label="langMap.main.address_line"
+                                        :label="langMap.main.address_line1"
                                         dense
                                         no-resize
                                         rows="3"
@@ -864,7 +864,7 @@
                                         v-model="addressForm.address.street2"
                                         :color="themeColor"
                                         :item-color="themeColor"
-                                        :label="langMap.main.address_line"
+                                        :label="langMap.main.address_line2"
                                         dense
                                         no-resize
                                         rows="3"
@@ -873,7 +873,7 @@
                                         v-model="addressForm.address.street3"
                                         :color="themeColor"
                                         :item-color="themeColor"
-                                        :label="langMap.main.address_line"
+                                        :label="langMap.main.address_line3"
                                         dense
                                         no-resize
                                         rows="3"
