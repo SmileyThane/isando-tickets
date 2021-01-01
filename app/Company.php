@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class Company extends Model
 {
@@ -86,7 +85,7 @@ class Company extends Model
 
     public function productCategories(): HasMany
     {
-        return $this->hasMany(ProductCategory::class,'company_id','id');
+        return $this->hasMany(ProductCategory::class, 'company_id', 'id');
     }
 
     public function settings(): MorphOne
@@ -121,7 +120,7 @@ class Company extends Model
 
     public function getSecondAliasAttribute()
     {
-        return $this->attributes['second_alias']  ?? Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
+        return $this->attributes['second_alias'] ?? Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
     }
 
 

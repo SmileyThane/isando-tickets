@@ -2,10 +2,10 @@
 
 namespace App;
 
+use CarpCai\AddressParser\Parser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use VIISON\AddressSplitter\AddressSplitter;
-use CarpCai\AddressParser\Parser;
 
 class Address extends Model
 {
@@ -25,6 +25,6 @@ class Address extends Model
 
     public function country()
     {
-        return $this->belongsTo(Country::class, 'country_id','id');
+        return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 }
