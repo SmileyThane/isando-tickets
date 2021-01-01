@@ -7,6 +7,7 @@ use App\Company;
 use App\Phone;
 use App\PhoneType;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class PhoneRepository
 {
@@ -37,7 +38,7 @@ class PhoneRepository
         try {
             Phone::where('id', $id)->delete();
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }
@@ -72,7 +73,7 @@ class PhoneRepository
         try {
             PhoneType::where('id', $id)->delete();
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }

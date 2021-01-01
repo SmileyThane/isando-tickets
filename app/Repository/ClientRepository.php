@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Throwable;
 
 class ClientRepository
 {
@@ -288,7 +289,7 @@ class ClientRepository
             $client->is_active = $request->is_active;
             $client->save();
             $result = true;
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
         }
         return $result;
     }

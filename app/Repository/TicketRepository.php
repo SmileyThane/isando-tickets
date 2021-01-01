@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class TicketRepository
 {
@@ -256,7 +257,7 @@ class TicketRepository
             if ($user->is_active) {
                 try {
                     $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id, $user->language->short_code));
-                } catch (\Throwable $throwable) {
+                } catch (Throwable $throwable) {
                     Log::error($throwable);
                     //hack for broken notification system
                 }

@@ -46,7 +46,7 @@ class CompanyRepository
                 function ($query) use ($request) {
                     $query->where('name', 'like', $request->search . '%')
                         ->orWhere('name', 'like', ' %' . $request->search . '%');
-                        $query->orWhere('description', 'like', '%' . $request->search . '%');
+                    $query->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
         }
