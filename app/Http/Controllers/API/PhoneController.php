@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\PhoneType;
 use App\Repository\PhoneRepository;
 use Illuminate\Http\Request;
 
@@ -24,7 +23,7 @@ class PhoneController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $phone = $this->phoneRepo->update($id,$request['phone_type'], $request['phone'],);
+        $phone = $this->phoneRepo->update($id, $request['phone_type'], $request['phone'],);
         return self::showResponse(true, $phone);
     }
 

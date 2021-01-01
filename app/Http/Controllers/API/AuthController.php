@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\CompanyUser;
+use App\Email;
 use App\Http\Controllers\Controller;
 use App\Plan;
 use App\Repository\CompanyRepository;
@@ -12,7 +13,6 @@ use App\Repository\PlanRepository;
 use App\Repository\RoleRepository;
 use App\Repository\UserRepository;
 use App\Role;
-use App\Email;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\AddressType;
 use App\Http\Controllers\Controller;
 use App\Repository\AddressRepository;
 use Illuminate\Http\Request;

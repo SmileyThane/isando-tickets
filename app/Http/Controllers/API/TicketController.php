@@ -44,8 +44,7 @@ class TicketController extends Controller
     public function types()
     {
         $types = TicketType::where('name', '!=', null);
-        if ($companyUser = Auth::user()->employee->hasRole(Role::COMPANY_CLIENT))
-        {
+        if ($companyUser = Auth::user()->employee->hasRole(Role::COMPANY_CLIENT)) {
             $types->where('id', '!=', TicketType::INTERNAL);
         }
         return self::showResponse(true, $types->get());

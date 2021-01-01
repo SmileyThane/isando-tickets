@@ -38,6 +38,7 @@ class CountryController extends Controller
         $country = $this->repo->createCompanyCountry($request->country_id, $request->company_id);
         return self::showResponse(true, $country);
     }
+
     public function deleteCompanyCountry(Request $request, $id)
     {
         return self::showResponse($this->repo->deleteCompanyCountry($id, $request->company_id));
