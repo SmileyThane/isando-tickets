@@ -1075,7 +1075,7 @@
                                                                 <v-list-item-action>
                                                                     <v-icon
                                                                         small
-                                                                        @click="editEmail(item)"
+                                                                        @click="editUserEmail(singleUserForm.user.id, item)"
                                                                     >
                                                                         mdi-pencil
                                                                     </v-icon>
@@ -2464,6 +2464,17 @@
                 this.emailForm.id = item.id;
                 this.emailForm.email = item.email;
                 this.emailForm.email_type = item.type ? item.type.id : 0;
+                this.emailForm.entity_type = 'App\\Company';
+                this.emailForm.entity_id = this.company.id;
+            },
+            editUserEmail(userId, item) {
+                this.updateEmailDlg = true;
+
+                this.emailForm.id = item.id;
+                this.emailForm.email = item.email;
+                this.emailForm.email_type = item.type ? item.type.id : 0;
+                this.emailForm.entity_type = 'App\\User';
+                this.emailForm.entity_id = userId;
             },
             resetEmail() {
                 this.emailForm = {

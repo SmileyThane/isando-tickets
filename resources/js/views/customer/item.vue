@@ -2055,6 +2055,8 @@ export default {
             this.emailForm.id = item.id;
             this.emailForm.email = item.email;
             this.emailForm.email_type = item.type ? item.type.id : 0;
+            this.emailForm.entity_type = 'App\\Company';
+            this.emailForm.entity_id = this.client.id;
         },
         showDeleteProductDlg(item) {
             this.selectedProductId = item.id;

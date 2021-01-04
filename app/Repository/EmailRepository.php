@@ -36,7 +36,7 @@ class EmailRepository
         return $email;
     }
 
-    public function update($id, $type, $value): Email
+    public function update($id, $type, $value, $entityType, $entityId): Email
     {
         $email = Email::find($id);
         $email->update([
@@ -47,7 +47,7 @@ class EmailRepository
         if ($type === 1) {
             $companyId = $companyId ?? Auth::user()->employee->companyData->id;
             $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
-            Email::where('id', '<>', $id)->where('email_type', 1)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+            Email::where('id', '<>', $id)->where('email_type', 1)->where('entity_type', $entityType)->where('entity_id', $entityId)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
         }
         return $email;
     }
