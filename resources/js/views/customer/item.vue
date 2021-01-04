@@ -107,11 +107,13 @@
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="deleteEmail(item.id)"
-                                                    >
+                                                <v-list-item-action v-if="item.email_type === 1">
+                                                    <v-icon small :title="langMap.profile.login_email">
+                                                        mdi-lock
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action v-else>
+                                                    <v-icon small @click="deleteEmail(item.id)">
                                                         mdi-delete
                                                     </v-icon>
                                                 </v-list-item-action>
@@ -753,7 +755,7 @@
                                                 <strong v-for="email in client.emails">
                                                     <span>
                                                         {{ email.email }}
-                                                        <v-icon v-if="contactInfoEditBtn == true"
+                                                        <v-icon v-if="contactInfoEditBtn == true && email.email_type !== 1"
                                                                 small
                                                                 @click="deleteEmail(email.id)"
                                                         >
@@ -821,7 +823,7 @@
                                                     <span>
                                                         {{ email.email }}
                                                         <v-icon
-                                                            v-if="contactInfoEditBtn == true"
+                                                            v-if="contactInfoEditBtn == true && email.email_type !== 1"
                                                             small
                                                             @click="deleteEmail(email.id)"
                                                         >

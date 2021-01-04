@@ -1581,7 +1581,7 @@
                                     <v-text-field :color="themeColor" :item-color="themeColor" v-model="emailForm.email" :label="langMap.main.email" dense></v-text-field>
                                 </v-col>
                                 <v-col cols="md-6" class="pa-1">
-                                    <v-select v-if="emailForm.email_type === 1" readonly :color="themeColor" :item-color="themeColor"
+                                    <v-select v-if="emailForm.email_type == 1" readonly :color="themeColor" :item-color="themeColor"
                                               v-model="emailForm.email_type" :items="emailTypes" item-value="id"
                                               dense :label="langMap.main.type">
                                         <template slot="selection" slot-scope="data">

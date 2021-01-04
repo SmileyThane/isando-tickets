@@ -264,7 +264,7 @@
                                                     </v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action v-if="item.email_type === 1">
-                                                    <v-icon :title="langMap.profile.login_email" small>
+                                                    <v-icon small :title="langMap.profile.login_email">
                                                         mdi-lock
                                                     </v-icon>
                                                 </v-list-item-action>
