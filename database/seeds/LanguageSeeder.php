@@ -784,7 +784,7 @@ class LanguageSeeder extends Seeder
 "due_date": "Deadline",
 "server": "server (für fernzugriff)",
 "access": "zugang",
-"details": "einzelheiten",
+"details": "Details",
 "attachments": "Anhänge",
 "attachment": "Anhang",
 "answer": "antwort",
