@@ -653,7 +653,7 @@ class LanguageSeeder extends Seeder
     "add_new": "Neues Team hinzufügen",
     "team_deleted": "Team gelöscht",
     "info": "Teaminfo",
-    "members": "Teammitglieder",
+    "members": "Agent",
     "new_member": "Neues Teammitglied"
   },
   "individuals": {
