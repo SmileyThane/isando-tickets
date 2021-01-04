@@ -733,7 +733,7 @@ class LanguageSeeder extends Seeder
 "additional": "Zusätzlich",
 "social": "sozial",
 "new": "neu",
-"type": "Wählen Sie",
+"type": "Typ",
 "city": "Stadt",
 "country": "Land",
 "street": "Straße",
