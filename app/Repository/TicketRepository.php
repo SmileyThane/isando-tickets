@@ -232,7 +232,7 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->status_id = $request->status_id;
         $ticket->save();
-        $this->emailEmployees([$ticket->creator], $ticket, ChangedTicketStatus::class);
+        $this->emailEmployees([$ticket->creator, $ticket->contact, $ticket->assigned_person], $ticket, ChangedTicketStatus::class);
         if ($withHistory === true) {
             if ($request->status_id === TicketStatus::CLOSED) {
                 $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_closed');
@@ -252,17 +252,18 @@ class TicketRepository
     public function emailEmployees($companyUsers, Ticket $ticket, $notificationClass): bool
     {
         foreach ($companyUsers as $companyUser) {
-            $user = $companyUser->userData;
-            $company = $companyUser->companyData;
-            if ($user->is_active) {
-                try {
-                    $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id, $user->language->short_code));
-                } catch (Throwable $throwable) {
-                    Log::error($throwable);
-                    //hack for broken notification system
+            if ($companyUser !== null) {
+                $user = $companyUser->userData;
+                $company = $companyUser->companyData;
+                if ($user->is_active) {
+                    try {
+                        $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id, $user->language->short_code));
+                    } catch (Throwable $throwable) {
+                        Log::error($throwable);
+                        //hack for broken notification system
+                    }
                 }
             }
-
         }
         return true;
     }
