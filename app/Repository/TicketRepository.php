@@ -111,6 +111,10 @@ class TicketRepository
     {
         if (!$companyUser->hasRole(Role::COMPANY_CLIENT)) {
             $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
+            $tickets->orWhere([['from_entity_type', Company::class], ['from_entity_id', $companyUser->company_id]]);
+        } else {
+            $tickets->orWhere([['to_entity_type', Client::class], ['to_entity_id', $companyUser->company_id]]);
+            $tickets->orWhere([['from_entity_type', Client::class], ['from_entity_id', $companyUser->company_id]]);
         }
         if ($companyUser->hasRole(Role::LICENSE_OWNER) || $companyUser->hasRole(Role::ADMIN)) {
             $products = ProductCompanyUser::where('company_user_id', $companyUser->id)->get();
