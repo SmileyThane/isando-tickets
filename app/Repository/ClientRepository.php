@@ -23,7 +23,7 @@ class ClientRepository
     {
         $params = [
             'client_name' => 'required',
-            'client_description' => 'required',
+           // 'client_description' => 'required',
         ];
         if ($new === true) {
             $params['supplier_type'] = 'required';

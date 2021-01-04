@@ -38,6 +38,7 @@
                                 v-model="company.name"
                                 required
                                 :readonly="!enableToEdit"
+                                :disabled="!checkRoleByIds([1,2,3])"
                                 dense
                             ></v-text-field>
 

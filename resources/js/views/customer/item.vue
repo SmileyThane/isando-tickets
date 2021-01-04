@@ -36,6 +36,7 @@
                                 :color="themeColor"
                                 :label="langMap.company.name"
                                 :readonly="!enableToEdit"
+                                :disabled="!checkRoleByIds([1,2,3])"
                                 dense
                                 name="client_name"
                                 prepend-icon="mdi-rename-box"
