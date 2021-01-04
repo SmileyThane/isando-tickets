@@ -245,7 +245,7 @@
                     {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
                     {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name'},
-                    {text: `${this.$store.state.lang.lang_map.ticket.title}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.product_name}`, value: 'product.name'},
                     {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person'},
                     {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update'},
