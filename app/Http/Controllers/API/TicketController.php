@@ -62,7 +62,7 @@ class TicketController extends Controller
         $result = $this->ticketRepo->validate($request);
         if ($result === true) {
             $result = $this->ticketRepo->create($request);
-            $employees = $this->ticketRepo->filterEmployeesByRoles($result->to->employees, [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER]);
+            $employees = $this->ticketRepo->filterEmployeesByRoles($result->to->employees, [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER, Role::USER, Role::COMPANY_CLIENT]);
             $this->ticketRepo->emailEmployees($employees, $result, NewTicket::class);
             $success = true;
         }
