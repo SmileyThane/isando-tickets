@@ -435,9 +435,11 @@ class TicketRepository
     public function filterEmployeesByRoles($employees, $roles)
     {
         return $employees->filter(function ($item) use ($roles) {
-            foreach ($item->roles as $role) {
-                if (in_array($role->id, $roles, true)) {
-                    return $item;
+            if ($item !== null) {
+                foreach ($item->roles as $role) {
+                    if (in_array($role->id, $roles, true)) {
+                        return $item;
+                    }
                 }
             }
             return null;
