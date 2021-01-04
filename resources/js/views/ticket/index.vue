@@ -76,6 +76,7 @@
             <template v-slot:item.assigned_person="{ item }">
                 <div @click="showItem(item)" class="justify-center" v-if="item.assigned_person">{{item.assigned_person.user_data.full_name}}
                 </div>
+                <div v-else> {{langMap.ticket.no_assigned}}</div>
             </template>
 <!--            <template v-slot:item.actions="{ item }">-->
 <!--            </template>-->
