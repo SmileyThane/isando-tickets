@@ -576,13 +576,18 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="item.id !== 1 && checkRoleByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, emailIcons,'updateEmailType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="item.id === 1">
+                                                    <v-icon small :title="langMap.profile.login_email">
+                                                        mdi-lock
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action v-if="item.id !== 1 && checkRoleByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteEmailType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
