@@ -57,9 +57,10 @@ class TicketRepository
 //                DB::enableQueryLog();
         $ticketIds = [];
         $companyUser = Auth::user()->employee;
-        $tickets = Ticket::where('from_company_user_id', $companyUser->id);
+        $tickets = Ticket::query();
         $tickets = $this->ticketRoleFilter($companyUser, $tickets);
-        $tickets->where(function ($ticketsQuery) use ($companyUser) {
+        $tickets->orWhere('from_company_user_id', $companyUser->id);
+        $tickets->orWhere(function ($ticketsQuery) use ($companyUser) {
             $ticketsQuery->where('to_company_user_id', $companyUser->id)
                 ->orWhere('contact_company_user_id', $companyUser->id);
         })->select('id');
