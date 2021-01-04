@@ -114,7 +114,7 @@ class TicketRepository
             $tickets->orWhere([['from_entity_type', Company::class], ['from_entity_id', $companyUser->company_id]]);
         } else {
             $clientCompanyUserIds = [];
-            $clientCompanyUsers = $companyUser->assignedToClients->get();
+            $clientCompanyUsers = $companyUser->assignedToClients()->get();
             if ($clientCompanyUsers !== null) {
                 $clientCompanyUserIds = $clientCompanyUsers->pluck('id')->toArray();
             }
