@@ -183,7 +183,7 @@
                                         </v-list-item-group>
                                     </v-list>
                                     <v-expansion-panels>
-                                        <v-expansion-panel>
+                                        <v-expansion-panel @click="resetEmail">
                                             <v-expansion-panel-header>
                                                 {{ this.$store.state.lang.lang_map.main.new_email }}
                                                 <template v-slot:actions>
@@ -237,7 +237,7 @@
                                                 </v-form>
                                             </v-expansion-panel-content>
                                         </v-expansion-panel>
-                                        <v-expansion-panel>
+                                        <v-expansion-panel @click="resetPhone">
                                             <v-expansion-panel-header>
                                                 {{ langMap.main.new_phone }}
                                                 <template v-slot:actions>
@@ -292,7 +292,7 @@
                                                 </v-form>
                                             </v-expansion-panel-content>
                                         </v-expansion-panel>
-                                        <v-expansion-panel>
+                                        <v-expansion-panel @click="resetAddress">
                                             <v-expansion-panel-header>
                                                 {{ langMap.main.new_address }}
                                                 <template v-slot:actions>
@@ -428,7 +428,7 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-expansion-panels>
-                            <v-expansion-panel>
+                            <v-expansion-panel @click="resetProduct">
                                 <v-expansion-panel-header>
                                     {{ langMap.product.add_new }}
                                     <template v-slot:actions>
@@ -1071,7 +1071,7 @@
                             </v-list-item-group>
                         </v-list>
                         <v-expansion-panels>
-                            <v-expansion-panel>
+                            <v-expansion-panel @click="resetSocial">
                                 <v-expansion-panel-header>
                                     {{ langMap.company.new_social_item }}
                                     <template v-slot:actions>
@@ -1163,7 +1163,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updatePhoneDlg=false">{{ langMap.main.cancel }}</v-btn>
+                        <v-btn color="red" text @click="updatePhoneDlg=false; resetPhone()">{{ langMap.main.cancel }}</v-btn>
                         <v-btn :color="themeColor" text @click="updatePhoneDlg=false; updatePhone()">
                             {{ langMap.main.save }}
                         </v-btn>
@@ -1203,7 +1203,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateSocialDlg=false">{{ langMap.main.cancel }}</v-btn>
+                        <v-btn color="red" text @click="updateSocialDlg=false; resetSocial()">{{ langMap.main.cancel }}</v-btn>
                         <v-btn :color="themeColor" text @click="updateSocialDlg=false; updateSocial()">
                             {{ langMap.main.save }}
                         </v-btn>
@@ -1310,7 +1310,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateAddressDlg=false">{{ langMap.main.cancel }}</v-btn>
+                        <v-btn color="red" text @click="updateAddressDlg=false; resetAddress()">{{ langMap.main.cancel }}</v-btn>
                         <v-btn :color="themeColor" text @click="updateAddressDlg=false; updateAddress()">
                             {{ langMap.main.save }}
                         </v-btn>
@@ -1349,7 +1349,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateEmailDlg=false">{{ langMap.main.cancel }}</v-btn>
+                        <v-btn color="red" text @click="updateEmailDlg=false; resetEmail()">{{ langMap.main.cancel }}</v-btn>
                         <v-btn :color="themeColor" text @click="updateEmailDlg=false; updateEmail()">
                             {{ langMap.main.save }}
                         </v-btn>
@@ -1716,6 +1716,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.phone_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.resetPhone();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1733,6 +1734,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.phone_updated;
                     this.actionColor = 'success';
                     this.snackbar = true;
+                    this.resetPhone();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1749,7 +1751,8 @@ export default {
                     this.snackbarMessage = this.langMap.company.phone_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
-                    this.contactInfoModal = false
+                    this.contactInfoModal = false;
+                    this.resetPhone();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1765,6 +1768,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.social_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.resetSocial();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1781,6 +1785,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.social_updated;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.resetSocial();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1796,6 +1801,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.social_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.resetSocial();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1811,6 +1817,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.address_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.resetAddress();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1833,6 +1840,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.address_updated;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.resetAddress();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1848,6 +1856,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.address_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.resetAddress();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1994,6 +2003,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.email_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.resetEmail();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -2010,6 +2020,7 @@ export default {
                     this.snackbarMessage = this.langMap.company.email_updated;
                     this.actionColor = 'success';
                     this.snackbar = true;
+                    this.resetEmail();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -2028,6 +2039,7 @@ export default {
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.contactInfoModal = false;
+                    this.resetEmail();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -2070,7 +2082,8 @@ export default {
             axios.post(`/api/product/client`, this.supplierForm).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.getClient()
+                    this.getClient();
+                    this.resetProduct();
                 } else {
                     console.log('error')
                 }
@@ -2086,12 +2099,61 @@ export default {
                     this.snackbarMessage = this.langMap.customer.product_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.resetProduct();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
                 }
             });
+        },
+        resetEmail() {
+            this.emailForm = {
+                entity_id: '',
+                    entity_type: 'App\\Client',
+                    email: '',
+                    email_type: ''
+            };
+        },
+        resetPhone() {
+            this.phoneForm = {
+                id: '',
+                    entity_id: '',
+                    entity_type: 'App\\Client',
+                    phone: '',
+                    phone_type: ''
+            };
+        },
+        resetAddress() {
+            this.addressForm = {
+                id: '',
+                    entity_id: '',
+                    entity_type: 'App\\Client',
+                    address: {
+                    street: '',
+                        street2: '',
+                        street3: '',
+                        postal_code: '',
+                        city: '',
+                        country_id: ''
+                },
+                address_type: ''
+            };
+        },
+        resetProduct() {
+            this.supplierForm = {
+                client_id: null,
+                product_id: null
+            }
+        },
+        resetSocial() {
+            this.socialForm = {
+                id: '',
+                    entity_id: '',
+                    entity_type: 'App\\Client',
+                    social_link: '',
+                    social_type: ''
+            }
         }
     },
     watch: {
