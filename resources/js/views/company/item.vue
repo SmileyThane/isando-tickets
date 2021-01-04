@@ -215,7 +215,7 @@
                                     <v-expansion-panels
                                         multiple
                                     >
-                                        <v-expansion-panel>
+                                        <v-expansion-panel @click="resetEmail">
                                             <v-expansion-panel-header>
                                                 {{this.$store.state.lang.lang_map.main.new_email}}
                                                 <template v-slot:actions>
@@ -267,7 +267,7 @@
                                                 </v-form>
                                             </v-expansion-panel-content>
                                         </v-expansion-panel>
-                                        <v-expansion-panel>
+                                        <v-expansion-panel @click="resetPhone">
                                             <v-expansion-panel-header>
                                                 {{langMap.main.new_phone}}
                                                 <template v-slot:actions>
@@ -330,7 +330,7 @@
                                                 </v-form>
                                             </v-expansion-panel-content>
                                         </v-expansion-panel>
-                                        <v-expansion-panel>
+                                        <v-expansion-panel @click="resetAddress">
                                             <v-expansion-panel-header>
                                                 {{langMap.main.new_address}}
                                                 <template v-slot:actions>
@@ -698,7 +698,7 @@
                             </v-list-item-group>
                         </v-list>
                         <v-expansion-panels>
-                            <v-expansion-panel>
+                            <v-expansion-panel @click="resetSocial">
                                 <v-expansion-panel-header>
                                     {{langMap.company.new_social_item}}
                                     <template v-slot:actions>
@@ -1426,7 +1426,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updatePhoneDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updatePhoneDlg=false; resetPhone()">{{langMap.main.cancel}}</v-btn>
                         <v-btn :color="themeColor" text @click="updatePhoneDlg=false; updatePhone()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -1460,7 +1460,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateSocialDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updateSocialDlg=false; resetSocial()">{{langMap.main.cancel}}</v-btn>
                         <v-btn :color="themeColor" text @click="updateSocialDlg=false; updateSocial()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -1563,7 +1563,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateAddressDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updateAddressDlg=false; resetAddress()">{{langMap.main.cancel}}</v-btn>
                         <v-btn :color="themeColor" text @click="updateAddressDlg=false; updateAddress()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -1607,7 +1607,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateEmailDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updateEmailDlg=false; resetEmail()">{{langMap.main.cancel}}</v-btn>
                         <v-btn :color="themeColor" text @click="updateEmailDlg=false; updateEmail()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -2179,6 +2179,15 @@
                     }
                 });
             },
+            resetPhone() {
+                this.phoneForm = {
+                    id: '',
+                    entity_id: '',
+                    entity_type: 'App\\Company',
+                    phone: '',
+                    phone_type: ''
+                }
+            },
             addSocial(form) {
                 axios.post('/api/social', form).then(response => {
                     response = response.data
@@ -2187,6 +2196,7 @@
                         this.snackbarMessage = this.langMap.company.social_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetSocial();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -2203,6 +2213,7 @@
                         this.snackbarMessage = this.langMap.company.social_updated;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetSocial();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -2218,12 +2229,22 @@
                         this.snackbarMessage = this.langMap.company.social_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetSocial();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
                         this.snackbar = true;
                     }
                 });
+            },
+            resetSocial() {
+                this.socialForm = {
+                    id: '',
+                    entity_id: '',
+                    entity_type: 'App\\Company',
+                    social_link: '',
+                    social_type: ''
+                }
             },
             addAddress(form) {
                 axios.post('/api/address', form).then(response => {
@@ -2233,6 +2254,7 @@
                         this.snackbarMessage = this.langMap.company.address_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetAddress();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -2255,6 +2277,7 @@
                         this.snackbarMessage = this.langMap.company.address_updated;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetAddress();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -2270,12 +2293,29 @@
                         this.snackbarMessage = this.langMap.company.address_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetAddress();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
                         this.snackbar = true;
                     }
                 });
+            },
+            resetAddress() {
+                this.addressForm = {
+                    id: '',
+                    entity_id: '',
+                    entity_type: 'App\\Company',
+                    address: {
+                    street: '',
+                        street2: '',
+                        street3: '',
+                        postal_code: '',
+                        city: '',
+                        country_id: ''
+                    },
+                    address_type: ''
+                }
             },
             changeIsActive(item) {
                 let request = {}
@@ -2375,6 +2415,7 @@
                         this.snackbarMessage = this.langMap.company.email_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetEmail();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
@@ -2391,6 +2432,7 @@
                         this.snackbarMessage = this.langMap.company.email_updated;
                         this.actionColor = 'success';
                         this.snackbar = true;
+                        this.resetEmail();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -2408,6 +2450,7 @@
                         this.snackbarMessage = this.langMap.company.email_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetEmail();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
@@ -2421,6 +2464,14 @@
                 this.emailForm.id = item.id;
                 this.emailForm.email = item.email;
                 this.emailForm.email_type = item.type ? item.type.id : 0;
+            },
+            resetEmail() {
+                this.emailForm = {
+                    entity_id: '',
+                    entity_type: 'App\\Company',
+                    email: '',
+                    email_type: ''
+                }
             }
         },
         watch: {
