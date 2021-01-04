@@ -1605,6 +1605,8 @@ export default {
             this.emailForm.id = item.id;
             this.emailForm.email = item.email;
             this.emailForm.email_type = item.type ? item.type.id : 0;
+            this.emailForm.entity_type = 'App\\User';
+            this.emailForm.entity_id = this.userData.id;
         },
         resetEmail () {
             this.emailForm = {
