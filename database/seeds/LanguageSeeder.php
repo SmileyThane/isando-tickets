@@ -47,7 +47,8 @@ class LanguageSeeder extends Seeder
     "home": "Home",
     "profile": "Profile",
     "logout": "Logout",
-    "all": "All"
+    "all": "All",
+    "notifications_settings": "Notifications settings"
   },
   "ticket_statuses": {
     "new": "New",
@@ -520,7 +521,8 @@ class LanguageSeeder extends Seeder
     "home": "Home",
     "profile": "Profil",
     "logout": "Logout",
-    "all": "Alle"
+    "all": "Alle",
+    "notifications_settings": "Benachrichtigungseinstellungen"
   },
   "ticket_statuses": {
     "new": "Neu",
