@@ -23,7 +23,7 @@ class EmailController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $email = $this->emailRepo->update($id, $request['email_type'], $request['email'], $request['entity_type'], $request['entity_id']);
+        $email = $this->emailRepo->update($request['entity_id'], $request['entity_type'], $id, $request['email'], $request['email_type']);
         return self::showResponse(true, $email);
     }
 
