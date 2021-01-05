@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\CompanyCountry;
 use App\Country;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 
 class CountryRepository
@@ -44,7 +45,7 @@ class CountryRepository
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         try {
             return (bool)CompanyCountry::where('country_id', $countryId)->where('company_id', $companyId)->delete();
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }

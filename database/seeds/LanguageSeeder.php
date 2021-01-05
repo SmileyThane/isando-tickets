@@ -653,7 +653,7 @@ class LanguageSeeder extends Seeder
     "add_new": "Neues Team hinzufügen",
     "team_deleted": "Team gelöscht",
     "info": "Teaminfo",
-    "members": "Teammitglieder",
+    "members": "Agent",
     "new_member": "Neues Teammitglied"
   },
   "individuals": {
@@ -733,7 +733,7 @@ class LanguageSeeder extends Seeder
 "additional": "Zusätzlich",
 "social": "sozial",
 "new": "neu",
-"type": "Wählen Sie",
+"type": "Typ",
 "city": "Stadt",
 "country": "Land",
 "street": "Straße",
@@ -784,7 +784,7 @@ class LanguageSeeder extends Seeder
 "due_date": "Deadline",
 "server": "server (für fernzugriff)",
 "access": "zugang",
-"details": "einzelheiten",
+"details": "Details",
 "attachments": "Anhänge",
 "attachment": "Anhang",
 "answer": "antwort",

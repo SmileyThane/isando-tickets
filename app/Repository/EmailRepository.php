@@ -7,6 +7,7 @@ use App\Company;
 use App\Email;
 use App\EmailType;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class EmailRepository
 {
@@ -35,20 +36,20 @@ class EmailRepository
         return $email;
     }
 
-    public function update($id, $type, $value): Email
+    public function update($id, $type, $value, $entityType, $entityId): Email
     {
-            $email = Email::find($id);
-            $email->update([
-                'email' => $value,
-                'email_type' => $type
-            ]);
+        $email = Email::find($id);
+        $email->update([
+            'email' => $value,
+            'email_type' => $type
+        ]);
 
-            if ($type === 1) {
-                $companyId = $companyId ?? Auth::user()->employee->companyData->id;
-                $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
-                Email::where('id', '<>', $id)->where('email_type', 1)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
-            }
-            return $email;
+        if ($type === 1) {
+            $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+            $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
+            Email::where('id', '<>', $id)->where('email_type', 1)->where('entity_type', $entityType)->where('entity_id', $entityId)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+        }
+        return $email;
     }
 
     public function delete($id): ?bool
@@ -56,7 +57,7 @@ class EmailRepository
         try {
             Email::where('id', $id)->delete();
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }
@@ -96,7 +97,7 @@ class EmailRepository
                 EmailType::where('id', $id)->delete();
             }
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }

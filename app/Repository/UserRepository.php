@@ -5,6 +5,7 @@ namespace App\Repository;
 
 
 use App\Company;
+use App\Email;
 use App\EmailType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
@@ -12,14 +13,13 @@ use App\Notifications\ResetPasswordEmail;
 use App\Role;
 use App\Settings;
 use App\User;
-use App\Email;
-use App\Repository\EmailRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Throwable;
 
 class UserRepository
 {
@@ -109,17 +109,18 @@ class UserRepository
             $user->is_active = $request->is_active;
             $user->save();
 //            Email::where(['entity_id' => $user->id, 'entity_type' => User::class])
-                $email = Email::find($request->email_id);
+            $email = Email::find($request->email_id);
 
-                if ($user->is_active === true) {
-                    $email->email_type = 1;
-                } else {
-                    $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $user->employee->companyData->id)->first();
-                    $email->email_type = $secondaryType ? $secondaryType->id : 1;
-                }
-                $email->save();
+            if ($user->is_active === true) {
+                $email->email_type = 1;
+                $this->sendInvite($user, Role::COMPANY_CLIENT);
+            } else {
+                $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $user->employee->companyData->id)->first();
+                $email->email_type = $secondaryType ? $secondaryType->id : 1;
+            }
+            $email->save();
             $result = true;
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             dd($th);
         }
         return $result;
@@ -137,7 +138,7 @@ class UserRepository
             } else {
                 $user->notify(new RegularInviteEmail($from, $user->full_name, $role, $user->email, $password, $user->language->short_code));
             }
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             Log::error($throwable);
             //hack for broken notification system
         }

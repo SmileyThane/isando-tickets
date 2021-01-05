@@ -7,6 +7,7 @@ use App\Address;
 use App\AddressType;
 use App\Company;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 
 class AddressRepository
@@ -49,7 +50,7 @@ class AddressRepository
         try {
             Address::where('id', $id)->delete();
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }
@@ -84,7 +85,7 @@ class AddressRepository
         try {
             AddressType::where('id', $id)->delete();
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }

@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class TicketRepository
 {
@@ -56,9 +57,10 @@ class TicketRepository
 //                DB::enableQueryLog();
         $ticketIds = [];
         $companyUser = Auth::user()->employee;
-        $tickets = Ticket::where('from_company_user_id', $companyUser->id);
+        $tickets = Ticket::query();
         $tickets = $this->ticketRoleFilter($companyUser, $tickets);
-        $tickets->where(function ($ticketsQuery) use ($companyUser) {
+        $tickets->orWhere('from_company_user_id', $companyUser->id);
+        $tickets->orWhere(function ($ticketsQuery) use ($companyUser) {
             $ticketsQuery->where('to_company_user_id', $companyUser->id)
                 ->orWhere('contact_company_user_id', $companyUser->id);
         })->select('id');
@@ -110,6 +112,21 @@ class TicketRepository
     {
         if (!$companyUser->hasRole(Role::COMPANY_CLIENT)) {
             $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
+            $tickets->orWhere([['from_entity_type', Company::class], ['from_entity_id', $companyUser->company_id]]);
+        } else {
+            $clientIds = [];
+            $clientCompanyUsers = $companyUser->assignedToClients()->get();
+            if ($clientCompanyUsers !== null) {
+                $clientIds = $clientCompanyUsers->pluck('client_id')->toArray();
+            }
+            $tickets->orWhere(static function ($ticketsQuery) use ($clientIds) {
+                $ticketsQuery->where('from_entity_type', Client::class)
+                    ->whereIn('from_entity_id', $clientIds);
+            });
+            $tickets->orWhere(static function ($ticketsQuery) use ($clientIds) {
+                $ticketsQuery->where('to_entity_type', Client::class)
+                    ->whereIn('to_entity_id', $clientIds);
+            });
         }
         if ($companyUser->hasRole(Role::LICENSE_OWNER) || $companyUser->hasRole(Role::ADMIN)) {
             $products = ProductCompanyUser::where('company_user_id', $companyUser->id)->get();
@@ -231,7 +248,7 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->status_id = $request->status_id;
         $ticket->save();
-        $this->emailEmployees([$ticket->creator], $ticket, ChangedTicketStatus::class);
+        $this->emailEmployees([$ticket->creator, $ticket->contact, $ticket->assigned_person], $ticket, ChangedTicketStatus::class);
         if ($withHistory === true) {
             if ($request->status_id === TicketStatus::CLOSED) {
                 $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_closed');
@@ -251,17 +268,18 @@ class TicketRepository
     public function emailEmployees($companyUsers, Ticket $ticket, $notificationClass): bool
     {
         foreach ($companyUsers as $companyUser) {
-            $user = $companyUser->userData;
-            $company = $companyUser->companyData;
-            if ($user->is_active) {
-                try {
-                    $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id, $user->language->short_code));
-                } catch (\Throwable $throwable) {
-                    Log::error($throwable);
-                    //hack for broken notification system
+            if ($companyUser !== null) {
+                $user = $companyUser->userData;
+                $company = $companyUser->companyData;
+                if ($user->is_active) {
+                    try {
+                        $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id, $user->language->short_code));
+                    } catch (Throwable $throwable) {
+                        Log::error($throwable);
+                        //hack for broken notification system
+                    }
                 }
             }
-
         }
         return true;
     }
@@ -418,9 +436,11 @@ class TicketRepository
     public function filterEmployeesByRoles($employees, $roles)
     {
         return $employees->filter(function ($item) use ($roles) {
-            foreach ($item->roles as $role) {
-                if (in_array($role->id, $roles, true)) {
-                    return $item;
+            if ($item !== null && $item->roles !== null) {
+                foreach ($item->roles as $role) {
+                    if (in_array($role->id, $roles, true)) {
+                        return $item;
+                    }
                 }
             }
             return null;

@@ -76,6 +76,7 @@
             <template v-slot:item.assigned_person="{ item }">
                 <div @click="showItem(item)" class="justify-center" v-if="item.assigned_person">{{item.assigned_person.user_data.full_name}}
                 </div>
+                <div v-else> {{langMap.ticket.no_assigned}}</div>
             </template>
 <!--            <template v-slot:item.actions="{ item }">-->
 <!--            </template>-->
@@ -233,20 +234,20 @@
                 },
                 headers: [
                     {text: '', value: 'data-table-expand'},
-                    {
-                        text: 'ID',
-                        align: 'start',
-                        sortable: false,
-                        value: 'id',
-                    },
+                    // {
+                    //     text: 'ID',
+                    //     align: 'start',
+                    //     sortable: false,
+                    //     value: 'id',
+                    // },
                     {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number'},
                     {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
                     {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name'},
-                    {text: `${this.$store.state.lang.lang_map.ticket.company_contact}`, value: 'assigned_person'},
+                    {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name'},
                     {text: `${this.$store.state.lang.lang_map.ticket.product_name}`, value: 'product.name'},
-                    {text: `${this.$store.state.lang.lang_map.ticket.title}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person'},
                     {text: `${this.$store.state.lang.lang_map.ticket.last_update}`, value: 'last_update'},
                 ],
                 mergeTicketForm: {

@@ -7,6 +7,7 @@ use App\Company;
 use App\Social;
 use App\SocialType;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class SocialRepository
 {
@@ -37,7 +38,7 @@ class SocialRepository
         try {
             Social::where('id', $id)->delete();
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }
@@ -72,7 +73,7 @@ class SocialRepository
         try {
             SocialType::where('id', $id)->delete();
             return true;
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }

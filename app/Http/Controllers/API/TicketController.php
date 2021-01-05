@@ -44,8 +44,7 @@ class TicketController extends Controller
     public function types()
     {
         $types = TicketType::where('name', '!=', null);
-        if ($companyUser = Auth::user()->employee->hasRole(Role::COMPANY_CLIENT))
-        {
+        if ($companyUser = Auth::user()->employee->hasRole(Role::COMPANY_CLIENT)) {
             $types->where('id', '!=', TicketType::INTERNAL);
         }
         return self::showResponse(true, $types->get());
@@ -63,7 +62,7 @@ class TicketController extends Controller
         $result = $this->ticketRepo->validate($request);
         if ($result === true) {
             $result = $this->ticketRepo->create($request);
-            $employees = $this->ticketRepo->filterEmployeesByRoles($result->to->employees, [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER]);
+            $employees = $this->ticketRepo->filterEmployeesByRoles($result->to->employees, [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER, Role::USER, Role::COMPANY_CLIENT]);
             $this->ticketRepo->emailEmployees($employees, $result, NewTicket::class);
             $success = true;
         }

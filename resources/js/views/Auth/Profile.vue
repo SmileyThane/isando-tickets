@@ -235,7 +235,7 @@
                                 </v-col>
                                 <v-col class="col-md-12">
                                     <v-expansion-panels>
-                                        <v-expansion-panel>
+                                        <v-expansion-panel @click="resetEmailSignature">
                                             <v-expansion-panel-header>
                                                 {{langMap.profile.new_email_signature}}
                                                 <template v-slot:actions>
@@ -407,7 +407,7 @@
                                 </v-col>
                                 <v-col class="col-md-12">
                                     <v-expansion-panels>
-                                        <v-expansion-panel>
+                                        <v-expansion-panel @click="resetEmail">
                                             <v-expansion-panel-header>
                                                 {{this.$store.state.lang.lang_map.main.new_email}}
                                                 <template v-slot:actions>
@@ -459,7 +459,7 @@
                                                 </v-form>
                                             </v-expansion-panel-content>
                                         </v-expansion-panel>
-                                        <v-expansion-panel>
+                                        <v-expansion-panel @click="resetPhone">
                                             <v-expansion-panel-header>
                                                 {{this.$store.state.lang.lang_map.main.phone}}
                                                 <template v-slot:actions>
@@ -511,7 +511,7 @@
                                                 </v-form>
                                             </v-expansion-panel-content>
                                         </v-expansion-panel>
-                                        <v-expansion-panel>
+                                        <v-expansion-panel @click="resetAddress">
                                             <v-expansion-panel-header>
                                                 {{this.$store.state.lang.lang_map.main.address}}
                                                 <template v-slot:actions>
@@ -716,7 +716,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updatePhoneDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updatePhoneDlg=false; resetPhone()">{{langMap.main.cancel}}</v-btn>
                         <v-btn :color="themeColor" text @click="updatePhoneDlg=false; updatePhone()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -822,7 +822,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateAddressDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updateAddressDlg=false; resetAddress()">{{langMap.main.cancel}}</v-btn>
                         <v-btn :color="themeColor" text @click="updateAddressDlg=false; updateAddress()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -866,7 +866,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateEmailDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updateEmailDlg=false; resetEmail()">{{langMap.main.cancel}}</v-btn>
                         <v-btn :color="themeColor" text @click="updateEmailDlg=false; updateEmail()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -904,7 +904,7 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateEmailSignatureDlg=false">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updateEmailSignatureDlg=false; resetEmailSignature()">{{langMap.main.cancel}}</v-btn>
                         <v-btn :color="themeColor" text @click="updateEmailSignatureDlg=false; updateEmailSignature()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -1165,6 +1165,7 @@
                         this.snackbarMessage = this.langMap.company.phone_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetPhone();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -1182,6 +1183,7 @@
                         this.snackbarMessage = this.langMap.company.phone_updated;
                         this.actionColor = 'success';
                         this.snackbar = true;
+                        this.resetPhone();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -1198,12 +1200,21 @@
                         this.snackbarMessage = this.langMap.company.phone_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetPhone();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
                         this.snackbar = true;
                     }
                 });
+            },
+            resetPhone() {
+                this.phoneForm = {
+                    entity_id: '',
+                        entity_type: 'App\\User',
+                        phone: '',
+                        phone_type: ''
+                }
             },
             addAddress() {
                 this.addressForm.entity_id = this.userData.id
@@ -1215,6 +1226,7 @@
                         this.snackbarMessage = this.langMap.company.address_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetAddress();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -1237,6 +1249,7 @@
                         this.snackbarMessage = this.langMap.company.address_updated;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetAddress();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -1252,12 +1265,28 @@
                         this.snackbarMessage = this.langMap.company.address_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetAddress();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
                         this.snackbar = true;
                     }
                 });
+            },
+            resetAddress() {
+                this.addressForm = {
+                    entity_id: '',
+                    entity_type: 'App\\User',
+                    address: {
+                        street: '',
+                        street2: '',
+                        street3: '',
+                        postal_code: '',
+                        city: '',
+                        country_id: ''
+                    },
+                    address_type: ''
+                }
             },
             getUserSettings() {
                 this.snackbar = false;
@@ -1370,6 +1399,7 @@
                         this.snackbarMessage = this.langMap.company.email_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetEmail();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
@@ -1386,6 +1416,7 @@
                         this.snackbarMessage = this.langMap.company.email_updated;
                         this.actionColor = 'success';
                         this.snackbar = true;
+                        this.resetEmail();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -1403,6 +1434,7 @@
                         this.snackbarMessage = this.langMap.company.email_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetEmail();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
@@ -1417,6 +1449,14 @@
                 this.emailForm.email = item.email;
                 this.emailForm.email_type = item.type ? item.type.id : 0;
             },
+            resetEmail() {
+                this.emailForm = {
+                    entity_id: '',
+                        entity_type: 'App\\User',
+                        email: '',
+                        email_type: ''
+                };
+            },
             addEmailSignature() {
                 this.emailSignatureForm.entity_id = this.userData.id
                 axios.post('/api/email_signature', this.emailSignatureForm).then(response => {
@@ -1426,6 +1466,7 @@
                         this.snackbarMessage = this.langMap.profile.email_signature_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetEmailSignature();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
@@ -1442,6 +1483,7 @@
                         this.snackbarMessage = this.langMap.profile.email_signature_updated;
                         this.actionColor = 'success';
                         this.snackbar = true;
+                        this.resetEmailSignature();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
@@ -1460,6 +1502,7 @@
                         this.snackbarMessage = this.langMap.profile.email_signature_deleted;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetEmailSignature();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
@@ -1473,6 +1516,14 @@
                 this.emailSignatureForm.id = item.id;
                 this.emailSignatureForm.name = item.name;
                 this.emailSignatureForm.signature = item.signature;
+            },
+            resetEmailSignature() {
+                this.emailSignatureForm = {
+                    entity_id: '',
+                        entity_type: 'App\\User',
+                        name: '',
+                        signature: ''
+                };
             }
         }
     }
