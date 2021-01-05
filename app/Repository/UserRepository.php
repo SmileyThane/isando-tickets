@@ -113,6 +113,7 @@ class UserRepository
 
             if ($user->is_active === true) {
                 $email->email_type = 1;
+                $this->sendInvite($user, Role::COMPANY_CLIENT);
             } else {
                 $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $user->employee->companyData->id)->first();
                 $email->email_type = $secondaryType ? $secondaryType->id : 1;
