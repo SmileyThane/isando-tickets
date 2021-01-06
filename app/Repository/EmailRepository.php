@@ -12,7 +12,7 @@ use Throwable;
 class EmailRepository
 {
 
-    public function create($entityId, $entityType, $emailValue, $emailType ): Email
+    public function create($entityId, $entityType, $emailValue, $emailType): Email
     {
         $emails = Email::where('entity_type', $entityType)->where('entity_id', $entityId)->get()->count();
         if (!$emails) {
@@ -46,7 +46,7 @@ class EmailRepository
         ]);
 
         if ($emailType === 1) {
-            $companyId =  Auth::user()->employee->companyData->id;
+            $companyId = Auth::user()->employee->companyData->id;
             $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
             Email::where('id', '<>', $emailId)->where('email_type', 1)->where('entity_type', $entityType)->where('entity_id', $entityId)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
         }
