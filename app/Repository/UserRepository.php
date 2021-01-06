@@ -108,15 +108,18 @@ class UserRepository
             $user = User::find($request->user_id);
             $user->is_active = $request->is_active;
             $user->save();
-
+            $email = Email::find($request->email_id);
 
             if ($user->is_active === true) {
-                $this->sendInvite($user, Role::COMPANY_CLIENT);
+                $email->email_type = 1;
+                $email->save();
+
+                $this->sendInvite($user->fresh(), Role::COMPANY_CLIENT);
             }
 
             $result = true;
-        } catch (Throwable $th) {
-            dd($th);
+        } catch (Throwable $throwable) {
+            Log::error($throwable);
         }
         return $result;
     }
@@ -136,6 +139,7 @@ class UserRepository
         } catch (Throwable $throwable) {
             Log::error($throwable);
             //hack for broken notification system
+            return false;
         }
         return true;
     }
