@@ -114,6 +114,14 @@ class UserRepository
                 $email->email_type = 1;
                 $email->save();
 
+                $companyId =  $user->employee->companyData->id;
+                $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
+                if (!$secondaryType) {
+                    $companyId =  Auth::user()->employee->companyData->id;
+                    $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
+                }
+                Email::where('id', '<>', $email->id)->where('email_type', 1)->where('entity_type', $email->entity_type)->where('entity_id', $email->entity_id)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+
                 $this->sendInvite($user->fresh(), Role::COMPANY_CLIENT);
             }
 
