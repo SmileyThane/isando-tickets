@@ -108,17 +108,12 @@ class UserRepository
             $user = User::find($request->user_id);
             $user->is_active = $request->is_active;
             $user->save();
-//            Email::where(['entity_id' => $user->id, 'entity_type' => User::class])
-            $email = Email::find($request->email_id);
+
 
             if ($user->is_active === true) {
-                $email->email_type = 1;
                 $this->sendInvite($user, Role::COMPANY_CLIENT);
-            } else {
-                $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $user->employee->companyData->id)->first();
-                $email->email_type = $secondaryType ? $secondaryType->id : 1;
             }
-            $email->save();
+
             $result = true;
         } catch (Throwable $th) {
             dd($th);
