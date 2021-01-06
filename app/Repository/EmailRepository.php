@@ -37,7 +37,7 @@ class EmailRepository
         return $email;
     }
 
-    public function update($entityId, $entityType, $emailId, $emailValue, $emailType, $entityId, $entityType): Email
+    public function update($entityId, $entityType, $emailId, $emailValue, $emailType): Email
     {
         $email = Email::find($emailId);
         $email->update([
