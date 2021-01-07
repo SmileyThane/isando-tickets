@@ -646,6 +646,7 @@
                                         </span>
                                         <div v-html="child_ticket.description"></div>
                                         <span class="caption text-center"
+                                              v-if="ticket.merge_comment"
                                         >
                                                 ({{ ticket.merge_comment }})
                                         </span>
