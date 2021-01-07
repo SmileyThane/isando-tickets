@@ -628,11 +628,11 @@
                                 <v-list-item>
                                     <v-list-item-content>
                                         <span
-                                            v-if="child_ticket.merge_info.length > 0"
+                                            v-if="child_ticket.merged_parent_info.length > 0"
                                             class="text-left"
                                             style="font-weight: bold;"
                                         >
-                                             {{ child_ticket.merge_info }}
+                                             {{ child_ticket.merged_parent_info }}
                                         </span>
                                         <span
                                             v-else
@@ -653,6 +653,37 @@
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-card>
+                            <v-spacer>
+                                &nbsp;
+                            </v-spacer>
+                        </div>
+                        <div
+                            v-if="ticket.merged_child_info.length > 0"
+                        >
+                            <v-card
+
+                                class="mx-auto"
+                                color="#f2f2f2"
+                                dense
+                                outlined
+                            >
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <span
+                                            class="text-left"
+                                            style="font-weight: bold;"
+                                        >
+                                             {{ ticket.merged_child_info }}
+                                        </span>
+                                        <span class="caption text-center"
+                                              v-if="ticket.merge_comment"
+                                        >
+                                                ({{ ticket.merge_comment }})
+                                    </span>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-card>
+
                             <v-spacer>
                                 &nbsp;
                             </v-spacer>
