@@ -205,6 +205,7 @@ class LanguageSeeder extends Seeder
     "social_info": "Social media"
   },
   "ticket": {
+    "merged_abbr": "Merged",
     "number": "Number",
     "contact_name": "Contact name",
     "contact_email": "Contact E-mail",
@@ -672,6 +673,7 @@ class LanguageSeeder extends Seeder
   "social_info": "Social Media"
   },
   "ticket": {
+    "merged_abbr": "ZGFT",
     "number": "Ticketnummer",
     "contact_name": "Kontaktname",
     "contact_email": "Kontakt E-mail",
