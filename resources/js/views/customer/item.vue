@@ -535,7 +535,7 @@
                                     >
                                         <v-card-text style="padding: 5px 10px ;">
                                             <v-tooltip top
-
+                                                       :color="themeColor"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <span
@@ -557,7 +557,6 @@
                                                         }}
                                                     </p>
                                                     </span>
-
                                                 </template>
                                                 <span>
                                                     {{ langMap.company.user }}:
