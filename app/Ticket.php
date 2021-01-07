@@ -22,7 +22,7 @@ class Ticket extends Model
         'category_id', 'parent_id', 'unifier_id', 'merged_at'
     ];
     protected $appends = ['number', 'from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
-        'replicated_to', 'ticket_type', 'created_at_time', 'merge_info', 'original_name'];
+        'replicated_to', 'ticket_type', 'created_at_time', 'merged_parent_info', 'merged_child_info', 'original_name'];
     protected $hidden = ['to'];
 
     protected static function booted()
@@ -193,17 +193,33 @@ class Ticket extends Model
             ->with('childTicketData');
     }
 
-    public function getMergeInfoAttribute(): string
+    public function getMergedParentInfoAttribute(): string
     {
-        if ($this->parent_id !== null) {
+        if ($this->parent_id !== null && $this->unifier_id) {
             $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
-            $mergeCommentPrefix = $translationsArray->ticket->ticket_merge_comment_prefix;
-            $mergeCommentPrefix .= $this->number . ' "' . $this->original_name . '"';
-            $unifier = $this->unifier_id && $this->merged_at ?
-                $translationsArray->ticket->ticket_merge_comment_middle . $this->merged_at .
-                $translationsArray->ticket->ticket_merge_comment_middle_2 . User::find($this->unifier_id)->full_name : '';
-            $postfix = $this->merged_at ? $translationsArray->ticket->ticket_merge_comment_postfix : '';
-            return $mergeCommentPrefix . $unifier . $postfix;
+            $mergeComment = $translationsArray->ticket->ticket_merge_parent_msg;
+            $mergeComment = str_replace(
+                ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
+                [$this->number, $this->original_name, $this->merged_at, User::find($this->unifier_id)->full_name],
+                $mergeComment
+            );
+            return $mergeComment;
+        }
+        return '';
+    }
+
+    public function getMergedChildInfoAttribute(): string
+    {
+        if ($this->parent_id !== null && $this->unifier_id) {
+            $parentTicket = Ticket::find($this->parent_id);
+            $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
+            $mergeComment = $translationsArray->ticket->ticket_merge_child_msg;
+            $mergeComment = str_replace(
+                ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
+                [$parentTicket->number, $parentTicket->original_name, $this->merged_at, User::find($this->unifier_id)->full_name],
+                $mergeComment
+            );
+            return $mergeComment;
         }
         return '';
     }
