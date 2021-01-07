@@ -79,7 +79,7 @@ class RegularInviteEmail extends Notification
                 ->greeting(' ')
                 ->line('Hallo ' . $this->name . ', ')
                 ->line("Willkommen zurück zu unserem $this->from Ticketing-System der $this->from. Ihr Konto wurde wiederhergestellt.")
-                ->line("Bitte benutzen Sie Ihr neues Passwort, um sich in Ihr Konto anzumelden:")
+                ->line("Bitte benutzen Sie Ihr Login-Name, um sich in Ihr Konto anzumelden:")
                 ->line('Ihr Login-Name: ' . $this->email)
                 ->line('Ihr Passwort: ' . $this->password)
                 ->action('Link zu unserem Ticketsystem: ', env('APP_URL'))
