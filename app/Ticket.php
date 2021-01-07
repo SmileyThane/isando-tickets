@@ -201,7 +201,7 @@ class Ticket extends Model
             $mergeCommentPrefix .= $this->number . ' "' . $this->original_name . '"';
             $unifier = $this->unifier_id && $this->merged_at ?
                 $translationsArray->ticket->ticket_merge_comment_middle . $this->merged_at .
-                $translationsArray->main->by . User::find($this->unifier_id)->full_name : '';
+                $translationsArray->ticket->ticket_merge_comment_middle_2 . User::find($this->unifier_id)->full_name : '';
             $postfix = $this->merged_at ? $translationsArray->ticket->ticket_merge_comment_postfix : '';
             return $mergeCommentPrefix . $unifier . $postfix;
         }

@@ -243,6 +243,7 @@ class LanguageSeeder extends Seeder
     "close_ticket":"Close ticket",
     "ticket_merge_comment_prefix": "Ticket ",
     "ticket_merge_comment_middle": " was merged with this ticket on ",
+    "ticket_merge_comment_middle_2": " by ",
     "ticket_merge_comment_postfix": ", and it was closed. "
   },
   "main": {
@@ -711,6 +712,7 @@ class LanguageSeeder extends Seeder
     "close_ticket":"Ticket schliessen",
     "ticket_merge_comment_prefix": "Ticket ",
     "ticket_merge_comment_middle": " wurde am ",
+    "ticket_merge_comment_middle_2": " von ",
     "ticket_merge_comment_postfix": " mit diesem Ticket zusammengeführt und geschlossen. "
 
   },
