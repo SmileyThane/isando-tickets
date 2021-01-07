@@ -685,9 +685,9 @@
             </v-col>
         </v-row>
         <v-row justify="center">
-            <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
+            <v-dialog v-model="removeEmployeeDialog" max-width="520" persistent>
                 <v-card>
-                    <v-card-title>{{ langMap.individuals.unlink }}?</v-card-title>
+                    <v-card-title>{{ langMap.individuals.unlink }}</v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">

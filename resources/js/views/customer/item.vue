@@ -535,7 +535,7 @@
                                     >
                                         <v-card-text style="padding: 5px 10px ;">
                                             <v-tooltip top
-
+                                                       :color="themeColor"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <span
@@ -557,7 +557,6 @@
                                                         }}
                                                     </p>
                                                     </span>
-
                                                 </template>
                                                 <span>
                                                     {{ langMap.company.user }}:
@@ -596,7 +595,7 @@
                                                         v-bind="attrs"
                                                         v-on="on"
                                                         icon
-                                                        @click.native.stop="removeEmployeeProcess(clientEmployee)">
+                                                        @click.native.stop="removeEmployeeProcess(clientEmployee.employee)">
                                                         <v-icon
                                                             small
 
@@ -715,13 +714,29 @@
                         <template>
                             <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
                                 <v-card>
-                                    <v-card-title>{{ langMap.individuals.unlink }}</v-card-title>
+                                    <v-card-title>{{ langMap.company.delete_employee_msg }}</v-card-title>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
                                             {{ langMap.main.cancel }}
                                         </v-btn>
                                         <v-btn color="red darken-1" text @click="removeEmployee(selectedEmployeeId)">
+                                            {{ langMap.main.delete }}
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </template>
+                        <template>
+                            <v-dialog v-model="unlinkEmployeeDialog" max-width="520" persistent>
+                                <v-card>
+                                    <v-card-title>{{ langMap.individuals.unlink }}</v-card-title>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="grey darken-1" text @click="unlinkEmployeeDialog = false">
+                                            {{ langMap.main.cancel }}
+                                        </v-btn>
+                                        <v-btn color="red darken-1" text @click="unlinkEmployee(selectedEmployeeId)">
                                             {{ langMap.main.delete }}
                                         </v-btn>
                                     </v-card-actions>
@@ -861,7 +876,7 @@
                                     </v-btn>
                                     <v-btn
                                         color="red darken-1" text
-                                        @click="removeEmployeeProcess(contactInfoForm)"
+                                        @click="unlinkEmployeeProcess(contactInfoForm)"
                                     >
                                         <v-icon small>
                                             mdi-delete
@@ -1461,6 +1476,7 @@ export default {
             },
             selectedEmployeeId: null,
             removeEmployeeDialog: false,
+            unlinkEmployeeDialog: false,
             contactInfoModal: false,
             contactInfoEditBtn: false,
             roles: [
@@ -1890,7 +1906,7 @@ export default {
             this.removeEmployeeDialog = true
         },
         removeEmployee(id) {
-            axios.delete(`/api/client/employee/${id}`).then(response => {
+            axios.delete(`/api/company/employee/${id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
@@ -1899,6 +1915,30 @@ export default {
                     this.actionColor = 'success'
                     this.snackbar = true;
                     this.removeEmployeeDialog = false
+                    this.contactInfoModal = false
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+
+            });
+        },
+        unlinkEmployeeProcess(item) {
+            console.log(item);
+            this.selectedEmployeeId = item.id
+            this.unlinkEmployeeDialog = true
+        },
+        unlinkEmployee(id) {
+            axios.delete(`/api/client/employee/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient()
+                    this.rolesDialog = false
+                    this.snackbarMessage = this.langMap.company.employee_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.unlinkEmployeeDialog = false
                     this.contactInfoModal = false
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;

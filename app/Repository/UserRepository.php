@@ -108,20 +108,26 @@ class UserRepository
             $user = User::find($request->user_id);
             $user->is_active = $request->is_active;
             $user->save();
-//            Email::where(['entity_id' => $user->id, 'entity_type' => User::class])
             $email = Email::find($request->email_id);
 
             if ($user->is_active === true) {
                 $email->email_type = 1;
-                $this->sendInvite($user, Role::COMPANY_CLIENT);
-            } else {
-                $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $user->employee->companyData->id)->first();
-                $email->email_type = $secondaryType ? $secondaryType->id : 1;
+                $email->save();
+
+                $companyId =  $user->employee->companyData->id;
+                $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
+                if (!$secondaryType) {
+                    $companyId =  Auth::user()->employee->companyData->id;
+                    $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
+                }
+                Email::where('id', '<>', $email->id)->where('email_type', 1)->where('entity_type', $email->entity_type)->where('entity_id', $email->entity_id)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+
+                $this->sendInvite($user->fresh(), Role::COMPANY_CLIENT);
             }
-            $email->save();
+
             $result = true;
-        } catch (Throwable $th) {
-            dd($th);
+        } catch (Throwable $throwable) {
+            Log::error($throwable);
         }
         return $result;
     }
@@ -141,6 +147,7 @@ class UserRepository
         } catch (Throwable $throwable) {
             Log::error($throwable);
             //hack for broken notification system
+            return false;
         }
         return true;
     }

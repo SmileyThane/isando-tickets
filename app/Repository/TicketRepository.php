@@ -72,8 +72,25 @@ class TicketRepository
             $ticketResult->where(
                 static function ($query) use ($request) {
                     if ($request->has('search_param')) {
-                        $key = $request->search_param === 'ID' ? 'id' : 'name';
-                        $query->where($key, 'like', '%' . trim($request->search) . '%');
+                        switch (strtolower($request->search_param)) {
+                            case 'id':
+                                $query->where('id', 'like', '%' . trim($request->search) . '%');
+                                break;
+                            case 'contact':
+                                $search = trim($request->search);
+                                $query->whereHas('contact.userData', function ($q) use ($search) {
+                                    $q->where(function ($_query) use ($search) {
+                                        $_query->where('name', 'LIKE', '%' . $search . '%')
+                                            ->orWhere('surname', 'LIKE', '%' . $search . '%')
+                                            ->orWhereHas('emails', function ($_q) use ($search) {
+                                                $_q->where('email', 'LIKE', '%' . $search . '%');
+                                            });
+                                    });
+                                });
+                                break;
+                            default:
+                                $query->where('name', 'like', '%' . trim($request->search) . '%');
+                        }
                     } else {
                         $query->where('name', 'like', '%' . trim($request->search) . '%')
                             ->orWhere('description', 'like', '%' . trim($request->search) . '%');
@@ -394,6 +411,7 @@ class TicketRepository
             }
             $parentTicket->unifier_id = Auth::id();
             $parentTicket->merged_at = now();
+            $parentTicket->merge_comment = $request->merge_comment;
             $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged', $childNumbers);
             $this->ticketUpdateRepo->addHistoryItem($parentTicket->id, null, $historyDescription);
             $parentTicket->save();

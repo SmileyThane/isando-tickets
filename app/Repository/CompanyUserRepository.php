@@ -69,19 +69,21 @@ class CompanyUserRepository
                 case 'id':
                     return $item->userData->id;
                 case 'name':
-                    return $item->userData->name;
+                    return mb_strtolower($item->userData->name);
                 case 'surname':
-                    return $item->userData->surname;
+                    return mb_strtolower($item->userData->surname);
                 case 'email':
+                case 'emails':
                     $email = $item->userData->contact_email;
-                    return $email ? $email->email : '';
+                    return $email ? mb_strtolower($email->email) : '';
                 case 'is_active':
                     return $item->userData->is_active ? 1 : 0;
                 case 'status':
                     return $item->userData->status ? 1 : 0;
+                case 'client':
                 case 'clients':
                     if ($item->assignedToClients) {
-                        return $item->assignedToClients[0]->clients->name;
+                        return mb_strtolower($item->assignedToClients[0]->clients->name);
                     } else {
                         return '';
                     }
@@ -108,6 +110,7 @@ class CompanyUserRepository
         $companyUser = CompanyUser::find($id);
         if ($companyUser && !$companyUser->hasRole(Role::LICENSE_OWNER)) {
             User::where('id', $companyUser->user_id)->delete();
+            ClientCompanyUser::where('company_user_id', $companyUser->id)->delete();
             $companyUser->delete();
             $result = true;
         }
