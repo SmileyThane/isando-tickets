@@ -411,6 +411,7 @@ class TicketRepository
             }
             $parentTicket->unifier_id = Auth::id();
             $parentTicket->merged_at = now();
+            $parentTicket->merge_comment = $request->merge_comment;
             $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged', $childNumbers);
             $this->ticketUpdateRepo->addHistoryItem($parentTicket->id, null, $historyDescription);
             $parentTicket->save();
