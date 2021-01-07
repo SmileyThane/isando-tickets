@@ -110,6 +110,7 @@ class CompanyUserRepository
         $companyUser = CompanyUser::find($id);
         if ($companyUser && !$companyUser->hasRole(Role::LICENSE_OWNER)) {
             User::where('id', $companyUser->user_id)->delete();
+            ClientCompanyUser::where('company_user_id', $companyUser->id)->delete();
             $companyUser->delete();
             $result = true;
         }
