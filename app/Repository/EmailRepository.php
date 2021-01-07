@@ -29,25 +29,26 @@ class EmailRepository
         );
 
         if ($emailType === 1) {
-            $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+            $companyId = Auth::user()->employee->companyData->id;
             $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
-            Email::where('id', '<>', $email->id)->where('email_type', 1)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+            Email::where('id', '<>', $email->id)->where('email_type', 1)->where('entity_type', $entityType)->where('entity_id', $entityId)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+
         }
         return $email;
     }
 
-    public function update($id, $type, $value, $entityType, $entityId): Email
+    public function update($entityId, $entityType, $emailId, $emailValue, $emailType): Email
     {
-        $email = Email::find($id);
+        $email = Email::find($emailId);
         $email->update([
-            'email' => $value,
-            'email_type' => $type
+            'email' => $emailValue,
+            'email_type' => $emailType
         ]);
 
-        if ($type === 1) {
-            $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        if ($emailType === 1) {
+            $companyId = Auth::user()->employee->companyData->id;
             $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
-            Email::where('id', '<>', $id)->where('email_type', 1)->where('entity_type', $entityType)->where('entity_id', $entityId)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+            Email::where('id', '<>', $emailId)->where('email_type', 1)->where('entity_type', $entityType)->where('entity_id', $entityId)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
         }
         return $email;
     }

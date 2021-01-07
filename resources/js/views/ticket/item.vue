@@ -569,18 +569,86 @@
                 <v-card
                     outlined
                 >
-
                     <v-card-text>
-                        <div v-if="ticket.merge_info.length > 0">
+                        <div v-for="child_ticket in ticket.child_tickets"
+                             v-if="ticket.child_tickets"
+                             :key="child_ticket.id"
+                        >
+                            <div v-for="answer in child_ticket.answers"
+                                 v-if="child_ticket.answers.length > 0"
+                                 :key="answer.id"
+                            >
+                                <v-card
+                                    class="mx-auto"
+                                    dense
+                                    outlined
+                                >
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <span
+                                                class="text-left"
+                                                style="font-weight: bold;"
+                                            >
+                                                {{ answer.employee.user_data.full_name }}
+                                                {{
+                                                    answer.created_at_time !== '' ? answer.created_at_time :
+                                                        answer.created_at
+                                                }} - {{ ticket.name }}:
+                                            </span>
+                                            <div v-html="answer.answer"></div>
+                                            <v-col v-if="answer.attachments.length > 0 " cols="12">
+                                                <h4>{{ langMap.main.attachments }}</h4>
+                                                <div
+                                                    v-for="attachment in answer.attachments"
+                                                    v-if="answer.attachments.length > 0"
+                                                >
+                                                    <v-chip
+                                                        :color="themeColor"
+                                                        :href="attachment.link"
+                                                        class="ma-2"
+                                                        text-color="white"
+                                                    >
+                                                        {{ attachment.name }}
+                                                    </v-chip>
+                                                </div>
+                                            </v-col>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </v-card>
+                                <v-spacer>
+                                    &nbsp;
+                                </v-spacer>
+                            </div>
                             <v-card
                                 class="mx-auto"
+                                color="#f2f2f2"
                                 dense
                                 outlined
                             >
                                 <v-list-item>
                                     <v-list-item-content>
-                                        <span class="text-left" style="font-weight: bold;">
-                                            {{ ticket.merge_info }}
+                                        <span
+                                            v-if="child_ticket.merge_info.length > 0"
+                                            class="text-left"
+                                            style="font-weight: bold;"
+                                        >
+                                             {{ child_ticket.merge_info }}
+                                        </span>
+                                        <span
+                                            v-else
+                                            class="text-left"
+                                            style="font-weight: bold;">
+                                                {{ ticket.creator.user_data.full_name }}
+                                                {{
+                                                ticket.created_at_time !== '' ? ticket.created_at_time :
+                                                    ticket.created_at
+                                            }} - {{ ticket.name }}:
+                                        </span>
+                                        <div v-html="child_ticket.description"></div>
+                                        <span class="caption text-center"
+                                              v-if="ticket.merge_comment"
+                                        >
+                                                ({{ ticket.merge_comment }})
                                         </span>
                                     </v-list-item-content>
                                 </v-list-item>
@@ -589,7 +657,6 @@
                                 &nbsp;
                             </v-spacer>
                         </div>
-
                         <div v-for="answer in ticket.answers"
                              :key="answer.id"
                         >
@@ -640,7 +707,7 @@
                         >
                             <v-list-item>
                                 <v-list-item-content>
-                                    <span v-text="ticket.merge_comment"></span>
+<!--                                    <span v-text="ticket.merge_comment"></span>-->
                                     <span class="text-left" style="font-weight: bold;">
                                                 {{ ticket.creator.user_data.full_name }}
                                                 {{
@@ -652,78 +719,7 @@
                                 </v-list-item-content>
                             </v-list-item>
                         </v-card>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <div v-for="child_ticket in ticket.child_tickets"
-                             v-if="ticket.child_tickets"
-                             :key="child_ticket.id"
-                        >
-                            <div v-for="answer in child_ticket.answers"
-                                 v-if="child_ticket.answers.length > 0"
-                                 :key="answer.id"
-                            >
-                                <v-card
-                                    class="mx-auto"
-                                    dense
-                                    outlined
-                                >
-                                    <v-list-item>
-                                        <v-list-item-content>
-                                            <span class="text-left" style="font-weight: bold;">
-                                                {{ answer.employee.user_data.full_name }}
-                                                {{
-                                                    answer.created_at_time !== '' ? answer.created_at_time :
-                                                        answer.created_at
-                                                }} - {{ ticket.name }}:
-                                            </span>
-                                            <div v-html="answer.answer"></div>
-                                            <v-col v-if="answer.attachments.length > 0 " cols="12">
-                                                <h4>{{ langMap.main.attachments }}</h4>
-                                                <div
-                                                    v-for="attachment in answer.attachments"
-                                                    v-if="answer.attachments.length > 0"
-                                                >
-                                                    <v-chip
-                                                        :color="themeColor"
-                                                        :href="attachment.link"
-                                                        class="ma-2"
-                                                        text-color="white"
-                                                    >
-                                                        {{ attachment.name }}
-                                                    </v-chip>
-                                                </div>
-                                            </v-col>
-                                        </v-list-item-content>
-                                    </v-list-item>
-                                </v-card>
-                                <v-spacer>
-                                    &nbsp;
-                                </v-spacer>
-                            </div>
-                            <v-card
-                                class="mx-auto"
-                                color="#f2f2f2"
-                                dense
-                                outlined
-                            >
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <span class="text-left" style="font-weight: bold;">
-                                                {{ ticket.creator.user_data.full_name }}
-                                                {{
-                                                ticket.created_at_time !== '' ? ticket.created_at_time :
-                                                    ticket.created_at
-                                            }} - {{ ticket.name }}:
-                                        </span>
-                                        <div v-html="child_ticket.description"></div>
-                                    </v-list-item-content>
-                                </v-list-item>
-                            </v-card>
-                            <v-spacer>
-                                &nbsp;
-                            </v-spacer>
-                        </div>
+
                     </v-card-text>
                 </v-card>
 
@@ -838,7 +834,7 @@
                 </v-expansion-panels>
                 <br>
                 <v-expansion-panels
-                v-model="teamAssignPanel"
+                    v-model="teamAssignPanel"
                 >
                     <v-expansion-panel>
                         <v-expansion-panel-header
@@ -899,11 +895,11 @@
                                 >
                                     <template v-slot:selection="data">
                                         {{ data.item.employee.user_data.full_name }}
-<!--                                        ({{ data.item.employee.user_data.email }})-->
+                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                     <template v-slot:item="data">
                                         {{ data.item.employee.user_data.full_name }}
-<!--                                        ({{ data.item.employee.user_data.email }})-->
+                                        <!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                 </v-autocomplete>
                                 <v-btn :color="themeColor"
@@ -946,6 +942,30 @@
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
                             <br>
+                            <span v-for="childTicket in ticket.child_tickets"
+                                  :key="childTicket.id"
+                            >
+                            <div v-for="noticeItem in childTicket.notices"
+                                 :key="noticeItem.id"
+                            >
+                                <v-card
+                                    class="mx-auto"
+                                    dense
+                                    outlined
+                                >
+                                    <v-list-item three-line>
+                                        <v-list-item-content class="custom-small-text">
+                                            <strong>{{childTicket.number}}|{{ noticeItem.employee.user_data.name }}
+                                                {{ noticeItem.employee.user_data.surname }}
+                                                {{ noticeItem.created_at }}:</strong>
+                                            <div v-html="noticeItem.notice"></div>
+                                        </v-list-item-content>
+
+                                    </v-list-item>
+                                </v-card>
+                                <br>
+                            </div>
+                            </span>
                             <div v-for="noticeItem in ticket.notices"
                                  :key="noticeItem.id"
                             >
@@ -1586,7 +1606,6 @@ export default {
             if (value === 100) {
                 this.isLoaded = true;
             }
-            console.log(`val ${value}`);
         }
     },
     mounted() {
@@ -1651,7 +1670,6 @@ export default {
                             result[elementPos] = temp
                         }
                     }
-                    console.log(result);
                     if (this.ticketsSearch === '') {
                         this.mergeParentTickets = result
                         this.linkParentTickets = result

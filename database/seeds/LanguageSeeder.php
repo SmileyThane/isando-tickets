@@ -242,7 +242,9 @@ class LanguageSeeder extends Seeder
     "is_spam": "Marked as Spam",
     "reported_by": "Reported by",
     "close_ticket":"Close ticket",
-    "ticket_merge_comment_prefix": "This ticket was merged with a ticket No. "
+    "ticket_merge_comment_prefix": "Ticket ",
+    "ticket_merge_comment_middle": " was merged with this ticket on ",
+    "ticket_merge_comment_postfix": ", and it was closed. "
   },
   "main": {
     "create": "Create",
@@ -709,7 +711,10 @@ class LanguageSeeder extends Seeder
     "is_spam": "Marked as Spam",
     "reported_by": "Erstellt von",
     "close_ticket":"Ticket schliessen",
-    "ticket_merge_comment_prefix": "Dieses Ticket wurde mit der Ticket-Nr. "
+    "ticket_merge_comment_prefix": "Ticket ",
+    "ticket_merge_comment_middle": " wurde am ",
+    "ticket_merge_comment_postfix": " mit diesem Ticket zusammengeführt und geschlossen. "
+
   },
 
    "main":{

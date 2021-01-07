@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\Notification;
 use App\Repository\NotificationRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class NotificationController extends Controller
 {
@@ -56,7 +57,7 @@ class NotificationController extends Controller
         }
 
         $notification = new Notification($request['recipients'], $request['subject'], $request['body'], $attachments);
-        //  Mail::send($notification);
+        Mail::send($notification);
         $history = $this->notificationRepo->addHistory($request['subject'], $request['body'], $request['notification_type'], $request['priority'], $notification->bcc, $attachmentNames);
         return self::showResponse(true, $history);
     }

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use App\TicketType;
 
 class Ticket extends Model
 {
@@ -23,7 +22,7 @@ class Ticket extends Model
         'category_id', 'parent_id', 'unifier_id', 'merged_at'
     ];
     protected $appends = ['number', 'from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
-        'replicated_to', 'ticket_type', 'created_at_time', 'merge_info'];
+        'replicated_to', 'ticket_type', 'created_at_time', 'merge_info', 'original_name'];
     protected $hidden = ['to'];
 
     protected static function booted()
@@ -35,6 +34,11 @@ class Ticket extends Model
             $ticket->sequence = $last;
             $ticket->save();
         });
+    }
+
+    public function getOriginalNameAttribute()
+    {
+        return $this->attributes['name'];
     }
 
     public function getNameAttribute()
@@ -191,23 +195,15 @@ class Ticket extends Model
 
     public function getMergeInfoAttribute(): string
     {
-        $childTickets = $this->childTickets()->get();
-        if ($this->parent_id !== null || count($childTickets)) {
+        if ($this->parent_id !== null) {
             $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
             $mergeCommentPrefix = $translationsArray->ticket->ticket_merge_comment_prefix;
-            if ($this->parent_id === null) {
-                foreach ($childTickets as $key => $ticket) {
-                    $comma = $key !== count($childTickets) - 1 ? ', ' : '';
-                    $mergeCommentPrefix .= $ticket->number . $comma;
-                }
-            } else {
-                $mergeCommentPrefix .= Ticket::find($this->parent_id)->number;
-            }
-
-            $merged = $this->merged_at ? $translationsArray->main->on . $this->merged_at : '';
-            $unifier = $this->unifier_id ? $translationsArray->main->by . User::find($this->unifier_id)->full_name : '';
-            $postfix = $this->merged_at ?  $translationsArray->main->and_it_was_closed : '';
-            return $mergeCommentPrefix . $merged . $unifier . $postfix;
+            $mergeCommentPrefix .= $this->number . ' "' . $this->original_name . '"';
+            $unifier = $this->unifier_id && $this->merged_at ?
+                $translationsArray->ticket->ticket_merge_comment_middle . $this->merged_at .
+                $translationsArray->main->by . User::find($this->unifier_id)->full_name : '';
+            $postfix = $this->merged_at ? $translationsArray->ticket->ticket_merge_comment_postfix : '';
+            return $mergeCommentPrefix . $unifier . $postfix;
         }
         return '';
     }
@@ -215,7 +211,7 @@ class Ticket extends Model
     public function childTickets(): HasMany
     {
 //        return self::where('parent_id', $this->id);
-        return $this->hasMany(self::class, 'parent_id', 'id');
+        return $this->hasMany(self::class, 'parent_id', 'id')->orderByDesc('id');
     }
 
     public function getNumberAttribute(): string
