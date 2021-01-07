@@ -193,8 +193,7 @@ class ClientRepository
                 'employee.userData',
                 function ($query) use ($request) {
                     $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('surname', 'like', $request->search . '%')
-                        ->orWhere('email', 'like', $request->search . '%');
+                        ->orWhere('surname', 'like', $request->search . '%');
                 }
             );
         }
@@ -221,9 +220,11 @@ class ClientRepository
                     case 'name':
                         return $item->name;
                     case 'email':
+                    case 'emails':
                         $email = $item->contact_email;
                         return $email ? $email->email : '';
                     case 'phone':
+                    case 'phones':
                         $phone = $item->contact_phone;
                         return $phone ? $phone->phone : '';
                     case 'city':
@@ -248,9 +249,11 @@ class ClientRepository
                     case 'name':
                         return $item->employee->userData->full_name;
                     case 'email':
+                    case 'emails':
                         $email = $item->employee->userData->contact_email;
                         return $email ? $email->email : '';
                     case 'phone':
+                    case 'phones':
                         $phone = $item->employee->userData->contact_phone;
                         return $phone ? $phone->phone : '';
                     case 'city':
