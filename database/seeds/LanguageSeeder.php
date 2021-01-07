@@ -241,10 +241,8 @@ class LanguageSeeder extends Seeder
     "is_spam": "Marked as Spam",
     "reported_by": "Reported by",
     "close_ticket":"Close ticket",
-    "ticket_merge_comment_prefix": "Ticket ",
-    "ticket_merge_comment_middle": " was merged with this ticket on ",
-    "ticket_merge_comment_middle_2": " by ",
-    "ticket_merge_comment_postfix": ", and it was closed. "
+    "ticket_merge_parent_msg": "Ticket $ticket_number \"$ticket_subject\" was merged with this ticket on $date by $unifier, and it was closed. ",
+    "ticket_merge_child_msg": "This ticket was closed and merged with ticket $ticket_number \"$ticket_subject\" on $date by $unifier."
   },
   "main": {
     "create": "Create",
@@ -710,10 +708,8 @@ class LanguageSeeder extends Seeder
     "is_spam": "Marked as Spam",
     "reported_by": "Erstellt von",
     "close_ticket":"Ticket schliessen",
-    "ticket_merge_comment_prefix": "Ticket ",
-    "ticket_merge_comment_middle": " wurde am ",
-    "ticket_merge_comment_middle_2": " von ",
-    "ticket_merge_comment_postfix": " mit diesem Ticket zusammengeführt und geschlossen. "
+    "ticket_merge_parent_msg": "Ticket $ticket_number \"$ticket_subject\" wurde am $date von $unifier mit diesem Ticket zusammengeführt und geschlossen.",
+    "ticket_merge_child_msg": "Dieses Ticket wurde am $date von $unifier geschlossen und mit dem Ticket $ticket_number \"$ticket_subject\" zusammengeführt."
 
   },
 
