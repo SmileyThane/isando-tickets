@@ -673,7 +673,7 @@ class LanguageSeeder extends Seeder
   "social_info": "Social Media"
   },
   "ticket": {
-    "merged_abbr": "ZGFT",
+    "merged_abbr": "ZGF",
     "number": "Ticketnummer",
     "contact_name": "Kontaktname",
     "contact_email": "Kontakt E-mail",
