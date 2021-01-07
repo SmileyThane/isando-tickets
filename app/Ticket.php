@@ -43,8 +43,9 @@ class Ticket extends Model
 
     public function getNameAttribute()
     {
+        $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
         $name = $this->attributes['name'];
-        $name .= $this->parent_id ? " [Merged]" : "";
+        $name .= $this->parent_id ? '[' . $translationsArray->ticket->merged_abbr . ']' : "";
         $name .= $this->is_spam === 1 ? " [SPAM]" : "";
         return $name;
     }
