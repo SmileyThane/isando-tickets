@@ -243,6 +243,7 @@ class TicketRepository
                 $ticket->from_entity_id,
                 $request->from_entity_id,
                 $ticket->id);
+            $ticket->name = $request->name;
             $ticket->from_entity_id = $request->from_entity_id;
             $ticket->from_entity_type = $request->from_entity_type;
             $ticket->to_team_id = $this->ticketUpdateRepo->setTeamId($ticket->to_team_id, $request->to_team_id, $ticket->id);
