@@ -154,6 +154,22 @@
                                     />
                                 </div>
                                 <div class="col-md-12">
+                                    <v-select
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        v-model="selectedSignature"
+                                        :items="signatures"
+                                        :label="langMap.notification.signature"
+                                        item-value="signature"
+                                        item-text="name"
+                                        dense
+                                    >
+                                        <template slot="selection" slot-scope="data">
+                                            <div class="text--black mt-3" v-html="data.item.signature"></div>
+                                        </template>
+                                    </v-select>
+                                </div>
+                                <div class="col-md-12">
                                     <v-file-input
                                         :color="themeColor"
                                         :item-color="themeColor"
@@ -1468,6 +1484,8 @@ export default {
             assignPanel: [],
             notesPanel: [],
             teamAssignPanel: [],
+            signatures: [],
+            selectedSignature: '',
             thirdColumn: false,
             mergeBlock: false,
             linkBlock: false,
@@ -1654,6 +1672,7 @@ export default {
         this.getTypes()
         this.getTeams()
         this.getTickets()
+        this.getSignatures()
         // if (localStorage.getticket('auth_token')) {
         //     this.$router.push('tickets')
         // }
@@ -1690,6 +1709,18 @@ export default {
                         this.notesPanel.push(0);
                     }
 
+                }
+            });
+        },
+        getSignatures() {
+            axios.get('/api/email_signatures').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.signatures = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
                 }
             });
         },
@@ -1855,6 +1886,9 @@ export default {
             let formData = new FormData();
             for (let key in this.ticketAnswer) {
                 if (key !== 'files') {
+                    if (this.selectedSignature !== '') {
+                        this.ticketAnswer[key] += '<hr><br>' + this.selectedSignature
+                    }
                     formData.append(key, this.ticketAnswer[key]);
                 }
             }
