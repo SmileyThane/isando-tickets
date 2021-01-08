@@ -65,6 +65,13 @@
 
                         <v-row>
                             <v-col cols="12">
+                                <v-text-field
+                                    v-model="ticket.original_name"
+                                    :color="themeColor"
+                                    :item-color="themeColor"
+                                    :label="langMap.ticket.subject"
+                                    dense
+                                />
                                 <v-autocomplete
                                     v-model="from"
                                     :color="themeColor"
@@ -1819,6 +1826,7 @@ export default {
         updateTicket() {
             this.ticket.from_entity_id = Object.values(this.from)[0]
             this.ticket.from_entity_type = Object.keys(this.from)[0]
+            this.ticket.name = this.ticket.original_name
             axios.patch(`/api/ticket/${this.$route.params.id}`, this.ticket).then(response => {
                 response = response.data
                 if (response.success === true) {
