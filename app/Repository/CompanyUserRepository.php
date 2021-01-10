@@ -152,7 +152,7 @@ class CompanyUserRepository
                 if ($isNew === true) {
                     try {
                         @$user->notify(
-                            new RegularInviteEmail($companyUser->companyData->name, $user->full_name, $request['role_id'], $request['email'], $request['password'], $user->language->short_code)
+                            new RegularInviteEmail($companyUser->companyData->title, $companyUser->companyData->name, $user->full_name, $request['role_id'], $request['email'], $request['password'], $user->language->short_code)
                         );
                     } catch (\Throwable $throwable) {
                         Log::error($throwable);
