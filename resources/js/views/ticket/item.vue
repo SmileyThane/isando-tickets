@@ -1213,7 +1213,7 @@
                             style="background:#F0F0F0;"
                         >
                             <span>
-                                <strong>Merged tickets</strong>
+                                <strong>{{langMap.ticket.merged_abbr}} tickets</strong>
                             </span>
 
                             <template v-slot:actions>
