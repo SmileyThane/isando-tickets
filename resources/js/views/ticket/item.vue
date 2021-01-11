@@ -1213,7 +1213,7 @@
                             style="background:#F0F0F0;"
                         >
                             <span>
-                                <strong>Merged tickets</strong>
+                                <strong>{{langMap.ticket.merged_abbr}} tickets</strong>
                             </span>
 
                             <template v-slot:actions>
@@ -1725,26 +1725,29 @@ export default {
             });
         },
         getTickets() {
+            const search = this.ticketsSearch;
             axios.get(`/api/ticket?search_param=${this.searchLabel}&search=${this.ticketsSearch}&minified=1`)
                 .then(response => {
-                    response = response.data
-                    let result = response.data.data
-                    if (result.length > 1) {
-                        let elementPos = result.map(function (x) {
-                            return x.id;
-                        }).indexOf(this.ticket.id);
-                        if (elementPos !== -1) {
-                            let temp = result[0]
-                            result[0] = result[elementPos]
-                            result[elementPos] = temp
+                    if (this.ticketsSearch === search) {
+                        response = response.data
+                        let result = response.data.data
+                        if (result.length > 1) {
+                            let elementPos = result.map(function (x) {
+                                return x.id;
+                            }).indexOf(this.ticket.id);
+                            if (elementPos !== -1) {
+                                let temp = result[0]
+                                result[0] = result[elementPos]
+                                result[elementPos] = temp
+                            }
                         }
+                        if (this.ticketsSearch === '') {
+                            this.mergeParentTickets = result
+                            this.linkParentTickets = result
+                        }
+                        this.mergeTicketForm.child_ticket_id = [this.ticket.id]
+                        this.tickets = result
                     }
-                    if (this.ticketsSearch === '') {
-                        this.mergeParentTickets = result
-                        this.linkParentTickets = result
-                    }
-                    this.mergeTicketForm.child_ticket_id = [this.ticket.id]
-                    this.tickets = result
                 });
         },
         getSuppliers() {

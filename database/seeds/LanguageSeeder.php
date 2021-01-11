@@ -706,7 +706,7 @@ class LanguageSeeder extends Seeder
     "access_description": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
     "answer_description": "Schreiben Sie Ihre Antwort hier...",
     "no_assigned": "Kein Agent zugewiesen",
-    "merge": "Zusammengeführen",
+    "merge": "Zusammenführen",
     "is_spam": "Marked as Spam",
     "reported_by": "Erstellt von",
     "close_ticket":"Ticket schliessen",
