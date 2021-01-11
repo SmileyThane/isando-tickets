@@ -12,7 +12,7 @@ class ResetPasswordEmail extends Notification
 {
     use Queueable;
 
-
+    protected $title;
     protected $name;
     protected $role;
     protected $email;
@@ -23,15 +23,18 @@ class ResetPasswordEmail extends Notification
     /**
      * Create a new notification instance.
      *
+     * @param $from
+     * @param $title
      * @param $name
      * @param $role
      * @param $email
      * @param $password
      * @param $language
      */
-    public function __construct($from, $name, $role, $email, $password, $language = 'en')
+    public function __construct($from, $title, $name, $role, $email, $password, $language = 'en')
     {
         $this->from = $from;
+        $this->title = $title;
         $this->name = $name;
         $this->role = $role;
         $this->email = $email;
@@ -77,12 +80,12 @@ class ResetPasswordEmail extends Notification
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject('Sie wurden zum Ticketsystem eingeladen!')
                 ->greeting(' ')
-                ->line('Hallo ' . $this->name . ', ')
+                ->line('Sehr geehrte ' . $this->title . ' '. $this->name . ',')
                 ->line("Willkommen zurück zu unserem $this->from Ticketing-System der $this->from. Ihr Konto wurde wiederhergestellt.")
                 ->line("Bitte benutzen Sie Ihr neues Passwort, um sich in Ihr Konto anzumelden:")
                 ->line('Ihr Login-Name: ' . $this->email)
                 ->line('Ihr Passwort: ' . $this->password)
-                ->action('Link zu unserem Ticketsystem: ', env('APP_URL'))
+                ->action('Link zu unserem Ticketing-System: ', env('APP_URL'))
                 ->line('Wir wünschen Ihnen einen schönen Tag!')
                 ->line('')
                 ->salutation('Freundliche Grüsse, ' . $this->from);

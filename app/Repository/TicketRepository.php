@@ -291,7 +291,7 @@ class TicketRepository
                 $company = $companyUser->companyData;
                 if ($user->is_active) {
                     try {
-                        $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id, $user->language->short_code));
+                        $user->notify(new $notificationClass($company->name, $user->title, $user->full_name, $ticket->name, $ticket->id, $user->language->short_code));
                     } catch (Throwable $throwable) {
                         Log::error($throwable);
                         //hack for broken notification system

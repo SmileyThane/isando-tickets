@@ -12,7 +12,7 @@ class NewTicket extends Notification
 {
     use Queueable;
 
-
+    protected $title;
     protected $name;
     protected $ticket_subject;
     protected $ticket_id;
@@ -23,17 +23,19 @@ class NewTicket extends Notification
      * Create a new notification instance.
      *
      * @param $from
+     * @param $title
      * @param $name
      * @param $ticket_subject
      * @param $ticket_id
      * @param $language
      */
-    public function __construct($from, $name, $ticket_subject, $ticket_id, $language = 'en')
+    public function __construct($from, $title, $name, $ticket_subject, $ticket_id, $language = 'en')
     {
+        $this->from = $from;
+        $this->title = $title;
         $this->name = $name;
         $this->ticket_subject = $ticket_subject;
         $this->ticket_id = $ticket_id;
-        $this->from = $from;
         $this->language = $language;
     }
 
@@ -73,14 +75,17 @@ class NewTicket extends Notification
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject('Neues Ticket für Sie!')
-                ->line('Hallo ' . $this->name . ',')
+                ->line('Sehr geehrte ' . $this->title . ' '. $this->name . ',')
                 ->line('Sie haben ein neues Ticket in Ihrem Profil: ' . $this->ticket_subject)
                 ->action('Online ansehen:', env('APP_URL') . '/ticket/' . $this->ticket_id)
                 ->line('oder antworten Sie direkt auf diese E-Mail.')
                 ->line('Bitte kopieren Sie diese Nachricht nicht in Ihre E-Mail-Antwort und ändern Sie den Betreff dieser E-Mail nicht.
                 Dies kann zu Verzögerungen bei der Bearbeitung führen, da Ihre Antwort möglicherweise nicht korrekt Ihrem Ticket zugewiesen wird.')
                 ->line('Wir wünschen Ihnen einen schönen Tag!')
-                ->salutation('Freundliche Grüsse, ' . $this->from);
+                ->salutation('Freundliche Grüsse, ' . $this->from)
+                ->line('')
+                ->line('Wenn Sie Probleme beim Klicken auf den "Link zu unserem Ticketing-System" haben:
+                Kopieren Sie die untenstehende URL und fügen Sie diese in Ihren Webbrowser ein: ' . env('APP_URL') . '.');
         }
     }
 
