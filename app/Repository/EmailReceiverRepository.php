@@ -7,6 +7,7 @@ use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
+use App\Email;
 use App\Http\Controllers\Controller;
 use App\MailCache;
 use App\ProductClient;
@@ -57,7 +58,11 @@ class EmailReceiverRepository
             $senderObject = $message->getSender()[0];
             $rawSubject = $message->getSubject();
             $senderEmail = $senderObject->mail;
-            $userGlobal = User::where(['is_active' => true, 'email' => $senderEmail])->first();
+            $userGlobal = null;
+            $email = Email::where(['email' => $senderEmail, 'entity_type' => User::class])->first();
+            if ($email) {
+                $userGlobal = User::where(['is_active' => true, 'id' => $email->entity_id])->first();
+            }
             if ($userGlobal) {
                 Log::info('email from ' . $userGlobal->name);
                 try {
@@ -130,7 +135,11 @@ class EmailReceiverRepository
 
     private function ticketAnswerFromEmail($senderEmail, $ticket, $message, $files = []): bool
     {
-        $user = User::where(['is_active' => true, 'email' => $senderEmail])->first();
+        $user = null;
+        $email = Email::where(['email' => $senderEmail, 'entity_type' => User::class])->first();
+        if ($email) {
+            $user = User::where(['is_active' => true, 'id' => $email->entity_id])->first();
+        }
         if (!$user) {
             Log::info($senderEmail . ' not found');
         }
@@ -150,8 +159,12 @@ class EmailReceiverRepository
     private function createTicketFromEmail($senderEmail, $message, $ticketSubject, $files = [], $priorityId = 2, $accessDetails = null, $connectionDetails = null): ?Ticket
     {
         $fromEntityId = $fromEntityType = $toEntityId = $toEntityType = $productId = null;
-        $userFrom = User::where(['is_active' => true, 'email' => $senderEmail])->first();
-        if ($userFrom->employee->hasRole(Role::COMPANY_CLIENT)) {
+        $userFrom = null;
+        $email = Email::where(['email' => $senderEmail, 'entity_type' => User::class])->first();
+        if ($email) {
+            $userFrom = User::where(['is_active' => true, 'id' => $email->entity_id])->first();
+        }
+        if ($userFrom && $userFrom->employee->hasRole(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $userFrom->employee->id)->first();
             if ($clientCompanyUser) {
                 $fromEntityId = $clientCompanyUser->client_id;
@@ -161,7 +174,7 @@ class EmailReceiverRepository
                 $productClient = ProductClient::where('client_id', $fromEntityId)->first();
                 $productId = $productClient ? $productClient->product_id : null;
             }
-        } else {
+        } elseif ($userFrom) {
             $fromEntityId = $userFrom->employee->company_id;
             $fromEntityType = Company::class;
             $toEntityId = $userFrom->employee->company_id;
@@ -227,7 +240,7 @@ class EmailReceiverRepository
         $message = [];
         unset($parsedArray['Email'], $parsedArray['Ticket Escalation']);
         $message['description'] = $message['access_details'] = '';
-        $message['description'] .= '<p><strong>From: </strong>' . $parsedArray['From / Name'] . ' - ' . $parsedArray['Firm / Organisation'] . ' sent on ' . now()->format('d-m-Y h:i:s') .  "</p>";
+        $message['description'] .= '<p><strong>From: </strong>' . $parsedArray['From / Name'] . ' - ' . $parsedArray['Firm / Organisation'] . ' sent on ' . now()->format('d-m-Y h:i:s') . "</p>";
         $message['description'] .= '<p><strong>Phone: </strong>' . $parsedArray['Phone'] . "</p>";
         $message['description'] .= '<p><strong>Mobile: </strong>' . $parsedArray['Mobile'] . "</p>";
         $message['description'] .= '<p><strong>Briefly describe your problem: </strong>' . str_replace("\n", '<br/>', $parsedArray['Briefly describe your problem']) . "</p>";
@@ -236,15 +249,6 @@ class EmailReceiverRepository
         $message['access_details'] .= 'Which Version: ' . $parsedArray['Which Version'] . "\n";
         $message['access_details'] .= 'Last Update: ' . $parsedArray['Last Update'] . "\n";
         return $message;
-    }
-
-    private function makeSystemRequest($uri, $token, $params)
-    {
-        $request = Request::create($uri, 'POST', $params);
-        $request->headers->set('Authorization', 'Bearer ' . $token->accessToken);
-        $request->headers->set('Accept', 'application/json');
-        $response = app()->handle($request);
-        return $response->getContent();
     }
 
     private function parsePriorityByName($priorityName = ''): int
@@ -264,6 +268,15 @@ class EmailReceiverRepository
             }
         }
         return $priorityId;
+    }
+
+    private function makeSystemRequest($uri, $token, $params)
+    {
+        $request = Request::create($uri, 'POST', $params);
+        $request->headers->set('Authorization', 'Bearer ' . $token->accessToken);
+        $request->headers->set('Accept', 'application/json');
+        $response = app()->handle($request);
+        return $response->getContent();
     }
 
 }
