@@ -20,6 +20,11 @@ import Notifications from './views/notify/index'
 import SingleNotification from './views/notify/item'
 import NotificationsHistory from './views/notify/history'
 import SingleNotificationHistory from './views/notify/sent'
+import TrackingDashboard from './views/tracking/dashboard'
+import TrackingTracker from './views/tracking/tracker'
+import TrackingCalendar from './views/tracking/calendar'
+import TrackingProjects from './views/tracking/projects'
+import TrackingReports from './views/tracking/reports'
 
 export default [
     {
@@ -201,5 +206,52 @@ export default [
             requiresAuth: true,
         },
         component: SingleNotificationHistory
+    },
+    {
+        path: '/tracking',
+        meta: {
+            requiresAuth: true
+        },
+        redirect: { name: 'tracking_dashboard' }
+    },
+    {
+        path: '/tracking/dashboard',
+        name: 'tracking_dashboard',
+        meta: {
+            requiresAuth: true
+        },
+        component: TrackingDashboard
+    },
+    {
+        path: '/tracking/tracker',
+        name: 'tracking_tracker',
+        meta: {
+            requiresAuth: true
+        },
+        component: TrackingTracker
+    },
+    {
+        path: '/tracking/calendar',
+        name: 'tracking_calendar',
+        meta: {
+            requiresAuth: true
+        },
+        component: TrackingCalendar
+    },
+    {
+        path: '/tracking/projects',
+        name: 'tracking_projects',
+        meta: {
+            requiresAuth: true
+        },
+        component: TrackingProjects
+    },
+    {
+        path: '/tracking/reports',
+        name: 'tracking_reports',
+        meta: {
+            requiresAuth: true
+        },
+        component: TrackingReports
     }
 ];

@@ -191,6 +191,89 @@
                 :value="sidebarGroups"
                 color="white"
                 multiple
+                prepend-icon="mdi-alarm"
+            >
+                <template
+                    v-slot:activator
+                >
+                    <v-list-item-content>
+                        <v-list-item-title>{{timeTracking}}</v-list-item-title>
+                    </v-list-item-content>
+                </template>
+                <v-list-item
+                    :color="themeColor" link
+                    style="background-color:white;"
+                    to="/tracking/dashboard"
+                >
+                    <v-list-item-action>
+                        <v-icon>mdi-view-dashboard-outline</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.tracking_dashboard}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item
+                    :color="themeColor" link
+                    style="background-color:white;"
+                    to="/tracking/tracker"
+                >
+                    <v-list-item-action>
+                        <v-icon>mdi-alarm</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.tracking_tracker}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item
+                    :color="themeColor" link
+                    style="background-color:white;"
+                    to="/tracking/calendar"
+                >
+                    <v-list-item-action>
+                        <v-icon>mdi-calendar</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.tracking_calendar}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item
+                    :color="themeColor" link
+                    style="background-color:white;"
+                    to="/tracking/projects"
+                >
+                    <v-list-item-action>
+                        <v-icon>mdi-folder-account-outline</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.tracking_projects}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item
+                    :color="themeColor" link
+                    style="background-color:white;"
+                    to="/tracking/reports"
+                >
+                    <v-list-item-action>
+                        <v-icon>mdi-chart-areaspline</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.tracking_reports}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list-group>
+        </v-list>
+        <v-divider></v-divider>
+        <v-list dense>
+            <v-list-group
+                :style="'background-color: ' + themeColor + ';'"
+                :value="sidebarGroups"
+                color="white"
+                multiple
                 prepend-icon="mdi-email-alert-outline"
             >
                 <template
@@ -340,6 +423,7 @@
                 customers: '',
                 settings: '',
                 notifications: '',
+                timeTracking: '',
                 sidebarGroups: [],
                 themeColor: this.$store.state.themeColor
             }
@@ -364,6 +448,7 @@
             this.customers = this.$store.state.lang.lang_map.sidebar.customers
             this.notifications = this.$store.state.lang.lang_map.sidebar.notifications
             this.settings = this.$store.state.lang.lang_map.sidebar.settings
+            this.timeTracking = this.$store.state.lang.lang_map.sidebar.time_tracking
 
             let that = this;
             EventBus.$on('update-theme-color', function (color) {

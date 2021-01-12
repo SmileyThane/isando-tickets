@@ -47,7 +47,13 @@ class LanguageSeeder extends Seeder
     "home": "Home",
     "profile": "Profile",
     "logout": "Logout",
-    "all": "All"
+    "all": "All",
+    "time_tracking": "Time tracking",
+    "tracking_dashboard": "Dashboard",
+    "tracking_tracker": "Tracker",
+    "tracking_calendar": "Calendar",
+    "tracking_projects": "Projects",
+    "tracking_reports": "Reports"
   },
   "ticket_statuses": {
     "new": "New",
