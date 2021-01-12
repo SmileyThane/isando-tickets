@@ -168,6 +168,15 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('email_signature', 'API\EmailSignatureController@add');
         Route::patch('email_signature/{id}', 'API\EmailSignatureController@update');
         Route::delete('email_signature/{id}', 'API\EmailSignatureController@delete');
+
+        //Tracking projects
+        Route::get('tracking/projects', 'API\TrackingController@get');
+        Route::get('tracking/projects/{id}', 'API\TrackingController@find');
+        Route::post('tracking/projects', 'API\TrackingController@create');
+        Route::patch('tracking/projects/{id}', 'API\TrackingController@update');
+        Route::delete('tracking/projects/{id}', 'API\TrackingController@delete');
+        Route::get('tracking/clients', 'API\TrackingController@getClientList');
+        Route::get('tracking/products', 'API\TrackingController@getProductList');
     });
 
     //language management
