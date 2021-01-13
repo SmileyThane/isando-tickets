@@ -78,7 +78,8 @@ class EmailReceiverRepository
                                 ->orWhere('to_company_user_id', $userGlobal->employee->id);
                         })->first();
                     $attachments = $this->handleEmailAttachments($message->getAttachments());
-                    if ($ticket !== null && $cachedCount === 0) {
+                    if (!in_array($senderEmail, MailCache::CONTACT_FORM_ADDRESSES, true) &&
+                        $ticket !== null && $cachedCount === 0) {
                         Log::info('system starts creating answer for ticket ' . $ticket->id);
                         $responseBody = $this->ticketAnswerFromEmail($senderEmail, $ticket, $message, $attachments);
                     } elseif ($ticket === null && $cachedCount === 0) {
