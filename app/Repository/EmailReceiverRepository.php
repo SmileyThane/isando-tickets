@@ -232,7 +232,7 @@ class EmailReceiverRepository
                 }
                 $parsedArray[$key] = trim($parsedItem[1]);
             } else {
-                $parsedArray[$key] .= "\n" . trim($parsedItem[0]);
+                $parsedArray[$key] .= "<br>" . trim($parsedItem[0]);
             }
         }
         return $parsedArray;
@@ -248,9 +248,9 @@ class EmailReceiverRepository
         $message['description'] .= '<p><strong>Mobile: </strong>' . $parsedArray['Mobile'] . "</p>";
         $message['description'] .= '<p><strong>Briefly describe your problem: </strong>' . str_replace("\n", '<br/>', $parsedArray['Briefly describe your problem']) . "</p>";
 
-        $message['access_details'] .= 'Software/Hardware affected: ' . $parsedArray['Software/Hardware affected'] . "\n";
-        $message['access_details'] .= 'Which Version: ' . $parsedArray['Which Version'] . "\n";
-        $message['access_details'] .= 'Last Update: ' . $parsedArray['Last Update'] . "\n";
+        $message['access_details'] .= 'Software/Hardware affected: ' . $parsedArray['Software/Hardware affected'] . "<br>";
+        $message['access_details'] .= 'Which Version: ' . $parsedArray['Which Version'] . "<br>";
+        $message['access_details'] .= 'Last Update: ' . $parsedArray['Last Update'] . "<br>";
         return $message;
     }
 
