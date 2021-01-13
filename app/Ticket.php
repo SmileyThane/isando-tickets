@@ -58,6 +58,11 @@ class Ticket extends Model
         return $name;
     }
 
+    public function getDescriptionAttribute()
+    {
+        return str_replace("\n", "<br/>", $this->attributes['description']);
+    }
+
     public function getFromAttribute()
     {
         return $this->attributes['from_entity_type']::find($this->attributes['from_entity_id']);
