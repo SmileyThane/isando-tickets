@@ -118,7 +118,7 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn
-                                color="green darken-1"
+                                color="red darken-1"
                                 text
                                 @click="resetProject()"
                             >
@@ -168,13 +168,6 @@ export default {
                 itemsPerPageOptions: [10, 25, 50, 100],
             },
             headers: [
-                {text: '', value: 'data-table-expand'},
-                // {
-                //     text: 'ID',
-                //     align: 'start',
-                //     sortable: false,
-                //     value: 'id',
-                // },
                 {text: `${this.$store.state.lang.lang_map.tracking.name}`, value: 'name'},
                 {text: `${this.$store.state.lang.lang_map.tracking.client}`, value: 'client.name'},
                 {text: `${this.$store.state.lang.lang_map.tracking.tracked}`, value: 'tracked'},

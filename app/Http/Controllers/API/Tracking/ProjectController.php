@@ -1,20 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\Tracking;
 
-use App\Http\Controllers\Controller;
-use App\Repository\TrackingProjectRepository;
+use App\Http\Controllers\API\Tracking\BaseController;
 use Illuminate\Http\Request;
 
-class TrackingController extends Controller
+class ProjectController extends BaseController
 {
-
-    protected $trackingProjectsRepo;
-
-    public function __construct(TrackingProjectRepository $trackingProjectRepository)
-    {
-        $this->trackingProjectsRepo = $trackingProjectRepository;
-    }
 
     public function get(Request $request) {
         $trackingProjects = $this->trackingProjectsRepo->all($request);
@@ -55,15 +47,4 @@ class TrackingController extends Controller
         return self::showResponse($result);
     }
 
-    public function getClientList()
-    {
-        $result = $this->trackingProjectsRepo->getClients();
-        return self::showResponse($result);
-    }
-
-    public function getProductList()
-    {
-        $result = $this->trackingProjectsRepo->getProducts();
-        return self::showResponse($result);
-    }
 }

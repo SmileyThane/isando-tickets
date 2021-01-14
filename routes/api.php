@@ -170,13 +170,23 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::delete('email_signature/{id}', 'API\EmailSignatureController@delete');
 
         //Tracking projects
-        Route::get('tracking/projects', 'API\TrackingController@get');
-        Route::get('tracking/projects/{id}', 'API\TrackingController@find');
-        Route::post('tracking/projects', 'API\TrackingController@create');
-        Route::patch('tracking/projects/{id}', 'API\TrackingController@update');
-        Route::delete('tracking/projects/{id}', 'API\TrackingController@delete');
-        Route::get('tracking/clients', 'API\TrackingController@getClientList');
-        Route::get('tracking/products', 'API\TrackingController@getProductList');
+        Route::prefix('tracking')
+            ->namespace('API\Tracking')->group(function () {
+                //Tracking projects
+                Route::get('/projects', 'ProjectController@get');
+                Route::get('/projects/{id}', 'ProjectController@find');
+                Route::post('/projects', 'ProjectController@create');
+                Route::patch('/projects/{id}', 'ProjectController@update');
+                Route::delete('/projects/{id}', 'ProjectController@delete');
+
+                //Additional tracking routes
+                Route::get('/clients', 'BaseController@getClientList');
+                Route::get('/products', 'BaseController@getProductList');
+
+                //Tracker
+                Route::get('/tracker', 'TrackingController@get');
+        });
+
     });
 
     //language management

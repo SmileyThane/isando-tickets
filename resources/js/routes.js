@@ -24,6 +24,7 @@ import TrackingDashboard from './views/tracking/dashboard'
 import TrackingTracker from './views/tracking/tracker'
 import TrackingCalendar from './views/tracking/calendar'
 import TrackingProjects from './views/tracking/projects'
+import TrackingProjectItem from './views/tracking/projects/item'
 import TrackingReports from './views/tracking/reports'
 
 export default [
@@ -245,6 +246,14 @@ export default [
             requiresAuth: true
         },
         component: TrackingProjects
+    },
+    {
+        path: '/tracking/projects/:id',
+        name: 'tracking_project_item',
+        meta: {
+            requiresAuth: true
+        },
+        component: TrackingProjectItem,
     },
     {
         path: '/tracking/reports',
