@@ -279,31 +279,36 @@
         <br>
 
         <template>
-            <v-expansion-panels>
+            <v-expansion-panels
+                v-model="panels"
+                multiple
+            >
                 <v-expansion-panel
-                    isActive="true">
+                    v-for="(panelDate, index) in getPanelDates"
+                    :key="index"
+                >
                     <v-expansion-panel-header
                         :color="themeColor"
                         style="color: white"
                     >
-                        Today
+                        <span v-if="moment(panelDate).format(dateFormat) === moment().format(dateFormat)">Today</span>
+                        <span v-else>{{ moment(panelDate).format('ddd, DD MMM YYYY')}}</span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
                         <template>
                             <div>
                                 <v-data-table
-
                                     hide-default-footer
                                     :headers="headers"
-                                    :items="tracking"
+                                    :items="getFilteredTracking(panelDate)"
                                 >
                                     <template v-slot:item.passed="{ item }">
                                         <span v-text="convertSecondsToTimeFormat(item.passed)"></span>
                                     </template>
-                                    <template v-slot:item.name="props">
+                                    <template v-slot:item.description="props">
                                         <v-edit-dialog
                                             :return-value.sync="props.item.description"
-                                            @save="save"
+                                            @save="save(props.item.id, 'description')"
                                             @cancel="cancel"
                                             @open="open"
                                             @close="close"
@@ -312,10 +317,52 @@
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="props.item.description"
-                                                    :rules="[max25chars]"
+                                                    :rules="[validators.max255chars]"
                                                     label="Edit"
                                                     single-line
                                                     counter
+                                                ></v-text-field>
+                                            </template>
+                                        </v-edit-dialog>
+                                    </template>
+                                    <template v-slot:item.date_from="props">
+                                        <v-edit-dialog
+                                            :return-value.sync="props.item.date_from"
+                                            @save="save(props.item.id, 'date_from')"
+                                            @cancel="cancel"
+                                            @open="open"
+                                            @close="close"
+                                        >
+                                            {{ moment(props.item.date_from).format(timeFormat) }}
+                                            <template v-slot:input>
+                                                <v-text-field
+                                                    v-model="props.item.date_from"
+                                                    :rules="[validators.max255chars]"
+                                                    label="Edit"
+                                                    single-line
+                                                    counter
+                                                ></v-text-field>
+                                            </template>
+                                        </v-edit-dialog>
+                                    </template>
+                                    <template v-slot:item.date_to="props">
+                                        <v-edit-dialog
+                                            :return-value.sync="props.item.date_to"
+                                            large
+                                            @save="save(props.item.id, 'date_to')"
+                                            @cancel="cancel"
+                                            @open="open"
+                                            @close="close"
+                                        >
+                                            {{ moment(props.item.date_to).format(timeFormat) }}
+                                            <template v-slot:input>
+                                                <v-text-field
+                                                    v-model="props.item.date_to"
+                                                    :rules="[validators.max255chars]"
+                                                    label="Edit"
+                                                    single-line
+                                                    counter
+                                                    autofocus
                                                 ></v-text-field>
                                             </template>
                                         </v-edit-dialog>
@@ -325,7 +372,7 @@
                                             :return-value.sync="props.item.projectId"
                                             large
                                             persistent
-                                            @save="save"
+                                            @save="save(props.item.id, 'project')"
                                             @cancel="cancel"
                                             @open="open"
                                             @close="close"
@@ -337,7 +384,7 @@
                                                 </div>
                                                 <v-text-field
                                                     v-model="props.item.projectId"
-                                                    :rules="[max25chars]"
+                                                    :rules="[validators.max255chars]"
                                                     label="Edit"
                                                     single-line
                                                     counter
@@ -374,6 +421,7 @@ export default {
             snackbar: false,
             actionColor: '',
             loading: false,
+            panels: [0],
             panel: {
                 activePanel: true,
                 timeFromPicker: false,
@@ -414,13 +462,16 @@ export default {
                 },
                 {
                     text: 'Actions',
-                    value: ''
+                    value: 'actions'
                 }
             ],
             tracking: [],
             timeFrom: null,
             timeTo: null,
             date: null,
+            validators: {
+                max255chars: v => v.length <= 255 || 'Input too long!'
+            },
             trackForm: {
                 description: null,
                 projectId: null,
@@ -460,7 +511,6 @@ export default {
             });
             axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
                 .then(({ data }) => {
-                    console.log(data);
                     this.tracking = data.data;
                     this.loading = false;
                 });
@@ -487,10 +537,11 @@ export default {
                 projectId: null,
                 tags: [],
                 billable: false,
-                dateFrom: null,
-                dateTo: null,
+                dateFrom: moment().format(this.timeFormat),
+                dateTo: moment().format(this.timeFormat),
+                date: moment().format(this.dateFormat),
                 status: 'started',
-                time: '00:00:00'
+                timeStart: '00:00:00'
             };
         },
         createTrack() {
@@ -550,12 +601,42 @@ export default {
             return this.date;
         },
         convertSecondsToTimeFormat(seconds) {
-            console.log(seconds);
             const x = Math.floor(seconds / 60 / 60 / 60);
             const h = Math.floor(seconds / 60 / 60) - (x * 60);
             const m = Math.floor(seconds / 60) - (h * 60);
             const s = '00';
             return `${h}:${m}:${s}`;
+        },
+        save (id, fieldName) {
+            if (['date_from', 'date_to'].indexOf(fieldName)) {
+                const foundIndex = this.tracking.findIndex(function(i) {
+                    return i.id === id;
+                });
+                const foundElement = this.tracking[foundIndex];
+                this.tracking[foundIndex].passed = this.calculatePassedTime(foundElement.date_from, foundElement.date_to);
+            }
+        },
+        cancel () {
+            //TODO
+        },
+        open () {
+            //TODO
+        },
+        close () {
+            console.log('Dialog closed')
+            //TODO
+        },
+        calculatePassedTime(dateFrom, dateTo) {
+            if (moment(dateFrom) > moment(dateTo)) {
+                dateTo = moment(dateTo).add(1, 'day');
+            }
+            return  moment(dateTo).diff(moment(dateFrom), 'seconds');
+        },
+        getFilteredTracking(date) {
+            const self = this;
+            return this.tracking.filter(function(item) {
+               return moment(item.date_from).format(self.dateFormat) === date;
+            });
         }
     },
     computed: {
@@ -563,11 +644,18 @@ export default {
             if (moment(this.trackForm.dateFrom) > moment(this.trackForm.dateTo)) {
                 this.trackForm.dateTo = moment(this.trackForm.dateTo).add(1, 'day');
             }
-            const seconds = moment(this.trackForm.dateTo).diff(moment(this.trackForm.dateFrom), 'seconds');
+            const seconds = this.calculatePassedTime(this.trackForm.dateFrom, this.trackForm.dateTo);
             return this.convertSecondsToTimeFormat(seconds);
         },
         dateRangeText () {
             return this.dateRange.join(' ~ ')
+        },
+        getPanelDates () {
+            const items = this.tracking.reduce(function (acc, item) {
+                const date = moment(item.date_from).format('YYYY-MM-DD');
+                return [...acc, date.toString()];
+            }, []);
+            return [...new Set(items)].sort().reverse();
         },
         getItems () {
             return this.tracking;
