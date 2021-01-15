@@ -142,6 +142,7 @@
 
 <script>
 import EventBus from "../../../components/EventBus";
+import _ from "lodash";
 
 export default {
     data() {
@@ -180,10 +181,13 @@ export default {
                 name: '',
                 clientId: null,
                 productId: null,
-                color: '#000000'
+                color: '#' + Math.floor(Math.random()*16777215).toString(16)
             },
             colorMenu: false
         }
+    },
+    created() {
+        this.debounceGetProjects = _.debounce(this.getProjects, 500);
     },
     mounted() {
         this.getClients();
@@ -195,7 +199,7 @@ export default {
     },
     methods: {
         getProjects() {
-            this.loading = this.themeColor
+            this.loading = true;
             if (this.options.sortDesc.length <= 0) {
                 this.options.sortBy[0] = 'id'
                 this.options.sortDesc[0] = true
@@ -262,7 +266,7 @@ export default {
     watch: {
         options: {
             handler() {
-                this.getProjects()
+                this.debounceGetProjects();
             },
             deep: true,
         }

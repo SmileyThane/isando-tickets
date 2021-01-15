@@ -20,6 +20,10 @@ class TrackingProject extends Model
         return $this->hasOne('App\Client', 'id', 'client_id');
     }
 
+    public function Trackers() {
+        return $this->hasMany('App\Tracking', 'project_id', 'id');
+    }
+
     public function getTrackedAttribute() {
         // TODO
         return 0;
@@ -33,5 +37,13 @@ class TrackingProject extends Model
     public function getProgressAttribute() {
         // TODO
         return 0;
+    }
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($trackingProject) {
+            $trackingProject->Trackers()->delete();
+        });
     }
 }

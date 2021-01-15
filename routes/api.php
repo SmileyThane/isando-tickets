@@ -185,6 +185,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
                 //Tracker
                 Route::get('/tracker', 'TrackingController@get');
+                Route::post('/tracker', 'TrackingController@create');
         });
 
     });
