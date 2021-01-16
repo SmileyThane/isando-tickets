@@ -65,6 +65,13 @@
 
                         <v-row>
                             <v-col cols="12">
+                                <v-text-field
+                                    v-model="ticket.original_name"
+                                    :color="themeColor"
+                                    :item-color="themeColor"
+                                    :label="langMap.ticket.subject"
+                                    dense
+                                />
                                 <v-autocomplete
                                     v-model="from"
                                     :color="themeColor"
@@ -145,6 +152,22 @@
                                         :extensions="extensions"
                                         :placeholder="langMap.ticket.answer_description"
                                     />
+                                </div>
+                                <div class="col-md-12">
+                                    <v-select
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        v-model="selectedSignature"
+                                        :items="signatures"
+                                        :label="langMap.notification.signature"
+                                        item-value="signature"
+                                        item-text="name"
+                                        dense
+                                    >
+                                        <template slot="selection" slot-scope="data">
+                                            <div class="text--black mt-3" v-html="data.item.signature"></div>
+                                        </template>
+                                    </v-select>
                                 </div>
                                 <div class="col-md-12">
                                     <v-file-input
@@ -628,11 +651,11 @@
                                 <v-list-item>
                                     <v-list-item-content>
                                         <span
-                                            v-if="child_ticket.merge_info.length > 0"
+                                            v-if="child_ticket.merged_parent_info.length > 0"
                                             class="text-left"
                                             style="font-weight: bold;"
                                         >
-                                             {{ child_ticket.merge_info }}
+                                             {{ child_ticket.merged_parent_info }}
                                         </span>
                                         <span
                                             v-else
@@ -653,6 +676,37 @@
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-card>
+                            <v-spacer>
+                                &nbsp;
+                            </v-spacer>
+                        </div>
+                        <div
+                            v-if="ticket.merged_child_info.length > 0"
+                        >
+                            <v-card
+
+                                class="mx-auto"
+                                color="#f2f2f2"
+                                dense
+                                outlined
+                            >
+                                <v-list-item>
+                                    <v-list-item-content>
+                                        <span
+                                            class="text-left"
+                                            style="font-weight: bold;"
+                                        >
+                                             {{ ticket.merged_child_info }}
+                                        </span>
+                                        <span class="caption text-center"
+                                              v-if="ticket.merge_comment"
+                                        >
+                                                ({{ ticket.merge_comment }})
+                                    </span>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-card>
+
                             <v-spacer>
                                 &nbsp;
                             </v-spacer>
@@ -1159,7 +1213,7 @@
                             style="background:#F0F0F0;"
                         >
                             <span>
-                                <strong>Merged tickets</strong>
+                                <strong>{{langMap.ticket.merged_abbr}} tickets</strong>
                             </span>
 
                             <template v-slot:actions>
@@ -1430,6 +1484,8 @@ export default {
             assignPanel: [],
             notesPanel: [],
             teamAssignPanel: [],
+            signatures: [],
+            selectedSignature: '',
             thirdColumn: false,
             mergeBlock: false,
             linkBlock: false,
@@ -1616,6 +1672,7 @@ export default {
         this.getTypes()
         this.getTeams()
         this.getTickets()
+        this.getSignatures()
         // if (localStorage.getticket('auth_token')) {
         //     this.$router.push('tickets')
         // }
@@ -1655,27 +1712,42 @@ export default {
                 }
             });
         },
+        getSignatures() {
+            axios.get('/api/email_signatures').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.signatures = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
         getTickets() {
+            const search = this.ticketsSearch;
             axios.get(`/api/ticket?search_param=${this.searchLabel}&search=${this.ticketsSearch}&minified=1`)
                 .then(response => {
-                    response = response.data
-                    let result = response.data.data
-                    if (result.length > 1) {
-                        let elementPos = result.map(function (x) {
-                            return x.id;
-                        }).indexOf(this.ticket.id);
-                        if (elementPos !== -1) {
-                            let temp = result[0]
-                            result[0] = result[elementPos]
-                            result[elementPos] = temp
+                    if (this.ticketsSearch === search) {
+                        response = response.data
+                        let result = response.data.data
+                        if (result.length > 1) {
+                            let elementPos = result.map(function (x) {
+                                return x.id;
+                            }).indexOf(this.ticket.id);
+                            if (elementPos !== -1) {
+                                let temp = result[0]
+                                result[0] = result[elementPos]
+                                result[elementPos] = temp
+                            }
                         }
+                        if (this.ticketsSearch === '') {
+                            this.mergeParentTickets = result
+                            this.linkParentTickets = result
+                        }
+                        this.mergeTicketForm.child_ticket_id = [this.ticket.id]
+                        this.tickets = result
                     }
-                    if (this.ticketsSearch === '') {
-                        this.mergeParentTickets = result
-                        this.linkParentTickets = result
-                    }
-                    this.mergeTicketForm.child_ticket_id = [this.ticket.id]
-                    this.tickets = result
                 });
         },
         getSuppliers() {
@@ -1788,6 +1860,7 @@ export default {
         updateTicket() {
             this.ticket.from_entity_id = Object.values(this.from)[0]
             this.ticket.from_entity_type = Object.keys(this.from)[0]
+            this.ticket.name = this.ticket.original_name
             axios.patch(`/api/ticket/${this.$route.params.id}`, this.ticket).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -1816,6 +1889,9 @@ export default {
             let formData = new FormData();
             for (let key in this.ticketAnswer) {
                 if (key !== 'files') {
+                    if (this.selectedSignature !== '') {
+                        this.ticketAnswer[key] += '<hr><br>' + this.selectedSignature
+                    }
                     formData.append(key, this.ticketAnswer[key]);
                 }
             }

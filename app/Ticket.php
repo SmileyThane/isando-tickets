@@ -22,8 +22,16 @@ class Ticket extends Model
         'category_id', 'parent_id', 'unifier_id', 'merged_at'
     ];
     protected $appends = ['number', 'from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
-        'replicated_to', 'ticket_type', 'created_at_time', 'merge_info', 'original_name'];
+        'replicated_to', 'ticket_type', 'created_at_time', 'merged_parent_info', 'merged_child_info', 'original_name'];
     protected $hidden = ['to'];
+
+    protected $langId;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->langId = Auth::user() ? Auth::user()->language_id : 1;
+    }
 
     protected static function booted()
     {
@@ -43,10 +51,16 @@ class Ticket extends Model
 
     public function getNameAttribute()
     {
+        $translationsArray = Language::find($this->langId)->lang_map;
         $name = $this->attributes['name'];
-        $name .= $this->parent_id ? " [Merged]" : "";
+        $name .= $this->parent_id ? ' [' . $translationsArray->ticket->merged_abbr . ']' : "";
         $name .= $this->is_spam === 1 ? " [SPAM]" : "";
         return $name;
+    }
+
+    public function getDescriptionAttribute()
+    {
+        return str_replace("\n", "<br/>", $this->attributes['description']);
     }
 
     public function getFromAttribute()
@@ -87,14 +101,14 @@ class Ticket extends Model
 
     public function getLastUpdateAttribute(): string
     {
-        $locale = Language::find(Auth::user()->language_id)->locale;
+        $locale = Language::find($this->langId)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }
 
     public function getCreatedAtAttribute()
     {
-        $locale = Language::find(Auth::user()->language_id)->locale;
+        $locale = Language::find($this->langId)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }
@@ -112,7 +126,7 @@ class Ticket extends Model
 
     public function getCreatedAtTimeAttribute()
     {
-        $locale = Language::find(Auth::user()->language_id)->locale;
+        $locale = Language::find($this->langId)->locale;
         $createdAt = Carbon::parse($this->attributes['created_at']);
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
@@ -193,17 +207,33 @@ class Ticket extends Model
             ->with('childTicketData');
     }
 
-    public function getMergeInfoAttribute(): string
+    public function getMergedParentInfoAttribute(): string
     {
-        if ($this->parent_id !== null) {
-            $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
-            $mergeCommentPrefix = $translationsArray->ticket->ticket_merge_comment_prefix;
-            $mergeCommentPrefix .= $this->number . ' "' . $this->original_name . '"';
-            $unifier = $this->unifier_id && $this->merged_at ?
-                $translationsArray->ticket->ticket_merge_comment_middle . $this->merged_at .
-                $translationsArray->main->by . User::find($this->unifier_id)->full_name : '';
-            $postfix = $this->merged_at ? $translationsArray->ticket->ticket_merge_comment_postfix : '';
-            return $mergeCommentPrefix . $unifier . $postfix;
+        if ($this->parent_id !== null && $this->unifier_id) {
+            $translationsArray = Language::find($this->langId)->lang_map;
+            $mergeComment = $translationsArray->ticket->ticket_merge_parent_msg;
+            $mergeComment = str_replace(
+                ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
+                [$this->number, $this->original_name, $this->merged_at, User::find($this->unifier_id)->full_name],
+                $mergeComment
+            );
+            return $mergeComment;
+        }
+        return '';
+    }
+
+    public function getMergedChildInfoAttribute(): string
+    {
+        if ($this->parent_id !== null && $this->unifier_id) {
+            $parentTicket = Ticket::find($this->parent_id);
+            $translationsArray = Language::find($this->langId)->lang_map;
+            $mergeComment = $translationsArray->ticket->ticket_merge_child_msg;
+            $mergeComment = str_replace(
+                ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
+                [$parentTicket->number, $parentTicket->original_name, $this->merged_at, User::find($this->unifier_id)->full_name],
+                $mergeComment
+            );
+            return $mergeComment;
         }
         return '';
     }

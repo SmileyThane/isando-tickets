@@ -243,6 +243,7 @@ class TicketRepository
                 $ticket->from_entity_id,
                 $request->from_entity_id,
                 $ticket->id);
+            $ticket->name = $request->name;
             $ticket->from_entity_id = $request->from_entity_id;
             $ticket->from_entity_type = $request->from_entity_type;
             $ticket->to_team_id = $this->ticketUpdateRepo->setTeamId($ticket->to_team_id, $request->to_team_id, $ticket->id);
@@ -290,7 +291,7 @@ class TicketRepository
                 $company = $companyUser->companyData;
                 if ($user->is_active) {
                     try {
-                        $user->notify(new $notificationClass($company->name, $user->full_name, $ticket->name, $ticket->id, $user->language->short_code));
+                        $user->notify(new $notificationClass($company->name, $user->title, $user->full_name, $ticket->name, $ticket->id, $user->language->short_code));
                     } catch (Throwable $throwable) {
                         Log::error($throwable);
                         //hack for broken notification system

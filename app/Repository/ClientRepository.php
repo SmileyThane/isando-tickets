@@ -193,8 +193,7 @@ class ClientRepository
                 'employee.userData',
                 function ($query) use ($request) {
                     $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('surname', 'like', $request->search . '%')
-                        ->orWhere('email', 'like', $request->search . '%');
+                        ->orWhere('surname', 'like', $request->search . '%');
                 }
             );
         }
@@ -219,16 +218,18 @@ class ClientRepository
                     case 'id':
                         return $item->id;
                     case 'name':
-                        return $item->name;
+                        return mb_strtolower($item->name);
                     case 'email':
+                    case 'emails':
                         $email = $item->contact_email;
-                        return $email ? $email->email : '';
+                        return $email ? mb_strtolower($email->email) : '';
                     case 'phone':
+                    case 'phones':
                         $phone = $item->contact_phone;
-                        return $phone ? $phone->phone : '';
+                        return $phone ? mb_strtolower($phone->phone) : '';
                     case 'city':
                         if ($item->addresses->isNotEmpty()) {
-                            return $item->addresses->first()->city;
+                            return mb_strtolower($item->addresses->first()->city);
                         } else {
                             return '';
                         }
@@ -246,16 +247,18 @@ class ClientRepository
                     case 'id':
                         return $item->employee->userData->id;
                     case 'name':
-                        return $item->employee->userData->full_name;
+                        return mb_strtolower($item->employee->userData->full_name);
                     case 'email':
+                    case 'emails':
                         $email = $item->employee->userData->contact_email;
-                        return $email ? $email->email : '';
+                        return $email ? mb_strtolower($email->email) : '';
                     case 'phone':
+                    case 'phones':
                         $phone = $item->employee->userData->contact_phone;
-                        return $phone ? $phone->phone : '';
+                        return $phone ? mb_strtolower($phone->phone) : '';
                     case 'city':
                         if ($item->employee->userData->addresses->isNotEmpty()) {
-                            return $item->employee->userData->addresses->first()->city;
+                            return mb_strtolower($item->employee->userData->addresses->first()->city);
                         } else {
                             return '';
                         }

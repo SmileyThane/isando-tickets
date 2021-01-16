@@ -12,7 +12,7 @@ class RegularInviteEmail extends Notification
 {
     use Queueable;
 
-
+    protected $title;
     protected $name;
     protected $role;
     protected $email;
@@ -23,15 +23,18 @@ class RegularInviteEmail extends Notification
     /**
      * Create a new notification instance.
      *
+     * @param $from
+     * @param $title
      * @param $name
      * @param $role
      * @param $email
      * @param $password
      * @param $language
      */
-    public function __construct($from, $name, $role, $email, $password, $language = 'en')
+    public function __construct($from, $title, $name, $role, $email, $password, $language = 'en')
     {
         $this->from = $from;
+        $this->title = $title;
         $this->name = $name;
         $this->role = $role;
         $this->email = $email;
@@ -76,12 +79,13 @@ class RegularInviteEmail extends Notification
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject('Sie wurden zum Ticketsystem eingeladen!')
-                ->line('Lieber ' . $this->name . ', ')
-                ->line("Willkommen in unserem $this->from Ticketingsystem. Ihr Konto wurde erstellt.")
-                ->line("Bitte verwenden Sie die folgenden Anmeldeinformationen, um sich in Ihrem Konto anzumelden:")
-                ->line('Login:' . $this->email)
-                ->line('Passwort: ' . $this->password)
-                ->action('Link zu unserem Ticketsystem: ', env('APP_URL'))
+                ->greeting(' ')
+                ->line('Sehr geehrte ' . $this->title . ' '. $this->name . ',')
+                ->line("Willkommen bei unserem $this->from Ticketing-System der $this->from. Ihr Konto wurde erstellt.")
+                ->line("Bitte verwenden Sie die untenstehenden Zugangsdaten, um sich in Ihr Konto anzumelden::")
+                ->line('Ihr Login-Name: ' . $this->email)
+                ->line('Ihr Passwort: ' . $this->password)
+                ->action('Link zu unserem Ticketing-System: ', env('APP_URL'))
                 ->line('Wir wünschen Ihnen einen schönen Tag!')
                 ->line('')
                 ->salutation('Freundliche Grüsse, ' . $this->from);

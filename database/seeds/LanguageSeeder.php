@@ -206,6 +206,7 @@ class LanguageSeeder extends Seeder
     "social_info": "Social media"
   },
   "ticket": {
+    "merged_abbr": "Merged",
     "number": "Number",
     "contact_name": "Contact name",
     "contact_email": "Contact E-mail",
@@ -213,7 +214,7 @@ class LanguageSeeder extends Seeder
     "access_details": "Server access details",
     "status": "Status",
     "priority": "Priority",
-    "company_from": "From company",
+    "company_from": "Company",
     "company_to": "To company",
     "company_contact": "Company contact",
     "product_name": "Product name",
@@ -242,9 +243,8 @@ class LanguageSeeder extends Seeder
     "is_spam": "Marked as Spam",
     "reported_by": "Reported by",
     "close_ticket":"Close ticket",
-    "ticket_merge_comment_prefix": "Ticket ",
-    "ticket_merge_comment_middle": " was merged with this ticket on ",
-    "ticket_merge_comment_postfix": ", and it was closed. "
+    "ticket_merge_parent_msg": "Ticket $ticket_number \"$ticket_subject\" was merged with this ticket on $date by $unifier, and it was closed. ",
+    "ticket_merge_child_msg": "This ticket was closed and merged with ticket $ticket_number \"$ticket_subject\" on $date by $unifier."
   },
   "main": {
     "create": "Create",
@@ -675,6 +675,7 @@ class LanguageSeeder extends Seeder
   "social_info": "Social Media"
   },
   "ticket": {
+    "merged_abbr": "ZGF",
     "number": "Ticketnummer",
     "contact_name": "Kontaktname",
     "contact_email": "Kontakt E-mail",
@@ -682,7 +683,7 @@ class LanguageSeeder extends Seeder
     "access_details": "Server Zugangsdaten",
     "status": "Status",
     "priority": "Priorität",
-    "company_from": "Firma von",
+    "company_from": "Firma",
     "company_to": "An die Firma",
     "company_contact": "Verantwortlich",
     "product_name": "Produktname",
@@ -707,13 +708,12 @@ class LanguageSeeder extends Seeder
     "access_description": "Bitte geben Sie uns Ihre Teamviewer Zugangsdaten zu Ihrem Server an, falls vorhanden.",
     "answer_description": "Schreiben Sie Ihre Antwort hier...",
     "no_assigned": "Kein Agent zugewiesen",
-    "merge": "Zusammengeführen",
+    "merge": "Zusammenführen",
     "is_spam": "Marked as Spam",
     "reported_by": "Erstellt von",
     "close_ticket":"Ticket schliessen",
-    "ticket_merge_comment_prefix": "Ticket ",
-    "ticket_merge_comment_middle": " wurde am ",
-    "ticket_merge_comment_postfix": " mit diesem Ticket zusammengeführt und geschlossen. "
+    "ticket_merge_parent_msg": "Ticket $ticket_number \"$ticket_subject\" wurde am $date von $unifier mit diesem Ticket zusammengeführt und geschlossen.",
+    "ticket_merge_child_msg": "Dieses Ticket wurde am $date von $unifier geschlossen und mit dem Ticket $ticket_number \"$ticket_subject\" zusammengeführt."
 
   },
 

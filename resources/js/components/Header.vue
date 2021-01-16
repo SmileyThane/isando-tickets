@@ -11,44 +11,44 @@
         <v-toolbar-title
         >{{ this.$store.state.pageName }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-text-field
-            class="text-center"
-            dense
-            hide-details="auto"
-            :label="searchLabel"
-        >
-            <template slot="append">
-                <v-menu
-                    rounded
-                    transition="slide-y-transition"
-                    bottom
-                >
-                    <template v-slot:activator="{ on: menu, attrs }">
-                        <v-btn
-                            text
-                            v-bind="attrs"
-                            v-on="{...menu}"
-                        >
-                            <v-icon color="white">$expand</v-icon>
-                        </v-btn>
-                    </template>
-                    <v-list
-                        dense
-                    >
-                        <v-list-item
-                            link
-                            v-for="item in searchCategories"
-                            :key="item.id"
-                            @click="selectSearchCategory(item)"
-                        >
-                            <v-list-item-title>
-                                {{ item.name }}
-                            </v-list-item-title>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </template>
-        </v-text-field>
+<!--        <v-text-field-->
+<!--            class="text-center"-->
+<!--            dense-->
+<!--            hide-details="auto"-->
+<!--            :label="searchLabel"-->
+<!--        >-->
+<!--            <template slot="append">-->
+<!--                <v-menu-->
+<!--                    rounded-->
+<!--                    transition="slide-y-transition"-->
+<!--                    bottom-->
+<!--                >-->
+<!--                    <template v-slot:activator="{ on: menu, attrs }">-->
+<!--                        <v-btn-->
+<!--                            text-->
+<!--                            v-bind="attrs"-->
+<!--                            v-on="{...menu}"-->
+<!--                        >-->
+<!--                            <v-icon color="white">$expand</v-icon>-->
+<!--                        </v-btn>-->
+<!--                    </template>-->
+<!--                    <v-list-->
+<!--                        dense-->
+<!--                    >-->
+<!--                        <v-list-item-->
+<!--                            link-->
+<!--                            v-for="item in searchCategories"-->
+<!--                            :key="item.id"-->
+<!--                            @click="selectSearchCategory(item)"-->
+<!--                        >-->
+<!--                            <v-list-item-title>-->
+<!--                                {{ item.name }}-->
+<!--                            </v-list-item-title>-->
+<!--                        </v-list-item>-->
+<!--                    </v-list>-->
+<!--                </v-menu>-->
+<!--            </template>-->
+<!--        </v-text-field>-->
         <v-menu
             left
             bottom

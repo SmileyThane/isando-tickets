@@ -140,10 +140,8 @@ class UserRepository
                 $password = Controller::getRandomString();
                 $user->password = bcrypt($password);
                 $user->save();
-                $user->notify(new ResetPasswordEmail($from, $user->full_name, $role, $user->email, $password, $user->language->short_code));
-            } else {
-                $user->notify(new RegularInviteEmail($from, $user->full_name, $role, $user->email, $password, $user->language->short_code));
-            }
+                }
+            $user->notify(new RegularInviteEmail($from, $user->title, $user->full_name, $role, $user->email, $password, $user->language->short_code));
         } catch (Throwable $throwable) {
             Log::error($throwable);
             //hack for broken notification system

@@ -13,7 +13,7 @@ class ChangedTicketStatus extends Notification
 {
     use Queueable;
 
-
+    protected $title;
     protected $name;
     protected $ticket_subject;
     protected $ticket_id;
@@ -24,17 +24,19 @@ class ChangedTicketStatus extends Notification
      * Create a new notification instance.
      *
      * @param $from
+     * @param $title
      * @param $name
      * @param $ticket_subject
      * @param $ticket_id
      * @param $language
      */
-    public function __construct($from, $name, $ticket_subject, $ticket_id, $language = 'en')
+    public function __construct($from, $title, $name, $ticket_subject, $ticket_id, $language = 'en')
     {
+        $this->from = $from;
+        $this->title = $title;
         $this->name = $name;
         $this->ticket_subject = $ticket_subject;
         $this->ticket_id = $ticket_id;
-        $this->from = $from;
         $this->language = $language;
     }
 
@@ -87,8 +89,8 @@ class ChangedTicketStatus extends Notification
         } else {
             if ($ticket && $ticket->status_id === 5) {
                 $subject = 'Updates auf Ihrem Ticket: ' . $this->ticket_subject;
-                $firstLine = "Ihr Ticket wurde erfolgreich geschlossen.
-              Wir hoffen, dass Sie mit der Auflösung des Tickets und der Reaktionsgeschwindigkeit zufrieden waren. ";
+                $firstLine = "Ihr Ticket wurde erfolgreich abgeschlossen.
+                Wir hoffen, dass Sie mit der Abwicklung des Tickets und der Reaktionszeit zufrieden waren.";
                 $secondLine = "";
             } else {
                 $subject = 'Updates auf Ihrem Ticket: ' . $this->ticket_subject;
@@ -102,7 +104,7 @@ class ChangedTicketStatus extends Notification
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject($subject)
-                ->line('Hallo ' . $this->name . ',')
+                ->line('Sehr geehrte ' . $this->title . ' '. $this->name . ',')
                 ->line($firstLine)
                 ->action('Online ansehen', env('APP_URL') . '/ticket/' . $this->ticket_id)
                 ->line($secondLine)
