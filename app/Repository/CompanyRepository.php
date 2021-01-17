@@ -281,12 +281,13 @@ class CompanyRepository
         $result = new Collection();
         foreach ($employees as $employee) {
             $item = $employee->userData;
-            $item->notifications_status = [];
+            $notifications_status = [];
 
             $notifications = $notifiedUsers->where('user_id', $employee->userData->id);
             foreach ($notifications as $notification) {
-                array_push($item['notifications_status'], $notification->ticket_notification_type_id);
+                array_push($notifications_status, $notification->ticket_notification_type_id);
             }
+            $item->notifications_status = $notifications_status;
 
             $result->push($item);
         }
@@ -303,10 +304,10 @@ class CompanyRepository
                     $email = $item->contact_email;
                     return $email ? mb_strtolower($email->email) : '';
                 case 'notifications_status':
-                    if (empty($item->notifications)) {
+                    if (empty($item->notifications_status)) {
                         return 0;
                     } elseif(in_array(TicketNotificationType::ALL, $item->notifications_status)) {
-
+                        return 2;
                     } else {
                         return 1;
                     }
@@ -322,23 +323,20 @@ class CompanyRepository
         return $result->paginate($request->per_page ?? $result->count());
     }
 
-    public function addNotifiedUser(Request $request, $companyId = null, $userId, $notificationType)
+    public function setNotifiedUser(Request $request, $companyId = null, $userId, $notificationTypes)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
 
-        CompanyUserNotification::firstOrCreate([
-            'company_id' => $companyId,
-            'user_id' => $userId,
-            'ticket_notification_type_id' => $notificationType
-        ]);
-        return true;
-    }
+        CompanyUserNotification::where('company_id', $companyId)->where('user_id', $userId)->whereNotIn('ticket_notification_type_id', $notificationTypes)->delete();
 
-    public function deleteUserNotification($companyId = null, $userId, $notificationType)
-    {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        foreach ($notificationTypes as $notificationType) {
+            CompanyUserNotification::firstOrCreate([
+                'company_id' => $companyId,
+                'user_id' => $userId,
+                'ticket_notification_type_id' => $notificationType
+            ]);
+        }
 
-        CompanyUserNotification::where('company_id', $companyId)->where('user_id', $userId)->where('ticket_notification_type_id', $notificationType)->delete();
         return true;
     }
 }

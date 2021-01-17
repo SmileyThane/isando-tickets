@@ -112,13 +112,8 @@ class CompanyController extends Controller
         return self::showResponse(true, $this->companyRepo->getNotifiedUsers($request, $id));
     }
 
-    public function addUserNotification(Request $request, $id = null): JsonResponse
+    public function setUserNotifications(Request $request, $id = null): JsonResponse
     {
-        return self::showResponse($this->companyRepo->addNotifiedUser($request, $id, $request->user_id));
-    }
-
-    public function deleteUserNotification(Request $request, $id = null): JsonResponse
-    {
-        return self::showResponse($this->companyRepo->deleteNotifiedUser($id, $request->user_id));
+        return self::showResponse($this->companyRepo->setNotifiedUser($request, $id, $request->user_id, $request->notifications_status));
     }
 }

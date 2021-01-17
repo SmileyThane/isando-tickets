@@ -61,31 +61,33 @@
                                 </div>
                             </template>
                             <template v-slot:item.contact_email="{item}">
-                                <v-icon v-if="item.contact_email.type"
+                                <span v-if="item.contact_email">
+                                    <v-icon v-if="item.contact_email.type"
                                         :title="localized(item.contact_email.type)" dense
                                         x-small
                                         v-text="item.contact_email.type.icon">
-                                </v-icon>
-                                {{ item.contact_email.email }}
+                                    </v-icon>
+                                    {{ item.contact_email.email }}
+                                </span>
                             </template>
                             <template v-slot:item.notifications_status="{ item }">
                                 <v-icon v-if="item.notifications_status && item.notifications_status.length > 0 && item.notifications_status.includes(9)" @click="updateStatus(item)"
                                         class="justify-center"
-                                        :title="langMap.notifications_settings.all"
+                                        :title="langMap.notifications_settings.status_all"
                                         dense
                                 >
                                     mdi-checkbox-multiple-marked-circle-outline
                                 </v-icon>
                                 <v-icon v-else-if="item.notifications_status && item.notifications_status.length > 0" @click="updateStatus(item)"
                                         class="justify-center"
-                                        :title="langMap.notifications_settings.some"
+                                        :title="langMap.notifications_settings.status_some"
                                         dense
                                 >
                                     mdi-checkbox-multiple-blank-circle-outline
                                 </v-icon>
                                 <v-icon v-else @click="updateStatus(item)"
                                         class="justify-center"
-                                        :title="langMap.notifications_settings.none"
+                                        :title="langMap.notifications_settings.status_none"
                                         dense
                                 >
                                     mdi-cancel
@@ -96,6 +98,108 @@
                 </div>
             </div>
         </div>
+
+        <v-row justify="center">
+            <v-dialog v-model="updateNotificationsDlg" max-width="800px" persistent>
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{ updateUser.full_name }}: {{ langMap.notifications_settings.update_notifications_settings }}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="6">
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="updateUser.notifications_status"
+                                        :value="101"
+                                        :label="langMap.notifications_settings.new_assigned_to_me"
+                                        dense
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="updateUser.notifications_status"
+                                        :value="201"
+                                        :label="langMap.notifications_settings.new_assigned_to_team"
+                                        dense
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="updateUser.notifications_status"
+                                        :value="301"
+                                        :label="langMap.notifications_settings.new_assigned_to_company"
+                                        dense
+                                    >
+                                    </v-checkbox>
+                                </v-col>
+                                <v-col cols="6">
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="updateUser.notification_status"
+                                        :value="102"
+                                        :label="langMap.notifications_settings.update_assigned_to_me"
+                                        dense
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="updateUser.notifications_status"
+                                        :value="202"
+                                        :label="langMap.notifications_settings.update_assigned_to_team"
+                                        dense
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="updateUser.notifications_status"
+                                        :value="302"
+                                        :label="langMap.notifications_settings.update_assigned_to_company"
+                                        dense
+                                    >
+                                    </v-checkbox>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="updateUser.notifications_status"
+                                        :value="103"
+                                        :label="langMap.notifications_settings.client_response_assigned_to_me"
+                                        dense
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="updateUser.notifications_status"
+                                        :value="9"
+                                        :label="langMap.notifications_settings.all"
+                                        dense
+                                    >
+                                    </v-checkbox>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+
+                        <v-btn color="red" text @click="updateNotificationsDlg=false">{{ langMap.main.cancel }}</v-btn>
+                        <v-btn :color="themeColor" text
+                               @click="updateNotificationsDlg=false; updateNotifications()">
+                            {{ langMap.main.save }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-row>
+
     </v-container>
 </template>
 
@@ -140,7 +244,12 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.status}`, value: 'notifications_status'}
             ],
             usersSearch: '',
-            users: []
+            users: [],
+            updateUser: {
+                id: '',
+                notifications_status: []
+            },
+            updateNotificationsDlg: false
         }
     },
     mounted() {
@@ -189,39 +298,29 @@ export default {
                 });
         },
         updateStatus(user) {
-            if (user.notification_status === 1) {
-                axios.delete(`/api/main_company_settings/notify/${user.id}`
-                ).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUsers()
-                        this.snackbarMessage = this.langMap.notifications_settings.disabled
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.errorType = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            } else {
-                axios.post('/api/main_company_settings/notify', {
-                    user_id: user.id
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUsers()
-                        this.snackbarMessage = this.langMap.notifications_settings.enabled
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.errorType = 'error';
-                        this.snackbar = true;
-                    }
+            this.updateUser = user;
+            this.updateForm = user.notifications_status;
+            this.updateNotificationsDlg = true;
+        },
+        updateNotifications() {
+            axios.post('/api/main_company_settings/notify', {
+                user_id: this.updateUser.id,
+                notifications_status: this.updateUser.notifications_status
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUsers()
+                    this.snackbarMessage = this.langMap.notifications_settings.updated
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.getUsers()
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.snackbar = true;
+                }
 
-                });
-            }
+            });
         },
         updateItemsCount(value) {
             this.options.itemsPerPage = value
