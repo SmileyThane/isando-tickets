@@ -291,7 +291,7 @@
                 <v-list-item
                     :color="themeColor" link
                     style="background-color:white;"
-                    to="/settings/system"
+                    to="/settings/ system"
                     v-if="checkRoleByIds([1,2,3])"
                 >
                     <v-list-item-action>
@@ -305,8 +305,8 @@
                 <v-list-item
                     :color="themeColor" link
                     style="background-color:white;"
-                    to="/settings/system"
-                    v-if="checkRoleByIds([1])"
+                    to="/settings/notify"
+                    v-if="checkRoleByIds([1,2,3])"
                 >
                     <v-list-item-action>
                         <v-icon>mdi-message-cog-outline</v-icon>

@@ -7,10 +7,14 @@ namespace App\Repository;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
+use App\CompanyUserNotification;
+use App\CompanyUser;
 use App\ProductCategory;
 use App\Role;
 use App\Settings;
+use App\TicketNotificationType;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -252,5 +256,89 @@ class CompanyRepository
         $company->logo_url = Storage::url($file);
         $company->save();
         return $company;
+    }
+
+    public function getNotifiedUsers(Request $request, $companyId = null)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+
+        $employees = CompanyUser::where('company_id', $companyId);
+
+        if (!empty($request->search)) {
+            $request['page'] = 1;
+            $employees->whereHas(
+                'userData',
+                function ($query) use ($request) {
+                    $query->where('name', 'like', $request->search . '%')
+                        ->orWhere('surname', 'like', $request->search . '%');
+                }
+            );
+        }
+
+        $employees = $employees->with('userData.emails.type')->get();
+        $notifiedUsers = CompanyUserNotification::where('company_id', $companyId)->get();
+
+        $result = new Collection();
+        foreach ($employees as $employee) {
+            $item = $employee->userData;
+            $item->notifications_status = [];
+
+            $notifications = $notifiedUsers->where('user_id', $employee->userData->id);
+            foreach ($notifications as $notification) {
+                array_push($item['notifications_status'], $notification->ticket_notification_type_id);
+            }
+
+            $result->push($item);
+        }
+
+        $orderFunc = function ($item, $key) use ($request) {
+            switch ($request->sort_by) {
+                case 'id':
+                    return $item->id;
+                case 'name':
+                    return mb_strtolower($item->name);
+                case 'surname':
+                    return mb_strtolower($item->surname);
+                case 'contact_email':
+                    $email = $item->contact_email;
+                    return $email ? mb_strtolower($email->email) : '';
+                case 'notifications_status':
+                    if (empty($item->notifications)) {
+                        return 0;
+                    } elseif(in_array(TicketNotificationType::ALL, $item->notifications_status)) {
+
+                    } else {
+                        return 1;
+                    }
+            }
+        };
+
+        if ($request->sort_val === 'false') {
+            $result = $result->sortBy($orderFunc);
+        } else {
+            $result = $result->sortByDesc($orderFunc);
+        }
+
+        return $result->paginate($request->per_page ?? $result->count());
+    }
+
+    public function addNotifiedUser(Request $request, $companyId = null, $userId, $notificationType)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+
+        CompanyUserNotification::firstOrCreate([
+            'company_id' => $companyId,
+            'user_id' => $userId,
+            'ticket_notification_type_id' => $notificationType
+        ]);
+        return true;
+    }
+
+    public function deleteUserNotification($companyId = null, $userId, $notificationType)
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+
+        CompanyUserNotification::where('company_id', $companyId)->where('user_id', $userId)->where('ticket_notification_type_id', $notificationType)->delete();
+        return true;
     }
 }

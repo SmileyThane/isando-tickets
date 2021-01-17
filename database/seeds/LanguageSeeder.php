@@ -483,6 +483,11 @@ class LanguageSeeder extends Seeder
     "sender": "Sender",
     "sent_at": "Sent at"
   },
+  "notifications_settings": {
+     "all": "User will receive all tickets notifications",
+     "some": "User will receive some tickets notifications",
+     "none": "User will not receive any tickets notifications"
+  },
   "exceptions": {
 
   }
@@ -786,7 +791,7 @@ class LanguageSeeder extends Seeder
 "priority": "priorität",
 "from": "formular",
 "to": "zu",
-"title": "titel",
+"title": "Titel",
 "last": "zuletzt",
 "due_date": "Deadline",
 "server": "server (für fernzugriff)",
@@ -949,6 +954,11 @@ class LanguageSeeder extends Seeder
     "history": "Geschichte",
     "sender": "Absender",
     "sent_at": "Gesendet an"
+  },
+  "notifications_settings": {
+     "all": "Der Benutzer erhält alle Ticketbenachrichtigungen",
+     "some": "Der Benutzer erhält einige Ticketbenachrichtigungen",
+     "none": "Der Benutzer erhält keine Ticketbenachrichtigungen"
   },
   "exceptions": {
 

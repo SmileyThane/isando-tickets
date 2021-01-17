@@ -173,7 +173,7 @@ export default [
     },
     {
         path: '/settings/notify',
-        name: 'notification_settings',
+        name: 'notifications_settings',
         meta: {
             requiresAuth: true,
         },
