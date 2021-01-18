@@ -55,6 +55,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('main_company_settings', 'API\CompanyController@updateSettings');
         Route::post('company/{id}/settings', 'API\CompanyController@updateSettings');
         Route::post('company/{id}/logo', 'API\CompanyController@updateLogo');
+        Route::get('main_company_settings/notify', 'API\CompanyController@getUserNotifications');
+        Route::post('main_company_settings/notify', 'API\CompanyController@setUserNotifications');
 
         //employee management
         Route::get('employee', 'API\CompanyController@getIndividuals');

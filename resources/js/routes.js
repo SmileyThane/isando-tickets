@@ -20,6 +20,7 @@ import Notifications from './views/notify/index'
 import SingleNotification from './views/notify/item'
 import NotificationsHistory from './views/notify/history'
 import SingleNotificationHistory from './views/notify/sent'
+import NotificationsSettings from './views/settings/notify'
 
 export default [
     {
@@ -169,6 +170,14 @@ export default [
             requiresAuth: true,
         },
         component: SystemSettings
+    },
+    {
+        path: '/settings/notify',
+        name: 'notifications_settings',
+        meta: {
+            requiresAuth: true,
+        },
+        component: NotificationsSettings
     },
     {
         path: '/notify',
