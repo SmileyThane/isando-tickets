@@ -227,13 +227,15 @@ class Ticket extends Model
         if ($this->parent_id !== null && $this->unifier_id) {
             $parentTicket = Ticket::find($this->parent_id);
             $translationsArray = Language::find($this->langId)->lang_map;
-            $mergeComment = $translationsArray->ticket->ticket_merge_child_msg;
-            $mergeComment = str_replace(
-                ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
-                [$parentTicket->number, $parentTicket->original_name, $this->merged_at, User::find($this->unifier_id)->full_name],
-                $mergeComment
-            );
-            return $mergeComment;
+            if ($parentTicket) {
+                $mergeComment = $translationsArray->ticket->ticket_merge_child_msg;
+                $mergeComment = str_replace(
+                    ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
+                    [$parentTicket->number, $parentTicket->original_name, $this->merged_at, User::find($this->unifier_id)->full_name],
+                    $mergeComment
+                );
+                return $mergeComment;
+            }
         }
         return '';
     }
