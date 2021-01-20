@@ -225,9 +225,9 @@ class Ticket extends Model
     public function getMergedChildInfoAttribute(): string
     {
         if ($this->parent_id !== null && $this->unifier_id) {
-            $parentTicket = Ticket::find($this->parent_id);
-            $translationsArray = Language::find($this->langId)->lang_map;
+            $parentTicket = self::find($this->parent_id);
             if ($parentTicket) {
+                $translationsArray = Language::find($this->langId)->lang_map;
                 $mergeComment = $translationsArray->ticket->ticket_merge_child_msg;
                 $mergeComment = str_replace(
                     ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
