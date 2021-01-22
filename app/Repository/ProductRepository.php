@@ -17,9 +17,11 @@ class ProductRepository
 {
 
     protected $companyRepo;
+    protected $fileRepo;
 
-    public function __construct(CompanyRepository $companyRepository)
+    public function __construct(CompanyRepository $companyRepository, FileRepository $fileRepository)
     {
+        $this->fileRepo = $fileRepository;
         $this->companyRepo = $companyRepository;
     }
 
@@ -64,7 +66,7 @@ class ProductRepository
 
     public function find($id)
     {
-        return Product::where('id', $id)->with('employees', 'clients.clientData', 'category')->first();
+        return Product::where('id', $id)->with('employees', 'clients.clientData', 'category', 'attachments')->first();
     }
 
     public function create(Request $request)
@@ -74,7 +76,12 @@ class ProductRepository
         $product->description = $request->product_description;
         $product->photo = $request->product_photo;
         $product->category_id = $request->category_id ?? null;
+//        $product->product_code = $request->product_code;
         $product->save();
+        $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
+        foreach ($files as $file) {
+            $this->fileRepo->store($file, $product->id, Product::class);
+        }
         $request->product_id = $product->id;
         $request->company_id = Auth::user()->employee->company_id;
         $this->companyRepo->attachProduct($request);
@@ -88,6 +95,7 @@ class ProductRepository
         $product->description = $request->product_description;
         $product->photo = $request->product_photo;
         $product->category_id = $request->category_id ?? null;
+        $product->product_code = $request->product_code;
         $product->save();
         return $product;
     }
