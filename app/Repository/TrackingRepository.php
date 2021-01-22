@@ -120,6 +120,7 @@ class TrackingRepository
     {
         if ($tracking->user_id === Auth::user()->id) {
             $newTracking = $tracking->replicate();
+            $newTracking->save();
             return $newTracking;
         }
         return false;

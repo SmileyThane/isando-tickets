@@ -43,4 +43,10 @@ class TrackingController extends BaseController
         return self::showResponse($result);
     }
 
+    public function duplicate(Tracking $tracking)
+    {
+        $result = $this->trackingRepo->duplicate($tracking);
+        return self::showResponse((bool)$result, $result);
+    }
+
 }

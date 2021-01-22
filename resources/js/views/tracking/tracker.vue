@@ -70,6 +70,7 @@
                                                     placeholder="Start typing to Search"
                                                     prepend-icon="mdi-database-search"
                                                     return-object
+                                                    autofocus
                                                 ></v-autocomplete>
                                             </v-card>
                                         </v-menu>
@@ -226,7 +227,7 @@
                                                     v-on="on"
                                                     hide-details="auto"
                                                     style="max-width: 100px"
-                                                    @blur="setTimeFromHandler()"
+                                                    @blur="handlerSetTimeFrom()"
                                                 ></v-text-field>
                                             </template>
                                             <v-time-picker
@@ -262,7 +263,7 @@
                                                     v-on="on"
                                                     hide-details="auto"
                                                     style="max-width: 100px"
-                                                    @blur="setTimeToHandler()"
+                                                    @blur="handlerSetTimeTo()"
                                                 ></v-text-field>
                                             </template>
                                             <v-time-picker
@@ -297,7 +298,7 @@
                                                     v-on="on"
                                                     hide-details="auto"
                                                     style="max-width: 1050px"
-                                                    @blur="setDateHandler()"
+                                                    @blur="handlerSetDate()"
                                                 ></v-text-field>
                                             </template>
                                             <v-date-picker
@@ -406,7 +407,7 @@
                             v-model="dateRange"
                             range
                             no-title
-                            @input="dateRangeHandler()"
+                            @input="handlerDateRange()"
                         ></v-date-picker>
                     </v-menu>
                 </v-col>
@@ -436,10 +437,9 @@
                         <template>
                             <div>
                                 <v-data-table
-                                    hide-default-footer
                                     :headers="headers"
                                     :items="filterTracking(panelDate)"
-                                    :items-per-page="20"
+                                    :items-per-page="15"
                                     class="elevation-1"
                                 >
                                     <template v-slot:item.description="props">
@@ -448,7 +448,7 @@
                                             @save="save(props.item.id, 'description')"
                                             @cancel="cancel"
                                             @open="open"
-                                            @close="close"
+                                            @close="save(props.item.id, 'description')"
                                         >
                                             <span class="text--secondary" v-if="!props.item.description">
                                                 Add description
@@ -457,7 +457,6 @@
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="props.item.description"
-                                                    :rules="[validators.max255chars]"
                                                     label="Description"
                                                     hint="Description"
                                                     single-line
@@ -467,31 +466,39 @@
                                             </template>
                                         </v-edit-dialog>
                                     </template>
-                                    <template v-slot:item.project="props">
+                                    <template v-slot:item.project.name="props">
                                         <v-edit-dialog
-                                            :return-value.sync="props.item.project"
-                                            persistent
-                                            @save="save(props.item.id, 'project')"
+                                            :return-value.sync="props.item.project_id"
+                                            @save="save(props.item.id, 'project_id')"
                                             @cancel="cancel"
                                             @open="open"
-                                            @close="close"
+                                            @close="save(props.item.id, 'project_id')"
                                         >
                                             <span class="text--secondary" v-if="!props.item.project">
-                                                Add project
+                                                <v-icon>mdi-plus-circle-outline</v-icon>&nbsp;Project
                                             </span>
-                                            <div>{{ props.item.project }}</div>
+                                            <div v-if="props.item.project">
+                                                {{ props.item.project.name }}
+                                            </div>
                                             <template v-slot:input>
-                                                <div class="mt-4 title">
-                                                    Update Project
-                                                </div>
-                                                <v-text-field
-                                                    v-model="props.item.project"
-                                                    :rules="[validators.max255chars]"
-                                                    label="Edit"
-                                                    single-line
-                                                    counter
-                                                    autofocus
-                                                ></v-text-field>
+                                                <v-card>
+                                                    <v-autocomplete
+                                                        v-model="props.item.project"
+                                                        :items="getFilteredProjects"
+                                                        :loading="isLoadingSearchProject"
+                                                        :search-input.sync="search"
+                                                        color="white"
+                                                        hide-no-data
+                                                        hide-selected
+                                                        item-text="name"
+                                                        item-value="id"
+                                                        label="Projects"
+                                                        placeholder="Start typing to Search"
+                                                        prepend-icon="mdi-database-search"
+                                                        return-object
+                                                        autofocus
+                                                    ></v-autocomplete>
+                                                </v-card>
                                             </template>
                                         </v-edit-dialog>
                                     </template>
@@ -501,13 +508,12 @@
                                             @save="save(props.item.id, 'date_from')"
                                             @cancel="cancel"
                                             @open="open"
-                                            @close="close"
+                                            @close="save(props.item.id, 'date_from')"
                                         >
                                             {{ moment(props.item.date_from).format(timeFormat) }}
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="props.item.date_from"
-                                                    :rules="[validators.max255chars]"
                                                     label="Edit"
                                                     single-line
                                                     counter
@@ -521,7 +527,7 @@
                                             @save="save(props.item.id, 'date_to')"
                                             @cancel="cancel"
                                             @open="open"
-                                            @close="close"
+                                            @close="save(props.item.id, 'date_to')"
                                             v-if="props.item.status == 'stopped'"
                                         >
                                             <span v-if="props.item.date_to && props.item.status == 'stopped'">
@@ -530,7 +536,6 @@
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="props.item.date_to"
-                                                    :rules="[validators.max255chars]"
                                                     label="Edit"
                                                     single-line
                                                     counter
@@ -667,17 +672,17 @@ export default {
                     text: 'Description',
                     align: 'start',
                     value: 'description',
-                    width: '15%'
+                    width: '20%'
                 },
                 {
                     text: 'Company',
                     value: 'project.client.name',
-                    width: '15%'
+                    width: '20%'
                 },
                 {
                     text: 'Project name',
                     value: 'project.name',
-                    width: '15%'
+                    width: '20%'
                 },
                 {
                     text: 'Tag',
@@ -687,17 +692,17 @@ export default {
                 {
                     text: 'Start',
                     value: 'date_from',
-                    width: '10%'
+                    width: '5%'
                 },
                 {
                     text: 'End',
                     value: 'date_to',
-                    width: '10%'
+                    width: '5%'
                 },
                 {
                     text: 'Passed',
                     value: 'passed',
-                    width: '10%'
+                    width: '5%'
                 },
                 {
                     text: 'Actions',
@@ -709,10 +714,6 @@ export default {
             /* Data */
             tracking: [],
             projects: [],
-            /* Validators */
-            validators: {
-                max255chars: v => v.length <= 255 || 'Input too long!'
-            },
             manualPanel: {
                 description: null,
                 project: null,
@@ -820,50 +821,6 @@ export default {
                     return data;
                 });
         },
-        dateRangeHandler() {
-            if (this.dateRange.length === 2) {
-                this.dateRange.sort();
-                this.dateRangePicker = false;
-                this.debounceGetTacking();
-            }
-        },
-        // parseTime(time) {
-        //     if (!time) return null
-        //     time = this.helperAddZeros(time.replace(/\D+/g, ''), 4);
-        //     return time.slice(0, 2), ':', time.slice(2);
-        // },
-        helperAddZeros(num, len) {
-            while((""+num).length < len) num = "0" + num;
-            return num.toString();
-        },
-        resetManualPanel() {
-            this.manualPanel = {
-                description: null,
-                projectId: null,
-                tags: [],
-                billable: false,
-                date_from: moment().format(this.timeFormat),
-                date_to: moment().format(this.timeFormat),
-                date: moment().format(this.dateFormat),
-                status: 'started',
-                timeStart: '00:00:00'
-            };
-        },
-        resetTimerPanel() {
-            this.timerPanel = {
-                trackId: null,
-                passedSeconds: '00:00:00',
-                start: null,
-                billable: false,
-                description: null,
-                project: null,
-                tags: [],
-                status: 'started',
-                date_from: moment(),
-                date_to: null,
-                date: moment()
-            };
-        },
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
             this.__createTracking(this.manualPanel);
@@ -903,89 +860,6 @@ export default {
                 this.resetTimerPanel();
             }
         },
-        setTimeFromHandler() {
-            if (!this.timeFrom) {
-                this.timeFrom = moment().format(this.timeFormat);
-            }
-            if (/([0-9]{1,}:[0-9]{2})/.test(this.timeFrom)) {
-                return this.timeFrom;
-            }
-            if (/(\d{1,4})/.test(this.timeFrom)) {
-                let str = this.timeFrom.toString().slice(0,4);
-                str = this.helperAddZeros(str, 4);
-                this.timeFrom = str.slice(0,2) + ':' + str.slice(-2);
-                return this.timeFrom;
-            }
-            this.timeFrom = moment().format(this.timeFormat);
-            return this.timeFrom;
-        },
-        setTimeToHandler() {
-            if (!this.timeTo) {
-                this.timeTo = moment().format(this.timeFormat);
-            }
-            if (/([0-9]{1,}:[0-9]{2})/.test(this.timeTo)) {
-                return this.timeTo;
-            }
-            if (/(\d{1,4})/.test(this.timeTo)) {
-                let str = this.timeTo.toString().slice(0,4);
-                str = this.helperAddZeros(str, 4);
-                this.timeTo = str.slice(0,2) + ':' + str.slice(-2);
-                return this.timeTo;
-            }
-            this.timeTo = moment().format(this.timeFormat);
-            return this.timeTo;
-        },
-        setDateHandler() {
-            if (!this.date || ! /([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/.test(this.date)) {
-                this.date = moment().format(this.dateFormat);
-            }
-            return this.date;
-        },
-        helperConvertSecondsToTimeFormat(seconds) {
-            if (!seconds) {
-                return `00:00:00`;
-            }
-            const h = Math.floor(seconds / 60 / 60);
-            const m = Math.floor((seconds - h * 60 * 60) / 60);
-            const s = seconds - (m * 60) - (h * 60 * 60);
-            return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
-        },
-        forceSave(item, fieldName, newValue) {
-            const foundIndex = this.tracking.findIndex(function(i) {
-                return i.id === item.id;
-            });
-            this.tracking[foundIndex][fieldName] = newValue;
-        },
-        save (id, fieldName) {
-            const foundIndex = this.tracking.findIndex(i => i.id === id);
-            if (['date_from', 'date_to'].indexOf(fieldName)) {
-                const {date_from, date_to} = this.tracking[foundIndex];
-                this.tracking[foundIndex].passed = this.helperCalculatePassedTime(date_from, date_to);
-            }
-            this.__updateTrackingById(id, this.tracking[foundIndex]);
-        },
-        cancel () {
-            //TODO
-        },
-        open () {
-            //TODO
-        },
-        close () {
-            //TODO
-        },
-        helperCalculatePassedTime(date_from, date_to) {
-            if (moment(date_from) > moment(date_to)) {
-                date_to = moment(date_to).add(1, 'day');
-            }
-            const seconds = moment(date_to).diff(moment(date_from), 'seconds');
-            return seconds;
-        },
-        filterTracking(date) {
-            const self = this;
-            return this.tracking.filter(function(item) {
-               return moment(item.date_from).format(self.dateFormat) === date;
-            });
-        },
         actionDuplicateTracking(trackerId) {
             this.__duplicateTracking(trackerId);
         },
@@ -1004,6 +878,131 @@ export default {
                 status: 'stopped',
                 date_to: moment()
             });
+        },
+        helperAddZeros(num, len) {
+            while((""+num).length < len) num = "0" + num;
+            return num.toString();
+        },
+        helperConvertSecondsToTimeFormat(seconds) {
+            if (!seconds) {
+                return `00:00:00`;
+            }
+            const h = Math.floor(seconds / 60 / 60);
+            const m = Math.floor((seconds - h * 60 * 60) / 60);
+            const s = seconds - (m * 60) - (h * 60 * 60);
+            return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
+        },
+        helperCalculatePassedTime(date_from, date_to) {
+            if (moment(date_from) > moment(date_to)) {
+                date_to = moment(date_to).add(1, 'day');
+            }
+            const seconds = moment(date_to).diff(moment(date_from), 'seconds');
+            return seconds;
+        },
+        resetManualPanel() {
+            this.manualPanel = {
+                description: null,
+                projectId: null,
+                tags: [],
+                billable: false,
+                date_from: moment().format(this.timeFormat),
+                date_to: moment().format(this.timeFormat),
+                date: moment().format(this.dateFormat),
+                status: 'started',
+                timeStart: '00:00:00'
+            };
+        },
+        resetTimerPanel() {
+            this.timerPanel = {
+                trackId: null,
+                passedSeconds: '00:00:00',
+                start: null,
+                billable: false,
+                description: null,
+                project: null,
+                tags: [],
+                status: 'started',
+                date_from: moment(),
+                date_to: null,
+                date: moment()
+            };
+        },
+        handlerDateRange() {
+            if (this.dateRange.length === 2) {
+                this.dateRange.sort();
+                this.dateRangePicker = false;
+                this.debounceGetTacking();
+            }
+        },
+        handlerSetTimeFrom() {
+            if (!this.timeFrom) {
+                this.timeFrom = moment().format(this.timeFormat);
+            }
+            if (/([0-9]{1,}:[0-9]{2})/.test(this.timeFrom)) {
+                return this.timeFrom;
+            }
+            if (/(\d{1,4})/.test(this.timeFrom)) {
+                let str = this.timeFrom.toString().slice(0,4);
+                str = this.helperAddZeros(str, 4);
+                this.timeFrom = str.slice(0,2) + ':' + str.slice(-2);
+                return this.timeFrom;
+            }
+            this.timeFrom = moment().format(this.timeFormat);
+            return this.timeFrom;
+        },
+        handlerSetTimeTo() {
+            if (!this.timeTo) {
+                this.timeTo = moment().format(this.timeFormat);
+            }
+            if (/([0-9]{1,}:[0-9]{2})/.test(this.timeTo)) {
+                return this.timeTo;
+            }
+            if (/(\d{1,4})/.test(this.timeTo)) {
+                let str = this.timeTo.toString().slice(0,4);
+                str = this.helperAddZeros(str, 4);
+                this.timeTo = str.slice(0,2) + ':' + str.slice(-2);
+                return this.timeTo;
+            }
+            this.timeTo = moment().format(this.timeFormat);
+            return this.timeTo;
+        },
+        handlerSetDate() {
+            if (!this.date || ! /([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/.test(this.date)) {
+                this.date = moment().format(this.dateFormat);
+            }
+            return this.date;
+        },
+        filterTracking(date) {
+            const self = this;
+            return this.tracking.filter(function(item) {
+                return moment(item.date_from).format(self.dateFormat) === date;
+            });
+        },
+        save (id, fieldName) {
+            const foundIndex = this.tracking.findIndex(i => i.id === id);
+            if (['date_from', 'date_to'].indexOf(fieldName)) {
+                const {date_from, date_to} = this.tracking[foundIndex];
+                this.tracking[foundIndex].passed = this.helperCalculatePassedTime(date_from, date_to);
+            }
+            this.__updateTrackingById(id, this.tracking[foundIndex]);
+        },
+        forceSave(item, fieldName, newValue) {
+            const foundIndex = this.tracking.findIndex(function(i) {
+                return i.id === item.id;
+            });
+            this.tracking[foundIndex][fieldName] = newValue;
+            this.__updateTrackingById(item.id, {
+                [fieldName]: newValue
+            })
+        },
+        cancel () {
+            //TODO
+        },
+        open () {
+            //TODO
+        },
+        close () {
+            //TODO
         },
     },
     computed: {
