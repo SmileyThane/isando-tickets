@@ -42,7 +42,9 @@
                                 :readonly="!enableToEdit"
                                 dense
                             ></v-text-field>
-                            <v-text-field
+                            <v-textarea
+                                rows="1"
+                                auto-grow
                                 :color="themeColor"
                                 :label="langMap.main.description"
                                 name="description"
@@ -53,8 +55,36 @@
                                 lazy-validation
                                 :readonly="!enableToEdit"
                                 dense
+                            ></v-textarea>
+                            <v-text-field
+                                :color="themeColor"
+                                :label="langMap.product.code"
+                                name="code"
+                                prepend-icon="mdi-rename-box"
+                                type="text"
+                                v-model="product.product_code"
+                                :error-messages="errors.product_code"
+                                lazy-validation
+                                :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
                         </v-form>
+                        <v-col v-if="product.attachments.length > 0 " cols="12">
+                            <h4>{{ langMap.main.attachments }}</h4>
+                            <div
+                                v-for="attachment in product.attachments"
+                                v-if="product.attachments.length > 0"
+                            >
+                                <v-chip
+                                    :color="themeColor"
+                                    :href="attachment.link"
+                                    class="ma-2"
+                                    text-color="white"
+                                >
+                                    {{ attachment.name }}
+                                </v-chip>
+                            </div>
+                        </v-col>
                     </v-card-text>
                 </v-card>
             </div>
