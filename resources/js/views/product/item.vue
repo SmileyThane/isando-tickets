@@ -75,11 +75,12 @@
                             :items="product.clients"
                             :footer-props="footerProps"
                             class="elevation-1"
+                            @click:row="showCompany"
                         >
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteCustomerDlg(item)">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click.native.stop="showDeleteCustomerDlg(item)">
                                             <v-icon
                                                 small
                                             >
@@ -249,6 +250,9 @@
             cancelUpdateProduct() {
                 this.getProduct();
                 this.enableToEdit = false;
+            },
+            showCompany(item) {
+                this.$router.push(`/customer/${item.client_id}`)
             },
             getSuppliers() {
                 axios.get('/api/client?sort_by=name&sort_val=false').then(response => {
