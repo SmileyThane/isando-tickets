@@ -439,6 +439,8 @@
                                     hide-default-footer
                                     :headers="headers"
                                     :items="filterTracking(panelDate)"
+                                    :items-per-page="20"
+                                    class="elevation-1"
                                 >
                                     <template v-slot:item.description="props">
                                         <v-edit-dialog
@@ -448,6 +450,9 @@
                                             @open="open"
                                             @close="close"
                                         >
+                                            <span class="text--secondary" v-if="!props.item.description">
+                                                Add description
+                                            </span>
                                             {{ props.item.description }}
                                             <template v-slot:input>
                                                 <v-text-field
@@ -471,6 +476,9 @@
                                             @open="open"
                                             @close="close"
                                         >
+                                            <span class="text--secondary" v-if="!props.item.project">
+                                                Add project
+                                            </span>
                                             <div>{{ props.item.project }}</div>
                                             <template v-slot:input>
                                                 <div class="mt-4 title">
@@ -718,7 +726,7 @@ export default {
             },
             nameLimit: 255,
             timerPanel: {
-                startId: null,
+                trackId: null,
                 passedSeconds: '00:00:00',
                 start: null,
                 billable: false,
@@ -797,7 +805,7 @@ export default {
                     return data;
                 });
         },
-        __actionDeleteTrackingById(id) {
+        __deleteTrackingById(id) {
             this.loadingDeleteTrack = true;
             return axios.delete(`/api/tracking/tracker/${id}`)
                 .finally(e => {
@@ -805,21 +813,12 @@ export default {
                     this.loadingDeleteTrack = false;
                 });
         },
-        __actionDuplicateTracking(id) {
+        __duplicateTracking(id) {
             return axios.post(`/api/tracking/tracker/${id}/duplicate`)
                 .then(({ data }) => {
                     this.debounceGetTacking();
                     return data;
                 });
-        },
-        timer() {
-            if (this.timerPanel.start) {
-                return setTimeout(() => {
-                    const seconds = moment().diff(moment(this.timerPanel.start), 'seconds');
-                    this.timerPanel.passedSeconds = this.helperConvertSecondsToTimeFormat(seconds);
-                    this.timer();
-                }, 1000);
-            }
         },
         dateRangeHandler() {
             if (this.dateRange.length === 2) {
@@ -850,6 +849,21 @@ export default {
                 timeStart: '00:00:00'
             };
         },
+        resetTimerPanel() {
+            this.timerPanel = {
+                trackId: null,
+                passedSeconds: '00:00:00',
+                start: null,
+                billable: false,
+                description: null,
+                project: null,
+                tags: [],
+                status: 'started',
+                date_from: moment(),
+                date_to: null,
+                date: moment()
+            };
+        },
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
             this.__createTracking(this.manualPanel);
@@ -857,34 +871,36 @@ export default {
         actionStartNewTrack() {
             // start
             if (!this.timerPanel.start) {
-                this.timerPanel.startId = null;
+                this.timerPanel.trackId = null;
                 this.timerPanel.status = 'started';
                 this.timerPanel.start = moment();
-                this.timerPanel.date = this.timerPanel.start;
-                this.timerPanel.date_from = this.timerPanel.start;
+                this.timerPanel.date = moment();
+                this.timerPanel.date_from = moment();
                 this.timerPanel.date_to = null;
                 this.timerPanel.timeStart = this.timerPanel.start;
                 this.loadingCreateTrack = true;
                 this.__createTracking(this.timerPanel)
                     .then(data => {
                         if (data.success) {
-                            this.timerPanel.startId = data.data.id;
+                            this.timerPanel.trackId = data.data.id;
                         }
                     });
-                this.timer();
             } else {
                 // stop
-                if (this.timerPanel.startId) {
-                    this.timerPanel.date = this.timerPanel.start;
-                    this.timerPanel.date_from = this.timerPanel.start;
-                    this.timerPanel.date_to = moment();
-                    this.timerPanel.timeStart = this.timerPanel.start;
-                    this.timerPanel.start = null;
-                    this.timerPanel.status = 'stopped';
-                    this.__updateTrackingById(this.timerPanel.startId, this.manualPanel);
+                this.timerPanel.date = this.timerPanel.start;
+                this.timerPanel.date_from = this.timerPanel.start;
+                this.timerPanel.date_to = moment();
+                this.timerPanel.timeStart = this.timerPanel.start;
+                this.timerPanel.start = null;
+                this.timerPanel.status = 'stopped';
+                const index = this.tracking.findIndex(i => i.id === this.timerPanel.trackId);
+                this.tracking[index].status = 'stopped';
+                if (this.timerPanel.trackId) {
+                    this.__updateTrackingById(this.timerPanel.trackId, this.timerPanel);
                 } else {
-                    this.__createTracking(this.manualPanel);
+                    this.__createTracking(this.timerPanel);
                 }
+                this.resetTimerPanel();
             }
         },
         setTimeFromHandler() {
@@ -971,12 +987,19 @@ export default {
             });
         },
         actionDuplicateTracking(trackerId) {
-            this.__actionDuplicateTracking(trackerId);
+            this.__duplicateTracking(trackerId);
         },
         actionDeleteTracking(trackerId) {
-            this.__actionDeleteTrackingById(trackerId);
+            this.__deleteTrackingById(trackerId);
         },
         actionStopTracking(trackerId) {
+            if (this.timerPanel.trackId === trackerId) {
+                this.timerPanel.start = null;
+                this.resetTimerPanel();
+                const index = this.tracking.findIndex(i => i.id === trackerId);
+                this.tracking[index].status = 'stopped';
+                this.tracking[index].date_to = moment();
+            }
             this.__updateTrackingById(trackerId, {
                 status: 'stopped',
                 date_to: moment()
@@ -1055,6 +1078,7 @@ export default {
                 .finally(() => (this.isLoadingSearchProject = false));
 1        },
         globalTimer: function () {
+            // Update DataTable passed field
             const tracking = this.tracking.filter(i => {
                 return i.status === 'started';
             });
@@ -1062,6 +1086,10 @@ export default {
                 const index = this.tracking.indexOf(i);
                 this.tracking[index].passed = this.helperCalculatePassedTime(i.date_from, moment());
             });
+            if (this.timerPanel.start) {
+                const seconds = moment().diff(moment(this.timerPanel.start), 'seconds');
+                this.timerPanel.passedSeconds = this.helperConvertSecondsToTimeFormat(seconds);
+            }
         }
     },
 }

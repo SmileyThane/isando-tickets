@@ -20,7 +20,7 @@ class TrackingRepository
 
     protected $rules = [
         'create' => [
-            'product_id' => 'nullable|exists:App\Product,id',
+            'product.id' => 'nullable|exists:App\Product,id',
             'description' => 'nullable|string',
             'date_from' => 'required|string',
             'date_to' => 'nullable|string',
@@ -29,7 +29,7 @@ class TrackingRepository
             'billed' => 'boolean',
         ],
         'update' => [
-            'product_id' => 'nullable|exists:App\Product,id',
+            'product.id' => 'nullable|exists:App\Product,id',
             'description' => 'nullable|string',
             'date_from' => 'nullable|string',
             'date_to' => 'nullable|string',
@@ -77,8 +77,8 @@ class TrackingRepository
         $tracking = new Tracking();
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
-        $tracking->date_from = Carbon::parseFromLocale($request->date_from);
-        $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parseFromLocale($request->date_to) : null;
+        $tracking->date_from = Carbon::parse($request->date_from);
+        $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to) : null;
         $tracking->status = $request->status;
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
@@ -92,10 +92,10 @@ class TrackingRepository
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
         if ($request->has('date_from')) {
-            $tracking->date_from = Carbon::parseFromLocale($request->date_rom);
+            $tracking->date_from = Carbon::parse($request->date_from);
         }
         if ($request->has('date_to')) {
-            $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parseFromLocale($request->date_to) : null;
+            $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to) : null;
         }
         if ($request->has('status')) {
             $tracking->status = $request->status;
