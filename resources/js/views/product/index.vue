@@ -25,26 +25,58 @@
                                 <v-expansion-panel-content>
                                     <v-form>
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 <v-text-field
                                                     :color="themeColor"
                                                     :label="langMap.main.name"
                                                     name="product_name"
                                                     type="text"
                                                     v-model="productForm.product_name"
+                                                    prepend-icon="mdi-text"
                                                     required
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-6">
-                                                <v-text-field
+                                            <div class="col-md-4">
+                                                <v-textarea
                                                     :color="themeColor"
                                                     :label="langMap.main.description"
                                                     name="product_description"
-                                                    type="text"
                                                     v-model="productForm.product_description"
+                                                    rows="1"
+                                                    auto-grow
+                                                    required
+                                                ></v-textarea>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <v-text-field
+                                                    :color="themeColor"
+                                                    :label="langMap.product.code"
+                                                    name="product_code"
+                                                    v-model="productForm.product_code"
                                                     required
                                                 ></v-text-field>
                                             </div>
+                                            <div class="col-md-3">
+                                                <v-file-input
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
+                                                    :label="langMap.ticket.add_attachments"
+                                                    :show-size="1000"
+                                                    chips
+                                                    multiple
+                                                    prepend-icon="mdi-paperclip"
+                                                    v-on:change="onFileChange('productForm')"
+                                                >
+                                                    <template v-slot:selection="{ index, text }">
+                                                        <v-chip
+                                                            :color="themeColor"
+                                                        >
+                                                            {{ text }}
+                                                        </v-chip>
+                                                    </template>
+                                                </v-file-input>
+                                            </div>
+                                            <br>
                                             <v-btn
                                                 dark
                                                 fab
@@ -208,6 +240,7 @@
                 productForm: {
                     product_name: '',
                     product_description: '',
+                    files: []
                 }
             }
         },
@@ -246,9 +279,22 @@
 
                 });
             },
+            onFileChange(form) {
+                this[form].files = null;
+                this[form].files = event.target.files;
+            },
             addProduct() {
-                // console.log(this.productForm)
-                axios.post('/api/product', this.productForm).then(response => {
+                const config = {
+                    headers: {'content-type': 'multipart/form-data'}
+                }
+                let formData = new FormData();
+                for (let key in this.productForm) {
+                    if (key !== 'files') {
+                        formData.append(key, this.productForm[key]);
+                    }
+                }
+                Array.from(this.productForm.files).forEach(file => formData.append('files[]', file));
+                axios.post('/api/product', formData, config).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.getProducts()
