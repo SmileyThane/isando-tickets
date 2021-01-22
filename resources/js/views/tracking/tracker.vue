@@ -461,7 +461,6 @@
                                                     hint="Description"
                                                     single-line
                                                     counter
-                                                    @blur="forceSave(props.item, 'description', props.item.description)"
                                                 ></v-text-field>
                                             </template>
                                         </v-edit-dialog>
@@ -562,6 +561,7 @@
                                                     depressed
                                                     :color="themeColor"
                                                     v-if="props.item.status == 'stopped'"
+                                                    @click="actionStartTrackingAsId(props.item.id)"
                                                 >
                                                     <v-icon>mdi-play-outline</v-icon>
                                                 </v-btn>
@@ -592,9 +592,6 @@
                                                                 color="primary"
                                                             >
                                                                 <v-list-item>
-                                                                    <v-list-item-icon>
-                                                                        <v-icon>mdi-content-duplicate</v-icon>
-                                                                    </v-list-item-icon>
                                                                     <v-list-item-content>
                                                                         <v-list-item-title
                                                                             @click="actionDuplicateTracking(props.item.id)"
@@ -604,9 +601,6 @@
                                                                     </v-list-item-content>
                                                                 </v-list-item>
                                                                 <v-list-item>
-                                                                    <v-list-item-icon>
-                                                                        <v-icon>mdi-trash-can-outline</v-icon>
-                                                                    </v-list-item-icon>
                                                                     <v-list-item-content>
                                                                         <v-list-item-title
                                                                             @click="actionDeleteTracking(props.item.id)"
@@ -636,12 +630,16 @@
 
 <script>
 import EventBus from "../../components/EventBus";
-import moment from "moment";
+import moment from "moment-timezone";
 import _ from "lodash";
 
 export default {
     data() {
         return {
+            tz: {
+                name: moment.tz.guess(),
+                offset: new Date().getTimezoneOffset()
+            },
             dateFormat: 'YYYY-MM-DD',
             timeFormat: 'HH:mm',
             langMap: this.$store.state.lang.lang_map,
@@ -879,6 +877,17 @@ export default {
                 date_to: moment()
             });
         },
+        actionStartTrackingAsId(trackerId) {
+            this.__duplicateTracking(trackerId)
+                .then(data => {
+                    if (data.success) {
+                        this.__updateTrackingById(data.data.id, {
+                            date_to: null,
+                            status: 'started'
+                        });
+                    }
+                });
+        },
         helperAddZeros(num, len) {
             while((""+num).length < len) num = "0" + num;
             return num.toString();
@@ -896,8 +905,7 @@ export default {
             if (moment(date_from) > moment(date_to)) {
                 date_to = moment(date_to).add(1, 'day');
             }
-            const seconds = moment(date_to).diff(moment(date_from), 'seconds');
-            return seconds;
+            return moment(date_to).diff(moment(date_from), 'seconds');
         },
         resetManualPanel() {
             this.manualPanel = {
@@ -986,15 +994,6 @@ export default {
             }
             this.__updateTrackingById(id, this.tracking[foundIndex]);
         },
-        forceSave(item, fieldName, newValue) {
-            const foundIndex = this.tracking.findIndex(function(i) {
-                return i.id === item.id;
-            });
-            this.tracking[foundIndex][fieldName] = newValue;
-            this.__updateTrackingById(item.id, {
-                [fieldName]: newValue
-            })
-        },
         cancel () {
             //TODO
         },
@@ -1078,13 +1077,13 @@ export default {
 1        },
         globalTimer: function () {
             // Update DataTable passed field
-            const tracking = this.tracking.filter(i => {
+            this.tracking.filter(i => {
                 return i.status === 'started';
-            });
-            tracking.forEach(i => {
+            }).forEach(i => {
                 const index = this.tracking.indexOf(i);
                 this.tracking[index].passed = this.helperCalculatePassedTime(i.date_from, moment());
             });
+            // Update timerPanel
             if (this.timerPanel.start) {
                 const seconds = moment().diff(moment(this.timerPanel.start), 'seconds');
                 this.timerPanel.passedSeconds = this.helperConvertSecondsToTimeFormat(seconds);
