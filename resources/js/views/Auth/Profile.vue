@@ -154,7 +154,7 @@
                                     class="col-md-6"
                                     :item-color="themeColor"
                                     name="language"
-                                    prepend-icon="mdi-mail"
+                                    prepend-icon="mdi-web"
                                     item-text="name"
                                     item-value="id"
                                     :items="languages"
