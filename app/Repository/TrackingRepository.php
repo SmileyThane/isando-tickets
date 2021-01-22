@@ -18,17 +18,33 @@ use Illuminate\Support\Facades\Validator;
 class TrackingRepository
 {
 
-    public function validate($request, $new = true)
-    {
-        $params = [
-            'productId' => 'nullable|exists:App\Product,id',
+    protected $rules = [
+        'create' => [
+            'product_id' => 'nullable|exists:App\Product,id',
             'description' => 'nullable|string',
-            'dateFrom' => 'required|string',
-            'dateTo' => 'required|string',
+            'date_from' => 'required|string',
+            'date_to' => 'nullable|string',
             'status' => 'required|string|in:started,paused,stopped',
             'billable' => 'boolean',
             'billed' => 'boolean',
-        ];
+        ],
+        'update' => [
+            'product_id' => 'nullable|exists:App\Product,id',
+            'description' => 'nullable|string',
+            'date_from' => 'nullable|string',
+            'date_to' => 'nullable|string',
+            'status' => 'nullable|string|in:started,paused,stopped',
+            'billable' => 'boolean',
+            'billed' => 'boolean',
+        ]
+    ];
+
+    public function validate($request, $new = true)
+    {
+        $params = $this->rules['update'];
+        if ($new) {
+            $params = $this->rules['create'];
+        }
         $validator = Validator::make($request->all(), $params);
         if ($validator->fails()) {
             return $validator->errors();
@@ -41,8 +57,8 @@ class TrackingRepository
         return Auth::user()
             ->tracking()
             ->whereBetween('date_from', [
-                Carbon::parse($request->dateFrom)->startOfDay(),
-                Carbon::parse($request->dateTo)->endOfDay()
+                Carbon::parse($request->date_from)->startOfDay(),
+                Carbon::parse($request->date_to)->endOfDay()
             ])
             ->with('Project.Product')
             ->with('Project.Client')
@@ -50,7 +66,6 @@ class TrackingRepository
             ->orderBy('id', 'desc')
             ->get();
     }
-
 
     public function find($id)
     {
@@ -61,25 +76,52 @@ class TrackingRepository
     {
         $tracking = new Tracking();
         $tracking->user_id = Auth::user()->id;
-        if ($request->has('productId')) { $tracking->product_id = $request->productId; }
         if ($request->has('description')) { $tracking->description = $request->description; }
-        $tracking->date_from = Carbon::parseFromLocale($request->dateFrom);
-        $tracking->date_to = Carbon::parseFromLocale($request->dateTo);
+        $tracking->date_from = Carbon::parseFromLocale($request->date_from);
+        $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parseFromLocale($request->date_to) : null;
         $tracking->status = $request->status;
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
+        if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
         $tracking->save();
         return $tracking;
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Tracking $tracking)
     {
-        //TODO
+        $tracking->user_id = Auth::user()->id;
+        if ($request->has('description')) { $tracking->description = $request->description; }
+        if ($request->has('date_from')) {
+            $tracking->date_from = Carbon::parseFromLocale($request->date_rom);
+        }
+        if ($request->has('date_to')) {
+            $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parseFromLocale($request->date_to) : null;
+        }
+        if ($request->has('status')) {
+            $tracking->status = $request->status;
+        }
+        if ($request->has('billable')) { $tracking->billable = $request->billable; }
+        if ($request->has('billed')) { $tracking->billed = $request->billed; }
+        if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
+        $tracking->save();
+        return $tracking;
     }
 
-    public function delete($id)
+    public function delete(Tracking $tracking)
     {
-        //TODO
+        if ($tracking->user_id === Auth::user()->id) {
+            $tracking->delete();
+            return true;
+        }
+        return false;
     }
 
+    public function duplicate(Tracking $tracking)
+    {
+        if ($tracking->user_id === Auth::user()->id) {
+            $newTracking = $tracking->replicate();
+            return $newTracking;
+        }
+        return false;
+    }
 }

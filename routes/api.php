@@ -186,6 +186,9 @@ Route::group(['middleware' => 'auth:api'], function () {
                 //Tracker
                 Route::get('/tracker', 'TrackingController@get');
                 Route::post('/tracker', 'TrackingController@create');
+                Route::put('/tracker/{tracking}', 'TrackingController@update');
+                Route::post('/tracker/{tracking}/duplicate', 'TrackingController@duplicate');
+                Route::delete('/tracker/{tracking}', 'TrackingController@delete');
         });
 
     });

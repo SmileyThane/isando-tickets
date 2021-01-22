@@ -9,232 +9,369 @@
             {{ snackbarMessage }}
         </v-snackbar>
 
+<!--        panel-->
         <template>
             <v-card flat>
-                <v-container fluid>
+                <v-toolbar>
                     <v-row class="child-flex">
-                        <v-toolbar>
-                            <v-col cols="12" md="4" sm="8">
-                                <v-text-field
-                                    outlined
-                                    dense
-                                    hide-details="auto"
-                                    placeholder="What are you working on?"
-                                    v-model="trackForm.description"
-                                ></v-text-field>
-                            </v-col>
-                            <v-spacer v-if="panel.activePanel"></v-spacer>
-                            <v-col cols="12" md="2" sm="4" class="text-right">
-                                <v-btn
-                                    tile
-                                    small
-                                    text
-                                    :color="themeColor"
-                                >
-                                    <v-icon center>
-                                        mdi-plus-circle-outline
-                                    </v-icon>
+                        <v-col cols="11" md="11" sm="10" v-if="mode">
+<!--                            Timer mode-->
+                            <v-row>
+                                <v-col cols="12" md="4" sm="8">
+                                    <v-text-field
+                                        outlined
+                                        dense
+                                        hide-details="auto"
+                                        placeholder="What are you working on?"
+                                        v-model="timerPanel.description"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-spacer></v-spacer>
+                                <v-col cols="12" md="2" sm="4" class="text-right">
+                                    <template>
+                                        <v-menu
+                                            ref="menuProject"
+                                            v-model="menuProject"
+                                            :close-on-content-click="false"
+                                            :nudge-width="200"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    tile
+                                                    small
+                                                    text
+                                                    :color="themeColor"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                >
+                                                    <v-icon center v-if="!timerPanel.project">
+                                                        mdi-plus-circle-outline
+                                                    </v-icon>
+                                                    <span v-if="!timerPanel.project">
                                     &nbsp;&nbsp;Project
-                                </v-btn>
-                                <v-btn
-                                    icon
-                                    x-small
-                                    fab
-                                    :color="themeColor"
-                                >
-                                    <v-icon center>
-                                        mdi-tag-outline
-                                    </v-icon>
-                                </v-btn>
-                                <v-btn
-                                    icon
-                                    x-small
-                                    fab
-                                    :color="themeColor"
-                                >
-                                    <v-icon center>
-                                        mdi-currency-usd
-                                    </v-icon>
-                                </v-btn>
-                            </v-col>
-                            <v-col cols="12" md="1" v-if="!panel.activePanel">
-                                <v-menu
-                                    ref="menuFrom"
-                                    v-model="panel.timeFromPicker"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    max-width="290px"
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field
-                                            dense
-                                            v-model="timeFrom"
-                                            label="From"
-                                            placeholder="hh:mm"
-                                            prepend-icon="mdi-clock-time-four-outline"
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            hide-details="auto"
-                                            style="max-width: 100px"
-                                            @blur="setTimeFromHandler()"
-                                        ></v-text-field>
+                                </span>
+                                                    <span v-if="timerPanel.project">
+                                    {{timerPanel.project.name}}
+                                </span>
+                                                </v-btn>
+                                            </template>
+                                            <v-card>
+                                                <v-autocomplete
+                                                    v-model="timerPanel.project"
+                                                    :items="getFilteredProjects"
+                                                    :loading="isLoadingSearchProject"
+                                                    :search-input.sync="search"
+                                                    color="white"
+                                                    hide-no-data
+                                                    hide-selected
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    label="Projects"
+                                                    placeholder="Start typing to Search"
+                                                    prepend-icon="mdi-database-search"
+                                                    return-object
+                                                ></v-autocomplete>
+                                            </v-card>
+                                        </v-menu>
                                     </template>
-                                    <v-time-picker
+
+                                    <v-btn
+                                        icon
+                                        x-small
+                                        fab
+                                        :color="themeColor"
+                                    >
+                                        <v-icon center>
+                                            mdi-tag-outline
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn
+                                        fab
+                                        :icon="!timerPanel.billable"
+                                        x-small
+                                        :color="themeColor"
+                                        @click="timerPanel.billable = !timerPanel.billable"
+                                    >
+                                        <v-icon center>
+                                            mdi-currency-usd
+                                        </v-icon>
+                                    </v-btn>
+                                </v-col>
+                                <v-col cols="12" md="1">
+                                    <v-text-field
+                                        v-model="timerPanel.passedSeconds"
+                                        placeholder="00:00:00"
                                         dense
-                                        v-if="panel.timeFromPicker"
-                                        v-model="timeFrom"
-                                        full-width
-                                        @click:minute="$refs.menuFrom.save(timeFrom)"
-                                    ></v-time-picker>
-                                </v-menu>
-                            </v-col>
-                            <v-col cols="12" md="1" v-if="!panel.activePanel">
-                                <v-menu
-                                    ref="menuTo"
-                                    v-model="panel.timeToPicker"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    max-width="290px"
-                                    min-width="290px"
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field
-                                            dense
-                                            v-model="timeTo"
-                                            label="To"
-                                            placeholder="hh:mm"
-                                            prepend-icon="mdi-clock-time-four-outline"
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            hide-details="auto"
-                                            style="max-width: 100px"
-                                            @blur="setTimeToHandler()"
-                                        ></v-text-field>
-                                    </template>
-                                    <v-time-picker
+                                        hide-details="auto"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="1">
+                                    <v-btn
+                                        tile
+                                        small
+                                        :color="!timerPanel.start ? themeColor : 'error'"
+                                        style="color: white"
+                                        @click="actionStartNewTrack()"
+                                    >
+                                        <span v-if="!timerPanel.start">Start</span>
+                                        <span v-if="timerPanel.start">Stop</span>
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+
+                        <v-col cols="11" md="11" sm="10" v-if="!mode">
+<!--                            Manual mode-->
+                            <v-row>
+                                <v-col cols="12" md="4" sm="8">
+                                    <v-text-field
+                                        outlined
                                         dense
-                                        v-if="panel.timeToPicker"
-                                        v-model="timeTo"
-                                        full-width
-                                        @click:minute="$refs.menuTo.save(timeTo)"
-                                    ></v-time-picker>
-                                </v-menu>
-                            </v-col>
-                            <v-col cols="12" md="1" v-if="!panel.activePanel">
-                                <v-menu
-                                    v-model="panel.createDatePicker"
-                                    :close-on-content-click="false"
-                                    :nudge-right="40"
-                                    transition="scale-transition"
-                                    offset-y
-                                    min-width="auto"
-                                    left
-                                >
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-text-field
-                                            dense
-                                            v-model="date"
-                                            label="Date"
-                                            placeholder="yyyy-mm-dd"
-                                            prepend-icon="mdi-calendar"
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            hide-details="auto"
-                                            style="max-width: 1050px"
-                                            @blur="setDateHandler()"
-                                        ></v-text-field>
-                                    </template>
-                                    <v-date-picker
-                                        dense
-                                        v-model="date"
-                                        @input="panel.createDatePicker = false"
-                                    ></v-date-picker>
-                                </v-menu>
-                            </v-col>
-                            <v-col cols="12" md="1" v-if="panel.activePanel">
-                                <v-text-field
-                                    v-model="trackForm.timeStart"
-                                    placeholder="00:00:00"
-                                    dense
-                                    hide-details="auto"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" md="1" v-if="!panel.activePanel">
-                                <v-text-field
-                                    v-model="timeAdd"
-                                    placeholder="00:00:00"
-                                    dense
-                                    readonly
-                                    hide-details="auto"
-                                ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" md="1" v-if="panel.activePanel">
-                                <v-btn
-                                    tile
-                                    small
-                                    :color="themeColor"
-                                    style="color: white"
-                                    @click="startNewTrack()"
-                                >
-                                    Start
-                                </v-btn>
-                            </v-col>
-                            <v-col cols="12" md="1" v-if="!panel.activePanel">
-                                <v-btn
-                                    small
-                                    tile
-                                    :color="themeColor"
-                                    style="color: white"
-                                    @click="createTrack()"
-                                >
-                                    Add
-                                </v-btn>
-                            </v-col>
-                            <v-col cols="12" md="1" sm="2">
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            fab
-                                            x-small
-                                            :icon="!panel.activePanel"
-                                            :color="themeColor"
-                                            @click="panel.activePanel=true"
-                                            v-bind="attrs"
-                                            v-on="on"
+                                        hide-details="auto"
+                                        placeholder="What are you working on?"
+                                        v-model="manualPanel.description"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-spacer></v-spacer>
+                                <v-col cols="12" md="2" sm="4" class="text-right">
+                                    <template>
+                                        <v-menu
+                                            ref="menuProject"
+                                            v-model="menuProject"
+                                            :close-on-content-click="false"
+                                            :nudge-width="200"
                                         >
-                                            <v-icon>mdi-clock</v-icon>
-                                        </v-btn>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    tile
+                                                    small
+                                                    text
+                                                    :color="themeColor"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                >
+                                                    <v-icon center v-if="!manualPanel.project">
+                                                        mdi-plus-circle-outline
+                                                    </v-icon>
+                                                    <span v-if="!manualPanel.project">
+                                    &nbsp;&nbsp;Project
+                                </span>
+                                                    <span v-if="manualPanel.project">
+                                    {{manualPanel.project.name}}
+                                </span>
+                                                </v-btn>
+                                            </template>
+                                            <v-card>
+                                                <v-autocomplete
+                                                    v-model="manualPanel.project"
+                                                    :items="getFilteredProjects"
+                                                    :loading="isLoadingSearchProject"
+                                                    :search-input.sync="search"
+                                                    color="white"
+                                                    hide-no-data
+                                                    hide-selected
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    label="Projects"
+                                                    placeholder="Start typing to Search"
+                                                    prepend-icon="mdi-database-search"
+                                                    return-object
+                                                ></v-autocomplete>
+                                            </v-card>
+                                        </v-menu>
                                     </template>
-                                    <span>Timer</span>
-                                </v-tooltip>
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            fab
-                                            x-small
-                                            :icon="panel.activePanel"
-                                            :color="themeColor"
-                                            @click="panel.activePanel=false"
-                                            v-bind="attrs"
-                                            v-on="on"
+
+                                    <v-btn
+                                        icon
+                                        x-small
+                                        fab
+                                        :color="themeColor"
+                                    >
+                                        <v-icon center>
+                                            mdi-tag-outline
+                                        </v-icon>
+                                    </v-btn>
+                                    <v-btn
+                                        :icon="!manualPanel.billable"
+                                        x-small
+                                        :color="themeColor"
+                                        fab
+                                        @click="manualPanel.billable = !manualPanel.billable"
+                                    >
+                                        <v-icon center>
+                                            mdi-currency-usd
+                                        </v-icon>
+                                    </v-btn>
+                                </v-col>
+                                <v-col cols="12" md="1">
+                                    <template>
+                                        <v-menu
+                                            ref="menuFrom"
+                                            v-model="timeFromPicker"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            max-width="290px"
+                                            min-width="290px"
                                         >
-                                            <v-icon>mdi-format-list-bulleted-square</v-icon>
-                                        </v-btn>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    dense
+                                                    v-model="timeFrom"
+                                                    label="From"
+                                                    placeholder="hh:mm"
+                                                    prepend-icon="mdi-clock-time-four-outline"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    hide-details="auto"
+                                                    style="max-width: 100px"
+                                                    @blur="setTimeFromHandler()"
+                                                ></v-text-field>
+                                            </template>
+                                            <v-time-picker
+                                                dense
+                                                v-if="timeFromPicker"
+                                                v-model="timeFrom"
+                                                full-width
+                                                @click:minute="$refs.menuFrom.save(timeFrom)"
+                                            ></v-time-picker>
+                                        </v-menu>
                                     </template>
-                                    <span>Manual</span>
-                                </v-tooltip>
-                            </v-col>
-                        </v-toolbar>
+                                </v-col>
+                                <v-col cols="12" md="1">
+                                    <template>
+                                        <v-menu
+                                            ref="menuTo"
+                                            v-model="timeToPicker"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            max-width="290px"
+                                            min-width="290px"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    dense
+                                                    v-model="timeTo"
+                                                    label="To"
+                                                    placeholder="hh:mm"
+                                                    prepend-icon="mdi-clock-time-four-outline"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    hide-details="auto"
+                                                    style="max-width: 100px"
+                                                    @blur="setTimeToHandler()"
+                                                ></v-text-field>
+                                            </template>
+                                            <v-time-picker
+                                                dense
+                                                v-if="timeToPicker"
+                                                v-model="timeTo"
+                                                full-width
+                                                @click:minute="$refs.menuTo.save(timeTo)"
+                                            ></v-time-picker>
+                                        </v-menu>
+                                    </template>
+                                </v-col>
+                                <v-col cols="12" md="1">
+                                    <template>
+                                        <v-menu
+                                            v-model="createDatePicker"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="auto"
+                                            left
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    dense
+                                                    v-model="date"
+                                                    label="Date"
+                                                    placeholder="yyyy-mm-dd"
+                                                    prepend-icon="mdi-calendar"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    hide-details="auto"
+                                                    style="max-width: 1050px"
+                                                    @blur="setDateHandler()"
+                                                ></v-text-field>
+                                            </template>
+                                            <v-date-picker
+                                                dense
+                                                v-model="date"
+                                                @input="createDatePicker = false"
+                                            ></v-date-picker>
+                                        </v-menu>
+                                    </template>
+                                </v-col>
+                                <v-col cols="12" md="1">
+                                    <v-text-field
+                                        v-model="timeAdd"
+                                        placeholder="00:00:00"
+                                        dense
+                                        readonly
+                                        hide-details="auto"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" md="1">
+                                    <v-btn
+                                        small
+                                        tile
+                                        :color="themeColor"
+                                        :loading="loadingCreateTrack"
+                                        :disabled="loadingCreateTrack"
+                                        style="color: white"
+                                        @click="actionCreateTrack()"
+                                    >
+                                        Add
+                                    </v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                        <v-col cols="1" md="1" sm="2" class="pt-6">
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        fab
+                                        x-small
+                                        :icon="!mode"
+                                        :color="themeColor"
+                                        @click="mode=true"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <v-icon>mdi-clock</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Timer</span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        fab
+                                        x-small
+                                        :icon="mode"
+                                        :color="themeColor"
+                                        @click="mode=false"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <v-icon>mdi-format-list-bulleted-square</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Manual</span>
+                            </v-tooltip>
+                        </v-col>
                     </v-row>
-                </v-container>
+                </v-toolbar>
             </v-card>
         </template>
 
+<!--        dateRangePicker-->
         <template>
             <v-row>
                 <v-col
@@ -245,8 +382,8 @@
                     lg="2"
                 >
                     <v-menu
-                        ref="panel.dateRangePicker"
-                        v-model="panel.dateRangePicker"
+                        ref="dateRangePicker"
+                        v-model="dateRangePicker"
                         :close-on-content-click="false"
                         transition="scale-transition"
                         offset-y
@@ -278,6 +415,7 @@
 
         <br>
 
+<!--        dataTable-->
         <template>
             <v-expansion-panels
                 v-model="panels"
@@ -300,11 +438,8 @@
                                 <v-data-table
                                     hide-default-footer
                                     :headers="headers"
-                                    :items="getFilteredTracking(panelDate)"
+                                    :items="filterTracking(panelDate)"
                                 >
-                                    <template v-slot:item.passed="{ item }">
-                                        <span v-text="convertSecondsToTimeFormat(item.passed)"></span>
-                                    </template>
                                     <template v-slot:item.description="props">
                                         <v-edit-dialog
                                             :return-value.sync="props.item.description"
@@ -318,9 +453,36 @@
                                                 <v-text-field
                                                     v-model="props.item.description"
                                                     :rules="[validators.max255chars]"
+                                                    label="Description"
+                                                    hint="Description"
+                                                    single-line
+                                                    counter
+                                                    @blur="forceSave(props.item, 'description', props.item.description)"
+                                                ></v-text-field>
+                                            </template>
+                                        </v-edit-dialog>
+                                    </template>
+                                    <template v-slot:item.project="props">
+                                        <v-edit-dialog
+                                            :return-value.sync="props.item.project"
+                                            persistent
+                                            @save="save(props.item.id, 'project')"
+                                            @cancel="cancel"
+                                            @open="open"
+                                            @close="close"
+                                        >
+                                            <div>{{ props.item.project }}</div>
+                                            <template v-slot:input>
+                                                <div class="mt-4 title">
+                                                    Update Project
+                                                </div>
+                                                <v-text-field
+                                                    v-model="props.item.project"
+                                                    :rules="[validators.max255chars]"
                                                     label="Edit"
                                                     single-line
                                                     counter
+                                                    autofocus
                                                 ></v-text-field>
                                             </template>
                                         </v-edit-dialog>
@@ -348,13 +510,15 @@
                                     <template v-slot:item.date_to="props">
                                         <v-edit-dialog
                                             :return-value.sync="props.item.date_to"
-                                            large
                                             @save="save(props.item.id, 'date_to')"
                                             @cancel="cancel"
                                             @open="open"
                                             @close="close"
+                                            v-if="props.item.status == 'stopped'"
                                         >
-                                            {{ moment(props.item.date_to).format(timeFormat) }}
+                                            <span v-if="props.item.date_to && props.item.status == 'stopped'">
+                                                {{ moment(props.item.date_to).format(timeFormat) }}
+                                            </span>
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="props.item.date_to"
@@ -367,31 +531,83 @@
                                             </template>
                                         </v-edit-dialog>
                                     </template>
-                                    <template v-slot:item.iron="props">
-                                        <v-edit-dialog
-                                            :return-value.sync="props.item.projectId"
-                                            large
-                                            persistent
-                                            @save="save(props.item.id, 'project')"
-                                            @cancel="cancel"
-                                            @open="open"
-                                            @close="close"
-                                        >
-                                            <div>{{ props.item.projectId }}</div>
-                                            <template v-slot:input>
-                                                <div class="mt-4 title">
-                                                    Update Project
-                                                </div>
-                                                <v-text-field
-                                                    v-model="props.item.projectId"
-                                                    :rules="[validators.max255chars]"
-                                                    label="Edit"
-                                                    single-line
-                                                    counter
-                                                    autofocus
-                                                ></v-text-field>
-                                            </template>
-                                        </v-edit-dialog>
+                                    <template v-slot:item.passed="{ item }">
+                                        <span v-text="helperConvertSecondsToTimeFormat(item.passed)"></span>
+                                    </template>
+                                    <template v-slot:item.actions="props">
+                                        <v-row>
+                                            <v-col cols="6">
+                                                <v-btn
+                                                    depressed
+                                                    color="error"
+                                                    v-if="props.item.status == 'started'"
+                                                    @click="actionStopTracking(props.item.id)"
+                                                >
+                                                    <v-icon>mdi-pause</v-icon>
+                                                </v-btn>
+                                                <v-btn
+                                                    depressed
+                                                    :color="themeColor"
+                                                    v-if="props.item.status == 'stopped'"
+                                                >
+                                                    <v-icon>mdi-play-outline</v-icon>
+                                                </v-btn>
+                                            </v-col>
+                                            <v-col cols="6">
+                                                <v-menu
+                                                    bottom
+                                                    left
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-btn
+                                                            :color="themeColor"
+                                                            icon
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                        >
+                                                            <v-icon>mdi-dots-vertical</v-icon>
+                                                        </v-btn>
+                                                    </template>
+                                                    <v-card
+                                                        class="mx-auto"
+                                                        max-width="300"
+                                                        tile
+                                                    >
+                                                        <v-list dense>
+                                                            <v-subheader>Actions</v-subheader>
+                                                            <v-list-item-group
+                                                                color="primary"
+                                                            >
+                                                                <v-list-item>
+                                                                    <v-list-item-icon>
+                                                                        <v-icon>mdi-content-duplicate</v-icon>
+                                                                    </v-list-item-icon>
+                                                                    <v-list-item-content>
+                                                                        <v-list-item-title
+                                                                            @click="actionDuplicateTracking(props.item.id)"
+                                                                        >
+                                                                            Duplicate
+                                                                        </v-list-item-title>
+                                                                    </v-list-item-content>
+                                                                </v-list-item>
+                                                                <v-list-item>
+                                                                    <v-list-item-icon>
+                                                                        <v-icon>mdi-trash-can-outline</v-icon>
+                                                                    </v-list-item-icon>
+                                                                    <v-list-item-content>
+                                                                        <v-list-item-title
+                                                                            @click="actionDeleteTracking(props.item.id)"
+                                                                        >
+                                                                            Delete
+                                                                        </v-list-item-title>
+                                                                    </v-list-item-content>
+                                                                </v-list-item>
+                                                            </v-list-item-group>
+                                                        </v-list>
+                                                    </v-card>
+                                                </v-menu>
+                                            </v-col>
+                                        </v-row>
                                     </template>
                                 </v-data-table>
 
@@ -420,73 +636,105 @@ export default {
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
-            loading: false,
-            panels: [0],
-            panel: {
-                activePanel: true,
-                timeFromPicker: false,
-                timeToPicker: false,
-                dateRangePicker: false,
-                createDatePicker: false
-            },
+            /* Toolbar */
+            mode: true,
+            loadingCreateTrack: false,
+            loadingUpdateTrack: false,
+            loadingDeleteTrack: false,
+            timeFromPicker: false,
+            timeToPicker: false,
+            timeFrom: null,
+            timeTo: null,
+            date: null,
+            menuProject: false,
+            search: '',
+            isLoadingSearchProject: false,
+            createDatePicker: false,
+            /* Date range picker */
+            dateRangePicker: false,
             dateRange: [],
+            /* Data table */
             headers: [
                 {
                     text: 'Description',
                     align: 'start',
-                    value: 'description'
+                    value: 'description',
+                    width: '15%'
                 },
                 {
                     text: 'Company',
-                    value: 'project.client.name'
+                    value: 'project.client.name',
+                    width: '15%'
                 },
                 {
                     text: 'Project name',
-                    value: 'project.name'
+                    value: 'project.name',
+                    width: '15%'
                 },
                 {
                     text: 'Tag',
-                    value: ''
+                    value: '',
+                    width: '15%'
                 },
                 {
                     text: 'Start',
-                    value: 'date_from'
+                    value: 'date_from',
+                    width: '10%'
                 },
                 {
                     text: 'End',
-                    value: 'date_to'
+                    value: 'date_to',
+                    width: '10%'
                 },
                 {
                     text: 'Passed',
-                    value: 'passed'
+                    value: 'passed',
+                    width: '10%'
                 },
                 {
                     text: 'Actions',
-                    value: 'actions'
+                    value: 'actions',
+                    sortable: false
                 }
             ],
+            panels: [0],
+            /* Data */
             tracking: [],
-            timeFrom: null,
-            timeTo: null,
-            date: null,
+            projects: [],
+            /* Validators */
             validators: {
                 max255chars: v => v.length <= 255 || 'Input too long!'
             },
-            trackForm: {
+            manualPanel: {
                 description: null,
-                projectId: null,
+                project: null,
                 tags: [],
                 billable: false,
-                dateFrom: moment().format(this.timeFormat),
-                dateTo: moment().format(this.timeFormat),
-                date: moment().format(this.dateFormat),
+                date_from: moment(),
+                date_to: null,
+                date: moment(),
                 status: 'started',
                 timeStart: '00:00:00'
-            }
+            },
+            nameLimit: 255,
+            timerPanel: {
+                startId: null,
+                passedSeconds: '00:00:00',
+                start: null,
+                billable: false,
+                description: null,
+                project: null,
+                tags: [],
+                status: 'started',
+                date_from: moment(),
+                date_to: null,
+                date: moment()
+            },
+            globalTimer: null
         }
     },
     created: function () {
-        this.debounceGetTacking = _.debounce(this.getTracking, 500);
+        this.debounceGetTacking = _.debounce(this.__getTracking, 500);
         this.dateRange = [
             moment().subtract(1, 'days').format(this.dateFormat),
             moment().format(this.dateFormat)
@@ -496,6 +744,7 @@ export default {
         this.date = moment().format(this.dateFormat);
     },
     mounted() {
+        this.__globalTimer();
         this.debounceGetTacking();
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
@@ -503,64 +752,140 @@ export default {
         });
     },
     methods: {
-        getTracking() {
+        __globalTimer() {
+            return setTimeout(() => {
+                this.globalTimer = moment();
+                this.__globalTimer();
+            }, 1000);
+        },
+        __getTracking() {
             this.loading = true;
             const queryParams = new URLSearchParams({
-                dateFrom: this.dateRange[0] || null,
-                dateTo: this.dateRange[1] || null
+                date_from: this.dateRange[0] || null,
+                date_to: this.dateRange[1] || null
             });
-            axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
+            return axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
                 .then(({ data }) => {
                     this.tracking = data.data;
                     this.loading = false;
+                    return data;
+                })
+                .catch(e => {
+                    this.debounceGetTacking();
                 });
+        },
+        __createTracking(data) {
+            this.loadingCreateTrack = true;
+            return axios.post('/api/tracking/tracker', data)
+                .then(({ data }) => {
+                    this.debounceGetTacking();
+                    this.resetManualPanel();
+                    this.loadingCreateTrack = false;
+                    return data;
+                });
+        },
+        __updateTrackingById(id, data) {
+            this.loadingUpdateTrack = true;
+            return axios.put(`/api/tracking/tracker/${id}`, data)
+                .then(({ data }) => {
+                    if (!data.success) {
+                        return false;
+                    }
+                    this.debounceGetTacking();
+                    this.resetManualPanel();
+                    this.loadingUpdateTrack = false;
+                    return data;
+                });
+        },
+        __actionDeleteTrackingById(id) {
+            this.loadingDeleteTrack = true;
+            return axios.delete(`/api/tracking/tracker/${id}`)
+                .finally(e => {
+                    this.debounceGetTacking();
+                    this.loadingDeleteTrack = false;
+                });
+        },
+        __actionDuplicateTracking(id) {
+            return axios.post(`/api/tracking/tracker/${id}/duplicate`)
+                .then(({ data }) => {
+                    this.debounceGetTacking();
+                    return data;
+                });
+        },
+        timer() {
+            if (this.timerPanel.start) {
+                return setTimeout(() => {
+                    const seconds = moment().diff(moment(this.timerPanel.start), 'seconds');
+                    this.timerPanel.passedSeconds = this.helperConvertSecondsToTimeFormat(seconds);
+                    this.timer();
+                }, 1000);
+            }
         },
         dateRangeHandler() {
             if (this.dateRange.length === 2) {
                 this.dateRange.sort();
-                this.panel.dateRangePicker = false;
+                this.dateRangePicker = false;
                 this.debounceGetTacking();
             }
         },
         // parseTime(time) {
         //     if (!time) return null
-        //     time = this.addZeros(time.replace(/\D+/g, ''), 4);
+        //     time = this.helperAddZeros(time.replace(/\D+/g, ''), 4);
         //     return time.slice(0, 2), ':', time.slice(2);
         // },
-        addZeros(num, len) {
+        helperAddZeros(num, len) {
             while((""+num).length < len) num = "0" + num;
             return num.toString();
         },
-        resetTrack() {
-            this.trackForm = {
+        resetManualPanel() {
+            this.manualPanel = {
                 description: null,
                 projectId: null,
                 tags: [],
                 billable: false,
-                dateFrom: moment().format(this.timeFormat),
-                dateTo: moment().format(this.timeFormat),
+                date_from: moment().format(this.timeFormat),
+                date_to: moment().format(this.timeFormat),
                 date: moment().format(this.dateFormat),
                 status: 'started',
                 timeStart: '00:00:00'
             };
         },
-        createTrack() {
-            this.loading = true;
-            this.trackForm.status = 'stopped';
-            axios.post('/api/tracking/tracker', this.trackForm)
-                .then(({ data }) => {
-                    console.log(data);
-                    this.loading = false;
-                    this.debounceGetTacking();
-                    this.resetTrack();
-                });
+        actionCreateTrack() {
+            this.manualPanel.status = 'stopped';
+            this.__createTracking(this.manualPanel);
         },
-        startNewTrack() {
-            this.loading = true;
-            this.trackForm.status = 'started';
-            //TODO
-            this.debounceGetTacking();
-            this.resetTrack();
+        actionStartNewTrack() {
+            // start
+            if (!this.timerPanel.start) {
+                this.timerPanel.startId = null;
+                this.timerPanel.status = 'started';
+                this.timerPanel.start = moment();
+                this.timerPanel.date = this.timerPanel.start;
+                this.timerPanel.date_from = this.timerPanel.start;
+                this.timerPanel.date_to = null;
+                this.timerPanel.timeStart = this.timerPanel.start;
+                this.loadingCreateTrack = true;
+                this.__createTracking(this.timerPanel)
+                    .then(data => {
+                        if (data.success) {
+                            this.timerPanel.startId = data.data.id;
+                        }
+                    });
+                this.timer();
+            } else {
+                // stop
+                if (this.timerPanel.startId) {
+                    this.timerPanel.date = this.timerPanel.start;
+                    this.timerPanel.date_from = this.timerPanel.start;
+                    this.timerPanel.date_to = moment();
+                    this.timerPanel.timeStart = this.timerPanel.start;
+                    this.timerPanel.start = null;
+                    this.timerPanel.status = 'stopped';
+                    this.__updateTrackingById(this.timerPanel.startId, this.manualPanel);
+                } else {
+                    this.__createTracking(this.manualPanel);
+                }
+            }
         },
         setTimeFromHandler() {
             if (!this.timeFrom) {
@@ -571,7 +896,7 @@ export default {
             }
             if (/(\d{1,4})/.test(this.timeFrom)) {
                 let str = this.timeFrom.toString().slice(0,4);
-                str = this.addZeros(str, 4);
+                str = this.helperAddZeros(str, 4);
                 this.timeFrom = str.slice(0,2) + ':' + str.slice(-2);
                 return this.timeFrom;
             }
@@ -587,7 +912,7 @@ export default {
             }
             if (/(\d{1,4})/.test(this.timeTo)) {
                 let str = this.timeTo.toString().slice(0,4);
-                str = this.addZeros(str, 4);
+                str = this.helperAddZeros(str, 4);
                 this.timeTo = str.slice(0,2) + ':' + str.slice(-2);
                 return this.timeTo;
             }
@@ -600,21 +925,28 @@ export default {
             }
             return this.date;
         },
-        convertSecondsToTimeFormat(seconds) {
-            const x = Math.floor(seconds / 60 / 60 / 60);
-            const h = Math.floor(seconds / 60 / 60) - (x * 60);
-            const m = Math.floor(seconds / 60) - (h * 60);
-            const s = '00';
-            return `${h}:${m}:${s}`;
+        helperConvertSecondsToTimeFormat(seconds) {
+            if (!seconds) {
+                return `00:00:00`;
+            }
+            const h = Math.floor(seconds / 60 / 60);
+            const m = Math.floor((seconds - h * 60 * 60) / 60);
+            const s = seconds - (m * 60) - (h * 60 * 60);
+            return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
+        },
+        forceSave(item, fieldName, newValue) {
+            const foundIndex = this.tracking.findIndex(function(i) {
+                return i.id === item.id;
+            });
+            this.tracking[foundIndex][fieldName] = newValue;
         },
         save (id, fieldName) {
+            const foundIndex = this.tracking.findIndex(i => i.id === id);
             if (['date_from', 'date_to'].indexOf(fieldName)) {
-                const foundIndex = this.tracking.findIndex(function(i) {
-                    return i.id === id;
-                });
-                const foundElement = this.tracking[foundIndex];
-                this.tracking[foundIndex].passed = this.calculatePassedTime(foundElement.date_from, foundElement.date_to);
+                const {date_from, date_to} = this.tracking[foundIndex];
+                this.tracking[foundIndex].passed = this.helperCalculatePassedTime(date_from, date_to);
             }
+            this.__updateTrackingById(id, this.tracking[foundIndex]);
         },
         cancel () {
             //TODO
@@ -623,29 +955,41 @@ export default {
             //TODO
         },
         close () {
-            console.log('Dialog closed')
             //TODO
         },
-        calculatePassedTime(dateFrom, dateTo) {
-            if (moment(dateFrom) > moment(dateTo)) {
-                dateTo = moment(dateTo).add(1, 'day');
+        helperCalculatePassedTime(date_from, date_to) {
+            if (moment(date_from) > moment(date_to)) {
+                date_to = moment(date_to).add(1, 'day');
             }
-            return  moment(dateTo).diff(moment(dateFrom), 'seconds');
+            const seconds = moment(date_to).diff(moment(date_from), 'seconds');
+            return seconds;
         },
-        getFilteredTracking(date) {
+        filterTracking(date) {
             const self = this;
             return this.tracking.filter(function(item) {
                return moment(item.date_from).format(self.dateFormat) === date;
             });
-        }
+        },
+        actionDuplicateTracking(trackerId) {
+            this.__actionDuplicateTracking(trackerId);
+        },
+        actionDeleteTracking(trackerId) {
+            this.__actionDeleteTrackingById(trackerId);
+        },
+        actionStopTracking(trackerId) {
+            this.__updateTrackingById(trackerId, {
+                status: 'stopped',
+                date_to: moment()
+            });
+        },
     },
     computed: {
         timeAdd () {
-            if (moment(this.trackForm.dateFrom) > moment(this.trackForm.dateTo)) {
-                this.trackForm.dateTo = moment(this.trackForm.dateTo).add(1, 'day');
+            if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
+                this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day');
             }
-            const seconds = this.calculatePassedTime(this.trackForm.dateFrom, this.trackForm.dateTo);
-            return this.convertSecondsToTimeFormat(seconds);
+            const seconds = this.helperCalculatePassedTime(this.manualPanel.date_from, this.manualPanel.date_to);
+            return this.helperConvertSecondsToTimeFormat(seconds);
         },
         dateRangeText () {
             return this.dateRange.join(' ~ ')
@@ -655,36 +999,69 @@ export default {
                 const date = moment(item.date_from).format('YYYY-MM-DD');
                 return [...acc, date.toString()];
             }, []);
-            return [...new Set(items)].sort().reverse();
+            const panels = [...new Set(items)].sort().reverse();
+            this.panels = panels.map((i,k) => k);
+            return panels;
         },
         getItems () {
             return this.tracking;
+        },
+        getFilteredProjects() {
+            return this.projects.map(entry => {
+                const name = entry.name.length > this.nameLimit
+                    ? entry.name.slice(0, this.nameLimit) + '...'
+                    : entry.name
+
+                return Object.assign({}, entry, { name })
+            })
         }
     },
     watch: {
         timeFrom: function () {
-            this.trackForm.dateFrom = moment(this.date)
+            this.manualPanel.date_from = moment(this.date)
                 .hours(this.timeFrom.toString().split(':')[0])
                 .minutes(this.timeFrom.toString().split(':')[1]);
         },
         timeTo: function () {
-            this.trackForm.dateTo = moment(this.date)
+            this.manualPanel.date_to = moment(this.date)
                 .hours(this.timeTo.toString().split(':')[0])
                 .minutes(this.timeTo.toString().split(':')[1]);
         },
         date: function () {
-            this.trackForm.date = moment(this.date);
-            this.trackForm.dateFrom = moment(this.date)
+            this.manualPanel.date = moment(this.date);
+            this.manualPanel.date_from = moment(this.date)
                 .hours(this.timeFrom.toString().split(':')[0])
                 .minutes(this.timeFrom.toString().split(':')[1]);
             let dayToAdding = 0;
-            if (moment(this.trackForm.dateTo).format(this.dateFormat) > moment(this.trackForm.dateFrom).format(this.dateFormat)) {
+            if (moment(this.manualPanel.date_to).format(this.dateFormat) > moment(this.manualPanel.date_from).format(this.dateFormat)) {
                 dayToAdding = 1;
             }
-            this.trackForm.dateTo = moment(this.date)
+            this.manualPanel.date_to = moment(this.date)
                 .add(dayToAdding, 'day')
                 .hours(this.timeTo.toString().split(':')[0])
                 .minutes(this.timeTo.toString().split(':')[1]);
+        },
+        search () {
+            if (this.projects.length > 0) return;
+            if (this.isLoadingSearchProject) return;
+            this.isLoadingSearchProject = true;
+            const queryParams = new URLSearchParams({
+                search: this.search ?? ''
+            });
+            axios.get(`/api/tracking/projects?${queryParams}`)
+                .then(({data}) => {
+                    this.projects = data.data.data;
+                })
+                .finally(() => (this.isLoadingSearchProject = false));
+1        },
+        globalTimer: function () {
+            const tracking = this.tracking.filter(i => {
+                return i.status === 'started';
+            });
+            tracking.forEach(i => {
+                const index = this.tracking.indexOf(i);
+                this.tracking[index].passed = this.helperCalculatePassedTime(i.date_from, moment());
+            });
         }
     },
 }
