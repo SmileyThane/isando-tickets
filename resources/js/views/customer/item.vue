@@ -921,7 +921,7 @@
                                 <v-expansion-panel-content>
                                     <v-form>
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <v-text-field
                                                     v-model="employeeForm.name"
                                                     :color="themeColor"
@@ -931,7 +931,7 @@
                                                     type="text"
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <v-text-field
                                                     v-model="employeeForm.middle_name"
                                                     :color="themeColor"
@@ -941,7 +941,7 @@
                                                     type="text"
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <v-text-field
                                                     v-model="employeeForm.surname"
                                                     :color="themeColor"
@@ -952,6 +952,21 @@
                                                 ></v-text-field>
                                             </div>
                                             <div class="col-md-6">
+                                            <v-autocomplete
+                                                v-model="employeeForm.language_id"
+                                                :color="themeColor"
+                                                :error-messages="errors.language_id"
+                                                :item-color="themeColor"
+                                                :items="languages"
+                                                :label="this.$store.state.lang.lang_map.main.language"
+                                                item-text="name"
+                                                item-value="id"
+                                                lazy-validation
+                                                name="language"
+                                                prepend-icon="mdi-web"
+                                            />
+                                            </div>
+                                            <div class="col-md-6">
                                                 <v-text-field
                                                     v-model="employeeForm.email"
                                                     :color="themeColor"
@@ -959,6 +974,7 @@
                                                     name="email"
                                                     required
                                                     type="text"
+                                                    prepend-icon="mdi-mail"
                                                 ></v-text-field>
                                                 <v-checkbox
                                                     v-model="employeeForm.is_active"
@@ -1426,6 +1442,7 @@ export default {
             actionColor: '',
             snackbarMessage: '',
             errors: [],
+            languages: [],
             footerProps: {
                 itemsPerPage: 10,
                 disableItemsPerPage: true,
@@ -1540,8 +1557,9 @@ export default {
         }
     },
     mounted() {
-        this.getClient()
-        this.getRoles()
+        this.getClient();
+        this.getRoles();
+        this.getLanguages();
         this.getPhoneTypes();
         this.getAddressTypes();
         this.getSocialTypes();
@@ -1574,6 +1592,18 @@ export default {
                     this.snackbar = true;
                 }
 
+            });
+        },
+        getLanguages() {
+            axios.get('/api/lang').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.languages = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
             });
         },
         getRoles() {

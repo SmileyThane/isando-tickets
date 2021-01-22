@@ -42,7 +42,9 @@
                                 :readonly="!enableToEdit"
                                 dense
                             ></v-text-field>
-                            <v-text-field
+                            <v-textarea
+                                rows="1"
+                                auto-grow
                                 :color="themeColor"
                                 :label="langMap.main.description"
                                 name="description"
@@ -53,8 +55,36 @@
                                 lazy-validation
                                 :readonly="!enableToEdit"
                                 dense
+                            ></v-textarea>
+                            <v-text-field
+                                :color="themeColor"
+                                :label="langMap.product.code"
+                                name="code"
+                                prepend-icon="mdi-rename-box"
+                                type="text"
+                                v-model="product.product_code"
+                                :error-messages="errors.product_code"
+                                lazy-validation
+                                :readonly="!enableToEdit"
+                                dense
                             ></v-text-field>
                         </v-form>
+                        <v-col v-if="product.attachments.length > 0 " cols="12">
+                            <h4>{{ langMap.main.attachments }}</h4>
+                            <div
+                                v-for="attachment in product.attachments"
+                                v-if="product.attachments.length > 0"
+                            >
+                                <v-chip
+                                    :color="themeColor"
+                                    :href="attachment.link"
+                                    class="ma-2"
+                                    text-color="white"
+                                >
+                                    {{ attachment.name }}
+                                </v-chip>
+                            </div>
+                        </v-col>
                     </v-card-text>
                 </v-card>
             </div>
@@ -75,11 +105,12 @@
                             :items="product.clients"
                             :footer-props="footerProps"
                             class="elevation-1"
+                            @click:row="showCompany"
                         >
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteCustomerDlg(item)">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click.native.stop="showDeleteCustomerDlg(item)">
                                             <v-icon
                                                 small
                                             >
@@ -249,6 +280,9 @@
             cancelUpdateProduct() {
                 this.getProduct();
                 this.enableToEdit = false;
+            },
+            showCompany(item) {
+                this.$router.push(`/customer/${item.client_id}`)
             },
             getSuppliers() {
                 axios.get('/api/client?sort_by=name&sort_val=false').then(response => {

@@ -26,6 +26,7 @@ import TrackingCalendar from './views/tracking/calendar'
 import TrackingProjects from './views/tracking/projects'
 import TrackingProjectItem from './views/tracking/projects/item'
 import TrackingReports from './views/tracking/reports'
+import NotificationsSettings from './views/settings/notify'
 
 export default [
     {
@@ -175,6 +176,14 @@ export default [
             requiresAuth: true,
         },
         component: SystemSettings
+    },
+    {
+        path: '/settings/notify',
+        name: 'notifications_settings',
+        meta: {
+            requiresAuth: true,
+        },
+        component: NotificationsSettings
     },
     {
         path: '/notify',

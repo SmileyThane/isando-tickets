@@ -60,7 +60,7 @@
                                             :color="themeColor"
                                             :error-messages="employeeErrors.email"
                                             :label="langMap.main.email"
-                                            class="col-md-6"
+                                            class="col-md-4"
                                             dense
                                             name="email"
                                             required
@@ -73,13 +73,26 @@
                                             :items="customers"
                                             :label="langMap.customer.customer"
                                             :placeholder="this.$store.state.lang.lang_map.main.search"
-                                            class="col-md-6"
+                                            class="col-md-4"
                                             dense
                                             hide-no-data
                                             hide-selected
                                             item-text="name"
                                             item-value="id"
                                         ></v-autocomplete>
+                                        <v-autocomplete
+                                            v-model="employeeForm.language_id"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
+                                            :items="languages"
+                                            :label="this.$store.state.lang.lang_map.main.language"
+                                            class="col-md-4"
+                                            dense
+                                            item-text="name"
+                                            item-value="id"
+                                            lazy-validation
+                                            name="language"
+                                        />
                                         <v-btn
                                             :color="themeColor"
                                             bottom
@@ -147,7 +160,7 @@
                                 </div>
                             </template>
                             <template v-slot:item.user_data.emails="{item}">
-                                <span v-if="item.user_data.emails.length > 0" v-for="email in item.user_data.emails">
+                                <span v-for="email in item.user_data.emails" v-if="item.user_data.emails.length > 0">
                                     <v-icon v-if="email.type"
                                             :title="localized(email.type)" dense
                                             x-small
@@ -230,6 +243,7 @@ export default {
             lastPage: 0,
             loading: this.themeColor,
             expanded: [],
+            languages: [],
             singleExpand: false,
             isLoading: false,
             selectedEmployeeId: null,
@@ -279,6 +293,7 @@ export default {
     mounted() {
         this.getEmployees();
         this.getClients();
+        this.getLanguages();
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
@@ -336,6 +351,18 @@ export default {
                         this.snackbar = true;
                     }
                 });
+        },
+        getLanguages() {
+            axios.get('/api/lang').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.languages = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
         },
         addEmployee() {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {

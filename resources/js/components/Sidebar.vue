@@ -388,6 +388,21 @@
                 <v-list-item
                     :color="themeColor" link
                     style="background-color:white;"
+                    to="/settings/notify"
+                    v-if="checkRoleByIds([1,2,3])"
+                >
+                    <v-list-item-action>
+                        <v-icon>mdi-message-cog-outline</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.notifications_settings}}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <!--
+                <v-list-item
+                    :color="themeColor" link
+                    style="background-color:white;"
                     to="/"
                     v-if="checkRoleByIds([1,2,3])"
                 >
@@ -399,6 +414,7 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                -->
             </v-list-group>
         </v-list>
     </v-navigation-drawer>

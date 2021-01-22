@@ -68,6 +68,7 @@ class UserRepository
         $user->surname = $request->surname;
         $user->password = bcrypt($request->password);
         $user->is_active = $request->is_active;
+        $user->language_id = $request->language_id ?? 1;
         $user->save();
 
         if ($request['email'] && $request['email'] !== '[no_email]') {

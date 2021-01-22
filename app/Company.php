@@ -123,5 +123,8 @@ class Company extends Model
         return $this->attributes['second_alias'] ?? Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
     }
 
-
+    public function x(): HasMany
+    {
+        return $this->hasMany(CompanyUserNotification::class, 'company_id', 'id')->has('userData');
+    }
 }
