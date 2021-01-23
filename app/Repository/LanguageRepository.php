@@ -7,6 +7,7 @@ namespace App\Repository;
 use App\CompanyLanguage;
 use App\Language;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 
 class LanguageRepository
@@ -45,7 +46,7 @@ class LanguageRepository
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         try {
             return (bool)CompanyLanguage::where('language_id', $languageId)->where('company_id', $companyId)->delete();
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return false;
         }
     }

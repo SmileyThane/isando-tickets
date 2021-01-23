@@ -9,7 +9,6 @@ use App\Email;
 use App\EmailType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
-use App\Notifications\ResetPasswordEmail;
 use App\Role;
 use App\Settings;
 use App\User;
@@ -115,10 +114,10 @@ class UserRepository
                 $email->email_type = 1;
                 $email->save();
 
-                $companyId =  $user->employee->companyData->id;
+                $companyId = $user->employee->companyData->id;
                 $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
                 if (!$secondaryType) {
-                    $companyId =  Auth::user()->employee->companyData->id;
+                    $companyId = Auth::user()->employee->companyData->id;
                     $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
                 }
                 Email::where('id', '<>', $email->id)->where('email_type', 1)->where('entity_type', $email->entity_type)->where('entity_id', $email->entity_id)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
@@ -141,7 +140,7 @@ class UserRepository
                 $password = Controller::getRandomString();
                 $user->password = bcrypt($password);
                 $user->save();
-                }
+            }
             $user->notify(new RegularInviteEmail($from, $user->title, $user->full_name, $role, $user->email, $password, $user->language->short_code));
         } catch (Throwable $throwable) {
             Log::error($throwable);
