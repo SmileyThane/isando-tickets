@@ -199,7 +199,7 @@
                                         fab
                                         @click="manualPanel.billable = !manualPanel.billable"
                                     >
-                                        <v-icon center>
+                                        <v-icon center v-bind:class="{ 'white--text': manualPanel.billable }">
                                             mdi-currency-usd
                                         </v-icon>
                                     </v-btn>
@@ -821,7 +821,11 @@ export default {
         },
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
-            this.__createTracking(this.manualPanel);
+            let data = this.manualPanel;
+            data.date = data.date_from;
+            data.date_from = moment(`${data.date_from}`).utc();
+            data.date_to = moment(`${data.date_to}`).utc();
+            this.__createTracking(data);
         },
         actionStartNewTrack() {
             // start
