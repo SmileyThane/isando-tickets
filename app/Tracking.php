@@ -24,4 +24,12 @@ class Tracking extends Model
     public function getPassedAttribute() {
         return Carbon::parse($this->date_to)->diffInSeconds(Carbon::parse($this->date_from));
     }
+
+    public function getDateFromAttribute() {
+        return Carbon::parse($this->attributes['date_from'])->utc()->format('Y-m-d\TH:i:s.uP');
+    }
+
+    public function getDateToAttribute() {
+        return Carbon::parse($this->attributes['date_to'])->utc()->format('Y-m-d\TH:i:s.uP');
+    }
 }

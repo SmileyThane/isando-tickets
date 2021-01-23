@@ -828,9 +828,9 @@ export default {
             if (!this.timerPanel.start) {
                 this.timerPanel.trackId = null;
                 this.timerPanel.status = 'started';
-                this.timerPanel.start = moment();
-                this.timerPanel.date = moment();
-                this.timerPanel.date_from = moment();
+                this.timerPanel.start = moment().utc();
+                this.timerPanel.date = moment().utc();
+                this.timerPanel.date_from = moment().utc();
                 this.timerPanel.date_to = null;
                 this.timerPanel.timeStart = this.timerPanel.start;
                 this.loadingCreateTrack = true;
@@ -844,7 +844,7 @@ export default {
                 // stop
                 this.timerPanel.date = this.timerPanel.start;
                 this.timerPanel.date_from = this.timerPanel.start;
-                this.timerPanel.date_to = moment();
+                this.timerPanel.date_to = moment().utc();
                 this.timerPanel.timeStart = this.timerPanel.start;
                 this.timerPanel.start = null;
                 this.timerPanel.status = 'stopped';

@@ -77,8 +77,8 @@ class TrackingRepository
         $tracking = new Tracking();
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
-        $tracking->date_from = Carbon::parse($request->date_from);
-        $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to) : null;
+        $tracking->date_from = Carbon::parse($request->date_from)->utc();
+        $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->utc() : null;
         $tracking->status = $request->status;
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
@@ -92,10 +92,10 @@ class TrackingRepository
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
         if ($request->has('date_from')) {
-            $tracking->date_from = Carbon::parse($request->date_from);
+            $tracking->date_from = Carbon::parse($request->date_from)->utc();
         }
         if ($request->has('date_to')) {
-            $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to) : null;
+            $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->utc() : null;
         }
         if ($request->has('status')) {
             $tracking->status = $request->status;
