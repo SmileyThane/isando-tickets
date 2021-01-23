@@ -21,7 +21,7 @@ class SentNotification extends Model
 
     public function getRecipientsAttribute(): array
     {
-        return (array) json_decode($this->attributes['recipients']);
+        return (array)json_decode($this->attributes['recipients']);
     }
 
     public function setRecipientsAttribute(array $data = [])
@@ -31,7 +31,7 @@ class SentNotification extends Model
 
     public function getAttachmentsAttribute(): array
     {
-        return (array) json_decode($this->attributes['attachments']);
+        return (array)json_decode($this->attributes['attachments']);
     }
 
     public function setAttachmentsAttribute(array $data = [])

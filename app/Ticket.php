@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class Ticket extends Model
 {
@@ -253,7 +254,7 @@ class Ticket extends Model
             $owner = $this->to_enity_type === Company::class ?
                 $this->to :
                 $this->to->supplier_type::find($this->to->supplier_id);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $owner = Auth::user()->employee->companyData; // as variant to modification or fix
         }
 
