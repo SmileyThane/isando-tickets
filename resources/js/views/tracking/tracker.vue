@@ -93,7 +93,7 @@
                                         :color="themeColor"
                                         @click="timerPanel.billable = !timerPanel.billable"
                                     >
-                                        <v-icon center>
+                                        <v-icon center v-bind:class="{ 'white--text': timerPanel.billable }">
                                             mdi-currency-usd
                                         </v-icon>
                                     </v-btn>
@@ -345,7 +345,7 @@
                                         v-bind="attrs"
                                         v-on="on"
                                     >
-                                        <v-icon>mdi-clock</v-icon>
+                                        <v-icon v-bind:class="{ 'white--text': mode }">mdi-clock</v-icon>
                                     </v-btn>
                                 </template>
                                 <span>Timer</span>
@@ -361,7 +361,7 @@
                                         v-bind="attrs"
                                         v-on="on"
                                     >
-                                        <v-icon>mdi-format-list-bulleted-square</v-icon>
+                                        <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
                                     </v-btn>
                                 </template>
                                 <span>Manual</span>
@@ -555,7 +555,7 @@
                                                     v-if="props.item.status == 'started'"
                                                     @click="actionStopTracking(props.item.id)"
                                                 >
-                                                    <v-icon>mdi-pause</v-icon>
+                                                    <v-icon class="white--text">mdi-pause</v-icon>
                                                 </v-btn>
                                                 <v-btn
                                                     depressed
@@ -563,7 +563,7 @@
                                                     v-if="props.item.status == 'stopped'"
                                                     @click="actionStartTrackingAsId(props.item.id)"
                                                 >
-                                                    <v-icon>mdi-play-outline</v-icon>
+                                                    <v-icon class="white--text">mdi-play-outline</v-icon>
                                                 </v-btn>
                                             </v-col>
                                             <v-col cols="6">
