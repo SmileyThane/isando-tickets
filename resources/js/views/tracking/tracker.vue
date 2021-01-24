@@ -444,11 +444,11 @@
                                 >
                                     <template v-slot:item.description="props">
                                         <v-edit-dialog
-                                            :return-value.sync="props.item.description"
-                                            @save="save(props.item.id, 'description')"
+
+                                            @save="save(props.item, 'description')"
                                             @cancel="cancel"
                                             @open="open"
-                                            @close="save(props.item.id, 'description')"
+                                            @close="save(props.item, 'description')"
                                         >
                                             <span class="text--secondary" v-if="!props.item.description">
                                                 Add description
@@ -471,7 +471,7 @@
                                             @save="save(props.item.id, 'project_id')"
                                             @cancel="cancel"
                                             @open="open"
-                                            @close="save(props.item.id, 'project_id')"
+                                            @close="save(props.item, 'project', props.item.project)"
                                         >
                                             <span class="text--secondary" v-if="!props.item.project">
                                                 <v-icon>mdi-plus-circle-outline</v-icon>&nbsp;Project
@@ -504,10 +504,10 @@
                                     <template v-slot:item.date_from="props">
                                         <v-edit-dialog
                                             :return-value.sync="props.item.date_from"
-                                            @save="save(props.item.id, 'date_from')"
+                                            @save="save(props.item, 'date_from')"
                                             @cancel="cancel"
                                             @open="open"
-                                            @close="save(props.item.id, 'date_from')"
+                                            @close="save(props.item, 'date_from', props.item.date_from)"
                                         >
                                             {{ moment(props.item.date_from).format(timeFormat) }}
                                             <template v-slot:input>
@@ -523,10 +523,10 @@
                                     <template v-slot:item.date_to="props">
                                         <v-edit-dialog
                                             :return-value.sync="props.item.date_to"
-                                            @save="save(props.item.id, 'date_to')"
+                                            @save="save(props.item, 'date_to')"
                                             @cancel="cancel"
                                             @open="open"
-                                            @close="save(props.item.id, 'date_to')"
+                                            @close="save(props.item, 'date_to', props.item.date_to)"
                                             v-if="props.item.status == 'stopped'"
                                         >
                                             <span v-if="props.item.date_to && props.item.status == 'stopped'">
@@ -587,7 +587,6 @@
                                                         tile
                                                     >
                                                         <v-list dense>
-                                                            <v-subheader>Actions</v-subheader>
                                                             <v-list-item-group
                                                                 color="primary"
                                                             >
@@ -793,7 +792,7 @@ export default {
         },
         __updateTrackingById(id, data) {
             this.loadingUpdateTrack = true;
-            return axios.put(`/api/tracking/tracker/${id}`, data)
+            return axios.patch(`/api/tracking/tracker/${id}`, data)
                 .then(({ data }) => {
                     if (!data.success) {
                         return false;
@@ -990,13 +989,18 @@ export default {
                 return moment(item.date_from).format(self.dateFormat) === date;
             });
         },
-        save (id, fieldName) {
-            const foundIndex = this.tracking.findIndex(i => i.id === id);
+        save (item, fieldName, newValue = null) {
+            console.log(item, fieldName, newValue);
+            // const foundIndex = this.tracking.findIndex(i => i.id === item.id);
             if (['date_from', 'date_to'].indexOf(fieldName)) {
-                const {date_from, date_to} = this.tracking[foundIndex];
-                this.tracking[foundIndex].passed = this.helperCalculatePassedTime(date_from, date_to);
+                // const {date_from, date_to} = this.tracking[foundIndex];
+                // this.tracking[foundIndex].passed = this.helperCalculatePassedTime(date_from, date_to);
+                item.passed = this.helperCalculatePassedTime(item.date_from, item.date_to);
             }
-            this.__updateTrackingById(id, this.tracking[foundIndex]);
+            if (newValue) {
+                item[fieldName] = newValue;
+            }
+            this.__updateTrackingById(item.id, item);
         },
         cancel () {
             //TODO

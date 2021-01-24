@@ -21,7 +21,8 @@ class CreateTrackingProjectsTable extends Migration
             $table->string('color')->nullable(false)->default('#000000');
             $table->boolean('billable_by_default')->default(false);
             $table->double('rate', 8, 2)->nullable();
-            $table->dateTimeTz('rate_from')->nullable();
+            $table->double('rate_from', 8, 2)->nullable();
+            $table->dateTimeTz('rate_from_date')->nullable();
             $table->timestamps();
 
             $table->foreign('product_id')->references('id')->on('products');

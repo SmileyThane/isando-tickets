@@ -180,7 +180,9 @@ export default {
             project: {
                 name: '',
                 clientId: null,
+                client: null,
                 productId: null,
+                product: null,
                 color: '#' + Math.floor(Math.random()*16777215).toString(16)
             },
             colorMenu: false
@@ -269,6 +271,14 @@ export default {
                 this.debounceGetProjects();
             },
             deep: true,
+        },
+        productId: function () {
+            const index = this.products.findIndex(i => i.id === this.productId);
+            this.product = this.products[index];
+        },
+        clientId: function () {
+            const index = this.clients.findIndex(i => i.id === this.clientId);
+            this.client = this.clients[index];
         }
     },
     computed: {

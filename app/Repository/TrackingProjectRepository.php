@@ -4,10 +4,7 @@
 namespace App\Repository;
 
 use App\Client;
-use App\Company;
 use App\Product;
-use App\Team;
-use App\TeamCompanyUser;
 use App\TrackingProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,12 +17,15 @@ class TrackingProjectRepository
     {
         $params = [
             'name' => 'required',
-            'productId' => 'required|exists:App\Product,id',
-            'clientId' => 'required|exists:App\Client,id',
+            'productId' => 'required_without:product.id|exists:App\Product,id',
+            'product.id' => 'required_without:productId|exists:App\Product,id',
+            'clientId' => 'required_without:client.id|exists:App\Client,id',
+            'client.id' => 'required_without:clientId|exists:App\Client,id',
             'color' => 'required|string',
             'billableByDefault' => 'boolean',
-            'rate' => 'numeric',
-            'rateFrom' => 'numeric',
+            'rate' => 'nullable|numeric',
+            'rate_from' => 'nullable|numeric',
+            'rate_from_date' => 'nullable|date',
         ];
         $validator = Validator::make($request->all(), $params);
         if ($validator->fails()) {
@@ -54,16 +54,28 @@ class TrackingProjectRepository
 
     public function find($id)
     {
-        return TrackingProject::where('id', $id)->with('client')->first();
+        return TrackingProject::where('id', $id)->with('client', 'product')->first();
     }
 
     public function create(Request $request)
     {
         $trackingProject = new TrackingProject();
         $trackingProject->name = $request->name;
-        $trackingProject->product_id = $request->productId;
-        $trackingProject->client_id = $request->clientId;
+        $trackingProject->product_id = $request->product['id'] ?? $request->productId;
+        $trackingProject->client_id = $request->client['id'] ?? $request->clientId;
         $trackingProject->color = $request->color;
+        if ($request->has('billableByDefault')) {
+            $trackingProject->billable_by_default = $request->billable_by_default;
+        }
+        if ($request->has('rate')) {
+            $trackingProject->rate = $request->rate;
+        }
+        if ($request->has('rate_from')) {
+            $trackingProject->rate_from = $request->rate_from;
+        }
+        if ($request->has('rate_from_date')) {
+            $trackingProject->rate_from_date = $request->rate_from_date;
+        }
         $trackingProject->save();
         return $trackingProject;
     }
@@ -74,23 +86,26 @@ class TrackingProjectRepository
         if ($request->has('name')) {
             $trackingProject->name = $request->name;
         }
-        if ($request->has('productId')) {
-            $trackingProject->product_id = $request->productId;
+        if ($request->has('product')) {
+            $trackingProject->product_id = $request->product['id'];
         }
-        if ($request->has('clientId')) {
-            $trackingProject->client_id = $request->clientId;
+        if ($request->has('client')) {
+            $trackingProject->client_id = $request->client['id'];
         }
         if ($request->has('color')) {
             $trackingProject->color = $request->color;
         }
-        if ($request->has('billableByDefault')) {
-            $trackingProject->billable_by_default = $request->billableByDefault;
+        if ($request->has('billable_by_default')) {
+            $trackingProject->billable_by_default = $request->billable_by_default;
         }
         if ($request->has('rate')) {
             $trackingProject->rate = $request->rate;
         }
         if ($request->has('rate_from')) {
-            $trackingProject->rate_from = $request->rateFrom;
+            $trackingProject->rate_from = $request->rate_from;
+        }
+        if ($request->has('rate_from_date')) {
+            $trackingProject->rate_from_date = $request->rate_from_date;
         }
         $trackingProject->save();
         return $trackingProject;
