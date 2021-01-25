@@ -108,7 +108,7 @@ class AuthController extends Controller
     }
 
 
-    public function resetPassword(Request git $request)
+    public function resetPassword(Request $request)
     {
         $result = $this->userRepo->resetPassword($request->email);
         return self::showResponse($result);
