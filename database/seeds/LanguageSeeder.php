@@ -565,7 +565,7 @@ class LanguageSeeder extends Seeder
     "profile": "Profil",
     "logout": "Logout",
     "all": "Alle",
-    "notifications_settings": "Benachrichtigungseinstellungen"
+    "notifications_settings": "Benachrichtigungseinstellungen",
     "time_tracking": "Time tracking",
     "tracking_dashboard": "Dashboard",
     "tracking_tracker": "Tracker",
