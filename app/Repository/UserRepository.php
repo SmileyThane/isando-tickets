@@ -184,4 +184,29 @@ class UserRepository
         return $settings->data;
     }
 
+    public function resetPassword($email)
+    {
+        $email = Email::where('entity_type', User::class)->where('email', $email)->first();
+        if (!$email) {
+            return false;
+        }
+
+        $user = User::find($email->entity_id);
+        if (!$user) {
+            return false;
+        }
+
+        $from =  $user->employee->companyData->name;
+        try {
+            $password = Controller::getRandomString();
+            $user->password = bcrypt($password);
+            $user->save();
+            $user->notify(new ResetPasswordEmail($from, $user->title, $user->full_name, null, $user->email, $password, $user->language->short_code));
+        } catch (Throwable $throwable) {
+            Log::error($throwable);
+            //hack for broken notification system
+            return false;
+        }
+        return true;
+    }
 }
