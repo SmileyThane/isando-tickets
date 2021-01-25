@@ -19,14 +19,15 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{ this.$store.state.lang.lang_map.individuals.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateUser">
-                            {{this.$store.state.lang.lang_map.main.cancel}}
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
+                               @click="cancelUpdateUser">
+                            {{ this.$store.state.lang.lang_map.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">
-                            {{this.$store.state.lang.lang_map.main.update}}
+                            {{ this.$store.state.lang.lang_map.main.update }}
                         </v-btn>
                     </v-toolbar>
                     <v-card-text>
@@ -98,9 +99,21 @@
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
                                 ></v-text-field>
-                                <v-col md="6">
-                                    <v-spacer></v-spacer>
-                                </v-col>
+                                <v-autocomplete
+                                    v-model="userData.language_id"
+                                    :color="themeColor"
+                                    :item-color="themeColor"
+                                    :items="languages"
+                                    :label="this.$store.state.lang.lang_map.main.language"
+                                    :readonly="!enableToEdit"
+                                    class="col-md-6"
+                                    dense
+                                    item-text="name"
+                                    item-value="id"
+                                    lazy-validation
+                                    name="language"
+                                    prepend-icon="mdi-web"
+                                />
                                 <v-checkbox
                                     v-model="userData.status"
                                     :label="this.$store.state.lang.lang_map.individuals.active"
@@ -130,7 +143,7 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.assigned_companies}}
+                        <v-toolbar-title>{{ this.$store.state.lang.lang_map.individuals.assigned_companies }}
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
@@ -170,7 +183,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{this.$store.state.lang.lang_map.individuals.new_customer}}
+                                    {{ this.$store.state.lang.lang_map.individuals.new_customer }}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -230,7 +243,8 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.contact_info}}</v-toolbar-title>
+                        <v-toolbar-title>{{ this.$store.state.lang.lang_map.individuals.contact_info }}
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -264,7 +278,7 @@
                                                     </v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action v-if="item.email_type === 1">
-                                                    <v-icon small :title="langMap.profile.login_email">
+                                                    <v-icon :title="langMap.profile.login_email" small>
                                                         mdi-lock
                                                     </v-icon>
                                                 </v-list-item-action>
@@ -314,11 +328,11 @@
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">
-                                                        <span v-if="item.street">{{item.street}}, </span>
-                                                        <span v-if="item.street2">{{item.street2}}, </span>
-                                                        <span v-if="item.street3">{{item.street3}}</span>
-                                                        <br>{{item.postal_code}}&nbsp;&nbsp;{{item.city}},
-                                                        <span v-if="item.country">{{localized(item.country)}}</span>
+                                                        <span v-if="item.street">{{ item.street }}, </span>
+                                                        <span v-if="item.street2">{{ item.street2 }}, </span>
+                                                        <span v-if="item.street3">{{ item.street3 }}</span>
+                                                        <br>{{ item.postal_code }}&nbsp;&nbsp;{{ item.city }},
+                                                        <span v-if="item.country">{{ localized(item.country) }}</span>
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
                                                                           v-text="localized(item.type)"></v-list-item-subtitle>
@@ -347,7 +361,7 @@
                                     <v-expansion-panels>
                                         <v-expansion-panel @click="resetEmail">
                                             <v-expansion-panel-header>
-                                                {{this.$store.state.lang.lang_map.main.new_email}}
+                                                {{ this.$store.state.lang.lang_map.main.new_email }}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -401,7 +415,7 @@
                                         </v-expansion-panel>
                                         <v-expansion-panel @click="resetPhone">
                                             <v-expansion-panel-header>
-                                                {{this.$store.state.lang.lang_map.main.new_phone}}
+                                                {{ this.$store.state.lang.lang_map.main.new_phone }}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -455,7 +469,7 @@
                                         </v-expansion-panel>
                                         <v-expansion-panel @click="resetAddress">
                                             <v-expansion-panel-header>
-                                                {{this.$store.state.lang.lang_map.main.new_address}}
+                                                {{ this.$store.state.lang.lang_map.main.new_address }}
                                                 <template v-slot:actions>
                                                     <v-icon color="submit">mdi-plus</v-icon>
                                                 </template>
@@ -521,11 +535,13 @@
                                                                 item-value="id"
                                                             >
                                                                 <template slot="selection" slot-scope="data">
-                                                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item)
+                                                                    ({{ data.item.iso_3166_2 }}) {{
+                                                                        localized(data.item)
                                                                     }}
                                                                 </template>
                                                                 <template slot="item" slot-scope="data">
-                                                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item)
+                                                                    ({{ data.item.iso_3166_2 }}) {{
+                                                                        localized(data.item)
                                                                     }}
                                                                 </template>
                                                             </v-select>
@@ -581,7 +597,7 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.individuals.social_info}}</v-toolbar-title>
+                        <v-toolbar-title>{{ this.$store.state.lang.lang_map.individuals.social_info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -626,7 +642,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel @click="resetSocial">
                                 <v-expansion-panel-header>
-                                    {{langMap.company.new_social_item}}
+                                    {{ langMap.company.new_social_item }}
                                     <template v-slot:actions>
                                         <v-icon color="submit">mdi-plus</v-icon>
                                     </template>
@@ -702,7 +718,7 @@
             <v-dialog v-model="rolesDialog" max-width="600px" persistent>
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{langMap.company.update_info}}: {{singleUserForm.user.name}}</span>
+                        <span class="headline">{{ langMap.company.update_info }}: {{ singleUserForm.user.name }}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -727,38 +743,53 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="red" text @click="rolesDialog = false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn :color="themeColor" text @click="updateRole">{{langMap.main.save}}</v-btn>
+                        <v-btn color="red" text @click="rolesDialog = false">{{ langMap.main.cancel }}</v-btn>
+                        <v-btn :color="themeColor" text @click="updateRole">{{ langMap.main.save }}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
             <v-dialog v-model="isAccessedDialog" max-width="600px" persistent>
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{langMap.company.update_info}}: {{userData.full_name}}</span>
+                        <span class="headline">{{ langMap.company.update_info }}: {{ userData.full_name }}</span>
                     </v-card-title>
                     <v-card-text>
-                        {{userData.is_active === true ?
-                        this.$store.state.lang.lang_map.main.give_access :
-                        this.$store.state.lang.lang_map.individuals.unlink
+                        {{
+                            userData.is_active === true ?
+                                this.$store.state.lang.lang_map.main.give_access :
+                                this.$store.state.lang.lang_map.individuals.unlink
                         }}
                         <v-select
-                            :readonly="userData.is_active === false"
-                            class="mx-4"
                             v-model="primaryEmailId"
                             :color="themeColor"
-                            item-value="id"
-                            item-text="email"
                             :item-color="themeColor"
                             :items="userData.emails"
                             :label="langMap.main.email"
-                        ></v-select>
-
+                            :readonly="userData.is_active === false"
+                            prepend-icon="mdi-mail"
+                            item-text="email"
+                            item-value="id"
+                        />
+                        <v-autocomplete
+                            v-model="userData.language_id"
+                            :color="themeColor"
+                            :item-color="themeColor"
+                            :items="languages"
+                            :label="this.$store.state.lang.lang_map.main.language"
+                            item-text="name"
+                            item-value="id"
+                            lazy-validation
+                            name="language"
+                            prepend-icon="mdi-web"
+                        />
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="red" text @click="isAccessedDialog = false; userData.is_active = !userData.is_active">{{langMap.main.cancel}}</v-btn>
-                        <v-btn :color="themeColor" text @click="changeIsAccessed">{{langMap.main.save}}</v-btn>
+                        <v-btn color="red" text
+                               @click="isAccessedDialog = false; userData.is_active = !userData.is_active">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn :color="themeColor" text @click="changeIsAccessed">{{ langMap.main.save }}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -766,7 +797,7 @@
             <v-dialog v-model="updatePhoneDlg" max-width="600px" persistent>
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{langMap.company.update_phone}}</span>
+                        <span class="headline">{{ langMap.company.update_phone }}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -794,9 +825,10 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updatePhoneDlg=false; resetPhone()">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updatePhoneDlg=false; resetPhone()">{{ langMap.main.cancel }}
+                        </v-btn>
                         <v-btn :color="themeColor" text @click="updatePhoneDlg=false; updatePhone()">
-                            {{langMap.main.save}}
+                            {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -805,7 +837,7 @@
             <v-dialog v-model="updateSocialDlg" max-width="600px" persistent>
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{langMap.company.update_social}}</span>
+                        <span class="headline">{{ langMap.company.update_social }}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -834,9 +866,11 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateSocialDlg=false; resetSocial()">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updateSocialDlg=false; resetSocial()">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
                         <v-btn :color="themeColor" text @click="updateSocialDlg=false; updateSocial()">
-                            {{langMap.main.save}}
+                            {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -845,7 +879,7 @@
             <v-dialog v-model="updateAddressDlg" max-width="600px" persistent>
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{langMap.company.update_address}}</span>
+                        <span class="headline">{{ langMap.company.update_address }}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -941,9 +975,11 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateAddressDlg=false; resetAddress()">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updateAddressDlg=false; resetAddress()">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
                         <v-btn :color="themeColor" text @click="updateAddressDlg=false; updateAddress()">
-                            {{langMap.main.save}}
+                            {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -952,7 +988,7 @@
             <v-dialog v-model="updateEmailDlg" max-width="600px" persistent>
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{langMap.company.update_email}}</span>
+                        <span class="headline">{{ langMap.company.update_email }}</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -962,9 +998,10 @@
                                                   :label="langMap.main.email" dense></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-select v-if="emailForm.email_type === 1" readonly v-model="emailForm.email_type" :color="themeColor"
-                                              :item-color="themeColor" :items="emailTypes" :label="langMap.main.type"
-                                              dense item-value="id">
+                                    <v-select v-if="emailForm.email_type === 1" v-model="emailForm.email_type" :color="themeColor"
+                                              :item-color="themeColor"
+                                              :items="emailTypes" :label="langMap.main.type" dense
+                                              item-value="id" readonly>
                                         <template slot="selection" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
                                             {{ localized(data.item) }}
@@ -992,9 +1029,10 @@
                     </v-card-text>
                     <v-card-actions>
 
-                        <v-btn color="red" text @click="updateEmailDlg=false; resetEmail()">{{langMap.main.cancel}}</v-btn>
+                        <v-btn color="red" text @click="updateEmailDlg=false; resetEmail()">{{ langMap.main.cancel }}
+                        </v-btn>
                         <v-btn :color="themeColor" text @click="updateEmailDlg=false; updateEmail()">
-                            {{langMap.main.save}}
+                            {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -1029,6 +1067,7 @@ export default {
             snackbarMessage: '',
             errors: [],
             enableToEdit: false,
+            languages: [],
             userData: {
                 id: '',
                 title: '',
@@ -1112,6 +1151,7 @@ export default {
     mounted() {
         this.getCountries()
         this.getUser()
+        this.getLanguages()
         this.getPhoneTypes()
         this.getAddressTypes()
         this.getSocialTypes()
@@ -1136,6 +1176,18 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.countries = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getLanguages() {
+            axios.get('/api/lang').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.languages = response.data
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1172,7 +1224,8 @@ export default {
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
-                    this.snackbar = true;                }
+                    this.snackbar = true;
+                }
             });
         },
         cancelUpdateUser() {
@@ -1185,13 +1238,15 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = this.userData.status ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;                    this.actionColor = 'success'
+                    this.snackbarMessage = this.userData.status ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
+                    this.actionColor = 'success'
                     this.snackbar = true
                     this.enableToEdit = false
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
-                    this.snackbar = true;                }
+                    this.snackbar = true;
+                }
             });
         },
         submitNewData(id, data, method) {
@@ -1414,6 +1469,7 @@ export default {
             let request = {}
             request.user_id = this.selectedIsAccessedItem.id
             request.email_id = this.primaryEmailId
+            request.language_id = this.userData.language_id
             console.log(this.primaryEmailId);
             request.is_active = this.selectedIsAccessedItem.is_active
             this.singleUserForm.role_ids = this.selectedIsAccessedItem.is_active == true ? [6] : [];
@@ -1435,8 +1491,7 @@ export default {
             });
             this.updateRole()
         },
-        showIsAccessedModal(item)
-        {
+        showIsAccessedModal(item) {
             this.selectedIsAccessedItem = item
             this.isAccessedDialog = true
         },
@@ -1608,7 +1663,7 @@ export default {
             this.emailForm.entity_type = 'App\\User';
             this.emailForm.entity_id = this.userData.id;
         },
-        resetEmail () {
+        resetEmail() {
             this.emailForm = {
                 id: '',
                 entity_id: '',
@@ -1632,7 +1687,7 @@ export default {
                 entity_id: '',
                 entity_type: 'App\\User',
                 address: {
-                street: '',
+                    street: '',
                     street2: '',
                     street3: '',
                     city: '',
