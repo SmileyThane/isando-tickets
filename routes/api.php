@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('register', 'API\AuthController@register');
 Route::post('login', 'API\AuthController@login');
+Route::post('reset_password', 'API\AuthController@resetPassword');
 Route::get('plans', 'API\AuthController@plans');
 Route::get('time_zones', 'HomeController@getTimeZones');
 Route::get('/mail/receive/{type?}', 'HomeController@receiveMail')->name('receiveEmail');

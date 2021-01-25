@@ -104,7 +104,7 @@ class ChangedTicketStatus extends Notification
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject($subject)
-                ->line('Sehr geehrte ' . $this->title . ' '. $this->name . ',')
+                ->line('Hallo '. $this->name . ',')
                 ->line($firstLine)
                 ->action('Online ansehen', env('APP_URL') . '/ticket/' . $this->ticket_id)
                 ->line($secondLine)

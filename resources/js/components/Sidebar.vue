@@ -306,7 +306,7 @@
                     :color="themeColor" link
                     style="background-color:white;"
                     to="/settings/notify"
-                    v-if="checkRoleByIds([1,2,3])"
+                    v-if="checkRoleByIds([1])"
                 >
                     <v-list-item-action>
                         <v-icon>mdi-message-cog-outline</v-icon>
