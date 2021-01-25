@@ -48,7 +48,32 @@ class LanguageSeeder extends Seeder
     "profile": "Profile",
     "logout": "Logout",
     "all": "All",
-    "notifications_settings": "Notifications settings"
+    "notifications_settings": "Notifications settings",
+    "time_tracking": "Time tracking",
+    "tracking_dashboard": "Dashboard",
+    "tracking_tracker": "Tracker",
+    "tracking_calendar": "Calendar",
+    "tracking_projects": "Projects",
+    "tracking_reports": "Reports"
+  },
+  "tracking": {
+    "name": "Name",
+    "client": "Client",
+    "tracked": "Tracked",
+    "amount": "Amount",
+    "progress": "Progress",
+    "access": "Access",
+    "create": "Create",
+    "cancel": "Cancel",
+    "create_project": {
+      "btn_title": "Create new project",
+      "modal_title": "Create new project",
+      "name": "Project name",
+      "client": "Client",
+      "cancel": "Cancel",
+      "create": "Create",
+      "product": "Product"
+    }
   },
   "ticket_statuses": {
     "new": "New",
@@ -540,7 +565,35 @@ class LanguageSeeder extends Seeder
     "profile": "Profil",
     "logout": "Logout",
     "all": "Alle",
+<<<<<<< HEAD
+    "time_tracking": "Time tracking",
+    "tracking_dashboard": "Dashboard",
+    "tracking_tracker": "Tracker",
+    "tracking_calendar": "Calendar",
+    "tracking_projects": "Projects",
+    "tracking_reports": "Reports"
+  },
+  "tracking": {
+    "name": "Name",
+    "client": "Client",
+    "tracked": "Tracked",
+    "amount": "Amount",
+    "progress": "Progress",
+    "access": "Access",
+    "create": "Create",
+    "cancel": "Cancel",
+    "create_project": {
+      "btn_title": "Create new project",
+      "modal_title": "Create new project",
+      "name": "Project name",
+      "client": "Client",
+      "cancel": "Cancel",
+      "create": "Create",
+      "product": "Product"
+    }
+=======
     "notifications_settings": "Benachrichtigungseinstellungen"
+>>>>>>> dev
   },
   "ticket_statuses": {
     "new": "Neu",

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -141,5 +142,10 @@ class User extends Authenticatable
     public function language(): HasOne
     {
         return $this->hasOne(Language::class, 'id', 'language_id');
+    }
+
+    public function tracking(): HasMany
+    {
+        return $this->hasMany(Tracking::class, 'user_id', 'id');
     }
 }
