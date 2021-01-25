@@ -122,7 +122,7 @@ class TrackingProjectRepository
         return $result;
     }
 
-    public function getClients() {
+    public function getClients(Request $request) {
         $productIds = Auth::user()
             ->employee
             ->companyData
@@ -135,18 +135,24 @@ class TrackingProjectRepository
         $clientIds = $products->map(function($product) {
             return $product->clients;
         })->collapse()->pluck('client_id')->all();
-        return Client::whereIn('id', $clientIds)->get();
+        $clients = Client::whereIn('id', $clientIds);
+        if ($request->has('search') && $request->search) {
+            $clients->where('name', 'LIKE', "%{$request->search}%");
+        }
+        return $clients->get();
     }
 
-    public function getProducts() {
+    public function getProducts(Request $request) {
         $productIds = Auth::user()
             ->employee
             ->companyData
             ->products
             ->pluck('product_id');
-        $products = Product::whereIn('id', $productIds)
-            ->get();
-        return $products;
+        $products = Product::whereIn('id', $productIds);
+        if ($request->has('search') && $request->search) {
+            $products->where('name', 'LIKE', "%{$request->search}%");
+        }
+        return $products->get();
     }
 
 }
