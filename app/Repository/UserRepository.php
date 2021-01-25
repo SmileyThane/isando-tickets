@@ -107,6 +107,7 @@ class UserRepository
         try {
             $user = User::find($request->user_id);
             $user->is_active = $request->is_active;
+            $user->language_id = $request->language_id ?? $user->language_id;
             $user->save();
             $email = Email::find($request->email_id);
 
