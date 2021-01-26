@@ -88,7 +88,7 @@ class ResetPasswordEmail extends Notification
                 ->action('Link zu unserem Ticketing-System: ', env('APP_URL'))
                 ->line('Wir wünschen Ihnen einen schönen Tag!')
                 ->line('')
-                ->salutation('Freundliche Grüsse, , INAX AG');
+                ->salutation('Freundliche Grüsse, INAX AG');
         }
     }
 
