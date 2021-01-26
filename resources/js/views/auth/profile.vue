@@ -43,6 +43,7 @@
                                     :readonly="!enableToEdit"
                                     dense
                                 ></v-text-field>
+
                                 <v-text-field
                                     :color="themeColor"
                                     :label="this.$store.state.lang.lang_map.main.title_before_name"
@@ -56,6 +57,7 @@
                                     :readonly="!enableToEdit"
                                     dense
                                 ></v-text-field>
+
                                 <v-text-field
                                     :color="themeColor"
                                     :label="this.$store.state.lang.lang_map.main.first_name"
