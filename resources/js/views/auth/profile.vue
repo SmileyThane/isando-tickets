@@ -32,19 +32,6 @@
                             <v-row>
                                 <v-text-field
                                     :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.title"
-                                    name="title"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                    v-model="userData.title"
-                                    :error-messages="errors.title"
-                                    lazy-validation
-                                    class="col-md-6"
-                                    :readonly="!enableToEdit"
-                                    dense
-                                ></v-text-field>
-                                <v-text-field
-                                    :color="themeColor"
                                     :label="this.$store.state.lang.lang_map.main.title_before_name"
                                     name="title_before_name"
                                     prepend-icon="mdi-book-account-outline"
@@ -56,6 +43,21 @@
                                     :readonly="!enableToEdit"
                                     dense
                                 ></v-text-field>
+
+                                <v-text-field
+                                    :color="themeColor"
+                                    :label="this.$store.state.lang.lang_map.main.title"
+                                    name="title"
+                                    prepend-icon="mdi-book-account-outline"
+                                    type="text"
+                                    v-model="userData.title"
+                                    :error-messages="errors.title"
+                                    lazy-validation
+                                    class="col-md-6"
+                                    :readonly="!enableToEdit"
+                                    dense
+                                ></v-text-field>
+
                                 <v-text-field
                                     :color="themeColor"
                                     :label="this.$store.state.lang.lang_map.main.first_name"
