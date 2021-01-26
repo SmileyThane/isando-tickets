@@ -32,20 +32,21 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
-                            <v-text-field
-                                v-model="userData.title_before_name"
-                                :color="themeColor"
-                                :error-messages="errors.title_before_name"
-                                :label="this.$store.state.lang.lang_map.main.title_before_name"
-                                :readonly="!enableToEdit"
-                                class="col-md-6"
-                                dense
-                                lazy-validation
-                                name="title_before_name"
-                                prepend-icon="mdi-book-account-outline"
-                                type="text"
-                            ></v-text-field>
                             <v-row>
+                                <v-text-field
+                                    v-model="userData.title_before_name"
+                                    :color="themeColor"
+                                    :error-messages="errors.title_before_name"
+                                    :label="this.$store.state.lang.lang_map.main.title_before_name"
+                                    :readonly="!enableToEdit"
+                                    class="col-md-6"
+                                    dense
+                                    lazy-validation
+                                    name="title_before_name"
+                                    prepend-icon="mdi-book-account-outline"
+                                    type="text"
+                                ></v-text-field>
+
                                 <v-text-field
                                     v-model="userData.title"
                                     :color="themeColor"
@@ -59,6 +60,7 @@
                                     prepend-icon="mdi-book-account-outline"
                                     type="text"
                                 ></v-text-field>
+
                                 <v-text-field
                                     v-model="userData.name"
                                     :color="themeColor"
