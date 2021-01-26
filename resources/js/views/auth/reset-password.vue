@@ -88,7 +88,9 @@ export default {
     },
     methods: {
         handleSubmit(e) {
-            e.preventDefault()
+            e.preventDefault();
+            this.message = false;
+            this.alert = false;
             if (this.email.length > 0) {
                 axios.post('/api/reset_password', {
                     email: this.email
