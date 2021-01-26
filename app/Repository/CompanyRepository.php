@@ -7,14 +7,14 @@ namespace App\Repository;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
-use App\CompanyUserNotification;
 use App\CompanyUser;
+use App\CompanyUserNotification;
 use App\ProductCategory;
 use App\Role;
 use App\Settings;
 use App\TicketNotificationType;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -306,7 +306,7 @@ class CompanyRepository
                 case 'notifications_status':
                     if (empty($item->notifications_status)) {
                         return 0;
-                    } elseif(in_array(TicketNotificationType::ALL, $item->notifications_status)) {
+                    } elseif (in_array(TicketNotificationType::ALL, $item->notifications_status)) {
                         return 2;
                     } else {
                         return 1;

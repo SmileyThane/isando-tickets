@@ -67,28 +67,28 @@ class ResetPasswordEmail extends Notification
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject('Your password was restored at the ticketing system!')
                 ->line('Dear ' . $this->name . ', ')
-                ->line("Welcome back to our $this->from ticketing system. Your account has been restored.")
+                ->line("Welcome back to our ticketing system. Your account has been restored.")
                 ->line("Please use your new password to log into your account:")
-                ->line('Your login name:' . $this->email)
+                ->line('Your login name: ' . $this->email)
                 ->line('Your password: ' . $this->password)
                 ->action('Link to our ticketing system: ', env('APP_URL'))
                 ->line('Have a Good Day!')
                 ->line('')
-                ->salutation('- Best Wishes, ' . $this->from);
+                ->salutation('- Best Wishes, INAX AG' . $this->from);
         } else {
             return (new MailMessage)
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject('Sie wurden zum Ticketsystem eingeladen!')
                 ->greeting(' ')
-                ->line('Sehr geehrte ' . $this->title . ' '. $this->name . ',')
-                ->line("Willkommen zurück zu unserem $this->from Ticketing-System der $this->from. Ihr Konto wurde wiederhergestellt.")
+                ->line('Hallo '. $this->name . ',')
+                ->line("Willkommen zurück zu unserem Ticketing-System der INAX AG. Ihr Konto wurde wiederhergestellt.")
                 ->line("Bitte benutzen Sie Ihr neues Passwort, um sich in Ihr Konto anzumelden:")
                 ->line('Ihr Login-Name: ' . $this->email)
                 ->line('Ihr Passwort: ' . $this->password)
                 ->action('Link zu unserem Ticketing-System: ', env('APP_URL'))
                 ->line('Wir wünschen Ihnen einen schönen Tag!')
                 ->line('')
-                ->salutation('Freundliche Grüsse, ' . $this->from);
+                ->salutation('Freundliche Grüsse, , INAX AG');
         }
     }
 

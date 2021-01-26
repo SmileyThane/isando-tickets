@@ -80,7 +80,7 @@ class RegularInviteEmail extends Notification
                 ->from(Config::get('mail.from.address'), $this->from)
                 ->subject('Sie wurden zum Ticketsystem eingeladen!')
                 ->greeting(' ')
-                ->line('Sehr geehrte ' . $this->title . ' '. $this->name . ',')
+                ->line('Hallo '. $this->name . ',')
                 ->line("Willkommen bei unserem $this->from Ticketing-System der $this->from. Ihr Konto wurde erstellt.")
                 ->line("Bitte verwenden Sie die untenstehenden Zugangsdaten, um sich in Ihr Konto anzumelden::")
                 ->line('Ihr Login-Name: ' . $this->email)

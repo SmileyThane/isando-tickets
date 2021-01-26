@@ -106,4 +106,12 @@ class AuthController extends Controller
     {
         return self::showResponse(true, Plan::all());
     }
+
+
+    public function resetPassword(Request $request)
+    {
+        $result = $this->userRepo->resetPassword($request->email);
+        return self::showResponse($result);
+    }
+
 }

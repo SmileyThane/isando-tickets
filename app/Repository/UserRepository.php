@@ -108,6 +108,7 @@ class UserRepository
         try {
             $user = User::find($request->user_id);
             $user->is_active = $request->is_active;
+            $user->language_id = $request->language_id ?? $user->language_id;
             $user->save();
             $email = Email::find($request->email_id);
 
@@ -115,10 +116,10 @@ class UserRepository
                 $email->email_type = 1;
                 $email->save();
 
-                $companyId =  $user->employee->companyData->id;
+                $companyId = $user->employee->companyData->id;
                 $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
                 if (!$secondaryType) {
-                    $companyId =  Auth::user()->employee->companyData->id;
+                    $companyId = Auth::user()->employee->companyData->id;
                     $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
                 }
                 Email::where('id', '<>', $email->id)->where('email_type', 1)->where('entity_type', $email->entity_type)->where('entity_id', $email->entity_id)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
@@ -141,7 +142,7 @@ class UserRepository
                 $password = Controller::getRandomString();
                 $user->password = bcrypt($password);
                 $user->save();
-                }
+            }
             $user->notify(new RegularInviteEmail($from, $user->title, $user->full_name, $role, $user->email, $password, $user->language->short_code));
         } catch (Throwable $throwable) {
             Log::error($throwable);
@@ -184,4 +185,29 @@ class UserRepository
         return $settings->data;
     }
 
+    public function resetPassword($email)
+    {
+        $email = Email::where('entity_type', User::class)->where('email', $email)->first();
+        if (!$email) {
+            return false;
+        }
+
+        $user = User::find($email->entity_id);
+        if (!$user) {
+            return false;
+        }
+
+        $from =  $user->employee->companyData->name;
+        try {
+            $password = Controller::getRandomString();
+            $user->password = bcrypt($password);
+            $user->save();
+            $user->notify(new ResetPasswordEmail($from, $user->title, $user->full_name, null, $user->email, $password, $user->language->short_code));
+        } catch (Throwable $throwable) {
+            Log::error($throwable);
+            //hack for broken notification system
+            return false;
+        }
+        return true;
+    }
 }

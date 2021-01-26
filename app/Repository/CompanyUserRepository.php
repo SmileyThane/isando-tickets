@@ -8,17 +8,18 @@ use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyUser;
+use App\Email;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
 use App\Role;
 use App\Settings;
 use App\User;
-use App\Email;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Throwable;
 
 class CompanyUserRepository
 {
@@ -119,7 +120,7 @@ class CompanyUserRepository
 
     public function invite(Request $request)
     {
-        $isClientable =  $request['is_clientable'] ?? false;
+        $isClientable = $request['is_clientable'] ?? false;
         $isNew = false;
         $request['password'] = Controller::getRandomString();
         $email = Email::where('entity_type', User::class)->where('email', $request['email'])->first();
@@ -154,7 +155,7 @@ class CompanyUserRepository
                         @$user->notify(
                             new RegularInviteEmail($companyUser->companyData->title, $companyUser->companyData->name, $user->full_name, $request['role_id'], $request['email'], $request['password'], $user->language->short_code)
                         );
-                    } catch (\Throwable $throwable) {
+                    } catch (Throwable $throwable) {
                         Log::error($throwable);
                         //hack for broken notification system
                     }

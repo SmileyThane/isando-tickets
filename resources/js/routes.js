@@ -11,9 +11,9 @@ import SingleEmployee from './views/employee/item'
 import Ticket from './views/ticket/index'
 import CreateTicket from './views/ticket/create'
 import SingleTicket from './views/ticket/item'
-import Login from './views/Auth/Login'
-import Register from './views/Auth/Register'
-import Profile from './views/Auth/Profile'
+import Login from './views/auth/login'
+import Register from './views/auth/register'
+import Profile from './views/auth/profile'
 import SystemSettings from './views/settings/system'
 import AllCustomers from './views/customer/all'
 import Notifications from './views/notify/index'
@@ -27,6 +27,8 @@ import TrackingProjects from './views/tracking/projects'
 import TrackingProjectItem from './views/tracking/projects/item'
 import TrackingReports from './views/tracking/reports'
 import NotificationsSettings from './views/settings/notify'
+import ResetPassword from './views/auth/reset-password'
+
 
 export default [
     {
@@ -216,6 +218,14 @@ export default [
             requiresAuth: true,
         },
         component: SingleNotificationHistory
+    },
+    {
+        path: '/reset-password',
+        name: 'reset_password',
+        meta: {
+            requiresAuth: false,
+        },
+        component: ResetPassword
     },
     {
         path: '/tracking',

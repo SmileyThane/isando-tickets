@@ -16,7 +16,7 @@ class NotificationTemplate extends Model
 
     public function getRecipientsAttribute(): array
     {
-        return (array) json_decode($this->attributes['recipients']);
+        return (array)json_decode($this->attributes['recipients']);
     }
 
     public function setRecipientsAttribute(array $data = [])
