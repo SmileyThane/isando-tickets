@@ -114,13 +114,13 @@ class User extends Authenticatable
 
     public function getEmailAttribute()
     {
-        $email = $this->emails()->where('email_type', 1)->orderBy('email_type')->first();
+        $email = $this->emails()->orderBy('email_type')->first();
         return $email ? $email->email : null;
     }
 
     public function getEmailIdAttribute()
     {
-        $email = $this->emails()->where('email_type', 1)->orderBy('email_type')->first();
+        $email = $this->emails()->orderBy('email_type')->first();
         if (!email) {
             $email = $this->emails()->first();
         }
