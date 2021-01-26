@@ -52,7 +52,9 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <a href="/login">Back to login</a>
+                            <v-list>
+                                <v-list-item to="/login">Back to login</v-list-item>
+                            </v-list>
                             <v-spacer></v-spacer>
                             <v-btn :color="themeColor" style="color: white;" @click="handleSubmit">Reset</v-btn>
                         </v-card-actions>
