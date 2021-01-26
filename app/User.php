@@ -121,9 +121,6 @@ class User extends Authenticatable
     public function getEmailIdAttribute()
     {
         $email = $this->emails()->orderBy('email_type')->first();
-        if (!email) {
-            $email = $this->emails()->first();
-        }
         return $email ? $email->id : null;
     }
 
