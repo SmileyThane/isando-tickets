@@ -9,6 +9,7 @@ use App\Email;
 use App\EmailType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
+use App\Notifications\ResetPasswordEmail;
 use App\Role;
 use App\Settings;
 use App\User;
