@@ -82,7 +82,9 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <a href="/reset-password">Forgot your password?</a>
+                            <v-list>
+                                <v-list-item to="/reset-password">Forgot your password? </v-list-item>
+                            </v-list>
                             <v-spacer></v-spacer>
                             <v-btn :color="themeColor" style="color: white;" @click="handleSubmit">Login</v-btn>
                         </v-card-actions>

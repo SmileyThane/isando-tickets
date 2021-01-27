@@ -114,19 +114,19 @@ class User extends Authenticatable
 
     public function getEmailAttribute()
     {
-        $email = $this->emails()->where('email_type', 1)->first();
+        $email = $this->emails()->orderBy('email_type')->first();
         return $email ? $email->email : null;
     }
 
     public function getEmailIdAttribute()
     {
-        $email = $this->emails()->where('email_type', 1)->first();
+        $email = $this->emails()->orderBy('email_type')->first();
         return $email ? $email->id : null;
     }
 
     public function getContactEmailAttribute()
     {
-        return $email = $this->emails()->with('type')->first();
+        return $email = $this->emails()->with('type')->orderBy('email_type')->first();
     }
 
     public function emailSignatures(): MorphMany
