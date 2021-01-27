@@ -512,7 +512,7 @@
                                             {{ moment(props.item.date_from).format(timeFormat) }}
                                             <template v-slot:input>
                                                 <v-text-field
-                                                    v-model="props.item.date_from"
+                                                    v-model="moment(props.item.date_from).format(`${dateFormat} ${timeFormat}`)"
                                                     label="Edit"
                                                     single-line
                                                     counter
@@ -534,7 +534,7 @@
                                             </span>
                                             <template v-slot:input>
                                                 <v-text-field
-                                                    v-model="props.item.date_to"
+                                                    v-model="moment(props.item.date_to).format(`${dateFormat} ${timeFormat}`)"
                                                     label="Edit"
                                                     single-line
                                                     counter
