@@ -17,13 +17,13 @@
                         :value="alert"
                         type="error"
                     >
-                        Invalid Email
+                        Provided email address is not associated with any user account.
                     </v-alert>
                     <v-alert
                         :value="message"
                         type="success"
                     >
-                        The new password sent to the email address you specified. Please, check your mail box.
+                        The new password sent to the your user account primary email. Please, check your mail box.
                     </v-alert>
                     <v-card class="elevation-12">
                         <v-toolbar

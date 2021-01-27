@@ -71,10 +71,20 @@
                                     <v-subheader class="float-right">Product</v-subheader>
                                 </v-col>
                                 <v-col cols="10" lg="4" md="6">
-                                    <v-text-field
-                                        v-model="project.product.name"
-                                        @blur="actionSave()"
-                                    ></v-text-field>
+                                    <template>
+                                        <v-autocomplete
+                                            v-model="project.product"
+                                            :items="getFilteredProducts"
+                                            :loading="isLoadingSearchProduct"
+                                            :search-input.sync="searchProduct"
+                                            color="white"
+                                            item-text="name"
+                                            item-value="id"
+                                            placeholder="Start typing to Search"
+                                            return-object
+                                            @change="actionSave()"
+                                        ></v-autocomplete>
+                                    </template>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -82,10 +92,20 @@
                                     <v-subheader class="float-right">Client</v-subheader>
                                 </v-col>
                                 <v-col cols="10" lg="4" md="6">
-                                    <v-text-field
-                                        v-model="project.client.name"
-                                        @blur="actionSave()"
-                                    ></v-text-field>
+                                    <template>
+                                        <v-autocomplete
+                                            v-model="project.client"
+                                            :items="getFilteredClients"
+                                            :loading="isLoadingSearchClient"
+                                            :search-input.sync="searchClient"
+                                            color="white"
+                                            item-text="name"
+                                            item-value="id"
+                                            placeholder="Start typing to Search"
+                                            return-object
+                                            @change="actionSave()"
+                                        ></v-autocomplete>
+                                    </template>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -285,10 +305,19 @@ export default {
             colorMenu: false,
             rateDialog: false,
             rateFrom: '1',
-            rateFromMenu: false
+            rateFromMenu: false,
+            products: [],
+            isLoadingSearchProduct: false,
+            searchProduct: null,
+            clients: [],
+            isLoadingSearchClient: false,
+            searchClient: null,
+            nameLimit: 255
         }
     },
     mounted() {
+        this.__getProducts();
+        this.__getClients();
         this.__getProject(this.$route.params.id);
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
@@ -304,6 +333,30 @@ export default {
                 }
             });
         },
+        __getProducts() {
+            if (this.isLoadingSearchProduct) return;
+            this.isLoadingSearchProduct = true;
+            const queryParams = new URLSearchParams({
+                search: this.searchProduct ?? ''
+            });
+            axios.get(`/api/tracking/products?${queryParams.toString()}`)
+                .then(({data}) => {
+                    this.products = data.data;
+                })
+                .finally(() => (this.isLoadingSearchProduct = false));
+        },
+        __getClients() {
+            if (this.isLoadingSearchClient) return;
+            this.isLoadingSearchClient = true;
+            const queryParams = new URLSearchParams({
+                search: this.searchClient ?? ''
+            });
+            axios.get(`/api/tracking/clients?${queryParams.toString()}`)
+                .then(({data}) => {
+                    this.clients = data.data;
+                })
+                .finally(() => (this.isLoadingSearchClient = false));
+        },
         __updateProjectById(projectId, data) {
             axios.patch(`/api/tracking/projects/${projectId}`, data)
                 .then(({ data }) => {
@@ -317,7 +370,12 @@ export default {
         }
     },
     watch: {
-
+        searchProduct () {
+            this.__getProducts();
+        },
+        searchClient () {
+            this.__getClients();
+        }
     },
     computed: {
         switchColor() {
@@ -330,6 +388,24 @@ export default {
                 borderRadius: menu ? '50%' : '4px',
                 transition: 'border-radius 200ms ease-in-out'
             }
+        },
+        getFilteredProducts() {
+            return this.products.map(entry => {
+                const name = entry.name.length > this.nameLimit
+                    ? entry.name.slice(0, this.nameLimit) + '...'
+                    : entry.name
+
+                return Object.assign({}, entry, { name })
+            })
+        },
+        getFilteredClients() {
+            return this.clients.map(entry => {
+                const name = entry.name.length > this.nameLimit
+                    ? entry.name.slice(0, this.nameLimit) + '...'
+                    : entry.name
+
+                return Object.assign({}, entry, { name })
+            })
         }
     }
 }

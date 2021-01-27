@@ -226,14 +226,18 @@ export default {
         getClients() {
             axios.get('/api/tracking/clients')
             .then(({data}) => {
-                this.clients = data.success;
+                if (data.success) {
+                    this.clients = data.data;
+                }
                 this.loading = false
             });
         },
         getProducts() {
             axios.get('/api/tracking/products')
             .then(({data}) => {
-                this.products = data.success;
+                if (data.success) {
+                    this.products = data.data;
+                }
                 this.loading = false
             });
         },
