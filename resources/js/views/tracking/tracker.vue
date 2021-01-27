@@ -492,6 +492,7 @@
                                                         item-text="name"
                                                         item-value="id"
                                                         label="Projects"
+                                                        hint="Projects"
                                                         placeholder="Start typing to Search"
                                                         prepend-icon="mdi-database-search"
                                                         return-object
@@ -500,6 +501,19 @@
                                                 </v-card>
                                             </template>
                                         </v-edit-dialog>
+                                    </template>
+                                    <template v-slot:item.billable="props">
+                                        <v-btn
+                                            fab
+                                            :icon="!props.item.billable"
+                                            x-small
+                                            :color="themeColor"
+                                            @click="props.item.billable = !props.item.billable; save(props.item, 'billable')"
+                                        >
+                                            <v-icon center v-bind:class="{ 'white--text': props.item.billable }">
+                                                mdi-currency-usd
+                                            </v-icon>
+                                        </v-btn>
                                     </template>
                                     <template v-slot:item.date_from="props">
                                         <v-edit-dialog
@@ -513,7 +527,8 @@
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="moment(props.item.date_from).format(`${dateFormat} ${timeFormat}`)"
-                                                    label="Edit"
+                                                    label="Date From"
+                                                    hint="Date From"
                                                     single-line
                                                     counter
                                                 ></v-text-field>
@@ -535,7 +550,8 @@
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="moment(props.item.date_to).format(`${dateFormat} ${timeFormat}`)"
-                                                    label="Edit"
+                                                    label="Date Until"
+                                                    hint="Date Until"
                                                     single-line
                                                     counter
                                                     autofocus
@@ -679,12 +695,17 @@ export default {
                 {
                     text: 'Project name',
                     value: 'project.name',
-                    width: '20%'
+                    width: '15%'
                 },
                 {
                     text: 'Tag',
                     value: '',
                     width: '15%'
+                },
+                {
+                    text: 'Billable',
+                    value: 'billable',
+                    width: '5%'
                 },
                 {
                     text: 'Start',
