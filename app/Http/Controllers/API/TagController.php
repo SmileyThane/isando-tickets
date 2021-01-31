@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Repository\TagRepository;
-use App\Tag;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -26,7 +25,7 @@ class TagController extends Controller
     }
 
     public function get(Request $request) {
-        $result = Tag::all();
+        $result = $this->tagRepo->all($request);
         return self::showResponse((bool)$result, $result);
     }
 }

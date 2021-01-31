@@ -34,7 +34,7 @@ class TagRepository
 
     public function all(Request $request)
     {
-
+        return Tag::all();
     }
 
     public function find($id)
