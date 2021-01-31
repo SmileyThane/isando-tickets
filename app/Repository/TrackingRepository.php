@@ -3,11 +3,6 @@
 
 namespace App\Repository;
 
-use App\Client;
-use App\Company;
-use App\Product;
-use App\Team;
-use App\TeamCompanyUser;
 use App\Tracking;
 use App\TrackingProject;
 use Carbon\Carbon;
@@ -27,15 +22,21 @@ class TrackingRepository
             'status' => 'required|string|in:started,paused,stopped',
             'billable' => 'boolean',
             'billed' => 'boolean',
+            'tags' => 'array|nullable',
+            'tags.*.id' => 'integer|nullable',
+            'tags.*.name' => 'string',
         ],
         'update' => [
             'product.id' => 'nullable|exists:App\Product,id',
             'description' => 'nullable|string',
-            'date_from' => 'nullable|string',
+            'date_from' => 'nullable|string|before:date_to',
             'date_to' => 'nullable|string',
             'status' => 'nullable|string|in:started,paused,stopped',
             'billable' => 'boolean',
             'billed' => 'boolean',
+            'tags' => 'array|nullable',
+            'tags.*.id' => 'integer|nullable',
+            'tags.*.name' => 'string',
         ]
     ];
 
@@ -62,6 +63,7 @@ class TrackingRepository
             ])
             ->with('Project.Product')
             ->with('Project.Client')
+            ->with('Tags')
             ->with('User:id,name,surname,middle_name')
             ->orderBy('id', 'desc')
             ->get();
@@ -83,6 +85,11 @@ class TrackingRepository
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
+        if ($request->has('tags')) {
+            foreach ($request->tags as $tag) {
+                $tracking->Tags()->attach($tag['id']);
+            }
+        }
         $tracking->save();
         return $tracking;
     }
@@ -95,6 +102,9 @@ class TrackingRepository
             $tracking->date_from = Carbon::parse($request->date_from)->utc();
         }
         if ($request->has('date_to')) {
+            if (Carbon::parse($tracking->date_from)->gt($request->date_to)) {
+                throw new \Exception('error');
+            }
             $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->utc() : null;
         }
         if ($request->has('status')) {
@@ -103,6 +113,12 @@ class TrackingRepository
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
+        if ($request->has('tags')) {
+            $tracking->Tags()->detach();
+            foreach ($request->tags as $tag) {
+                $tracking->Tags()->attach($tag['id']);
+            }
+        }
         $tracking->save();
         return $tracking;
     }

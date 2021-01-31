@@ -21,6 +21,13 @@ class Tracking extends Model
         return $this->hasOne('App\TrackingProject', 'id', 'project_id');
     }
 
+    public function Tags() {
+        return $this->morphToMany(
+            Tag::class,
+            'taggable'
+        );
+    }
+
     public function getPassedAttribute() {
         return Carbon::parse($this->date_to)->diffInSeconds(Carbon::parse($this->date_from));
     }

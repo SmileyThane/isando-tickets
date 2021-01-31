@@ -502,6 +502,99 @@
                                             </template>
                                         </v-edit-dialog>
                                     </template>
+                                    <template v-slot:item.tags="props">
+                                        <v-menu
+                                            :close-on-content-click="false"
+                                            :nudge-width="200"
+                                            offset-x
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    icon
+                                                    :color="themeColor"
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                >
+                                                    <v-icon
+                                                        v-if="props.item.tags.length"
+                                                    >mdi-tag</v-icon>
+                                                    <v-icon v-else>mdi-tag-outline</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <v-card
+                                                style="max-width: 400px"
+                                            >
+                                                <template>
+                                                    <v-combobox
+                                                        v-model="props.item.tags"
+                                                        :hide-no-data="!searchTag"
+                                                        :items="tags"
+                                                        :search-input.sync="searchTag"
+                                                        hide-selected
+                                                        return-object
+                                                        item-text="name"
+                                                        item-id="name"
+                                                        multiple
+                                                        small-chips
+                                                        solo
+                                                        @input="onUpdate"
+                                                        @blur="save(props.item, 'tags', props.item.tags)"
+                                                    >
+                                                        <template v-slot:no-data>
+                                                            <v-list-item>
+                                                                <span class="subheading">Create&nbsp;</span>
+                                                                <v-chip
+                                                                    :color="themeColor"
+                                                                    label
+                                                                    small
+                                                                    outlined
+                                                                >
+                                                                    {{ searchTag }}
+                                                                </v-chip>
+                                                            </v-list-item>
+                                                        </template>
+                                                        <template v-slot:selection="{ attrs, item, parent, selected }">
+                                                            <v-chip
+                                                                v-if="item.name === Object(item).name"
+                                                                v-bind="attrs"
+                                                                :color="themeColor"
+                                                                :input-value="selected"
+                                                                label
+                                                                small
+                                                                outlined
+                                                            >
+                                                                <span v-if="item.id">
+                                                                    {{ item.name }}
+                                                                    <v-icon
+                                                                        small
+                                                                        @click="parent.selectItem(item)"
+                                                                    >
+                                                                        mdi-close-circle-outline
+                                                                    </v-icon>
+                                                                </span>
+                                                                <v-progress-circular
+                                                                    v-if="!item.id"
+                                                                    indeterminate
+                                                                    :size="20"
+                                                                    :color="themeColor"
+                                                                ></v-progress-circular>
+                                                            </v-chip>
+                                                        </template>
+                                                        <template v-slot:item="{ parent, item, on, attrs }">
+                                                            <v-chip
+                                                                :color="themeColor"
+                                                                label
+                                                                small
+                                                                style="color: white"
+                                                            >
+                                                                {{ item.name }}
+                                                            </v-chip>
+                                                        </template>
+                                                    </v-combobox>
+                                                </template>
+                                            </v-card>
+                                        </v-menu>
+                                    </template>
                                     <template v-slot:item.billable="props">
                                         <v-btn
                                             fab
@@ -659,6 +752,7 @@ export default {
             timeFormat: 'HH:mm',
             langMap: this.$store.state.lang.lang_map,
             themeColor: this.$store.state.themeColor,
+            /* Snackbar */
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
@@ -685,7 +779,7 @@ export default {
                     text: 'Description',
                     align: 'start',
                     value: 'description',
-                    width: '20%'
+                    width: '25%'
                 },
                 {
                     text: 'Company',
@@ -695,12 +789,12 @@ export default {
                 {
                     text: 'Project name',
                     value: 'project.name',
-                    width: '15%'
+                    width: '20%'
                 },
                 {
                     text: 'Tag',
-                    value: '',
-                    width: '15%'
+                    value: 'tags',
+                    width: '5%'
                 },
                 {
                     text: 'Billable',
@@ -757,7 +851,9 @@ export default {
                 date_to: null,
                 date: moment()
             },
-            globalTimer: null
+            globalTimer: null,
+            tags: [],
+            searchTag: null
         }
     },
     created: function () {
@@ -773,6 +869,7 @@ export default {
     mounted() {
         this.__globalTimer();
         this.debounceGetTacking();
+        this.__getTags();
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
@@ -805,6 +902,18 @@ export default {
             this.loadingCreateTrack = true;
             return axios.post('/api/tracking/tracker', data)
                 .then(({ data }) => {
+                    if (!data.success) {
+                        if (data.error) {
+                            this.debounceGetTacking();
+                            this.resetManualPanel();
+                            this.loadingCreateTrack = false;
+                            const error = Object.keys(data.error)[0];
+                            this.snackbarMessage = data.error[error].pop();
+                            this.actionColor = 'error'
+                            this.snackbar = true;
+                        }
+                        return false;
+                    }
                     this.debounceGetTacking();
                     this.resetManualPanel();
                     this.loadingCreateTrack = false;
@@ -816,6 +925,15 @@ export default {
             return axios.patch(`/api/tracking/tracker/${id}`, data)
                 .then(({ data }) => {
                     if (!data.success) {
+                        if (data.error) {
+                            this.debounceGetTacking();
+                            this.resetManualPanel();
+                            this.loadingUpdateTrack = false;
+                            const error = Object.keys(data.error)[0];
+                            this.snackbarMessage = data.error[error].pop();
+                            this.actionColor = 'error'
+                            this.snackbar = true;
+                        }
                         return false;
                     }
                     this.debounceGetTacking();
@@ -838,6 +956,15 @@ export default {
                     this.debounceGetTacking();
                     return data;
                 });
+        },
+        __getTags() {
+            return axios.get('/api/tags')
+                .then(({ data }) => {
+                    if (data.success) {
+                        this.tags = data.data;
+                    }
+                })
+                .catch(e => (this.__getTags()));
         },
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
@@ -1016,6 +1143,7 @@ export default {
             if (['date_from', 'date_to'].indexOf(fieldName)) {
                 // const {date_from, date_to} = this.tracking[foundIndex];
                 // this.tracking[foundIndex].passed = this.helperCalculatePassedTime(date_from, date_to);
+                // item[fieldName] = moment.tz(newValue, this.tz.name).utc();
                 item.passed = this.helperCalculatePassedTime(item.date_from, item.date_to);
             }
             if (newValue) {
@@ -1032,6 +1160,41 @@ export default {
         close () {
             //TODO
         },
+        filterTags (item, queryText, itemText) {
+            const hasValue = val => val != null ? val : ''
+
+            const text = hasValue(itemText)
+            const query = hasValue(queryText)
+
+            return text.toString().toLowerCase() === query.toString().toLowerCase()
+        },
+        getTagIds (items) {
+            return items.map(i => i.id);
+        },
+        onUpdate($event) {
+            $event.map(item => {
+                if (typeof item === 'string') {
+                    axios.post('/api/tags', {name: item})
+                        .then(({ data }) => {
+                            if (data.success) {
+                                this.__getTags()
+                                    .then(tags => {
+                                        this.tracking = this.tracking.map(track => {
+                                            track.tags = track.tags.map(tag => {
+                                                if (typeof tag === 'string' && tag === data.data.name) {
+                                                    return data.data;
+                                                }
+                                                return tag;
+                                            });
+                                            return track;
+                                        });
+                                    })
+                            }
+                            this.searchTag = '';
+                        });
+                }
+            });
+        }
     },
     computed: {
         timeAdd () {

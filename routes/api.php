@@ -193,6 +193,8 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::post('/tracker/{tracking}/duplicate', 'TrackingController@duplicate');
                 Route::delete('/tracker/{tracking}', 'TrackingController@delete');
         });
+        Route::get('/tags', 'API\TagController@get');
+        Route::post('/tags', 'API\TagController@create');
 
     });
 

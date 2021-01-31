@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\Client;
 use App\Product;
+use App\Tag;
 use App\TrackingProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
