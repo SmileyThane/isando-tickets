@@ -20,10 +20,10 @@
                         <v-toolbar-title>{{this.$store.state.lang.lang_map.main.profile}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="cancelUpdateUser">
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="canceluserData">
                             {{this.$store.state.lang.lang_map.main.cancel}}
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="userData">
                             {{this.$store.state.lang.lang_map.main.update}}
                         </v-btn>
                     </v-toolbar>
@@ -288,6 +288,106 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
+
+                <v-card class="elevation-6">
+                    <v-toolbar
+                        dense
+                        :color="themeColor"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>{{langMap.profile.notifications_settings}}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="canceluserData">
+                            {{this.$store.state.lang.lang_map.main.cancel}}
+                        </v-btn>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateNotificationsSettings">
+                            {{this.$store.state.lang.lang_map.main.update}}
+                        </v-btn>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col cols="6">
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="101"
+                                        :label="langMap.profile.new_assigned_to_me"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="201"
+                                        :label="langMap.profile.new_assigned_to_team"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="301"
+                                        :label="langMap.profile.new_assigned_to_company"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="103"
+                                        :label="langMap.profile.client_response_assigned_to_me"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+                                </v-col>
+                                <v-col cols="6">
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="102"
+                                        :label="langMap.profile.update_assigned_to_me"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="202"
+                                        :label="langMap.profile.update_assigned_to_team"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="302"
+                                        :label="langMap.profile.update_assigned_to_company"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+                                </v-col>
+
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+
             </v-col>
             <v-col class="col-md-6">
                 <v-card class="elevation-6">
@@ -640,10 +740,10 @@
                         <v-toolbar-title>{{langMap.profile.user_theme_color}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="cancelUpdateUserSettings">
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="canceluserDataSettings">
                             {{this.$store.state.lang.lang_map.main.cancel}}
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUserSettings">
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="userDataSettings">
                             {{this.langMap.main.update}}
                         </v-btn>
                     </v-toolbar>
@@ -967,8 +1067,10 @@
                     addresses: [],
                     emails: [],
                     language_id: '',
-                    timezone_id: ''
+                    timezone_id: '',
+                    notification_statuses: [],
                 },
+                notificationStatuses: [],
                 phoneForm: {
                     entity_id: '',
                     entity_type: 'App\\User',
@@ -1064,7 +1166,18 @@
                 axios.get('/api/user').then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.userData = response.data
+                        this.userData = response.data;
+                        if (this.userData.notification_statuses.length) {
+                            let that = this;
+                            this.userData.notification_statuses.forEach(function (item) {
+                                if (item.status !== 0) {
+                                    that.notificationStatuses.push(item.status);
+                                }
+                            });
+                        } else {
+                            this.notificationStatuses = [101, 102, 103, 201, 202, 301, 302];
+                        }
+
                         // console.log(this.userData);
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
@@ -1109,7 +1222,7 @@
                     }
                 });
             },
-            updateUser(e) {
+            userData(e) {
                 e.preventDefault()
                 this.snackbar = false;
                 axios.post('/api/user', this.userData).then(response => {
@@ -1129,9 +1242,32 @@
                     }
                 });
             },
-            cancelUpdateUser() {
+            canceluserData() {
                 this.enableToEdit = false;
                 this.getUser();
+            },
+            updateNotificationsSettings() {
+                this.enableToEdit = false;
+
+                if (this.notificationStatuses.length === 0) {
+                    this.notificationStatuses = [0];
+                }
+                axios.post('/api/user/notifications', {
+                    user_id: this.userData.id,
+                    notification_statuses: this.notificationStatuses
+                }).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.profile.notifications_settings_updated;
+                        this.actionColor = 'success';
+                        this.snackbar = true;
+                    } else {
+                        this.getUser();
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.errorType = 'error';
+                        this.snackbar = true;
+                    }
+                });
             },
             getPhoneTypes() {
                 axios.get(`/api/phone_types`).then(response => {
@@ -1311,7 +1447,7 @@
                     return true;
                 });
             },
-            updateUserSettings() {
+            userDataSettings() {
                 this.snackbar = false;
 
                 axios.post('/api/user/settings', {theme_color: this.themeColorNew}).then(response => {
@@ -1333,7 +1469,7 @@
                     return true;
                 });
             },
-            cancelUpdateUserSettings() {
+            canceluserDataSettings() {
                 this.enableToEdit = false;
                 this.getUser();
                 this.getCompanySettings();

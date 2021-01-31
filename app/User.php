@@ -148,4 +148,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Tracking::class, 'user_id', 'id');
     }
+
+    public function notificationStatuses(): hasMany
+    {
+        return $this->hasMany(UserNotificationStatus::class,'user_id', 'id');
+    }
 }

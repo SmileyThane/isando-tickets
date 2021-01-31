@@ -5,11 +5,13 @@ namespace App\Repository;
 
 
 use App\Company;
+use App\CompanyUserNotification;
 use App\Email;
 use App\EmailType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
 use App\Notifications\ResetPasswordEmail;
+use App\UserNotificationStatus;
 use App\Role;
 use App\Settings;
 use App\User;
@@ -57,7 +59,7 @@ class UserRepository
 
     public function find($id, $with = [])
     {
-        return User::where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type', 'emailSignatures'], $with))->first();
+        return  User::where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type', 'emailSignatures', 'notificationStatuses'], $with))->first();
     }
 
     public function create(Request $request)
@@ -208,6 +210,20 @@ class UserRepository
             //hack for broken notification system
             return false;
         }
+        return true;
+    }
+
+    public function setNotificationStatuses($id, $notificationStatuses)
+    {
+        UserNotificationStatus::where('user_id', $id)->whereNotIn('status', $notificationStatuses)->delete();
+
+        foreach ($notificationStatuses as $status) {
+            UserNotificationStatus::firstOrCreate([
+                'user_id' => $id,
+                'status' => $status
+            ]);
+        }
+
         return true;
     }
 }
