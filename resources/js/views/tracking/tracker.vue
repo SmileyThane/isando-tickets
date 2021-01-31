@@ -267,16 +267,100 @@
                                         </v-menu>
                                     </template>
 
-                                    <v-btn
-                                        icon
-                                        x-small
-                                        fab
-                                        :color="themeColor"
+                                    <v-menu
+                                        :close-on-content-click="false"
+                                        :nudge-width="200"
+                                        offset-x
                                     >
-                                        <v-icon center>
-                                            mdi-tag-outline
-                                        </v-icon>
-                                    </v-btn>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                                :icon="!manualPanel.tags.length"
+                                                x-small
+                                                fab
+                                                :color="themeColor"
+                                                v-bind="attrs"
+                                                v-on="on"
+                                            >
+                                                <v-icon
+                                                    v-if="manualPanel.tags.length"
+                                                    style="color: white"
+                                                >mdi-tag</v-icon>
+                                                <v-icon v-else center>
+                                                    mdi-tag-outline
+                                                </v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <v-card
+                                            style="max-width: 400px"
+                                        >
+                                            <template>
+                                                <v-combobox
+                                                    v-model="manualPanel.tags"
+                                                    :hide-no-data="!searchTag"
+                                                    :items="tags"
+                                                    :search-input.sync="searchTag"
+                                                    hide-selected
+                                                    return-object
+                                                    item-text="name"
+                                                    item-id="name"
+                                                    multiple
+                                                    small-chips
+                                                    solo
+                                                >
+                                                    <template v-slot:no-data>
+                                                        <v-list-item>
+                                                            <span class="subheading">Create&nbsp;</span>
+                                                            <v-chip
+                                                                :color="themeColor"
+                                                                label
+                                                                small
+                                                                outlined
+                                                            >
+                                                                {{ searchTag }}
+                                                            </v-chip>
+                                                        </v-list-item>
+                                                    </template>
+                                                    <template v-slot:selection="{ attrs, item, parent, selected }">
+                                                        <v-chip
+                                                            v-if="item.name === Object(item).name"
+                                                            v-bind="attrs"
+                                                            :color="themeColor"
+                                                            :input-value="selected"
+                                                            label
+                                                            small
+                                                            outlined
+                                                        >
+                                                                <span v-if="item.id">
+                                                                    {{ item.name }}
+                                                                    <v-icon
+                                                                        small
+                                                                        @click="parent.selectItem(item)"
+                                                                    >
+                                                                        mdi-close-circle-outline
+                                                                    </v-icon>
+                                                                </span>
+                                                            <v-progress-circular
+                                                                v-if="!item.id"
+                                                                indeterminate
+                                                                :size="20"
+                                                                :color="themeColor"
+                                                            ></v-progress-circular>
+                                                        </v-chip>
+                                                    </template>
+                                                    <template v-slot:item="{ parent, item, on, attrs }">
+                                                        <v-chip
+                                                            :color="themeColor"
+                                                            label
+                                                            small
+                                                            style="color: white"
+                                                        >
+                                                            {{ item.name }}
+                                                        </v-chip>
+                                                    </template>
+                                                </v-combobox>
+                                            </template>
+                                        </v-card>
+                                    </v-menu>
                                     <v-btn
                                         :icon="!manualPanel.billable"
                                         x-small
