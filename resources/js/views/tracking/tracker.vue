@@ -13,11 +13,11 @@
         <template>
             <v-card flat>
                 <v-toolbar>
-                    <v-row class="child-flex">
-                        <v-col cols="11" md="11" sm="10" v-if="mode">
+                    <v-row>
+                        <v-col cols="11" lg="11" md="10" sm="10" v-if="mode">
 <!--                            Timer mode-->
                             <v-row>
-                                <v-col cols="12" md="4" sm="8">
+                                <v-col cols="4" lg="4" md="4">
                                     <v-text-field
                                         outlined
                                         dense
@@ -27,7 +27,7 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-spacer></v-spacer>
-                                <v-col cols="12" md="2" sm="4" class="text-right">
+                                <v-col cols="2" lg="3" md="3" class="text-right">
                                     <template>
                                         <v-menu
                                             ref="menuProject"
@@ -183,7 +183,7 @@
                                         </v-icon>
                                     </v-btn>
                                 </v-col>
-                                <v-col cols="12" md="1">
+                                <v-col cols="1" lg="2" md="2">
                                     <v-text-field
                                         v-model="timerPanel.passedSeconds"
                                         placeholder="00:00:00"
@@ -191,7 +191,7 @@
                                         hide-details="auto"
                                     ></v-text-field>
                                 </v-col>
-                                <v-col cols="12" md="1">
+                                <v-col cols="1" lg="1" md="1">
                                     <v-btn
                                         tile
                                         small
@@ -206,10 +206,10 @@
                             </v-row>
                         </v-col>
 
-                        <v-col cols="11" md="11" sm="10" v-if="!mode">
+                        <v-col cols="11" lg="11" md="10" sm="10" v-if="!mode">
 <!--                            Manual mode-->
                             <v-row>
-                                <v-col cols="12" md="4" sm="8">
+                                <v-col cols="4" lg="3" md="3" sm="8">
                                     <v-text-field
                                         outlined
                                         dense
@@ -219,7 +219,7 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-spacer></v-spacer>
-                                <v-col cols="12" md="2" sm="4" class="text-right">
+                                <v-col cols="2" lg="3" md="3" sm="4" class="text-right">
                                     <template>
                                         <v-menu
                                             ref="menuProject"
@@ -373,7 +373,7 @@
                                         </v-icon>
                                     </v-btn>
                                 </v-col>
-                                <v-col cols="12" md="1">
+                                <v-col cols="1" lg="1" md="1">
                                     <template>
                                         <v-menu
                                             ref="menuFrom"
@@ -409,7 +409,7 @@
                                         </v-menu>
                                     </template>
                                 </v-col>
-                                <v-col cols="12" md="1">
+                                <v-col cols="1" lg="1" md="1">
                                     <template>
                                         <v-menu
                                             ref="menuTo"
@@ -445,7 +445,7 @@
                                         </v-menu>
                                     </template>
                                 </v-col>
-                                <v-col cols="12" md="1">
+                                <v-col cols="2" lg="2" md="2">
                                     <template>
                                         <v-menu
                                             v-model="createDatePicker"
@@ -478,7 +478,7 @@
                                         </v-menu>
                                     </template>
                                 </v-col>
-                                <v-col cols="12" md="1">
+                                <v-col cols="1" lg="1" md="1">
                                     <v-text-field
                                         v-model="timeAdd"
                                         placeholder="00:00:00"
@@ -487,7 +487,7 @@
                                         hide-details="auto"
                                     ></v-text-field>
                                 </v-col>
-                                <v-col cols="12" md="1">
+                                <v-col cols="1" lg="1" md="1">
                                     <v-btn
                                         small
                                         tile
@@ -502,7 +502,7 @@
                                 </v-col>
                             </v-row>
                         </v-col>
-                        <v-col cols="1" md="1" sm="2" class="pt-6">
+                        <v-col cols="1" lg="1" md="2" sm="2" class="pt-6">
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
