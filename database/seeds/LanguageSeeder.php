@@ -466,7 +466,16 @@ class LanguageSeeder extends Seeder
     "update_email_signature": "Update Email signature",
     "email_signature_created": "Email signature created",
     "email_signature_deleted": "Email signature deleted",
-    "email_signature_updated": "Email signature updated"
+    "email_signature_updated": "Email signature updated",
+     "notifications_settings": "Notifications settings",
+     "notifications_settings_updated": "Notifications settings updated",
+     "new_assigned_to_me": "New tickets assigned to me",
+     "update_assigned_to_me": "Updates in tickets assigned to me",
+     "new_assigned_to_team": "New tickets assigned to to any person in my team",
+     "update_assigned_to_team": "Updates in tickets assigned to any person in my team",
+     "new_assigned_to_company": "New tickets assigned to any person in my company",
+     "update_assigned_to_company": "Updates in tickets assigned to any person in my company",
+     "client_response_assigned_to_me": "Client responses in tickets assigned to me"
   },
   "notification": {
     "template": "Template",
@@ -508,21 +517,6 @@ class LanguageSeeder extends Seeder
     "history": "History",
     "sender": "Sender",
     "sent_at": "Sent at"
-  },
-  "notifications_settings": {
-     "status_all": "User will receive all tickets notifications",
-     "status_some": "User will receive some tickets notifications",
-     "status_none": "User will not receive any tickets notifications",
-     "update_notifications_settings": "Update notifications settings",
-     "updated": "Notifications settings updated",
-     "new_assigned_to_me": "New tickets assigned to me",
-     "update_assigned_to_me": "Updates in tickets assigned to me",
-     "new_assigned_to_team": "New tickets assigned to to any person in my team",
-     "update_assigned_to_team": "Updates in tickets assigned to any person in my team",
-     "new_assigned_to_company": "New tickets assigned to any person in my company",
-     "update_assigned_to_company": "Updates in tickets assigned to any person in my company",
-     "client_response_assigned_to_me": "Client responses in tickets assigned to me",
-     "all": "All notifications (force)"
   },
   "exceptions": {
 
@@ -974,7 +968,16 @@ class LanguageSeeder extends Seeder
     "update_email_signature": "E-Mail-Signatur aktualisieren",
     "email_signature_created": "E-Mail-Signatur erstellt",
     "email_signature_deleted": "E-Mail-Signatur gelöscht",
-    "email_signature_updated": "E-Mail-Signatur aktualisiert"
+    "email_signature_updated": "E-Mail-Signatur aktualisiert",
+     "notifications_settings": "Benachrichtigungseinstellungen",
+     "notifications_settings_updated": "Benachrichtigungseinstellungen aktualisiert",
+     "new_assigned_to_me": "Mir wurden neue Tickets zugewiesen",
+     "update_assigned_to_me": "Aktualisierungen der mir zugewiesenen Tickets",
+     "new_assigned_to_team": "Neue Tickets, die einer Person in meinem Team zugewiesen wurden",
+     "update_assigned_to_team": "Aktualisierungen von Tickets, die einer Person in meinem Team zugewiesen sind",
+     "new_assigned_to_company": "Neue Tickets, die einer Person in meiner Firma zugewiesen wurden",
+     "update_assigned_to_company": "Aktualisierungen von Tickets, die einer Person in meinem Unternehmen zugewiesen sind",
+     "client_response_assigned_to_me": "Kundenantworten in mir zugewiesenen Tickets"
   },
   "notification": {
     "template": "Vorlage",
@@ -1016,21 +1019,6 @@ class LanguageSeeder extends Seeder
     "history": "Geschichte",
     "sender": "Absender",
     "sent_at": "Gesendet an"
-  },
-  "notifications_settings": {
-     "status_all": "Der Benutzer erhält alle Ticketbenachrichtigungen",
-     "status_some": "Der Benutzer erhält einige Ticketbenachrichtigungen",
-     "status_none": "Der Benutzer erhält keine Ticketbenachrichtigungen",
-     "update_notifications_settings": "Benachrichtigungseinstellungen aktualisieren",
-     "updated": "Benachrichtigungseinstellungen aktualisiert",
-     "new_assigned_to_me": "Mir wurden neue Tickets zugewiesen",
-     "update_assigned_to_me": "Aktualisierungen der mir zugewiesenen Tickets",
-     "new_assigned_to_team": "Neue Tickets, die einer Person in meinem Team zugewiesen wurden",
-     "update_assigned_to_team": "Aktualisierungen von Tickets, die einer Person in meinem Team zugewiesen sind",
-     "new_assigned_to_company": "Neue Tickets, die einer Person in meiner Firma zugewiesen wurden",
-     "update_assigned_to_company": "Aktualisierungen von Tickets, die einer Person in meinem Unternehmen zugewiesen sind",
-     "client_response_assigned_to_me": "Kundenantworten in mir zugewiesenen Tickets",
-     "all": "Alle Benachrichtigungen (Kraft)"
   },
   "exceptions": {
 
