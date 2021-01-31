@@ -85,12 +85,12 @@ class TrackingRepository
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
+        $tracking->save();
         if ($request->has('tags')) {
             foreach ($request->tags as $tag) {
                 $tracking->Tags()->attach($tag['id']);
             }
         }
-        $tracking->save();
         return $tracking;
     }
 
