@@ -189,6 +189,7 @@
                                         placeholder="00:00:00"
                                         dense
                                         hide-details="auto"
+                                        readonly
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="1" lg="1" md="1">
