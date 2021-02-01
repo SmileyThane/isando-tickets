@@ -17,7 +17,7 @@ class CreateCompanyUserNotificationsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('company_id')->constrained('companies');
-            $table->unsignedInteger('ticket_notification_type_id')->default(\App\TicketNotificationType::ALL);
+            $table->unsignedInteger('ticket_notification_type_id')->default(\App\UserNotificationStatus::ALL);
             $table->timestamps();
         });
     }
