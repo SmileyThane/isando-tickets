@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('user/roles/id', 'API\UserController@authorizedRoleIds');
         Route::get('user/settings', 'API\UserController@getSettings');
         Route::post('user/settings', 'API\UserController@updateSettings');
+        Route::post('user/notifications', 'API\UserController@setNotifications');
 
         //company management
         Route::get('company/{id?}', 'API\CompanyController@find');
@@ -56,8 +57,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('main_company_settings', 'API\CompanyController@updateSettings');
         Route::post('company/{id}/settings', 'API\CompanyController@updateSettings');
         Route::post('company/{id}/logo', 'API\CompanyController@updateLogo');
-        Route::get('main_company_settings/notify', 'API\CompanyController@getUserNotifications');
-        Route::post('main_company_settings/notify', 'API\CompanyController@setUserNotifications');
+
 
         //employee management
         Route::get('employee', 'API\CompanyController@getIndividuals');
