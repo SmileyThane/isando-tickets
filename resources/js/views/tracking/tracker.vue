@@ -115,6 +115,7 @@
                                                     multiple
                                                     small-chips
                                                     solo
+                                                    @input="onUpdateTimerPanel"
                                                 >
                                                     <template v-slot:no-data>
                                                         <v-list-item>
@@ -307,6 +308,7 @@
                                                     multiple
                                                     small-chips
                                                     solo
+                                                    @input="onUpdateManualPanel"
                                                 >
                                                     <template v-slot:no-data>
                                                         <v-list-item>
@@ -1357,6 +1359,48 @@ export default {
                                                 return tag;
                                             });
                                             return track;
+                                        });
+                                    })
+                            }
+                            this.searchTag = '';
+                        });
+                }
+            });
+        },
+        onUpdateTimerPanel($event) {
+            $event.map(item => {
+                if (typeof item === 'string') {
+                    axios.post('/api/tags', {name: item})
+                        .then(({ data }) => {
+                            if (data.success) {
+                                this.__getTags()
+                                    .then(tags => {
+                                        this.timerPanel.tags = this.timerPanel.tags.map(tag => {
+                                            if (typeof tag === 'string' && tag === data.data.name) {
+                                                return data.data;
+                                            }
+                                            return tag;
+                                        });
+                                    })
+                            }
+                            this.searchTag = '';
+                        });
+                }
+            });
+        },
+        onUpdateManualPanel($event) {
+            $event.map(item => {
+                if (typeof item === 'string') {
+                    axios.post('/api/tags', {name: item})
+                        .then(({ data }) => {
+                            if (data.success) {
+                                this.__getTags()
+                                    .then(tags => {
+                                        this.manualPanel.tags = this.manualPanel.tags.map(tag => {
+                                            if (typeof tag === 'string' && tag === data.data.name) {
+                                                return data.data;
+                                            }
+                                            return tag;
                                         });
                                     })
                             }
