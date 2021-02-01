@@ -29,51 +29,9 @@
                                 <v-spacer></v-spacer>
                                 <v-col cols="2" lg="3" md="3" class="text-right">
                                     <template>
-                                        <v-menu
-                                            ref="menuProject"
-                                            v-model="menuProject"
-                                            :close-on-content-click="false"
-                                            :nudge-width="200"
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-btn
-                                                    tile
-                                                    small
-                                                    text
-                                                    :color="themeColor"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                >
-                                                    <v-icon center v-if="!timerPanel.project">
-                                                        mdi-plus-circle-outline
-                                                    </v-icon>
-                                                    <span v-if="!timerPanel.project">
-                                    &nbsp;&nbsp;Project
-                                </span>
-                                                    <span v-if="timerPanel.project">
-                                    {{timerPanel.project.name}}
-                                </span>
-                                                </v-btn>
-                                            </template>
-                                            <v-card>
-                                                <v-autocomplete
-                                                    v-model="timerPanel.project"
-                                                    :items="getFilteredProjects"
-                                                    :loading="isLoadingSearchProject"
-                                                    :search-input.sync="search"
-                                                    color="white"
-                                                    hide-no-data
-                                                    hide-selected
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    label="Projects"
-                                                    placeholder="Start typing to Search"
-                                                    prepend-icon="mdi-database-search"
-                                                    return-object
-                                                    autofocus
-                                                ></v-autocomplete>
-                                            </v-card>
-                                        </v-menu>
+                                        <ProjectBtn
+                                            :color="themeColor"
+                                        ></ProjectBtn>
                                     </template>
 
                                     <v-menu
@@ -241,11 +199,11 @@
                                                         mdi-plus-circle-outline
                                                     </v-icon>
                                                     <span v-if="!manualPanel.project">
-                                    &nbsp;&nbsp;Project
-                                </span>
+                                                        &nbsp;&nbsp;Project
+                                                    </span>
                                                     <span v-if="manualPanel.project">
-                                    {{manualPanel.project.name}}
-                                </span>
+                                                        {{manualPanel.project.name}}
+                                                    </span>
                                                 </v-btn>
                                             </template>
                                             <v-card>
@@ -910,8 +868,14 @@
 import EventBus from "../../components/EventBus";
 import moment from "moment-timezone";
 import _ from "lodash";
+import ProjectBtn from "./components/project-btn";
+import TagBtn from "./components/tag-btn";
 
 export default {
+    components: {
+        ProjectBtn,
+        TagBtn
+    },
     data() {
         return {
             tz: {
@@ -1436,7 +1400,7 @@ export default {
                     this.projects = data.data.data;
                 })
                 .finally(() => (this.isLoadingSearchProject = false));
-1        },
+        },
         globalTimer: function () {
             // Update DataTable passed field
             this.tracking.filter(i => {

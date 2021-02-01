@@ -14,15 +14,19 @@ use Illuminate\Support\Facades\Validator;
 class TrackingProjectRepository
 {
 
+    public function genHexColor() {
+        return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+    }
+
     public function validate($request, $new = true)
     {
         $params = [
             'name' => 'required',
-            'productId' => 'required_without:product.id|exists:App\Product,id',
-            'product.id' => 'required_without:productId|exists:App\Product,id',
-            'clientId' => 'required_without:client.id|exists:App\Client,id',
-            'client.id' => 'required_without:clientId|exists:App\Client,id',
-            'color' => 'required|string',
+            'productId' => 'nullable|exists:App\Product,id',
+            'product.id' => 'nullable|exists:App\Product,id',
+            'clientId' => 'nullable|exists:App\Client,id',
+            'client.id' => 'nullable|exists:App\Client,id',
+            'color' => 'nullable|string',
             'billableByDefault' => 'boolean',
             'rate' => 'nullable|numeric',
             'rate_from' => 'nullable|numeric',
@@ -37,18 +41,17 @@ class TrackingProjectRepository
 
     public function all(Request $request)
     {
-        $productIds = Auth::user()
-            ->employee
-            ->companyData
-            ->products
-            ->pluck('product_id');
-        $trackingProjects = TrackingProject::with('Product', 'Client')
-            ->whereIn('product_id', $productIds);
+//        $productIds = Auth::user()
+//            ->employee
+//            ->companyData
+//            ->products
+//            ->pluck('product_id');
+        $trackingProjects = TrackingProject::with('Product', 'Client');
+//            ->whereIn('product_id', $productIds);
         if ($request->has('search')) {
             $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
         }
         return $trackingProjects
-//            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
             ->paginate($request->per_page ?? $trackingProjects->count());
     }
 
@@ -64,7 +67,7 @@ class TrackingProjectRepository
         $trackingProject->name = $request->name;
         $trackingProject->product_id = $request->product['id'] ?? $request->productId;
         $trackingProject->client_id = $request->client['id'] ?? $request->clientId;
-        $trackingProject->color = $request->color;
+        $trackingProject->color = $request->color ?? $this->genHexColor();
         if ($request->has('billableByDefault')) {
             $trackingProject->billable_by_default = $request->billable_by_default;
         }
