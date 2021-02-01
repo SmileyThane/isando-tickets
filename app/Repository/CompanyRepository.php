@@ -238,6 +238,10 @@ class CompanyRepository
             $data['override_user_theme'] = $request->override_user_theme;
         }
 
+        if ($request->has('employee_number_format')) {
+            $data['employee_number_format'] = $request->employee_number_format;
+        }
+
         $settings->data = $data;
         $settings->save();
 
