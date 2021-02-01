@@ -34,11 +34,13 @@
                     :items="projects"
                     :search-input.sync="search"
                     hide-selected
+                    label="Choose project"
                     return-object
                     item-text="name"
                     item-id="id"
                     solo
                     autofocus
+                    clearable
                     @input="onUpdate"
                 >
                     <template v-slot:no-data>
@@ -72,22 +74,33 @@
 import _ from 'lodash';
 
 export default {
-    props: ['color'],
+    props: {
+        color: {
+            type: String,
+            default: '#ffffff'
+        },
+        onChoosable: {
+            type: Function,
+            required: true
+        },
+        value: {
+            required: true
+        }
+    },
     data: () => {
         return {
             search: '',
             isLoadingProject: false,
             nameLimit: 20,
             projects: [],
-            isCreatingProject: false,
-            project: null
+            isCreatingProject: false
         };
     },
     created() {
         this.debounceGetProjects = _.debounce(this.__getProjects, 500);
     },
     mounted() {
-        this.debounceGetProjects();
+        this.debounceGetProjects()
     },
     methods: {
         __getProjects() {
@@ -119,14 +132,23 @@ export default {
                         this.isCreatingProject = false;
                         this.search = '';
                     });
+            } else {
+                this.project = item;
             }
         }
     },
-    computed: {},
-    watch: {
-        project: function () {
-            console.log(this.project);
+    computed: {
+        project: {
+            get() {
+                return this.value;
+            },
+            set(val) {
+                this.$emit('input', val);
+            }
         }
+    },
+    watch: {
+
     }
 };
 </script>

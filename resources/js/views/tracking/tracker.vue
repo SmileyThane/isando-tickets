@@ -30,105 +30,21 @@
                                 <v-col cols="2" lg="3" md="3" class="text-right">
                                     <template>
                                         <ProjectBtn
+                                            key="timerPanelProjectKey"
                                             :color="themeColor"
+                                            :onChoosable="handlerProjectTimerPanel"
+                                            v-model="timerPanel.project"
                                         ></ProjectBtn>
                                     </template>
 
-                                    <v-menu
-                                        :close-on-content-click="false"
-                                        :nudge-width="200"
-                                        offset-x
+                                    <TagBtn
+                                        key="timerPanelTagKey"
+                                        :color="themeColor"
+                                        :onChoosable="handlerTagsTimerPanel"
+                                        v-model="timerPanel.tags"
+                                        :items="tags"
                                     >
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn
-                                                :icon="!timerPanel.tags.length"
-                                                x-small
-                                                fab
-                                                :color="themeColor"
-                                                v-bind="attrs"
-                                                v-on="on"
-                                            >
-                                                <v-icon
-                                                    v-if="timerPanel.tags.length"
-                                                    style="color: white"
-                                                >mdi-tag</v-icon>
-                                                <v-icon v-else center>
-                                                    mdi-tag-outline
-                                                </v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <v-card
-                                            style="max-width: 400px"
-                                        >
-                                            <template>
-                                                <v-combobox
-                                                    v-model="timerPanel.tags"
-                                                    :hide-no-data="!searchTag"
-                                                    :items="tags"
-                                                    :search-input.sync="searchTag"
-                                                    hide-selected
-                                                    return-object
-                                                    item-text="name"
-                                                    item-id="name"
-                                                    multiple
-                                                    small-chips
-                                                    solo
-                                                    @input="onUpdateTimerPanel"
-                                                >
-                                                    <template v-slot:no-data>
-                                                        <v-list-item>
-                                                            <span class="subheading">Create&nbsp;</span>
-                                                            <v-chip
-                                                                :color="themeColor"
-                                                                label
-                                                                small
-                                                                outlined
-                                                            >
-                                                                {{ searchTag }}
-                                                            </v-chip>
-                                                        </v-list-item>
-                                                    </template>
-                                                    <template v-slot:selection="{ attrs, item, parent, selected }">
-                                                        <v-chip
-                                                            v-if="item.name === Object(item).name"
-                                                            v-bind="attrs"
-                                                            :color="themeColor"
-                                                            :input-value="selected"
-                                                            label
-                                                            small
-                                                            outlined
-                                                        >
-                                                                <span v-if="item.id">
-                                                                    {{ item.name }}
-                                                                    <v-icon
-                                                                        small
-                                                                        @click="parent.selectItem(item)"
-                                                                    >
-                                                                        mdi-close-circle-outline
-                                                                    </v-icon>
-                                                                </span>
-                                                            <v-progress-circular
-                                                                v-if="!item.id"
-                                                                indeterminate
-                                                                :size="20"
-                                                                :color="themeColor"
-                                                            ></v-progress-circular>
-                                                        </v-chip>
-                                                    </template>
-                                                    <template v-slot:item="{ parent, item, on, attrs }">
-                                                        <v-chip
-                                                            :color="themeColor"
-                                                            label
-                                                            small
-                                                            style="color: white"
-                                                        >
-                                                            {{ item.name }}
-                                                        </v-chip>
-                                                    </template>
-                                                </v-combobox>
-                                            </template>
-                                        </v-card>
-                                    </v-menu>
+                                    </TagBtn>
 
                                     <v-btn
                                         fab
@@ -180,148 +96,22 @@
                                 </v-col>
                                 <v-spacer></v-spacer>
                                 <v-col cols="2" lg="3" md="3" sm="4" class="text-right">
-                                    <template>
-                                        <v-menu
-                                            ref="menuProject"
-                                            v-model="menuProject"
-                                            :close-on-content-click="false"
-                                            :nudge-width="200"
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-btn
-                                                    tile
-                                                    small
-                                                    text
-                                                    :color="themeColor"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                >
-                                                    <v-icon center v-if="!manualPanel.project">
-                                                        mdi-plus-circle-outline
-                                                    </v-icon>
-                                                    <span v-if="!manualPanel.project">
-                                                        &nbsp;&nbsp;Project
-                                                    </span>
-                                                    <span v-if="manualPanel.project">
-                                                        {{manualPanel.project.name}}
-                                                    </span>
-                                                </v-btn>
-                                            </template>
-                                            <v-card>
-                                                <v-autocomplete
-                                                    v-model="manualPanel.project"
-                                                    :items="getFilteredProjects"
-                                                    :loading="isLoadingSearchProject"
-                                                    :search-input.sync="search"
-                                                    color="white"
-                                                    hide-no-data
-                                                    hide-selected
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    label="Projects"
-                                                    placeholder="Start typing to Search"
-                                                    prepend-icon="mdi-database-search"
-                                                    return-object
-                                                ></v-autocomplete>
-                                            </v-card>
-                                        </v-menu>
-                                    </template>
+                                    <ProjectBtn
+                                        key="manualPanelProjectKey"
+                                        :color="themeColor"
+                                        :onChoosable="handlerProjectManualPanel"
+                                        v-model="manualPanel.project"
+                                    ></ProjectBtn>
 
-                                    <v-menu
-                                        :close-on-content-click="false"
-                                        :nudge-width="200"
-                                        offset-x
+                                    <TagBtn
+                                        key="manualPanelTagKey"
+                                        :color="themeColor"
+                                        :onChoosable="handlerTagsManualPanel"
+                                        v-model="manualPanel.tags"
+                                        :items="tags"
                                     >
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn
-                                                :icon="!manualPanel.tags.length"
-                                                x-small
-                                                fab
-                                                :color="themeColor"
-                                                v-bind="attrs"
-                                                v-on="on"
-                                            >
-                                                <v-icon
-                                                    v-if="manualPanel.tags.length"
-                                                    style="color: white"
-                                                >mdi-tag</v-icon>
-                                                <v-icon v-else center>
-                                                    mdi-tag-outline
-                                                </v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <v-card
-                                            style="max-width: 400px"
-                                        >
-                                            <template>
-                                                <v-combobox
-                                                    v-model="manualPanel.tags"
-                                                    :hide-no-data="!searchTag"
-                                                    :items="tags"
-                                                    :search-input.sync="searchTag"
-                                                    hide-selected
-                                                    return-object
-                                                    item-text="name"
-                                                    item-id="name"
-                                                    multiple
-                                                    small-chips
-                                                    solo
-                                                    @input="onUpdateManualPanel"
-                                                >
-                                                    <template v-slot:no-data>
-                                                        <v-list-item>
-                                                            <span class="subheading">Create&nbsp;</span>
-                                                            <v-chip
-                                                                :color="themeColor"
-                                                                label
-                                                                small
-                                                                outlined
-                                                            >
-                                                                {{ searchTag }}
-                                                            </v-chip>
-                                                        </v-list-item>
-                                                    </template>
-                                                    <template v-slot:selection="{ attrs, item, parent, selected }">
-                                                        <v-chip
-                                                            v-if="item.name === Object(item).name"
-                                                            v-bind="attrs"
-                                                            :color="themeColor"
-                                                            :input-value="selected"
-                                                            label
-                                                            small
-                                                            outlined
-                                                        >
-                                                                <span v-if="item.id">
-                                                                    {{ item.name }}
-                                                                    <v-icon
-                                                                        small
-                                                                        @click="parent.selectItem(item)"
-                                                                    >
-                                                                        mdi-close-circle-outline
-                                                                    </v-icon>
-                                                                </span>
-                                                            <v-progress-circular
-                                                                v-if="!item.id"
-                                                                indeterminate
-                                                                :size="20"
-                                                                :color="themeColor"
-                                                            ></v-progress-circular>
-                                                        </v-chip>
-                                                    </template>
-                                                    <template v-slot:item="{ parent, item, on, attrs }">
-                                                        <v-chip
-                                                            :color="themeColor"
-                                                            label
-                                                            small
-                                                            style="color: white"
-                                                        >
-                                                            {{ item.name }}
-                                                        </v-chip>
-                                                    </template>
-                                                </v-combobox>
-                                            </template>
-                                        </v-card>
-                                    </v-menu>
+                                    </TagBtn>
+
                                     <v-btn
                                         :icon="!manualPanel.billable"
                                         x-small
@@ -633,97 +423,13 @@
                                         </v-edit-dialog>
                                     </template>
                                     <template v-slot:item.tags="props">
-                                        <v-menu
-                                            :close-on-content-click="false"
-                                            :nudge-width="200"
-                                            offset-x
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-btn
-                                                    icon
-                                                    :color="themeColor"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                >
-                                                    <v-icon
-                                                        v-if="props.item.tags.length"
-                                                    >mdi-tag</v-icon>
-                                                    <v-icon v-else>mdi-tag-outline</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <v-card
-                                                style="max-width: 400px"
-                                            >
-                                                <template>
-                                                    <v-combobox
-                                                        v-model="props.item.tags"
-                                                        :hide-no-data="!searchTag"
-                                                        :items="tags"
-                                                        :search-input.sync="searchTag"
-                                                        hide-selected
-                                                        return-object
-                                                        item-text="name"
-                                                        item-id="name"
-                                                        multiple
-                                                        small-chips
-                                                        solo
-                                                        @input="onUpdate"
-                                                        @blur="save(props.item, 'tags', props.item.tags)"
-                                                    >
-                                                        <template v-slot:no-data>
-                                                            <v-list-item>
-                                                                <span class="subheading">Create&nbsp;</span>
-                                                                <v-chip
-                                                                    :color="themeColor"
-                                                                    label
-                                                                    small
-                                                                    outlined
-                                                                >
-                                                                    {{ searchTag }}
-                                                                </v-chip>
-                                                            </v-list-item>
-                                                        </template>
-                                                        <template v-slot:selection="{ attrs, item, parent, selected }">
-                                                            <v-chip
-                                                                v-if="item.name === Object(item).name"
-                                                                v-bind="attrs"
-                                                                :color="themeColor"
-                                                                :input-value="selected"
-                                                                label
-                                                                small
-                                                                outlined
-                                                            >
-                                                                <span v-if="item.id">
-                                                                    {{ item.name }}
-                                                                    <v-icon
-                                                                        small
-                                                                        @click="parent.selectItem(item)"
-                                                                    >
-                                                                        mdi-close-circle-outline
-                                                                    </v-icon>
-                                                                </span>
-                                                                <v-progress-circular
-                                                                    v-if="!item.id"
-                                                                    indeterminate
-                                                                    :size="20"
-                                                                    :color="themeColor"
-                                                                ></v-progress-circular>
-                                                            </v-chip>
-                                                        </template>
-                                                        <template v-slot:item="{ parent, item, on, attrs }">
-                                                            <v-chip
-                                                                :color="themeColor"
-                                                                label
-                                                                small
-                                                                style="color: white"
-                                                            >
-                                                                {{ item.name }}
-                                                            </v-chip>
-                                                        </template>
-                                                    </v-combobox>
-                                                </template>
-                                            </v-card>
-                                        </v-menu>
+                                        <TagBtn
+                                            :key="props.item.id"
+                                            :color="themeColor"
+                                            v-model="props.item.tags"
+                                            :items="tags"
+                                            @blur="save(props.item, 'tags', props.item.tags)"
+                                        ></TagBtn>
                                     </template>
                                     <template v-slot:item.billable="props">
                                         <v-btn
@@ -989,11 +695,12 @@ export default {
             },
             globalTimer: null,
             tags: [],
-            searchTag: null
+            isLoadingTags: false
         }
     },
     created: function () {
-        this.debounceGetTacking = _.debounce(this.__getTracking, 500);
+        this.debounceGetTacking = _.debounce(this.__getTracking, 1000);
+        this.debounceGetTags = _.debounce(this.__getTags, 1000);
         this.dateRange = [
             moment().subtract(1, 'days').format(this.dateFormat),
             moment().format(this.dateFormat)
@@ -1005,7 +712,7 @@ export default {
     mounted() {
         this.__globalTimer();
         this.debounceGetTacking();
-        this.__getTags();
+        this.debounceGetTags();
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
@@ -1094,13 +801,18 @@ export default {
                 });
         },
         __getTags() {
+            if (this.isLoadingTags || this.tags.length) return;
+            this.isLoadingTags = true;
             return axios.get('/api/tags')
                 .then(({ data }) => {
                     if (data.success) {
                         this.tags = data.data;
+                        return data.data;
                     }
+                    this.isLoadingTags = false;
+                    return null;
                 })
-                .catch(e => (this.__getTags()));
+                .catch(e => (this.debounceGetTags()));
         },
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
@@ -1267,6 +979,18 @@ export default {
             }
             return this.date;
         },
+        handlerProjectTimerPanel(data) {
+            this.timerPanel.project = data.project;
+        },
+        handlerProjectManualPanel(data) {
+            this.manualPanel.project = data.project;
+        },
+        handlerTagsTimerPanel(data) {
+            this.timerPanel.tags  = data.tags;
+        },
+        handlerTagsManualPanel(data) {
+            this.manualPanel.tags  = data.tags;
+        },
         filterTracking(date) {
             const self = this;
             return this.tracking.filter(function(item) {
@@ -1295,83 +1019,6 @@ export default {
         },
         close () {
             //TODO
-        },
-        filterTags (item, queryText, itemText) {
-            const hasValue = val => val != null ? val : ''
-
-            const text = hasValue(itemText)
-            const query = hasValue(queryText)
-
-            return text.toString().toLowerCase() === query.toString().toLowerCase()
-        },
-        getTagIds (items) {
-            return items.map(i => i.id);
-        },
-        onUpdate($event) {
-            $event.map(item => {
-                if (typeof item === 'string') {
-                    axios.post('/api/tags', {name: item})
-                        .then(({ data }) => {
-                            if (data.success) {
-                                this.__getTags()
-                                    .then(tags => {
-                                        this.tracking = this.tracking.map(track => {
-                                            track.tags = track.tags.map(tag => {
-                                                if (typeof tag === 'string' && tag === data.data.name) {
-                                                    return data.data;
-                                                }
-                                                return tag;
-                                            });
-                                            return track;
-                                        });
-                                    })
-                            }
-                            this.searchTag = '';
-                        });
-                }
-            });
-        },
-        onUpdateTimerPanel($event) {
-            $event.map(item => {
-                if (typeof item === 'string') {
-                    axios.post('/api/tags', {name: item})
-                        .then(({ data }) => {
-                            if (data.success) {
-                                this.__getTags()
-                                    .then(tags => {
-                                        this.timerPanel.tags = this.timerPanel.tags.map(tag => {
-                                            if (typeof tag === 'string' && tag === data.data.name) {
-                                                return data.data;
-                                            }
-                                            return tag;
-                                        });
-                                    })
-                            }
-                            this.searchTag = '';
-                        });
-                }
-            });
-        },
-        onUpdateManualPanel($event) {
-            $event.map(item => {
-                if (typeof item === 'string') {
-                    axios.post('/api/tags', {name: item})
-                        .then(({ data }) => {
-                            if (data.success) {
-                                this.__getTags()
-                                    .then(tags => {
-                                        this.manualPanel.tags = this.manualPanel.tags.map(tag => {
-                                            if (typeof tag === 'string' && tag === data.data.name) {
-                                                return data.data;
-                                            }
-                                            return tag;
-                                        });
-                                    })
-                            }
-                            this.searchTag = '';
-                        });
-                }
-            });
         }
     },
     computed: {

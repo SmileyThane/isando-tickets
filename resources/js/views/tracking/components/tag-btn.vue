@@ -6,7 +6,7 @@
     >
         <template v-slot:activator="{ on, attrs }">
             <v-btn
-                :icon="!value.length"
+                :icon="!selectedTags.length"
                 x-small
                 fab
                 :color="color"
@@ -14,7 +14,7 @@
                 v-on="on"
             >
                 <v-icon
-                    v-if="value.length"
+                    v-if="selectedTags.length"
                     style="color: white"
                 >mdi-tag</v-icon>
                 <v-icon v-else center>
@@ -27,17 +27,21 @@
         >
             <template>
                 <v-combobox
-                    v-model="value"
+                    v-bind="$attrs"
+                    v-on="$listeners"
+                    v-model="selectedTags"
                     :hide-no-data="!search"
-                    :items="items"
                     :search-input.sync="search"
                     hide-selected
                     return-object
+                    label="Choose tags"
                     item-text="name"
                     item-id="name"
                     multiple
                     small-chips
                     solo
+                    clearable
+                    @input="onUpdate"
                 >
                     <template v-slot:no-data>
                         <v-list-item>
@@ -96,12 +100,86 @@
 </template>
 
 <script>
+
+// import _ from 'lodash';
+
 export default {
-    props: ['value', 'items', 'color'],
+    props: {
+        value: {
+            required: true
+        },
+        color: {
+            type: String,
+            default: '#ffffff'
+        },
+        onChoosable: {
+            type: Function
+        }
+    },
     data: () => {
         return {
-            search: ''
+            search: '',
+            isLoadingTags: false
         };
+    },
+    created() {
+        // this.debounceGetTags = _.debounce(this.__getTags, 2000);
+    },
+    mounted() {
+        // this.debounceGetTags();
+    },
+    methods: {
+        // __getTags() {
+        //     if (this.isLoadingTags || this.tags.length) return;
+        //     this.isLoadingTags = true;
+        //     return axios.get('/api/tags')
+        //         .then(({ data }) => {
+        //             if (data.success) {
+        //                 this.tags = data.data;
+        //                 return data.data;
+        //             }
+        //             this.isLoadingTags = false;
+        //             return null;
+        //         })
+        //         .catch(e => (this.debounceGetTags()));
+        // },
+        __createTag(name) {
+            if (typeof name !== 'string') return;
+            return axios.post('/api/tags', {name})
+                .then(({ data }) => {
+                    if (data.success) {
+                        const createdTag = data.data;
+                        this.debounceGetTags();
+                        this.selectedTags = this.selectedTags.map(tag => {
+                            if (typeof tag === 'string' && tag === createdTag.name) {
+                                return createdTag;
+                            }
+                            return tag;
+                        });
+                        return createdTag;
+                    }
+                    return null;
+                })
+                .catch(e => ( console.log(e) ));
+        },
+        onUpdate($event) {
+            $event.map(item => {
+                if (typeof item === 'string') {
+                    this.__createTag(item);
+                    this.searchTag = '';
+                }
+            });
+        }
+    },
+    computed: {
+        selectedTags: {
+            get() {
+                return this.value;
+            },
+            set(val) {
+                this.$emit('input', val);
+            }
+        }
     }
 };
 </script>
