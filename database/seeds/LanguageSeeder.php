@@ -482,7 +482,9 @@ class LanguageSeeder extends Seeder
      "update_assigned_to_team": "Updates in tickets assigned to any person in my team",
      "new_assigned_to_company": "New tickets assigned to any person in my company",
      "update_assigned_to_company": "Updates in tickets assigned to any person in my company",
-     "client_response_assigned_to_me": "Client responses in tickets assigned to me"
+     "client_response_assigned_to_me": "Client responses in tickets assigned to me",
+     "personal_id": "Personal ID number",
+     "avatar": "Avatar picture"
   },
   "notification": {
     "template": "Template",
@@ -991,7 +993,9 @@ class LanguageSeeder extends Seeder
      "update_assigned_to_team": "Aktualisierungen von Tickets, die einer Person in meinem Team zugewiesen sind",
      "new_assigned_to_company": "Neue Tickets, die einer Person in meiner Firma zugewiesen wurden",
      "update_assigned_to_company": "Aktualisierungen von Tickets, die einer Person in meinem Unternehmen zugewiesen sind",
-     "client_response_assigned_to_me": "Kundenantworten in mir zugewiesenen Tickets"
+     "client_response_assigned_to_me": "Kundenantworten in mir zugewiesenen Tickets",
+     "personal_id": "Persönliche ID-Nummer",
+     "avatar": "Avatar Bild"
   },
   "notification": {
     "template": "Vorlage",

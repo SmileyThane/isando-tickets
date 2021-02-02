@@ -33,105 +33,134 @@
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-text-field
-                                    v-model="userData.title_before_name"
-                                    :color="themeColor"
-                                    :error-messages="errors.title_before_name"
-                                    :label="this.$store.state.lang.lang_map.main.title_before_name"
-                                    :readonly="!enableToEdit"
-                                    class="col-md-6"
-                                    dense
-                                    lazy-validation
-                                    name="title_before_name"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                ></v-text-field>
+                                <v-col class="col-md-5">
+                                    <label>{{ langMap.profile.avatar }}</label>
 
-                                <v-text-field
-                                    v-model="userData.title"
-                                    :color="themeColor"
-                                    :error-messages="errors.title"
-                                    :label="this.$store.state.lang.lang_map.main.title"
-                                    :readonly="!enableToEdit"
-                                    class="col-md-6"
-                                    dense
-                                    lazy-validation
-                                    name="title"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                ></v-text-field>
+                                    <v-img
+                                        :src="avatar"
+                                        contain
+                                        style="z-index: 1; max-height: 20em; min-height: 10em;"
+                                    >
+                                        <v-file-input
+                                            v-model="newAvatar"
+                                            :color="themeColor"
+                                            :disabled="!enableToEdit"
+                                            accept="image/*"
+                                            dense
+                                            prepend-icon="mdi-camera"
+                                            style="z-index: 2; max-width: 1em;"
+                                        />
+                                    </v-img>
+                                </v-col>
+                                <v-col class="col-md-7">
+                                    <v-text-field
+                                        v-model="userData.number"
+                                        :color="themeColor"
+                                        :error-messages="errors.number"
+                                        :label="langMap.profile.personal_id"
+                                        :readonly="!enableToEdit"
+                                        dense
+                                        name="number"
+                                        type="text"
+                                        prepend-icon="mdi-picture-in-picture-top-right-outline"
+                                    />
 
-                                <v-text-field
-                                    v-model="userData.name"
-                                    :color="themeColor"
-                                    :error-messages="errors.name"
-                                    :label="this.$store.state.lang.lang_map.main.first_name"
-                                    :readonly="!enableToEdit"
-                                    class="col-md-6"
-                                    dense
-                                    lazy-validation
-                                    name="name"
-                                    prepend-icon="mdi-book-account-outline"
-                                    required
-                                    type="text"
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="userData.middle_name"
-                                    :color="themeColor"
-                                    :error-messages="errors.middle_name"
-                                    :label="this.$store.state.lang.lang_map.main.middle_name"
-                                    :readonly="!enableToEdit"
-                                    class="col-md-6"
-                                    dense
-                                    lazy-validation
-                                    name="middle_name"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="userData.surname"
-                                    :color="themeColor"
-                                    :error-messages="errors.surname"
-                                    :label="this.$store.state.lang.lang_map.main.last_name"
-                                    :readonly="!enableToEdit"
-                                    class="col-md-6"
-                                    dense
-                                    lazy-validation
-                                    name="surname"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                ></v-text-field>
-                                <v-autocomplete
-                                    v-model="userData.language_id"
-                                    :color="themeColor"
-                                    :item-color="themeColor"
-                                    :items="languages"
-                                    :label="this.$store.state.lang.lang_map.main.language"
-                                    :readonly="!enableToEdit"
-                                    class="col-md-6"
-                                    dense
-                                    item-text="name"
-                                    item-value="id"
-                                    lazy-validation
-                                    name="language"
-                                    prepend-icon="mdi-web"
-                                />
-                                <v-checkbox
-                                    v-model="userData.status"
-                                    :label="this.$store.state.lang.lang_map.individuals.active"
-                                    class="col-md-6"
-                                    color="success"
-                                    hide-details
-                                    @change="updateStatus"
-                                />
-                                <v-checkbox
-                                    v-model="userData.is_active"
-                                    :label="this.$store.state.lang.lang_map.main.give_access"
-                                    class="col-md-6"
-                                    color="success"
-                                    hide-details
-                                    @change="showIsAccessedModal(userData)"
-                                />
+                                    <v-text-field
+                                        v-model="userData.title_before_name"
+                                        :color="themeColor"
+                                        :error-messages="errors.title_before_name"
+                                        :label="langMap.main.title_before_name"
+                                        :readonly="!enableToEdit"
+                                        dense
+                                        lazy-validation
+                                        name="title_before_name"
+                                        prepend-icon="mdi-book-account-outline"
+                                        type="text"
+                                    />
+
+                                    <v-text-field
+                                        v-model="userData.title"
+                                        :color="themeColor"
+                                        :error-messages="errors.title"
+                                        :label="langMap.main.title"
+                                        :readonly="!enableToEdit"
+                                        dense
+                                        lazy-validation
+                                        name="title"
+                                        prepend-icon="mdi-book-account-outline"
+                                        type="text"
+                                    />
+                                    <v-text-field
+                                        v-model="userData.name"
+                                        :color="themeColor"
+                                        :error-messages="errors.name"
+                                        :label="langMap.main.first_name"
+                                        :readonly="!enableToEdit"
+                                        dense
+                                        lazy-validation
+                                        name="name"
+                                        prepend-icon="mdi-book-account-outline"
+                                        required
+                                        type="text"
+                                    />
+                                    <v-text-field
+                                        v-model="userData.middle_name"
+                                        :color="themeColor"
+                                        :error-messages="errors.middle_name"
+                                        :label="langMap.main.middle_name"
+                                        :readonly="!enableToEdit"
+                                        dense
+                                        lazy-validation
+                                        name="middle_name"
+                                        prepend-icon="mdi-book-account-outline"
+                                        type="text"
+                                    />
+                                    <v-text-field
+                                        v-model="userData.surname"
+                                        :color="themeColor"
+                                        :error-messages="errors.surname"
+                                        :label="langMap.main.last_name"
+                                        :readonly="!enableToEdit"
+                                        dense
+                                        lazy-validation
+                                        name="surname"
+                                        prepend-icon="mdi-book-account-outline"
+                                        type="text"
+                                    />
+
+                                    <v-autocomplete
+                                        v-model="userData.language_id"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        :items="languages"
+                                        :label="langMap.main.language"
+                                        :readonly="!enableToEdit"
+                                        dense
+                                        item-text="name"
+                                        item-value="id"
+                                        lazy-validation
+                                        name="language"
+                                        prepend-icon="mdi-web"
+                                    />
+                                </v-col>
+                                <v-col class="col-md-6">
+                                    <v-checkbox
+                                        v-model="userData.status"
+                                        :label="langMap.individuals.active"
+                                        color="success"
+                                        hide-details
+                                        @change="updateStatus"
+                                    />
+                                </v-col>
+                                <v-col class="col-md-6">
+                                    <v-checkbox
+                                        v-model="userData.is_active"
+                                        :label="langMap.main.give_access"
+                                        color="success"
+                                        hide-details
+                                        @change="showIsAccessedModal(userData)"
+                                    />
+                                </v-col>
                             </v-row>
                         </v-form>
                     </v-card-text>
@@ -199,7 +228,7 @@
                                                     :color="themeColor"
                                                     :error-messages="employeeForm.id"
                                                     :items="customers"
-                                                    :label="this.$store.state.lang.lang_map.main.company"
+                                                    :label="langMap.main.company"
                                                     :placeholder="this.$store.state.lang.lang_map.main.search"
                                                     hide-no-data
                                                     hide-selected
@@ -210,7 +239,7 @@
                                             <v-text-field
                                                 v-model="employeeForm.description"
                                                 :color="themeColor"
-                                                :label="this.$store.state.lang.lang_map.main.description"
+                                                :label="langMap.main.description"
                                                 class="pa-1"
                                                 dense
                                                 type="text"
@@ -777,7 +806,7 @@
                             :color="themeColor"
                             :item-color="themeColor"
                             :items="languages"
-                            :label="this.$store.state.lang.lang_map.main.language"
+                            :label="langMap.main.language"
                             item-text="name"
                             item-value="id"
                             lazy-validation
@@ -1072,6 +1101,7 @@ export default {
             languages: [],
             userData: {
                 id: '',
+                number: '',
                 title: '',
                 title_before_name: '',
                 surname: '',
@@ -1084,7 +1114,8 @@ export default {
                 phones: [],
                 addresses: [],
                 emails: [],
-                status: ''
+                status: '',
+                avatar_url: ''
             },
             singleUserForm: {
                 user: '',
@@ -1147,7 +1178,9 @@ export default {
             selectedEmployeeId: null,
             isAccessedDialog: false,
             selectedIsAccessedItem: null,
-            primaryEmailId: null
+            primaryEmailId: null,
+            avatar: '',
+            newAvatar: null,
         }
     },
     mounted() {
@@ -1167,6 +1200,13 @@ export default {
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
         });
+    },
+    watch: {
+        newAvatar(val) {
+            if (this.newAvatar !== null) {
+                this.avatar = URL.createObjectURL(this.newAvatar)
+            }
+        }
     },
     methods: {
         localized(item, field = 'name') {
@@ -1206,6 +1246,11 @@ export default {
                     this.companies = this.userData.employee.assigned_to_clients.length > 0 ? this.userData.employee.assigned_to_clients : this.userData.employee.companies
                     // console.log(this.companies);
                     this.employeeForm.company_user_id = this.userData.employee.id
+                    if (this.userData.avatar_url) {
+                        this.avatar = this.userData.avatar_url;
+                    } else {
+                        this.avatar = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
+                    }
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1215,6 +1260,33 @@ export default {
         },
         updateUser() {
             this.snackbar = false;
+
+            if (this.newAvatar) {
+                let formData = new FormData();
+                formData.append('user_id', this.userData.id);
+                formData.append('avatar', this.newAvatar);
+                axios.post(
+                    '/api/user/avatar',
+                    formData, {
+                        headers: {'content-type': 'multipart/form-data'}
+                    }
+                ).then(response => {
+                    this.newAvatar = null;
+
+                    response = response.data;
+                    if (response.success === true) {
+                        this.avatar = response.data.avatar_url;
+                        this.userData.avatar_url = response.data.avatar_url;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+
+                        return;
+                    }
+                });
+            }
+
             axios.post('/api/user', this.userData).then(response => {
                 response = response.data
                 if (response.success === true) {

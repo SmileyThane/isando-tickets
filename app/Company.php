@@ -15,7 +15,11 @@ class Company extends Model
     use SoftDeletes;
 
     protected $fillable = ['id', 'name', 'company_number', 'photo', 'description',
-        'registration_date', 'is_validated', 'logo_url', 'first_alias', 'second_alias'];
+        'registration_date', 'is_validated', 'first_alias', 'second_alias'];
+
+    protected $appends = [
+        'logo_url'
+    ];
 
     public function getRegistrationDateAttribute()
     {
@@ -123,8 +127,8 @@ class Company extends Model
         return $this->attributes['second_alias'] ?? Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
     }
 
-    public function x(): HasMany
+    public function getLogoUrlAttribute()
     {
-        return $this->hasMany(CompanyUserNotification::class, 'company_id', 'id')->has('userData');
+        return $this->attributes['logo_url'];
     }
 }

@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('user/settings', 'API\UserController@getSettings');
         Route::post('user/settings', 'API\UserController@updateSettings');
         Route::post('user/notifications', 'API\UserController@setNotifications');
+        Route::post('user/avatar', 'API\UserController@updateAvatar');
 
         //company management
         Route::get('company/{id?}', 'API\CompanyController@find');

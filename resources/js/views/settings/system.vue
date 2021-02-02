@@ -307,7 +307,7 @@
                                         :color="themeColor"
                                         :readonly="!enableToEdit"
                                         :label="langMap.system_settings.employee_number_automatic"
-                                        :value="true"
+                                        value="1"
                                         v-model="employeeNumberFormat.auto"
                                         @change="updateEmployeeNumber()"
                                     >
@@ -317,10 +317,10 @@
                                 </v-col>
                                 <v-col class="col-md-4">
                                     <v-text-field
-                                        v-model="employeeNumberFormat.prefix"
+                                        v-model.trim="employeeNumberFormat.prefix"
                                         :color="themeColor"
                                         :label="langMap.system_settings.employee_number_format_prefix"
-                                        :readonly="!enableToEdit || !employeeNumberFormat.auto"
+                                        :readonly="!enableToEdit || employeeNumberFormat.auto !== '1'"
                                         counter="6"
                                         dense
                                         maxlength="6"
@@ -328,26 +328,26 @@
                                     ></v-text-field>
                                 </v-col>
                                 <v-col class="col-md-4">
-                                    <v-input
-                                        v-model="employeeNumberFormat.start"
+                                    <v-text-field
+                                        v-model.number="employeeNumberFormat.start"
                                         :color="themeColor"
                                         :label="langMap.system_settings.employee_number_format_start"
-                                        :readonly="!enableToEdit || !employeeNumberFormat.auto"
+                                        :readonly="!enableToEdit || employeeNumberFormat.auto !== '1'"
                                         dense
                                         @change="updateEmployeeNumber()"
                                     >
-                                    </v-input>
+                                    </v-text-field>
                                 </v-col>
                                 <v-col class="col-md-4">
-                                    <v-input
-                                        v-model="employeeNumberFormat.size"
+                                    <v-text-field
+                                        v-model.number="employeeNumberFormat.size"
                                         :color="themeColor"
                                         :label="langMap.system_settings.employee_number_format_size"
-                                        :readonly="!enableToEdit || !employeeNumberFormat.auto"
+                                        :readonly="!enableToEdit || employeeNumberFormat.auto !== '1'"
                                         dense
                                         @change="updateEmployeeNumber()"
                                     >
-                                    </v-input>
+                                    </v-text-field>
                                 </v-col>
                             </v-row>
                             <p>{{ langMap.system_settings.employee_number_example }}
@@ -1042,7 +1042,7 @@ export default {
             employeeNumberFormat: {
                 auto: false,
                 prefix: '',
-                size: 6,
+                size: 8,
                 start: 50000
             },
             employeeNumber: '',
@@ -1548,7 +1548,7 @@ export default {
                     this.companySettings['timezone'] = response.data.hasOwnProperty('timezone') ? response.data.timezone : 35;
                     this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
                     this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
-                    this.companySettings['employee_number_format'] = response.data.hasOwnProperty('employee_number_format') ? response.data.employee_number_format : 'false||50000|8';
+                    this.companySettings['employee_number_format'] = response.data.hasOwnProperty('employee_number_format') ? response.data.employee_number_format : '0||50000|8';
 
                     let fmt = this.companySettings.ticket_number_format.split('｜');
                     let pos = ['prefix', 'delimiter1', 'date', 'delimiter2', 'suffix'];
@@ -1562,7 +1562,7 @@ export default {
                     }
 
                     fmt = this.companySettings.employee_number_format.split('｜');
-                    fmt[0] = fmt[0] ? fmt[0] : false;
+                    fmt[0] = fmt[0] ? fmt[0] : 0;
                     fmt[1] = fmt[1] ? fmt[1].replaceAll(' ', '').substr(0, 6) : '';
 
                     pos = ['auto', 'prefix', 'start', 'size'];
@@ -1599,6 +1599,8 @@ export default {
                         this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                         this.errorType = 'error';
                         this.alert = true;
+
+                        return;
                     }
                 });
             }
