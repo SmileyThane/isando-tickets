@@ -435,13 +435,10 @@
                                         >
                                             {{ moment(props.item.date_from).format(timeFormat) }}
                                             <template v-slot:input>
-                                                <v-text-field
-                                                    v-model="moment(props.item.date_from).format(`${dateFormat} ${timeFormat}`)"
-                                                    label="Date From"
-                                                    hint="Date From"
-                                                    single-line
-                                                    counter
-                                                ></v-text-field>
+                                                <TimeField
+                                                    v-model="props.item.date_from"
+                                                    format="HH:mm"
+                                                ></TimeField>
                                             </template>
                                         </v-edit-dialog>
                                     </template>
@@ -559,11 +556,13 @@ import moment from "moment-timezone";
 import _ from "lodash";
 import ProjectBtn from "./components/project-btn";
 import TagBtn from "./components/tag-btn";
+import TimeField from "./components/time-field";
 
 export default {
     components: {
         ProjectBtn,
-        TagBtn
+        TagBtn,
+        TimeField
     },
     data() {
         return {
