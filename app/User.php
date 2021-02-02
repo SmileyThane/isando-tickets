@@ -155,7 +155,7 @@ class User extends Authenticatable
         return $this->hasMany(UserNotificationStatus::class,'user_id', 'id');
     }
 
-    public function getNumberAttribute(): string
+    public function getNumberAttribute()
     {
 
         $settings = $this->employee->companyData->settings;
@@ -166,7 +166,7 @@ class User extends Authenticatable
             $format = $settings->data['employee_number_format'];
         }
 
-        list($active, $prefix, $start, $size) = explode('｜', $format);
+        list($active, $prefix, $start, $size) = explode('|', $format);
 
         if (!$active) {
             return $this->attributes['number'];
