@@ -101,7 +101,7 @@
 
 <script>
 
-// import _ from 'lodash';
+import _ from 'lodash';
 
 export default {
     props: {
@@ -123,26 +123,26 @@ export default {
         };
     },
     created() {
-        // this.debounceGetTags = _.debounce(this.__getTags, 2000);
+        this.debounceGetTags = _.debounce(this.__getTags, 2000);
     },
     mounted() {
         // this.debounceGetTags();
     },
     methods: {
-        // __getTags() {
-        //     if (this.isLoadingTags || this.tags.length) return;
-        //     this.isLoadingTags = true;
-        //     return axios.get('/api/tags')
-        //         .then(({ data }) => {
-        //             if (data.success) {
-        //                 this.tags = data.data;
-        //                 return data.data;
-        //             }
-        //             this.isLoadingTags = false;
-        //             return null;
-        //         })
-        //         .catch(e => (this.debounceGetTags()));
-        // },
+        __getTags() {
+            if (this.isLoadingTags) return;
+            this.isLoadingTags = true;
+            return axios.get('/api/tags')
+                .then(({ data }) => {
+                    if (data.success) {
+                        this.tags = data.data;
+                        return data.data;
+                    }
+                    this.isLoadingTags = false;
+                    return null;
+                })
+                .catch(e => (this.debounceGetTags()));
+        },
         __createTag(name) {
             if (typeof name !== 'string') return;
             return axios.post('/api/tags', {name})

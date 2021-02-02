@@ -34,6 +34,7 @@
                                             :color="themeColor"
                                             :onChoosable="handlerProjectTimerPanel"
                                             v-model="timerPanel.project"
+                                            :items="projects"
                                         ></ProjectBtn>
                                     </template>
 
@@ -101,6 +102,7 @@
                                         :color="themeColor"
                                         :onChoosable="handlerProjectManualPanel"
                                         v-model="manualPanel.project"
+                                        :items="projects"
                                     ></ProjectBtn>
 
                                     <TagBtn
@@ -387,39 +389,18 @@
                                     </template>
                                     <template v-slot:item.project.name="props">
                                         <v-edit-dialog
-                                            :return-value.sync="props.item.project_id"
-                                            @save="save(props.item.id, 'project_id')"
+                                            @save="save(props.item, 'project', props.item.project)"
                                             @cancel="cancel"
                                             @open="open"
                                             @close="save(props.item, 'project', props.item.project)"
                                         >
-                                            <span class="text--secondary" v-if="!props.item.project">
-                                                <v-icon>mdi-plus-circle-outline</v-icon>&nbsp;Project
-                                            </span>
-                                            <div v-if="props.item.project">
-                                                {{ props.item.project.name }}
-                                            </div>
-                                            <template v-slot:input>
-                                                <v-card>
-                                                    <v-autocomplete
-                                                        v-model="props.item.project"
-                                                        :items="getFilteredProjects"
-                                                        :loading="isLoadingSearchProject"
-                                                        :search-input.sync="search"
-                                                        color="white"
-                                                        hide-no-data
-                                                        hide-selected
-                                                        item-text="name"
-                                                        item-value="id"
-                                                        label="Projects"
-                                                        hint="Projects"
-                                                        placeholder="Start typing to Search"
-                                                        prepend-icon="mdi-database-search"
-                                                        return-object
-                                                        autofocus
-                                                    ></v-autocomplete>
-                                                </v-card>
-                                            </template>
+                                            <ProjectBtn
+                                                :key="props.item.id"
+                                                :color="themeColor"
+                                                v-model="props.item.project"
+                                                :items="projects"
+                                                @blur="save(props.item, 'project', props.item.project)"
+                                            ></ProjectBtn>
                                         </v-edit-dialog>
                                     </template>
                                     <template v-slot:item.tags="props">
@@ -488,8 +469,8 @@
                                             </template>
                                         </v-edit-dialog>
                                     </template>
-                                    <template v-slot:item.passed="{ item }">
-                                        <span v-text="helperConvertSecondsToTimeFormat(item.passed)"></span>
+                                    <template v-slot:item.passed="props">
+                                        <span v-text="helperConvertSecondsToTimeFormat(props.item.passed)"></span>
                                     </template>
                                     <template v-slot:item.actions="props">
                                         <v-row>
@@ -695,12 +676,14 @@ export default {
             },
             globalTimer: null,
             tags: [],
-            isLoadingTags: false
+            isLoadingTags: false,
+            isLoadingProject: false
         }
     },
     created: function () {
         this.debounceGetTacking = _.debounce(this.__getTracking, 1000);
         this.debounceGetTags = _.debounce(this.__getTags, 1000);
+        this.debounceGetProjects = _.debounce(this.__getProjects, 1000);
         this.dateRange = [
             moment().subtract(1, 'days').format(this.dateFormat),
             moment().format(this.dateFormat)
@@ -713,6 +696,7 @@ export default {
         this.__globalTimer();
         this.debounceGetTacking();
         this.debounceGetTags();
+        this.debounceGetProjects();
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
@@ -813,6 +797,23 @@ export default {
                     return null;
                 })
                 .catch(e => (this.debounceGetTags()));
+        },
+        __getProjects() {
+            if (this.isLoadingProject) return;
+            this.isLoadingProject = true;
+            return axios.get(`/api/tracking/projects`)
+                .then(({ data }) => {
+                    if (data.success) {
+                        this.projects = data.data.data;
+                        return data.data.data;
+                    }
+                    return null;
+                })
+                .catch(e => {
+                    console.log(e);
+                    this.debounceGetProjects();
+                })
+                .finally(() => ( this.isLoadingProject = false ))
         },
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
@@ -998,12 +999,7 @@ export default {
             });
         },
         save (item, fieldName, newValue = null) {
-            console.log(item, fieldName, newValue);
-            // const foundIndex = this.tracking.findIndex(i => i.id === item.id);
             if (['date_from', 'date_to'].indexOf(fieldName)) {
-                // const {date_from, date_to} = this.tracking[foundIndex];
-                // this.tracking[foundIndex].passed = this.helperCalculatePassedTime(date_from, date_to);
-                // item[fieldName] = moment.tz(newValue, this.tz.name).utc();
                 item.passed = this.helperCalculatePassedTime(item.date_from, item.date_to);
             }
             if (newValue) {

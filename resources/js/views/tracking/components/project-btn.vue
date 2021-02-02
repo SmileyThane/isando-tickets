@@ -13,14 +13,14 @@
                 v-bind="attrs"
                 v-on="on"
             >
-                <span v-if="!project">
+                <span v-if="!selectedProject">
                     <v-icon>
                         mdi-plus-circle-outline
                     </v-icon>
                     &nbsp;&nbsp;Project
                 </span>
-                <span v-if="project">
-                    {{ project.name }}
+                <span v-if="selectedProject">
+                    {{ selectedProject.name }}
                 </span>
             </v-btn>
         </template>
@@ -29,9 +29,10 @@
         >
             <template>
                 <v-combobox
-                    v-model="project"
+                    v-bind="$attrs"
+                    v-on="$listeners"
+                    v-model="selectedProject"
                     :hide-no-data="!search"
-                    :items="projects"
                     :search-input.sync="search"
                     hide-selected
                     label="Choose project"
@@ -80,8 +81,7 @@ export default {
             default: '#ffffff'
         },
         onChoosable: {
-            type: Function,
-            required: true
+            type: Function
         },
         value: {
             required: true
@@ -97,10 +97,10 @@ export default {
         };
     },
     created() {
-        this.debounceGetProjects = _.debounce(this.__getProjects, 500);
+        this.debounceGetProjects = _.debounce(this.__getProjects, 1000);
     },
     mounted() {
-        this.debounceGetProjects()
+        // this.debounceGetProjects()
     },
     methods: {
         __getProjects() {
@@ -120,25 +120,31 @@ export default {
                 })
             .finally(() => ( this.isLoadingProject = false ))
         },
+        __createProject(name) {
+            if (typeof name !== 'string') return;
+            return axios.post('/api/tracking/projects', {name})
+                .then(({ data }) => {
+                    if (data.success) {
+                        const createdProject = data.data;
+                        if (typeof this.selectedProject === 'string' && this.selectedProject === createdProject.name) {
+                            this.selectedProject = createdProject;
+                        }
+                        this.debounceGetProjects();
+                        return createdProject;
+                    }
+                    return null;
+                })
+                .catch(e => ( console.log(e) ));
+        },
         onUpdate(item) {
             if (typeof item === 'string') {
-                this.isCreatingProject = true;
-                axios.post('/api/tracking/projects', {name: item})
-                    .then(({ data }) => {
-                        if (data.success) {
-                            this.project = data.data;
-                            this.debounceGetProjects();
-                        }
-                        this.isCreatingProject = false;
-                        this.search = '';
-                    });
-            } else {
-                this.project = item;
+                this.__createProject(item);
+                this.search = '';
             }
         }
     },
     computed: {
-        project: {
+        selectedProject: {
             get() {
                 return this.value;
             },
