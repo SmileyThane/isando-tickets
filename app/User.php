@@ -160,7 +160,7 @@ class User extends Authenticatable
 
         $settings = $this->employee->companyData->settings;
 
-        if (empty($settings->data['employee_number_format']) || count(explode('｜', $settings->data['ticket_number_format'])) != 5) {
+        if (empty($settings->data['employee_number_format']) || count(explode('｜', $settings->data['ticket_number_format'])) != 4) {
             $format = '0||50000|8';
         } else {
             $format = $settings->data['employee_number_format'];
