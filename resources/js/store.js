@@ -1,10 +1,17 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import EventBus from "./components/EventBus";
+import { Tags, Products, Projects, Clients } from './modules';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+    modules: {
+        Tags: Tags,
+        Products: Products,
+        Projects: Projects,
+        Clients: Clients
+    },
     state: {
         roles: {},
         lang: {},

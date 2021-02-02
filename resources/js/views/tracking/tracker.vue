@@ -28,15 +28,12 @@
                                 </v-col>
                                 <v-spacer></v-spacer>
                                 <v-col cols="2" lg="3" md="3" class="text-right">
-                                    <template>
-                                        <ProjectBtn
-                                            key="timerPanelProjectKey"
-                                            :color="themeColor"
-                                            :onChoosable="handlerProjectTimerPanel"
-                                            v-model="timerPanel.project"
-                                            :items="projects"
-                                        ></ProjectBtn>
-                                    </template>
+                                    <ProjectBtn
+                                        key="timerPanelProjectKey"
+                                        :color="themeColor"
+                                        :onChoosable="handlerProjectTimerPanel"
+                                        v-model="timerPanel.project"
+                                    ></ProjectBtn>
 
                                     <TagBtn
                                         key="timerPanelTagKey"
@@ -102,7 +99,6 @@
                                         :color="themeColor"
                                         :onChoosable="handlerProjectManualPanel"
                                         v-model="manualPanel.project"
-                                        :items="projects"
                                     ></ProjectBtn>
 
                                     <TagBtn
@@ -150,6 +146,7 @@
                                                     hide-details="auto"
                                                     style="max-width: 100px"
                                                     @blur="handlerSetTimeFrom()"
+                                                    @focus="$event.target.select()"
                                                 ></v-text-field>
                                             </template>
                                             <v-time-picker
@@ -186,6 +183,7 @@
                                                     hide-details="auto"
                                                     style="max-width: 100px"
                                                     @blur="handlerSetTimeTo()"
+                                                    @focus="$event.target.select()"
                                                 ></v-text-field>
                                             </template>
                                             <v-time-picker
@@ -398,7 +396,6 @@
                                                 :key="props.item.id"
                                                 :color="themeColor"
                                                 v-model="props.item.project"
-                                                :items="projects"
                                                 @blur="save(props.item, 'project', props.item.project)"
                                             ></ProjectBtn>
                                         </v-edit-dialog>
@@ -465,6 +462,7 @@
                                                     single-line
                                                     counter
                                                     autofocus
+                                                    @focus="$event.target.select()"
                                                 ></v-text-field>
                                             </template>
                                         </v-edit-dialog>
@@ -567,6 +565,7 @@ export default {
     },
     data() {
         return {
+            attemptRepeat: 0,
             tz: {
                 name: moment.tz.guess(),
                 offset: new Date().getTimezoneOffset()
@@ -648,7 +647,6 @@ export default {
             panels: [0],
             /* Data */
             tracking: [],
-            projects: [],
             manualPanel: {
                 description: null,
                 project: null,
@@ -683,7 +681,6 @@ export default {
     created: function () {
         this.debounceGetTacking = _.debounce(this.__getTracking, 1000);
         this.debounceGetTags = _.debounce(this.__getTags, 1000);
-        this.debounceGetProjects = _.debounce(this.__getProjects, 1000);
         this.dateRange = [
             moment().subtract(1, 'days').format(this.dateFormat),
             moment().format(this.dateFormat)
@@ -696,7 +693,9 @@ export default {
         this.__globalTimer();
         this.debounceGetTacking();
         this.debounceGetTags();
-        this.debounceGetProjects();
+        this.$store.dispatch('Projects/getProjectList');
+        this.$store.dispatch('Products/getProductList', { search: null });
+        this.$store.dispatch('Clients/getClientList', { search: null });
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
@@ -710,6 +709,7 @@ export default {
             }, 1000);
         },
         __getTracking() {
+            if (this.attemptRepeat > 5) return;
             this.loading = true;
             const queryParams = new URLSearchParams({
                 date_from: this.dateRange[0] || null,
@@ -719,9 +719,11 @@ export default {
                 .then(({ data }) => {
                     this.tracking = data.data;
                     this.loading = false;
+                    this.attemptRepeat = 0;
                     return data;
                 })
                 .catch(e => {
+                    this.attemptRepeat++;
                     this.debounceGetTacking();
                 });
         },
@@ -797,23 +799,6 @@ export default {
                     return null;
                 })
                 .catch(e => (this.debounceGetTags()));
-        },
-        __getProjects() {
-            if (this.isLoadingProject) return;
-            this.isLoadingProject = true;
-            return axios.get(`/api/tracking/projects`)
-                .then(({ data }) => {
-                    if (data.success) {
-                        this.projects = data.data.data;
-                        return data.data.data;
-                    }
-                    return null;
-                })
-                .catch(e => {
-                    console.log(e);
-                    this.debounceGetProjects();
-                })
-                .finally(() => ( this.isLoadingProject = false ))
         },
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
@@ -1041,7 +1026,7 @@ export default {
             return this.tracking;
         },
         getFilteredProjects() {
-            return this.projects.map(entry => {
+            return this.$store.getters['Projects/getProjects'].map(entry => {
                 const name = entry.name.length > this.nameLimit
                     ? entry.name.slice(0, this.nameLimit) + '...'
                     : entry.name
