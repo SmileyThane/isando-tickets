@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -21,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'surname', 'middle_name', 'title_before_name', 'title',
+        'number', 'name', 'surname', 'middle_name', 'title_before_name', 'title',
         'country_id', 'anredeform', 'language_id', 'timezone_id', 'settings', 'status'
     ];
 
@@ -44,7 +45,7 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'full_name', 'contact_phone', 'contact_email', 'email', 'email_id'
+        'number', 'full_name', 'contact_phone', 'contact_email', 'email', 'email_id', 'avatar_url'
     ];
 
     public function employee(): HasOne
@@ -152,5 +153,30 @@ class User extends Authenticatable
     public function notificationStatuses(): hasMany
     {
         return $this->hasMany(UserNotificationStatus::class,'user_id', 'id');
+    }
+
+    public function getNumberAttribute(): string
+    {
+
+        $settings = $this->employee->companyData->settings;
+
+        if (empty($settings->data['employee_number_format']) || count(explode('｜', $settings->data['ticket_number_format'])) != 5) {
+            $format = '0||50000|8';
+        } else {
+            $format = $settings->data['employee_number_format'];
+        }
+
+        list($active, $prefix, $start, $size) = explode('｜', $format);
+
+        if (!$active) {
+            return $this->attributes['number'];
+        }
+
+        return mb_strtoupper($prefix) . str_pad(($start + $this->attributes['id']), $size, '0', STR_PAD_LEFT);
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->attributes['avatar_url'];
     }
 }

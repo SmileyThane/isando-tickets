@@ -453,7 +453,14 @@ class LanguageSeeder extends Seeder
     "new_notification_type": "Add new notification type",
     "notification_type_created": "Notification type created",
     "notification_type_deleted": "Notification type deleted",
-    "notification_type_updated": "Notification type updated"
+    "notification_type_updated": "Notification type updated",
+    "employee_number_format": "Employee number format",
+    "employee_number_automatic": "Generate employee number automatic",
+    "employee_number_automatic_hint": "Employee number will be generated automatically using the rules below",
+    "employee_number_format_prefix": "Prefix",
+    "employee_number_format_start": "Start number",
+    "employee_number_format_size": "Digits count",
+    "employee_number_example": "Example: "
   },
   "profile": {
     "user_theme_color": "Personal theme color",
@@ -475,7 +482,9 @@ class LanguageSeeder extends Seeder
      "update_assigned_to_team": "Updates in tickets assigned to any person in my team",
      "new_assigned_to_company": "New tickets assigned to any person in my company",
      "update_assigned_to_company": "Updates in tickets assigned to any person in my company",
-     "client_response_assigned_to_me": "Client responses in tickets assigned to me"
+     "client_response_assigned_to_me": "Client responses in tickets assigned to me",
+     "personal_id": "Personal ID number",
+     "avatar": "Avatar picture"
   },
   "notification": {
     "template": "Template",
@@ -955,7 +964,14 @@ class LanguageSeeder extends Seeder
     "new_notification_type": "Neuen Mitteilungstyp hinzufügen",
     "notification_type_created": "Mitteilungstyp erstellt",
     "notification_type_deleted": "Mitteilungstyp gelöscht",
-    "notification_type_updated": "Mitteilungstyp aktualisiert"
+    "notification_type_updated": "Mitteilungstyp aktualisiert",
+    "employee_number_format": "Format der Mitarbeiternummer",
+    "employee_number_automatic": "Generieren Sie automatisch eine Mitarbeiternummer",
+    "employee_number_automatic_hint": "Die Mitarbeiternummer wird automatisch nach den folgenden Regeln generiert",
+    "employee_number_format_prefix": "Präfix",
+    "employee_number_format_start": "Startnummer",
+    "employee_number_format_size": "Ziffern zählen",
+    "employee_number_example": "Beispiel: "
   },
   "profile": {
     "user_theme_color": "Persönliche Hintergrundfarbe",
@@ -977,7 +993,9 @@ class LanguageSeeder extends Seeder
      "update_assigned_to_team": "Aktualisierungen von Tickets, die einer Person in meinem Team zugewiesen sind",
      "new_assigned_to_company": "Neue Tickets, die einer Person in meiner Firma zugewiesen wurden",
      "update_assigned_to_company": "Aktualisierungen von Tickets, die einer Person in meinem Unternehmen zugewiesen sind",
-     "client_response_assigned_to_me": "Kundenantworten in mir zugewiesenen Tickets"
+     "client_response_assigned_to_me": "Kundenantworten in mir zugewiesenen Tickets",
+     "personal_id": "Persönliche ID-Nummer",
+     "avatar": "Avatar Bild"
   },
   "notification": {
     "template": "Vorlage",

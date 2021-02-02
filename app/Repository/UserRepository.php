@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Throwable;
@@ -225,5 +226,19 @@ class UserRepository
         }
 
         return true;
+    }
+
+    public function updateAvatar(Request $request, $userId = null)
+    {
+        $userId = $request->user_id ?? Auth::user()->id;
+        $user = User::findOrFail($userId);
+
+        if (!Storage::exists('public/avatars')) {
+            Storage::makeDirectory('public/avatars');
+        }
+        $file = $request->file('avatar')->storeAs('public/avatars', $userId . '-' . time() . '.' . $request->file('avatar')->extension());
+        $user->avatar_url = Storage::url($file);
+        $user->save();
+        return $user;
     }
 }

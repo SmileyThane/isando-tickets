@@ -238,13 +238,17 @@ class CompanyRepository
             $data['override_user_theme'] = $request->override_user_theme;
         }
 
+        if ($request->has('employee_number_format')) {
+            $data['employee_number_format'] = $request->employee_number_format;
+        }
+
         $settings->data = $data;
         $settings->save();
 
         return $settings->data;
     }
 
-    public function updatelogo(Request $request, $companyId = null)
+    public function updateLogo(Request $request, $companyId = null)
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         $company = Company::findOrFail($companyId);
@@ -252,7 +256,7 @@ class CompanyRepository
         if (!Storage::exists('public/logos')) {
             Storage::makeDirectory('public/logos');
         }
-        $file = $request->file('logo')->storeAs('public/logos', $companyId . '-' . time() . '.' . $extension = $request->file('logo')->extension());
+        $file = $request->file('logo')->storeAs('public/logos', $companyId . '-' . time() . '.' . $request->file('logo')->extension());
         $company->logo_url = Storage::url($file);
         $company->save();
         return $company;
