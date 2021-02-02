@@ -12,7 +12,7 @@
                 {{ snackbarMessage }}
             </v-snackbar>
             <v-col class="col-md-6">
-                <v-card class="elevation-6 without-bottom">
+                <v-card class="elevation-12">
                     <v-toolbar
                         :color="themeColor"
                         dark
@@ -165,109 +165,10 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
-            </v-col>
-            <v-col md="6">
-                <v-card class="elevation-12">
-                    <v-toolbar
-                        :color="themeColor"
-                        dark
-                        dense
-                        flat
-                    >
-                        <v-toolbar-title>{{ this.$store.state.lang.lang_map.individuals.assigned_companies }}
-                        </v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-                    <v-card-text>
-                        <v-data-table
-                            :footer-props="footerProps"
-                            :headers="headers"
-                            :items="companies"
-                            class="elevation-1"
-                            dense
-                            item-key="id"
-                            @click:row="showCompany"
-                        >
-                            <template v-slot:item.actions="{ item }">
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            icon
-                                            @click.native.stop="removeEmployeeProcess(item)">
-                                            <v-icon
-                                                small
 
-                                            >
-                                                mdi-delete
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.company.delete_contact }}</span>
-                                </v-tooltip>
-                            </template>
-                        </v-data-table>
-                        <v-spacer>
-                            &nbsp;
-                        </v-spacer>
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    {{ this.$store.state.lang.lang_map.individuals.new_customer }}
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col class="pa-1" cols="md-12">
-                                                <v-autocomplete
-                                                    v-model="employeeForm.client_id"
-                                                    :color="themeColor"
-                                                    :error-messages="employeeForm.id"
-                                                    :items="customers"
-                                                    :label="langMap.main.company"
-                                                    :placeholder="this.$store.state.lang.lang_map.main.search"
-                                                    hide-no-data
-                                                    hide-selected
-                                                    item-text="name"
-                                                    item-value="id"
-                                                ></v-autocomplete>
-                                            </v-col>
-                                            <v-text-field
-                                                v-model="employeeForm.description"
-                                                :color="themeColor"
-                                                :label="langMap.main.description"
-                                                class="pa-1"
-                                                dense
-                                                type="text"
-                                            ></v-text-field>
-                                        </div>
-                                        <v-btn
-                                            :color="themeColor"
-                                            bottom
-                                            dark
-                                            fab
-                                            right
-                                            small
-                                            @click="addEmployee"
-                                        >
-                                            <v-icon>mdi-plus</v-icon>
-                                        </v-btn>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-            </v-col>
-            <v-col md="6">
-                <v-card class="elevation-6 without-bottom">
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
                     <v-toolbar
                         :color="themeColor"
                         dark
@@ -619,9 +520,208 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
+
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        dense
+                        :color="themeColor"
+                        dark
+                        flat
+                    >
+                        <v-toolbar-title>{{langMap.profile.notifications_settings}}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="canceluserData">
+                            {{this.$store.state.lang.lang_map.main.cancel}}
+                        </v-btn>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateNotificationsSettings">
+                            {{this.$store.state.lang.lang_map.main.update}}
+                        </v-btn>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col cols="6">
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="101"
+                                        :label="langMap.profile.new_assigned_to_me"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="201"
+                                        :label="langMap.profile.new_assigned_to_team"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="301"
+                                        :label="langMap.profile.new_assigned_to_company"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="103"
+                                        :label="langMap.profile.client_response_assigned_to_me"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+                                </v-col>
+                                <v-col cols="6">
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="102"
+                                        :label="langMap.profile.update_assigned_to_me"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="202"
+                                        :label="langMap.profile.update_assigned_to_team"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+
+                                    <v-checkbox
+                                        :color="themeColor"
+                                        v-model="notificationStatuses"
+                                        :value="302"
+                                        :label="langMap.profile.update_assigned_to_company"
+                                        dense
+                                        :readonly="!enableToEdit"
+                                    >
+                                    </v-checkbox>
+                                </v-col>
+
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </v-col>
             <v-col md="6">
-                <v-card class="elevation-6">
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title>{{ this.$store.state.lang.lang_map.individuals.assigned_companies }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="headers"
+                            :items="companies"
+                            class="elevation-1"
+                            dense
+                            item-key="id"
+                            @click:row="showCompany"
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            icon
+                                            @click.native.stop="removeEmployeeProcess(item)">
+                                            <v-icon
+                                                small
+
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.company.delete_contact }}</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ this.$store.state.lang.lang_map.individuals.new_customer }}
+                                    <template v-slot:actions>
+                                        <v-icon color="submit">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col class="pa-1" cols="md-12">
+                                                <v-autocomplete
+                                                    v-model="employeeForm.client_id"
+                                                    :color="themeColor"
+                                                    :error-messages="employeeForm.id"
+                                                    :items="customers"
+                                                    :label="langMap.main.company"
+                                                    :placeholder="this.$store.state.lang.lang_map.main.search"
+                                                    hide-no-data
+                                                    hide-selected
+                                                    item-text="name"
+                                                    item-value="id"
+                                                ></v-autocomplete>
+                                            </v-col>
+                                            <v-text-field
+                                                v-model="employeeForm.description"
+                                                :color="themeColor"
+                                                :label="langMap.main.description"
+                                                class="pa-1"
+                                                dense
+                                                type="text"
+                                            ></v-text-field>
+                                        </div>
+                                        <v-btn
+                                            :color="themeColor"
+                                            bottom
+                                            dark
+                                            fab
+                                            right
+                                            small
+                                            @click="addEmployee"
+                                        >
+                                            <v-icon>mdi-plus</v-icon>
+                                        </v-btn>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
                     <v-toolbar
                         :color="themeColor"
                         dark
@@ -730,6 +830,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
+
         </v-row>
         <v-row justify="center">
             <v-dialog v-model="removeEmployeeDialog" max-width="520" persistent>
@@ -1101,7 +1202,6 @@ export default {
             languages: [],
             userData: {
                 id: '',
-                number: '',
                 title: '',
                 title_before_name: '',
                 surname: '',
@@ -1115,8 +1215,11 @@ export default {
                 addresses: [],
                 emails: [],
                 status: '',
+                notification_statuses: [],
+                number: '',
                 avatar_url: ''
             },
+            notificationStatuses: [],
             singleUserForm: {
                 user: '',
                 role_ids: [],
@@ -1246,6 +1349,18 @@ export default {
                     this.companies = this.userData.employee.assigned_to_clients.length > 0 ? this.userData.employee.assigned_to_clients : this.userData.employee.companies
                     // console.log(this.companies);
                     this.employeeForm.company_user_id = this.userData.employee.id
+
+                    if (this.userData.notification_statuses.length) {
+                        let that = this;
+                        this.userData.notification_statuses.forEach(function (item) {
+                            if (item.status !== 0) {
+                                that.notificationStatuses.push(item.status);
+                            }
+                        });
+                    } else {
+                        this.notificationStatuses = [101, 102, 103, 201, 202, 301, 302];
+                    }
+
                     if (this.userData.avatar_url) {
                         this.avatar = this.userData.avatar_url;
                     } else {
@@ -1305,6 +1420,29 @@ export default {
         cancelUpdateUser() {
             this.getUser();
             this.enableToEdit = false;
+        },
+        updateNotificationsSettings() {
+            this.enableToEdit = false;
+
+            if (this.notificationStatuses.length === 0) {
+                this.notificationStatuses = [0];
+            }
+            axios.post('/api/user/notifications', {
+                user_id: this.userData.id,
+                notification_statuses: this.notificationStatuses
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.profile.notifications_settings_updated;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.getUser();
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.snackbar = true;
+                }
+            });
         },
         updateStatus() {
             this.snackbar = false;
