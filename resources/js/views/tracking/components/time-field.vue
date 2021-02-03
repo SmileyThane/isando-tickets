@@ -16,7 +16,8 @@
 
 <script>
 
-import moment from 'moment-timezone';
+import moment from 'moment';
+import tz from 'moment-timezone';
 
 export default {
     name: "time-field",
@@ -56,6 +57,7 @@ export default {
             if (
                     ($event.keyCode >= 48 && $event.keyCode <= 57)
                 || ($event.keyCode >= 96 && $event.keyCode <= 105)
+                || (keyCodes.indexOf($event.keyCode))
             ) {
                 return true;
             }
@@ -76,9 +78,11 @@ export default {
                 console.log('set ', val);
                 val = this.helperAddZeros(val, 4);
                 console.log('set ', val);
+                console.log('set ', moment);
                 const time = moment(this.value)
-                    .hours(parseInt(val.substr(0, 2)))
-                    .minutes(parseInt(val.substr(-2)));
+                    .tz(moment.guess())
+                    .hour(parseInt(val.substr(0, 2)))
+                    .minute(parseInt(val.substr(-2)));
                 console.log(time);
                 this.$emit('input', time);
             }
