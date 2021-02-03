@@ -22,11 +22,11 @@ class TrackingProjectRepository
     {
         $params = [
             'name' => 'required',
-            'productId' => 'nullable|exists:App\Product,id',
-            'product.id' => 'nullable|exists:App\Product,id',
-            'clientId' => 'nullable|exists:App\Client,id',
-            'client.id' => 'nullable|exists:App\Client,id',
-            'color' => 'nullable|string',
+            'productId' => 'required_without:product.id|exists:App\Product,id',
+            'product.id' => 'required_without:productId|exists:App\Product,id',
+            'clientId' => 'required_without:client.id|exists:App\Client,id',
+            'client.id' => 'required_without:clientId|exists:App\Client,id',
+            'color' => 'required|string',
             'billableByDefault' => 'boolean',
             'rate' => 'nullable|numeric',
             'rate_from' => 'nullable|numeric',

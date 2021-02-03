@@ -100,6 +100,7 @@
                                             label="Project name"
                                             placeholder="Type the project name here"
                                             clearable
+                                            required
                                         ></v-text-field>
                                     </v-list-item-action>
                                 </v-list-item>
@@ -117,6 +118,7 @@
                                             placeholder="Start typing to Search"
                                             return-object
                                             clearable
+                                            required
                                         ></v-autocomplete>
                                     </v-list-item-action>
                                 </v-list-item>
@@ -134,6 +136,7 @@
                                             placeholder="Start typing to Search"
                                             return-object
                                             clearable
+                                            required
                                         ></v-autocomplete>
                                     </v-list-item-action>
                                 </v-list-item>
@@ -145,6 +148,7 @@
                                             class="ma-0 pa-0"
                                             solo
                                             label="Color"
+                                            required
                                         >
                                             <template v-slot:append>
                                                 <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
@@ -175,7 +179,8 @@
                                 <v-btn
                                     color="success"
                                     text
-                                    @click="createNewProject(); menu = false"
+                                    :disabled="!createProjectValid"
+                                    @click="createNewProject"
                                 >
                                     Save
                                 </v-btn>
@@ -254,8 +259,11 @@ export default {
             };
         },
         createNewProject() {
-            this.$store.dispatch('Projects/createProject', this.form);
-            this.resetNewProjectForm();
+            if (this.createProjectValid) {
+                this.menu = false;
+                this.$store.dispatch('Projects/createProject', this.form);
+                this.resetNewProjectForm();
+            }
         }
     },
     computed: {
@@ -295,6 +303,9 @@ export default {
                 borderRadius: colorMenu ? '50%' : '4px',
                 transition: 'border-radius 200ms ease-in-out'
             }
+        },
+        createProjectValid() {
+            return this.form.name && this.form.product && this.form.client && this.form.color;
         }
     },
     watch: {
