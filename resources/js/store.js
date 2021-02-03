@@ -16,10 +16,11 @@ export default new Vuex.Store({
         roles: {},
         lang: {},
         pageName: '',
-        themeColor: '#60695D'
+        themeColor: '#60695D',
+        appVersion: ''
     },
     getters: {
-        roles: state => [state.roles, state.lang, state.pageName, state.themeColor]
+        roles: state => [state.roles, state.lang, state.pageName, state.themeColor, state.appVersion]
     },
     mutations: {
         setRoles(state, roles) {
@@ -34,6 +35,9 @@ export default new Vuex.Store({
         setThemeColor(state, themeColor) {
             state.themeColor = themeColor;
             EventBus.$emit('update-theme-color', themeColor);
+        },
+        setAppVersion(state, version) {
+            state.appVersion = version;
         }
     },
     actions: {
@@ -68,7 +72,7 @@ export default new Vuex.Store({
                 let override = false;
                 let color = '';
                 if (localStorage.themeColor) {
-                    commit('setThemeColor', color);
+                    commit('setThemeColor', localStorage.themeColor);
                     resolve();
                 }
                 axios.get('/api/main_company_settings').then(response => {
@@ -102,6 +106,21 @@ export default new Vuex.Store({
                     reject(error.response && error.response.data.message || 'Error.');
                 });
             });
-        }
+        },
+        getAppVersion({commit}) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/version')
+                    .then(result => {
+                        if (result.data.success === true)
+                            localStorage.appVersion = result.data.data;
+                            commit('setAppVersion', result.data.data);
+                        resolve();
+                    })
+
+                    .catch(error => {
+                        reject(error.response && error.response.data.message || 'Error.');
+                    });
+            });
+        },
     }
 })

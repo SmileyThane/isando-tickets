@@ -23,6 +23,7 @@
         "spatie/laravel-permission": "^3.13",
         "stevebauman/location": "^5.1",
         "symfony/process": "^5.2",
+        "tremby/laravel-git-version": "^1.2",
         "webklex/laravel-imap": "^1.4"
     },
     "require-dev": {
