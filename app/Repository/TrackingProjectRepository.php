@@ -51,6 +51,11 @@ class TrackingProjectRepository
         if ($request->has('search')) {
             $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
         }
+        if ($request->has('column') && $request->has('direction')) {
+            if ((string)$request->direction === 'true') $request->direction = 'desc';
+            if ((string)$request->direction === 'false') $request->direction = 'asc';
+            $trackingProjects->orderBy($request->column, $request->direction);
+        }
         return $trackingProjects
             ->paginate($request->per_page ?? $trackingProjects->count());
     }

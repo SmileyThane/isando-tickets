@@ -4,22 +4,23 @@ export default {
         projects: []
     },
     actions: {
-        getProjectList({commit}, { search }) {
-            const queryParams = new URLSearchParams({
-                search: search ?? ''
-            });
-            axios.get(`/api/tracking/projects?${queryParams.toString()}`)
-                .then(({ data: { success, data: { data: projects } } }) => {
+        getProjectList({commit}, params) {
+            if (!params.search) params.search = '';
+            const queryParams = new URLSearchParams(params);
+            return axios.get(`/api/tracking/projects?${queryParams.toString()}`)
+                .then(({ data: { success, data } }) => {
                     if (success) {
-                        commit('GET_PROJECTS', projects)
+                        commit('GET_PROJECTS', data.data)
+                        return data;
                     }
                 })
         },
         createProject({commit, dispatch}, project) {
-            axios.post('/api/tracking/projects', project)
+            return axios.post('/api/tracking/projects', project)
                 .then(({ data: { success, data: project } }) => {
                     if (success) {
                         dispatch('getProjectList');
+                        return project;
                     }
                 })
         }

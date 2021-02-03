@@ -227,7 +227,7 @@ export default {
                 name: '',
                 product: null,
                 client: null,
-                color: '#000000'
+                color: '#' + Math.floor(Math.random()*16777215).toString(16)
             }
         };
     },
@@ -255,7 +255,7 @@ export default {
                 name: '',
                 product: null,
                 client: null,
-                color: '#000000'
+                color: '#' + Math.floor(Math.random()*16777215).toString(16)
             };
         },
         createNewProject() {
