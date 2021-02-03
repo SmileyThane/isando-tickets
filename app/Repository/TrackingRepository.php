@@ -29,7 +29,7 @@ class TrackingRepository
         'update' => [
             'product.id' => 'nullable|exists:App\Product,id',
             'description' => 'nullable|string',
-            'date_from' => 'nullable|string|before:date_to',
+            'date_from' => 'nullable|string',
             'date_to' => 'nullable|string',
             'status' => 'nullable|string|in:started,paused,stopped',
             'billable' => 'boolean',
@@ -102,8 +102,8 @@ class TrackingRepository
             $tracking->date_from = Carbon::parse($request->date_from)->utc();
         }
         if ($request->has('date_to')) {
-            if (Carbon::parse($tracking->date_from)->gt($request->date_to)) {
-                throw new \Exception('error');
+            if (!is_null($request->date_to) && Carbon::parse($tracking->date_from)->gt($request->date_to)) {
+                throw new \Exception('The date from must be a date before date to.');
             }
             $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->utc() : null;
         }

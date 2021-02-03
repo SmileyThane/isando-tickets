@@ -848,6 +848,7 @@ export default {
                 .then(data => {
                     if (data.success) {
                         this.__updateTrackingById(data.data.id, {
+                            date_from: moment(),
                             date_to: null,
                             status: 'started'
                         });
