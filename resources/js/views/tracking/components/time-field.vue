@@ -7,6 +7,8 @@
         hint="Date From"
         single-line
         counter
+        autofocus
+        @focus="$event.target.select()"
         v-on:focus="onFocus"
         v-on:keydown="onKeyDown"
     ></v-text-field>

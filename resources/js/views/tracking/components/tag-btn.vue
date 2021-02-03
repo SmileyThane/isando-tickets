@@ -23,7 +23,8 @@
             </v-btn>
         </template>
         <v-card
-            style="max-width: 400px"
+            max-width="400"
+            class="d-flex pa-2"
         >
             <template>
                 <v-combobox
@@ -34,12 +35,13 @@
                     :search-input.sync="search"
                     hide-selected
                     return-object
-                    label="Choose tags"
+                    label="Tags"
+                    placeholder="Choose tags"
                     item-text="name"
                     item-id="name"
+                    :items="$store.getters['Tags/getTags']"
                     multiple
                     small-chips
-                    solo
                     clearable
                     @input="onUpdate"
                 >
@@ -123,44 +125,26 @@ export default {
         };
     },
     created() {
-        this.debounceGetTags = _.debounce(this.__getTags, 2000);
+        this.debounceGetTags = _.debounce(this.__getTags, 1000);
     },
     mounted() {
         // this.debounceGetTags();
     },
     methods: {
         __getTags() {
-            if (this.isLoadingTags) return;
-            this.isLoadingTags = true;
-            return axios.get('/api/tags')
-                .then(({ data }) => {
-                    if (data.success) {
-                        this.tags = data.data;
-                        return data.data;
-                    }
-                    this.isLoadingTags = false;
-                    return null;
-                })
-                .catch(e => (this.debounceGetTags()));
+            this.$store.dispatch('Tags/getTagList');
         },
         __createTag(name) {
             if (typeof name !== 'string') return;
-            return axios.post('/api/tags', {name})
-                .then(({ data }) => {
-                    if (data.success) {
-                        const createdTag = data.data;
-                        this.debounceGetTags();
-                        this.selectedTags = this.selectedTags.map(tag => {
-                            if (typeof tag === 'string' && tag === createdTag.name) {
-                                return createdTag;
-                            }
-                            return tag;
-                        });
-                        return createdTag;
-                    }
-                    return null;
-                })
-                .catch(e => ( console.log(e) ));
+            this.$store.dispatch('Tags/createTag', {name})
+                .then(createdTag => {
+                    this.selectedTags = this.selectedTags.map(tag => {
+                        if (typeof tag === 'string' && tag === createdTag.name) {
+                            return createdTag;
+                        }
+                        return tag;
+                    });
+                });
         },
         onUpdate($event) {
             $event.map(item => {

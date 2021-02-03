@@ -11,7 +11,7 @@
 
         <v-data-table
             :headers="headers"
-            :items="projects"
+            :items="$store.getters['Projects/getProjects']"
             item-key="id"
             :options.sync="options"
             :server-items-length="totalProjects"
@@ -27,8 +27,14 @@
 
                 <v-row>
                     <v-col sm="12" md="8">
-                        <v-text-field @input="getProjects" v-model="trackingProjectSearch" :color="themeColor"
-                                      :label="langMap.main.search" class="mx-4"></v-text-field>
+                        <v-text-field
+                            @input="debounceGetProjects"
+                            v-model="trackingProjectSearch"
+                            :color="themeColor"
+                            :label="langMap.main.search"
+                            class="mx-4"
+                            clearable
+                        ></v-text-field>
                     </v-col>
                     <v-col sm="12" md="2">
                         <v-select
@@ -87,14 +93,14 @@
                                 v-model="project.name"
                             ></v-text-field>
                             <v-select
-                                :items="products"
+                                :items="$store.getters['Products/getProducts']"
                                 item-text="name"
                                 item-value="id"
                                 :label="langMap.tracking.create_project.product"
                                 v-model="project.productId"
                             ></v-select>
                             <v-select
-                                :items="clients"
+                                :items="$store.getters['Clients/getClients']"
                                 item-text="name"
                                 item-value="id"
                                 :label="langMap.tracking.create_project.client"
@@ -153,7 +159,6 @@ export default {
             snackbar: false,
             actionColor: '',
             trackingProjectSearch: '',
-            projects: [],
             totalProjects: 0,
             lastPage: 0,
             loading: false,
@@ -175,8 +180,6 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.tracking.amount}`, value: 'amount'},
                 {text: `${this.$store.state.lang.lang_map.tracking.progress}`, value: 'progress'}
             ],
-            clients: [],
-            products: [],
             project: {
                 name: '',
                 clientId: null,
@@ -189,18 +192,20 @@ export default {
         }
     },
     created() {
-        this.debounceGetProjects = _.debounce(this.getProjects, 500);
+        this.debounceGetProjects = _.debounce(this.__getProjects, 1000);
+        this.debounceGetProducts = _.debounce(this.__getProducts, 1000);
+        this.debounceGetClients = _.debounce(this.__getClients, 1000);
     },
     mounted() {
-        this.getClients();
-        this.getProducts();
+        this.debounceGetProducts();
+        this.debounceGetClients();
         let self = this;
         EventBus.$on('update-theme-color', function (color) {
             self.themeColor = color;
         });
     },
     methods: {
-        getProjects() {
+        __getProjects() {
             this.loading = true;
             if (this.options.sortDesc.length <= 0) {
                 this.options.sortBy[0] = 'id'
@@ -209,37 +214,25 @@ export default {
             if (this.totalTickets < this.options.itemsPerPage) {
                 this.options.page = 1
             }
-            const queryParams = new URLSearchParams({
+            this.$store.dispatch('Projects/getProjectList', {
                 per_page: this.footerProps.itemsPerPage,
                 page: this.options.page,
-                search: this.trackingProjectSearch
-            });
-            axios.get(`/api/tracking/projects?${queryParams.toString()}`)
-                .then(response => {
-                    response = response.data
-                    this.projects = response.data.data
-                    this.totalProjects = response.data.total
-                    this.lastPage = response.data.last_page
+                search: this.trackingProjectSearch,
+                direction: this.options.sortDesc[0],
+                column: this.options.sortBy[0]
+            })
+                .then(({ data, total, last_page }) => {
+                    this.projects = data
+                    this.totalProjects = total
+                    this.lastPage = last_page
                     this.loading = false
                 });
         },
-        getClients() {
-            axios.get('/api/tracking/clients')
-            .then(({data}) => {
-                if (data.success) {
-                    this.clients = data.data;
-                }
-                this.loading = false
-            });
+        __getClients() {
+            this.$store.dispatch('Clients/getClientList', {});
         },
-        getProducts() {
-            axios.get('/api/tracking/products')
-            .then(({data}) => {
-                if (data.success) {
-                    this.products = data.data;
-                }
-                this.loading = false
-            });
+        __getProducts() {
+            this.$store.dispatch('Products/getProductList', {});
         },
         updateItemsCount(value) {
             this.footerProps.itemsPerPage = value
@@ -257,19 +250,17 @@ export default {
             this.dialog = false;
         },
         createProject() {
-            axios.post('/api/tracking/projects', this.project)
-            .then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.getProjects();
-                    this.resetProject();
-                } else {
-                    console.log('error')
-                }
-            });
+            this.$store.dispatch('Projects/createProject', this.project);
+            this.resetProject();
         }
     },
     watch: {
+        footerProps: {
+            handler() {
+                this.debounceGetProjects();
+            },
+            deep: true,
+        },
         options: {
             handler() {
                 this.debounceGetProjects();
@@ -277,12 +268,12 @@ export default {
             deep: true,
         },
         productId: function () {
-            const index = this.products.findIndex(i => i.id === this.productId);
-            this.product = this.products[index];
+            const index = this.$store.getters['Products/getProducts'].findIndex(i => i.id === this.productId);
+            this.product = this.$store.getters['Products/getProducts'][index];
         },
         clientId: function () {
-            const index = this.clients.findIndex(i => i.id === this.clientId);
-            this.client = this.clients[index];
+            const index = this.$store.getters['Clients/getClients'].findIndex(i => i.id === this.clientId);
+            this.client = this.$store.getters['Clients/getClients'][index];
         }
     },
     computed: {

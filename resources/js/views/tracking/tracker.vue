@@ -28,22 +28,18 @@
                                 </v-col>
                                 <v-spacer></v-spacer>
                                 <v-col cols="2" lg="3" md="3" class="text-right">
-                                    <template>
-                                        <ProjectBtn
-                                            key="timerPanelProjectKey"
-                                            :color="themeColor"
-                                            :onChoosable="handlerProjectTimerPanel"
-                                            v-model="timerPanel.project"
-                                            :items="projects"
-                                        ></ProjectBtn>
-                                    </template>
+                                    <ProjectBtn
+                                        key="timerPanelProjectKey"
+                                        :color="themeColor"
+                                        :onChoosable="handlerProjectTimerPanel"
+                                        v-model="timerPanel.project"
+                                    ></ProjectBtn>
 
                                     <TagBtn
                                         key="timerPanelTagKey"
                                         :color="themeColor"
                                         :onChoosable="handlerTagsTimerPanel"
                                         v-model="timerPanel.tags"
-                                        :items="tags"
                                     >
                                     </TagBtn>
 
@@ -102,7 +98,6 @@
                                         :color="themeColor"
                                         :onChoosable="handlerProjectManualPanel"
                                         v-model="manualPanel.project"
-                                        :items="projects"
                                     ></ProjectBtn>
 
                                     <TagBtn
@@ -110,7 +105,6 @@
                                         :color="themeColor"
                                         :onChoosable="handlerTagsManualPanel"
                                         v-model="manualPanel.tags"
-                                        :items="tags"
                                     >
                                     </TagBtn>
 
@@ -150,6 +144,7 @@
                                                     hide-details="auto"
                                                     style="max-width: 100px"
                                                     @blur="handlerSetTimeFrom()"
+                                                    @focus="$event.target.select()"
                                                 ></v-text-field>
                                             </template>
                                             <v-time-picker
@@ -186,6 +181,7 @@
                                                     hide-details="auto"
                                                     style="max-width: 100px"
                                                     @blur="handlerSetTimeTo()"
+                                                    @focus="$event.target.select()"
                                                 ></v-text-field>
                                             </template>
                                             <v-time-picker
@@ -398,7 +394,6 @@
                                                 :key="props.item.id"
                                                 :color="themeColor"
                                                 v-model="props.item.project"
-                                                :items="projects"
                                                 @blur="save(props.item, 'project', props.item.project)"
                                             ></ProjectBtn>
                                         </v-edit-dialog>
@@ -408,7 +403,6 @@
                                             :key="props.item.id"
                                             :color="themeColor"
                                             v-model="props.item.tags"
-                                            :items="tags"
                                             @blur="save(props.item, 'tags', props.item.tags)"
                                         ></TagBtn>
                                     </template>
@@ -457,11 +451,12 @@
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="moment(props.item.date_to).format(`${dateFormat} ${timeFormat}`)"
-                                                    label="Date Until"
-                                                    hint="Date Until"
+                                                    label="Date End"
+                                                    hint="Date End"
                                                     single-line
                                                     counter
                                                     autofocus
+                                                    @focus="$event.target.select()"
                                                 ></v-text-field>
                                             </template>
                                         </v-edit-dialog>
@@ -566,6 +561,7 @@ export default {
     },
     data() {
         return {
+            attemptRepeat: 0,
             tz: {
                 name: moment.tz.guess(),
                 offset: new Date().getTimezoneOffset()
@@ -647,7 +643,6 @@ export default {
             panels: [0],
             /* Data */
             tracking: [],
-            projects: [],
             manualPanel: {
                 description: null,
                 project: null,
@@ -674,15 +669,12 @@ export default {
                 date: moment()
             },
             globalTimer: null,
-            tags: [],
             isLoadingTags: false,
             isLoadingProject: false
         }
     },
     created: function () {
-        this.debounceGetTacking = _.debounce(this.__getTracking, 1000);
-        this.debounceGetTags = _.debounce(this.__getTags, 1000);
-        this.debounceGetProjects = _.debounce(this.__getProjects, 1000);
+        this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
         this.dateRange = [
             moment().subtract(1, 'days').format(this.dateFormat),
             moment().format(this.dateFormat)
@@ -693,9 +685,11 @@ export default {
     },
     mounted() {
         this.__globalTimer();
-        this.debounceGetTacking();
-        this.debounceGetTags();
-        this.debounceGetProjects();
+        this.debounceGetTracking();
+        this.$store.dispatch('Projects/getProjectList', { search: null });
+        this.$store.dispatch('Products/getProductList', { search: null });
+        this.$store.dispatch('Clients/getClientList', { search: null });
+        this.$store.dispatch('Tags/getTagList');
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
@@ -709,6 +703,7 @@ export default {
             }, 1000);
         },
         __getTracking() {
+            if (this.attemptRepeat > 5) return;
             this.loading = true;
             const queryParams = new URLSearchParams({
                 date_from: this.dateRange[0] || null,
@@ -718,10 +713,12 @@ export default {
                 .then(({ data }) => {
                     this.tracking = data.data;
                     this.loading = false;
+                    this.attemptRepeat = 0;
                     return data;
                 })
                 .catch(e => {
-                    this.debounceGetTacking();
+                    this.attemptRepeat++;
+                    this.debounceGetTracking();
                 });
         },
         __createTracking(data) {
@@ -730,7 +727,7 @@ export default {
                 .then(({ data }) => {
                     if (!data.success) {
                         if (data.error) {
-                            this.debounceGetTacking();
+                            this.debounceGetTracking();
                             this.resetManualPanel();
                             this.loadingCreateTrack = false;
                             const error = Object.keys(data.error)[0];
@@ -740,7 +737,7 @@ export default {
                         }
                         return false;
                     }
-                    this.debounceGetTacking();
+                    this.debounceGetTracking();
                     this.resetManualPanel();
                     this.loadingCreateTrack = false;
                     return data;
@@ -752,7 +749,7 @@ export default {
                 .then(({ data }) => {
                     if (!data.success) {
                         if (data.error) {
-                            this.debounceGetTacking();
+                            this.debounceGetTracking();
                             this.resetManualPanel();
                             this.loadingUpdateTrack = false;
                             const error = Object.keys(data.error)[0];
@@ -762,7 +759,7 @@ export default {
                         }
                         return false;
                     }
-                    this.debounceGetTacking();
+                    this.debounceGetTracking();
                     this.resetManualPanel();
                     this.loadingUpdateTrack = false;
                     return data;
@@ -772,47 +769,16 @@ export default {
             this.loadingDeleteTrack = true;
             return axios.delete(`/api/tracking/tracker/${id}`)
                 .finally(e => {
-                    this.debounceGetTacking();
+                    this.debounceGetTracking();
                     this.loadingDeleteTrack = false;
                 });
         },
         __duplicateTracking(id) {
             return axios.post(`/api/tracking/tracker/${id}/duplicate`)
                 .then(({ data }) => {
-                    this.debounceGetTacking();
+                    this.debounceGetTracking();
                     return data;
                 });
-        },
-        __getTags() {
-            if (this.isLoadingTags || this.tags.length) return;
-            this.isLoadingTags = true;
-            return axios.get('/api/tags')
-                .then(({ data }) => {
-                    if (data.success) {
-                        this.tags = data.data;
-                        return data.data;
-                    }
-                    this.isLoadingTags = false;
-                    return null;
-                })
-                .catch(e => (this.debounceGetTags()));
-        },
-        __getProjects() {
-            if (this.isLoadingProject) return;
-            this.isLoadingProject = true;
-            return axios.get(`/api/tracking/projects`)
-                .then(({ data }) => {
-                    if (data.success) {
-                        this.projects = data.data.data;
-                        return data.data.data;
-                    }
-                    return null;
-                })
-                .catch(e => {
-                    console.log(e);
-                    this.debounceGetProjects();
-                })
-                .finally(() => ( this.isLoadingProject = false ))
         },
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
@@ -881,6 +847,7 @@ export default {
                 .then(data => {
                     if (data.success) {
                         this.__updateTrackingById(data.data.id, {
+                            date_from: moment(),
                             date_to: null,
                             status: 'started'
                         });
@@ -938,7 +905,7 @@ export default {
             if (this.dateRange.length === 2) {
                 this.dateRange.sort();
                 this.dateRangePicker = false;
-                this.debounceGetTacking();
+                this.debounceGetTracking();
             }
         },
         handlerSetTimeFrom() {
@@ -1040,7 +1007,7 @@ export default {
             return this.tracking;
         },
         getFilteredProjects() {
-            return this.projects.map(entry => {
+            return this.$store.getters['Projects/getProjects'].map(entry => {
                 const name = entry.name.length > this.nameLimit
                     ? entry.name.slice(0, this.nameLimit) + '...'
                     : entry.name
@@ -1075,17 +1042,7 @@ export default {
                 .minutes(this.timeTo.toString().split(':')[1]);
         },
         search () {
-            if (this.projects.length > 0) return;
-            if (this.isLoadingSearchProject) return;
-            this.isLoadingSearchProject = true;
-            const queryParams = new URLSearchParams({
-                search: this.search ?? ''
-            });
-            axios.get(`/api/tracking/projects?${queryParams}`)
-                .then(({data}) => {
-                    this.projects = data.data.data;
-                })
-                .finally(() => (this.isLoadingSearchProject = false));
+            this.$store.dispatch('Projects/getProjectList', { search: this.search });
         },
         globalTimer: function () {
             // Update DataTable passed field
