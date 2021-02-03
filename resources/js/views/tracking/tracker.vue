@@ -435,6 +435,8 @@
                                                     hint="Date From"
                                                     single-line
                                                     counter
+                                                    autofocus
+                                                    @focus="$event.target.select()"
                                                 ></v-text-field>
                                             </template>
                                         </v-edit-dialog>
@@ -454,8 +456,8 @@
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="moment(props.item.date_to).format(`${dateFormat} ${timeFormat}`)"
-                                                    label="Date Until"
-                                                    hint="Date Until"
+                                                    label="Date End"
+                                                    hint="Date End"
                                                     single-line
                                                     counter
                                                     autofocus
@@ -675,7 +677,7 @@ export default {
         }
     },
     created: function () {
-        this.debounceGetTacking = _.debounce(this.__getTracking, 1000);
+        this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
         this.dateRange = [
             moment().subtract(1, 'days').format(this.dateFormat),
             moment().format(this.dateFormat)
@@ -686,7 +688,7 @@ export default {
     },
     mounted() {
         this.__globalTimer();
-        this.debounceGetTacking();
+        this.debounceGetTracking();
         this.$store.dispatch('Projects/getProjectList', { search: null });
         this.$store.dispatch('Products/getProductList', { search: null });
         this.$store.dispatch('Clients/getClientList', { search: null });
@@ -719,7 +721,7 @@ export default {
                 })
                 .catch(e => {
                     this.attemptRepeat++;
-                    this.debounceGetTacking();
+                    this.debounceGetTracking();
                 });
         },
         __createTracking(data) {
@@ -728,7 +730,7 @@ export default {
                 .then(({ data }) => {
                     if (!data.success) {
                         if (data.error) {
-                            this.debounceGetTacking();
+                            this.debounceGetTracking();
                             this.resetManualPanel();
                             this.loadingCreateTrack = false;
                             const error = Object.keys(data.error)[0];
@@ -738,7 +740,7 @@ export default {
                         }
                         return false;
                     }
-                    this.debounceGetTacking();
+                    this.debounceGetTracking();
                     this.resetManualPanel();
                     this.loadingCreateTrack = false;
                     return data;
@@ -750,7 +752,7 @@ export default {
                 .then(({ data }) => {
                     if (!data.success) {
                         if (data.error) {
-                            this.debounceGetTacking();
+                            this.debounceGetTracking();
                             this.resetManualPanel();
                             this.loadingUpdateTrack = false;
                             const error = Object.keys(data.error)[0];
@@ -760,7 +762,7 @@ export default {
                         }
                         return false;
                     }
-                    this.debounceGetTacking();
+                    this.debounceGetTracking();
                     this.resetManualPanel();
                     this.loadingUpdateTrack = false;
                     return data;
@@ -770,14 +772,14 @@ export default {
             this.loadingDeleteTrack = true;
             return axios.delete(`/api/tracking/tracker/${id}`)
                 .finally(e => {
-                    this.debounceGetTacking();
+                    this.debounceGetTracking();
                     this.loadingDeleteTrack = false;
                 });
         },
         __duplicateTracking(id) {
             return axios.post(`/api/tracking/tracker/${id}/duplicate`)
                 .then(({ data }) => {
-                    this.debounceGetTacking();
+                    this.debounceGetTracking();
                     return data;
                 });
         },
@@ -906,7 +908,7 @@ export default {
             if (this.dateRange.length === 2) {
                 this.dateRange.sort();
                 this.dateRangePicker = false;
-                this.debounceGetTacking();
+                this.debounceGetTracking();
             }
         },
         handlerSetTimeFrom() {
