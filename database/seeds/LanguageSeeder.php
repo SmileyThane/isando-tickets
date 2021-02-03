@@ -404,7 +404,8 @@ class LanguageSeeder extends Seeder
     "on": " on ",
     "by": " by ",
     "and_it_was_closed": " and it was closed.",
-    "primary": "Primary"
+    "primary": "Primary",
+    "version": "Version"
   },
   "system_settings": {
     "title": "System settings",
@@ -916,7 +917,8 @@ class LanguageSeeder extends Seeder
 "on": " von ",
 "by": " zusammengeführt ",
 "and_it_was_closed": " and it was closed.",
-"primary": "Primär"
+"primary": "Primär",
+"version": "Version"
  },
   "system_settings": {
     "title": "Systemeinstellungen",

@@ -23,6 +23,7 @@ Route::post('reset_password', 'API\AuthController@resetPassword');
 Route::get('plans', 'API\AuthController@plans');
 Route::get('time_zones', 'HomeController@getTimeZones');
 Route::get('/mail/receive/{type?}', 'HomeController@receiveMail')->name('receiveEmail');
+Route::get('version', 'API\AuthController@getAppVersion');
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('auth/check', 'Controller@checkAuth');

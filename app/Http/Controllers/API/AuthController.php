@@ -114,4 +114,8 @@ class AuthController extends Controller
         return self::showResponse($result);
     }
 
+    public function getAppVersion(Request $request)
+    {
+        return self::showResponse(true, \Tremby\LaravelGitVersion\GitVersionHelper::getVersion());
+    }
 }
