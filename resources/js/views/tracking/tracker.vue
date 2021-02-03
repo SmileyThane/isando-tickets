@@ -40,7 +40,6 @@
                                         :color="themeColor"
                                         :onChoosable="handlerTagsTimerPanel"
                                         v-model="timerPanel.tags"
-                                        :items="tags"
                                     >
                                     </TagBtn>
 
@@ -106,7 +105,6 @@
                                         :color="themeColor"
                                         :onChoosable="handlerTagsManualPanel"
                                         v-model="manualPanel.tags"
-                                        :items="tags"
                                     >
                                     </TagBtn>
 
@@ -405,7 +403,6 @@
                                             :key="props.item.id"
                                             :color="themeColor"
                                             v-model="props.item.tags"
-                                            :items="tags"
                                             @blur="save(props.item, 'tags', props.item.tags)"
                                         ></TagBtn>
                                     </template>
@@ -673,14 +670,12 @@ export default {
                 date: moment()
             },
             globalTimer: null,
-            tags: [],
             isLoadingTags: false,
             isLoadingProject: false
         }
     },
     created: function () {
         this.debounceGetTacking = _.debounce(this.__getTracking, 1000);
-        this.debounceGetTags = _.debounce(this.__getTags, 1000);
         this.dateRange = [
             moment().subtract(1, 'days').format(this.dateFormat),
             moment().format(this.dateFormat)
@@ -692,10 +687,10 @@ export default {
     mounted() {
         this.__globalTimer();
         this.debounceGetTacking();
-        this.debounceGetTags();
-        this.$store.dispatch('Projects/getProjectList');
+        this.$store.dispatch('Projects/getProjectList', { search: null });
         this.$store.dispatch('Products/getProductList', { search: null });
         this.$store.dispatch('Clients/getClientList', { search: null });
+        this.$store.dispatch('Tags/getTagList');
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
@@ -785,20 +780,6 @@ export default {
                     this.debounceGetTacking();
                     return data;
                 });
-        },
-        __getTags() {
-            if (this.isLoadingTags || this.tags.length) return;
-            this.isLoadingTags = true;
-            return axios.get('/api/tags')
-                .then(({ data }) => {
-                    if (data.success) {
-                        this.tags = data.data;
-                        return data.data;
-                    }
-                    this.isLoadingTags = false;
-                    return null;
-                })
-                .catch(e => (this.debounceGetTags()));
         },
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
@@ -1061,17 +1042,7 @@ export default {
                 .minutes(this.timeTo.toString().split(':')[1]);
         },
         search () {
-            if (this.projects.length > 0) return;
-            if (this.isLoadingSearchProject) return;
-            this.isLoadingSearchProject = true;
-            const queryParams = new URLSearchParams({
-                search: this.search ?? ''
-            });
-            axios.get(`/api/tracking/projects?${queryParams}`)
-                .then(({data}) => {
-                    this.projects = data.data.data;
-                })
-                .finally(() => (this.isLoadingSearchProject = false));
+            this.$store.dispatch('Projects/getProjectList', { search: this.search });
         },
         globalTimer: function () {
             // Update DataTable passed field

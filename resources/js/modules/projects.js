@@ -4,8 +4,11 @@ export default {
         projects: []
     },
     actions: {
-        getProjectList({commit}) {
-            axios.get('/api/tracking/projects')
+        getProjectList({commit}, { search }) {
+            const queryParams = new URLSearchParams({
+                search: search ?? ''
+            });
+            axios.get(`/api/tracking/projects?${queryParams.toString()}`)
                 .then(({ data: { success, data: { data: projects } } }) => {
                     if (success) {
                         commit('GET_PROJECTS', projects)
