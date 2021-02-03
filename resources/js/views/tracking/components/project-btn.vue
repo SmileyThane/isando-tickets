@@ -261,7 +261,8 @@ export default {
         createNewProject() {
             if (this.createProjectValid) {
                 this.menu = false;
-                this.$store.dispatch('Projects/createProject', this.form);
+                this.$store.dispatch('Projects/createProject', this.form)
+                    .then(project => (this.selectedProject = project));
                 this.resetNewProjectForm();
             }
         }

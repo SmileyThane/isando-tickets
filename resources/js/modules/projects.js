@@ -5,7 +5,7 @@ export default {
     },
     actions: {
         getProjectList({commit}, params) {
-            if (!params.search) params.search = '';
+            if (params && !params.search) params.search = '';
             const queryParams = new URLSearchParams(params);
             return axios.get(`/api/tracking/projects?${queryParams.toString()}`)
                 .then(({ data: { success, data } }) => {
