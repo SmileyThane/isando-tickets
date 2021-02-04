@@ -73,6 +73,9 @@
             <template v-slot:item.category.name="{ item }">
                  {{ item.category ? langMap.ticket_categories[item.category.name] : '' }}
             </template>
+            <template v-slot:item.product.name="{ item }">
+                {{ item.product.full_name }}
+            </template>
             <template v-slot:item.assigned_person="{ item }">
                 <div @click="showItem(item)" class="justify-center" v-if="item.assigned_person">{{item.assigned_person.user_data.full_name}}
                 </div>
@@ -280,17 +283,18 @@
                 if (this.totalTickets < this.options.itemsPerPage) {
                     this.options.page = 1
                 }
-                let queryParams = new URLSearchParams({
-                    search: this.ticketsSearch,
-                    sort_by: this.manageSortableField(this.options.sortBy[0]),
-                    sort_val: this.options.sortDesc[0],
-                    with_spam: this.options.withSpam,
-                    per_page: this.options.itemsPerPage,
-                    minified: this.minifiedTickets,
-                    page: this.options.page
-                });
-                axios.get(`/api/ticket?${queryParams.toString()}`)
-                    .then(
+
+                axios.get('/api/ticket', {
+                    params: {
+                        search: this.ticketsSearch,
+                        sort_by: this.manageSortableField(this.options.sortBy[0]),
+                        sort_val: this.options.sortDesc[0],
+                        with_spam: this.options.withSpam,
+                        per_page: this.options.itemsPerPage,
+                        minified: this.minifiedTickets,
+                        page: this.options.page
+                    }
+                }).then(
                         response => {
                             response = response.data
                             this.tickets = response.data.data

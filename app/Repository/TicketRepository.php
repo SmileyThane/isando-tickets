@@ -68,7 +68,7 @@ class TicketRepository
             $ticketIds = $tickets->pluck('id')->toArray();
         }
         $ticketResult = Ticket::whereIn('id', $ticketIds);
-        if ($request->has('search') && trim($request->search)) {
+        if ($request->has('search') && !empty($request->search)) {
             $ticketResult->where(
                 static function ($query) use ($request) {
                     if ($request->has('search_param')) {
@@ -185,7 +185,7 @@ class TicketRepository
     public function find($id)
     {
         return Ticket::where('id', $id)
-            ->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'category',
+            ->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product.category', 'team', 'category',
                 'priority', 'status', 'answers.employee.userData', 'answers.attachments', 'mergedChild',
                 'childTickets.answers.employee.userData', 'childTickets.notices.employee.userData', 'childTickets.answers.attachments',
                 'histories.employee.userData', 'notices.employee.userData', 'attachments', 'mergedParent')->first()->makeVisible(['to']);

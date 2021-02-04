@@ -855,8 +855,8 @@
                         >
                             <span>
                                  <strong>{{ langMap.sidebar.product }}: </strong>
-                                 <span v-if="ticket.product !== null" class="float-md-right">
-                                     {{ ticket.product.name }}
+                                 <span v-if="ticket.product" class="float-md-right">
+                                     {{ ticket.product.full_name }}
                                   </span>
                             </span>
                             <v-spacer></v-spacer>
@@ -879,7 +879,7 @@
                                 color="green"
                                 dense
                                 item-color="green"
-                                item-text="name"
+                                item-text="full_name"
                                 item-value="id"
                                 @input="updateTicket"
                             />
@@ -1725,9 +1725,14 @@ export default {
             });
         },
         getTickets() {
-            const search = this.ticketsSearch;
-            axios.get(`/api/ticket?search_param=${this.searchLabel}&search=${this.ticketsSearch}&minified=1`)
-                .then(response => {
+            let search = this.ticketsSearch;
+            axios.get('/api/ticket', {
+                    params: {
+                        search_param: this.searchLabel,
+                        search: this.ticketsSearch,
+                        minified: 1,
+                    }
+                }).then(response => {
                     if (this.ticketsSearch === search) {
                         response = response.data
                         let result = response.data.data

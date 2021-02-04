@@ -58,10 +58,32 @@ class ProductRepository
                 }
             );
         }
-        $products = Product::whereIn('id', $productIds->get()->pluck('id')->toArray())->with('category');
-        return $products
-            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
-            ->paginate($request->per_page ?? $products->count());
+        $products = Product::whereIn('id', $productIds->get()->pluck('id')->toArray())->with('category')->get();
+
+        $orderFunc = function ($item, $key) use ($request) {
+            switch ($request->sort_by ?? 'name') {
+                case 'id':
+                    return $item->id; //'product_code', 'name', 'photo', 'description'
+                case 'product_code':
+                    $item->product_code;
+                case 'name':
+                    return mb_strtolower($item->name);
+                case 'photo':
+                    return $item->mb_strtolower($item->photo);
+                case 'description':
+                    return $item->mb_strtolower($item->description);
+                case 'full_name':
+                return mb_strtolower($item->full_name);
+            }
+        };
+
+        if ($request->sort_val === 'false') {
+            $products = $products->sortBy($orderFunc);
+        } else {
+            $products = $products->sortByDesc($orderFunc);
+        }
+
+        return $products->paginate($request->per_page ?? $products->count());
     }
 
     public function find($id)

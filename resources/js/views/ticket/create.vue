@@ -78,7 +78,7 @@
                                             :label="langMap.ticket.product_name"
                                             :color="themeColor"
                                             :item-color="themeColor"
-                                            item-text="name"
+                                            item-text="full_name"
                                             item-value="id"
                                             :items="products"
                                             v-model="ticketForm.to_product_id"
@@ -373,7 +373,12 @@
                 });
             },
             getProducts() {
-                axios.get('/api/product').then(response => {
+                axios.get('/api/product', {
+                    params: {
+                        sort_by: 'full_name',
+                        sort_val: false
+                    }
+                }).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.products = response.data.data
