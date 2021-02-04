@@ -49,7 +49,7 @@ class ProductRepository
             $clientIds = $employee->assignedToClients->pluck('client_id')->toArray();
             $productIds = ProductClient::where('client_id', $clientIds);
         }
-        if ($request->search !== '') {
+        if (!empty($request->search)) {
             $productIds->whereHas(
                 'productData',
                 function ($query) use ($request) {
@@ -58,7 +58,7 @@ class ProductRepository
                 }
             );
         }
-        $products = Product::whereIn('id', $productIds->get()->pluck('id')->toArray());
+        $products = Product::whereIn('id', $productIds->get()->pluck('id')->toArray())->with('category');
         return $products
             ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
             ->paginate($request->per_page ?? $products->count());

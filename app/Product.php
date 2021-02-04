@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+    protected $fillable = ['product_code', 'name', 'photo', 'description'];
+
+    protected $appends = ['full_name'];
+
     use SoftDeletes;
 
     public function attachments(): MorphMany
@@ -29,7 +33,15 @@ class Product extends Model
 
     public function category(): BelongsTo
     {
-        return $this->belongsTo(ProductCategory::class, 'id', 'parent_id');
+        return $this->belongsTo(ProductCategory::class, 'category_id', 'id');
     }
 
+    public function getFullNameAttribute()
+    {
+        if ($this->parent_id) {
+            return $this->category->full_name . ' > ' . $this->name;
+        } else {
+            return $this->name;
+        }
+    }
 }

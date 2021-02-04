@@ -52,14 +52,15 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('company/{id?}/product_categories/flat', 'API\CompanyController@getProductCategoriesFlat');
         Route::post('company/{id}/product_category', 'API\CompanyController@attachProductCategory');
         Route::delete('product_category/{id}', 'API\CompanyController@detachProductCategory');
-        Route::get('main_company_name', 'API\CompanyController@mainCompanyName');
-        Route::get('main_company_logo', 'API\CompanyController@mainCompanyLogo');
-        Route::post('main_company_logo', 'API\CompanyController@updateLogo');
-        Route::get('main_company_settings', 'API\CompanyController@getSettings');
-        Route::post('main_company_settings', 'API\CompanyController@updateSettings');
+        Route::post('main_company/settings', 'API\CompanyController@updateSettings');
         Route::post('company/{id}/settings', 'API\CompanyController@updateSettings');
         Route::post('company/{id}/logo', 'API\CompanyController@updateLogo');
-
+        Route::get('main_company/name', 'API\CompanyController@mainCompanyName');
+        Route::get('main_company/logo', 'API\CompanyController@mainCompanyLogo');
+        Route::post('main_company/logo', 'API\CompanyController@updateLogo');
+        Route::get('main_company/settings', 'API\CompanyController@getSettings');
+        Route::get('main_company/product_categories/tree', 'API\CompanyController@getProductCategoriesTree');
+        Route::get('main_company/product_categories/flat', 'API\CompanyController@getProductCategoriesFlat');
 
         //employee management
         Route::get('employee', 'API\CompanyController@getIndividuals');

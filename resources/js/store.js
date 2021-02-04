@@ -75,7 +75,7 @@ export default new Vuex.Store({
                     commit('setThemeColor', localStorage.themeColor);
                     resolve();
                 }
-                axios.get('/api/main_company_settings').then(response => {
+                axios.get('/api/main_company/settings').then(response => {
                     response = response.data;
                     if (response.success === true && response.data.theme_color) {
                         color = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';

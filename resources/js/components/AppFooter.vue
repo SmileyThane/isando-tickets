@@ -4,7 +4,7 @@
         app
     >
         <span class="white--text">&copy; ISANDO 2021</span>
-        <span class="white--text" style="margin-left: auto;">{{ $store.state.lang.lang_map.main.version}} {{ $store.state.appVersion }}</span>
+        <span class="white--text" style="margin-left: auto;" v-if="$store.state.lang && $store.state.lang.lang_map">{{ $store.state.lang.lang_map.main.version }} {{ $store.state.appVersion }}</span>
     </v-footer>
 </template>
 

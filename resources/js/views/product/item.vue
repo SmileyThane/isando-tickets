@@ -30,6 +30,20 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
+                            <v-select
+                                :color="themeColor"
+                                :label="langMap.main.category"
+                                name="category_id"
+                                prepend-icon="mdi-rename-box"
+                                v-model="product.category_id"
+                                :readonly="!enableToEdit"
+                                :items="categories"
+                                :item-color="themeColor"
+                                item-value="id"
+                                item-text="full_name"
+                                dense
+                            />
+
                             <v-text-field
                                 :color="themeColor"
                                 :label="langMap.main.name"
@@ -69,7 +83,7 @@
                                 dense
                             ></v-text-field>
                         </v-form>
-                        <v-col v-if="product.attachments.length > 0 " cols="12">
+                        <v-col v-if="product.attachments && product.attachments.length > 0 " cols="12">
                             <h4>{{ langMap.main.attachments }}</h4>
                             <div
                                 v-for="attachment in product.attachments"
@@ -221,6 +235,8 @@
                 ],
                 product: {
                     id: '',
+                    category_id: '',
+                    product_code: '',
                     product_name: '',
                     product_description: '',
                     clients: []
@@ -231,12 +247,14 @@
                     product_id: null
                 },
                 deleteCustomerDlg: false,
-                clientProductId: null
+                clientProductId: null,
+                categories: []
             }
         },
         mounted() {
             this.getProduct();
             this.getSuppliers();
+            this.getCategories();
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
                 that.themeColor = color;
@@ -285,13 +303,35 @@
                 this.$router.push(`/customer/${item.client_id}`)
             },
             getSuppliers() {
-                axios.get('/api/client?sort_by=name&sort_val=false').then(response => {
+                axios.get('/api/client',{
+                    params: {
+                        sort_by: 'name',
+                        sort_val: false
+                    }
+                }).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.suppliers = response.data.data
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            },
+            getCategories() {
+                axios.get(`/api/main_company/product_categories/flat`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.categories = [{
+                            id: null,
+                            name: this.langMap.main.none,
+                            full_name: this.langMap.main.none,
+                            parent_id: null
+                        }].concat(response.data);
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
                         this.snackbar = true;
                     }
                 });

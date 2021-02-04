@@ -205,10 +205,11 @@ class LanguageSeeder extends Seeder
   },
   "product": {
     "add_new": "Add new product",
-    "code": "Produktcode",
+    "code": "Product code",
     "info": "Product info",
     "product_clients": "Product clients",
-    "unlink_product": "Unlink product"
+    "unlink_product": "Unlink product",
+    "product_created": "New product created"
   },
   "team": {
     "add_new": "Add new team",
@@ -722,7 +723,8 @@ class LanguageSeeder extends Seeder
     "code": "Produktcode",
     "info": "Produktinfo",
     "product_clients": "Produktkunden",
-    "unlink_product": "Produktverknüpfung löschen"
+    "unlink_product": "Produktverknüpfung löschen",
+    "product_created": "Neues Produkt erstellt",
   },
   "team": {
     "add_new": "Neues Team hinzufügen",

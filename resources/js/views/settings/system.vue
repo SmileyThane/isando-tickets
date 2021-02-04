@@ -1077,7 +1077,7 @@ export default {
     },
     methods: {
         getCompany() {
-            axios.get(`/api/main_company_name`).then(response => {
+            axios.get(`/api/main_company/name`).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.company = response.data;
@@ -1104,7 +1104,7 @@ export default {
             });
         },
         getCompanyLogo() {
-            axios.get('/api/main_company_logo').then(response => {
+            axios.get('/api/main_company/logo').then(response => {
                 response = response.data
                 if (response.success === true) {
                     if (response.data) {
@@ -1540,7 +1540,7 @@ export default {
             this.updateTypeDialog = true;
         },
         getCompanySettings() {
-            axios.get(`/api/main_company_settings`).then(response => {
+            axios.get(`/api/main_company/settings`).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     this.companySettings['navbar_style'] = response.data.hasOwnProperty('navbar_style') ? response.data.navbar_style : 1;
@@ -1584,7 +1584,7 @@ export default {
                 let formData = new FormData();
                 formData.append('logo', this.companyNewLogo);
                 axios.post(
-                    '/api/main_company_logo',
+                    '/api/main_company/logo',
                     formData, {
                         headers: {'content-type': 'multipart/form-data'}
                     }
@@ -1614,7 +1614,7 @@ export default {
 
             this.updateCompany();
 
-            axios.post('/api/main_company_settings', this.companySettings).then(response => {
+            axios.post('/api/main_company/settings', this.companySettings).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     localStorage.removeItem('themeColor');

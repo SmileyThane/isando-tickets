@@ -74,7 +74,7 @@ class CompanyController extends Controller
 
     public function attachProductCategory(Request $request): JsonResponse
     {
-        return self::showResponse($this->companyRepo->attachProductCategory($request));
+        return self::showResponse($this->companyRepo->attachProductCategory($request->name, $request->company_id, $request->parent_id));
     }
 
     public function detachProductCategory($id): JsonResponse
