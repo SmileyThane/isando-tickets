@@ -239,8 +239,9 @@
                 headers: [
                     {text: '', value: 'data-table-expand'},
                     {text: 'ID', align: 'start', sortable: false, value: 'id'},
-                    {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.full_name', sortable: false, width: '30%'},
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name', width: '30%'},
+                    {text: `${this.$store.state.lang.lang_map.product.code}`, value: 'product_code', sortable: false},
+                    {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.full_name', sortable: false, width: '25%'},
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name', width: '20%'},
                     {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description', width: '30%'},
                 ],
                 productsSearch: '',
