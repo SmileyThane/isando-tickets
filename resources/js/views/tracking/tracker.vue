@@ -395,6 +395,7 @@
                                                 :color="themeColor"
                                                 v-model="props.item.project"
                                                 @blur="save(props.item, 'project', props.item.project)"
+                                                @input="save(props.item, 'project', props.item.project)"
                                             ></ProjectBtn>
                                         </v-edit-dialog>
                                     </template>
