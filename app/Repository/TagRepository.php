@@ -20,7 +20,8 @@ class TagRepository
 {
 
     protected $rules = [
-        'name' => 'string'
+        'name' => 'string',
+        'color' => 'string'
     ];
 
     public function validate($request, $new = true)
@@ -48,6 +49,7 @@ class TagRepository
         if (!$tag) {
             $tag = new Tag();
             $tag->name = $request->name;
+            $tag->color = $request->color;
             $tag->save();
         }
         return $tag;
@@ -56,6 +58,7 @@ class TagRepository
     public function update(Request $request, Tag $tag)
     {
         $tag->name = $request->name;
+        $tag->color = $request->color;
         $tag->save();
         return $tag;
     }
