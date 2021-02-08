@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@mdi/font": "^5.3.45",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.0.0",
     "cross-env": "^7.0",
     "deepmerge": "^4.2.2",
@@ -20,7 +20,7 @@
     "laravel-mix": "^5.0.7",
     "lodash": "^4.17.20",
     "popper.js": "^1.12",
-    "resolve-url-loader": "^2.3.1",
+    "resolve-url-loader": "^3.1.2",
     "sass": "^1.27.0",
     "sass-loader": "^8.0.2",
     "vue": "^2.6.11",

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\Tracking;
 
-use App\Http\Controllers\API\Tracking\BaseController;
 use Illuminate\Http\Request;
 
 class ProjectController extends BaseController

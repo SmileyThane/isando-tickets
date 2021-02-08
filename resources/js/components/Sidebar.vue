@@ -474,7 +474,7 @@
                 return roleExists
             },
             getCompanyName() {
-                axios.get(`/api/main_company_name`)
+                axios.get(`/api/main_company/name`)
                     .then(
                         response => {
                             this.firstAlias = response.data.data.first_alias
@@ -483,7 +483,7 @@
                         });
             },
             getCompanyLogo() {
-                axios.get(`/api/main_company_logo`).then(response => {
+                axios.get(`/api/main_company/logo`).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.companyLogo = response.data;
@@ -491,7 +491,7 @@
                 });
             },
             getCompanySettings() {
-                axios.get(`/api/main_company_settings`).then(response => {
+                axios.get(`/api/main_company/settings`).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.navbarStyle = response.data.hasOwnProperty('navbar_style') ? response.data.navbar_style : 1;

@@ -39,7 +39,7 @@ class ProductRepository
             $clientIds = $employee->assignedToClients->pluck('client_id')->toArray();
             $productIds = ProductClient::where('client_id', $clientIds);
         }
-        if ($request->search !== '') {
+        if (!empty($request->search)) {
             $productIds->whereHas(
                 'productData',
                 function ($query) use ($request) {
@@ -48,10 +48,32 @@ class ProductRepository
                 }
             );
         }
-        $products = Product::whereIn('id', $productIds->get()->pluck('id')->toArray());
-        return $products
-            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
-            ->paginate($request->per_page ?? $products->count());
+        $products = Product::whereIn('id', $productIds->get()->pluck('id')->toArray())->with('category')->get();
+
+        $orderFunc = function ($item, $key) use ($request) {
+            switch ($request->sort_by ?? 'name') {
+                case 'id':
+                    return $item->id; //'product_code', 'name', 'photo', 'description'
+                case 'product_code':
+                    $item->product_code;
+                case 'name':
+                    return mb_strtolower($item->name);
+                case 'photo':
+                    return $item->mb_strtolower($item->photo);
+                case 'description':
+                    return $item->mb_strtolower($item->description);
+                case 'full_name':
+                return mb_strtolower($item->full_name);
+            }
+        };
+
+        if ($request->sort_val === 'false') {
+            $products = $products->sortBy($orderFunc);
+        } else {
+            $products = $products->sortByDesc($orderFunc);
+        }
+
+        return $products->paginate($request->per_page ?? $products->count());
     }
 
     public function find($id)
@@ -66,7 +88,7 @@ class ProductRepository
         $product->description = $request->product_description;
         $product->photo = $request->product_photo;
         $product->category_id = $request->category_id ?? null;
-//        $product->product_code = $request->product_code;
+        $product->product_code = $request->product_code;
         $product->save();
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
         foreach ($files as $file) {

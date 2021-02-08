@@ -23,165 +23,187 @@
                         <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="canceluserData">
                             {{this.$store.state.lang.lang_map.main.cancel}}
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="userData">
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">
                             {{this.$store.state.lang.lang_map.main.update}}
                         </v-btn>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-text-field
-                                    :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.title_before_name"
-                                    name="title_before_name"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                    v-model="userData.title_before_name"
-                                    :error-messages="errors.title_before_name"
-                                    lazy-validation
-                                    class="col-md-6"
-                                    :readonly="!enableToEdit"
-                                    dense
-                                ></v-text-field>
+                                <v-col class="col-md-5">
+                                    <label>{{ langMap.profile.avatar }}</label>
 
-                                <v-text-field
-                                    :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.title"
-                                    name="title"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                    v-model="userData.title"
-                                    :error-messages="errors.title"
-                                    lazy-validation
-                                    class="col-md-6"
-                                    :readonly="!enableToEdit"
-                                    dense
-                                ></v-text-field>
+                                    <v-img
+                                        :src="avatar"
+                                        contain
+                                        style="z-index: 1; max-height: 20em; min-height: 10em;"
+                                    >
+                                        <v-file-input
+                                            v-model="newAvatar"
+                                            :color="themeColor"
+                                            :disabled="!enableToEdit"
+                                            accept="image/*"
+                                            dense
+                                            prepend-icon="mdi-camera"
+                                            style="z-index: 2; max-width: 1em;"
+                                        />
+                                    </v-img>
+                                </v-col>
+                                <v-col class="col-md-7">
+                                    <v-text-field
+                                        v-model="userData.number"
+                                        :color="themeColor"
+                                        :error-messages="errors.number"
+                                        :label="langMap.profile.personal_id"
+                                        :readonly="!enableToEdit"
+                                        dense
+                                        name="number"
+                                        type="text"
+                                        prepend-icon="mdi-picture-in-picture-top-right-outline"
+                                    />
+                                    <v-text-field
+                                        :color="themeColor"
+                                        :label="langMap.main.title_before_name"
+                                        name="title_before_name"
+                                        prepend-icon="mdi-book-account-outline"
+                                        type="text"
+                                        v-model="userData.title_before_name"
+                                        :error-messages="errors.title_before_name"
+                                        lazy-validation
+                                        :readonly="!enableToEdit"
+                                        dense
+                                    />
 
-                                <v-text-field
-                                    :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.first_name"
-                                    name="name"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                    v-model="userData.name"
-                                    :error-messages="errors.name"
-                                    lazy-validation
-                                    required
-                                    class="col-md-6"
-                                    :readonly="!enableToEdit"
-                                    dense
-                                ></v-text-field>
-                                <v-text-field
-                                    :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.middle_name"
-                                    name="middle_name"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                    v-model="userData.middle_name"
-                                    :error-messages="errors.middle_name"
-                                    lazy-validation
-                                    class="col-md-6"
-                                    :readonly="!enableToEdit"
-                                    dense
-                                ></v-text-field>
-                                <v-text-field
-                                    :color="themeColor"
-                                    :label="this.$store.state.lang.lang_map.main.last_name"
-                                    name="surname"
-                                    prepend-icon="mdi-book-account-outline"
-                                    type="text"
-                                    v-model="userData.surname"
-                                    :error-messages="errors.surname"
-                                    lazy-validation
-                                    class="col-md-6"
-                                    :readonly="!enableToEdit"
-                                    dense
-                                ></v-text-field>
-                                <v-text-field
-                                    :color="themeColor"
-                                    id="password"
-                                    :label="this.$store.state.lang.lang_map.main.password"
-                                    placeholder="********"
-                                    name="password"
-                                    prepend-icon="mdi-lock"
-                                    type="password"
-                                    v-model="userData.password"
-                                    :error-messages="errors.password"
-                                    lazy-validation
-                                    class="col-md-6"
-                                    required
-                                    :readonly="!enableToEdit"
-                                    dense
-                                ></v-text-field>
-                                <v-select
-                                    :label="this.$store.state.lang.lang_map.main.country"
-                                    :color="themeColor"
-                                    class="col-md-6"
-                                    :item-color="themeColor"
-                                    name="country"
-                                    prepend-icon="mdi-map"
-                                    item-value="id"
-                                    :items="countries"
-                                    v-model="userData.country_id"
-                                    :error-messages="errors.country_id"
-                                    lazy-validation
-                                    :readonly="!enableToEdit"
-                                    required
-                                    dense>
-                                <template slot="selection" slot-scope="data">
-                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
-                                </template>
-                                <template slot="item" slot-scope="data">
-                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
-                                </template>
-                                </v-select>
-                                <v-text-field
-                                    :color="themeColor"
-                                    label="Anredeform"
-                                    name="anredeform"
-                                    prepend-icon="mdi-mail"
-                                    type="text"
-                                    v-model="userData.anredeform"
-                                    :error-messages="errors.anredeform"
-                                    lazy-validation
-                                    class="col-md-6"
-                                    required
-                                    :readonly="!enableToEdit"
-                                    dense
-                                ></v-text-field>
-                                <v-select
-                                    :label="this.$store.state.lang.lang_map.main.language"
-                                    :color="themeColor"
-                                    class="col-md-6"
-                                    :item-color="themeColor"
-                                    name="language"
-                                    prepend-icon="mdi-web"
-                                    item-text="name"
-                                    item-value="id"
-                                    :items="languages"
-                                    v-model="userData.language_id"
-                                    :error-messages="errors.language_id"
-                                    lazy-validation
-                                    :readonly="!enableToEdit"
-                                    dense
-                                />
-                                <v-select
-                                    :label="this.$store.state.lang.lang_map.main.timezone"
-                                    :color="themeColor"
-                                    class="col-md-6"
-                                    :item-color="themeColor"
-                                    name="timezone"
-                                    prepend-icon="mdi-timetable"
-                                    item-text="text"
-                                    item-value="id"
-                                    :items="timezones"
-                                    v-model="userData.timezone_id"
-                                    :error-messages="errors.timezone_id"
-                                    lazy-validation
-                                    :readonly="!enableToEdit"
-                                    dense
-                                />
+                                    <v-text-field
+                                        :color="themeColor"
+                                        :label="langMap.main.title"
+                                        name="title"
+                                        prepend-icon="mdi-book-account-outline"
+                                        type="text"
+                                        v-model="userData.title"
+                                        :error-messages="errors.title"
+                                        lazy-validation
+                                        :readonly="!enableToEdit"
+                                        dense
+                                    />
+
+                                    <v-text-field
+                                        :color="themeColor"
+                                        :label="langMap.main.first_name"
+                                        name="name"
+                                        prepend-icon="mdi-book-account-outline"
+                                        type="text"
+                                        v-model="userData.name"
+                                        :error-messages="errors.name"
+                                        lazy-validation
+                                        required
+                                        :readonly="!enableToEdit"
+                                        dense
+                                    />
+                                    <v-text-field
+                                        :color="themeColor"
+                                        :label="langMap.main.middle_name"
+                                        name="middle_name"
+                                        prepend-icon="mdi-book-account-outline"
+                                        type="text"
+                                        v-model="userData.middle_name"
+                                        :error-messages="errors.middle_name"
+                                        lazy-validation
+                                        :readonly="!enableToEdit"
+                                        dense
+                                    />
+                                    <v-text-field
+                                        :color="themeColor"
+                                        :label="langMap.main.last_name"
+                                        name="surname"
+                                        prepend-icon="mdi-book-account-outline"
+                                        type="text"
+                                        v-model="userData.surname"
+                                        :error-messages="errors.surname"
+                                        lazy-validation
+                                        :readonly="!enableToEdit"
+                                        dense
+                                    />
+                                    <v-text-field
+                                        :color="themeColor"
+                                        id="password"
+                                        :label="langMap.main.password"
+                                        placeholder="********"
+                                        name="password"
+                                        prepend-icon="mdi-lock"
+                                        type="password"
+                                        v-model="userData.password"
+                                        :error-messages="errors.password"
+                                        lazy-validation
+                                        required
+                                        :readonly="!enableToEdit"
+                                        dense
+                                    />
+                                    <v-select
+                                        :label="langMap.main.country"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        name="country"
+                                        prepend-icon="mdi-map"
+                                        item-value="id"
+                                        :items="countries"
+                                        v-model="userData.country_id"
+                                        :error-messages="errors.country_id"
+                                        lazy-validation
+                                        :readonly="!enableToEdit"
+                                        required
+                                        dense>
+                                        <template slot="selection" slot-scope="data">
+                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                        </template>
+                                        <template slot="item" slot-scope="data">
+                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                        </template>
+                                    </v-select>
+                                    <v-text-field
+                                        :color="themeColor"
+                                        label="Anredeform"
+                                        name="anredeform"
+                                        prepend-icon="mdi-mail"
+                                        type="text"
+                                        v-model="userData.anredeform"
+                                        :error-messages="errors.anredeform"
+                                        lazy-validation
+                                        required
+                                        :readonly="!enableToEdit"
+                                        dense
+                                    />
+                                    <v-select
+                                        :label="langMap.main.language"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        name="language"
+                                        prepend-icon="mdi-web"
+                                        item-text="name"
+                                        item-value="id"
+                                        :items="languages"
+                                        v-model="userData.language_id"
+                                        :error-messages="errors.language_id"
+                                        lazy-validation
+                                        :readonly="!enableToEdit"
+                                        dense
+                                    />
+                                    <v-select
+                                        :label="langMap.main.timezone"
+                                        :color="themeColor"
+                                        :item-color="themeColor"
+                                        name="timezone"
+                                        prepend-icon="mdi-timetable"
+                                        item-text="text"
+                                        item-value="id"
+                                        :items="timezones"
+                                        v-model="userData.timezone_id"
+                                        :error-messages="errors.timezone_id"
+                                        lazy-validation
+                                        :readonly="!enableToEdit"
+                                        dense
+                                    />
+                                </v-col>
                             </v-row>
                         </v-form>
                     </v-card-text>
@@ -254,7 +276,7 @@
                                                                 v-model="emailSignatureForm.name"
                                                                 :label="langMap.main.name"
                                                                 dense
-                                                            ></v-text-field>
+                                                            />
                                                         </v-col>
                                                         <v-col cols="12" class="pa-1">
                                                             <tiptap-vuetify
@@ -452,7 +474,7 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
-                                                        v-text="localized(item.type)"></v-list-item-subtitle>
+                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -485,7 +507,7 @@
                                                         <span v-if="item.country">{{localized(item.country)}}</span>
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
-                                                        v-text="localized(item.type)"></v-list-item-subtitle>
+                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon
@@ -526,7 +548,7 @@
                                                                 v-model="emailForm.email"
                                                                 :label="langMap.main.email"
                                                                 dense
-                                                            ></v-text-field>
+                                                            />
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
                                                             <v-select
@@ -576,9 +598,9 @@
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
                                                                 v-model="phoneForm.phone"
-                                                                :label="this.$store.state.lang.lang_map.main.phone"
+                                                                :label="langMap.main.phone"
                                                                 dense
-                                                            ></v-text-field>
+                                                            />
                                                         </v-col>
                                                         <v-col cols="6" class="pa-1">
                                                             <v-select
@@ -587,7 +609,7 @@
                                                                 item-value="id"
                                                                 v-model="phoneForm.phone_type"
                                                                 :items="phoneTypes"
-                                                                :label="this.$store.state.lang.lang_map.main.type"
+                                                                :label="langMap.main.type"
                                                                 dense
                                                             >
                                                                 <template slot="selection" slot-scope="data">
@@ -632,7 +654,7 @@
                                                                 v-model="addressForm.address.street"
                                                                 :label="langMap.main.address_line1"
                                                                 dense
-                                                            ></v-text-field>
+                                                            />
                                                             <v-text-field
                                                                 no-resize
                                                                 rows="3"
@@ -641,7 +663,7 @@
                                                                 v-model="addressForm.address.street2"
                                                                 :label="langMap.main.address_line2"
                                                                 dense
-                                                            ></v-text-field>
+                                                            />
                                                             <v-text-field
                                                                 no-resize
                                                                 rows="3"
@@ -650,7 +672,7 @@
                                                                 v-model="addressForm.address.street3"
                                                                 :label="langMap.main.address_line3"
                                                                 dense
-                                                            ></v-text-field>
+                                                            />
                                                         </v-col>
                                                         <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
@@ -659,7 +681,7 @@
                                                                 v-model="addressForm.address.postal_code"
                                                                 :label="langMap.main.postal_code"
                                                                 dense
-                                                            ></v-text-field>
+                                                            />
                                                         </v-col>
                                                         <v-col cols="md-6" class="pa-1">
                                                             <v-text-field
@@ -668,7 +690,7 @@
                                                                 v-model="addressForm.address.city"
                                                                 :label="langMap.main.city"
                                                                 dense
-                                                            ></v-text-field>
+                                                            />
                                                         </v-col>
                                                         <v-col cols="md-6" class="pa-1">
                                                             <v-select
@@ -799,7 +821,7 @@
                         <v-container>
                             <div class="row">
                                 <v-col cols="md-6" class="pa-1">
-                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="phoneForm.phone" :label="langMap.main.phone" dense></v-text-field>
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="phoneForm.phone" :label="langMap.main.phone" dense/>
                                 </v-col>
                                 <v-col cols="md-6" class="pa-1">
                                     <v-select :color="themeColor" :item-color="themeColor"
@@ -842,7 +864,7 @@
                                         :label="langMap.main.address_line1"
                                         placeholder=""
                                         dense
-                                    ></v-text-field>
+                                    />
                                     <v-text-field
                                         no-resize
                                         rows="3"
@@ -852,7 +874,7 @@
                                         :label="langMap.main.address_line2"
                                         placeholder=""
                                         dense
-                                    ></v-text-field>
+                                    />
                                     <v-text-field
                                         no-resize
                                         rows="3"
@@ -862,7 +884,7 @@
                                         :label="langMap.main.address_line3"
                                         placeholder=""
                                         dense
-                                    ></v-text-field>
+                                    />
                                 </v-col>
                                 <v-col cols="md-6" class="pa-1">
                                     <v-text-field
@@ -871,7 +893,7 @@
                                         v-model="addressForm.address.postal_code"
                                         :label="langMap.main.postal_code"
                                         dense
-                                    ></v-text-field>
+                                    />
                                 </v-col>
                                 <v-col cols="md-6" class="pa-1">
                                     <v-text-field
@@ -880,7 +902,7 @@
                                         v-model="addressForm.address.city"
                                         :label="langMap.main.city"
                                         dense
-                                    ></v-text-field>
+                                    />
                                 </v-col>
                                 <v-col cols="md-6" class="pa-1">
                                     <v-select
@@ -939,7 +961,7 @@
                         <v-container>
                             <div class="row">
                                 <v-col cols="md-6" class="pa-1">
-                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="emailForm.email" :label="langMap.main.email" dense></v-text-field>
+                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="emailForm.email" :label="langMap.main.email" dense/>
                                 </v-col>
                                 <v-col cols="md-6" class="pa-1">
                                     <v-select v-if="emailForm.email_type === 1" readonly :color="themeColor" :item-color="themeColor"
@@ -989,7 +1011,7 @@
                                         v-model="emailSignatureForm.name"
                                         :label="langMap.main.name"
                                         dense
-                                    ></v-text-field>                                </v-col>
+                                    />                                </v-col>
                                 <v-col cols="12" class="pa-1">
                                     <tiptap-vuetify
                                         ref="body"
@@ -1019,650 +1041,692 @@
 
 <script>
 
-    import EventBus from "../../components/EventBus";
-    import {
-        Blockquote,
-        Bold,
-        BulletList,
-        Code,
-        HardBreak,
-        Heading,
-        History,
-        HorizontalRule,
-        Image,
-        Italic,
-        Link,
-        ListItem,
-        OrderedList,
-        Paragraph,
-        Strike,
-        TiptapVuetify,
-        Underline
-    } from 'tiptap-vuetify';
+import EventBus from "../../components/EventBus";
+import {
+    Blockquote,
+    Bold,
+    BulletList,
+    Code,
+    HardBreak,
+    Heading,
+    History,
+    HorizontalRule,
+    Image,
+    Italic,
+    Link,
+    ListItem,
+    OrderedList,
+    Paragraph,
+    Strike,
+    TiptapVuetify,
+    Underline
+} from 'tiptap-vuetify';
 
-    export default {
-        components: {
-            TiptapVuetify
-        },
-        data() {
-            return {
-                snackbar: false,
-                actionColor: '',
-                snackbarMessage: '',
-                errors: [],
-                enableToEdit: false,
-                themeColor: this.$store.state.themeColor,
-                langMap: this.$store.state.lang.lang_map,
-                userData: {
-                    title: '',
-                    title_before_name: '',
-                    surname: '',
-                    country: '',
-                    anredeform: '',
-                    lang: '',
-                    name: "",
-                    email: "",
-                    password: "",
-                    phones: [],
-                    addresses: [],
-                    emails: [],
-                    language_id: '',
-                    timezone_id: '',
-                    notification_statuses: [],
+export default {
+    components: {
+        TiptapVuetify
+    },
+    data() {
+        return {
+            snackbar: false,
+            actionColor: '',
+            snackbarMessage: '',
+            errors: [],
+            enableToEdit: false,
+            themeColor: this.$store.state.themeColor,
+            langMap: this.$store.state.lang.lang_map,
+            userData: {
+                title: '',
+                title_before_name: '',
+                surname: '',
+                country: '',
+                anredeform: '',
+                lang: '',
+                name: "",
+                email: "",
+                password: "",
+                phones: [],
+                addresses: [],
+                emails: [],
+                language_id: '',
+                timezone_id: '',
+                notification_statuses: [],
+                number: '',
+                avatar_url: ''
+            },
+            notificationStatuses: [],
+            phoneForm: {
+                entity_id: '',
+                entity_type: 'App\\User',
+                phone: '',
+                phone_type: ''
+            },
+            addressForm: {
+                entity_id: '',
+                entity_type: 'App\\User',
+                address: {
+                    street: '',
+                    street2: '',
+                    street3: '',
+                    postal_code: '',
+                    city: '',
+                    country_id: ''
                 },
-                notificationStatuses: [],
-                phoneForm: {
-                    entity_id: '',
-                    entity_type: 'App\\User',
-                    phone: '',
-                    phone_type: ''
-                },
-                addressForm: {
-                    entity_id: '',
-                    entity_type: 'App\\User',
-                    address: {
-                        street: '',
-                        street2: '',
-                        street3: '',
-                        postal_code: '',
-                        city: '',
-                        country_id: ''
-                    },
-                    address_type: ''
-                },
-                emailForm: {
-                    entity_id: '',
-                    entity_type: 'App\\User',
-                    email: '',
-                    email_type: ''
-                },
-                emailSignatureForm: {
-                    entity_id: '',
-                    entity_type: 'App\\User',
-                    name: '',
-                    signature: ''
-                },
-                phoneTypes: [],
-                addressTypes: [],
-                emailTypes: [],
-                languages: [],
-                timezones: [],
-                countries: [],
-                themeColorNew: this.$store.state.themeColor,
-                themeColorDlg: localStorage.themeColorDlg == 1 ? 0 : 1,
-                companySettings: {
-                    theme_color: '',
-                    override_user_theme: false
-                },
-                resetThemeColorFlag: 0,
-                updatePhoneDlg: false,
-                updateAddressDlg: false,
-                updateEmailDlg: false,
-                updateEmailSignatureDlg: false,
-                extensions: [
-                    History,
-                    Blockquote,
-                    Link,
-                    Underline,
-                    Strike,
-                    Italic,
-                    ListItem,
-                    BulletList,
-                    OrderedList,
-                    [Heading, {
-                        options: {
-                            levels: [1, 2, 3]
-                        }
-                    }],
-                    Bold,
-                    Code,
-                    HorizontalRule,
-                    Paragraph,
-                    Image,
-                    HardBreak
-                ]
-            }
-        },
-        mounted() {
-            this.getUser();
-            this.getPhoneTypes();
-            this.getAddressTypes();
-            this.getEmailTypes();
-            this.getLanguages();
-            this.getTimeZones();
-            this.getCountries();
-            this.getCompanySettings();
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeColor = color;
-            });
-        },
-        methods: {
-            localized(item, field = 'name') {
-                let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-                return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
+                address_type: ''
             },
-            getUser() {
-                axios.get('/api/user').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.userData = response.data;
-                        if (this.userData.notification_statuses.length) {
-                            let that = this;
-                            this.userData.notification_statuses.forEach(function (item) {
-                                if (item.status !== 0) {
-                                    that.notificationStatuses.push(item.status);
-                                }
-                            });
-                        } else {
-                            this.notificationStatuses = [101, 102, 103, 201, 202, 301, 302];
-                        }
+            emailForm: {
+                entity_id: '',
+                entity_type: 'App\\User',
+                email: '',
+                email_type: ''
+            },
+            emailSignatureForm: {
+                entity_id: '',
+                entity_type: 'App\\User',
+                name: '',
+                signature: ''
+            },
+            phoneTypes: [],
+            addressTypes: [],
+            emailTypes: [],
+            languages: [],
+            timezones: [],
+            countries: [],
+            themeColorNew: this.$store.state.themeColor,
+            themeColorDlg: localStorage.themeColorDlg == 1 ? 0 : 1,
+            companySettings: {
+                theme_color: '',
+                override_user_theme: false
+            },
+            resetThemeColorFlag: 0,
+            updatePhoneDlg: false,
+            updateAddressDlg: false,
+            updateEmailDlg: false,
+            updateEmailSignatureDlg: false,
+            extensions: [
+                History,
+                Blockquote,
+                Link,
+                Underline,
+                Strike,
+                Italic,
+                ListItem,
+                BulletList,
+                OrderedList,
+                [Heading, {
+                    options: {
+                        levels: [1, 2, 3]
+                    }
+                }],
+                Bold,
+                Code,
+                HorizontalRule,
+                Paragraph,
+                Image,
+                HardBreak
+            ],
+            avatar: '',
+            newAvatar: null,
+        }
 
-                        // console.log(this.userData);
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getLanguages() {
-                axios.get('/api/lang').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.languages = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getTimeZones() {
-                axios.get('/api/time_zones').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.timezones = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getCountries() {
-                axios.get('/api/countries').then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.countries = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            userData(e) {
-                e.preventDefault()
-                this.snackbar = false;
-                axios.post('/api/user', this.userData).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.userData.password = ''
-                        this.getUser()
-                        this.snackbarMessage = this.langMap.main.update_successful;
-                        this.actionColor = 'success'
-                        this.snackbar = true
-                        this.enableToEdit = false
-                        window.location.reload()
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            canceluserData() {
-                this.enableToEdit = false;
-                this.getUser();
-            },
-            updateNotificationsSettings() {
-                this.enableToEdit = false;
-
-                if (this.notificationStatuses.length === 0) {
-                    this.notificationStatuses = [0];
-                }
-                axios.post('/api/user/notifications', {
-                    user_id: this.userData.id,
-                    notification_statuses: this.notificationStatuses
-                }).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.snackbarMessage = this.langMap.profile.notifications_settings_updated;
-                        this.actionColor = 'success';
-                        this.snackbar = true;
-                    } else {
-                        this.getUser();
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.errorType = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getPhoneTypes() {
-                axios.get(`/api/phone_types`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.phoneTypes = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            getAddressTypes() {
-                axios.get(`/api/address_types`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.addressTypes = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            addPhone() {
-                this.phoneForm.entity_id = this.userData.id
-
-                axios.post('/api/phone', this.phoneForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser()
-                        this.snackbarMessage = this.langMap.company.phone_created;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetPhone();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                    return true
-                });
-            },
-            updatePhone() {
-                axios.patch(`/api/phone/${this.phoneForm.id}`, this.phoneForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.phoneForm.id = '';
-                        this.getUser();
-                        this.snackbarMessage = this.langMap.company.phone_updated;
-                        this.actionColor = 'success';
-                        this.snackbar = true;
-                        this.resetPhone();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                    return true
-                });
-            },
-            deletePhone(id) {
-                axios.delete(`/api/phone/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser()
-                        this.snackbarMessage = this.langMap.company.phone_deleted;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetPhone();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            resetPhone() {
-                this.phoneForm = {
-                    entity_id: '',
-                        entity_type: 'App\\User',
-                        phone: '',
-                        phone_type: ''
-                }
-            },
-            addAddress() {
-                this.addressForm.entity_id = this.userData.id
-
-                axios.post('/api/address', this.addressForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser()
-                        this.snackbarMessage = this.langMap.company.address_created;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetAddress();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            updateAddress() {
-                axios.patch(`/api/address/${this.addressForm.id}`, this.addressForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.addressForm.id = '';
-                        this.addressForm.address.street = '';
-                        this.addressForm.address.street2 = '';
-                        this.addressForm.address.street3 = '';
-                        this.addressForm.address.postal_code = '';
-                        this.addressForm.address.city = '';
-                        this.addressForm.address.country_id = '';
-                        this.getUser()
-                        this.snackbarMessage = this.langMap.company.address_updated;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetAddress();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            deleteAddress(id) {
-                axios.delete(`/api/address/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser()
-                        this.snackbarMessage = this.langMap.company.address_deleted;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetAddress();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            resetAddress() {
-                this.addressForm = {
-                    entity_id: '',
-                    entity_type: 'App\\User',
-                    address: {
-                        street: '',
-                        street2: '',
-                        street3: '',
-                        postal_code: '',
-                        city: '',
-                        country_id: ''
-                    },
-                    address_type: ''
-                }
-            },
-            getUserSettings() {
-                this.snackbar = false;
-
-                axios.get('/api/user/settings').then(response => {
-                    response = response.data;
-                    if (response.success === true) {
-                        if (this.companySettings.override_user_theme !== true) {
-                            this.themeColor = response.data.theme_color;
-                            this.$store.state.themeColor = response.data.theme_color;
-                            localStorage.themeColor = response.data.theme_color;
-                            EventBus.$emit('update-theme-color', response.data.theme_color);
-                        }
-                        this.enableToEdit = false;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                    return true;
-                });
-            },
-            userDataSettings() {
-                this.snackbar = false;
-
-                axios.post('/api/user/settings', {theme_color: this.themeColorNew}).then(response => {
-                    response = response.data;
-                    if (response.success === true) {
-                        if (this.companySettings.override_user_theme !== true) {
-                            this.themeColor = this.themeColorNew;
-                            this.$store.state.themeColor = this.themeColorNew;
-                            localStorage.themeColor = this.themeColorNew;
-                            EventBus.$emit('update-theme-color', this.themeColorNew);
-                        }
-                        localStorage.themeColorDlg = this.themeColorDlg == 1 ? 0 : 1;
-                        this.enableToEdit = false;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                    return true;
-                });
-            },
-            canceluserDataSettings() {
-                this.enableToEdit = false;
-                this.getUser();
-                this.getCompanySettings();
-                if (!this.companySettings.override_user_theme) {
-                    this.getUserSettings();
-                }
-            },
-            getCompanySettings() {
-                axios.get(`/api/main_company_settings`).then(response => {
-                    response = response.data;
-                    if (response.success === true) {
-                        this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
-                        this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            resetThemeColor() {
-                const resetThemeColorFlag = this.resetThemeColorFlag;
-                if (resetThemeColorFlag === 1) {
-                    this.themeColorNew = this.companySettings.theme_color;
-                } else {
-                    this.themeColorNew = this.$store.state.themeColor;
-                }
-            },
-            editPhone(item) {
-                this.updatePhoneDlg = true;
-
-                this.phoneForm.id = item.id;
-                this.phoneForm.phone = item.phone;
-                this.phoneForm.phone_type = item.type ? item.type.id : 0;
-            },
-            editAddress(item) {
-                this.updateAddressDlg = true;
-
-                this.addressForm.id = item.id;
-                this.addressForm.address.street = item.street;
-                this.addressForm.address.street2 = item.street2;
-                this.addressForm.address.street3 = item.street3;
-                this.addressForm.address.postal_code = item.postal_code;
-                this.addressForm.address.city = item.city;
-                this.addressForm.address.country_id = item.country ? item.country.id : 0;
-            },
-            getEmailTypes() {
-                axios.get(`/api/email_types`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.emailTypes = response.data
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                });
-            },
-            addEmail() {
-                this.emailForm.entity_id = this.userData.id
-                axios.post('/api/email', this.emailForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser()
-                        this.snackbarMessage = this.langMap.company.email_created;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetEmail();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            updateEmail() {
-                axios.patch(`/api/email/${this.emailForm.id}`, this.emailForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.emailForm.id = '';
-                        this.getUser();
-                        this.snackbarMessage = this.langMap.company.email_updated;
-                        this.actionColor = 'success';
-                        this.snackbar = true;
-                        this.resetEmail();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                    return true
-                });
-            },
-            deleteEmail(id) {
-                axios.delete(`/api/email/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser()
-                        this.emailForm.email = ''
-                        this.snackbarMessage = this.langMap.company.email_deleted;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetEmail();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            editEmail(item) {
-                this.updateEmailDlg = true;
-
-                this.emailForm.id = item.id;
-                this.emailForm.email = item.email;
-                this.emailForm.email_type = item.type ? item.type.id : 0;
-            },
-            resetEmail() {
-                this.emailForm = {
-                    entity_id: '',
-                        entity_type: 'App\\User',
-                        email: '',
-                        email_type: ''
-                };
-            },
-            addEmailSignature() {
-                this.emailSignatureForm.entity_id = this.userData.id
-                axios.post('/api/email_signature', this.emailSignatureForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser()
-                        this.snackbarMessage = this.langMap.profile.email_signature_created;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetEmailSignature();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            updateEmailSignature() {
-                axios.patch(`/api/email_signature/${this.emailSignatureForm.id}`, this.emailSignatureForm).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.emailSignatureForm.id = '';
-                        this.getUser();
-                        this.snackbarMessage = this.langMap.profile.email_signature_updated;
-                        this.actionColor = 'success';
-                        this.snackbar = true;
-                        this.resetEmailSignature();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error';
-                        this.snackbar = true;
-                    }
-                    return true
-                });
-            },
-            deleteEmailSignature(id) {
-                axios.delete(`/api/email_signature/${id}`).then(response => {
-                    response = response.data
-                    if (response.success === true) {
-                        this.getUser()
-                        this.emailSignatureForm.name = ''
-                        this.emailSignatureForm.signature = ''
-                        this.snackbarMessage = this.langMap.profile.email_signature_deleted;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetEmailSignature();
-                    } else {
-                        this.snackbarMessage = this.langMap.main.generic_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-            },
-            editEmailSignature(item) {
-                this.updateEmailSignatureDlg = true;
-
-                this.emailSignatureForm.id = item.id;
-                this.emailSignatureForm.name = item.name;
-                this.emailSignatureForm.signature = item.signature;
-            },
-            resetEmailSignature() {
-                this.emailSignatureForm = {
-                    entity_id: '',
-                        entity_type: 'App\\User',
-                        name: '',
-                        signature: ''
-                };
+    },
+    mounted() {
+        this.getUser();
+        this.getPhoneTypes();
+        this.getAddressTypes();
+        this.getEmailTypes();
+        this.getLanguages();
+        this.getTimeZones();
+        this.getCountries();
+        this.getCompanySettings();
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeColor = color;
+        });
+    },
+    watch: {
+        newAvatar(val) {
+            if (this.newAvatar !== null) {
+                this.avatar = URL.createObjectURL(this.newAvatar)
             }
         }
+    },
+    methods: {
+        localized(item, field = 'name') {
+            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
+            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
+        },
+        getUser() {
+            axios.get('/api/user').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.userData = response.data;
+                    if (this.userData.notification_statuses.length) {
+                        let that = this;
+                        this.userData.notification_statuses.forEach(function (item) {
+                            if (item.status !== 0) {
+                                that.notificationStatuses.push(item.status);
+                            }
+                        });
+                    } else {
+                        this.notificationStatuses = [101, 102, 103, 201, 202, 301, 302];
+                    }
+
+                    if (this.userData.avatar_url) {
+                        this.avatar = this.userData.avatar_url;
+                    } else {
+                        this.avatar = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgDTD2qgAAAAASUVORK5CYII=';
+                    }
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getLanguages() {
+            axios.get('/api/lang').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.languages = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getTimeZones() {
+            axios.get('/api/time_zones').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.timezones = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getCountries() {
+            axios.get('/api/countries').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.countries = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateUser() {
+            this.snackbar = false;
+
+            if (this.newAvatar) {
+                let formData = new FormData();
+                formData.append('user_id', this.userData.id);
+                formData.append('avatar', this.newAvatar);
+                axios.post(
+                    '/api/user/avatar',
+                    formData, {
+                        headers: {'content-type': 'multipart/form-data'}
+                    }
+                ).then(response => {
+                    this.newAvatar = null;
+
+                    response = response.data;
+                    if (response.success === true) {
+                        this.avatar = response.data.avatar_url;
+                        this.userData.avatar_url = response.data.avatar_url;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+
+                        return;
+                    }
+                });
+            }
+
+            axios.post('/api/user', this.userData).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.userData.password = ''
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.enableToEdit = false
+                    window.location.reload()
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        canceluserData() {
+            this.enableToEdit = false;
+            this.getUser();
+        },
+        updateNotificationsSettings() {
+            this.enableToEdit = false;
+
+            if (this.notificationStatuses.length === 0) {
+                this.notificationStatuses = [0];
+            }
+            axios.post('/api/user/notifications', {
+                user_id: this.userData.id,
+                notification_statuses: this.notificationStatuses
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.profile.notifications_settings_updated;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.getUser();
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getPhoneTypes() {
+            axios.get(`/api/phone_types`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.phoneTypes = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getAddressTypes() {
+            axios.get(`/api/address_types`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.addressTypes = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        addPhone() {
+            this.phoneForm.entity_id = this.userData.id
+
+            axios.post('/api/phone', this.phoneForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.company.phone_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetPhone();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
+        updatePhone() {
+            axios.patch(`/api/phone/${this.phoneForm.id}`, this.phoneForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.phoneForm.id = '';
+                    this.getUser();
+                    this.snackbarMessage = this.langMap.company.phone_updated;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                    this.resetPhone();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
+        deletePhone(id) {
+            axios.delete(`/api/phone/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.company.phone_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetPhone();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        resetPhone() {
+            this.phoneForm = {
+                entity_id: '',
+                entity_type: 'App\\User',
+                phone: '',
+                phone_type: ''
+            }
+        },
+        addAddress() {
+            this.addressForm.entity_id = this.userData.id
+
+            axios.post('/api/address', this.addressForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.company.address_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetAddress();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateAddress() {
+            axios.patch(`/api/address/${this.addressForm.id}`, this.addressForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.addressForm.id = '';
+                    this.addressForm.address.street = '';
+                    this.addressForm.address.street2 = '';
+                    this.addressForm.address.street3 = '';
+                    this.addressForm.address.postal_code = '';
+                    this.addressForm.address.city = '';
+                    this.addressForm.address.country_id = '';
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.company.address_updated;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetAddress();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        deleteAddress(id) {
+            axios.delete(`/api/address/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.company.address_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetAddress();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        resetAddress() {
+            this.addressForm = {
+                entity_id: '',
+                entity_type: 'App\\User',
+                address: {
+                    street: '',
+                    street2: '',
+                    street3: '',
+                    postal_code: '',
+                    city: '',
+                    country_id: ''
+                },
+                address_type: ''
+            }
+        },
+        getUserSettings() {
+            this.snackbar = false;
+
+            axios.get('/api/user/settings').then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    if (this.companySettings.override_user_theme !== true) {
+                        this.themeColor = response.data.theme_color;
+                        this.$store.state.themeColor = response.data.theme_color;
+                        localStorage.themeColor = response.data.theme_color;
+                        EventBus.$emit('update-theme-color', response.data.theme_color);
+                    }
+                    this.enableToEdit = false;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true;
+            });
+        },
+        userDataSettings() {
+            this.snackbar = false;
+
+            axios.post('/api/user/settings', {theme_color: this.themeColorNew}).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    if (this.companySettings.override_user_theme !== true) {
+                        this.themeColor = this.themeColorNew;
+                        this.$store.state.themeColor = this.themeColorNew;
+                        localStorage.themeColor = this.themeColorNew;
+                        EventBus.$emit('update-theme-color', this.themeColorNew);
+                    }
+                    localStorage.themeColorDlg = this.themeColorDlg == 1 ? 0 : 1;
+                    this.enableToEdit = false;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true;
+            });
+        },
+        canceluserDataSettings() {
+            this.enableToEdit = false;
+            this.getUser();
+            this.getCompanySettings();
+            if (!this.companySettings.override_user_theme) {
+                this.getUserSettings();
+            }
+        },
+        getCompanySettings() {
+            axios.get(`/api/main_company/settings`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
+                    this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        resetThemeColor() {
+            const resetThemeColorFlag = this.resetThemeColorFlag;
+            if (resetThemeColorFlag === 1) {
+                this.themeColorNew = this.companySettings.theme_color;
+            } else {
+                this.themeColorNew = this.$store.state.themeColor;
+            }
+        },
+        editPhone(item) {
+            this.updatePhoneDlg = true;
+
+            this.phoneForm.id = item.id;
+            this.phoneForm.phone = item.phone;
+            this.phoneForm.phone_type = item.type ? item.type.id : 0;
+        },
+        editAddress(item) {
+            this.updateAddressDlg = true;
+
+            this.addressForm.id = item.id;
+            this.addressForm.address.street = item.street;
+            this.addressForm.address.street2 = item.street2;
+            this.addressForm.address.street3 = item.street3;
+            this.addressForm.address.postal_code = item.postal_code;
+            this.addressForm.address.city = item.city;
+            this.addressForm.address.country_id = item.country ? item.country.id : 0;
+        },
+        getEmailTypes() {
+            axios.get(`/api/email_types`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.emailTypes = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        addEmail() {
+            this.emailForm.entity_id = this.userData.id
+            axios.post('/api/email', this.emailForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.company.email_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetEmail();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateEmail() {
+            axios.patch(`/api/email/${this.emailForm.id}`, this.emailForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.emailForm.id = '';
+                    this.getUser();
+                    this.snackbarMessage = this.langMap.company.email_updated;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                    this.resetEmail();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
+        deleteEmail(id) {
+            axios.delete(`/api/email/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.emailForm.email = ''
+                    this.snackbarMessage = this.langMap.company.email_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetEmail();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        editEmail(item) {
+            this.updateEmailDlg = true;
+
+            this.emailForm.id = item.id;
+            this.emailForm.email = item.email;
+            this.emailForm.email_type = item.type ? item.type.id : 0;
+        },
+        resetEmail() {
+            this.emailForm = {
+                entity_id: '',
+                entity_type: 'App\\User',
+                email: '',
+                email_type: ''
+            };
+        },
+        addEmailSignature() {
+            this.emailSignatureForm.entity_id = this.userData.id
+            axios.post('/api/email_signature', this.emailSignatureForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.profile.email_signature_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetEmailSignature();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateEmailSignature() {
+            axios.patch(`/api/email_signature/${this.emailSignatureForm.id}`, this.emailSignatureForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.emailSignatureForm.id = '';
+                    this.getUser();
+                    this.snackbarMessage = this.langMap.profile.email_signature_updated;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                    this.resetEmailSignature();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+                return true
+            });
+        },
+        deleteEmailSignature(id) {
+            axios.delete(`/api/email_signature/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.emailSignatureForm.name = ''
+                    this.emailSignatureForm.signature = ''
+                    this.snackbarMessage = this.langMap.profile.email_signature_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.resetEmailSignature();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        editEmailSignature(item) {
+            this.updateEmailSignatureDlg = true;
+
+            this.emailSignatureForm.id = item.id;
+            this.emailSignatureForm.name = item.name;
+            this.emailSignatureForm.signature = item.signature;
+        },
+        resetEmailSignature() {
+            this.emailSignatureForm = {
+                entity_id: '',
+                entity_type: 'App\\User',
+                name: '',
+                signature: ''
+            };
+        }
     }
+}
 </script>

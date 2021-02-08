@@ -72,6 +72,10 @@ class Client extends Model
         return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 
+    public function Projects() {
+        return $this->hasMany(TrackingProject::class, 'client_id', 'id');
+    }
+
     public function getContactPhoneAttribute()
     {
         return $this->phones()->with('type')->first();

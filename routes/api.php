@@ -23,6 +23,7 @@ Route::post('reset_password', 'API\AuthController@resetPassword');
 Route::get('plans', 'API\AuthController@plans');
 Route::get('time_zones', 'HomeController@getTimeZones');
 Route::get('/mail/receive/{type?}', 'HomeController@receiveMail')->name('receiveEmail');
+Route::get('version', 'API\AuthController@getAppVersion');
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('auth/check', 'Controller@checkAuth');
@@ -41,6 +42,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('user/settings', 'API\UserController@getSettings');
         Route::post('user/settings', 'API\UserController@updateSettings');
         Route::post('user/notifications', 'API\UserController@setNotifications');
+        Route::post('user/avatar', 'API\UserController@updateAvatar');
 
         //company management
         Route::get('company/{id?}', 'API\CompanyController@find');
@@ -50,14 +52,15 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('company/{id?}/product_categories/flat', 'API\CompanyController@getProductCategoriesFlat');
         Route::post('company/{id}/product_category', 'API\CompanyController@attachProductCategory');
         Route::delete('product_category/{id}', 'API\CompanyController@detachProductCategory');
-        Route::get('main_company_name', 'API\CompanyController@mainCompanyName');
-        Route::get('main_company_logo', 'API\CompanyController@mainCompanyLogo');
-        Route::post('main_company_logo', 'API\CompanyController@updateLogo');
-        Route::get('main_company_settings', 'API\CompanyController@getSettings');
-        Route::post('main_company_settings', 'API\CompanyController@updateSettings');
+        Route::post('main_company/settings', 'API\CompanyController@updateSettings');
         Route::post('company/{id}/settings', 'API\CompanyController@updateSettings');
         Route::post('company/{id}/logo', 'API\CompanyController@updateLogo');
-
+        Route::get('main_company/name', 'API\CompanyController@mainCompanyName');
+        Route::get('main_company/logo', 'API\CompanyController@mainCompanyLogo');
+        Route::post('main_company/logo', 'API\CompanyController@updateLogo');
+        Route::get('main_company/settings', 'API\CompanyController@getSettings');
+        Route::get('main_company/product_categories/tree', 'API\CompanyController@getProductCategoriesTree');
+        Route::get('main_company/product_categories/flat', 'API\CompanyController@getProductCategoriesFlat');
 
         //employee management
         Route::get('employee', 'API\CompanyController@getIndividuals');

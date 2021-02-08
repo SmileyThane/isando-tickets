@@ -11,9 +11,11 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class ProductCategory extends Model
 {
+    use SoftDeletes, NodeTrait;
+
     protected $fillable = ['name', 'company_id', 'parent_id'];
 
-    use SoftDeletes, NodeTrait;
+    protected $appends = ['full_name'];
 
     public function company(): BelongsTo
     {
@@ -36,10 +38,10 @@ class ProductCategory extends Model
         return $this->hasMany(Product::class, 'category_id', 'id');
     }
 
-    public function getFullName(): string
+    public function getFullNameAttribute(): string
     {
         if ($this->parent_id) {
-            return $this->parent()->first()->getFullName() . ' > ' . $this->name;
+            return $this->parent->full_name . ' > ' . $this->name;
         } else {
             return $this->name;
         }

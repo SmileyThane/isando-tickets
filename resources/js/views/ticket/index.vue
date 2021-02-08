@@ -185,6 +185,9 @@
             <template v-slot:item.category.name="{ item }">
                 {{ item.category ? item.category.name : '' }}
             </template>
+            <template v-slot:item.product.name="{ item }">
+                {{ item.product.full_name }}
+            </template>
             <template v-slot:item.assigned_person="{ item }">
                 <div v-if="item.assigned_person" class="justify-center" @click="showItem(item)">
                     {{ item.assigned_person.user_data.full_name }}

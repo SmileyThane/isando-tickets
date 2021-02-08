@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Validator;
 class TrackingProjectRepository
 {
 
+    public function genHexColor() {
+        return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+    }
+
     public function validate($request, $new = true)
     {
         $params = [
@@ -37,18 +41,22 @@ class TrackingProjectRepository
 
     public function all(Request $request)
     {
-        $productIds = Auth::user()
-            ->employee
-            ->companyData
-            ->products
-            ->pluck('product_id');
-        $trackingProjects = TrackingProject::with('Product', 'Client')
-            ->whereIn('product_id', $productIds);
+//        $productIds = Auth::user()
+//            ->employee
+//            ->companyData
+//            ->products
+//            ->pluck('product_id');
+        $trackingProjects = TrackingProject::with('Product', 'Client');
+//            ->whereIn('product_id', $productIds);
         if ($request->has('search')) {
             $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
         }
+        if ($request->has('column') && $request->has('direction')) {
+            if ((string)$request->direction === 'true') $request->direction = 'desc';
+            if ((string)$request->direction === 'false') $request->direction = 'asc';
+            $trackingProjects->orderBy($request->column, $request->direction);
+        }
         return $trackingProjects
-//            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
             ->paginate($request->per_page ?? $trackingProjects->count());
     }
 
@@ -64,7 +72,7 @@ class TrackingProjectRepository
         $trackingProject->name = $request->name;
         $trackingProject->product_id = $request->product['id'] ?? $request->productId;
         $trackingProject->client_id = $request->client['id'] ?? $request->clientId;
-        $trackingProject->color = $request->color;
+        $trackingProject->color = $request->color ?? $this->genHexColor();
         if ($request->has('billableByDefault')) {
             $trackingProject->billable_by_default = $request->billable_by_default;
         }

@@ -69,6 +69,8 @@ class CompanyUserRepository
             switch ($orderBy) {
                 case 'id':
                     return $item->userData->id;
+                case 'number':
+                    $item->userData->number;
                 case 'name':
                     return mb_strtolower($item->userData->name);
                 case 'surname':

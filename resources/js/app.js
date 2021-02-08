@@ -54,5 +54,6 @@ const app = new Vue({
         store.dispatch('getLanguage');
         store.dispatch('getRoles');
         store.dispatch('getThemeColor');
+        store.dispatch('getAppVersion');
     }
 });

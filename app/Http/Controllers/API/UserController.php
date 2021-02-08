@@ -94,6 +94,11 @@ class UserController extends Controller
     {
         return self::showResponse(true, $this->userRepo->setNotificationStatuses($request->user_id, $request->notification_statuses));
     }
+
+    public function updateAvatar(Request $request)
+    {
+        return self::showResponse(true, $this->userRepo->updateAvatar($request));
+    }
 }
 
 
