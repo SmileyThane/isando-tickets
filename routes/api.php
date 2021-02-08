@@ -152,6 +152,11 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('link/ticket', 'API\TicketController@addLink');
         Route::post('spam/ticket', 'API\TicketController@markAsSpam');
 
+        //custom ticket filter
+        Route::get('ticket_filters', 'API\TicketController@getFilters');
+        Route::get('ticket_filter_parameters', 'API\TicketController@getFilterParameters');
+        Route::post('ticket_query', 'API\TicketController@addFilter');
+
         //notifications management
         Route::get('notification_types', 'API\NotificationController@getTypes');
         Route::post('notification_type', 'API\NotificationController@addType');
