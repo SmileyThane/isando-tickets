@@ -1,6 +1,6 @@
 <template>
     <v-navigation-drawer
-        :mini-variant="localDrawer"
+        :mini-variant.sync="localDrawer"
         app
         v-model="drawer"
     >
