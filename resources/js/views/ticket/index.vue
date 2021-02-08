@@ -32,6 +32,7 @@
                         <v-text-field
                             v-model="ticketsSearch"
                             :color="themeColor"
+                            :disabled="filterId !== null"
                             :label="langMap.main.search"
                             class="ma-2"
                             hide-details
@@ -66,7 +67,16 @@
                             item-value="id"
                             prepend-icon="mdi-filter"
                             @change="getTickets"
-                        />
+                        >
+                            <template v-slot:append-outer>
+                                <v-icon
+                                    :disabled="filterId === null"
+                                    @click="removeFilter"
+                                >
+                                    mdi-delete
+                                </v-icon>
+                            </template>
+                        </v-autocomplete>
                         <v-text-field
                             v-if="filterPanel"
                             v-model="filterName"
@@ -91,7 +101,7 @@
                                color="green darken-1"
                                outlined
                                @click="saveFilter">
-                            {{langMap.main.save}}
+                            {{ langMap.main.save }}
                         </v-btn>
                     </v-col>
                     <v-col md="2">
@@ -129,20 +139,20 @@
                                             v-model="filterParam.selectedCompareParam"
                                             :color="themeColor"
                                             :items="filterParam.compareParams"
+                                            :label="langMap.filter.compare_param"
                                             hide-details
                                             item-text="name"
                                             item-value="value"
-                                            :label="langMap.filter.compare_param"
                                         ></v-select>
                                         <v-select
                                             v-if="filterParam.type === 'select'"
                                             v-model="filterParam.value"
                                             :color="themeColor"
                                             :items="filterParam.prefilled_values"
+                                            :label="langMap.filter.value"
                                             hide-details
                                             item-text="name"
                                             item-value="id"
-                                            :label="langMap.filter.value"
                                             @change="manageFilter"
                                         >
                                         </v-select>
@@ -446,6 +456,10 @@ export default {
                     console.log('error')
                 }
             });
+        },
+        removeFilter() {
+            this.filterId = null
+            this.getTickets()
         },
         getProducts() {
             axios.get('/api/product').then(response => {
