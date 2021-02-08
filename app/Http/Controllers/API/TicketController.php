@@ -143,4 +143,22 @@ class TicketController extends Controller
         return self::showResponse($result);
     }
 
+    public function addFilter(Request $request)
+    {
+        $result = $this->ticketRepo->addFilter($request);
+        return self::showResponse(true, $result);
+    }
+
+    public function getFilters()
+    {
+        $result = $this->ticketRepo->getFilters();
+        return self::showResponse(true, $result);
+    }
+
+    public function getFilterParameters(Request $request)
+    {
+        $result = $this->ticketRepo->getFilterParameters($request);
+        return self::showResponse(true, $result);
+    }
+
 }
