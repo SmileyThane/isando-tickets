@@ -15,16 +15,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductRepository
 {
-
-    protected $companyRepo;
-    protected $fileRepo;
-
-    public function __construct(CompanyRepository $companyRepository, FileRepository $fileRepository)
-    {
-        $this->fileRepo = $fileRepository;
-        $this->companyRepo = $companyRepository;
-    }
-
     public function validate($request)
     {
         $params = [
@@ -80,11 +70,11 @@ class ProductRepository
         $product->save();
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
         foreach ($files as $file) {
-            $this->fileRepo->store($file, $product->id, Product::class);
+            (new FileRepository())->store($file, $product->id, Product::class);
         }
         $request->product_id = $product->id;
         $request->company_id = Auth::user()->employee->company_id;
-        $this->companyRepo->attachProduct($request);
+        (new CompanyRepository())->attachProduct($request);
         return $product;
     }
 
