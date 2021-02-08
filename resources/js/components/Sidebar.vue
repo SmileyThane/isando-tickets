@@ -284,6 +284,19 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                <v-list-item
+                    link
+                    style="background-color:white;"
+                    to="/tracking/settings"
+                >
+                    <v-list-item-action>
+                        <v-icon>mdi-tune-vertical</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.tracking_settings }}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list-group>
         </v-list>
         <v-divider></v-divider>

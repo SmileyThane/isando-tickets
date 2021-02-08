@@ -20,6 +20,15 @@ export default {
                         return tag;
                     }
                 })
+        },
+        deleteTag({commit, dispatch}, tagId) {
+            axios.delete(`/api/tags/${tagId}`)
+                .then(({ data: { success } }) => {
+                   if (success) {
+                       dispatch('getTagList');
+                       return true;
+                   }
+                });
         }
     },
     mutations: {

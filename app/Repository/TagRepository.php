@@ -3,17 +3,8 @@
 
 namespace App\Repository;
 
-use App\Client;
-use App\Company;
-use App\Product;
 use App\Tag;
-use App\Team;
-use App\TeamCompanyUser;
-use App\Tracking;
-use App\TrackingProject;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TagRepository
@@ -35,6 +26,10 @@ class TagRepository
 
     public function all(Request $request)
     {
+        if ($request->has('search')) {
+            return Tag::where('name', 'LIKE', '%' . $request->get('search') . '%')
+                ->get();
+        }
         return Tag::all();
     }
 
@@ -57,14 +52,18 @@ class TagRepository
 
     public function update(Request $request, Tag $tag)
     {
-        $tag->name = $request->name;
-        $tag->color = $request->color;
+        if ($request->has('name')) {
+            $tag->name = $request->name;
+        }
+        if ($request->has('color')) {
+            $tag->color = $request->color;
+        }
         $tag->save();
         return $tag;
     }
 
-    public function delete(Tracking $tracking)
+    public function delete(Tag $tag)
     {
-
+        $tag->delete();
     }
 }
