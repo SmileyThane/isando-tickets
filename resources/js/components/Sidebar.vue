@@ -69,6 +69,23 @@
         </v-list>
         <v-divider></v-divider>
         <v-list dense>
+            <v-list-item
+                dense
+                :style="'background-color:' + 'white' + ';'"
+                link
+                to="/knowledge-base">
+                <v-list-item-action>
+                    <v-icon>mdi-book-open-page-variant</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{this.$store.state.lang.lang_map.sidebar.knowledge_base}}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+        </v-list>
+        <v-divider></v-divider>
+        <v-list dense>
             <v-list-group
                 :style="'background-color: ' + 'white' + ';'"
                 :value="sidebarGroups"
