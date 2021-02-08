@@ -252,7 +252,6 @@
                         </v-btn>
                     </p>
                 </td>
-
             </template>
         </v-data-table>
         <template>
