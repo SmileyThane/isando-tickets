@@ -363,7 +363,8 @@
                                     dot
                                     inline
                                 >
-                                    <strong>{{ langMap.ticket_statuses[ticket.status.name] }}</strong>
+<!--                                    <strong>{{ langMap.ticket_statuses[ticket.status.name] }}</strong>-->
+                                    <strong>{{ ticket.status.name }}</strong>
                                 </v-badge>
                             </v-btn>
                         </template>
@@ -396,7 +397,8 @@
                                     dot
                                     inline
                                 >
-                                    <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>
+<!--                                    <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>-->
+                                    <strong>{{ ticket.priority.name }}</strong>
                                 </v-badge>
                             </v-btn>
                         </template>
@@ -415,7 +417,8 @@
                                         dot
                                         inline
                                     >
-                                        <strong>{{ langMap.ticket_priorities[priority.name] }}</strong>
+<!--                                        <strong>{{ langMap.ticket_priorities[priority.name] }}</strong>-->
+                                        <strong>{{ priority.name }}</strong>
                                     </v-badge>
                                 </v-list-item-title>
                             </v-list-item>
@@ -432,7 +435,9 @@
                                 class="ma-2 float-md-right"
                                 small
                             >
-                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>
+<!--                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>-->
+                                <strong>{{ ticket.ticket_type.name }}</strong>
+
                             </v-btn>
                         </template>
                         <v-list
@@ -445,7 +450,8 @@
                                 @click="changeType(type.id)"
                             >
                                 <v-list-item-title>
-                                    <strong>{{ langMap.ticket_types[type.name] }}</strong>
+<!--                                    <strong>{{ langMap.ticket_types[type.name] }}</strong>-->
+                                    <strong>{{ type.name }}</strong>
                                 </v-list-item-title>
                             </v-list-item>
                         </v-list>

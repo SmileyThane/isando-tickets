@@ -129,7 +129,7 @@
                                             v-model="ticketForm.name"
                                         ></v-text-field>
                                     </v-col>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <v-select
                                             :label="langMap.ticket.priority"
                                             :color="themeColor"
@@ -139,17 +139,17 @@
                                             :items="priorities"
                                             v-model="ticketForm.priority_id"
                                         >
-                                            <template slot="selection" slot-scope="data">
-                                                {{ langMap.ticket_priorities[data.item.name] }}
-                                            </template>
-                                            <template slot="item" slot-scope="data">
-                                                {{ langMap.ticket_priorities[data.item.name] }}
-                                            </template>
+<!--                                            <template slot="selection" slot-scope="data">-->
+<!--                                                {{ langMap.ticket_priorities[data.item.name] }}-->
+<!--                                            </template>-->
+<!--                                            <template slot="item" slot-scope="data">-->
+<!--                                                {{ langMap.ticket_priorities[data.item.name] }}-->
+<!--                                            </template>-->
                                         </v-select>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-2">
                                         <v-select
-                                            label="Type"
+                                            :label="langMap.main.type"
                                             :color="themeColor"
                                             :item-color="themeColor"
                                             item-text="name"
@@ -157,13 +157,24 @@
                                             :items="types"
                                             v-model="ticketForm.ticket_type_id"
                                         >
-                                            <template slot="selection" slot-scope="data">
-                                                {{ langMap.ticket_types[data.item.name] }}
-                                            </template>
-                                            <template slot="item" slot-scope="data">
-                                                {{ langMap.ticket_types[data.item.name] }}
-                                            </template>
+<!--                                            <template slot="selection" slot-scope="data">-->
+<!--                                                {{ langMap.ticket_types[data.item.name] }}-->
+<!--                                            </template>-->
+<!--                                            <template slot="item" slot-scope="data">-->
+<!--                                                {{ langMap.ticket_types[data.item.name] }}-->
+<!--                                            </template>-->
                                         </v-select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <v-select
+                                            :label="langMap.main.category"
+                                            :color="themeColor"
+                                            :item-color="themeColor"
+                                            item-text="name"
+                                            item-value="id"
+                                            :items="categories"
+                                            v-model="ticketForm.category_id"
+                                        />
                                     </div>
                                     <v-col cols="12">
                                         <v-textarea
@@ -309,6 +320,7 @@
                 suppliers: [],
                 products: [],
                 priorities: [],
+                categories: [],
                 types: [],
                 employees: [],
                 onFileChange(form) {
@@ -334,6 +346,7 @@
             this.getProducts()
             this.getPriorities()
             this.getTypes()
+            this.getCategories()
             // this.getCompany()
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
@@ -401,6 +414,17 @@
                     response = response.data
                     if (response.success === true) {
                         this.types = response.data
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            getCategories() {
+                axios.get('/api/ticket_categories').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.categories = response.data
                     } else {
                         console.log('error')
                     }
