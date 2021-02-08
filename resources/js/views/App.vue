@@ -37,7 +37,6 @@
         watch: {
             checkPreloaded(value) {
                 this.isLoaded = true;
-                // console.log(`val ${value}`);
             }
         },
         computed: {

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import EventBus from "./components/EventBus";
-import { Tags, Products, Projects, Clients } from './modules';
+import {Clients, Products, Projects, Tags} from './modules';
 
 Vue.use(Vuex);
 
@@ -57,9 +57,12 @@ export default new Vuex.Store({
             return new Promise((resolve, reject) => {
                 axios.get('/api/lang/map')
                     .then(result => {
-                        if (result.data.success === true && result.data.data.lang_map !== null)
+                        if (result.data.success === true && result.data.data.lang_map !== null) {
                             commit('setLang', result.data.data);
-                        resolve();
+                            resolve();
+                        } else {
+                            console.log('ERROR: broken_lang_object!');
+                        }
                     })
 
                     .catch(error => {
@@ -113,7 +116,7 @@ export default new Vuex.Store({
                     .then(result => {
                         if (result.data.success === true)
                             localStorage.appVersion = result.data.data;
-                            commit('setAppVersion', result.data.data);
+                        commit('setAppVersion', result.data.data);
                         resolve();
                     })
 
