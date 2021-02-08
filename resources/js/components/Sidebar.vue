@@ -44,7 +44,7 @@
         <v-divider>&nbsp;</v-divider>
         <v-list dense>
             <v-list-item
-                :style="'background-color:' + themeColor + ';'"
+                :style="'background-color:' + 'white' + ';'"
                 @click.stop="localDrawer = !localDrawer"
                 v-show="localDrawer"
             >
@@ -57,7 +57,7 @@
             </v-list-item>
             <v-list-item
                 dense
-                :style="'background-color:' + themeColor + ';'"
+                :style="'background-color:' + 'white' + ';'"
                 link to="/home">
                 <v-list-item-action>
                     <v-icon>mdi-home</v-icon>
@@ -70,9 +70,9 @@
         <v-divider></v-divider>
         <v-list dense>
             <v-list-group
-                :style="'background-color: ' + themeColor + ';'"
+                :style="'background-color: ' + 'white' + ';'"
                 :value="sidebarGroups"
-                color="white"
+                color="#757575"
                 multiple
                 prepend-icon="mdi-badge-account-horizontal-outline"
                 v-if="checkRoleByIds([1,2,3,4,5])"
@@ -85,7 +85,8 @@
                     </v-list-item-content>
                 </template>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'#757575'"
+                    link
                     style="background-color:white;"
                     to="/all"
                 >
@@ -97,7 +98,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'#757575'" link
                     style="background-color:white;"
                     to="/customer"
                     v-if="checkRoleByIds([1,2,3,4,5])"
@@ -110,7 +111,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'#757575'" link
                     style="background-color:white;"
                     to="/employee"
                     v-if="checkRoleByIds([1,2,3,4,5])"
@@ -123,7 +124,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'#757575'" link
                     style="background-color:white;"
                     to="/product"
                     v-if="checkRoleByIds([1,2,3,4,5])"
@@ -142,9 +143,9 @@
         >&nbsp;</v-divider>
         <v-list dense>
             <v-list-group
-                :style="'background-color: ' + themeColor + ';'"
+                :style="'background-color: ' + 'white' + ';'"
                 :value="sidebarGroups"
-                color="white"
+                color="#757575"
                 multiple
                 prepend-icon="mdi-ticket-account"
             >
@@ -156,7 +157,7 @@
                     </v-list-item-content>
                 </template>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'#757575'" link
                     style="background-color:white;"
                     to="/tickets"
                 >
@@ -170,7 +171,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'#757575'" link
                     style="background-color:white;"
                     to="/ticket_create"
                 >
@@ -187,9 +188,9 @@
         <v-divider></v-divider>
         <v-list dense>
             <v-list-group
-                :style="'background-color: ' + themeColor + ';'"
+                :style="'background-color: ' + 'white' + ';'"
                 :value="sidebarGroups"
-                color="white"
+                color="#757575"
                 multiple
                 prepend-icon="mdi-alarm"
             >
@@ -201,7 +202,7 @@
                     </v-list-item-content>
                 </template>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/tracking/dashboard"
                 >
@@ -214,7 +215,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/tracking/tracker"
                 >
@@ -227,7 +228,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/tracking/calendar"
                 >
@@ -240,7 +241,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/tracking/projects"
                 >
@@ -253,7 +254,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/tracking/reports"
                 >
@@ -270,9 +271,9 @@
         <v-divider></v-divider>
         <v-list dense>
             <v-list-group
-                :style="'background-color: ' + themeColor + ';'"
+                :style="'background-color: ' + 'white' + ';'"
                 :value="sidebarGroups"
-                color="white"
+                color="#757575"
                 multiple
                 prepend-icon="mdi-email-alert-outline"
             >
@@ -284,7 +285,7 @@
                     </v-list-item-content>
                 </template>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/notify"
                 >
@@ -297,7 +298,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/notify_history"
                 >
@@ -311,29 +312,12 @@
                 </v-list-item>
             </v-list-group>
         </v-list>
-        <v-divider></v-divider>
-        <v-list dense>
-            <v-list-item
-                dense
-                :style="'background-color:' + themeColor + ';'"
-                link
-                to="/">
-                <v-list-item-action>
-                    <v-icon>mdi-book-open-page-variant</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                    <v-list-item-title>
-                        {{this.$store.state.lang.lang_map.sidebar.knowledge_base}}
-                    </v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
-        </v-list>
         <v-divider>&nbsp;</v-divider>
         <v-list dense>
             <v-list-group
-                :style="'background-color: ' + themeColor + ';'"
+                :style="'background-color: ' + 'white' + ';'"
                 :value="sidebarGroups"
-                color="white"
+                color="#757575"
                 multiple
                 prepend-icon="mdi-cog"
 
@@ -342,13 +326,13 @@
                     v-slot:activator
                 >
                     <v-list-item-content
-                        :color="themeColor"
+                        :color="'white'"
                     >
                         <v-list-item-title>{{settings}}</v-list-item-title>
                     </v-list-item-content>
                 </template>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/company">
                     <v-list-item-action>
@@ -359,7 +343,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/team"
                     v-if="checkRoleByIds([1,2,3,4,5])"
@@ -372,7 +356,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/settings/system"
                     v-if="checkRoleByIds([1,2,3])"
@@ -387,7 +371,7 @@
                 </v-list-item>
                 <!--
                 <v-list-item
-                    :color="themeColor" link
+                    :color="'white'" link
                     style="background-color:white;"
                     to="/"
                     v-if="checkRoleByIds([1,2,3])"
