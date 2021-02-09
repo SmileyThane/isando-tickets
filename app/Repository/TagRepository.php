@@ -64,6 +64,11 @@ class TagRepository
 
     public function delete(Tag $tag)
     {
-        $tag->delete();
+        try {
+            $tag->delete();
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 }

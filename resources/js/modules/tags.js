@@ -22,12 +22,13 @@ export default {
                 })
         },
         deleteTag({commit, dispatch}, tagId) {
-            axios.delete(`/api/tags/${tagId}`)
+            return axios.delete(`/api/tags/${tagId}`)
                 .then(({ data: { success } }) => {
                    if (success) {
                        dispatch('getTagList');
                        return true;
                    }
+                   return false;
                 });
         }
     },

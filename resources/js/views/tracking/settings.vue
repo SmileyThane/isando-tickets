@@ -17,6 +17,78 @@
             <v-tabs-items v-model="tab">
                 <v-tab-item :key="0">
                     <v-card flat>
+                        <v-toolbar flat>
+                            <v-dialog
+                                v-model="dialog"
+                                width="500"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        :color="themeColor"
+                                        style="color: white"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        Create tag
+                                    </v-btn>
+                                </template>
+
+                                <v-card>
+                                    <v-card-title class="headline">
+                                        Create new tag
+                                    </v-card-title>
+
+                                    <v-card-text>
+                                        <v-text-field
+                                            label="Name"
+                                            v-model="form.name"
+                                            required
+                                        ></v-text-field>
+                                        <v-text-field
+                                            v-model="form.color"
+                                            hide-details
+                                            class="ma-0 pa-0"
+                                            solo
+                                            label="Color"
+                                            required
+                                        >
+                                            <template v-slot:append>
+                                                <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+                                                    <template v-slot:activator="{ on }">
+                                                        <div :style="switchColor" v-on="on" />
+                                                    </template>
+                                                    <v-card>
+                                                        <v-card-text class="pa-0">
+                                                            <v-color-picker v-model="form.color" flat />
+                                                        </v-card-text>
+                                                    </v-card>
+                                                </v-menu>
+                                            </template>
+                                        </v-text-field>
+                                    </v-card-text>
+
+                                    <v-divider></v-divider>
+
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            color="error"
+                                            text
+                                            @click="resetForm(); dialog = false"
+                                        >
+                                            Cancel
+                                        </v-btn>
+                                        <v-btn
+                                            color="success"
+                                            text
+                                            @click="createTag(); dialog = false"
+                                        >
+                                            Create
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </v-toolbar>
                         <v-card-text>
                             <v-data-table
                                 dense
@@ -33,7 +105,11 @@
                                         @open="open"
                                         @close="close"
                                     >
-                                        {{ props.item.name }}
+                                        <v-chip
+                                            :color="props.item.color"
+                                            :text-color="invertColor(props.item.color)"
+                                            small
+                                        >{{ props.item.name }}</v-chip>
                                         <template v-slot:input>
                                             <v-text-field
                                                 v-model="props.item.name"
@@ -45,7 +121,13 @@
                                     </v-edit-dialog>
                                 </template>
                                 <template v-slot:item.actions="props">
-                                    actions
+                                    <v-btn
+                                        icon
+                                        :color="themeColor"
+                                        @click="removeTag(props.item.id)"
+                                    >
+                                        <v-icon>mdi-delete</v-icon>
+                                    </v-btn>
                                 </template>
                             </v-data-table>
                         </v-card-text>
@@ -60,8 +142,10 @@
 <script>
 import EventBus from "../../components/EventBus";
 import _ from 'lodash';
+import TagBtn from './components/tag-btn';
 
 export default {
+    components: {TagBtn},
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
@@ -84,7 +168,13 @@ export default {
                     value: 'actions',
                 }
             ],
-            searchTag: null
+            searchTag: null,
+            dialog: false,
+            form: {
+                name: '',
+                color: '#' + Math.floor(Math.random()*16777215).toString(16).substr(0, 6)
+            },
+            colorMenu: false
         }
     },
     created() {
@@ -101,8 +191,36 @@ export default {
         __getTags() {
             this.$store.dispatch('Tags/getTagList', { search: this.searchTag });
         },
+        createTag() {
+            this.$store.dispatch('Tags/createTag', this.form)
+                .then(tag => {
+                    if (tag) {
+                        this.snackbarMessage = 'Tag created successfully';
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        resetForm() {
+            this.form = {
+                name: '',
+                color: '#' + Math.floor(Math.random()*16777215).toString(16).substr(0, 6)
+            };
+        },
         removeTag(tagId) {
-            this.$store.dispatch('Tags/deleteTag', tagId);
+            this.$store.dispatch('Tags/deleteTag', tagId)
+                .then(result => {
+                    console.log(result);
+                    if (result) {
+                        this.snackbarMessage = 'Tag deleted successfully';
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = 'Tag removal error';
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
         },
         save () {
             this.snack = true
@@ -121,10 +239,52 @@ export default {
         },
         close () {
             console.log('Dialog closed')
+        },
+        invertColor(hex, bw = true) {
+            if (hex.indexOf('#') === 0) {
+                hex = hex.slice(1);
+            }
+            // convert 3-digit hex to 6-digits.
+            if (hex.length === 3) {
+                hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+            }
+            if (hex.length !== 6) {
+                throw new Error('Invalid HEX color.');
+            }
+            var r = parseInt(hex.slice(0, 2), 16),
+                g = parseInt(hex.slice(2, 4), 16),
+                b = parseInt(hex.slice(4, 6), 16);
+            if (bw) {
+                // http://stackoverflow.com/a/3943023/112731
+                return (r * 0.299 + g * 0.587 + b * 0.114) > 186
+                    ? '#000000'
+                    : '#FFFFFF';
+            }
+            // invert color components
+            r = (255 - r).toString(16);
+            g = (255 - g).toString(16);
+            b = (255 - b).toString(16);
+            // pad each with zeros and return
+            return "#" + this.padZero(r) + this.padZero(g) + this.padZero(b);
+        },
+        padZero(str, len) {
+            len = len || 2;
+            let zeros = new Array(len).join('0');
+            return (zeros + str).slice(-len);
         }
     },
-    watch: {
-
+    computed: {
+        switchColor() {
+            const { form: { color }, colorMenu } = this
+            return {
+                backgroundColor: color,
+                cursor: 'pointer',
+                height: '30px',
+                width: '30px',
+                borderRadius: colorMenu ? '50%' : '4px',
+                transition: 'border-radius 200ms ease-in-out'
+            }
+        }
     },
 }
 </script>

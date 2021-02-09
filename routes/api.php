@@ -203,6 +203,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         });
         Route::get('/tags', 'API\TagController@get');
         Route::post('/tags', 'API\TagController@create');
+        Route::delete('/tags/{tag}', 'API\TagController@delete');
 
     });
 
