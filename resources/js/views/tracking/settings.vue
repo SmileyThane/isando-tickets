@@ -53,13 +53,34 @@
                                             required
                                         >
                                             <template v-slot:append>
-                                                <v-menu v-model="colorMenu" top nudge-bottom="105" nudge-left="16" :close-on-content-click="false">
+                                                <v-menu
+                                                    v-model="colorMenuCreate"
+                                                    top
+                                                    nudge-bottom="105"
+                                                    nudge-left="16"
+                                                    :close-on-content-click="false"
+                                                >
                                                     <template v-slot:activator="{ on }">
-                                                        <div :style="switchColor" v-on="on" />
+                                                        <div
+                                                            :style="{
+                                                                backgroundColor: form.color,
+                                                                cursor: 'pointer',
+                                                                height: '30px',
+                                                                width: '30px',
+                                                                borderRadius: colorMenuCreate ? '50%' : '4px',
+                                                                transition: 'border-radius 200ms ease-in-out'
+                                                            }"
+                                                            v-on="on"
+                                                        />
                                                     </template>
                                                     <v-card>
-                                                        <v-card-text class="pa-0">
-                                                            <v-color-picker v-model="form.color" flat />
+                                                        <v-card-text
+                                                            class="pa-0"
+                                                        >
+                                                            <v-color-picker
+                                                                v-model="form.color"
+                                                                flat
+                                                            />
                                                         </v-card-text>
                                                     </v-card>
                                                 </v-menu>
@@ -94,31 +115,60 @@
                                 dense
                                 :headers="headers"
                                 :items="$store.getters['Tags/getTags']"
-                                item-key="name"
+                                :items-per-page="15"
                                 class="elevation-1"
                             >
                                 <template v-slot:item.name="props">
                                     <v-edit-dialog
-                                        :return-value.sync="props.item.name"
-                                        @save="save"
-                                        @cancel="cancel"
-                                        @open="open"
-                                        @close="close"
+                                        @save="save(props.item)"
+                                        @cancel="save(props.item)"
+                                        @open="save(props.item)"
+                                        @close="save(props.item)"
                                     >
-                                        <v-chip
-                                            :color="props.item.color"
-                                            :text-color="invertColor(props.item.color)"
-                                            small
-                                        >{{ props.item.name }}</v-chip>
+                                        {{ props.item.name }}
                                         <template v-slot:input>
                                             <v-text-field
                                                 v-model="props.item.name"
-                                                label="Edit"
+                                                label="Name"
+                                                hint="Name"
                                                 single-line
                                                 counter
                                             ></v-text-field>
                                         </template>
                                     </v-edit-dialog>
+                                </template>
+                                <template v-slot:item.color="props">
+                                    <v-menu
+                                        v-model="colorMenu[props.item.id]"
+                                        top
+                                        nudge-bottom="105"
+                                        nudge-left="16"
+                                        :close-on-content-click="false"
+                                    >
+                                        <template v-slot:activator="{ on }">
+                                            <div
+                                                v-on="on"
+                                                :style="{
+                                                    backgroundColor: props.item.color,
+                                                    cursor: 'pointer',
+                                                    height: '30px',
+                                                    width: '30px',
+                                                    borderRadius: colorMenu[props.item.id] ? '50%' : '4px',
+                                                    transition: 'border-radius 200ms ease-in-out'
+                                                }"
+                                            />
+                                        </template>
+                                        <v-card>
+                                            <v-card-text class="pa-0">
+                                                <v-color-picker
+                                                    v-model="props.item.color"
+                                                    flat
+                                                    @input="save(props.item)"
+                                                />
+                                            </v-card-text>
+                                        </v-card>
+                                    </v-menu>
+
                                 </template>
                                 <template v-slot:item.actions="props">
                                     <v-btn
@@ -162,8 +212,12 @@ export default {
                     value: 'name',
                 },
                 {
+                    text: 'Color',
+                    sortable: false,
+                    value: 'color',
+                },
+                {
                     text: 'Actions',
-                    align: 'start',
                     sortable: false,
                     value: 'actions',
                 }
@@ -174,7 +228,8 @@ export default {
                 name: '',
                 color: '#' + Math.floor(Math.random()*16777215).toString(16).substr(0, 6)
             },
-            colorMenu: false
+            colorMenuCreate: false,
+            colorMenu: {}
         }
     },
     created() {
@@ -222,23 +277,8 @@ export default {
                     }
                 });
         },
-        save () {
-            this.snack = true
-            this.snackColor = 'success'
-            this.snackText = 'Data saved'
-        },
-        cancel () {
-            this.snack = true
-            this.snackColor = 'error'
-            this.snackText = 'Canceled'
-        },
-        open () {
-            this.snack = true
-            this.snackColor = 'info'
-            this.snackText = 'Dialog opened'
-        },
-        close () {
-            console.log('Dialog closed')
+        save (item) {
+            this.$store.dispatch('Tags/updateTag', item);
         },
         invertColor(hex, bw = true) {
             if (hex.indexOf('#') === 0) {
@@ -274,16 +314,9 @@ export default {
         }
     },
     computed: {
-        switchColor() {
-            const { form: { color }, colorMenu } = this
-            return {
-                backgroundColor: color,
-                cursor: 'pointer',
-                height: '30px',
-                width: '30px',
-                borderRadius: colorMenu ? '50%' : '4px',
-                transition: 'border-radius 200ms ease-in-out'
-            }
+        switchColorCreate() {
+            const { form: { color }, colorMenuCreate } = this
+            return
         }
     },
 }

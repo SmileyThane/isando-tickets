@@ -30,6 +30,11 @@ class TagController extends Controller
         return self::showResponse((bool)$result, $result);
     }
 
+    public function update(Request $request, Tag $tag) {
+        $result = $this->tagRepo->update($request, $tag);
+        return self::showResponse((bool)$result, $result);
+    }
+
     public function delete(Request $request, Tag $tag) {
         $result = $this->tagRepo->delete($tag);
         return self::showResponse($result, $result);
