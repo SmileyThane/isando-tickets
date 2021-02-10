@@ -26,6 +26,7 @@ import TrackingCalendar from './views/tracking/calendar'
 import TrackingProjects from './views/tracking/projects'
 import TrackingProjectItem from './views/tracking/projects/item'
 import TrackingReports from './views/tracking/reports'
+import TrackingSettings from './views/tracking/settings'
 import ResetPassword from './views/auth/reset-password'
 
 
@@ -272,5 +273,13 @@ export default [
             requiresAuth: true
         },
         component: TrackingReports
+    },
+    {
+        path: '/tracking/settings',
+        name: 'tracking_settings',
+        meta: {
+            requiresAuth: true
+        },
+        component: TrackingSettings
     }
 ];

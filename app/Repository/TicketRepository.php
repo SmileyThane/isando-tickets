@@ -14,11 +14,13 @@ use App\Role;
 use App\TeamCompanyUser;
 use App\Ticket;
 use App\TicketAnswer;
+use App\TicketFilter;
 use App\TicketMerge;
 use App\TicketNotice;
 use App\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
@@ -28,11 +30,16 @@ class TicketRepository
 
     protected $fileRepo;
     protected $ticketUpdateRepo;
+    protected $ticketSelectRepo;
 
-    public function __construct(FileRepository $fileRepository, TicketUpdateRepository $ticketUpdateRepository)
+    public function __construct(
+        FileRepository $fileRepository,
+        TicketUpdateRepository $ticketUpdateRepository,
+        TicketSelectRepository $ticketSelectRepository)
     {
         $this->fileRepo = $fileRepository;
         $this->ticketUpdateRepo = $ticketUpdateRepository;
+        $this->ticketSelectRepo = $ticketSelectRepository;
     }
 
     public function validate($request)
@@ -68,7 +75,7 @@ class TicketRepository
             $ticketIds = $tickets->pluck('id')->toArray();
         }
         $ticketResult = Ticket::whereIn('id', $ticketIds);
-        if ($request->has('search') && trim($request->search)) {
+        if (($request->has('search') && !empty($request->search)) || $request->has('filter_id')) {
             $ticketResult->where(
                 static function ($query) use ($request) {
                     if ($request->has('search_param')) {
@@ -91,6 +98,15 @@ class TicketRepository
                             default:
                                 $query->where('name', 'like', '%' . trim($request->search) . '%');
                         }
+                    } elseif ($request->has('filter_id')) {
+                        $filter = TicketFilter::find($request->filter_id);
+                        if ($filter) {
+                            $filterArray = json_decode($filter->filter_parameters, true);
+                            foreach ($filterArray as $key => $filterItem) {
+                                $value = $filterItem['compare_parameter'] === 'like' ? '%' . $filterItem['value'] . '%' : $filterItem['value'];
+                                $query->where($filterItem['field'], $filterItem['compare_parameter'], $value);
+                            }
+                        }
                     } else {
                         $query->where('name', 'like', '%' . trim($request->search) . '%')
                             ->orWhere('description', 'like', '%' . trim($request->search) . '%');
@@ -104,7 +120,7 @@ class TicketRepository
         if ($request->minified && $request->minified === 'true') {
             return $ticketResult->select('id', 'name', 'from_entity_id', 'from_entity_type', 'updated_at')->paginate(count($ticketIds));
         }
-//        dd(DB::getQueryLog());
+
         $ticketResult
             ->with(
                 'creator.userData', 'assignedPerson.userData',
@@ -122,6 +138,7 @@ class TicketRepository
         } else {
             $ticketResult = $ticketResult->orderBy($orderedField, $orderedDirection);
         }
+//        dd(DB::getQueryLog());
         return $ticketResult = $ticketResult->paginate($request->per_page ?? count($ticketIds));
     }
 
@@ -185,7 +202,7 @@ class TicketRepository
     public function find($id)
     {
         return Ticket::where('id', $id)
-            ->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product', 'team', 'category',
+            ->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product.category', 'team', 'category',
                 'priority', 'status', 'answers.employee.userData', 'answers.attachments', 'mergedChild',
                 'childTickets.answers.employee.userData', 'childTickets.notices.employee.userData', 'childTickets.answers.attachments',
                 'histories.employee.userData', 'notices.employee.userData', 'attachments', 'mergedParent')->first()->makeVisible(['to']);
@@ -441,6 +458,26 @@ class TicketRepository
             return true;
         }
         return false;
+    }
+
+    public function addFilter(Request $request): TicketFilter
+    {
+        $ticketFilter = new TicketFilter();
+        $ticketFilter->user_id = Auth::id();
+        $ticketFilter->name = $request->name;
+        $ticketFilter->filter_parameters = json_encode($request->filter_parameters);
+        $ticketFilter->save();
+        return $ticketFilter;
+    }
+
+    public function getFilters()
+    {
+        return TicketFilter::where('user_id', Auth::id())->get();
+    }
+
+    public function getFilterParameters(Request $request): array
+    {
+        return $this->ticketSelectRepo->getFilterParameters($request);
     }
 
     public function removeMerge($id): bool

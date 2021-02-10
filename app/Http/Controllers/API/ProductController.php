@@ -5,17 +5,14 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Repository\ProductRepository;
-use App\Repository\UserRepository;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    protected $userRepo;
     protected $productRepo;
 
-    public function __construct(UserRepository $userRepository, ProductRepository $productRepository)
+    public function __construct(ProductRepository $productRepository)
     {
-        $this->userRepo = $userRepository;
         $this->productRepo = $productRepository;
     }
 

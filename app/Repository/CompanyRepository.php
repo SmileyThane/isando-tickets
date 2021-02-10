@@ -150,12 +150,14 @@ class CompanyRepository
     }
 
 
-    public function attachProductCategory(Request $request)
+    public function attachProductCategory($name, $companyId = null, $parentId = null)
     {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+
         ProductCategory::firstOrCreate([
-            'name' => $request->name,
-            'company_id' => $request->company_id,
-            'parent_id' => $request->parent_id ?? null,
+            'name' => $name,
+            'company_id' => $companyId,
+            'parent_id' => $parentId,
         ]);
 
         return true;
@@ -172,26 +174,26 @@ class CompanyRepository
         return $result;
     }
 
-    public function getProductCategoriesTree($id, $showFullNames = false)
+    public function getProductCategoriesTree($companyId = null, $showFullNames = false)
     {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+
         $result = [];
-        $company = Company::find($id);
+        $company = Company::find($companyId);
         if ($company) {
             $result = $company->productCategories()->orderBy('name', 'ASC')->get()->toTree();
         }
         return $result;
     }
 
-    public function getProductCategoriesFlat($id)
+    public function getProductCategoriesFlat($companyId = null)
     {
-        $result = [];
-        $company = Company::find($id);
-        if ($company) {
-            $result = $company->productCategories()->orderBy('parent_id', 'ASC')->orderBy('name', 'ASC')->get();
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
 
-            foreach ($result as &$category) {
-                $category->name = $category->getFullName();
-            }
+        $result = [];
+        $company = Company::find($companyId);
+        if ($company) {
+            return $result = $company->productCategories()->orderBy('parent_id', 'ASC')->orderBy('name', 'ASC')->get();
         }
         return $result;
     }

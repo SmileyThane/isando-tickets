@@ -24,8 +24,22 @@
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <v-form>
+
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
+                                                <v-select
+                                                    :color="themeColor"
+                                                    :label="langMap.main.category"
+                                                    name="category_id"
+                                                    prepend-icon="mdi-rename-box"
+                                                    v-model="productForm.category_id"
+                                                    :items="categories"
+                                                    :item-color="themeColor"
+                                                    item-value="id"
+                                                    item-text="full_name"
+                                                />
+                                            </div>
+                                            <div class="col-md-4">
                                                 <v-text-field
                                                     :color="themeColor"
                                                     :label="langMap.main.name"
@@ -47,7 +61,7 @@
                                                     required
                                                 ></v-textarea>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-4">
                                                 <v-text-field
                                                     :color="themeColor"
                                                     :label="langMap.product.code"
@@ -56,7 +70,7 @@
                                                     required
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <v-file-input
                                                     :color="themeColor"
                                                     :item-color="themeColor"
@@ -224,28 +238,30 @@
                 },
                 headers: [
                     {text: '', value: 'data-table-expand'},
-                    {
-                        text: 'ID',
-                        align: 'start',
-                        sortable: false,
-                        value: 'id',
-                    },
-                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
-                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
+                    {text: 'ID', align: 'start', sortable: false, value: 'id'},
+                    {text: `${this.$store.state.lang.lang_map.product.code}`, value: 'product_code', sortable: false},
+                    {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.full_name', sortable: false, width: '25%'},
+                    {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name', width: '20%'},
+                    {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description', width: '30%'},
                 ],
                 productsSearch: '',
                 products: [],
                 removeProductDialog: false,
                 selectedProductId: null,
                 productForm: {
+                    product_code: '',
+                    category_id: '',
                     product_name: '',
                     product_description: '',
                     files: []
-                }
+                },
+                categories: []
             }
         },
         mounted() {
             this.getProducts();
+            this.getCategories();
+
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
                 that.themeColor = color;
@@ -261,22 +277,45 @@
                 if (this.totalProducts < this.options.itemsPerPage) {
                     this.options.page = 1
                 }
-                axios.get(`/api/product?
-                    search=${this.productsSearch}&
-                    sort_by=${this.options.sortBy[0]}&
-                    sort_val=${this.options.sortDesc[0]}&
-                    per_page=${this.options.itemsPerPage}&
-                    page=${this.options.page}`).then(response => {
+                axios.get('/api/product', {
+                    params: {
+                        search: this.productsSearch,
+                        sort_by: this.options.sortBy[0],
+                        sort_val: this.options.sortDesc[0],
+                        per_page: this.options.itemsPerPage,
+                        page: this.options.page
+                    }
+                }).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.products = response.data.data
                         this.totalProducts = response.data.total
                         this.lastPage = response.data.last_page
+                        this.lastPage = response.data.last_page
                         this.loading = false
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
 
+                });
+            },
+            getCategories() {
+                axios.get(`/api/main_company/product_categories/flat`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.categories = [{
+                            id: null,
+                            name: this.langMap.main.none,
+                            full_name: this.langMap.main.none,
+                            parent_id: null
+                        }].concat(response.data);
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
                 });
             },
             onFileChange(form) {
@@ -297,9 +336,14 @@
                 axios.post('/api/product', formData, config).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        this.getProducts()
+                        this.getProducts();
+                        this.snackbarMessage = this.langMap.product.product_created;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
                     } else {
-                        console.log('error')
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
                     }
                 });
             },

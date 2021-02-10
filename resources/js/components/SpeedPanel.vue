@@ -1,125 +1,129 @@
 <template>
     <v-dialog
         v-model="dialog"
-        hide-overlay
-        persistent
-        transition="dialog-right-transition"
-        max-width="350px"
         content-class="dialog-right"
+        hide-overlay
+        max-width="350px"
+        persistent
     >
         <template v-slot:activator="{ on, attrs }">
             <v-btn
+                v-show="displayDlg()"
                 v-bind="attrs"
                 v-on="on"
                 :color="themeColor"
+                class="mx-2"
                 dark
+                fab
                 fixed
                 right
-                class="mx-2"
+                bottom
                 style="z-index: 99;"
-                fab
-                v-show="displayDlg()"
             >
-              <v-icon>
-                  mdi-cog
-              </v-icon>
+                <v-icon>
+                    mdi-cog
+                </v-icon>
             </v-btn>
         </template>
-        <v-card>
-            <v-toolbar
-                dark
-                :color="themeColor"
+        <v-expand-x-transition>
+            <v-card
+                v-show="dialog"
             >
-                <v-btn
-                    icon
+                <v-toolbar
+                    :color="themeColor"
                     dark
-                    @click="dialog = false"
                 >
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-                <v-toolbar-title>{{ this.$store.state.lang.lang_map.system_settings.theme_color }}</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-toolbar-items>
                     <v-btn
-                        text
-                        @click="updateUserSettings"
+                        dark
+                        icon
+                        @click="dialog = false"
                     >
-                        {{ this.$store.state.lang.lang_map.main.update }}
+                        <v-icon>mdi-close</v-icon>
                     </v-btn>
-                </v-toolbar-items>
-            </v-toolbar>
+                    <v-toolbar-title>{{ this.$store.state.lang.lang_map.system_settings.theme_color }}</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-toolbar-items>
+                        <v-btn
+                            text
+                            @click="updateUserSettings"
+                        >
+                            {{ this.$store.state.lang.lang_map.main.update }}
+                        </v-btn>
+                    </v-toolbar-items>
+                </v-toolbar>
                 <v-card-text>
                     <v-container>
                         <v-row>
                             <v-col cols="12">
                                 <v-color-picker
+                                    v-model="themeColor"
                                     dot-size="25"
                                     mode="hexa"
-                                    v-model="themeColor"
                                 ></v-color-picker>
                             </v-col>
                             <v-col cols="12">
                                 <v-checkbox
                                     v-model="themeColorDlg"
-                                    :value="1"
-                                    :label="this.$store.state.lang.lang_map.main.do_not_show_this_again"></v-checkbox>
+                                    :label="this.$store.state.lang.lang_map.main.do_not_show_this_again"
+                                    :value="1"></v-checkbox>
                             </v-col>
                         </v-row>
                     </v-container>
                 </v-card-text>
-        </v-card>
+            </v-card>
+        </v-expand-x-transition>
     </v-dialog>
 </template>
 <style scoped>
->>>.dialog-right {
+>>> .dialog-right {
     position: absolute;
     right: 0;
 }
 </style>
 <script>
-    import EventBus from "./EventBus";
+import EventBus from "./EventBus";
 
-    export default {
-        name: "SpeedPanel",
-        props: {value: {type: Boolean}},
-        data() {
-            return {
-                themeColor: this.$store.state.themeColor,
-                themeColorDlg: localStorage.themeColorDlg,
-                dialog: false
+export default {
+    name: "SpeedPanel",
+    props: {value: {type: Boolean}},
+    data() {
+        return {
+            themeColor: this.$store.state.themeColor,
+            themeColorDlg: localStorage.themeColorDlg,
+            dialog: false
+        }
+    },
+    mounted() {
+        let that = this;
+        EventBus.$on('update-theme-color', function (color) {
+            that.themeColor = color;
+        });
+    },
+    methods: {
+        displayDlg() {
+            if (this.themeColorDlg != 1) {
+                return !this.dialog
+            } else {
+                return false;
             }
         },
-        mounted() {
-            let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeColor = color;
-            });
-        },
-        methods: {
-            displayDlg() {
-                if (this.themeColorDlg != 1) {
-                    return !this.dialog
+        updateUserSettings() {
+            this.dialog = false;
+            axios.post('/api/user/settings', {theme_color: this.themeColor}).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.$store.state.themeColor = this.themeColor;
+                    localStorage.themeColor = this.themeColor;
+                    EventBus.$emit('update-theme-color', this.themeColor);
+                    localStorage.themeColorDlg = this.themeColorDlg;
                 } else {
-                    return false;
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
                 }
-            },
-            updateUserSettings() {
-                this.dialog = false;
-                axios.post('/api/user/settings', {theme_color: this.themeColor}).then(response => {
-                    response = response.data;
-                    if (response.success === true) {
-                        this.$store.state.themeColor = this.themeColor;
-                        localStorage.themeColor = this.themeColor;
-                        EventBus.$emit('update-theme-color', this.themeColor);
-                        localStorage.themeColorDlg = this.themeColorDlg;
-                    } else {
-                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
-                        this.errorType = 'error';
-                        this.alert = true;
-                    }
-                    return true;
-                });
-            }
+                return true;
+            });
         }
     }
+}
 </script>

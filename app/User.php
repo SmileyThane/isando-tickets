@@ -157,8 +157,12 @@ class User extends Authenticatable
 
     public function getNumberAttribute()
     {
+        $employee = CompanyUser::where('user_id', $this->id)->first();
+        if (!$employee) {
+            return $this->attributes['number'];
+        }
 
-        $settings = $this->employee->companyData->settings;
+        $settings = $employee->companyData->settings;
 
         if (empty($settings->data['employee_number_format']) || count(explode('｜', $settings->data['ticket_number_format'])) != 4) {
             $format = '0||50000|8';

@@ -985,7 +985,7 @@
                                                                 :items="productCategoriesFlat"
                                                                 :label="langMap.company.parent_product_category"
                                                                 dense
-                                                                item-text="name"
+                                                                item-text="full_name"
                                                                 item-value="id"
                                                             >
                                                             </v-select>
@@ -1812,7 +1812,7 @@ export default {
                     sortable: false,
                     value: 'product_data.id',
                 },
-                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'product_data.name'},
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'product_data.full_name'},
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
@@ -2043,7 +2043,8 @@ export default {
                 if (response.success === true) {
                     this.productCategoriesFlat = [{
                         id: null,
-                        name: `${this.$store.state.lang.lang_map.main.none}`,
+                        name: this.langMap.main.none,
+                        full_name: this.langMap.main.none,
                         parent_id: null
                     }].concat(response.data);
                 } else {
@@ -2062,7 +2063,7 @@ export default {
                     this.getProductCategoriesFlat();
                     this.productCategoryForm.parent_id = '';
                     this.productCategoryForm.name = '';
-                    this.snackbarMessage = `${this.$store.state.lang.lang_map.company.product_category_created}`;
+                    this.snackbarMessage = this.langMap.company.product_category_created;
                     this.actionColor = 'success';
                     this.snackbar = true;
                 } else {

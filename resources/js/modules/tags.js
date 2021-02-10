@@ -14,12 +14,33 @@ export default {
         },
         createTag({commit, dispatch}, tag) {
             return axios.post('/api/tags', tag)
-                .then(({ data: { success, data: tag } }) => {
+                .then(({ data: { success, data } }) => {
                     if (success) {
                         dispatch('getTagList');
-                        return tag;
+                        return data;
                     }
+                    return false;
                 })
+        },
+        updateTag({commit, dispatch}, tag) {
+            return axios.patch(`/api/tags/${tag.id}`, tag)
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        dispatch('getTagList');
+                        return data;
+                    }
+                    return false;
+                })
+        },
+        deleteTag({commit, dispatch}, tagId) {
+            return axios.delete(`/api/tags/${tagId}`)
+                .then(({ data: { success } }) => {
+                   if (success) {
+                       dispatch('getTagList');
+                       return true;
+                   }
+                   return false;
+                });
         }
     },
     mutations: {
