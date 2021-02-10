@@ -34,13 +34,13 @@
                         </v-label>
                         <span v-if="ticket.connection_details" v-text="ticket.connection_details">
                             </span>
-                        <br>
+                        <br/>
                         <v-label v-if="ticket.access_details">
                             {{ langMap.ticket.access_details }}:
                         </v-label>
                         <span v-if="ticket.access_details" v-text="ticket.access_details">
                             </span>
-                        <br>
+                        <br/>
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -262,7 +262,7 @@
                             item-value="id"
                             multiple
                         />
-                        <br>
+                        <br/>
                         <v-textarea
                             v-model="linkTicketForm.merge_comment"
                             :color="themeColor"
@@ -535,7 +535,7 @@
                                                    </v-avatar>
                                                 <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
                                                 {{ ticket.contact.user_data.full_name }}
-                                                <br>
+                                                <br/>
                                                 {{ ticket.from.name }}
                                             </span>
                                             <!--                                    <v-btn-->
@@ -563,7 +563,7 @@
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <br>
+                            <br/>
                             <v-btn class="float-md-right"
                                    color="white" small
                                    style="color: black;"
@@ -580,20 +580,20 @@
                                     {{ ticket.contact.user_data.email }}
                                 </span>
                                 </span>
-                            <br>
+                            <br/>
                             <span v-if="ticket.product !== null">
                                 <v-label>
                                     {{ langMap.ticket.product_name }}:
                                 </v-label>
                                 {{ ticket.product.name }}
                             </span>
-                            <br>
+                            <br/>
                             <v-label v-if="ticket.availability">
                                 {{ langMap.ticket.availability }}:
                             </v-label>
                             <span v-if="ticket.availability" v-html="ticket.availability">
                             </span>
-                            <br>
+                            <br/>
                             <v-btn class="float-md-right"
                                    color="#F0" small
                                    style="color: black;"
@@ -794,7 +794,7 @@
                     </v-card-text>
                 </v-card>
 
-                <br>
+                <br/>
 
             </v-col>
             <v-col
@@ -827,7 +827,7 @@
 
                                      <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
                                      {{ ticket.contact.user_data.full_name }}
-                                     <br>
+                                     <br/>
                                      {{ ticket.from.name }}
                                   </span>
                             </span>
@@ -837,7 +837,7 @@
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <br>
+                            <br/>
                             <v-btn class="float-md-right"
                                    color="white" small
                                    style="color: black;"
@@ -854,13 +854,13 @@
                                     {{ ticket.contact.user_data.email }}
                                 </span>
                                 </span>
-                            <br>
+                            <br/>
                             <v-label v-if="ticket.availability">
                                 {{ langMap.ticket.availability }}:
                             </v-label>
                             <span v-if="ticket.availability" v-html="ticket.availability">
                             </span>
-                            <br>
+                            <br/>
                             <v-btn class="float-md-right"
                                    color="#F0" small
                                    style="color: black;"
@@ -869,11 +869,11 @@
                                 <v-icon small>mdi-eye</v-icon>
                                 Server access
                             </v-btn>
-                            <br>
+                            <br/>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-                <br>
+                <br/>
                 <v-expansion-panels
                     class="d-sm-none d-md-flex"
                 >
@@ -883,7 +883,7 @@
                         >
                             <span>
                                  <strong>{{ langMap.sidebar.product }}: </strong>
-                                 <span v-if="ticket.product" class="float-md-right">
+                                 <span v-if="ticket.product" class="float-md-right text-md-right">
                                      {{ ticket.product.full_name }}
                                   </span>
                             </span>
@@ -899,7 +899,7 @@
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <br>
+                            <br/>
                             <v-select
                                 v-model="ticket.to_product_id"
                                 :items="products"
@@ -914,7 +914,7 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-                <br>
+                <br/>
                 <v-expansion-panels
                     v-model="teamAssignPanel"
                 >
@@ -926,7 +926,7 @@
                                 <span v-if="ticket.team !== null">
                                 <strong>{{ langMap.sidebar.team }}: </strong>
                                     <span class="float-md-right">{{ ticket.team.name }} </span>
-                                    <br>
+                                    <br/>
                                 </span>
                                  <span v-else>
                                     <strong>{{ langMap.ticket.no_assigned }}</strong>
@@ -962,7 +962,7 @@
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <br>
+                            <br/>
                             <v-form>
                                 <v-autocomplete
                                     v-model="ticket.to_team_id"
@@ -1014,7 +1014,7 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
-                <br>
+                <br/>
                 <v-expansion-panels v-model="notesPanel" multiple>
                     <v-expansion-panel>
                         <v-expansion-panel-header
@@ -1034,7 +1034,7 @@
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <br>
+                            <br/>
                             <span v-for="childTicket in ticket.child_tickets"
                                   :key="childTicket.id"
                             >
@@ -1072,7 +1072,7 @@
 
                                     </v-list-item>
                                 </v-card>
-                                <br>
+                                <br/>
                             </div>
                             </span>
                             <div v-for="noticeItem in ticket.notices"
@@ -1108,7 +1108,7 @@
 
                                     </v-list-item>
                                 </v-card>
-                                <br>
+                                <br/>
                             </div>
                         </v-expansion-panel-content>
                     </v-expansion-panel>
@@ -1199,28 +1199,22 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-list-item-title v-on="on">
                                             <span>
-                                                {{ item.parent_ticket_data.number }}|{{ item.parent_ticket_data.name }}
+                                                {{ item.parent_ticket_data.number }} | {{ item.parent_ticket_data.name }}
                                             </span>
-                                                    <br>
+                                                    <br/>
                                                     <span style="font-weight: lighter;">
-                                                    {{
-                                                            item.parent_ticket_data.creator !== null && item.parent_ticket_data.creator.user_data !== null ?
-                                                                item.parent_ticket_data.creator.user_data.name + " " +
-                                                                item.parent_ticket_data.creator.user_data.surname : ''
-                                                        }},
-                                                    {{
-                                                            item.parent_ticket_data.from !== null ? item.parent_ticket_data.from.name : ''
-                                                        }}
+                                                    {{ item.parent_ticket_data.creator !== null && item.parent_ticket_data.creator.user_data !== null ? item.parent_ticket_data.creator.user_data.full_name : '' }},
+                                                    {{ item.parent_ticket_data.from !== null ? item.parent_ticket_data.from.name : '' }}
                                             </span>
-                                                    <br>
+                                                    <br/>
                                                     <span style="font-weight: lighter;">
                                                     {{ item.parent_ticket_data.last_update }}
                                             </span>
                                                 </v-list-item-title>
                                             </template>
-                                            <span>{{ item.parent_ticket_data.number }}|{{
-                                                    item.parent_ticket_data.name
-                                                }}</span>
+                                            <span>
+                                                {{ item.parent_ticket_data.number }} | {{item.parent_ticket_data.name }}
+                                            </span>
                                         </v-tooltip>
                                     </v-list-item>
                                     <!--                                <v-subheader>Child</v-subheader>-->
@@ -1234,36 +1228,28 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-list-item-title v-on="on">
                                             <span>
-                                                    {{ item.child_ticket_data.number }}|{{
-                                                    item.child_ticket_data.name
-                                                }}
+                                                    {{ item.child_ticket_data.number }} | {{ item.child_ticket_data.name }}
                                             </span>
-                                                    <br>
+                                                    <br/>
                                                     <span style="font-weight: lighter;">
-                                                    {{
-                                                            item.child_ticket_data.creator !== null && item.child_ticket_data.creator.user_data !== null ?
-                                                                item.child_ticket_data.creator.user_data.name + " " +
-                                                                item.child_ticket_data.creator.user_data.surname : ''
-                                                        }},
-                                                    {{
-                                                            item.child_ticket_data.from !== null ? item.child_ticket_data.from.name : ''
-                                                        }}
+                                                    {{ item.child_ticket_data.creator !== null && item.child_ticket_data.creator.user_data !== null ? item.child_ticket_data.creator.user_data.full_name : '' }},
+                                                    {{ item.child_ticket_data.from !== null ? item.child_ticket_data.from.name : '' }}
                                             </span>
-                                                    <br>
+                                                    <br/>
                                                     <span style="font-weight: lighter;">
                                                     {{ item.child_ticket_data.last_update }}
                                             </span>
                                                 </v-list-item-title>
                                             </template>
-                                            <span>{{ item.child_ticket_data.number }}|{{
-                                                    item.child_ticket_data.name
-                                                }}</span>
+                                            <span>
+                                                {{ item.child_ticket_data.number }} | {{ item.child_ticket_data.name }}
+                                            </span>
                                         </v-tooltip>
 
                                     </v-list-item>
                                 </v-list-item-group>
                             </v-list>
-                            <br>
+                            <br/>
                             <v-btn
                                 color="#f2f2f2"
                                 small
@@ -1320,9 +1306,7 @@
                                                             style="float: right"
                                                             @click="mergeTicketForm.parent_ticket_id === item.id ? null: removeMerge(item.id)"
                                                     >
-                                                        {{
-                                                            mergeTicketForm.parent_ticket_id === item.id ? 'mdi-medal-outline' : 'mdi-cancel'
-                                                        }}
+                                                        {{ mergeTicketForm.parent_ticket_id === item.id ? 'mdi-medal-outline' : 'mdi-cancel' }}
                                                     </v-icon>
                                                 </template>
                                                 <span>{{ langMap.main.cancel }}</span>
@@ -1397,10 +1381,10 @@
                                                     <v-tooltip bottom>
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <span v-on="on">
-                                                            {{ item.number }}|{{ item.name }}
+                                                            {{ item.number }} | {{ item.name }}
                                                         </span>
                                                     </template>
-                                                    <span>{{ item.number }}|{{ item.name }}</span>
+                                                    <span>{{ item.number }} | {{ item.name }}</span>
                                                 </v-tooltip>
                                                 <v-tooltip top>
                                                     <template v-slot:activator="{ on, attrs }">
@@ -1418,16 +1402,12 @@
                                                 </v-tooltip>
                                                 </span>
 
-                                                <br>
+                                                <br/>
                                                 <span style="font-weight: lighter;">
-                                                    {{
-                                                        item.creator !== null && item.creator.user_data !== null ?
-                                                            item.creator.user_data.name + " " +
-                                                            item.creator.user_data.surname : ''
-                                                    }},
+                                                    {{ item.creator !== null && item.creator.user_data !== null ? item.creator.user_data.full_name : '' }},
                                                     {{ item.from !== null ? item.from.name : '' }}
                                                 </span>
-                                                <br>
+                                                <br/>
                                                 <span style="font-weight: lighter;">
                                                     {{ item.last_update }}
                                                 </span>
@@ -1437,7 +1417,7 @@
                                     </v-list-item-group>
                                 </v-list>
                             </div>
-                            <br>
+                            <br/>
                             <v-textarea
                                 v-model="mergeTicketForm.merge_comment"
                                 :color="themeColor"
@@ -1478,8 +1458,21 @@
                                     >
                                         <v-list-item-title>
                                             <strong class="text-left">
-                                                {{ history.employee.user_data.name }}
-                                                {{ history.employee.user_data.surname }}
+                                                <v-avatar
+                                                    size="2em"
+                                                    class="mr-2"
+                                                    color="grey darken-1"
+                                                    v-if="history.employee.user_data.avatar_url || history.employee.user_data.full_name"
+                                                >
+                                                    <v-img v-if="history.employee.user_data.avatar_url" :src="history.employee.user_data.avatar_url" />
+                                                    <span v-else-if="history.employee.user_data.full_name" class="white--text">
+                                                        {{ history.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    </span>
+                                                </v-avatar>
+                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+
+                                                {{ history.employee.user_data.full_name }}
+
                                                 {{ history.created_at }}:
                                             </strong>
                                             <p>{{ history.description }}</p>
@@ -1965,7 +1958,7 @@ export default {
             for (let key in this.ticketAnswer) {
                 if (key !== 'files') {
                     if (this.selectedSignature !== '') {
-                        this.ticketAnswer[key] += '<hr><br>' + this.selectedSignature
+                        this.ticketAnswer[key] += '<hr><br/>' + this.selectedSignature
                     }
                     formData.append(key, this.ticketAnswer[key]);
                 }
