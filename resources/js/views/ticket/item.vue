@@ -521,7 +521,7 @@
                         >
                                         <span>
                                             <strong>{{ langMap.ticket.reported_by }}: </strong>
-                                            <span v-if="ticket.contact !== null">
+                                            <span v-if="ticket.contact !== null" class="float-md-right text-md-right">
                                                 <v-avatar
                                                     size="2em"
                                                     class="mr-2"
@@ -812,7 +812,7 @@
                         >
                             <span>
                                  <strong>{{ langMap.ticket.reported_by }}: </strong>
-                                 <span v-if="ticket.contact !== null" class="float-md-right">
+                                 <span v-if="ticket.contact !== null" class="float-md-right text-md-right">
                                      <v-avatar
                                          size="2em"
                                          class="mr-2"
@@ -933,7 +933,7 @@
                                 </span>
                                 <span v-if="ticket.assigned_person !== null">
                                 <strong>{{ langMap.team.members }}: </strong>
-                                    <span class="float-md-right">
+                                    <span class="float-md-right text-md-right">
                                         <v-avatar
                                             size="2em"
                                             class="mr-2"
