@@ -629,11 +629,22 @@
                                                 class="text-left"
                                                 style="font-weight: bold;"
                                             >
+                                                <v-avatar
+                                                    size="2em"
+                                                    class="mr-2"
+                                                    color="grey darken-1"
+                                                    v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
+                                                >
+                                                    <v-img v-if="answer.employee.user_data.avatar_url" :src="answer.employee.user_data.avatar_url" />
+                                                    <span v-else-if="answer.employee.user_data.full_name" class="white--text">
+                                                        {{ answer.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    </span>
+                                                </v-avatar>
+                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+
                                                 {{ answer.employee.user_data.full_name }}
-                                                {{
-                                                    answer.created_at_time !== '' ? answer.created_at_time :
-                                                        answer.created_at
-                                                }} - {{ ticket.name }}:
+
+                                                {{ answer.created_at_time !== '' ? answer.created_at_time : answer.created_at }} - {{ ticket.name }}:
                                             </span>
                                             <div v-html="answer.answer"></div>
                                             <v-col v-if="answer.attachments.length > 0 " cols="12">
@@ -678,11 +689,21 @@
                                             v-else
                                             class="text-left"
                                             style="font-weight: bold;">
+                                            <v-avatar
+                                                    size="2em"
+                                                    class="mr-2"
+                                                    color="grey darken-1"
+                                                    v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
+                                                >
+                                                    <v-img v-if="ticket.creator.user_data.avatar_url" :src="ticket.creator.user_data.avatar_url" />
+                                                    <span v-else-if="ticket.creator.user_data.full_name" class="white--text">
+                                                        {{ ticket.creator.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    </span>
+                                                </v-avatar>
+                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+
                                                 {{ ticket.creator.user_data.full_name }}
-                                                {{
-                                                ticket.created_at_time !== '' ? ticket.created_at_time :
-                                                    ticket.created_at
-                                            }} - {{ ticket.name }}:
+                                                {{ ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at }} - {{ ticket.name }}:
                                         </span>
                                         <div v-html="child_ticket.description"></div>
                                         <span class="caption text-center"
@@ -739,11 +760,21 @@
                                 <v-list-item>
                                     <v-list-item-content>
                                         <span class="text-left" style="font-weight: bold;">
+                                            <v-avatar
+                                                size="2em"
+                                                class="mr-2"
+                                                color="grey darken-1"
+                                                v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
+                                            >
+                                                    <v-img v-if="answer.employee.user_data.avatar_url" :src="answer.employee.user_data.avatar_url" />
+                                                    <span v-else-if="answer.employee.user_data.full_name" class="white--text">
+                                                        {{ answer.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    </span>
+                                                </v-avatar>
+                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+
                                             {{ answer.employee.user_data.full_name }}
-                                            {{
-                                                answer.created_at_time !== '' ? answer.created_at_time :
-                                                    answer.created_at
-                                            }}:
+                                            {{ answer.created_at_time !== '' ? answer.created_at_time : answer.created_at }}:
                                         </span>
                                         <div v-html="answer.answer"></div>
                                         <v-col v-if="answer.attachments.length > 0 " cols="12">
@@ -780,11 +811,21 @@
                                 <v-list-item-content>
 <!--                                    <span v-text="ticket.merge_comment"></span>-->
                                     <span class="text-left" style="font-weight: bold;">
+                                        <v-avatar
+                                            size="2em"
+                                            class="mr-2"
+                                            color="grey darken-1"
+                                            v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
+                                        >
+                                                    <v-img v-if="ticket.creator.user_data.avatar_url" :src="ticket.creator.user_data.avatar_url" />
+                                                    <span v-else-if="ticket.creator.user_data.full_name" class="white--text">
+                                                        {{ ticket.creator.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    </span>
+                                                </v-avatar>
+                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+
                                                 {{ ticket.creator.user_data.full_name }}
-                                                {{
-                                            ticket.created_at_time !== '' ? ticket.created_at_time :
-                                                ticket.created_at
-                                        }} - {{ ticket.name }}:
+                                                {{ ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at }} - {{ ticket.name }}:
                                     </span>
                                     <div v-html="ticket.description"></div>
                                 </v-list-item-content>
