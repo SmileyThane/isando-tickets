@@ -30,6 +30,13 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
+                            <v-img v-if="companyLogo"
+                                   :src="companyLogo"
+                                   max-width="15em"
+                                   max-height="7em"
+                                   contain
+                            />
+
                             <v-text-field
                                 v-model="company.name"
                                 :color="themeColor"
@@ -515,7 +522,20 @@
                                 </td>
                             </template>
                             <template v-slot:item.user_data="{ item }">
-                                <div v-if="item.user_data" class="justify-center">
+                                <div v-if="item.user_data">
+                                    <v-avatar
+                                        size="2em"
+                                        class="mr-2"
+                                        color="grey darken-1"
+                                        v-if="item.user_data.avatar_url || item.user_data.full_name"
+                                    >
+                                        <v-img v-if="item.user_data.avatar_url" :src="item.user_data.avatar_url" />
+                                        <span v-else-if="item.user_data.full_name" class="white--text">
+                                            {{ item.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                        </span>
+
+                                    </v-avatar>
+                                    <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
                                     {{ item.user_data.full_name }}
                                 </div>
                             </template>
@@ -1840,6 +1860,7 @@ export default {
                     }
                 ]
             },
+            companyLogo: '',
             employeeForm: {
                 name: '',
                 email: '',
@@ -1951,6 +1972,7 @@ export default {
     },
     mounted() {
         this.getCompany();
+        this.getCompanyLogo();
         this.getLanguages();
         this.getRoles();
         this.getPhoneTypes();
@@ -1997,6 +2019,18 @@ export default {
                     this.snackbar = true;
                 }
 
+            });
+        },
+        getCompanyLogo() {
+            axios.get(`/api/main_company/logo`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.companyLogo = response.data;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
             });
         },
         getRoles() {
