@@ -133,19 +133,16 @@
                                             min-width="290px"
                                         >
                                             <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                    dense
+                                                <TimeField
                                                     v-model="timeFrom"
+                                                    style="max-width: 100px"
                                                     label="From"
                                                     placeholder="hh:mm"
-                                                    prepend-icon="mdi-clock-time-four-outline"
                                                     v-bind="attrs"
                                                     v-on="on"
-                                                    hide-details="auto"
-                                                    style="max-width: 100px"
-                                                    @blur="handlerSetTimeFrom()"
-                                                    @focus="$event.target.select()"
-                                                ></v-text-field>
+                                                    format="HH:mm"
+
+                                                ></TimeField>
                                             </template>
                                             <v-time-picker
                                                 dense
@@ -170,19 +167,16 @@
                                             min-width="290px"
                                         >
                                             <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                    dense
+                                                <TimeField
                                                     v-model="timeTo"
+                                                    style="max-width: 100px"
                                                     label="To"
                                                     placeholder="hh:mm"
-                                                    prepend-icon="mdi-clock-time-four-outline"
                                                     v-bind="attrs"
                                                     v-on="on"
-                                                    hide-details="auto"
-                                                    style="max-width: 100px"
-                                                    @blur="handlerSetTimeTo()"
-                                                    @focus="$event.target.select()"
-                                                ></v-text-field>
+                                                    format="HH:mm"
+
+                                                ></TimeField>
                                             </template>
                                             <v-time-picker
                                                 dense
@@ -251,7 +245,7 @@
                                 </v-col>
                             </v-row>
                         </v-col>
-                        <v-col cols="1" lg="1" md="2" sm="2" class="pt-6">
+                        <v-col cols="1" lg="1" md="2" sm="2">
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
@@ -423,16 +417,13 @@
                                     <template v-slot:item.date_from="props">
                                         <v-edit-dialog
                                             :return-value.sync="props.item.date_from"
-                                            @save="save(props.item, 'date_from')"
-                                            @cancel="cancel"
-                                            @open="open"
-                                            @close="save(props.item, 'date_from', props.item.date_from)"
                                         >
                                             {{ moment(props.item.date_from).format(timeFormat) }}
                                             <template v-slot:input>
                                                 <TimeField
                                                     v-model="props.item.date_from"
                                                     format="HH:mm"
+                                                    @input="save(props.item, 'date_from', props.item.date_from)"
                                                 ></TimeField>
                                             </template>
                                         </v-edit-dialog>
@@ -440,25 +431,17 @@
                                     <template v-slot:item.date_to="props">
                                         <v-edit-dialog
                                             :return-value.sync="props.item.date_to"
-                                            @save="save(props.item, 'date_to')"
-                                            @cancel="cancel"
-                                            @open="open"
-                                            @close="save(props.item, 'date_to', props.item.date_to)"
                                             v-if="props.item.status == 'stopped'"
                                         >
                                             <span v-if="props.item.date_to && props.item.status == 'stopped'">
                                                 {{ moment(props.item.date_to).format(timeFormat) }}
                                             </span>
                                             <template v-slot:input>
-                                                <v-text-field
-                                                    v-model="moment(props.item.date_to).format(`${dateFormat} ${timeFormat}`)"
-                                                    label="Date End"
-                                                    hint="Date End"
-                                                    single-line
-                                                    counter
-                                                    autofocus
-                                                    @focus="$event.target.select()"
-                                                ></v-text-field>
+                                                <TimeField
+                                                    v-model="props.item.date_to"
+                                                    format="HH:mm"
+                                                    @input="save(props.item, 'date_to', props.item.date_to)"
+                                                ></TimeField>
                                             </template>
                                         </v-edit-dialog>
                                     </template>
@@ -680,8 +663,8 @@ export default {
             moment().subtract(1, 'days').format(this.dateFormat),
             moment().format(this.dateFormat)
         ];
-        this.timeFrom = moment().add(1, 'minutes').format(this.timeFormat);
-        this.timeTo = moment().add(15, 'minutes').format(this.timeFormat);
+        this.timeFrom = moment();
+        this.timeTo = moment().add(15, 'minutes');
         this.date = moment().format(this.dateFormat);
     },
     mounted() {
@@ -869,7 +852,9 @@ export default {
             return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
         },
         helperCalculatePassedTime(date_from, date_to) {
+            console.log(date_from, date_to);
             if (moment(date_from) > moment(date_to)) {
+                console.log('INC');
                 date_to = moment(date_to).add(1, 'day');
             }
             return moment(date_to).diff(moment(date_from), 'seconds');
@@ -909,38 +894,38 @@ export default {
                 this.debounceGetTracking();
             }
         },
-        handlerSetTimeFrom() {
-            if (!this.timeFrom) {
-                this.timeFrom = moment().format(this.timeFormat);
-            }
-            if (/([0-9]{1,}:[0-9]{2})/.test(this.timeFrom)) {
-                return this.timeFrom;
-            }
-            if (/(\d{1,4})/.test(this.timeFrom)) {
-                let str = this.timeFrom.toString().slice(0,4);
-                str = this.helperAddZeros(str, 4);
-                this.timeFrom = str.slice(0,2) + ':' + str.slice(-2);
-                return this.timeFrom;
-            }
-            this.timeFrom = moment().format(this.timeFormat);
-            return this.timeFrom;
-        },
-        handlerSetTimeTo() {
-            if (!this.timeTo) {
-                this.timeTo = moment().format(this.timeFormat);
-            }
-            if (/([0-9]{1,}:[0-9]{2})/.test(this.timeTo)) {
-                return this.timeTo;
-            }
-            if (/(\d{1,4})/.test(this.timeTo)) {
-                let str = this.timeTo.toString().slice(0,4);
-                str = this.helperAddZeros(str, 4);
-                this.timeTo = str.slice(0,2) + ':' + str.slice(-2);
-                return this.timeTo;
-            }
-            this.timeTo = moment().format(this.timeFormat);
-            return this.timeTo;
-        },
+        // handlerSetTimeFrom() {
+        //     if (!this.timeFrom) {
+        //         this.timeFrom = moment().format(this.timeFormat);
+        //     }
+        //     if (/([0-9]{1,}:[0-9]{2})/.test(this.timeFrom)) {
+        //         return this.timeFrom;
+        //     }
+        //     if (/(\d{1,4})/.test(this.timeFrom)) {
+        //         let str = this.timeFrom.toString().slice(0,4);
+        //         str = this.helperAddZeros(str, 4);
+        //         this.timeFrom = str.slice(0,2) + ':' + str.slice(-2);
+        //         return this.timeFrom;
+        //     }
+        //     this.timeFrom = moment().format(this.timeFormat);
+        //     return this.timeFrom;
+        // },
+        // handlerSetTimeTo() {
+        //     if (!this.timeTo) {
+        //         this.timeTo = moment().format(this.timeFormat);
+        //     }
+        //     if (/([0-9]{1,}:[0-9]{2})/.test(this.timeTo)) {
+        //         return this.timeTo;
+        //     }
+        //     if (/(\d{1,4})/.test(this.timeTo)) {
+        //         let str = this.timeTo.toString().slice(0,4);
+        //         str = this.helperAddZeros(str, 4);
+        //         this.timeTo = str.slice(0,2) + ':' + str.slice(-2);
+        //         return this.timeTo;
+        //     }
+        //     this.timeTo = moment().format(this.timeFormat);
+        //     return this.timeTo;
+        // },
         handlerSetDate() {
             if (!this.date || ! /([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/.test(this.date)) {
                 this.date = moment().format(this.dateFormat);
@@ -986,7 +971,10 @@ export default {
     },
     computed: {
         timeAdd () {
+            console.log(moment(this.manualPanel.date_from).format());
+            console.log(moment(this.manualPanel.date_to).format());
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
+                console.log('increase');
                 this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day');
             }
             const seconds = this.helperCalculatePassedTime(this.manualPanel.date_from, this.manualPanel.date_to);
@@ -1019,28 +1007,20 @@ export default {
     },
     watch: {
         timeFrom: function () {
-            this.manualPanel.date_from = moment(this.date)
-                .hours(this.timeFrom.toString().split(':')[0])
-                .minutes(this.timeFrom.toString().split(':')[1]);
+            this.manualPanel.date_from = this.timeFrom;
         },
         timeTo: function () {
-            this.manualPanel.date_to = moment(this.date)
-                .hours(this.timeTo.toString().split(':')[0])
-                .minutes(this.timeTo.toString().split(':')[1]);
+            this.manualPanel.date_to = this.timeTo;
         },
         date: function () {
             this.manualPanel.date = moment(this.date);
-            this.manualPanel.date_from = moment(this.date)
-                .hours(this.timeFrom.toString().split(':')[0])
-                .minutes(this.timeFrom.toString().split(':')[1]);
+            this.manualPanel.date_from = this.timeFrom;
             let dayToAdding = 0;
             if (moment(this.manualPanel.date_to).format(this.dateFormat) > moment(this.manualPanel.date_from).format(this.dateFormat)) {
                 dayToAdding = 1;
             }
-            this.manualPanel.date_to = moment(this.date)
-                .add(dayToAdding, 'day')
-                .hours(this.timeTo.toString().split(':')[0])
-                .minutes(this.timeTo.toString().split(':')[1]);
+            this.manualPanel.date_to = moment(this.timeTo)
+                .add(dayToAdding, 'day');
         },
         search () {
             this.$store.dispatch('Projects/getProjectList', { search: this.search });

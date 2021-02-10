@@ -265,7 +265,6 @@ export default {
         removeTag(tagId) {
             this.$store.dispatch('Tags/deleteTag', tagId)
                 .then(result => {
-                    console.log(result);
                     if (result) {
                         this.snackbarMessage = 'Tag deleted successfully';
                         this.actionColor = 'success'
@@ -312,12 +311,6 @@ export default {
             let zeros = new Array(len).join('0');
             return (zeros + str).slice(-len);
         }
-    },
-    computed: {
-        switchColorCreate() {
-            const { form: { color }, colorMenuCreate } = this
-            return
-        }
-    },
+    }
 }
 </script>

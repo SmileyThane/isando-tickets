@@ -1,31 +1,56 @@
 <template>
-    <v-text-field
-        v-bind="$attrs"
-        v-on="$listeners"
-        v-model="formattedTime"
-        label="Date From"
-        hint="Date From"
-        single-line
-        counter
-        autofocus
-        @focus="$event.target.select()"
-        v-on:focus="onFocus"
-        v-on:keydown="onKeyDown"
-    ></v-text-field>
+    <div
+        :class="classes"
+        style="max-width: 100px;"
+    >
+        <div
+            v-if="prependIcon"
+            class="v-input__prepend-outer">
+            <div class="v-input__icon v-input__icon--prepend">
+                <v-icon>{{prependIcon}}</v-icon>
+            </div>
+        </div>
+        <div class="v-input__control">
+            <div class="v-input__slot">
+                <div class="v-text-field__slot">
+                    <label
+                        v-if="label"
+                        class="v-label v-label--active theme--light"
+                        style="left: 0px; right: auto; position: absolute;"
+                    >{{label}}</label>
+                    <input
+                        type="time"
+                        autofocus
+                        v-model="time"
+                        v-bind="$attrs"
+                        @keypress="onKeyDown"
+                        @blur="setTimeHandler"
+                        @focus="$event.target.select()"
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
 
-import moment from 'moment';
-import tz from 'moment-timezone';
+// import moment from 'moment';
+import moment from 'moment-timezone';
+import VInput from 'vuetify/lib/components/VInput/VInput';
 
 export default {
     name: "time-field",
-    props: ['format', 'value'],
+    extends: VInput,
+    props: ['format', 'value', 'prependIcon', 'label', 'dense'],
     data: () => {
         return {
-            isFocused: false
+            isFocused: false,
+            time: ''
         };
+    },
+    mounted() {
+        this.time = moment(this.value).format(this.format);
     },
     methods: {
         onInput(val) {
@@ -53,40 +78,71 @@ export default {
             return num.toString();
         },
         onKeyDown($event) {
+            if ($event.keyCode === 13) {
+                this.setTimeHandler();
+                return true;
+            }
             const keyCodes = [8, 46, 37, 38, 39, 40, 13, 27];
             if (
                     ($event.keyCode >= 48 && $event.keyCode <= 57)
                 || ($event.keyCode >= 96 && $event.keyCode <= 105)
-                || (keyCodes.indexOf($event.keyCode))
+                || (keyCodes.indexOf($event.keyCode) !== -1)
             ) {
                 return true;
             }
             $event.preventDefault();
+        },
+        setTimeHandler() {
+            let val = this.time.toString().replace(':', '');
+            console.log('data: ', val);
+            val = val.toString();
+            if (val.length > 4) {
+                val = val.substr(0, 4);
+            }
+            console.log('len: ', val);
+            val = this.helperAddZeros(val, 4);
+            console.log('zero: ', val);
+            console.log({
+                hours: parseInt(val.substr(0, 2)),
+                minutes: parseInt(val.substr(-2))
+            });
+            console.log('value: ', this.value);
+            const time = moment(this.value)
+                .set({
+                    hours: parseInt(val.substr(0, 2)),
+                    minutes: parseInt(val.substr(-2))
+                });
+            console.log('time: ', time.format());
+            if (moment(time.format()).isValid()) {
+                console.log('time is valid: ', time.format());
+                this.formattedTime = moment(time).format();
+                return true;
+            }
+            console.log('time is invalid: ', time.format());
+            return moment().format();
         }
     },
     computed: {
         formattedTime: {
             get() {
-                return moment(this.value).format(this.isFocused ? 'HHmm' : this.format);
+                if (moment(this.value).isValid()) {
+                    return moment(this.value).format(this.isFocused ? 'HHmm' : this.format);
+                }
+                return this.value;
             },
             set(val) {
-                val = val.toString();
-                console.log('set ', val);
-                if (val.length > 4) {
-                    val = val.substr(0, 4);
-                }
-                console.log('set ', val);
-                val = this.helperAddZeros(val, 4);
-                console.log('set ', val);
-                console.log('set ', moment);
-                const time = moment(this.value)
-                    .tz(moment.guess())
-                    .hour(parseInt(val.substr(0, 2)))
-                    .minute(parseInt(val.substr(-2)));
-                console.log(time);
-                this.$emit('input', time);
+                this.$emit('input', val);
             }
+        },
+        classes: () =>{
+            return ['v-input', 'v-input--hide-details', 'v-input--is-label-active',
+                'v-input--is-dirty', 'theme--light', 'v-text-field',
+                'v-text-field--is-booted', 'v-text-field--placeholder', 'v-input--dense'];
         }
     }
 }
 </script>
+
+<style type="text/css">
+
+</style>
