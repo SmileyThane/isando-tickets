@@ -422,6 +422,9 @@
                                             <template v-slot:input>
                                                 <TimeField
                                                     v-model="props.item.date_from"
+                                                    style="max-width: 100px; height: 40px"
+                                                    label="From"
+                                                    placeholder="hh:mm"
                                                     format="HH:mm"
                                                     @input="save(props.item, 'date_from', props.item.date_from)"
                                                 ></TimeField>
@@ -439,6 +442,9 @@
                                             <template v-slot:input>
                                                 <TimeField
                                                     v-model="props.item.date_to"
+                                                    style="max-width: 100px; height: 40px"
+                                                    label="To"
+                                                    placeholder="hh:mm"
                                                     format="HH:mm"
                                                     @input="save(props.item, 'date_to', props.item.date_to)"
                                                 ></TimeField>
