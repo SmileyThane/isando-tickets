@@ -536,8 +536,8 @@
                                                 <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
                                                 {{ ticket.contact.user_data.full_name }}
                                                 <br>
+                                                {{ ticket.from.name }}
                                             </span>
-                                            {{ ticket.from.name }}
                                             <!--                                    <v-btn-->
                                             <!--                                        text-->
                                             <!--                                        small-->
@@ -827,9 +827,7 @@
 
                                      <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
                                      {{ ticket.contact.user_data.full_name }}
-                                  </span>
-                                <br v-if="ticket.contact !== null">
-                                  <span class="float-md-right">
+                                     <br>
                                      {{ ticket.from.name }}
                                   </span>
                             </span>
@@ -1100,8 +1098,11 @@
                                                     </span>
                                                 </v-avatar>
                                                 <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+
                                                 {{ noticeItem.employee.user_data.full_name }}
-                                                {{ noticeItem.created_at }}:</strong>
+
+                                                {{ noticeItem.created_at }}:
+                                            </strong>
                                             <div v-html="noticeItem.notice"></div>
                                         </v-list-item-content>
 
