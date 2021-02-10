@@ -28,13 +28,14 @@ class TrackingController extends BaseController
 
     public function update(Request $request, Tracking $tracking)
     {
-        $success = false;
-        $result = $this->trackingRepo->validate($request, false);
-        if ($result === true) {
+        $result = null;
+        try {
+            $result = $this->trackingRepo->validate($request, false);
             $result = $this->trackingRepo->update($request, $tracking);
-            $success = true;
+        } catch (\Exception $exception) {
+            return self::showResponse(false, $result);
         }
-        return self::showResponse($success, $result);
+        return self::showResponse(true, $result);
     }
 
     public function delete(Tracking $tracking)

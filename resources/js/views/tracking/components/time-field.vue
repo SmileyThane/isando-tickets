@@ -54,7 +54,6 @@ export default {
     },
     methods: {
         onInput(val) {
-            console.log('onInput ', val);
             this.$emit('input', val);
         },
         onFocus($event) {
@@ -94,31 +93,20 @@ export default {
         },
         setTimeHandler() {
             let val = this.time.toString().replace(':', '');
-            console.log('data: ', val);
             val = val.toString();
             if (val.length > 4) {
                 val = val.substr(0, 4);
             }
-            console.log('len: ', val);
             val = this.helperAddZeros(val, 4);
-            console.log('zero: ', val);
-            console.log({
-                hours: parseInt(val.substr(0, 2)),
-                minutes: parseInt(val.substr(-2))
-            });
-            console.log('value: ', this.value);
             const time = moment(this.value)
                 .set({
                     hours: parseInt(val.substr(0, 2)),
                     minutes: parseInt(val.substr(-2))
                 });
-            console.log('time: ', time.format());
             if (moment(time.format()).isValid()) {
-                console.log('time is valid: ', time.format());
                 this.formattedTime = moment(time).format();
                 return true;
             }
-            console.log('time is invalid: ', time.format());
             return moment().format();
         }
     },

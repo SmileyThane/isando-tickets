@@ -134,7 +134,7 @@
                                         >
                                             <template v-slot:activator="{ on, attrs }">
                                                 <TimeField
-                                                    v-model="timeFrom"
+                                                    v-model="manualPanel.date_from"
                                                     style="max-width: 100px"
                                                     label="From"
                                                     placeholder="hh:mm"
@@ -147,9 +147,9 @@
                                             <v-time-picker
                                                 dense
                                                 v-if="timeFromPicker"
-                                                v-model="timeFrom"
+                                                v-model="manualPanel.date_from"
                                                 full-width
-                                                @click:minute="$refs.menuFrom.save(timeFrom)"
+                                                @click:minute="$refs.menuFrom.save(manualPanel.date_from)"
                                             ></v-time-picker>
                                         </v-menu>
                                     </template>
@@ -168,7 +168,7 @@
                                         >
                                             <template v-slot:activator="{ on, attrs }">
                                                 <TimeField
-                                                    v-model="timeTo"
+                                                    v-model="manualPanel.date_to"
                                                     style="max-width: 100px"
                                                     label="To"
                                                     placeholder="hh:mm"
@@ -181,9 +181,9 @@
                                             <v-time-picker
                                                 dense
                                                 v-if="timeToPicker"
-                                                v-model="timeTo"
+                                                v-model="manualPanel.date_to"
                                                 full-width
-                                                @click:minute="$refs.menuTo.save(timeTo)"
+                                                @click:minute="$refs.menuTo.save(manualPanel.date_to)"
                                             ></v-time-picker>
                                         </v-menu>
                                     </template>
@@ -511,6 +511,7 @@
                                                                     <v-list-item-content>
                                                                         <v-list-item-title
                                                                             @click="actionDeleteTracking(props.item.id)"
+                                                                            style="color: red"
                                                                         >
                                                                             Delete
                                                                         </v-list-item-title>
@@ -638,8 +639,8 @@ export default {
                 project: null,
                 tags: [],
                 billable: false,
-                date_from: moment(),
-                date_to: null,
+                date_from: moment().format(),
+                date_to: moment().add(15, 'minutes').format(),
                 date: moment(),
                 status: 'started',
                 timeStart: '00:00:00'
@@ -669,8 +670,8 @@ export default {
             moment().subtract(1, 'days').format(this.dateFormat),
             moment().format(this.dateFormat)
         ];
-        this.timeFrom = moment();
-        this.timeTo = moment().add(15, 'minutes');
+        this.timeFrom = moment().format();
+        this.timeTo = moment().add(15, 'minutes').format();
         this.date = moment().format(this.dateFormat);
     },
     mounted() {
@@ -858,9 +859,7 @@ export default {
             return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
         },
         helperCalculatePassedTime(date_from, date_to) {
-            console.log(date_from, date_to);
             if (moment(date_from) > moment(date_to)) {
-                console.log('INC');
                 date_to = moment(date_to).add(1, 'day');
             }
             return moment(date_to).diff(moment(date_from), 'seconds');
@@ -871,11 +870,11 @@ export default {
                 projectId: null,
                 tags: [],
                 billable: false,
-                date_from: moment().format(this.timeFormat),
-                date_to: moment().format(this.timeFormat),
+                date_from: moment().format(),
+                date_to: moment().add(15, 'minutes').format(),
                 date: moment().format(this.dateFormat),
                 status: 'started',
-                timeStart: '00:00:00'
+                timeStart: this.helperConvertSecondsToTimeFormat(this.helperCalculatePassedTime(moment().format(), moment().add(15, 'minutes').format()))
             };
         },
         resetTimerPanel() {
@@ -977,10 +976,7 @@ export default {
     },
     computed: {
         timeAdd () {
-            console.log(moment(this.manualPanel.date_from).format());
-            console.log(moment(this.manualPanel.date_to).format());
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
-                console.log('increase');
                 this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day');
             }
             const seconds = this.helperCalculatePassedTime(this.manualPanel.date_from, this.manualPanel.date_to);

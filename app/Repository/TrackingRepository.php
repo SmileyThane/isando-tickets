@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\Tracking;
 use App\TrackingProject;
+use App\TrackingLogger;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -80,29 +81,41 @@ class TrackingRepository
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
         $tracking->date_from = Carbon::parse($request->date_from)->utc();
+        if ($request->has('date_from') && $request->has('date_to') && !is_null($request->date_to)) {
+            if (Carbon::parse($request->date_from)->gt(Carbon::parse($request->date_to))) {
+                throw new \Exception('The date from must be a date before date to.');
+            }
+        }
         $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->utc() : null;
         $tracking->status = $request->status;
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
         $tracking->save();
+        $this->logTracking($tracking->id, TrackingLogger::CREATE, null, $tracking);
         if ($request->has('tags')) {
             foreach ($request->tags as $tag) {
                 $tracking->Tags()->attach($tag['id']);
             }
+            $this->logTracking($tracking->id, TrackingLogger::ATTACH_TAGS, null, $request->tags);
         }
+
         return $tracking;
     }
 
     public function update(Request $request, Tracking $tracking)
     {
+        $oldTracking = $tracking;
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
         if ($request->has('date_from')) {
+            if (Carbon::parse($request->date_from)->gt(Carbon::parse($tracking->date_to))) {
+                throw new \Exception('The date from must be a date before date to.');
+            }
             $tracking->date_from = Carbon::parse($request->date_from)->utc();
         }
         if ($request->has('date_to')) {
-            if (!is_null($request->date_to) && Carbon::parse($tracking->date_from)->gt($request->date_to)) {
+            if (!is_null($request->date_to) && Carbon::parse($tracking->date_from)->gt(Carbon::parse($request->date_to))) {
                 throw new \Exception('The date from must be a date before date to.');
             }
             $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->utc() : null;
@@ -113,19 +126,22 @@ class TrackingRepository
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
+        $tracking->save();
+        $this->logTracking($tracking->id, TrackingLogger::UPDATE, $oldTracking, $tracking);
         if ($request->has('tags')) {
+            $this->logTracking($tracking->id, TrackingLogger::UPDATE_TAGS, $tracking->Tags()->get(), $request->tags);
             $tracking->Tags()->detach();
             foreach ($request->tags as $tag) {
                 $tracking->Tags()->attach($tag['id']);
             }
         }
-        $tracking->save();
         return $tracking;
     }
 
     public function delete(Tracking $tracking)
     {
         if ($tracking->user_id === Auth::user()->id) {
+            $this->logTracking($tracking->id, TrackingLogger::DELETE, $tracking, null);
             $tracking->delete();
             return true;
         }
@@ -137,8 +153,26 @@ class TrackingRepository
         if ($tracking->user_id === Auth::user()->id) {
             $newTracking = $tracking->replicate();
             $newTracking->save();
+            $this->logTracking($tracking->id, TrackingLogger::DUPLICATE, $tracking, $newTracking);
             return $newTracking;
         }
         return false;
+    }
+
+    protected function logTracking($trackingId, $action, $from = null, $to = null) {
+        if ($action === TrackingLogger::UPDATE_TAGS && empty($from) && empty($to)) {
+            return false;
+        }
+        $trackingLog = new TrackingLogger();
+        $trackingLog->user_id = Auth::user()->id;
+        $trackingLog->tracking_id = $trackingId;
+        $trackingLog->action = $action;
+        $trackingLog->from = $from;
+        $trackingLog->to = $to;
+        try {
+            $trackingLog->save();
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
     }
 }
