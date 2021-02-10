@@ -155,9 +155,23 @@
                                 </v-pagination>
                             </template>
                             <template v-slot:item.id="{ item }">
-                                <div v-if="item" class="justify-center" @click="showItem(item)">
+                                <div v-if="item.user_data" class="justify-center" @click="showItem(item)">
                                     {{ item.user_data.id }}
                                 </div>
+                            </template>
+                            <template v-slot:item.avatar="{ item }">
+                                <v-avatar
+                                    size="2em"
+                                    color="grey darken-1"
+                                    v-if="item.user_data && (item.user_data.avatar_url || item.user_data.full_name)"
+                                >
+                                    <v-img v-if="item.user_data.avatar_url" :src="item.user_data.avatar_url" />
+                                    <span v-else-if="item.user_data.full_name" class="white--text">
+                                            {{ item.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                        </span>
+
+                                </v-avatar>
+                                <v-icon v-else large>mdi-account-circle</v-icon>
                             </template>
                             <template v-slot:item.user_data.emails="{item}">
                                 <span v-for="email in item.user_data.emails" v-if="item.user_data.emails.length > 0">
@@ -172,7 +186,7 @@
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.user_data.is_active="{ item }">
-                                <v-icon v-if="item" class="justify-center" @click="showItem(item)">
+                                <v-icon v-if="item" @click="showItem(item)">
                                     {{
                                         item.user_data.is_active === 1 ?
                                             'mdi-check-circle-outline' :
@@ -181,7 +195,7 @@
                                 </v-icon>
                             </template>
                             <template v-slot:item.user_data.status="{ item }">
-                                <v-icon v-if="item" class="justify-center" @click="showItem(item)">
+                                <v-icon v-if="item" @click="showItem(item)">
                                     {{
                                         item.user_data.status === 1 ?
                                             'mdi-check-circle-outline' :
@@ -261,20 +275,14 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             headers: [
                 {text: '', value: 'data-table-expand'},
-                {
-                    text: 'ID',
-                    align: 'start',
-                    value: 'id',
-                },
+                {text: 'ID', align: 'start', value: 'id'},
                 {text: `${this.$store.state.lang.lang_map.profile.personal_id}`, value: 'user_data.number'},
+                {text: `${this.$store.state.lang.lang_map.profile.avatar}`, value: 'avatar', align: 'center', sortable: false},
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'user_data.name'},
                 {text: `${this.$store.state.lang.lang_map.main.last_name}`, value: 'user_data.surname'},
                 {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'user_data.emails'},
-                {
-                    text: `${this.$store.state.lang.lang_map.individuals.is_active}`,
-                    value: 'user_data.is_active'
-                },
-                {text: `${this.$store.state.lang.lang_map.individuals.status}`, value: 'user_data.status'},
+                {text: `${this.$store.state.lang.lang_map.individuals.is_active}`, value: 'user_data.is_active', align: 'center'},
+                {text: `${this.$store.state.lang.lang_map.individuals.status}`, value: 'user_data.status', align: 'center'},
                 {text: `${this.$store.state.lang.lang_map.main.client}`, value: 'assigned_to_clients.clients'},
             ],
             employeesSearch: '',

@@ -522,11 +522,22 @@
                                         <span>
                                             <strong>{{ langMap.ticket.reported_by }}: </strong>
                                             <span v-if="ticket.contact !== null">
-                                                {{ ticket.contact.user_data.name }}
-                                                {{ ticket.contact.user_data.surname }}
+                                                <v-avatar
+                                                    size="2em"
+                                                    class="mr-2"
+                                                    color="grey darken-1"
+                                                    v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
+                                                >
+                                                    <v-img v-if="ticket.contact.user_data.avatar_url" :src="ticket.contact.user_data.avatar_url" />
+                                                    <span v-else-if="ticket.contact.user_data.full_name" class="white--text">
+                                                    {{ ticket.contact.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    </span>
+                                                   </v-avatar>
+                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                                {{ ticket.contact.user_data.full_name }}
                                                 <br>
+                                                {{ ticket.from.name }}
                                             </span>
-                                            {{ ticket.from.name }}
                                             <!--                                    <v-btn-->
                                             <!--                                        text-->
                                             <!--                                        small-->
@@ -802,10 +813,21 @@
                             <span>
                                  <strong>{{ langMap.ticket.reported_by }}: </strong>
                                  <span v-if="ticket.contact !== null" class="float-md-right">
+                                     <v-avatar
+                                         size="2em"
+                                         class="mr-2"
+                                         color="grey darken-1"
+                                         v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
+                                     >
+                                         <v-img v-if="ticket.contact.user_data.avatar_url" :src="ticket.contact.user_data.avatar_url" />
+                                         <span v-else-if="ticket.contact.user_data.full_name" class="white--text">
+                                            {{ ticket.contact.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                         </span>
+                                     </v-avatar>
+
+                                     <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
                                      {{ ticket.contact.user_data.full_name }}
-                                  </span>
-                                <br v-if="ticket.contact !== null">
-                                  <span class="float-md-right">
+                                     <br>
                                      {{ ticket.from.name }}
                                   </span>
                             </span>
@@ -912,6 +934,17 @@
                                 <span v-if="ticket.assigned_person !== null">
                                 <strong>{{ langMap.team.members }}: </strong>
                                     <span class="float-md-right">
+                                        <v-avatar
+                                            size="2em"
+                                            class="mr-2"
+                                            color="grey darken-1"
+                                            v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
+                                        >
+                                         <v-img v-if="ticket.assigned_person.user_data.avatar_url" :src="ticket.assigned_person.user_data.avatar_url" />
+                                         <span v-else-if="ticket.assigned_person.user_data.full_name" class="white--text">
+                                            {{ ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                         </span>
+                                        </v-avatar>
                                         {{ ticket.assigned_person.user_data.full_name }}
                                     </span>
                                 </span>
@@ -1015,8 +1048,24 @@
                                 >
                                     <v-list-item three-line>
                                         <v-list-item-content class="custom-small-text">
-                                            <strong>{{childTicket.number}}|{{ noticeItem.employee.user_data.name }}
-                                                {{ noticeItem.employee.user_data.surname }}
+                                            <strong>
+                                                {{childTicket.number}} |
+
+                                                <v-avatar
+                                                    size="2em"
+                                                    class="mr-2"
+                                                    color="grey darken-1"
+                                                    v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
+                                                >
+                                                    <v-img v-if="noticeItem.employee.user_data.avatar_url" :src="noticeItem.employee.user_data.avatar_url" />
+                                                    <span v-else-if="noticeItem.employee.user_data.full_name" class="white--text">
+                                                        {{ noticeItem.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    </span>
+                                                </v-avatar>
+                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+
+                                                {{ noticeItem.employee.user_data.full_name }}
+
                                                 {{ noticeItem.created_at }}:</strong>
                                             <div v-html="noticeItem.notice"></div>
                                         </v-list-item-content>
@@ -1036,9 +1085,24 @@
                                 >
                                     <v-list-item three-line>
                                         <v-list-item-content class="custom-small-text">
-                                            <strong>{{ noticeItem.employee.user_data.name }}
-                                                {{ noticeItem.employee.user_data.surname }}
-                                                {{ noticeItem.created_at }}:</strong>
+                                            <strong>
+                                                <v-avatar
+                                                    size="2em"
+                                                    class="mr-2"
+                                                    color="grey darken-1"
+                                                    v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
+                                                >
+                                                    <v-img v-if="noticeItem.employee.user_data.avatar_url" :src="noticeItem.employee.user_data.avatar_url" />
+                                                    <span v-else-if="noticeItem.employee.user_data.full_name" class="white--text">
+                                                        {{ noticeItem.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    </span>
+                                                </v-avatar>
+                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+
+                                                {{ noticeItem.employee.user_data.full_name }}
+
+                                                {{ noticeItem.created_at }}:
+                                            </strong>
                                             <div v-html="noticeItem.notice"></div>
                                         </v-list-item-content>
 

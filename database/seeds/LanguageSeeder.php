@@ -233,7 +233,7 @@ class LanguageSeeder extends Seeder
                             'info' => 'Product info',
                             'product_clients' => 'Product clients',
                             'unlink_product' => 'Unlink product',
-                            "product_created" => "New product created",
+                            'product_created' => 'New product created',
                         ],
                     'team' =>
                         [
@@ -297,7 +297,7 @@ class LanguageSeeder extends Seeder
                             'is_spam' => 'Marked as Spam',
                             'reported_by' => 'Reported by',
                             'close_ticket' => 'Close ticket',
-                            'ticket_merge_parent_msg' => 'Ticket $ticket_number "$ticket_subject" was merged with this ticket on $date by $unifier, and it was closed. ',
+                            'ticket_merge_parent_msg' => 'Ticket $ticket_number "$ticket_subject" was merged with this ticket on $date by $unifier, and it was closed.',
                             'ticket_merge_child_msg' => 'This ticket was closed and merged with ticket $ticket_number "$ticket_subject" on $date by $unifier.',
                         ],
                     'main' =>
@@ -434,7 +434,7 @@ class LanguageSeeder extends Seeder
                             'by' => ' by ',
                             'and_it_was_closed' => ' and it was closed.',
                             'primary' => 'Primary',
-                            "version" => "Version",
+                            'version' => 'Version',
                         ],
                     'system_settings' =>
                         [
@@ -485,13 +485,13 @@ class LanguageSeeder extends Seeder
                             'notification_type_created' => 'Notification type created',
                             'notification_type_deleted' => 'Notification type deleted',
                             'notification_type_updated' => 'Notification type updated',
-                            "employee_number_format" => "Employee number format",
-                            "employee_number_automatic" => "Generate employee number automatic",
-                            "employee_number_automatic_hint" => "Employee number will be generated automatically using the rules below",
-                            "employee_number_format_prefix" => "Prefix",
-                            "employee_number_format_start" => "Start number",
-                            "employee_number_format_size" => "Digits count",
-                            "employee_number_example" => "Example: ",
+                            'employee_number_format' => 'Employee number format',
+                            'employee_number_automatic' => 'Generate employee number automatic',
+                            'employee_number_automatic_hint' => 'Employee number will be generated automatically using the rules below',
+                            'employee_number_format_prefix' => 'Prefix',
+                            'employee_number_format_start' => 'Start number',
+                            'employee_number_format_size' => 'Digits count',
+                            'employee_number_example' => 'Example: ',
                         ],
                     'profile' =>
                         [
@@ -515,8 +515,9 @@ class LanguageSeeder extends Seeder
                             'new_assigned_to_company' => 'New tickets assigned to any person in my company',
                             'update_assigned_to_company' => 'Updates in tickets assigned to any person in my company',
                             'client_response_assigned_to_me' => 'Client responses in tickets assigned to me',
-                            "personal_id" => "Persönliche ID-Nummer",
-                            "avatar" => "Avatar Bild",
+                            'personal_id' => 'Personal ID number',
+                            'avatar' => 'Avatar picture',
+
                         ],
                     'notification' =>
                         [
@@ -767,7 +768,7 @@ class LanguageSeeder extends Seeder
                             'info' => 'Produktinfo',
                             'product_clients' => 'Produktkunden',
                             'unlink_product' => 'Produktverknüpfung löschen',
-                            "product_created" => "Neues Produkt erstellt",
+                            'product_created' => 'Neues Produkt erstellt',
                         ],
                         'team' => [
                             'add_new' => 'Neues Team hinzufügen',
@@ -961,7 +962,7 @@ class LanguageSeeder extends Seeder
                             'by' => ' zusammengeführt ',
                             'and_it_was_closed' => ' and it was closed.',
                             'primary' => 'Primär',
-                            "version" => "Version",
+                            'version' => 'Version',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
@@ -1010,13 +1011,13 @@ class LanguageSeeder extends Seeder
                             'notification_type_created' => 'Mitteilungstyp erstellt',
                             'notification_type_deleted' => 'Mitteilungstyp gelöscht',
                             'notification_type_updated' => 'Mitteilungstyp aktualisiert',
-                            "employee_number_format" => "Format der Mitarbeiternummer",
-                            "employee_number_automatic" => "Generieren Sie automatisch eine Mitarbeiternummer",
-                            "employee_number_automatic_hint" => "Die Mitarbeiternummer wird automatisch nach den folgenden Regeln generiert",
-                            "employee_number_format_prefix" => "Präfix",
-                            "employee_number_format_start" => "Startnummer",
-                            "employee_number_format_size" => "Ziffern zählen",
-                            "employee_number_example" => "Beispiel: ",
+                            'employee_number_format' => 'Format der Mitarbeiternummer',
+                            'employee_number_automatic' => 'Generieren Sie automatisch eine Mitarbeiternummer',
+                            'employee_number_automatic_hint' => 'Die Mitarbeiternummer wird automatisch nach den folgenden Regeln generiert',
+                            'employee_number_format_prefix' => 'Präfix',
+                            'employee_number_format_start' => 'Startnummer',
+                            'employee_number_format_size' => 'Ziffern zählen',
+                            'employee_number_example' => 'Beispiel: ',
                         ],
                         'profile' => [
                             'user_theme_color' => 'Persönliche Hintergrundfarbe',
@@ -1039,8 +1040,8 @@ class LanguageSeeder extends Seeder
                             'new_assigned_to_company' => 'Neue Tickets, die einer Person in meiner Firma zugewiesen wurden',
                             'update_assigned_to_company' => 'Aktualisierungen von Tickets, die einer Person in meinem Unternehmen zugewiesen sind',
                             'client_response_assigned_to_me' => 'Kundenantworten in mir zugewiesenen Tickets',
-                            "personal_id" => "Personal ID number",
-                            "avatar" => "Avatar picture",
+                            'personal_id' => 'Persönliche ID-Nummer',
+                            'avatar' => 'Avatar Bild',
                         ],
                         'notification' => [
                             'template' => 'Vorlage',

@@ -528,12 +528,12 @@
 
                                 >
                                     <v-card
-                                        height="90"
-                                        max-width="150"
-                                        min-width="150"
+                                        height="100"
+                                        max-width="200"
+                                        min-width="200"
                                         @click="showUser(clientEmployee)"
                                     >
-                                        <v-card-text style="padding: 5px 10px ;">
+                                        <v-card-text style="padding: 5px 10px;">
                                             <v-tooltip top
                                                        :color="themeColor"
                                             >
@@ -541,12 +541,24 @@
                                                     <span
                                                         v-on="on"
                                                     >
+                                                        <v-avatar
+                                                            size="2em"
+                                                            class="mr-2"
+                                                            color="grey darken-1"
+                                                            v-if="clientEmployee.employee.user_data.avatar_url || clientEmployee.employee.user_data.full_name"
+                                                        >
+                                                        <v-img v-if="clientEmployee.employee.user_data.avatar_url" :src="clientEmployee.employee.user_data.avatar_url" />
+                                                        <span v-else-if="clientEmployee.employee.user_data.full_name" class="white--text">
+                                                        {{ clientEmployee.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                        </span>
+                                                    </v-avatar>
+                                                    <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
                                                     {{ clientEmployee.employee.user_data.full_name }}
-                                                    <p class="caption"
+                                                    <p class="caption mt-2"
                                                        style="
                                                         color: darkgrey;
                                                         margin: 0;
-                                                        width: 100px;
+                                                        width: 180px;
                                                         text-overflow: ellipsis;
                                                         overflow: hidden;
                                                         white-space: nowrap;">

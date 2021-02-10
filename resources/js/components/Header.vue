@@ -88,7 +88,7 @@
             text-color="black"
         >
             <v-avatar left>
-                <v-icon>mdi-account-circle</v-icon>
+                <v-img :src="avatar" />
             </v-avatar>
             <v-label class="d-sm-none d-md-flex">{{ username }}</v-label>
 
@@ -105,6 +105,7 @@ export default {
     data() {
         return {
             username: localStorage.getItem('name') + ' ' + localStorage.getItem('surname'),
+            avatar: localStorage.getItem('avatar'),
             localDrawer: null,
             searchCategories: [
                 {
@@ -145,6 +146,7 @@ export default {
                 response = response.data;
                 if (response.success === true) {
                     this.username = response.data.name + ' ' + response.data.surname;
+                    this.avatar = response.data.avatar_url;
                 }
             });
         },
