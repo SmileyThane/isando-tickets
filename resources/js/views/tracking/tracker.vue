@@ -121,72 +121,22 @@
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="1" lg="1" md="1">
-                                    <template>
-                                        <v-menu
-                                            ref="menuFrom"
-                                            v-model="timeFromPicker"
-                                            :close-on-content-click="false"
-                                            :nudge-right="40"
-                                            transition="scale-transition"
-                                            offset-y
-                                            max-width="290px"
-                                            min-width="290px"
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <TimeField
-                                                    v-model="manualPanel.date_from"
-                                                    style="max-width: 100px"
-                                                    label="From"
-                                                    placeholder="hh:mm"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                    format="HH:mm"
-
-                                                ></TimeField>
-                                            </template>
-                                            <v-time-picker
-                                                dense
-                                                v-if="timeFromPicker"
-                                                v-model="manualPanel.date_from"
-                                                full-width
-                                                @click:minute="$refs.menuFrom.save(manualPanel.date_from)"
-                                            ></v-time-picker>
-                                        </v-menu>
-                                    </template>
+                                    <TimeField
+                                        v-model="manualPanel.date_from"
+                                        style="max-width: 100px"
+                                        label="From"
+                                        placeholder="hh:mm"
+                                        format="HH:mm"
+                                    ></TimeField>
                                 </v-col>
                                 <v-col cols="1" lg="1" md="1">
-                                    <template>
-                                        <v-menu
-                                            ref="menuTo"
-                                            v-model="timeToPicker"
-                                            :close-on-content-click="false"
-                                            :nudge-right="40"
-                                            transition="scale-transition"
-                                            offset-y
-                                            max-width="290px"
-                                            min-width="290px"
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <TimeField
-                                                    v-model="manualPanel.date_to"
-                                                    style="max-width: 100px"
-                                                    label="To"
-                                                    placeholder="hh:mm"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                    format="HH:mm"
-
-                                                ></TimeField>
-                                            </template>
-                                            <v-time-picker
-                                                dense
-                                                v-if="timeToPicker"
-                                                v-model="manualPanel.date_to"
-                                                full-width
-                                                @click:minute="$refs.menuTo.save(manualPanel.date_to)"
-                                            ></v-time-picker>
-                                        </v-menu>
-                                    </template>
+                                    <TimeField
+                                        v-model="manualPanel.date_to"
+                                        style="max-width: 100px"
+                                        label="To"
+                                        placeholder="hh:mm"
+                                        format="HH:mm"
+                                    ></TimeField>
                                 </v-col>
                                 <v-col cols="2" lg="2" md="2">
                                     <template>
@@ -342,7 +292,7 @@
                         :color="themeColor"
                         style="color: white"
                     >
-                        <span v-if="moment(panelDate).format(dateFormat) === moment().format(dateFormat)">Today</span>
+                        <span v-if="moment(panelDate).format() === moment().format()">Today</span>
                         <span v-else>{{ moment(panelDate).format('ddd, DD MMM YYYY')}}</span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -775,8 +725,8 @@ export default {
             this.manualPanel.status = 'stopped';
             let data = this.manualPanel;
             data.date = data.date_from;
-            data.date_from = moment(`${data.date_from}`).utc();
-            data.date_to = moment(`${data.date_to}`).utc();
+            data.date_from = moment(data.date_from).utc();
+            data.date_to = moment(data.date_to).utc();
             this.__createTracking(data);
         },
         actionStartNewTrack() {

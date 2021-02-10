@@ -114,7 +114,7 @@ export default {
         formattedTime: {
             get() {
                 if (moment(this.value).isValid()) {
-                    return moment(this.value).format(this.isFocused ? 'HHmm' : this.format);
+                    return moment(this.value).format();
                 }
                 return this.value;
             },
