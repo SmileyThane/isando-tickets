@@ -121,78 +121,22 @@
                                     </v-btn>
                                 </v-col>
                                 <v-col cols="1" lg="1" md="1">
-                                    <template>
-                                        <v-menu
-                                            ref="menuFrom"
-                                            v-model="timeFromPicker"
-                                            :close-on-content-click="false"
-                                            :nudge-right="40"
-                                            transition="scale-transition"
-                                            offset-y
-                                            max-width="290px"
-                                            min-width="290px"
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                    dense
-                                                    v-model="timeFrom"
-                                                    label="From"
-                                                    placeholder="hh:mm"
-                                                    prepend-icon="mdi-clock-time-four-outline"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                    hide-details="auto"
-                                                    style="max-width: 100px"
-                                                    @blur="handlerSetTimeFrom()"
-                                                    @focus="$event.target.select()"
-                                                ></v-text-field>
-                                            </template>
-                                            <v-time-picker
-                                                dense
-                                                v-if="timeFromPicker"
-                                                v-model="timeFrom"
-                                                full-width
-                                                @click:minute="$refs.menuFrom.save(timeFrom)"
-                                            ></v-time-picker>
-                                        </v-menu>
-                                    </template>
+                                    <TimeField
+                                        v-model="manualPanel.date_from"
+                                        style="max-width: 100px"
+                                        label="From"
+                                        placeholder="hh:mm"
+                                        format="HH:mm"
+                                    ></TimeField>
                                 </v-col>
                                 <v-col cols="1" lg="1" md="1">
-                                    <template>
-                                        <v-menu
-                                            ref="menuTo"
-                                            v-model="timeToPicker"
-                                            :close-on-content-click="false"
-                                            :nudge-right="40"
-                                            transition="scale-transition"
-                                            offset-y
-                                            max-width="290px"
-                                            min-width="290px"
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                    dense
-                                                    v-model="timeTo"
-                                                    label="To"
-                                                    placeholder="hh:mm"
-                                                    prepend-icon="mdi-clock-time-four-outline"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                    hide-details="auto"
-                                                    style="max-width: 100px"
-                                                    @blur="handlerSetTimeTo()"
-                                                    @focus="$event.target.select()"
-                                                ></v-text-field>
-                                            </template>
-                                            <v-time-picker
-                                                dense
-                                                v-if="timeToPicker"
-                                                v-model="timeTo"
-                                                full-width
-                                                @click:minute="$refs.menuTo.save(timeTo)"
-                                            ></v-time-picker>
-                                        </v-menu>
-                                    </template>
+                                    <TimeField
+                                        v-model="manualPanel.date_to"
+                                        style="max-width: 100px"
+                                        label="To"
+                                        placeholder="hh:mm"
+                                        format="HH:mm"
+                                    ></TimeField>
                                 </v-col>
                                 <v-col cols="2" lg="2" md="2">
                                     <template>
@@ -251,7 +195,7 @@
                                 </v-col>
                             </v-row>
                         </v-col>
-                        <v-col cols="1" lg="1" md="2" sm="2" class="pt-6">
+                        <v-col cols="1" lg="1" md="2" sm="2">
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
@@ -348,7 +292,7 @@
                         :color="themeColor"
                         style="color: white"
                     >
-                        <span v-if="moment(panelDate).format(dateFormat) === moment().format(dateFormat)">Today</span>
+                        <span v-if="moment(panelDate).format() === moment().format()">Today</span>
                         <span v-else>{{ moment(panelDate).format('ddd, DD MMM YYYY')}}</span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -423,47 +367,37 @@
                                     <template v-slot:item.date_from="props">
                                         <v-edit-dialog
                                             :return-value.sync="props.item.date_from"
-                                            @save="save(props.item, 'date_from')"
-                                            @cancel="cancel"
-                                            @open="open"
-                                            @close="save(props.item, 'date_from', props.item.date_from)"
                                         >
                                             {{ moment(props.item.date_from).format(timeFormat) }}
                                             <template v-slot:input>
-                                                <v-text-field
-                                                    v-model="moment(props.item.date_from).format(`${dateFormat} ${timeFormat}`)"
-                                                    label="Date From"
-                                                    hint="Date From"
-                                                    single-line
-                                                    counter
-                                                    autofocus
-                                                    @focus="$event.target.select()"
-                                                ></v-text-field>
+                                                <TimeField
+                                                    v-model="props.item.date_from"
+                                                    style="max-width: 100px; height: 40px"
+                                                    label="From"
+                                                    placeholder="hh:mm"
+                                                    format="HH:mm"
+                                                    @input="save(props.item, 'date_from', props.item.date_from)"
+                                                ></TimeField>
                                             </template>
                                         </v-edit-dialog>
                                     </template>
                                     <template v-slot:item.date_to="props">
                                         <v-edit-dialog
                                             :return-value.sync="props.item.date_to"
-                                            @save="save(props.item, 'date_to')"
-                                            @cancel="cancel"
-                                            @open="open"
-                                            @close="save(props.item, 'date_to', props.item.date_to)"
                                             v-if="props.item.status == 'stopped'"
                                         >
                                             <span v-if="props.item.date_to && props.item.status == 'stopped'">
                                                 {{ moment(props.item.date_to).format(timeFormat) }}
                                             </span>
                                             <template v-slot:input>
-                                                <v-text-field
-                                                    v-model="moment(props.item.date_to).format(`${dateFormat} ${timeFormat}`)"
-                                                    label="Date End"
-                                                    hint="Date End"
-                                                    single-line
-                                                    counter
-                                                    autofocus
-                                                    @focus="$event.target.select()"
-                                                ></v-text-field>
+                                                <TimeField
+                                                    v-model="props.item.date_to"
+                                                    style="max-width: 100px; height: 40px"
+                                                    label="To"
+                                                    placeholder="hh:mm"
+                                                    format="HH:mm"
+                                                    @input="save(props.item, 'date_to', props.item.date_to)"
+                                                ></TimeField>
                                             </template>
                                         </v-edit-dialog>
                                     </template>
@@ -527,6 +461,7 @@
                                                                     <v-list-item-content>
                                                                         <v-list-item-title
                                                                             @click="actionDeleteTracking(props.item.id)"
+                                                                            style="color: red"
                                                                         >
                                                                             Delete
                                                                         </v-list-item-title>
@@ -557,11 +492,13 @@ import moment from "moment-timezone";
 import _ from "lodash";
 import ProjectBtn from "./components/project-btn";
 import TagBtn from "./components/tag-btn";
+import TimeField from "./components/time-field";
 
 export default {
     components: {
         ProjectBtn,
-        TagBtn
+        TagBtn,
+        TimeField
     },
     data() {
         return {
@@ -652,8 +589,8 @@ export default {
                 project: null,
                 tags: [],
                 billable: false,
-                date_from: moment(),
-                date_to: null,
+                date_from: moment().format(),
+                date_to: moment().add(15, 'minutes').format(),
                 date: moment(),
                 status: 'started',
                 timeStart: '00:00:00'
@@ -683,8 +620,8 @@ export default {
             moment().subtract(1, 'days').format(this.dateFormat),
             moment().format(this.dateFormat)
         ];
-        this.timeFrom = moment().add(1, 'minutes').format(this.timeFormat);
-        this.timeTo = moment().add(15, 'minutes').format(this.timeFormat);
+        this.timeFrom = moment().format();
+        this.timeTo = moment().add(15, 'minutes').format();
         this.date = moment().format(this.dateFormat);
     },
     mounted() {
@@ -788,8 +725,8 @@ export default {
             this.manualPanel.status = 'stopped';
             let data = this.manualPanel;
             data.date = data.date_from;
-            data.date_from = moment(`${data.date_from}`).utc();
-            data.date_to = moment(`${data.date_to}`).utc();
+            data.date_from = moment(data.date_from).utc();
+            data.date_to = moment(data.date_to).utc();
             this.__createTracking(data);
         },
         actionStartNewTrack() {
@@ -883,11 +820,11 @@ export default {
                 projectId: null,
                 tags: [],
                 billable: false,
-                date_from: moment().format(this.timeFormat),
-                date_to: moment().format(this.timeFormat),
+                date_from: moment().format(),
+                date_to: moment().add(15, 'minutes').format(),
                 date: moment().format(this.dateFormat),
                 status: 'started',
-                timeStart: '00:00:00'
+                timeStart: this.helperConvertSecondsToTimeFormat(this.helperCalculatePassedTime(moment().format(), moment().add(15, 'minutes').format()))
             };
         },
         resetTimerPanel() {
@@ -912,38 +849,38 @@ export default {
                 this.debounceGetTracking();
             }
         },
-        handlerSetTimeFrom() {
-            if (!this.timeFrom) {
-                this.timeFrom = moment().format(this.timeFormat);
-            }
-            if (/([0-9]{1,}:[0-9]{2})/.test(this.timeFrom)) {
-                return this.timeFrom;
-            }
-            if (/(\d{1,4})/.test(this.timeFrom)) {
-                let str = this.timeFrom.toString().slice(0,4);
-                str = this.helperAddZeros(str, 4);
-                this.timeFrom = str.slice(0,2) + ':' + str.slice(-2);
-                return this.timeFrom;
-            }
-            this.timeFrom = moment().format(this.timeFormat);
-            return this.timeFrom;
-        },
-        handlerSetTimeTo() {
-            if (!this.timeTo) {
-                this.timeTo = moment().format(this.timeFormat);
-            }
-            if (/([0-9]{1,}:[0-9]{2})/.test(this.timeTo)) {
-                return this.timeTo;
-            }
-            if (/(\d{1,4})/.test(this.timeTo)) {
-                let str = this.timeTo.toString().slice(0,4);
-                str = this.helperAddZeros(str, 4);
-                this.timeTo = str.slice(0,2) + ':' + str.slice(-2);
-                return this.timeTo;
-            }
-            this.timeTo = moment().format(this.timeFormat);
-            return this.timeTo;
-        },
+        // handlerSetTimeFrom() {
+        //     if (!this.timeFrom) {
+        //         this.timeFrom = moment().format(this.timeFormat);
+        //     }
+        //     if (/([0-9]{1,}:[0-9]{2})/.test(this.timeFrom)) {
+        //         return this.timeFrom;
+        //     }
+        //     if (/(\d{1,4})/.test(this.timeFrom)) {
+        //         let str = this.timeFrom.toString().slice(0,4);
+        //         str = this.helperAddZeros(str, 4);
+        //         this.timeFrom = str.slice(0,2) + ':' + str.slice(-2);
+        //         return this.timeFrom;
+        //     }
+        //     this.timeFrom = moment().format(this.timeFormat);
+        //     return this.timeFrom;
+        // },
+        // handlerSetTimeTo() {
+        //     if (!this.timeTo) {
+        //         this.timeTo = moment().format(this.timeFormat);
+        //     }
+        //     if (/([0-9]{1,}:[0-9]{2})/.test(this.timeTo)) {
+        //         return this.timeTo;
+        //     }
+        //     if (/(\d{1,4})/.test(this.timeTo)) {
+        //         let str = this.timeTo.toString().slice(0,4);
+        //         str = this.helperAddZeros(str, 4);
+        //         this.timeTo = str.slice(0,2) + ':' + str.slice(-2);
+        //         return this.timeTo;
+        //     }
+        //     this.timeTo = moment().format(this.timeFormat);
+        //     return this.timeTo;
+        // },
         handlerSetDate() {
             if (!this.date || ! /([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/.test(this.date)) {
                 this.date = moment().format(this.dateFormat);
@@ -1022,28 +959,20 @@ export default {
     },
     watch: {
         timeFrom: function () {
-            this.manualPanel.date_from = moment(this.date)
-                .hours(this.timeFrom.toString().split(':')[0])
-                .minutes(this.timeFrom.toString().split(':')[1]);
+            this.manualPanel.date_from = this.timeFrom;
         },
         timeTo: function () {
-            this.manualPanel.date_to = moment(this.date)
-                .hours(this.timeTo.toString().split(':')[0])
-                .minutes(this.timeTo.toString().split(':')[1]);
+            this.manualPanel.date_to = this.timeTo;
         },
         date: function () {
             this.manualPanel.date = moment(this.date);
-            this.manualPanel.date_from = moment(this.date)
-                .hours(this.timeFrom.toString().split(':')[0])
-                .minutes(this.timeFrom.toString().split(':')[1]);
+            this.manualPanel.date_from = this.timeFrom;
             let dayToAdding = 0;
             if (moment(this.manualPanel.date_to).format(this.dateFormat) > moment(this.manualPanel.date_from).format(this.dateFormat)) {
                 dayToAdding = 1;
             }
-            this.manualPanel.date_to = moment(this.date)
-                .add(dayToAdding, 'day')
-                .hours(this.timeTo.toString().split(':')[0])
-                .minutes(this.timeTo.toString().split(':')[1]);
+            this.manualPanel.date_to = moment(this.timeTo)
+                .add(dayToAdding, 'day');
         },
         search () {
             this.$store.dispatch('Projects/getProjectList', { search: this.search });
