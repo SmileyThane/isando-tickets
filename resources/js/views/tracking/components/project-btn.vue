@@ -3,6 +3,7 @@
         :close-on-content-click="false"
         :nudge-width="200"
         offset-y
+        v-model="shown"
     >
         <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -220,6 +221,7 @@ export default {
     },
     data: () => {
         return {
+            shown: false,
             panels: 0,
             menu: false,
             search: '',
@@ -277,6 +279,7 @@ export default {
         },
         selectProject(project) {
             this.selectedProject = project.shift();
+            this.shown = false;
         }
     },
     computed: {

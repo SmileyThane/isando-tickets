@@ -111,6 +111,17 @@ export default {
         }
     },
     computed: {
+        time: {
+            get() {
+                if (moment(this.value).isValid()) {
+                    return moment(this.value).format();
+                }
+                return this.value;
+            },
+            set(val) {
+                this.$emit('input', val);
+            }
+        },
         formattedTime: {
             get() {
                 if (moment(this.value).isValid()) {
