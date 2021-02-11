@@ -10,12 +10,9 @@ class DeployController extends Controller
 {
     public function deploy(Request $request)
     {
-        $githubPayload = $request->getContent();
-        $githubHash = $request->header('X-Hub-Signature');
+        $githubPayload = json_decode($request->getContent());
 
-        $localToken = config('app.deploy_secret');
-        $localHash = 'sha1=' . hash_hmac('sha1', $githubPayload, $localToken, false);
-        if (hash_equals($githubHash, $localHash)) {
+        if ($githubPayload->ref == 'refs/heads/' . config('app.deploy_branch') && $githubPayload->repository->full_name == config('app.deploy_repository')) {
             $root_path = base_path();
             $process = new Process(['./deploy.sh'], $root_path);
             $process->run(function ($type, $buffer) {
