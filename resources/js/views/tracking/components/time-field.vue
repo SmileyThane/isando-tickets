@@ -111,21 +111,21 @@ export default {
         }
     },
     computed: {
-        time: {
-            get() {
-                if (moment(this.value).isValid()) {
-                    return moment(this.value).format();
-                }
-                return this.value;
-            },
-            set(val) {
-                this.$emit('input', val);
-            }
-        },
+        // time: {
+        //     get() {
+        //         if (moment(this.value).isValid()) {
+        //             return moment(this.value).format();
+        //         }
+        //         return this.value;
+        //     },
+        //     set(val) {
+        //         this.$emit('input', val);
+        //     }
+        // },
         formattedTime: {
             get() {
                 if (moment(this.value).isValid()) {
-                    return moment(this.value).format();
+                    return moment(this.value).format(this.format);
                 }
                 return this.value;
             },
@@ -137,6 +137,13 @@ export default {
             return ['v-input', 'v-input--hide-details', 'v-input--is-label-active',
                 'v-input--is-dirty', 'theme--light', 'v-text-field',
                 'v-text-field--is-booted', 'v-text-field--placeholder', 'v-input--dense'];
+        }
+    },
+    watch: {
+        value: function () {
+            if (moment(this.value).isValid()) {
+                this.time = moment(this.value).format(this.format);
+            }
         }
     }
 }
