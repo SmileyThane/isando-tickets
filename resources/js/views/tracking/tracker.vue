@@ -365,9 +365,7 @@
                                         </v-btn>
                                     </template>
                                     <template v-slot:item.date_from="props">
-                                        <v-edit-dialog
-                                            :return-value.sync="props.item.date_from"
-                                        >
+                                        <v-edit-dialog>
                                             {{ moment(props.item.date_from).format(timeFormat) }}
                                             <template v-slot:input>
                                                 <TimeField
@@ -591,7 +589,7 @@ export default {
                 billable: false,
                 date_from: moment().format(),
                 date_to: moment().add(15, 'minutes').format(),
-                date: moment(),
+                date: moment().format(),
                 status: 'started',
                 timeStart: '00:00:00'
             },
@@ -724,9 +722,9 @@ export default {
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
             let data = this.manualPanel;
-            data.date = data.date_from;
-            data.date_from = moment(data.date_from).utc();
-            data.date_to = moment(data.date_to).utc();
+            data.date = moment(data.date_from).format();
+            data.date_from = moment(data.date_from).utc().format();
+            data.date_to = moment(data.date_to).utc().format();
             this.__createTracking(data);
         },
         actionStartNewTrack() {
@@ -734,9 +732,9 @@ export default {
             if (!this.timerPanel.start) {
                 this.timerPanel.trackId = null;
                 this.timerPanel.status = 'started';
-                this.timerPanel.start = moment().utc();
-                this.timerPanel.date = moment().utc();
-                this.timerPanel.date_from = moment().utc();
+                this.timerPanel.start = moment().utc().format();
+                this.timerPanel.date = moment().utc().format();
+                this.timerPanel.date_from = moment().utc().format();
                 this.timerPanel.date_to = null;
                 this.timerPanel.timeStart = this.timerPanel.start;
                 this.loadingCreateTrack = true;
@@ -748,9 +746,9 @@ export default {
                     });
             } else {
                 // stop
-                this.timerPanel.date = this.timerPanel.start;
-                this.timerPanel.date_from = this.timerPanel.start;
-                this.timerPanel.date_to = moment().utc();
+                this.timerPanel.date = moment(this.timerPanel.start).format();
+                this.timerPanel.date_from = moment(this.timerPanel.start).format();
+                this.timerPanel.date_to = moment().utc().format();
                 this.timerPanel.timeStart = this.timerPanel.start;
                 this.timerPanel.start = null;
                 this.timerPanel.status = 'stopped';
@@ -776,11 +774,11 @@ export default {
                 this.resetTimerPanel();
                 const index = this.tracking.findIndex(i => i.id === trackerId);
                 this.tracking[index].status = 'stopped';
-                this.tracking[index].date_to = moment();
+                this.tracking[index].date_to = moment().format();
             }
             this.__updateTrackingById(trackerId, {
                 status: 'stopped',
-                date_to: moment()
+                date_to: moment().format()
             });
         },
         actionStartTrackingAsId(trackerId) {
@@ -788,7 +786,7 @@ export default {
                 .then(data => {
                     if (data.success) {
                         this.__updateTrackingById(data.data.id, {
-                            date_from: moment(),
+                            date_from: moment().format(),
                             date_to: null,
                             status: 'started'
                         });
@@ -816,30 +814,32 @@ export default {
         },
         resetManualPanel() {
             this.manualPanel = {
+                ...this.manualPanel,
                 description: null,
                 projectId: null,
                 tags: [],
                 billable: false,
-                date_from: moment().format(),
-                date_to: moment().add(15, 'minutes').format(),
-                date: moment().format(this.dateFormat),
-                status: 'started',
-                timeStart: this.helperConvertSecondsToTimeFormat(this.helperCalculatePassedTime(moment().format(), moment().add(15, 'minutes').format()))
+                // date_from: moment().format(),
+                // date_to: moment().add(15, 'minutes').format(),
+                // date: moment().format(this.dateFormat),
+                // status: 'started',
+                // timeStart: this.helperConvertSecondsToTimeFormat(this.helperCalculatePassedTime(moment().format(), moment().add(15, 'minutes').format()))
             };
         },
         resetTimerPanel() {
             this.timerPanel = {
+                ...this.timerPanel,
                 trackId: null,
-                passedSeconds: '00:00:00',
                 start: null,
                 billable: false,
                 description: null,
                 project: null,
                 tags: [],
-                status: 'started',
-                date_from: moment(),
-                date_to: null,
-                date: moment()
+                // status: 'started',
+                // passedSeconds: '00:00:00',
+                // date_from: moment(),
+                // date_to: null,
+                // date: moment()
             };
         },
         handlerDateRange() {
@@ -927,7 +927,7 @@ export default {
     computed: {
         timeAdd () {
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
-                this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day');
+                this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format();
             }
             const seconds = this.helperCalculatePassedTime(this.manualPanel.date_from, this.manualPanel.date_to);
             return this.helperConvertSecondsToTimeFormat(seconds);
@@ -959,20 +959,28 @@ export default {
     },
     watch: {
         timeFrom: function () {
-            this.manualPanel.date_from = this.timeFrom;
+            this.manualPanel.date_from = moment(this.timeFrom).format();
         },
         timeTo: function () {
-            this.manualPanel.date_to = this.timeTo;
+            this.manualPanel.date_to = moment(this.timeTo).format();
         },
         date: function () {
-            this.manualPanel.date = moment(this.date);
-            this.manualPanel.date_from = this.timeFrom;
+            this.manualPanel.date = moment(this.date).format();
+            const date = {
+                date: moment(this.date).date(),
+                month: moment(this.date).month(),
+                year: moment(this.date).year()
+            };
+            this.timeFrom = moment(this.timeFrom).set(date).format();
+            this.timeTo = moment(this.timeTo).set(date).format();
+            this.manualPanel.date_from = moment(this.timeFrom).format();
             let dayToAdding = 0;
             if (moment(this.manualPanel.date_to).format(this.dateFormat) > moment(this.manualPanel.date_from).format(this.dateFormat)) {
                 dayToAdding = 1;
             }
             this.manualPanel.date_to = moment(this.timeTo)
-                .add(dayToAdding, 'day');
+                .add(dayToAdding, 'day')
+                .format();
         },
         search () {
             this.$store.dispatch('Projects/getProjectList', { search: this.search });

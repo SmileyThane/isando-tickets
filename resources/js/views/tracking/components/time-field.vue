@@ -53,13 +53,13 @@ export default {
         this.time = moment(this.value).format(this.format);
     },
     methods: {
-        onInput(val) {
-            this.$emit('input', val);
-        },
-        onFocus($event) {
-            this.isFocused = $event.type === 'focus' ?? false;
-            $event.target.select();
-        },
+        // onInput(val) {
+        //     this.$emit('input', val);
+        // },
+        // onFocus($event) {
+        //     this.isFocused = $event.type === 'focus' ?? false;
+        //     $event.target.select();
+        // },
         // onChange(val) {
         //     console.log('onChange ', val);
         //     if (val.toString().length > 4) {
