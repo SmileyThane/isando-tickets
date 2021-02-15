@@ -33,6 +33,15 @@
     </div>
 </template>
 
+<style>
+.v-text-field.time-field__flat>.v-input__control>.v-input__slot:before {
+    border: none;
+}
+.v-text-field.time-field__flat>.v-input__control>.v-input__slot>.v-text-field__slot {
+    flex: inherit;
+}
+</style>
+
 <script>
 
 // import moment from 'moment';
@@ -136,7 +145,7 @@ export default {
         classes: () =>{
             return ['v-input', 'v-input--hide-details', 'v-input--is-label-active',
                 'v-input--is-dirty', 'theme--light', 'v-text-field',
-                'v-text-field--is-booted', 'v-text-field--placeholder', 'v-input--dense'];
+                'v-text-field--is-booted', 'v-text-field--placeholder', 'v-input--dense', 'time-field__flat'];
         }
     },
     watch: {
@@ -148,7 +157,3 @@ export default {
     }
 }
 </script>
-
-<style type="text/css">
-
-</style>

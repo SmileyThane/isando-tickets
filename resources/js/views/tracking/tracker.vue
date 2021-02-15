@@ -159,6 +159,7 @@
                                                     v-bind="attrs"
                                                     v-on="on"
                                                     hide-details="auto"
+                                                    class="date-picker__without-line"
                                                     style="max-width: 1050px"
                                                     @blur="handlerSetDate()"
                                                 ></v-text-field>
@@ -371,7 +372,6 @@
                                                 <TimeField
                                                     v-model="props.item.date_from"
                                                     style="max-width: 100px; height: 40px"
-                                                    label="From"
                                                     placeholder="hh:mm"
                                                     format="HH:mm"
                                                     @input="save(props.item, 'date_from', props.item.date_from)"
@@ -391,7 +391,6 @@
                                                 <TimeField
                                                     v-model="props.item.date_to"
                                                     style="max-width: 100px; height: 40px"
-                                                    label="To"
                                                     placeholder="hh:mm"
                                                     format="HH:mm"
                                                     @input="save(props.item, 'date_to', props.item.date_to)"
@@ -483,6 +482,14 @@
 
     </v-container>
 </template>
+
+<style>
+.date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:before,
+.date-picker__without-line.v-text-field:not(.v-input__has-state):hover>.v-input__control>.v-input__slot:before,
+.date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:after{
+    border: none !important;
+}
+</style>
 
 <script>
 import EventBus from "../../components/EventBus";
