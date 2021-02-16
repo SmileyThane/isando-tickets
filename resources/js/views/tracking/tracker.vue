@@ -667,6 +667,7 @@ export default {
         this.timeFrom = moment().format();
         this.timeTo = moment().add(15, 'minutes').format();
         this.date = moment().format(this.dateFormat);
+        Helper.storeKey('dateFormat', this.dateFormat);
     },
     mounted() {
         this.__globalTimer();

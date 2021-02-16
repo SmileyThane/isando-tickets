@@ -149,6 +149,7 @@
 <script>
 import EventBus from "../../../components/EventBus";
 import _ from "lodash";
+import * as Helper from "../helper";
 
 export default {
     data() {
@@ -186,7 +187,7 @@ export default {
                 client: null,
                 productId: null,
                 product: null,
-                color: '#' + Math.floor(Math.random()*16777215).toString(16).substr(0, 6)
+                color: Helper.genRandomColor()
             },
             colorMenu: false
         }
