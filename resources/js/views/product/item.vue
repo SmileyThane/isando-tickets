@@ -119,7 +119,9 @@
                             :items="product.clients"
                             :footer-props="footerProps"
                             class="elevation-1"
+                            :options.sync="options"
                             @click:row="showCompany"
+                            @update:options="updateItemsPerPage"
                         >
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
@@ -217,10 +219,12 @@
                 enableToEdit: false,
                 errors: [],
                 langMap: this.$store.state.lang.lang_map,
+                options: {
+                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
+                },
                 footerProps: {
-                    itemsPerPage: 10,
-                    disableItemsPerPage: true,
-                    itemsPerPageText: this.$store.state.lang.lang_map.main.items_per_page
+                    showFirstLastPage: true,
+                    itemsPerPageOptions: [10, 25, 50, 100],
                 },
                 headers: [
                     {
@@ -371,7 +375,11 @@
                         this.snackbar = true;
                     }
                 });
-            }
+            },
+        updateItemsPerPage(options) {
+            localStorage.itemsPerPage = options.itemsPerPage;
+        }
+
         }
     }
 </script>
