@@ -525,6 +525,7 @@ import _ from "lodash";
 import ProjectBtn from "./components/project-btn";
 import TagBtn from "./components/tag-btn";
 import TimeField from "./components/time-field";
+import * as Helper from "./helper";
 
 export default {
     components: {
@@ -654,10 +655,15 @@ export default {
     },
     created: function () {
         this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
-        this.dateRange = [
-            moment().subtract(1, 'days').format(this.dateFormat),
-            moment().format(this.dateFormat)
-        ];
+        if (Helper.getKey('dateRange')) {
+            this.dateRange = Helper.getKey('dateRange');
+        } else {
+            this.dateRange = [
+                moment().subtract(1, 'days').format(this.dateFormat),
+                moment().format(this.dateFormat)
+            ];
+            Helper.storeKey('dateRange', this.dateRange);
+        }
         this.timeFrom = moment().format();
         this.timeTo = moment().add(15, 'minutes').format();
         this.date = moment().format(this.dateFormat);
@@ -885,6 +891,7 @@ export default {
         handlerDateRange() {
             if (this.dateRange.length === 2) {
                 this.dateRange.sort();
+                Helper.storeKey('dateRange', this.dateRange);
                 this.dateRangePicker = false;
                 this.debounceGetTracking();
             }
