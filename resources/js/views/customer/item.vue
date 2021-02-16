@@ -472,7 +472,9 @@
                             :items="client.products"
                             class="elevation-1"
                             dense
+                            :options.sync="options"
                             item-key="id"
+                            @update:options="updateItemsPerPage"
                         >
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
@@ -1455,10 +1457,12 @@ export default {
             snackbarMessage: '',
             errors: [],
             languages: [],
+            options: {
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
+            },
             footerProps: {
-                itemsPerPage: 10,
-                disableItemsPerPage: true,
-                itemsPerPageText: this.$store.state.lang.lang_map.main.items_per_page
+                    showFirstLastPage: true,
+                    itemsPerPageOptions: [10, 25, 50, 100],
             },
             enableToEdit: false,
             rolesDialog: false,
@@ -2240,6 +2244,9 @@ export default {
                     social_link: '',
                     social_type: ''
             }
+        },
+        updateItemsPerPage(options) {
+            localStorage.itemsPerPage = options.itemsPerPage;
         }
     },
     watch: {

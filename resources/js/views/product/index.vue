@@ -134,6 +134,7 @@
                                             :item-color="themeColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
+                                            v-model="options.itemsPerPage"
                                             @change="updateItemsCount"
                                         ></v-select>
                                     </v-col>
@@ -229,10 +230,10 @@
                 options: {
                     page: 1,
                     sortDesc: [false],
-                    sortBy: ['id']
+                    sortBy: ['id'],
+                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
                 },
                 footerProps: {
-                    itemsPerPage: 10,
                     showFirstLastPage: true,
                     itemsPerPageOptions: [10, 25, 50, 100],
                 },
@@ -372,6 +373,7 @@
             },
             updateItemsCount(value) {
                 this.options.itemsPerPage = value
+                localStorage.itemsPerPage = value;
                 this.options.page = 1
             },
         },

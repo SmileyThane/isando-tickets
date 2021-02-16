@@ -49,6 +49,7 @@
                             :label="langMap.main.items_per_page"
                             class="ma-2"
                             hide-details
+                            v-model="options.itemsPerPage"
                             @change="updateItemsCount"
                         ></v-select>
                     </v-col>
@@ -356,10 +357,10 @@ export default {
                 page: 1,
                 sortDesc: [true],
                 sortBy: ['id'],
-                withSpam: false
+                withSpam: false,
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
             },
             footerProps: {
-                itemsPerPage: 10,
                 showFirstLastPage: true,
                 itemsPerPageOptions: [10, 25, 50, 100],
             },
@@ -596,6 +597,7 @@ export default {
         },
         updateItemsCount(value) {
             this.options.itemsPerPage = value
+            localStorage.itemsPerPage = value;
             this.options.page = 1
             // console.log(value)
         },

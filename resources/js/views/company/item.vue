@@ -484,7 +484,9 @@
                             dense
                             item-key="id"
                             show-expand
+                            :options.sync="options"
                             @click:row="showRolesModal"
+                            @update:options="updateItemsPerPage"
                         >
                             <template v-slot:expanded-item="{ headers, item }">
                                 <td :colspan="headers.length">
@@ -912,6 +914,8 @@
                             class="elevation-1"
                             dense
                             item-key="id"
+                            :options.sync="options"
+                            @update:options="updateItemsPerPage"
                         >
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
@@ -1808,10 +1812,12 @@ export default {
             enableToEdit: false,
             languages: [],
             errors: [],
+            options: {
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
+            },
             footerProps: {
-                itemsPerPage: 10,
-                disableItemsPerPage: true,
-                itemsPerPageText: this.$store.state.lang.lang_map.main.items_per_page
+                    showFirstLastPage: true,
+                    itemsPerPageOptions: [10, 25, 50, 100],
             },
             isCompanyUpdated: false,
             langMap: this.$store.state.lang.lang_map,
@@ -2671,6 +2677,9 @@ export default {
                 email: '',
                 email_type: ''
             }
+        },
+        updateItemsPerPage(options) {
+            localStorage.itemsPerPage = options.itemsPerPage;
         }
     },
     watch: {

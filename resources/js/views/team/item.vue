@@ -72,7 +72,9 @@
                             :headers="headers"
                             :items="team.employees"
                             class="elevation-1"
+                            :options.sync="options"
                             :footer-props="footerProps"
+                            @update:options="updateItemsPerPage"
                         >
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
@@ -166,10 +168,12 @@
                 snackbarMessage: '',
                 enableToEdit: false,
                 langMap: this.$store.state.lang.lang_map,
+                options: {
+                    itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
+                },
                 footerProps: {
-                    itemsPerPage: 10,
-                    disableItemsPerPage: true,
-                    itemsPerPageText: this.$store.state.lang.lang_map.main.items_per_page
+                    showFirstLastPage: true,
+                    itemsPerPageOptions: [10, 25, 50, 100],
                 },
                 headers: [
                     {
@@ -309,7 +313,10 @@
             cancelUpdateTeam() {
                 this.getTeam();
                 this.enableToEdit = false;
-            }
+            },
+        updateItemsPerPage(options) {
+            localStorage.itemsPerPage = options.itemsPerPage;
+        }
         }
     }
 </script>

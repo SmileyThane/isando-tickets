@@ -642,7 +642,9 @@
                             class="elevation-1"
                             dense
                             item-key="id"
+                            :options.sync="options"
                             @click:row="showCompany"
+                            @update:options="updateItemsPerPage"
                         >
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
@@ -1187,10 +1189,12 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
+            options: {
+                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10,
+            },
             footerProps: {
-                itemsPerPage: 10,
-                disableItemsPerPage: true,
-                itemsPerPageText: this.$store.state.lang.lang_map.main.items_per_page
+                    showFirstLastPage: true,
+                    itemsPerPageOptions: [10, 25, 50, 100],
             },
             langMap: this.$store.state.lang.lang_map,
             companies: [],
@@ -1916,6 +1920,9 @@ export default {
                 social_link: '',
                 social_type: ''
             }
+        },
+        updateItemsPerPage(options) {
+            localStorage.itemsPerPage = options.itemsPerPage;
         }
     }
 }
