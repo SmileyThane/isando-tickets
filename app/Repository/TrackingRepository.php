@@ -109,14 +109,14 @@ class TrackingRepository
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
         if ($request->has('date_from')) {
-            if (Carbon::parse($request->date_from)->gt(Carbon::parse($tracking->date_to))) {
+            if (!$request->has('date_to') && Carbon::parse($request->date_from)->gt(Carbon::parse($tracking->date_to))) {
                 throw new \Exception('The date from must be a date before date to.');
             }
             $tracking->date_from = Carbon::parse($request->date_from)->utc();
         }
         if ($request->has('date_to')) {
             if (!is_null($request->date_to) && Carbon::parse($tracking->date_from)->gt(Carbon::parse($request->date_to))) {
-                throw new \Exception('The date from must be a date before date to.');
+                throw new \Exception('The date to must be a date after date from.');
             }
             $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->utc() : null;
         }

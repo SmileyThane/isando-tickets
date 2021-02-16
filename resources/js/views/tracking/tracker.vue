@@ -401,6 +401,33 @@
                                     <template v-slot:item.passed="props">
                                         <span v-text="helperConvertSecondsToTimeFormat(props.item.passed)"></span>
                                     </template>
+                                    <template v-slot:item.date="props">
+                                        <v-menu
+                                            v-model="props.item.date_picker"
+                                            :close-on-content-click="false"
+                                            :nudge-right="40"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="auto"
+                                            left
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    :color="themeColor"
+                                                >
+                                                    <v-icon>mdi-calendar</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <v-date-picker
+                                                dense
+                                                v-model="props.item.date"
+                                                @input="props.item.date_picker = false; handlerChangeDate(props.item)"
+                                            ></v-date-picker>
+                                        </v-menu>
+                                    </template>
                                     <template v-slot:item.actions="props">
                                         <v-row>
                                             <v-col cols="6">
@@ -579,6 +606,12 @@ export default {
                     text: 'Passed',
                     value: 'passed',
                     width: '5%'
+                },
+                {
+                    text: '',
+                    value: 'date',
+                    width: '5%',
+                    sortable: false
                 },
                 {
                     text: 'Actions',
@@ -908,7 +941,7 @@ export default {
         },
         filterTracking(date) {
             const self = this;
-            return this.tracking.filter(function(item) {
+            return this.getItems.filter(function(item) {
                 return moment(item.date_from).format(self.dateFormat) === date;
             });
         },
@@ -929,6 +962,18 @@ export default {
         },
         close () {
             //TODO
+        },
+        handlerChangeDate(item) {
+            const date = {
+                date: moment(item.date).date(),
+                month: moment(item.date).month(),
+                year: moment(item.date).year()
+            };
+            const seconds = this.helperCalculatePassedTime(item.date_from, item.date_to);
+            item.date_from = moment(item.date_from).set(date).format();
+            item.date_to = moment(item.date_from).add(seconds, "seconds").format();
+            this.save(item, 'date_from');
+            console.log(item);
         }
     },
     computed: {
@@ -952,7 +997,13 @@ export default {
             return panels;
         },
         getItems () {
-            return this.tracking;
+            return this.tracking.map(track => {
+                return {
+                    ...track,
+                    date: moment(track.date_from).format('YYYY-MM-DD'),
+                    date_picker: false
+                };
+            });
         },
         getFilteredProjects() {
             return this.$store.getters['Projects/getProjects'].map(entry => {
