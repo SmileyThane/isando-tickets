@@ -251,27 +251,51 @@
                         :close-on-content-click="false"
                         transition="scale-transition"
                         offset-y
-                        max-width="290px"
                         min-width="auto"
                         class="float-right"
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-text-field
                                 v-model="dateRangeText"
-                                label="Date range"
-                                persistent-hint
-                                prepend-icon="mdi-calendar"
                                 v-bind="attrs"
                                 v-on="on"
                                 hide-details="auto"
+                                rounded
+                                :style="{
+                                    'border-style': 'solid',
+                                    'border-color': themeColor,
+                                    'border-width': '2px'
+                                }"
+                                class="py-0 mt-3 mb-n3 dateRangePicker"
                             ></v-text-field>
                         </template>
-                        <v-date-picker
-                            v-model="dateRange"
-                            range
-                            no-title
-                            @input="handlerDateRange()"
-                        ></v-date-picker>
+                        <v-card>
+                            <v-row>
+                                <v-col cols="4" offset="1" class="pt-6 mb-n3">
+                                    <v-text-field
+                                        readonly
+                                        label="Period from:"
+                                        v-model="periodStart"
+                                        prepend-icon="mdi-calendar"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="4" offset="2" class="pt-6 mb-n3">
+                                    <v-text-field
+                                        readonly
+                                        label="To:"
+                                        v-model="periodEnd"
+                                        prepend-icon="mdi-calendar"
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <vc-date-picker
+                                v-model="dateRange"
+                                is-range
+                                :columns="2"
+                                mode="date"
+                                @input="handlerDateRange"
+                            ></vc-date-picker>
+                        </v-card>
                     </v-menu>
                 </v-col>
             </v-row>
@@ -516,6 +540,9 @@
 .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:after{
     border: none !important;
 }
+.dateRangePicker input {
+    text-align: center;
+}
 </style>
 
 <script>
@@ -564,7 +591,7 @@ export default {
             createDatePicker: false,
             /* Date range picker */
             dateRangePicker: false,
-            dateRange: [],
+            dateRange: {},
             /* Data table */
             headers: [
                 {
@@ -586,22 +613,22 @@ export default {
                 {
                     text: 'Tag',
                     value: 'tags',
-                    width: '5%'
+                    width: '3%'
                 },
                 {
                     text: 'Billable',
                     value: 'billable',
-                    width: '5%'
+                    width: '3%'
                 },
                 {
                     text: 'Start',
                     value: 'date_from',
-                    width: '5%'
+                    width: '3%'
                 },
                 {
                     text: 'End',
                     value: 'date_to',
-                    width: '5%'
+                    width: '3%'
                 },
                 {
                     text: 'Passed',
@@ -611,12 +638,13 @@ export default {
                 {
                     text: '',
                     value: 'date',
-                    width: '5%',
+                    width: '3%',
                     sortable: false
                 },
                 {
                     text: 'Actions',
                     value: 'actions',
+                    width: '10%',
                     sortable: false
                 }
             ],
@@ -658,16 +686,15 @@ export default {
         if (Helper.getKey('dateRange')) {
             this.dateRange = Helper.getKey('dateRange');
         } else {
-            this.dateRange = [
-                moment().subtract(1, 'days').format(this.dateFormat),
-                moment().format(this.dateFormat)
-            ];
+            this.dateRange = {
+                start: moment().subtract(1, 'days').format(this.dateFormat),
+                end: moment().format(this.dateFormat)
+            };
             Helper.storeKey('dateRange', this.dateRange);
         }
         this.timeFrom = moment().format();
         this.timeTo = moment().add(15, 'minutes').format();
         this.date = moment().format(this.dateFormat);
-        Helper.storeKey('dateFormat', this.dateFormat);
     },
     mounted() {
         this.__globalTimer();
@@ -692,8 +719,8 @@ export default {
             if (this.attemptRepeat > 5) return;
             this.loading = true;
             const queryParams = new URLSearchParams({
-                date_from: this.dateRange[0] || null,
-                date_to: this.dateRange[1] || null
+                date_from: moment(this.dateRange.start).format(this.dateFormat) || null,
+                date_to: moment(this.dateRange.end).format(this.dateFormat) || null
             });
             return axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
                 .then(({ data }) => {
@@ -890,12 +917,9 @@ export default {
             };
         },
         handlerDateRange() {
-            if (this.dateRange.length === 2) {
-                this.dateRange.sort();
-                Helper.storeKey('dateRange', this.dateRange);
-                this.dateRangePicker = false;
-                this.debounceGetTracking();
-            }
+            Helper.storeKey('dateRange', this.dateRange);
+            this.dateRangePicker = false;
+            this.debounceGetTracking();
         },
         // handlerSetTimeFrom() {
         //     if (!this.timeFrom) {
@@ -981,7 +1005,6 @@ export default {
             item.date_from = moment(item.date_from).set(date).format();
             item.date_to = moment(item.date_from).add(seconds, "seconds").format();
             this.save(item, 'date_from');
-            console.log(item);
         }
     },
     computed: {
@@ -993,7 +1016,8 @@ export default {
             return this.helperConvertSecondsToTimeFormat(seconds);
         },
         dateRangeText () {
-            return this.dateRange.join(' ~ ')
+            const dateFormat = 'DD MMM YYYY';
+            return `${moment(this.dateRange.start).format(dateFormat)} - ${moment(this.dateRange.end).format(dateFormat)}`;
         },
         getPanelDates () {
             const items = this.tracking.reduce(function (acc, item) {
@@ -1021,6 +1045,12 @@ export default {
 
                 return Object.assign({}, entry, { name })
             })
+        },
+        periodStart () {
+            return moment(this.dateRange.start).format('DD/MM/YYYY');
+        },
+        periodEnd () {
+            return moment(this.dateRange.end).format('DD/MM/YYYY');
         }
     },
     watch: {
