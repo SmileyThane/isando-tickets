@@ -261,6 +261,7 @@
                                 v-on="on"
                                 hide-details="auto"
                                 rounded
+                                readonly
                                 :style="{
                                     'border-style': 'solid',
                                     'border-color': themeColor,
