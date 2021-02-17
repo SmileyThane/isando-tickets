@@ -262,6 +262,7 @@
                                 hide-details="auto"
                                 rounded
                                 readonly
+                                prepend-inner-icon="mdi-calendar"
                                 :style="{
                                     'border-style': 'solid',
                                     'border-color': themeColor,
