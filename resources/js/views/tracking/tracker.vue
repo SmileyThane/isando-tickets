@@ -237,15 +237,8 @@
 
 <!--        dateRangePicker-->
         <template>
-            <v-row>
-                <v-col
-                    cols="12"
-                    offset-md="7"
-                    md="4"
-                    offset-lg="9"
-                    lg="2"
-                >
-                    <v-menu
+            <div class="d-flex flex-row-reverse mr-16">
+                <v-menu
                         ref="dateRangePicker"
                         v-model="dateRangePicker"
                         :close-on-content-click="false"
@@ -267,7 +260,9 @@
                                 :style="{
                                     'border-style': 'solid',
                                     'border-color': themeColor,
-                                    'border-width': '2px'
+                                    'border-width': '2px',
+                                    'min-width': '280px',
+                                    'max-width': '300px'
                                 }"
                                 class="py-0 mt-3 mb-n3 dateRangePicker"
                             ></v-text-field>
@@ -300,8 +295,7 @@
                             ></vc-date-picker>
                         </v-card>
                     </v-menu>
-                </v-col>
-            </v-row>
+            </div>
         </template>
 
         <br>
