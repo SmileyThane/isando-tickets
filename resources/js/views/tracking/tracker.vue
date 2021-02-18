@@ -253,6 +253,7 @@
                         offset-y
                         min-width="auto"
                         class="float-right"
+                        nudge-left="200px"
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-text-field
