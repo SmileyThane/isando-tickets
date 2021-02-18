@@ -72,8 +72,8 @@
                                         style="color: white"
                                         @click="actionStartNewTrack()"
                                     >
-                                        <span v-if="!timerPanel.start">Start</span>
-                                        <span v-if="timerPanel.start">Stop</span>
+                                        <span v-if="!timerPanel.start">{{ langMap.tracking.tracker.start }}</span>
+                                        <span v-if="timerPanel.start">{{ langMap.tracking.tracker.stop }}</span>
                                     </v-btn>
                                 </v-col>
                             </v-row>
@@ -87,7 +87,7 @@
                                         outlined
                                         dense
                                         hide-details="auto"
-                                        placeholder="What are you working on?"
+                                        :placeholder="langMap.tracking.tracker.timer_panel_description"
                                         v-model="manualPanel.description"
                                     ></v-text-field>
                                 </v-col>
@@ -124,7 +124,7 @@
                                     <TimeField
                                         v-model="manualPanel.date_from"
                                         style="max-width: 100px"
-                                        label="From"
+                                        :label="langMap.tracking.tracker.from"
                                         placeholder="hh:mm"
                                         format="HH:mm"
                                     ></TimeField>
@@ -133,7 +133,7 @@
                                     <TimeField
                                         v-model="manualPanel.date_to"
                                         style="max-width: 100px"
-                                        label="To"
+                                        :label="langMap.tracking.tracker.to"
                                         placeholder="hh:mm"
                                         format="HH:mm"
                                     ></TimeField>
@@ -153,7 +153,7 @@
                                                 <v-text-field
                                                     dense
                                                     v-model="date"
-                                                    label="Date"
+                                                    :label="langMap.tracking.tracker.date"
                                                     placeholder="yyyy-mm-dd"
                                                     prepend-icon="mdi-calendar"
                                                     v-bind="attrs"
@@ -191,7 +191,7 @@
                                         style="color: white"
                                         @click="actionCreateTrack()"
                                     >
-                                        Add
+                                        {{langMap.tracking.tracker.add}}
                                     </v-btn>
                                 </v-col>
                             </v-row>
@@ -211,7 +211,7 @@
                                         <v-icon v-bind:class="{ 'white--text': mode }">mdi-clock</v-icon>
                                     </v-btn>
                                 </template>
-                                <span>Timer</span>
+                                <span v-text="langMap.tracking.tracker.timer"></span>
                             </v-tooltip>
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
@@ -227,7 +227,7 @@
                                         <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
                                     </v-btn>
                                 </template>
-                                <span>Manual</span>
+                                <span v-text="langMap.tracking.tracker.manual"></span>
                             </v-tooltip>
                         </v-col>
                     </v-row>
@@ -276,7 +276,7 @@
                                 <v-col cols="4" offset="1" class="pt-6 mb-n3">
                                     <v-text-field
                                         readonly
-                                        label="Period from:"
+                                        :label="langMap.tracking.tracker.period_from"
                                         v-model="periodStart"
                                         prepend-icon="mdi-calendar"
                                     ></v-text-field>
@@ -284,7 +284,7 @@
                                 <v-col cols="4" offset="2" class="pt-6 mb-n3">
                                     <v-text-field
                                         readonly
-                                        label="To:"
+                                        :label="langMap.tracking.tracker.period_to"
                                         v-model="periodEnd"
                                         prepend-icon="mdi-calendar"
                                     ></v-text-field>
@@ -319,7 +319,7 @@
                         :color="themeColor"
                         style="color: white"
                     >
-                        <span v-if="moment(panelDate).format() === moment().format()">Today</span>
+                        <span v-if="moment(panelDate).format() === moment().format()">{{langMap.tracking.tracker.today}}</span>
                         <span v-else>{{ moment(panelDate).format('ddd, DD MMM YYYY')}}</span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -340,14 +340,14 @@
                                             @close="save(props.item, 'description')"
                                         >
                                             <span class="text--secondary" v-if="!props.item.description">
-                                                Add description
+                                                {{langMap.tracking.tracker.add_description}}
                                             </span>
                                             {{ props.item.description }}
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="props.item.description"
-                                                    label="Description"
-                                                    hint="Description"
+                                                    :label="langMap.tracking.tracker.description"
+                                                    :hint="langMap.tracking.tracker.description"
                                                     single-line
                                                     counter
                                                 ></v-text-field>
@@ -503,7 +503,7 @@
                                                                         <v-list-item-title
                                                                             @click="actionDuplicateTracking(props.item.id)"
                                                                         >
-                                                                            Duplicate
+                                                                            {{ langMap.tracking.tracker.duplicate }}
                                                                         </v-list-item-title>
                                                                     </v-list-item-content>
                                                                 </v-list-item>
@@ -513,7 +513,7 @@
                                                                             @click="actionDeleteTracking(props.item.id)"
                                                                             style="color: red"
                                                                         >
-                                                                            Delete
+                                                                            {{langMap.tracking.tracker.delete}}
                                                                         </v-list-item-title>
                                                                     </v-list-item-content>
                                                                 </v-list-item>
@@ -597,43 +597,43 @@ export default {
             /* Data table */
             headers: [
                 {
-                    text: 'Description',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.description,
                     align: 'start',
                     value: 'description',
                     width: '25%'
                 },
                 {
-                    text: 'Company',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.company,
                     value: 'project.client.name',
                     width: '20%'
                 },
                 {
-                    text: 'Project name',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.project_name,
                     value: 'project.name',
                     width: '20%'
                 },
                 {
-                    text: 'Tag',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.tag,
                     value: 'tags',
                     width: '3%'
                 },
                 {
-                    text: 'Billable',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.billable,
                     value: 'billable',
                     width: '3%'
                 },
                 {
-                    text: 'Start',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.start,
                     value: 'date_from',
                     width: '3%'
                 },
                 {
-                    text: 'End',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.end,
                     value: 'date_to',
                     width: '3%'
                 },
                 {
-                    text: 'Passed',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.passed,
                     value: 'passed',
                     width: '5%'
                 },
@@ -644,7 +644,7 @@ export default {
                     sortable: false
                 },
                 {
-                    text: 'Actions',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.actions,
                     value: 'actions',
                     width: '10%',
                     sortable: false

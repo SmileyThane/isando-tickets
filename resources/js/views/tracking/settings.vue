@@ -11,7 +11,7 @@
 
         <template>
             <v-tabs>
-                <v-tab>Tags</v-tab>
+                <v-tab>{{ langMap.tracking.settings.tags }}</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
@@ -29,18 +29,18 @@
                                         v-bind="attrs"
                                         v-on="on"
                                     >
-                                        Create tag
+                                        {{ langMap.tracking.settings.create_tag }}
                                     </v-btn>
                                 </template>
 
                                 <v-card>
                                     <v-card-title class="headline">
-                                        Create new tag
+                                        {{ langMap.tracking.settings.create_tag_title }}
                                     </v-card-title>
 
                                     <v-card-text>
                                         <v-text-field
-                                            label="Name"
+                                            :label="langMap.tracking.settings.name"
                                             v-model="form.name"
                                             required
                                         ></v-text-field>
@@ -49,7 +49,7 @@
                                             hide-details
                                             class="ma-0 pa-0"
                                             solo
-                                            label="Color"
+                                            :label="langMap.tracking.settings.color"
                                             required
                                         >
                                             <template v-slot:append>
@@ -97,14 +97,14 @@
                                             text
                                             @click="resetForm(); dialog = false"
                                         >
-                                            Cancel
+                                            {{ langMap.tracking.settings.cancel }}
                                         </v-btn>
                                         <v-btn
                                             color="success"
                                             text
                                             @click="createTag(); dialog = false"
                                         >
-                                            Create
+                                            {{ langMap.tracking.settings.create }}
                                         </v-btn>
                                     </v-card-actions>
                                 </v-card>
@@ -129,8 +129,8 @@
                                         <template v-slot:input>
                                             <v-text-field
                                                 v-model="props.item.name"
-                                                label="Name"
-                                                hint="Name"
+                                                :label="langMap.tracking.settings.name"
+                                                :hint="langMap.tracking.settings.name"
                                                 single-line
                                                 counter
                                             ></v-text-field>
@@ -207,18 +207,18 @@ export default {
             tab: 0,
             headers: [
                 {
-                    text: 'Tag name',
+                    text: this.$store.state.lang.lang_map.tracking.settings.tag_name,
                     align: 'start',
                     sortable: true,
                     value: 'name',
                 },
                 {
-                    text: 'Color',
+                    text: this.$store.state.lang.lang_map.tracking.settings.color,
                     sortable: false,
                     value: 'color',
                 },
                 {
-                    text: 'Actions',
+                    text: this.$store.state.lang.lang_map.tracking.settings.actions,
                     sortable: false,
                     value: 'actions',
                 }
@@ -251,7 +251,7 @@ export default {
             this.$store.dispatch('Tags/createTag', this.form)
                 .then(tag => {
                     if (tag) {
-                        this.snackbarMessage = 'Tag created successfully';
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_created_successfully;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     }
@@ -267,11 +267,11 @@ export default {
             this.$store.dispatch('Tags/deleteTag', tagId)
                 .then(result => {
                     if (result) {
-                        this.snackbarMessage = 'Tag deleted successfully';
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_deleted_successfully;
                         this.actionColor = 'success'
                         this.snackbar = true;
                     } else {
-                        this.snackbarMessage = 'Tag removal error';
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_removal_error;
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }

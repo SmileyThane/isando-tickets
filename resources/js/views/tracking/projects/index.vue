@@ -70,7 +70,7 @@
             </template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
-                    More info about {{ item.name }}
+                    {{ langMap.tracking.create_project.more_info }} {{ item.name }}
                 </td>
             </template>
         </v-data-table>
@@ -169,7 +169,7 @@ export default {
                 page: 1,
                 sortDesc: [true],
                 sortBy: ['id'],
-                itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
+                itemsPerPage: Helper.getKey('itemsPerPage') ?? 10
             },
             footerProps: {
                 showFirstLastPage: true,
@@ -197,6 +197,8 @@ export default {
         this.debounceGetProjects = _.debounce(this.__getProjects, 1000);
         this.debounceGetProducts = _.debounce(this.__getProducts, 1000);
         this.debounceGetClients = _.debounce(this.__getClients, 1000);
+        this.options.itemsPerPage = Helper.getKey('itemsPerPage') ?? 10;
+        this.footerProps.itemsPerPage = Helper.getKey('itemsPerPage') ?? 10;
     },
     mounted() {
         this.debounceGetProducts();
@@ -205,6 +207,8 @@ export default {
         EventBus.$on('update-theme-color', function (color) {
             self.themeColor = color;
         });
+        this.options.itemsPerPage = Helper.getKey('itemsPerPage');
+        this.footerProps.itemsPerPage = Helper.getKey('itemsPerPage');
     },
     methods: {
         __getProjects() {
@@ -217,7 +221,7 @@ export default {
                 this.options.page = 1
             }
             this.$store.dispatch('Projects/getProjectList', {
-                per_page: this.footerProps.itemsPerPage,
+                per_page: this.footerProps.itemsPerPage ?? 10,
                 page: this.options.page,
                 search: this.trackingProjectSearch,
                 direction: this.options.sortDesc[0],
@@ -238,7 +242,7 @@ export default {
         },
         updateItemsCount(value) {
             this.footerProps.itemsPerPage = value
-            localStorage.itemsPerPage = value;
+            Helper.storeKey('itemsPerPage', value);
             this.options.page = 1
         },
         showItem(item) {
