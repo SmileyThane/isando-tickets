@@ -687,6 +687,10 @@ export default {
         this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
         if (Helper.getKey('dateRange')) {
             this.dateRange = Helper.getKey('dateRange');
+            if (moment(this.dateRange.end).format(this.dateFormat) === moment().subtract(1, 'days').format(this.dateFormat)) {
+                this.dateRange.end = moment();
+                Helper.storeKey('dateRange', this.dateRange);
+            }
         } else {
             this.dateRange = {
                 start: moment().subtract(1, 'days').format(this.dateFormat),
