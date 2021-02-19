@@ -13,190 +13,70 @@
         <template>
             <v-card flat>
                 <v-toolbar>
-                    <v-row>
-                        <v-col cols="11" lg="11" md="10" sm="10" v-if="mode">
-<!--                            Timer mode-->
-                            <v-row>
-                                <v-col cols="4" lg="4" md="4">
-                                    <v-text-field
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        placeholder="What are you working on?"
-                                        v-model="timerPanel.description"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-spacer></v-spacer>
-                                <v-col cols="2" lg="3" md="3" class="text-right">
-                                    <ProjectBtn
-                                        key="timerPanelProjectKey"
-                                        :color="themeColor"
-                                        :onChoosable="handlerProjectTimerPanel"
-                                        v-model="timerPanel.project"
-                                    ></ProjectBtn>
-
-                                    <TagBtn
-                                        key="timerPanelTagKey"
-                                        :color="themeColor"
-                                        :onChoosable="handlerTagsTimerPanel"
-                                        v-model="timerPanel.tags"
-                                    >
-                                    </TagBtn>
-
-                                    <v-btn
-                                        fab
-                                        :icon="!timerPanel.billable"
-                                        x-small
-                                        :color="themeColor"
-                                        @click="timerPanel.billable = !timerPanel.billable"
-                                    >
-                                        <v-icon center v-bind:class="{ 'white--text': timerPanel.billable }">
-                                            mdi-currency-usd
-                                        </v-icon>
-                                    </v-btn>
-                                </v-col>
-                                <v-col cols="1" lg="2" md="2">
-                                    <v-text-field
-                                        v-model="timerPanel.passedSeconds"
-                                        placeholder="00:00:00"
-                                        dense
-                                        hide-details="auto"
-                                        readonly
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="1" lg="1" md="1">
-                                    <v-btn
-                                        tile
-                                        small
-                                        :color="!timerPanel.start ? themeColor : 'error'"
-                                        style="color: white"
-                                        @click="actionStartNewTrack()"
-                                    >
-                                        <span v-if="!timerPanel.start">{{ langMap.tracking.tracker.start }}</span>
-                                        <span v-if="timerPanel.start">{{ langMap.tracking.tracker.stop }}</span>
-                                    </v-btn>
-                                </v-col>
-                            </v-row>
-                        </v-col>
-
-                        <v-col cols="11" lg="11" md="10" sm="10" v-if="!mode">
-<!--                            Manual mode-->
-                            <v-row>
-                                <v-col cols="4" lg="3" md="3" sm="8">
-                                    <v-text-field
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        :placeholder="langMap.tracking.tracker.timer_panel_description"
-                                        v-model="manualPanel.description"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-spacer></v-spacer>
-                                <v-col cols="2" lg="3" md="3" sm="4" class="text-right">
-                                    <ProjectBtn
-                                        key="manualPanelProjectKey"
-                                        :color="themeColor"
-                                        :onChoosable="handlerProjectManualPanel"
-                                        v-model="manualPanel.project"
-                                    ></ProjectBtn>
-
-                                    <TagBtn
-                                        key="manualPanelTagKey"
-                                        :color="themeColor"
-                                        :onChoosable="handlerTagsManualPanel"
-                                        v-model="manualPanel.tags"
-                                    >
-                                    </TagBtn>
-
-                                    <v-btn
-                                        :icon="!manualPanel.billable"
-                                        x-small
-                                        :color="themeColor"
-                                        fab
-                                        @click="manualPanel.billable = !manualPanel.billable"
-                                    >
-                                        <v-icon center v-bind:class="{ 'white--text': manualPanel.billable }">
-                                            mdi-currency-usd
-                                        </v-icon>
-                                    </v-btn>
-                                </v-col>
-                                <v-col cols="1" lg="1" md="1">
-                                    <TimeField
-                                        v-model="manualPanel.date_from"
-                                        style="max-width: 100px"
-                                        :label="langMap.tracking.tracker.from"
-                                        placeholder="hh:mm"
-                                        format="HH:mm"
-                                    ></TimeField>
-                                </v-col>
-                                <v-col cols="1" lg="1" md="1">
-                                    <TimeField
-                                        v-model="manualPanel.date_to"
-                                        style="max-width: 100px"
-                                        :label="langMap.tracking.tracker.to"
-                                        placeholder="hh:mm"
-                                        format="HH:mm"
-                                    ></TimeField>
-                                </v-col>
-                                <v-col cols="2" lg="2" md="2">
-                                    <template>
-                                        <v-menu
-                                            v-model="createDatePicker"
-                                            :close-on-content-click="false"
-                                            :nudge-right="40"
-                                            transition="scale-transition"
-                                            offset-y
-                                            min-width="auto"
-                                            left
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                    dense
-                                                    v-model="date"
-                                                    :label="langMap.tracking.tracker.date"
-                                                    placeholder="yyyy-mm-dd"
-                                                    prepend-icon="mdi-calendar"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                    hide-details="auto"
-                                                    class="date-picker__without-line"
-                                                    style="max-width: 1050px"
-                                                    @blur="handlerSetDate()"
-                                                ></v-text-field>
-                                            </template>
-                                            <v-date-picker
-                                                dense
-                                                v-model="date"
-                                                @input="createDatePicker = false"
-                                            ></v-date-picker>
-                                        </v-menu>
-                                    </template>
-                                </v-col>
-                                <v-col cols="1" lg="1" md="1">
-                                    <v-text-field
-                                        v-model="timeAdd"
-                                        placeholder="00:00:00"
-                                        dense
-                                        readonly
-                                        hide-details="auto"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="1" lg="1" md="1">
-                                    <v-btn
-                                        small
-                                        tile
-                                        :color="themeColor"
-                                        :loading="loadingCreateTrack"
-                                        :disabled="loadingCreateTrack"
-                                        style="color: white"
-                                        @click="actionCreateTrack()"
-                                    >
-                                        {{langMap.tracking.tracker.add}}
-                                    </v-btn>
-                                </v-col>
-                            </v-row>
-                        </v-col>
-                        <v-col cols="1" lg="1" md="2" sm="2">
+                    <!-- Timer mode-->
+                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="mode">
+                        <div class="flex-grow-1 align-self-center">
+                            <v-text-field
+                                outlined
+                                dense
+                                hide-details="auto"
+                                placeholder="What are you working on?"
+                                v-model="timerPanel.description"
+                                style="max-width: 1000px"
+                            ></v-text-field>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <ProjectBtn
+                                key="timerPanelProjectKey"
+                                :color="themeColor"
+                                :onChoosable="handlerProjectTimerPanel"
+                                v-model="timerPanel.project"
+                            ></ProjectBtn>
+                        </div>
+                        <div class="mx-2 align-self-center">
+                            <TagBtn
+                                key="timerPanelTagKey"
+                                :color="themeColor"
+                                :onChoosable="handlerTagsTimerPanel"
+                                v-model="timerPanel.tags"
+                            >
+                            </TagBtn>
+                        </div>
+                        <div class="mx-2 align-self-center">
+                            <v-btn
+                                fab
+                                :icon="!timerPanel.billable"
+                                x-small
+                                :color="themeColor"
+                                @click="timerPanel.billable = !timerPanel.billable"
+                            >
+                                <v-icon center v-bind:class="{ 'white--text': timerPanel.billable }">
+                                    mdi-currency-usd
+                                </v-icon>
+                            </v-btn>
+                        </div>
+                        <div class="mx-3 align-self-center" style="max-width: 100px">
+                            <v-text-field
+                                v-model="timerPanel.passedSeconds"
+                                placeholder="00:00:00"
+                                dense
+                                hide-details="auto"
+                                readonly
+                            ></v-text-field>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <v-btn
+                                tile
+                                small
+                                :color="!timerPanel.start ? themeColor : 'error'"
+                                style="color: white"
+                                @click="actionStartNewTrack()"
+                            >
+                                <span v-if="!timerPanel.start">{{ langMap.tracking.tracker.start }}</span>
+                                <span v-if="timerPanel.start">{{ langMap.tracking.tracker.stop }}</span>
+                            </v-btn>
+                        </div>
+                        <div class="mx-1 d-flex flex-column">
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
@@ -229,8 +109,158 @@
                                 </template>
                                 <span v-text="langMap.tracking.tracker.manual"></span>
                             </v-tooltip>
-                        </v-col>
-                    </v-row>
+                        </div>
+                    </div>
+                    <!-- Manual mode-->
+                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!mode">
+                        <div class="flex-grow-1 align-self-center">
+                            <v-text-field
+                                outlined
+                                dense
+                                hide-details="auto"
+                                :placeholder="langMap.tracking.tracker.timer_panel_description"
+                                v-model="manualPanel.description"
+                                style="max-width: 1000px"
+                            ></v-text-field>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <ProjectBtn
+                                key="manualPanelProjectKey"
+                                :color="themeColor"
+                                :onChoosable="handlerProjectManualPanel"
+                                v-model="manualPanel.project"
+                            ></ProjectBtn>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <TagBtn
+                                key="manualPanelTagKey"
+                                :color="themeColor"
+                                :onChoosable="handlerTagsManualPanel"
+                                v-model="manualPanel.tags"
+                            >
+                            </TagBtn>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <v-btn
+                                :icon="!manualPanel.billable"
+                                x-small
+                                :color="themeColor"
+                                fab
+                                @click="manualPanel.billable = !manualPanel.billable"
+                            >
+                                <v-icon center v-bind:class="{ 'white--text': manualPanel.billable }">
+                                    mdi-currency-usd
+                                </v-icon>
+                            </v-btn>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <TimeField
+                                v-model="manualPanel.date_from"
+                                style="max-width: 100px"
+                                :label="langMap.tracking.tracker.from"
+                                placeholder="hh:mm"
+                                format="HH:mm"
+                            ></TimeField>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <TimeField
+                                v-model="manualPanel.date_to"
+                                style="max-width: 100px"
+                                :label="langMap.tracking.tracker.to"
+                                placeholder="hh:mm"
+                                format="HH:mm"
+                            ></TimeField>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <v-menu
+                                v-model="createDatePicker"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="auto"
+                                left
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                        dense
+                                        v-model="date"
+                                        :label="langMap.tracking.tracker.date"
+                                        placeholder="yyyy-mm-dd"
+                                        prepend-icon="mdi-calendar"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        hide-details="auto"
+                                        class="date-picker__without-line"
+                                        style="min-width: 100px; max-width: 130px"
+                                        @blur="handlerSetDate()"
+                                    ></v-text-field>
+                                </template>
+                                <v-date-picker
+                                    dense
+                                    v-model="date"
+                                    @input="createDatePicker = false"
+                                ></v-date-picker>
+                            </v-menu>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <v-text-field
+                                v-model="timeAdd"
+                                placeholder="00:00:00"
+                                dense
+                                readonly
+                                hide-details="auto"
+                                style="max-width: 80px; text-align: center"
+                            ></v-text-field>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <v-btn
+                                small
+                                tile
+                                :color="themeColor"
+                                :loading="loadingCreateTrack"
+                                :disabled="loadingCreateTrack"
+                                style="color: white"
+                                @click="actionCreateTrack()"
+                            >
+                                {{langMap.tracking.tracker.add}}
+                            </v-btn>
+                        </div>
+                        <div class="mx-1 d-flex flex-column">
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        fab
+                                        x-small
+                                        :icon="!mode"
+                                        :color="themeColor"
+                                        @click="mode=true"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <v-icon v-bind:class="{ 'white--text': mode }">mdi-clock</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span v-text="langMap.tracking.tracker.timer"></span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        fab
+                                        x-small
+                                        :icon="mode"
+                                        :color="themeColor"
+                                        @click="mode=false"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span v-text="langMap.tracking.tracker.manual"></span>
+                            </v-tooltip>
+                        </div>
+                    </div>
                 </v-toolbar>
             </v-card>
         </template>
@@ -450,8 +480,8 @@
                                         </v-menu>
                                     </template>
                                     <template v-slot:item.actions="props">
-                                        <v-row>
-                                            <v-col cols="6">
+                                        <div class="d-flex flex-row">
+                                            <div>
                                                 <v-btn
                                                     depressed
                                                     color="error"
@@ -468,8 +498,8 @@
                                                 >
                                                     <v-icon class="white--text">mdi-play-outline</v-icon>
                                                 </v-btn>
-                                            </v-col>
-                                            <v-col cols="6">
+                                            </div>
+                                            <div>
                                                 <v-menu
                                                     bottom
                                                     left
@@ -516,8 +546,8 @@
                                                         </v-list>
                                                     </v-card>
                                                 </v-menu>
-                                            </v-col>
-                                        </v-row>
+                                            </div>
+                                        </div>
                                     </template>
                                 </v-data-table>
 
