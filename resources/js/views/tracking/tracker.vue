@@ -191,7 +191,7 @@
                                         v-bind="attrs"
                                         v-on="on"
                                         hide-details="auto"
-                                        class="date-picker__without-line"
+                                        class="date-picker__without-line mt-1"
                                         style="min-width: 100px; max-width: 130px"
                                         @blur="handlerSetDate()"
                                     ></v-text-field>
