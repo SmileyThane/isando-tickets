@@ -203,7 +203,7 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="noteDialog" max-width="480">
+            <v-dialog v-model="noteDialog" max-width="50%">
                 <v-card dense outlined>
                     <v-card-title class="headline" style="background-color: #F0F0F0;">
                         {{ langMap.ticket.add_internal_note }}
@@ -212,17 +212,11 @@
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <v-textarea
+                                    <tiptap-vuetify
                                         v-model="ticketNotice.notice"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
-                                        :label="langMap.ticket.add_internal_note"
-                                        auto-grow
-                                        dense
-                                        prepend-icon="mdi-text"
-                                        row-height="25"
-                                        rows="1"
-                                    ></v-textarea>
+                                        :extensions="extensions"
+                                        :placeholder="langMap.ticket.add_internal_note"
+                                    />
                                 </div>
                             </div>
                         </v-form>
