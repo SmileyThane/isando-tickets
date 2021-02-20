@@ -146,7 +146,7 @@
                     <v-card-text>
                         <v-form>
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-12 mt-2">
                                     <tiptap-vuetify
                                         v-model="ticketAnswer.answer"
                                         :extensions="extensions"
@@ -211,13 +211,29 @@
                     <v-card-text>
                         <v-form>
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-12 mt-2">
                                     <tiptap-vuetify
                                         v-model="ticketNotice.notice"
                                         :extensions="extensions"
                                         :placeholder="langMap.ticket.add_internal_note"
                                     />
                                 </div>
+                            </div>
+                            <div class="col-md-12">
+                                <v-select
+                                    :color="themeColor"
+                                    :item-color="themeColor"
+                                    v-model="selectedSignature"
+                                    :items="signatures"
+                                    :label="langMap.notification.signature"
+                                    item-value="signature"
+                                    item-text="name"
+                                    dense
+                                >
+                                    <template slot="selection" slot-scope="data">
+                                        <div class="text--black mt-3" v-html="data.item.signature"></div>
+                                    </template>
+                                </v-select>
                             </div>
                         </v-form>
                     </v-card-text>
@@ -2012,6 +2028,10 @@ export default {
             });
         },
         addTicketNotice() {
+            if (this.selectedSignature !== '') {
+                this.ticketNotice.notice += '<hr><br/>' + this.selectedSignature
+            }
+
             axios.post(`/api/ticket/${this.$route.params.id}/notice`, this.ticketNotice).then(response => {
                 response = response.data
                 if (response.success === true) {
