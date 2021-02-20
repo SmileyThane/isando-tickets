@@ -524,7 +524,7 @@
                                             <span v-if="ticket.contact !== null" class="float-md-right text-md-right">
                                                 <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
                                                 >
@@ -631,7 +631,7 @@
                                             >
                                                 <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
                                                 >
@@ -691,7 +691,7 @@
                                             style="font-weight: bold;">
                                             <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
                                                 >
@@ -762,7 +762,7 @@
                                         <span class="text-left" style="font-weight: bold;">
                                             <v-avatar
                                                 size="2em"
-                                                class="mr-2"
+                                                class="mr-2 mb-2"
                                                 color="grey darken-1"
                                                 v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
                                             >
@@ -813,7 +813,7 @@
                                     <span class="text-left" style="font-weight: bold;">
                                         <v-avatar
                                             size="2em"
-                                            class="mr-2"
+                                            class="mr-2 mb-2"
                                             color="grey darken-1"
                                             v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
                                         >
@@ -856,7 +856,7 @@
                                  <span v-if="ticket.contact !== null" class="float-md-right text-md-right">
                                      <v-avatar
                                          size="2em"
-                                         class="mr-2"
+                                         class="mr-2 mb-2"
                                          color="grey darken-1"
                                          v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
                                      >
@@ -977,7 +977,7 @@
                                     <span class="float-md-right text-md-right">
                                         <v-avatar
                                             size="2em"
-                                            class="mr-2"
+                                            class="mr-2 mb-2"
                                             color="grey darken-1"
                                             v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
                                         >
@@ -1094,7 +1094,7 @@
 
                                                 <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
                                                 >
@@ -1129,7 +1129,7 @@
                                             <strong>
                                                 <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
                                                 >
@@ -1501,7 +1501,7 @@
                                             <strong class="text-left">
                                                 <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="history.employee.user_data.avatar_url || history.employee.user_data.full_name"
                                                 >
