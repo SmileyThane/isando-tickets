@@ -44,23 +44,10 @@ class ClientRepository
 
     public function clients($request)
     {
-        $employee = Auth::user()->employee;
-        $companyId = $employee->company_id;
-        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
-            $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
-            $clients = Client::where('id', $clientCompanyUser->client_id);
-        } else {
-            $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
-        }
         if ($request->search) {
             $request['page'] = 1;
-            $clients->where(
-                function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('description', 'like', '%' . $request->search . '%');
-                }
-            );
         }
+        $clients = $this->getClients($request);
         $clients = $clients->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
         return $clients->paginate($request->per_page ?? $clients->count());
     }
@@ -283,7 +270,6 @@ class ClientRepository
         return $result->paginate($request->per_page ?? $result->count());
     }
 
-
     public function changeIsActive(Request $request): bool
     {
         $result = false;
@@ -375,5 +361,27 @@ class ClientRepository
             }
         }
         return $results;
+    }
+
+    public function getClients($request)
+    {
+        $employee = Auth::user()->employee;
+        $companyId = $employee->company_id;
+        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
+            $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
+            $clients = Client::where('id', $clientCompanyUser->client_id);
+        } else {
+            $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
+        }
+
+        if ($request->search) {
+            $clients->where(
+                function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
+                }
+            );
+        }
+        return $clients;
     }
 }
