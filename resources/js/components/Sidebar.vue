@@ -86,6 +86,23 @@
         </v-list>
         <v-divider></v-divider>
         <v-list dense>
+            <v-list-item
+                :style="'background-color:' + 'white' + ';'"
+                dense
+                link
+                to="/custom_license">
+                <v-list-item-action>
+                    <v-icon>mdi-book-open-page-variant</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>
+                        {{ this.$store.state.lang.lang_map.sidebar.custom_licenses }}
+                    </v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+        </v-list>
+        <v-divider></v-divider>
+        <v-list dense>
             <v-list-group
                 v-if="checkRoleByIds([1,2,3,4,5])"
                 :style="'background-color: ' + 'white' + ';'"
