@@ -54,7 +54,7 @@
 
                                 <div v-if="userData.emails && userData.emails.length > 0" class="mb-3">
                                     <p v-for="(item, i) in userData.emails"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.email }}
                                     </p>
                                 </div>
@@ -62,7 +62,7 @@
                                 <div v-if="userData.phones && userData.phones.length > 0">
                                     <hr/>
                                     <p v-for="(item, i) in userData.phones"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.phone }}
                                     </p>
                                 </div>
@@ -70,7 +70,7 @@
                             <v-col cols="6">
                                 <div v-if="userData.addresses && userData.addresses.length > 0" class="mb-3">
                                     <p v-for="(item, i) in userData.addresses"  :key="item.id" class="mb-1">
-                                        <v-icon v-if="item.type" title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2 mb-2" />
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2 mb-2" />
 
                                         <span v-if="item.street">{{ item.street }}</span>
                                         <span v-if="item.street2">, {{ item.street2 }}</span>
@@ -83,7 +83,7 @@
                                 <div v-if="userData.socials && userData.socials.length > 0">
                                     <hr/>
                                     <p v-for="(item, i) in userData.socials"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.social_link }}
                                     </p>
                                 </div>
@@ -144,8 +144,8 @@
                             <v-col cols="6">
                                 <hr/>
 
-                                <p class="mb-0" v-if="languages && languages.length > 0">
-                                    <v-icon left small dense :color="themeColor">mdi-web</v-icon>
+                                <p class="mb-0" v-if="langs && langs.length > 0">
+                                    <v-icon left small dense :color="themeColor" :title="langMap.main.language">mdi-web</v-icon>
                                     {{ langs[userData.language_id].name }}
                                 </p>
                             </v-col>
@@ -440,7 +440,7 @@
                                                         <span v-if="item.street2">, {{ item.street2 }}</span>
                                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                                         <br/>{{ item.postal_code }}&nbsp;&nbsp;{{ item.city }}
-                                                        <span v-if="item.country">{{ localized(item.country) }}</span>
+                                                        <br/><span v-if="item.country">{{ localized(item.country) }}</span>
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
                                                 </v-list-item-content>
@@ -1424,8 +1424,6 @@ export default {
                     if (response.success === true) {
                         this.avatar = response.data.avatar_url;
                         this.userData.avatar_url = response.data.avatar_url;
-
-                        this.updateNotificationsSettings();
                     } else {
                         this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                         this.errorType = 'error';
@@ -1439,7 +1437,8 @@ export default {
             axios.post('/api/user', this.userData).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.getUser()
+                    this.updateNotificationsSettings();
+
                     this.snackbarMessage = this.langMap.company.user_updated;
                     this.actionColor = 'success'
                     this.snackbar = true
