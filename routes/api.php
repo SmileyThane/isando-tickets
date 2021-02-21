@@ -222,5 +222,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('countries/company/{company_id?}', 'API\CountryController@getCompanyCountries');
     Route::post('country/company', 'API\CountryController@addCompanyCountry');
     Route::delete('country/{id}/company/{company_id?}', 'API\CountryController@deleteCompanyCountry');
+
+    //custom license
+    Route::get('custom_license', 'API\CustomLicenseController@index');
+    Route::get('custom_license/{id}', 'API\CustomLicenseController@find');
 });
 
