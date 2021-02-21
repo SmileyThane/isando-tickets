@@ -4,6 +4,8 @@ import Customer from './views/customer/index'
 import SingleCustomer from './views/customer/item'
 import Product from './views/product/index'
 import SingleProduct from './views/product/item'
+import CustomLicenses from './views/custom_license/index'
+import CustomLicense from './views/custom_license/item'
 import Team from './views/team/index'
 import SingleTeam from './views/team/item'
 import Employee from './views/employee/index'
@@ -281,5 +283,21 @@ export default [
             requiresAuth: true
         },
         component: TrackingSettings
-    }
+    },
+    {
+        path: '/custom_license/:id',
+        name: 'custom_license',
+        meta: {
+            requiresAuth: true,
+        },
+        component: CustomLicense
+    },
+    {
+        path: '/custom_license',
+        name: 'custom_licenses',
+        meta: {
+            requiresAuth: true,
+        },
+        component: CustomLicenses
+    },
 ];
