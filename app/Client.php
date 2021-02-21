@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -84,5 +85,10 @@ class Client extends Model
     public function getContactEmailAttribute()
     {
         return $this->emails()->with('type')->first();
+    }
+
+    public function customLicense(): HasOne
+    {
+        return $this->hasOne(CustomLicense::class, 'client_id', 'id');
     }
 }
