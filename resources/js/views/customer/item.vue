@@ -44,7 +44,7 @@
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
 
                                 <div v-if="client.emails && client.emails.length > 0" class="mb-3">
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <p v-for="(item, i) in client.emails"  :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.email }}
@@ -52,7 +52,7 @@
                                 </div>
 
                                 <div v-if="client.phones && client.phones.length > 0">
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <p v-for="(item, i) in client.phones"  :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.phone }}
@@ -73,7 +73,7 @@
                                 </div>
 
                                 <div v-if="client.socials && client.socials.length > 0">
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <p v-for="(item, i) in client.socials"  :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.social_link }}
@@ -83,7 +83,7 @@
                         </v-row>
                         <v-row>
                             <v-col cols="6">
-                                <hr/>
+                                <hr class="lighten" />
 
                                 <p class="mb-0">
                                     <v-icon v-if="client.is_active" small dense left color="success">mdi-check-circle</v-icon>
@@ -154,7 +154,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <h3>{{ langMap.company.additional_info }}</h3>
@@ -507,7 +507,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <v-row>

@@ -51,7 +51,7 @@
                                 <h3 class="mb-3">{{ userData .title }} {{ userData.title_before_name}} {{ userData.full_name }}</h3>
 
                                 <div v-if="userData.emails && userData.emails.length > 0" class="mb-3">
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <p v-for="(item, i) in userData.emails"  :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.email }}
@@ -59,7 +59,7 @@
                                 </div>
 
                                 <div v-if="userData.phones && userData.phones.length > 0">
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <p v-for="(item, i) in userData.phones"  :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.phone }}
@@ -80,7 +80,7 @@
                                 </div>
 
                                 <div v-if="userData.socials && userData.socials.length > 0">
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <p v-for="(item, i) in userData.socials"  :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.social_link }}
@@ -90,7 +90,7 @@
                         </v-row>
                         <v-row>
                             <v-col cols="6">
-                                <hr/>
+                                <hr class="lighten" />
 
                                 <p class="mb-0">
                                     <v-icon v-if="notificationStatuses.includes(101)" small dense left color="success">mdi-check-circle</v-icon>
@@ -117,7 +117,7 @@
                                 </p>
                             </v-col>
                             <v-col cols="6">
-                                <hr/>
+                                <hr class="lighten" />
 
                                 <p class="mb-0">
                                     <v-icon v-if="notificationStatuses.includes(102)" small dense left color="success">mdi-check-circle</v-icon>
@@ -141,7 +141,7 @@
 
                         <v-row>
                             <v-col cols="6">
-                                <hr/>
+                                <hr class="lighten" />
 
                                 <p class="mb-0" v-if="langs && langs.length > 0">
                                     <v-icon left small dense :color="themeColor" :title="langMap.main.language">mdi-web</v-icon>
@@ -149,7 +149,7 @@
                                 </p>
                             </v-col>
                             <v-col cols="6">
-                                <hr/>
+                                <hr class="lighten" />
 
                                 <p class="mb-0">
                                     <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>
@@ -273,7 +273,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <h3>{{ langMap.individuals.contact_info }}</h3>
@@ -626,7 +626,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <h3>{{ langMap.profile.notifications_settings }}</h3>
@@ -688,7 +688,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <v-row>
