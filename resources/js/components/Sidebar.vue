@@ -323,7 +323,7 @@
                     </v-list-item-content>
                 </template>
                 <v-list-item
-
+                    v-if="!checkRoleByIds([6, 101])"
                     link
                     style="background-color:white;"
                     to="/notify"

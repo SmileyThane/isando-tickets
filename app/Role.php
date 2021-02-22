@@ -7,12 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     protected $table = 'roles';
+
+    const SUPERADMIN = 1;
     const LICENSE_OWNER = 2;
     const ADMIN = 3;
     const MANAGER = 4;
-    const COMPANY_CLIENT = 6;
     const USER = 5;
+    const COMPANY_CLIENT = 6;
+
     const HIGH_PRIVIGIES = [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER];
 
-
+    // this is a virtual role
+    const IS_CLIENTABLE = 101;
 }
