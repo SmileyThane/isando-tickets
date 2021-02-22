@@ -215,6 +215,7 @@ class LanguageSeeder extends Seeder
                     'company' =>
                         [
                             'company_number' => 'Company number',
+                            'short_name' => 'Short name',
                             'registration_date' => 'Date of registration',
                             'info' => 'Company info',
                             'logo' => 'Logo',
@@ -272,6 +273,8 @@ class LanguageSeeder extends Seeder
                             'company_created' => 'Company created',
                             'company_updated' => 'Company updated',
                             'company_deleted' => 'Company deleted',
+                            'company_activated' => 'Company activated',
+                            'company_deactivated' => 'Company deactivated',
                             'role_created' => 'Role created',
                             'role_updated' => 'Role updated',
                             'role_deleted' => 'Role deleted',
@@ -822,6 +825,7 @@ class LanguageSeeder extends Seeder
                         ],
                         'company' => [
                             'company_number' => 'Firmennummer',
+                            'short_name' => 'Kurzer Name',
                             'registration_date' => 'Datum der Registrierung',
                             'info' => 'Firmeninfo',
                             'logo' => 'Firmenlogo',
@@ -873,6 +877,8 @@ class LanguageSeeder extends Seeder
                             'company_created' => 'Firma erstellt',
                             'company_updated' => 'Firma aktualisiert',
                             'company_deleted' => 'Firma gelöscht',
+                            'company_activated' => 'Firma aktiviert',
+                            'company_deactivated' => 'Firma deaktiviert',
                             'role_created' => 'Rolle erstellt',
                             'role_updated' => 'Rolle aktualisiert',
                             'role_deleted' => 'Rolle gelöscht',

@@ -20,7 +20,7 @@
                         flat
                         :color="themeColor"
                     >
-                        <v-toolbar-title>{{ langMap.individuals.info}}</v-toolbar-title>
+                        <v-toolbar-title>{{ langMap.individuals.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-btn color="white" icon @click="enableToEdit = true" v-if="!enableToEdit">
                             <v-icon small dense>mdi-pencil</v-icon>
@@ -38,7 +38,7 @@
                                     v-if="userData.avatar_url || userData.full_name"
                                     size="80px"
                                 >
-                                    <v-img v-if="userData.avatar_url " :src="userData.avatar_url" size="100px" />
+                                    <v-img v-if="userData.avatar_url" :src="userData.avatar_url" size="100px" />
                                     <div v-else-if="userData.full_name" class="white--text" size="100px">
                                         {{ userData.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
                                     </div>
@@ -50,9 +50,8 @@
 
                                 <h3 class="mb-3">{{ userData .title }} {{ userData.title_before_name}} {{ userData.full_name }}</h3>
 
-                                <hr/>
-
                                 <div v-if="userData.emails && userData.emails.length > 0" class="mb-3">
+                                    <hr/>
                                     <p v-for="(item, i) in userData.emails"  :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.email }}
@@ -174,7 +173,7 @@
                                     <v-row>
                                         <v-col cols="2">
                                             <label>{{ langMap.profile.avatar }}</label>
-                                            <v-avatar size="80px">
+                                            <v-avatar size="100px">
                                                 <v-img :src="avatar" style="z-index: 1;">
                                                     <v-file-input
                                                         v-model="newAvatar"

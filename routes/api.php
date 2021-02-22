@@ -115,6 +115,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('all', 'API\ClientController@all');
         Route::post('client/is_active', 'API\ClientController@changeIsActive');
         Route::get('recipients', 'API\ClientController@recipientsTree');
+        Route::post('client/{id}/logo', 'API\ClientController@updateLogo');
 
         //team management
         Route::get('team', 'API\TeamController@get');

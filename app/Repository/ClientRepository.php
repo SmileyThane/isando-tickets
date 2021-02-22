@@ -13,6 +13,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Throwable;
@@ -56,8 +57,9 @@ class ClientRepository
             $request['page'] = 1;
             $clients->where(
                 function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('description', 'like', '%' . $request->search . '%');
+                    $query->where('name', 'like', $request->search . '%')
+                        ->orWhere('short_name', 'like', $request->search . '%')
+                        ->orWhere('description', 'like', $request->search . '%');
                 }
             );
         }
@@ -106,6 +108,7 @@ class ClientRepository
         $client = Client::find($id);
         $client->name = $request->client_name;
         $client->description = $request->client_description;
+        $client->short_name = $request->short_name;
         $client->photo = $request->photo;
         $client->save();
         return $client;
@@ -218,6 +221,7 @@ class ClientRepository
                     case 'id':
                         return $item->id;
                     case 'name':
+                        return mb_strtolower($item->name);
                         return mb_strtolower($item->name);
                     case 'email':
                     case 'emails':
@@ -375,5 +379,18 @@ class ClientRepository
             }
         }
         return $results;
+    }
+
+    public function updateLogo(Request $request, $clientId)
+    {
+        $client = Client::findOrFail($clientId);
+
+        if (!Storage::exists('public/logos')) {
+            Storage::makeDirectory('public/logos');
+        }
+        $file = $request->file('logo')->storeAs('public/logos', 'client-' . $clientId . '-' . time() . '.' . $request->file('logo')->extension());
+        $client->logo_url = Storage::url($file);
+        $client->save();
+        return $client;
     }
 }

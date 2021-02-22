@@ -13,6 +13,8 @@ class Client extends Model
 {
     use SoftDeletes;
 
+    protected $fillable = ['name', 'short_name', 'description', 'photo', 'city', 'country_id', 'is_active', 'company_external_id', 'logo_url'];
+
     protected $appends = [
         'contact_phone', 'contact_email'
     ];

@@ -15,11 +15,7 @@ class Company extends Model
     use SoftDeletes;
 
     protected $fillable = ['id', 'name', 'company_number', 'photo', 'description',
-        'registration_date', 'is_validated', 'first_alias', 'second_alias'];
-
-    protected $appends = [
-        'logo_url'
-    ];
+        'registration_date', 'is_validated', 'first_alias', 'second_alias', 'short_name', 'logo_url'];
 
     public function getRegistrationDateAttribute()
     {
@@ -125,10 +121,5 @@ class Company extends Model
     public function getSecondAliasAttribute()
     {
         return $this->attributes['second_alias'] ?? Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
-    }
-
-    public function getLogoUrlAttribute()
-    {
-        return $this->attributes['logo_url'];
     }
 }

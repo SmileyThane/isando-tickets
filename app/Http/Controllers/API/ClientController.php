@@ -124,4 +124,9 @@ class ClientController extends Controller
         $result = $this->clientRepo->getClientsAsRecipientsTree($request);
         return self::showResponse(true, $result);
     }
+
+    public function updateLogo(Request $request, $id = null)
+    {
+        return self::showResponse(true, $this->clientRepo->updateLogo($request, $id));
+    }
 }

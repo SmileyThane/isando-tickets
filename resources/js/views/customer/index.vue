@@ -105,6 +105,17 @@
                                     </v-col>
                                 </v-row>
                             </template>
+                            <template v-slot:item.logo="{ item }">
+                                <v-avatar
+                                    size="2em"
+                                    color="grey darken-1"
+                                    tile
+                                    v-if="item.logo_url"
+                                >
+                                    <v-img :src="item.logo_url" />
+                                </v-avatar>
+                                <v-icon v-else large>mdi-account-circle</v-icon>
+                            </template>
                             <template v-slot:footer>
                                 <v-pagination :color="themeColor"
                                               v-model="options.page"
@@ -217,7 +228,9 @@
                         align: 'start',
                         value: 'id',
                     },
+                    {text: `${this.$store.state.lang.lang_map.main.logo}`, value: 'logo', align: 'center', sortable: false},
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.company.short_name}`, value: 'short_name'},
                     {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
                     {text: `${this.$store.state.lang.lang_map.customer.active}`, value: 'is_active'},
                 ],
