@@ -29,22 +29,22 @@
 
                     <v-card-text v-if="!enableToEdit">
                         <v-row>
-                            <v-col cols="2">
+                            <v-col cols="2" v-if="client.logo_url">
                                 <v-avatar
                                     color="grey darken-1"
                                     v-if="client.logo_url"
-                                    size="100px"
+                                    size="80px"
                                     tile
                                 >
-                                    <v-img :src="client.logo_url" size="100px" />
+                                    <v-img :src="client.logo_url" size="80px" />
                                 </v-avatar>
                             </v-col>
-                            <v-col cols="4">
+                            <v-col :cols="client.logo_url ? 4 : 6">
                                 <h3 class="mb-3">{{ client.client_name }} <span v-if="client.short_name">| {{ client.short_name }}</span></h3>
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
 
                                 <div v-if="client.emails && client.emails.length > 0" class="mb-3">
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <p v-for="(item, i) in client.emails"  :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.email }}
@@ -52,7 +52,7 @@
                                 </div>
 
                                 <div v-if="client.phones && client.phones.length > 0">
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <p v-for="(item, i) in client.phones"  :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.phone }}
@@ -73,7 +73,7 @@
                                 </div>
 
                                 <div v-if="client.socials && client.socials.length > 0">
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <p v-for="(item, i) in client.socials"  :key="item.id" class="mb-0">
                                         <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.social_link }}
@@ -82,8 +82,8 @@
                             </v-col>
                         </v-row>
                         <v-row>
-                            <v-col>
-                                <hr/>
+                            <v-col cols="6">
+                                <hr class="lighten" />
 
                                 <p class="mb-0">
                                     <v-icon v-if="client.is_active" small dense left color="success">mdi-check-circle</v-icon>
@@ -100,7 +100,7 @@
                                     <v-row>
                                         <v-col cols="2">
                                             <label>{{ langMap.company.logo }}</label>
-                                            <v-avatar size="100px" tile>
+                                            <v-avatar size="80px" tile>
                                                 <v-img :src="logo" style="z-index: 1;">
                                                     <v-file-input
                                                         v-model="newLogo"
@@ -143,7 +143,7 @@
                                                         rows="3"
                                                         v-model="client.client_description"
                                                         :color="themeColor"
-                                                        :label="langMap.company.description"
+                                                        :placeholder="langMap.company.description"
                                                         dense
                                                         prepend-icon="mdi-book-account-outline"
                                                         type="text"
@@ -154,7 +154,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <h3>{{ langMap.company.additional_info }}</h3>
@@ -507,7 +507,7 @@
                                     </v-row>
 
                                     <v-spacer>&nbsp;</v-spacer>
-                                    <hr/>
+                                    <hr class="lighten" />
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <v-row>
