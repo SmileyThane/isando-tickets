@@ -29,17 +29,17 @@
 
                     <v-card-text v-if="!enableToEdit">
                         <v-row>
-                            <v-col cols="2">
+                            <v-col cols="2" v-if="client.logo_url">
                                 <v-avatar
                                     color="grey darken-1"
                                     v-if="client.logo_url"
-                                    size="100px"
+                                    size="80px"
                                     tile
                                 >
-                                    <v-img :src="client.logo_url" size="100px" />
+                                    <v-img :src="client.logo_url" size="80px" />
                                 </v-avatar>
                             </v-col>
-                            <v-col cols="4">
+                            <v-col :cols="client.logo_url ? 4 : 6">
                                 <h3 class="mb-3">{{ client.client_name }} <span v-if="client.short_name">| {{ client.short_name }}</span></h3>
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
 
@@ -82,7 +82,7 @@
                             </v-col>
                         </v-row>
                         <v-row>
-                            <v-col>
+                            <v-col cols="6">
                                 <hr/>
 
                                 <p class="mb-0">
@@ -100,7 +100,7 @@
                                     <v-row>
                                         <v-col cols="2">
                                             <label>{{ langMap.company.logo }}</label>
-                                            <v-avatar size="100px" tile>
+                                            <v-avatar size="80px" tile>
                                                 <v-img :src="logo" style="z-index: 1;">
                                                     <v-file-input
                                                         v-model="newLogo"
@@ -143,7 +143,7 @@
                                                         rows="3"
                                                         v-model="client.client_description"
                                                         :color="themeColor"
-                                                        :label="langMap.company.description"
+                                                        :placeholder="langMap.company.description"
                                                         dense
                                                         prepend-icon="mdi-book-account-outline"
                                                         type="text"
