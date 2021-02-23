@@ -28,6 +28,13 @@ class Tracking extends Model
         );
     }
 
+    public function Service() {
+        return $this->morphOne(
+            Serviceable::class,
+            'serviceable'
+        );
+    }
+
     public function getPassedAttribute() {
         return Carbon::parse($this->date_to)->diffInSeconds(Carbon::parse($this->date_from));
     }

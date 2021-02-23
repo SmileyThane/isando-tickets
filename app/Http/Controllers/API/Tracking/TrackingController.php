@@ -3,7 +3,6 @@
 
 namespace App\Http\Controllers\API\Tracking;
 
-
 use App\Tracking;
 use Illuminate\Http\Request;
 

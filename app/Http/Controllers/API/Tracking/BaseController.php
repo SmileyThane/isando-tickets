@@ -7,6 +7,7 @@ namespace App\Http\Controllers\API\Tracking;
 use App\Http\Controllers\API\Tracking\Traits\Clients;
 use App\Http\Controllers\API\Tracking\Traits\Products;
 use App\Http\Controllers\Controller;
+use App\Repository\ServiceRepository;
 use App\Repository\TrackingRepository;
 use App\Repository\TrackingProjectRepository;
 

@@ -734,6 +734,7 @@ export default {
         this.$store.dispatch('Products/getProductList', { search: null });
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Tags/getTagList');
+        this.$store.dispatch('Services/getServicesList', { search: null });
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;

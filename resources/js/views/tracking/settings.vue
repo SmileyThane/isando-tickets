@@ -10,8 +10,9 @@
         </v-snackbar>
 
         <template>
-            <v-tabs>
-                <v-tab>{{ langMap.tracking.settings.tags }}</v-tab>
+            <v-tabs v-model="tab">
+                <v-tab :key="0">{{ langMap.tracking.settings.tags }}</v-tab>
+                <v-tab :key="1">{{ langMap.tracking.settings.services }}</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
@@ -19,7 +20,7 @@
                     <v-card flat>
                         <v-toolbar flat>
                             <v-dialog
-                                v-model="dialog"
+                                v-model="dialogTags"
                                 width="500"
                             >
                                 <template v-slot:activator="{ on, attrs }">
@@ -41,11 +42,11 @@
                                     <v-card-text>
                                         <v-text-field
                                             :label="langMap.tracking.settings.name"
-                                            v-model="form.name"
+                                            v-model="forms.tags.name"
                                             required
                                         ></v-text-field>
                                         <v-text-field
-                                            v-model="form.color"
+                                            v-model="forms.tags.color"
                                             hide-details
                                             class="ma-0 pa-0"
                                             solo
@@ -63,7 +64,7 @@
                                                     <template v-slot:activator="{ on }">
                                                         <div
                                                             :style="{
-                                                                backgroundColor: form.color,
+                                                                backgroundColor: forms.tags.color,
                                                                 cursor: 'pointer',
                                                                 height: '30px',
                                                                 width: '30px',
@@ -78,7 +79,7 @@
                                                             class="pa-0"
                                                         >
                                                             <v-color-picker
-                                                                v-model="form.color"
+                                                                v-model="forms.tags.color"
                                                                 flat
                                                             />
                                                         </v-card-text>
@@ -95,14 +96,14 @@
                                         <v-btn
                                             color="error"
                                             text
-                                            @click="resetForm(); dialog = false"
+                                            @click="resetForm(); dialogTags = false"
                                         >
                                             {{ langMap.tracking.settings.cancel }}
                                         </v-btn>
                                         <v-btn
                                             color="success"
                                             text
-                                            @click="createTag(); dialog = false"
+                                            @click="createTag(); dialogTags = false"
                                         >
                                             {{ langMap.tracking.settings.create }}
                                         </v-btn>
@@ -113,17 +114,17 @@
                         <v-card-text>
                             <v-data-table
                                 dense
-                                :headers="headers"
+                                :headers="headers.tags"
                                 :items="$store.getters['Tags/getTags']"
                                 :items-per-page="15"
                                 class="elevation-1"
                             >
                                 <template v-slot:item.name="props">
                                     <v-edit-dialog
-                                        @save="save(props.item)"
-                                        @cancel="save(props.item)"
-                                        @open="save(props.item)"
-                                        @close="save(props.item)"
+                                        @save="saveTag(props.item)"
+                                        @cancel="saveTag(props.item)"
+                                        @open="saveTag(props.item)"
+                                        @close="saveTag(props.item)"
                                     >
                                         {{ props.item.name }}
                                         <template v-slot:input>
@@ -163,7 +164,7 @@
                                                 <v-color-picker
                                                     v-model="props.item.color"
                                                     flat
-                                                    @input="save(props.item)"
+                                                    @input="saveTag(props.item)"
                                                 />
                                             </v-card-text>
                                         </v-card>
@@ -175,6 +176,99 @@
                                         icon
                                         :color="themeColor"
                                         @click="removeTag(props.item.id)"
+                                    >
+                                        <v-icon>mdi-delete</v-icon>
+                                    </v-btn>
+                                </template>
+                            </v-data-table>
+                        </v-card-text>
+                    </v-card>
+                </v-tab-item>
+                <v-tab-item :key="1">
+                    <v-card flat>
+                        <v-toolbar flat>
+                            <v-dialog
+                                v-model="dialogServices"
+                                width="500"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        :color="themeColor"
+                                        style="color: white"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        {{ langMap.tracking.settings.create_service }}
+                                    </v-btn>
+                                </template>
+
+                                <v-card>
+                                    <v-card-title class="headline">
+                                        {{ langMap.tracking.settings.create_service_title }}
+                                    </v-card-title>
+
+                                    <v-card-text>
+                                        <v-text-field
+                                            :label="langMap.tracking.settings.name"
+                                            v-model="forms.services.name"
+                                            required
+                                        ></v-text-field>
+                                    </v-card-text>
+
+                                    <v-divider></v-divider>
+
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            color="error"
+                                            text
+                                            @click="resetForm(); dialogServices = false"
+                                        >
+                                            {{ langMap.tracking.settings.cancel }}
+                                        </v-btn>
+                                        <v-btn
+                                            color="success"
+                                            text
+                                            @click="createService(); dialogServices = false"
+                                        >
+                                            {{ langMap.tracking.settings.create }}
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
+                        </v-toolbar>
+                        <v-card-text>
+                            <v-data-table
+                                dense
+                                :headers="headers.services"
+                                :items="$store.getters['Services/getServices']"
+                                :items-per-page="15"
+                                class="elevation-1"
+                            >
+                                <template v-slot:item.name="props">
+                                    <v-edit-dialog
+                                        @save="saveService(props.item)"
+                                        @cancel="saveService(props.item)"
+                                        @open="saveService(props.item)"
+                                        @close="saveService(props.item)"
+                                    >
+                                        {{ props.item.name }}
+                                        <template v-slot:input>
+                                            <v-text-field
+                                                v-model="props.item.name"
+                                                :label="langMap.tracking.settings.name"
+                                                :hint="langMap.tracking.settings.name"
+                                                single-line
+                                                counter
+                                            ></v-text-field>
+                                        </template>
+                                    </v-edit-dialog>
+                                </template>
+                                <template v-slot:item.actions="props">
+                                    <v-btn
+                                        icon
+                                        :color="themeColor"
+                                        @click="removeService(props.item.id)"
                                     >
                                         <v-icon>mdi-delete</v-icon>
                                     </v-btn>
@@ -205,36 +299,59 @@ export default {
             snackbar: false,
             actionColor: '',
             tab: 0,
-            headers: [
-                {
-                    text: this.$store.state.lang.lang_map.tracking.settings.tag_name,
-                    align: 'start',
-                    sortable: true,
-                    value: 'name',
-                },
-                {
-                    text: this.$store.state.lang.lang_map.tracking.settings.color,
-                    sortable: false,
-                    value: 'color',
-                },
-                {
-                    text: this.$store.state.lang.lang_map.tracking.settings.actions,
-                    sortable: false,
-                    value: 'actions',
-                }
-            ],
+            headers: {
+                tags: [
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.tag_name,
+                        align: 'start',
+                        sortable: true,
+                        value: 'name',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.color,
+                        sortable: false,
+                        value: 'color',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
+                        sortable: false,
+                        value: 'actions',
+                    }
+                ],
+                services: [
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.service_name,
+                        align: 'start',
+                        sortable: true,
+                        value: 'name',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
+                        sortable: false,
+                        value: 'actions',
+                    }
+                ]
+            },
             searchTag: null,
-            dialog: false,
-            form: {
-                name: '',
-                color: Helper.genRandomColor()
+            dialogTags: false,
+            dialogServices: false,
+            forms: {
+                tags: {
+                    name: '',
+                    color: Helper.genRandomColor()
+                },
+                services: {
+                    name: ''
+                }
             },
             colorMenuCreate: false,
-            colorMenu: {}
+            colorMenu: {},
+            searchService: null
         }
     },
     created() {
         this.debounceGetTags = _.debounce(this.__getTags, 1000);
+        this.debounceGetServices = _.debounce(this.__getServices, 1000);
     },
     mounted() {
         let that = this;
@@ -242,25 +359,44 @@ export default {
             that.themeColor = color;
         });
         this.debounceGetTags();
+        this.debounceGetServices();
     },
     methods: {
         __getTags() {
             this.$store.dispatch('Tags/getTagList', { search: this.searchTag });
         },
+        __getServices() {
+            this.$store.dispatch('Services/getServicesList', { search: this.searchService });
+        },
         createTag() {
-            this.$store.dispatch('Tags/createTag', this.form)
+            this.$store.dispatch('Tags/createTag', this.forms.tags)
                 .then(tag => {
                     if (tag) {
                         this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_created_successfully;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.resetForm();
+                    }
+                });
+        },
+        createService() {
+            this.$store.dispatch('Services/createService', this.forms.services)
+                .then(service => {
+                    if (service) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.service_created_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.resetForm();
                     }
                 });
         },
         resetForm() {
-            this.form = {
+            this.forms.tags = {
                 name: '',
                 color: Helper.genRandomColor()
+            };
+            this.forms.services = {
+                name: ''
             };
         },
         removeTag(tagId) {
@@ -277,8 +413,25 @@ export default {
                     }
                 });
         },
-        save (item) {
+        removeService(serviceId) {
+            this.$store.dispatch('Services/deleteService', serviceId)
+                .then(result => {
+                    if (result) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.service_deleted_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.service_removal_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        saveTag (item) {
             this.$store.dispatch('Tags/updateTag', item);
+        },
+        saveService (item) {
+            this.$store.dispatch('Services/updateService', item);
         },
         invertColor(hex, bw = true) {
             return Helper.invertColor(hex, bw);

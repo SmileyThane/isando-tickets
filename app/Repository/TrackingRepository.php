@@ -65,6 +65,7 @@ class TrackingRepository
             ->with('Project.Product')
             ->with('Project.Client')
             ->with('Tags')
+            ->with('Service')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
             ->orderBy('id', 'desc')
             ->get();

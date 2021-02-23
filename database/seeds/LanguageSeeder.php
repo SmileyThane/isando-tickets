@@ -119,7 +119,14 @@ class LanguageSeeder extends Seeder
                                 'actions' => 'Actions',
                                 'tag_created_successfully' => 'Tag created successfully',
                                 'tag_deleted_successfully' => 'Tag deleted successfully',
-                                'tag_removal_error' => 'Tag removal error'
+                                'tag_removal_error' => 'Tag removal error',
+                                'services' => 'Services',
+                                'service_name' => 'Service name',
+                                'create_service' => 'Create service',
+                                'create_service_title' => 'Create new service',
+                                'service_created_successfully' => 'Service created successfully',
+                                'service_deleted_successfully' => 'Service deleted successfully',
+                                'service_removal_error' => 'Service removal error',
                             ],
                             'tag_btn' => [
                                 'tags' => 'Tags',
