@@ -27,10 +27,9 @@
     width: 100%;
 }
 
-
 hr.lighten {
     border: none;
     height: 1px;
-    color: #ddd;
-    background-color: #ddd;
+    color: #eee;
+    background-color: #eee;
 }
