@@ -74,15 +74,67 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{ langMap.sidebar.license }}</v-toolbar-title>
+                        <v-toolbar-title>
+                            <span class="text-left">{{ langMap.sidebar.custom_license }} </span>
+
+                        </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <p>Active: {{license.active ? 'Yes' : 'No'}}</p>
+                        <v-icon v-if="!enableToEditLicense" @click="enableToEditLicense = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEditLicense" color="white" style="color: black; margin-right: 10px"
+                               @click="enableToEditLicense = !enableToEditLicense; getLicense();">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn v-if="enableToEditLicense" color="white" style="color: black;" @click="updateLicense()">
+                            {{ langMap.main.update }}
+                        </v-btn>
                     </v-toolbar>
                     <v-card-text>
-                        <p><strong>Total users:</strong> {{license.usersAllowed}}</p>
-                        <p><strong>Users available:</strong> {{license.usersLeft}}</p>
-                        <p><strong>Expired at:</strong> {{license.expiresAt}}</p>
+                        <p
+                            class="ma-2"
+                        >
+                            <strong>Total users:</strong> {{ license.usersAllowed }}
+                            <strong>Assigned users:</strong> {{ license.usersAllowed - license.usersLeft }}
+                            <strong>Users available:</strong> {{ license.usersLeft }}
+                        </p>
+
+                        <v-menu
+                            v-model="menu2"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            min-width="auto"
+                            class="ma-2"
+                            offset-y
+                            transition="scale-transition"
+                        >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
+                                    v-model="license.expiresAt"
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    :color="themeColor"
+                                    prepend-icon="mdi-calendar"
+                                    class="ma-2"
+                                    readonly
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker
+                                v-model="license.expiresAt"
+                                :color="themeColor"
+                                @input="menu2 = false;"
+                            ></v-date-picker>
+                        </v-menu>
+
+                        <v-checkbox
+                            v-model="license.active"
+                            :color="themeColor"
+                            :readonly="!enableToEditLicense"
+                            class="ma-2"
+                            hide-details
+                            label="Active"
+                        >
+                        </v-checkbox>
                         <v-card
+                            v-if="enableToEditLicense"
                             class="mx-auto"
                             outlined
                         >
@@ -94,15 +146,40 @@
                                     class="ma-2"
                                     color="grey darken-1"
                                     outlined
-                                    @click="">
+                                    @click="appendLicenseItems(licenseValue)">
                                     {{ 'up to ' + licenseValue }}
                                 </v-btn>
                                 <br v-if="index === (licenseValues.length/2) - 1">
                             </span>
                         </v-card>
                     </v-card-text>
-
-
+                </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title>{{ langMap.notification.history }}</v-toolbar-title>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-list
+                            dense
+                        >
+                            <v-list-item
+                                v-for="(item, index) in licenseHistory"
+                                :key="index"
+                            >
+                                <v-list-item-title>
+                                    {{ item.diff }}
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-card-text>
                 </v-card>
             </div>
         </div>
@@ -125,6 +202,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'employee.role_names'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
+            menu2: false,
             snackbar: false,
             actionColor: '',
             snackbarMessage: '',
@@ -138,7 +216,9 @@ export default {
                 itemsPerPageOptions: [10, 25, 50, 100],
             },
             enableToEdit: false,
+            enableToEditLicense: false,
             rolesDialog: false,
+            licenseHistory: [],
             singleUserForm: {
                 user: '',
                 role_ids: [],
@@ -147,6 +227,7 @@ export default {
             clientIsLoaded: false,
             employees: [],
             licenseValues: [10, 20, 50, 100, 500, 1000],
+            selectedDate: new Date().toISOString().substr(0, 10),
             client: {
                 client_name: '',
                 client_description: '',
@@ -190,7 +271,7 @@ export default {
                 }
             ],
             productsSearch: '',
-            license: null,
+            license: {},
             products: [],
             phoneTypes: [],
             addressTypes: [],
@@ -209,6 +290,7 @@ export default {
     mounted() {
         this.getClient();
         this.getLicense();
+        this.getLicenseHistory();
         this.getRoles();
         this.getLanguages();
         this.getCountries();
@@ -243,6 +325,37 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.license = response.data
+                    this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+
+            });
+        },
+        getLicenseHistory() {
+            axios.get(`/api/custom_license/${this.$route.params.id}/history`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.licenseHistory = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+
+            });
+        },
+        appendLicenseItems(count = 0) {
+            this.license.usersAllowed += count
+        },
+        updateLicense() {
+            axios.put(`/api/custom_license/${this.$route.params.id}`, this.license).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.license = response.data
+                    this.license.expiresAt = this.moment(response.data.expiresAt).format('DD-MM-YYYY')
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
