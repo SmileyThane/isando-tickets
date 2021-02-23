@@ -155,7 +155,7 @@
                 headers: [
                     {text: 'ID', value: 'id'},
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
-                    {text: 'iXarma app', value: 'has_ixarma'},
+                    {text: 'iXarma', value: 'has_ixarma'},
                     {text: 'iXarma app', value: 'has_ixarma_app'},
                     {text: 'Ticketing', value: 'has_ticketing'},
                     {text: 'Time traking', value: 'has_tracker'},
