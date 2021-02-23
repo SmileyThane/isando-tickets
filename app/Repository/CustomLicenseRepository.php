@@ -4,8 +4,10 @@
 namespace App\Repository;
 
 
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Illuminate\Http\Request;
 
 class CustomLicenseRepository
 {
@@ -29,7 +31,6 @@ class CustomLicenseRepository
         if ($parsedResult['status'] === 'SUCCESS') {
             return $parsedResult['body'];
         }
-
     }
 
     private function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true)
@@ -38,14 +39,25 @@ class CustomLicenseRepository
             'base_uri' => env('IXARMA_BASE_URL'),
         ]);
         $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJhZG1pbi5peGFybWEiLCJ1cG4iOiJhZG1pbi5peGFybWEiLCJleHAiOjE2NDUyNzYxNjQsImFkZHJlc3MiOiIxMTExMTExMTExMTExMTExMTExMTExMTEiLCJncm91cHMiOlsiSVhBUk1BX0FETUlOIl0sImlhdCI6MTYxMzc0MDE2NCwianRpIjoiNDg1Mjk3ZDctZGZiNy00ZDE3LWI0NjItYjYzZDQ1OGJhNTk2In0.PreHkqWUoD4pTzcmck6Rq26V8BsOn7_tZMs_eqGCiJGViKBA3yf3tmz-61nU10JwRKMF34Koqpkx9ncS0x3lXCMreCfg8l8FDLj-qjCzmRP6dKvo-AlJsVN8xBGttfCMd9lHXogemLDb1kk7ta20Qx49S-dGMbFR5dCGmgBC3F7F05k3gW7YMDdTPBIMBv43_UbGMTa9q2316RjbPwtvjqFQlJgcdU6H7rquaETiZO8RERiyzYRA1pPv2-ZQgMilVSC1vC90xrd68CG3gJy6yr_5aAKR5zWlwcmIs4_9GYQH_3ex0FWRi9UtWEKiRyYG-r2Uxi0hlnCdBjDlGC8c5A';
-        $options = [];
-        if ($withAuth) {
-            $options[] = [RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token]];
-        }
-        $options[] = [RequestOptions::FORM_PARAMS => json_encode($parameters)];
         $response = $guzzle->request($method, $uri, [
-            RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token]]);
+            RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token],
+            'Content-type' => 'application/json',
+            'Accept' => '*/*',
+            RequestOptions::JSON => $parameters
+        ]);
         return $response->getBody();
+    }
+
+    public function itemHistory($id)
+    {
+        $client = \App\Client::find($id);
+        $ixArmaId = $client->customLicense->remote_client_id;
+        $result = $this->makeIxArmaRequest("/api/v1/app/license/history/$ixArmaId/page/0", []);
+        $parsedResult = json_decode($result->getContents(), true);
+        if ($parsedResult['status'] === 'SUCCESS') {
+            return $parsedResult['body'];
+        }
+
     }
 
     public function create()
@@ -53,9 +65,21 @@ class CustomLicenseRepository
 
     }
 
-    public function update()
+    public function update(Request $request, $id)
     {
-
+        $client = \App\Client::find($id);
+        $ixArmaId = $client->customLicense->remote_client_id;
+        $data = [
+            'newAllowedUsers' =>   $request->usersAllowed,
+            'newExpires' => Carbon::parse($request->expiresAt)->format('m/d/Y')
+        ];
+        $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", $data, 'PUT');
+        $parsedResult = json_decode($result->getContents(), true);
+        if ($parsedResult['status'] === 'SUCCESS') {
+            return $parsedResult['body'];
+        } else {
+            return $parsedResult['message'];
+        }
     }
 
     public function delete()
