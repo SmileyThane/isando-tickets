@@ -3,6 +3,8 @@
 
 namespace App\Repository;
 
+use App\Service;
+use App\Serviceable;
 use App\Tracking;
 use App\TrackingProject;
 use App\TrackingLogger;
@@ -65,7 +67,6 @@ class TrackingRepository
             ->with('Project.Product')
             ->with('Project.Client')
             ->with('Tags')
-            ->with('Service')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
             ->orderBy('id', 'desc')
             ->get();
@@ -73,7 +74,9 @@ class TrackingRepository
 
     public function find($id)
     {
-        return TrackingProject::where('id', $id)->with('client')->first();
+        return TrackingProject::where('id', $id)
+            ->with('client')
+            ->first();
     }
 
     public function create(Request $request)
@@ -127,6 +130,10 @@ class TrackingRepository
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
+        if ($request->has('service')) {
+            $service = Service::with('Company')->find($request->service['id']);
+            $tracking->Services()->sync([$service->id]);
+        }
         $tracking->save();
         $this->logTracking($tracking->id, TrackingLogger::UPDATE, $oldTracking, $tracking);
         if ($request->has('tags')) {

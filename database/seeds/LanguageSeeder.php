@@ -95,7 +95,7 @@ class LanguageSeeder extends Seeder
                                 'period_from' => 'Period from:',
                                 'period_to' => 'To:',
                                 'today' => 'Today',
-                                'add_description' => 'Add description',
+                                'add_description' => 'Add description or service type',
                                 'description' => 'Description',
                                 'duplicate' => 'Duplicate',
                                 'delete' => 'Delete',
@@ -105,7 +105,8 @@ class LanguageSeeder extends Seeder
                                 'billable' => 'Billable',
                                 'end' => 'End',
                                 'passed' => 'Passed',
-                                'actions' => 'Actions'
+                                'actions' => 'Actions',
+                                'service_type' => 'Service type'
                             ],
                             'settings' => [
                                 'tags' => 'Tags',
@@ -719,7 +720,7 @@ class LanguageSeeder extends Seeder
                                 'period_from' => 'Period from:',
                                 'period_to' => 'To:',
                                 'today' => 'Today',
-                                'add_description' => 'Add description',
+                                'add_description' => 'Add description or service type',
                                 'description' => 'Description',
                                 'duplicate' => 'Duplicate',
                                 'delete' => 'Delete',
@@ -729,7 +730,8 @@ class LanguageSeeder extends Seeder
                                 'billable' => 'Billable',
                                 'end' => 'End',
                                 'passed' => 'Passed',
-                                'actions' => 'Actions'
+                                'actions' => 'Actions',
+                                'service_type' => 'Service type'
                             ],
                             'settings' => [
                                 'tags' => 'Tags',
@@ -743,7 +745,14 @@ class LanguageSeeder extends Seeder
                                 'actions' => 'Actions',
                                 'tag_created_successfully' => 'Tag created successfully',
                                 'tag_deleted_successfully' => 'Tag deleted successfully',
-                                'tag_removal_error' => 'Tag removal error'
+                                'tag_removal_error' => 'Tag removal error',
+                                'services' => 'Services',
+                                'service_name' => 'Service name',
+                                'create_service' => 'Create service',
+                                'create_service_title' => 'Create new service',
+                                'service_created_successfully' => 'Service created successfully',
+                                'service_deleted_successfully' => 'Service deleted successfully',
+                                'service_removal_error' => 'Service removal error',
                             ],
                             'tag_btn' => [
                                 'tags' => 'Tags',

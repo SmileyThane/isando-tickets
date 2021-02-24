@@ -12,8 +12,18 @@ class Service extends Model
         'name'
     ];
 
-    public function serviceable()
-    {
-        return $this->morphTo();
+    public function Company() {
+        return $this->hasOne(Company::class, 'id', 'company_id');
     }
+
+    public function Serviceable() {
+        return $this->hasMany(Serviceable::class, 'service_id', 'id');
+    }
+
+    public function Tracking() {
+        return $this->Serviceable()->first()->Tracking();
+    }
+
 }
+
+

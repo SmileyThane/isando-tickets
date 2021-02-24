@@ -358,24 +358,37 @@
                                 >
                                     <template v-slot:item.description="props">
                                         <v-edit-dialog
-
                                             @save="save(props.item, 'description')"
                                             @cancel="cancel"
                                             @open="open"
                                             @close="save(props.item, 'description')"
                                         >
+                                            <span v-if="props.item.service">
+                                                    {{ props.item.service.name }}
+                                                    <v-icon x-small>mdi-checkbox-blank-circle</v-icon>
+                                                </span>
                                             <span class="text--secondary" v-if="!props.item.description">
                                                 {{langMap.tracking.tracker.add_description}}
                                             </span>
-                                            {{ props.item.description }}
+                                            <span v-else>
+                                                {{ props.item.description }}
+                                            </span>
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="props.item.description"
                                                     :label="langMap.tracking.tracker.description"
-                                                    :hint="langMap.tracking.tracker.description"
                                                     single-line
                                                     counter
                                                 ></v-text-field>
+                                                <v-select
+                                                    :items="$store.getters['Services/getServices']"
+                                                    :label="langMap.tracking.tracker.service_type"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="props.item.service"
+                                                    return-object
+                                                    dense
+                                                ></v-select>
                                             </template>
                                         </v-edit-dialog>
                                     </template>

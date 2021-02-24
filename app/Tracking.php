@@ -10,7 +10,7 @@ class Tracking extends Model
     protected $table = 'tracking';
 
     protected $appends = [
-        'passed'
+        'passed', 'service'
     ];
 
     public function User() {
@@ -28,11 +28,18 @@ class Tracking extends Model
         );
     }
 
-    public function Service() {
-        return $this->morphOne(
-            Serviceable::class,
-            'serviceable'
+    public function Services() {
+        return $this->morphToMany(
+            Service::class,
+            'serviceable',
+            'serviceable',
+            'serviceable_id',
+            'service_id'
         );
+    }
+
+    public function getServiceAttribute() {
+        return $this->Services()->first();
     }
 
     public function getPassedAttribute() {
