@@ -131,8 +131,12 @@ class TrackingRepository
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
         if ($request->has('service')) {
-            $service = Service::with('Company')->find($request->service['id']);
-            $tracking->Services()->sync([$service->id]);
+            if (!is_null($request->service)) {
+                $service = Service::with('Company')->find($request->service['id']);
+                $tracking->Services()->sync([$service->id]);
+            } else {
+                $tracking->Services()->sync([]);
+            }
         }
         $tracking->save();
         $this->logTracking($tracking->id, TrackingLogger::UPDATE, $oldTracking, $tracking);

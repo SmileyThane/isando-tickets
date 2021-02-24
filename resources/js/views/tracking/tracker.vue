@@ -377,12 +377,14 @@
                                                 <v-text-field
                                                     v-model="props.item.description"
                                                     :label="langMap.tracking.tracker.description"
+                                                    :placeholder="langMap.tracking.tracker.description"
                                                     single-line
                                                     counter
                                                 ></v-text-field>
                                                 <v-select
                                                     :items="$store.getters['Services/getServices']"
                                                     :label="langMap.tracking.tracker.service_type"
+                                                    :placeholder="langMap.tracking.tracker.service_type"
                                                     item-text="name"
                                                     item-value="id"
                                                     v-model="props.item.service"
