@@ -92,7 +92,7 @@
                 link
                 to="/custom_license">
                 <v-list-item-action>
-                    <v-icon>mdi-book-open-page-variant</v-icon>
+                    <v-icon>mdi-license</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
                     <v-list-item-title>
