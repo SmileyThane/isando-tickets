@@ -64,6 +64,40 @@
                         ></v-checkbox>
                     </v-card-text>
                 </v-card>
+                <v-spacer>
+                    &nbsp;
+                </v-spacer>
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title>{{ 'License Users' }}</v-toolbar-title>
+                    </v-toolbar>
+                    <div class="card-body">
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="licenseUserHeaders"
+                            :items="licenseUsers"
+                            :loading-text="langMap.main.loading"
+                            :options.sync="options"
+                            class="elevation-1"
+                            hide-default-footer
+                        >
+                            <!--                            <template v-slot:item.has_tracker="{ item }">-->
+                            <!--                                <v-icon @click="showItem(item)" class="justify-center" v-if="item">-->
+                            <!--                                    {{-->
+                            <!--                                        item.has_tracker === 1 ?-->
+                            <!--                                            'mdi-check-circle-outline' :-->
+                            <!--                                            'mdi-cancel'-->
+                            <!--                                    }}-->
+                            <!--                                </v-icon>-->
+                            <!--                            </template>-->
+                        </v-data-table>
+                    </div>
+                </v-card>
 
             </div>
             <div class="col-md-6">
@@ -93,16 +127,17 @@
                             class="ma-2"
                         >
                             <strong>Total users:</strong> {{ license.usersAllowed }}
-                            <strong>Assigned users:</strong> {{ license.usersAllowed - license.usersLeft }}
+                            <strong>Assigned users:</strong> {{ usersAssigned }}
                             <strong>Users available:</strong> {{ license.usersLeft }}
                         </p>
 
                         <v-menu
+                            :disabled="!enableToEditLicense"
                             v-model="menu2"
                             :close-on-content-click="false"
                             :nudge-right="40"
-                            min-width="auto"
                             class="ma-2"
+                            min-width="auto"
                             offset-y
                             transition="scale-transition"
                         >
@@ -112,8 +147,8 @@
                                     v-bind="attrs"
                                     v-on="on"
                                     :color="themeColor"
-                                    prepend-icon="mdi-calendar"
                                     class="ma-2"
+                                    prepend-icon="mdi-calendar"
                                     readonly
                                 ></v-text-field>
                             </template>
@@ -125,9 +160,9 @@
                         </v-menu>
 
                         <v-checkbox
+                            :readonly="!enableToEditLicense"
                             v-model="license.active"
                             :color="themeColor"
-                            :readonly="!enableToEditLicense"
                             class="ma-2"
                             hide-details
                             label="Active"
@@ -197,10 +232,14 @@ export default {
         return {
             themeColor: this.$store.state.themeColor,
             langMap: this.$store.state.lang.lang_map,
-            headers: [
-                {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'user_data'},
-                {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'employee.role_names'},
-                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+            licenseUserHeaders: [
+                {text: 'id', value: 'id'},
+                {text: `username`, value: 'username'},
+                {text: `phone`, value: 'phoneNumber', sortable: false},
+                {text: `platform`, value: 'platform', sortable: false},
+                {text: `licensed`, value: 'licensed', sortable: false},
+                {text: `active`, value: 'active', sortable: false},
+                {text: `created_at`, value: 'createdAtString', sortable: false},
             ],
             menu2: false,
             snackbar: false,
@@ -219,6 +258,7 @@ export default {
             enableToEditLicense: false,
             rolesDialog: false,
             licenseHistory: [],
+            licenseUsers: [],
             singleUserForm: {
                 user: '',
                 role_ids: [],
@@ -227,6 +267,7 @@ export default {
             clientIsLoaded: false,
             employees: [],
             licenseValues: [10, 20, 50, 100, 500, 1000],
+            usersAssigned: 0,
             selectedDate: new Date().toISOString().substr(0, 10),
             client: {
                 client_name: '',
@@ -290,7 +331,7 @@ export default {
     mounted() {
         this.getClient();
         this.getLicense();
-        this.getLicenseHistory();
+        this.getLicenseUsers();
         this.getRoles();
         this.getLanguages();
         this.getCountries();
@@ -326,6 +367,8 @@ export default {
                 if (response.success === true) {
                     this.license = response.data
                     this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
+                    this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
+                    this.getLicenseHistory();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -347,6 +390,19 @@ export default {
 
             });
         },
+        getLicenseUsers() {
+            axios.get(`/api/custom_license/${this.$route.params.id}/users`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.licenseUsers = response.data.entities
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+
+            });
+        },
         appendLicenseItems(count = 0) {
             this.license.usersAllowed += count
         },
@@ -355,7 +411,10 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.license = response.data
-                    this.license.expiresAt = this.moment(response.data.expiresAt).format('DD-MM-YYYY')
+                    this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
+                    this.enableToEditLicense = false;
+                    this.getLicense()
+                    this.getLicenseUsers()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
