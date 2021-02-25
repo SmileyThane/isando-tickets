@@ -8,427 +8,590 @@
         >
             {{ snackbarMessage }}
         </v-snackbar>
-        <div class="row">
-            <div class="col-md-6">
-                <v-card class="elevation-12">
+        <v-row>
+            <v-col cols="6">
+                <v-card>
                     <v-toolbar
-                        :color="themeColor"
                         dark
                         dense
                         flat
+                        :color="themeColor"
                     >
                         <v-toolbar-title>{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
-                               @click="cancelUpdateClient">
-                            {{ langMap.main.cancel }}
+                        <v-btn color="white" icon @click="enableToEdit = true" v-if="!enableToEdit">
+                            <v-icon small dense>mdi-pencil</v-icon>
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateClient">
-                            {{ langMap.main.update }}
+                        <v-btn color="white" icon @click="cancelUpdateClient" v-if="enableToEdit">
+                            <v-icon small dense>mdi-close</v-icon>
                         </v-btn>
-
                     </v-toolbar>
-                    <v-card-text>
-                        <v-form>
-                            <v-text-field
-                                v-model="client.client_name"
-                                :color="themeColor"
-                                :label="langMap.company.name"
-                                :readonly="!enableToEdit"
-                                :disabled="!checkRoleByIds([1,2,3])"
-                                dense
-                                name="client_name"
-                                prepend-icon="mdi-rename-box"
-                                required
-                                type="text"
-                            ></v-text-field>
-                            <v-text-field
-                                v-model="client.client_description"
-                                :color="themeColor"
-                                :label="langMap.company.description"
-                                :readonly="!enableToEdit"
-                                dense
-                                name="client_description"
-                                prepend-icon="mdi-comment-text"
-                                required
-                                type="text"
-                            ></v-text-field>
-                        </v-form>
-                        <v-checkbox
-                            v-model="client.is_active"
-                            :label="this.$store.state.lang.lang_map.customer.active"
-                            color="success"
-                            hide-details
-                            @change="changeIsActiveClient(client)"
-                        ></v-checkbox>
+
+                    <v-card-text v-if="!enableToEdit">
+                        <v-row>
+                            <v-col cols="2" v-if="client.logo_url">
+                                <v-avatar
+                                    color="grey darken-1"
+                                    v-if="client.logo_url"
+                                    size="80px"
+                                    tile
+                                >
+                                    <v-img :src="client.logo_url" size="80px" />
+                                </v-avatar>
+                            </v-col>
+                            <v-col :cols="client.logo_url ? 4 : 6">
+                                <h3 class="mb-3">{{ client.client_name }} <span v-if="client.short_name">| {{ client.short_name }}</span></h3>
+                                <p v-if="client.client_description">| {{ client.client_description }}</p>
+
+                                <div v-if="client.emails && client.emails.length > 0" class="mb-3">
+                                    <hr class="lighten" />
+                                    <p v-for="(item, i) in client.emails"  :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        {{ item.email }}
+                                    </p>
+                                </div>
+
+                                <div v-if="client.phones && client.phones.length > 0">
+                                    <hr class="lighten" />
+                                    <p v-for="(item, i) in client.phones"  :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        {{ item.phone }}
+                                    </p>
+                                </div>
+                            </v-col>
+                            <v-col cols="6">
+                                <div v-if="client.addresses && client.addresses.length > 0" class="mb-3">
+                                    <p v-for="(item, i) in client.addresses"  :key="item.id" class="mb-1">
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2 mb-2" />
+
+                                        <span v-if="item.street">{{ item.street }}</span>
+                                        <span v-if="item.street2">, {{ item.street2 }}</span>
+                                        <span v-if="item.street3">, {{ item.street3 }}</span>
+                                        <br/>{{ item.postal_code }} {{ item.city }}
+                                        <br/><span v-if="item.country">{{ localized(item.country) }}</span>
+                                    </p>
+                                </div>
+
+                                <div v-if="client.socials && client.socials.length > 0">
+                                    <hr class="lighten" />
+                                    <p v-for="(item, i) in client.socials"  :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        {{ item.social_link }}
+                                    </p>
+                                </div>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="6">
+                                <hr class="lighten" />
+
+                                <p class="mb-0">
+                                    <v-icon v-if="client.is_active" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                    {{ langMap.customer.active }}
+                                </p>
+                            </v-col>
+                        </v-row>
                     </v-card-text>
-                </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-                <v-card class="elevation-12">
-                    <v-toolbar
-                        :color="themeColor"
-                        dark
-                        dense
-                        flat
-                    >
-                        <v-toolbar-title>{{ langMap.company.additional_info }}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
+                    <v-expand-transition>
+                        <v-card v-if="enableToEdit" class="transition-fast-in-fast-out">
+                            <v-card-text>
+                                <v-form>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <label>{{ langMap.company.logo }}</label>
+                                            <v-avatar size="80px" tile>
+                                                <v-img :src="logo" style="z-index: 1;">
+                                                    <v-file-input
+                                                        v-model="newLogo"
+                                                        color="white"
+                                                        accept="image/*"
+                                                        dense
+                                                        prepend-icon="mdi-camera"
+                                                        icon
+                                                        style="z-index: 2; max-width: 1em;"
+                                                        class="mt-7 ml-7"
+                                                    />
+                                                </v-img>
+                                            </v-avatar>
+                                        </v-col>
+                                        <v-col cols="10">
+                                            <v-row>
+                                                <v-col cols="6">
+                                                    <v-text-field
+                                                        v-model="client.client_name"
+                                                        :color="themeColor"
+                                                        :label="langMap.company.name"
+                                                        dense
+                                                        prepend-icon="mdi-book-account-outline"
+                                                        required
+                                                        type="text"
+                                                    />
+                                                </v-col>
+                                                <v-col cols="6">
+                                                    <v-text-field
+                                                        v-model="client.short_name"
+                                                        :color="themeColor"
+                                                        :label="langMap.company.short_name"
+                                                        dense
+                                                        prepend-icon="mdi-book-account-outline"
+                                                        type="text"
+                                                    />
+                                                </v-col>
+                                                <v-col cols="12">
+                                                    <v-textarea
+                                                        rows="3"
+                                                        v-model="client.client_description"
+                                                        :color="themeColor"
+                                                        :placeholder="langMap.company.description"
+                                                        dense
+                                                        prepend-icon="mdi-book-account-outline"
+                                                        type="text"
+                                                    />
+                                                </v-col>
+                                            </v-row>
+                                        </v-col>
+                                    </v-row>
 
-                    <v-card-text>
-                        <v-form>
-                            <v-row>
-                                <v-col md="12">
-                                    <v-list
-                                        dense
-                                        subheader
-                                    >
-                                        <v-list-item-group :color="themeColor">
-                                            <v-list-item
-                                                v-for="(item, i) in client.emails"
-                                                :key="item.id"
-                                            >
+                                    <v-spacer>&nbsp;</v-spacer>
+                                    <hr class="lighten" />
+                                    <v-spacer>&nbsp;</v-spacer>
+
+                                    <h3>{{ langMap.company.additional_info }}</h3>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-list-item v-for="(item, i) in client.emails" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                    <v-icon v-text="item.type.icon" small dense />
                                                 </v-list-item-icon>
-                                                <v-list-item-content>
+                                                <v-list-item-content class="mr-2">
                                                     <v-list-item-title v-text="item.email"></v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type"
-                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
                                                 </v-list-item-content>
                                                 <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="editEmail(item)"
-                                                    >
-                                                        mdi-pencil
-                                                    </v-icon>
+                                                    <v-icon small @click="editEmail(item)">mdi-pencil</v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action v-if="item.email_type === 1">
-                                                    <v-icon small :title="langMap.profile.login_email">
-                                                        mdi-lock
-                                                    </v-icon>
+                                                    <v-icon :title="langMap.profile.login_email" small>mdi-lock</v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action v-else>
-                                                    <v-icon small @click="deleteEmail(item.id)">
-                                                        mdi-delete
-                                                    </v-icon>
+                                                    <v-icon small @click="deleteEmail(item.id)">mdi-delete</v-icon>
                                                 </v-list-item-action>
                                             </v-list-item>
-                                            <v-list-item
-                                                v-for="(item, i) in client.phones"
-                                                :key="item.id"
-                                            >
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-list-item v-for="(item, i) in client.phones" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                    <v-icon v-text="item.type.icon" small dense />
                                                 </v-list-item-icon>
-                                                <v-list-item-content>
+                                                <v-list-item-content class="mr-2">
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type"
-                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
                                                 </v-list-item-content>
                                                 <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="editPhone(item)"
-                                                    >
-                                                        mdi-pencil
-                                                    </v-icon>
+                                                    <v-icon small @click="editPhone(item)">mdi-pencil</v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="deletePhone(item.id)"
-                                                    >
-                                                        mdi-delete
-                                                    </v-icon>
+                                                    <v-icon small @click="deletePhone(item.id)">mdi-delete</v-icon>
                                                 </v-list-item-action>
                                             </v-list-item>
-                                            <v-list-item
-                                                v-for="(item, i) in client.addresses"
-                                                :key="item.id"
-                                            >
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-expansion-panels v-model="emailForm.opened" accordion>
+                                                <v-expansion-panel>
+                                                    <v-expansion-panel-header>
+                                                        {{ langMap.main.new_email }}
+                                                        <template v-slot:actions>
+                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                        </template>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-form>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field
+                                                                        v-model="emailForm.email"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.email"
+                                                                        dense
+                                                                    />
+                                                                    <v-select
+                                                                        v-model="emailForm.email_type"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :items="emailTypes"
+                                                                        :label="langMap.main.type"
+                                                                        dense
+                                                                        item-value="id"
+                                                                    >
+                                                                        <template slot="selection" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                        <template slot="item" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+
+                                                                    </v-select>
+                                                                </v-col>
+                                                                <v-btn
+                                                                    :color="themeColor"
+                                                                    bottom
+                                                                    dark
+                                                                    fab
+                                                                    right
+                                                                    small
+                                                                    @click="addEmail"
+                                                                >
+                                                                    <v-icon>mdi-plus</v-icon>
+                                                                </v-btn>
+                                                            </v-row>
+                                                        </v-form>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+                                            </v-expansion-panels>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-expansion-panels v-model="phoneForm.opened" accordion>
+                                                <v-expansion-panel>
+                                                    <v-expansion-panel-header>
+                                                        {{ langMap.main.new_phone }}
+                                                        <template v-slot:actions>
+                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                        </template>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-form>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field
+                                                                        v-model="phoneForm.phone"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.phone"
+                                                                        dense
+                                                                    />
+                                                                    <v-select
+                                                                        v-model="phoneForm.phone_type"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :items="phoneTypes"
+                                                                        :label="langMap.main.type"
+                                                                        dense
+                                                                        item-value="id"
+                                                                    >
+                                                                        <template slot="selection" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                        <template slot="item" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                    </v-select>
+                                                                </v-col>
+                                                                <v-btn
+                                                                    :color="themeColor"
+                                                                    bottom
+                                                                    dark
+                                                                    fab
+                                                                    right
+                                                                    small
+                                                                    @click="addPhone"
+                                                                >
+                                                                    <v-icon>mdi-plus</v-icon>
+                                                                </v-btn>
+                                                            </v-row>
+                                                        </v-form>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+                                            </v-expansion-panels>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-list-item v-for="(item, i) in client.addresses" :key="item.id">
                                                 <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon"></v-icon>
+                                                    <v-icon v-text="item.type.icon" small dense />
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="">
-                                                        <span v-if="item.street">{{ item.street }}, </span>
-                                                        <span v-if="item.street2">{{ item.street2 }}, </span>
-                                                        <span v-if="item.street3">{{ item.street3 }}</span>
-                                                        <br>{{ item.postal_code }}&nbsp;&nbsp;{{ item.city }},
-                                                        <span v-if="item.country">{{ localized(item.country) }}</span>
+                                                        <span v-if="item.street">{{ item.street }}</span>
+                                                        <span v-if="item.street2">, {{ item.street2 }}</span>
+                                                        <span v-if="item.street3">, {{ item.street3 }}</span>
+                                                        <br/>{{ item.postal_code }}&nbsp;&nbsp;{{ item.city }}
+                                                        <br/><span v-if="item.country">{{ localized(item.country) }}</span>
                                                     </v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type"
-                                                                          v-text="localized(item.type.name)"></v-list-item-subtitle>
+                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
                                                 </v-list-item-content>
                                                 <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="editAddress(item)"
-                                                    >
-                                                        mdi-pencil
-                                                    </v-icon>
+                                                    <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="deleteAddress(item.id)"
-                                                    >
-                                                        mdi-delete
-                                                    </v-icon>
+                                                    <v-icon small @click="deleteAddress(item.id)">mdi-delete</v-icon>
                                                 </v-list-item-action>
                                             </v-list-item>
-                                        </v-list-item-group>
-                                    </v-list>
-                                    <v-expansion-panels>
-                                        <v-expansion-panel @click="resetEmail">
-                                            <v-expansion-panel-header>
-                                                {{ this.$store.state.lang.lang_map.main.new_email }}
-                                                <template v-slot:actions>
-                                                    <v-icon color="submit">mdi-plus</v-icon>
-                                                </template>
-                                            </v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                <v-form>
-                                                    <div class="row">
-                                                        <v-col class="pa-1" cols="md-6">
-                                                            <v-text-field
-                                                                v-model="emailForm.email"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :label="langMap.main.email"
-                                                                dense
-                                                            ></v-text-field>
-                                                        </v-col>
-                                                        <v-col class="pa-1" cols="6">
-                                                            <v-select
-                                                                v-model="emailForm.email_type"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :items="emailTypes"
-                                                                :label="langMap.main.type"
-                                                                dense
-                                                                item-value="id"
-                                                            >
-                                                                <template slot="selection" slot-scope="data">
-                                                                    <v-icon left small v-text="data.item.icon"></v-icon>
-                                                                    {{ localized(data.item) }}
-                                                                </template>
-                                                                <template slot="item" slot-scope="data">
-                                                                    <v-icon left small v-text="data.item.icon"></v-icon>
-                                                                    {{ localized(data.item) }}
-                                                                </template>
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-btn
-                                                            :color="themeColor"
-                                                            bottom
-                                                            dark
-                                                            fab
-                                                            right
-                                                            small
-                                                            @click="submitNewData(client.id, emailForm, 'addEmail')"
-                                                        >
-                                                            <v-icon>mdi-plus</v-icon>
-                                                        </v-btn>
-                                                    </div>
-                                                </v-form>
-                                            </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                        <v-expansion-panel @click="resetPhone">
-                                            <v-expansion-panel-header>
-                                                {{ langMap.main.new_phone }}
-                                                <template v-slot:actions>
-                                                    <v-icon color="submit">mdi-plus</v-icon>
-                                                </template>
-                                            </v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                <v-form>
-                                                    <div class="row">
-                                                        <v-col class="pa-1" cols="md-6">
-                                                            <v-text-field
-                                                                v-model="phoneForm.phone"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :label="langMap.main.phone"
-                                                                dense
-                                                            ></v-text-field>
-                                                        </v-col>
-                                                        <v-col class="pa-1" cols="6">
-                                                            <v-select
-                                                                v-model="phoneForm.phone_type"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :items="phoneTypes"
-                                                                :label="langMap.main.type"
-                                                                dense
-                                                                item-text="name"
-                                                                item-value="id"
-                                                            >
-                                                                <template slot="selection" slot-scope="data">
-                                                                    <v-icon left small v-text="data.item.icon"></v-icon>
-                                                                    {{ localized(data.item) }}
-                                                                </template>
-                                                                <template slot="item" slot-scope="data">
-                                                                    <v-icon left small v-text="data.item.icon"></v-icon>
-                                                                    {{ localized(data.item) }}
-                                                                </template>
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-btn
-                                                            :color="themeColor"
-                                                            bottom
-                                                            dark
-                                                            fab
-                                                            right
-                                                            small
-                                                            @click="submitNewData(client.id, phoneForm, 'addPhone')"
-                                                        >
-                                                            <v-icon>mdi-plus</v-icon>
-                                                        </v-btn>
-                                                    </div>
-                                                </v-form>
-                                            </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                        <v-expansion-panel @click="resetAddress">
-                                            <v-expansion-panel-header>
-                                                {{ langMap.main.new_address }}
-                                                <template v-slot:actions>
-                                                    <v-icon color="submit">mdi-plus</v-icon>
-                                                </template>
-                                            </v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                <v-form>
-                                                    <div class="row">
-                                                        <v-col class="pa-1" cols="md-12">
-                                                            <v-text-field
-                                                                v-model="addressForm.address.street"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :label="langMap.main.address_line1"
-                                                                dense
-                                                                no-resize
-                                                                rows="3"
-                                                            ></v-text-field>
-                                                            <v-text-field
-                                                                v-model="addressForm.address.street2"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :label="langMap.main.address_line2"
-                                                                dense
-                                                                no-resize
-                                                                rows="3"
-                                                            ></v-text-field>
-                                                            <v-text-field
-                                                                v-model="addressForm.address.street3"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :label="langMap.main.address_line3"
-                                                                dense
-                                                                no-resize
-                                                                rows="3"
-                                                            ></v-text-field>
-                                                        </v-col>
-                                                        <v-col class="pa-1" cols="md-6">
-                                                            <v-text-field
-                                                                v-model="addressForm.address.postal_code"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :label="langMap.main.postal_code"
-                                                                dense
-                                                            ></v-text-field>
-                                                        </v-col>
-                                                        <v-col class="pa-1" cols="md-6">
-                                                            <v-text-field
-                                                                v-model="addressForm.address.city"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :label="langMap.main.city"
-                                                                dense
-                                                            ></v-text-field>
-                                                        </v-col>
-                                                        <v-col class="pa-1" cols="md-6">
-                                                            <v-select
-                                                                v-model="addressForm.address.country_id"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :items="countries"
-                                                                :label="langMap.main.country"
-                                                                dense
-                                                                item-value="id"
-                                                            >
-                                                                <template slot="selection" slot-scope="data">
-                                                                    ({{ data.item.iso_3166_2 }}) {{
-                                                                        localized(data.item)
-                                                                    }}
-                                                                </template>
-                                                                <template slot="item" slot-scope="data">
-                                                                    ({{ data.item.iso_3166_2 }}) {{
-                                                                        localized(data.item)
-                                                                    }}
-                                                                </template>
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-col class="pa-1" cols="6">
-                                                            <v-select
-                                                                v-model="addressForm.address_type"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                :items="addressTypes"
-                                                                :label="langMap.main.type"
-                                                                dense
-                                                                item-text="name"
-                                                                item-value="id"
-                                                            >
-                                                                <template slot="selection" slot-scope="data">
-                                                                    <v-icon left small v-text="data.item.icon"></v-icon>
-                                                                    {{ localized(data.item) }}
-                                                                </template>
-                                                                <template slot="item" slot-scope="data">
-                                                                    <v-icon left small v-text="data.item.icon"></v-icon>
-                                                                    {{ localized(data.item) }}
-                                                                </template>
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-btn
-                                                            :color="themeColor"
-                                                            bottom
-                                                            dark
-                                                            fab
-                                                            right
-                                                            small
-                                                            @click="submitNewData(client.id, addressForm, 'addAddress')"
-                                                        >
-                                                            <v-icon>mdi-plus</v-icon>
-                                                        </v-btn>
-                                                    </div>
-                                                </v-form>
-                                            </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                    </v-expansion-panels>
-                                </v-col>
-                            </v-row>
-                        </v-form>
-                    </v-card-text>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-list-item v-for="(item, i) in client.socials" :key="item.id">
+                                                <v-list-item-icon v-if="item.type">
+                                                    <v-icon v-text="item.type.icon" small dense />
+                                                </v-list-item-icon>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="item.social_link" />
+                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action>
+                                                    <v-icon small @click="deleteAddress(item.id)">mdi-delete</v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-expansion-panels v-model="addressForm.opened" accordion>
+                                                <v-expansion-panel>
+                                                    <v-expansion-panel-header>
+                                                        {{ langMap.main.new_address }}
+                                                        <template v-slot:actions>
+                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                        </template>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-form>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field
+                                                                        v-model="addressForm.address.street"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.address_line1"
+                                                                        dense
+                                                                    />
+                                                                    <v-text-field
+                                                                        v-model="addressForm.address.street2"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.address_line2"
+                                                                        dense
+                                                                    />
+                                                                    <v-text-field
+                                                                        v-model="addressForm.address.street3"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.address_line3"
+                                                                        dense
+
+                                                                    />
+                                                                    <v-text-field
+                                                                        v-model="addressForm.address.postal_code"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.postal_code"
+                                                                        dense
+                                                                    />
+                                                                    <v-text-field
+                                                                        v-model="addressForm.address.city"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.city"
+                                                                        dense
+                                                                    />
+                                                                    <v-select
+                                                                        v-model="addressForm.address.country_id"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :items="countries"
+                                                                        :label="langMap.main.country"
+                                                                        dense
+                                                                        item-value="id"
+                                                                    >
+                                                                        <template slot="selection" slot-scope="data">
+                                                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                                                        </template>
+                                                                        <template slot="item" slot-scope="data">
+                                                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                                                        </template>
+                                                                    </v-select>
+                                                                    <v-select
+                                                                        v-model="addressForm.address_type"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :items="addressTypes"
+                                                                        :label="langMap.main.type"
+                                                                        dense
+                                                                        item-value="id"
+                                                                    >
+                                                                        <template slot="selection" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                        <template slot="item" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                    </v-select>
+                                                                </v-col>
+                                                                <v-btn
+                                                                    :color="themeColor"
+                                                                    bottom
+                                                                    dark
+                                                                    fab
+                                                                    right
+                                                                    small
+                                                                    @click="addAddress"
+                                                                >
+                                                                    <v-icon>mdi-plus</v-icon>
+                                                                </v-btn>
+                                                            </v-row>
+                                                        </v-form>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+                                            </v-expansion-panels>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-expansion-panels v-model="socialForm.opened" accordion>
+                                                <v-expansion-panel>
+                                                    <v-expansion-panel-header>
+                                                        {{ langMap.company.new_social_item }}
+                                                        <template v-slot:actions>
+                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                        </template>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-form>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field
+                                                                        v-model="socialForm.social_link"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.link"
+                                                                        dense
+                                                                    />
+                                                                    <v-select
+                                                                        v-model="socialForm.social_type"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :items="socialTypes"
+                                                                        :label="langMap.main.type"
+                                                                        dense
+                                                                        item-value="id"
+                                                                    >
+                                                                        <template slot="selection" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                        <template slot="item" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                    </v-select>
+                                                                </v-col>
+                                                                <v-btn
+                                                                    :color="themeColor"
+                                                                    bottom
+                                                                    dark
+                                                                    fab
+                                                                    right
+                                                                    small
+                                                                    @click="addSocial"
+                                                                >
+                                                                    <v-icon>mdi-plus</v-icon>
+                                                                </v-btn>
+                                                            </v-row>
+                                                        </v-form>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+                                            </v-expansion-panels>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-spacer>&nbsp;</v-spacer>
+                                    <hr class="lighten" />
+                                    <v-spacer>&nbsp;</v-spacer>
+
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-checkbox
+                                                v-model="client.is_active"
+                                                :label="langMap.customer.active"
+                                                :color="themeColor"
+                                                dense
+                                                hide-details
+                                                @change="changeIsActiveClient(client)"
+                                            />
+                                        </v-col>
+                                    </v-row>
+                                </v-form>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                    text
+                                    color="grey darken"
+                                    @click="cancelUpdateClient"
+                                >
+                                    {{ langMap.main.cancel}}
+                                </v-btn>
+                                <v-btn
+                                    text
+                                    :color="themeColor"
+                                    @click="updateClient"
+                                >
+                                    {{ langMap.main.save}}
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-expand-transition>
                 </v-card>
+
                 <v-spacer>
                     &nbsp;
                 </v-spacer>
-                <v-card class="elevation-12">
+
+                <v-card>
                     <v-toolbar
-                        :color="themeColor"
                         dark
                         dense
                         flat
+                        :color="themeColor"
                     >
                         <v-toolbar-title>{{ langMap.product.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="productHeaders"
+                            :items="client.products"
+                            class="elevation-1"
+                            dense
+                            :options.sync="options"
+                            item-key="id"
+                            @update:options="updateItemsPerPage"
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showProduct(item.product_data)">
+                                            <v-icon small>mdi-eye</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.show_product }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteProductDlg(item)">
+                                            <v-icon small>mdi-link-off</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.product.unlink_product }}</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+
+                        <v-spacer>&nbsp;</v-spacer>
+
                         <v-expansion-panels>
                             <v-expansion-panel @click="resetProduct">
                                 <v-expansion-panel-header>
@@ -449,7 +612,7 @@
                                                     :label="langMap.main.products"
                                                     item-text="name"
                                                     item-value="id"
-                                                ></v-autocomplete>
+                                                />
                                             </v-col>
                                             <v-btn
                                                 :color="themeColor"
@@ -466,59 +629,21 @@
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>
-                        <v-data-table
-                            :footer-props="footerProps"
-                            :headers="productHeaders"
-                            :items="client.products"
-                            class="elevation-1"
-                            dense
-                            :options.sync="options"
-                            item-key="id"
-                            @update:options="updateItemsPerPage"
-                        >
-                            <template v-slot:item.actions="{ item }">
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showProduct(item.product_data)">
-                                            <v-icon
-                                                small
-                                            >
-                                                mdi-eye
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.customer.show_product }}</span>
-                                </v-tooltip>
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteProductDlg(item)">
-                                            <v-icon
-                                                small
-                                            >
-                                                mdi-link-off
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <span>{{ langMap.product.unlink_product }}</span>
-                                </v-tooltip>
-                            </template>
-                        </v-data-table>
                     </v-card-text>
                 </v-card>
-            </div>
-            <div class="col-md-6">
-                <v-card class="elevation-12">
+            </v-col>
+            <v-col cols="6">
+                <v-card>
                     <v-toolbar
-                        :color="themeColor"
                         dark
                         dense
                         flat
+                        :color="themeColor"
                     >
                         <v-toolbar-title>{{ langMap.company.company_contacts }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
-
                         <v-container fluid>
                             <v-row dense>
                                 <v-col
@@ -540,48 +665,37 @@
                                                        :color="themeColor"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
-                                                    <span
-                                                        v-on="on"
-                                                    >
+                                                    <span v-on="on">
                                                         <v-avatar
                                                             size="2em"
                                                             class="mr-2"
                                                             color="grey darken-1"
                                                             v-if="clientEmployee.employee.user_data.avatar_url || clientEmployee.employee.user_data.full_name"
                                                         >
-                                                        <v-img v-if="clientEmployee.employee.user_data.avatar_url" :src="clientEmployee.employee.user_data.avatar_url" />
-                                                        <span v-else-if="clientEmployee.employee.user_data.full_name" class="white--text">
-                                                        {{ clientEmployee.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
-                                                        </span>
-                                                    </v-avatar>
-                                                    <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
-                                                    {{ clientEmployee.employee.user_data.full_name }}
-                                                    <p class="caption mt-2"
-                                                       style="
-                                                        color: darkgrey;
-                                                        margin: 0;
-                                                        width: 180px;
-                                                        text-overflow: ellipsis;
-                                                        overflow: hidden;
-                                                        white-space: nowrap;">
-                                                        {{
-                                                            clientEmployee.description ?
-                                                                clientEmployee.description :
-                                                                '&nbsp;'
-                                                        }}
-                                                    </p>
+                                                            <v-img v-if="clientEmployee.employee.user_data.avatar_url" :src="clientEmployee.employee.user_data.avatar_url" />
+                                                            <span v-else-if="clientEmployee.employee.user_data.full_name" class="white--text">
+                                                                {{ clientEmployee.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                            </span>
+                                                        </v-avatar>
+                                                        <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                                        {{ clientEmployee.employee.user_data.full_name }}
+                                                        <p class="caption mt-2"
+                                                            style="
+                                                            color: darkgrey;
+                                                            margin: 0;
+                                                            width: 180px;
+                                                            text-overflow: ellipsis;
+                                                            overflow: hidden;
+                                                            white-space: nowrap;">{{ clientEmployee.description ? clientEmployee.description : '&nbsp;' }}</p>
                                                     </span>
                                                 </template>
                                                 <span>
                                                     {{ langMap.company.user }}:
                                                     {{ clientEmployee.employee.user_data.full_name }}
-                                                    <p
-                                                        v-if="clientEmployee.description"
-                                                        class="caption"
-                                                    >
+                                                    <p v-if="clientEmployee.description" class="caption">
                                                         {{ clientEmployee.description }}
                                                     </p>
-                                                    <br v-else>
+                                                    <br v-else/>
                                                     {{ langMap.main.roles }}:
                                                     {{ clientEmployee.employee.role_names }}
 
@@ -594,11 +708,7 @@
                                                         v-on="on"
                                                         :disabled="!clientEmployee.employee.user_data.is_active" icon
                                                         @click.native.stop="sendInvite(clientEmployee.employee)">
-                                                        <v-icon
-                                                            small
-                                                        >
-                                                            mdi-email-alert
-                                                        </v-icon>
+                                                        <v-icon small>mdi-email-alert</v-icon>
                                                     </v-btn>
                                                 </template>
                                                 <span>{{ langMap.company.resend_invite }}</span>
@@ -610,12 +720,7 @@
                                                         v-on="on"
                                                         icon
                                                         @click.native.stop="removeEmployeeProcess(clientEmployee.employee)">
-                                                        <v-icon
-                                                            small
-
-                                                        >
-                                                            mdi-delete
-                                                        </v-icon>
+                                                        <v-icon small>mdi-delete</v-icon>
                                                     </v-btn>
                                                 </template>
                                                 <span>{{ langMap.company.delete_contact }}</span>
@@ -627,12 +732,7 @@
                                                         v-on="on"
                                                         icon
                                                         @click.native.stop="showContactInfo(clientEmployee)">
-                                                        <v-icon
-                                                            small
-
-                                                        >
-                                                            mdi-account-switch-outline
-                                                        </v-icon>
+                                                        <v-icon small>mdi-account-switch-outline</v-icon>
                                                     </v-btn>
                                                 </template>
                                                 <span>{{ langMap.individuals.contact_info }}</span>
@@ -642,89 +742,7 @@
                                 </v-col>
                             </v-row>
                         </v-container>
-                        <!--                        <v-data-table-->
-                        <!--                            :footer-props="footerProps"-->
-                        <!--                            :headers="headers"-->
-                        <!--                            :items="client.employees"-->
-                        <!--                            align="center"-->
-                        <!--                            class="elevation-1"-->
-                        <!--                            dense-->
-                        <!--                            item-key="id"-->
-                        <!--                            justify="center"-->
-                        <!--                            @click:row="showUser"-->
-                        <!--                        >-->
-                        <!--                            <template v-slot:item.actions="{ item }">-->
-                        <!--                                <v-tooltip top>-->
-                        <!--                                    <template v-slot:activator="{ on, attrs }">-->
-                        <!--                                        <v-btn v-bind="attrs"-->
-                        <!--                                               v-on="on"-->
-                        <!--                                               :disabled="!item.employee.user_data.is_active" icon-->
-                        <!--                                               @click.native.stop="sendInvite(item.employee)">-->
-                        <!--                                            <v-icon-->
-                        <!--                                                small-->
-                        <!--                                            >-->
-                        <!--                                                mdi-email-alert-->
-                        <!--                                            </v-icon>-->
-                        <!--                                        </v-btn>-->
-                        <!--                                    </template>-->
-                        <!--                                    <span>{{ langMap.company.resend_invite }}</span>-->
-                        <!--                                </v-tooltip>-->
-                        <!--                                &lt;!&ndash;                                <v-tooltip top>&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                    <template v-slot:activator="{ on, attrs }">&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                        <v-btn @click.native.stop="showUser(item)" icon v-bind="attrs" v-on="on">&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                            <v-icon&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                                small&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                            >&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                                mdi-pencil&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                            </v-icon>&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                        </v-btn>&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                    </template>&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                    <span>{{langMap.company.edit_contact}}</span>&ndash;&gt;-->
-                        <!--                                &lt;!&ndash;                                </v-tooltip>&ndash;&gt;-->
-                        <!--                                <v-tooltip top>-->
-                        <!--                                    <template v-slot:activator="{ on, attrs }">-->
-                        <!--                                        <v-btn-->
-                        <!--                                            v-bind="attrs"-->
-                        <!--                                            v-on="on"-->
-                        <!--                                            icon-->
-                        <!--                                            @click.native.stop="removeEmployeeProcess(item)">-->
-                        <!--                                            <v-icon-->
-                        <!--                                                small-->
 
-                        <!--                                            >-->
-                        <!--                                                mdi-delete-->
-                        <!--                                            </v-icon>-->
-                        <!--                                        </v-btn>-->
-                        <!--                                    </template>-->
-                        <!--                                    <span>{{ langMap.company.delete_contact }}</span>-->
-                        <!--                                </v-tooltip>-->
-                        <!--                                <v-tooltip top>-->
-                        <!--                                    <template v-slot:activator="{ on, attrs }">-->
-                        <!--                                        <v-btn-->
-                        <!--                                            v-bind="attrs"-->
-                        <!--                                            v-on="on"-->
-                        <!--                                            icon-->
-                        <!--                                            @click.native.stop="showContactInfo(item)">-->
-                        <!--                                            <v-icon-->
-                        <!--                                                small-->
-
-                        <!--                                            >-->
-                        <!--                                                mdi-account-switch-outline-->
-                        <!--                                            </v-icon>-->
-                        <!--                                        </v-btn>-->
-                        <!--                                    </template>-->
-                        <!--                                    <span>{{ langMap.individuals.contact_info }}</span>-->
-                        <!--                                </v-tooltip>-->
-                        <!--                            </template>-->
-                        <!--                            <template v-slot:item.user_data="{ item }">-->
-                        <!--                                <div v-if="item.employee.user_data"-->
-                        <!--                                     class="text-xs-center">-->
-                        <!--                                    {{ item.employee.user_data.full_name }}-->
-                        <!--                                    <p v-if="item.description" class="caption" style="color: darkgrey;">-->
-                        <!--                                        {{ item.description }}</p>-->
-                        <!--                                </div>-->
-                        <!--                            </template>-->
-                        <!--                        </v-data-table>-->
                         <template>
                             <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
                                 <v-card>
@@ -817,17 +835,7 @@
                                             <v-icon x-large>
                                                 mdi-card-account-details-outline
                                             </v-icon>
-                                                <br>
-                                            <!--                                            <span v-if="contactInfoEditBtn === false">-->
-                                            <!--                                                <span>-->
-                                            <!--                                                    {{ langMap.main.description }}-->
-                                            <!--                                                </span>-->
-                                            <!--                                                <br>-->
-                                            <!--                                                <strong>-->
-                                            <!--                                                    {{ contactInfoForm.description }}-->
-                                            <!--                                                </strong>-->
-                                            <!--                                                <v-divider>&nbsp;</v-divider>-->
-                                            <!--                                            </span>-->
+                                                <br/>
                                             <span>
                                                 <br>
                                                 <v-text-field
@@ -860,11 +868,11 @@
                                                         </v-icon>
                                                     </span>
                                                 </strong>
-                                                <v-divider>&nbsp;</v-divider>
+                                                <v-spacer>&nbsp;</v-spacer>
                                                 <span>
                                                     {{ langMap.main.phone }}
                                                 </span>
-                                                <br>
+                                                <br/>
                                                 <strong v-for="phone in contactInfoForm.employee.user_data.phones">
                                                     <span>
                                                         {{ phone.phone }}
@@ -898,24 +906,10 @@
                                         {{ langMap.main.delete }}
                                     </v-btn>
 
-                                    <v-btn color="green darken-1" text
-                                           @click="editContactInfo"
-                                    >
-                                        <v-icon small>
-                                            {{
-                                                contactInfoEditBtn === false ?
-                                                    'mdi-pencil' :
-                                                    ''
-                                            }}
-                                        </v-icon>
+                                    <v-btn color="green darken-1" text @click="editContactInfo">
+                                        <v-icon small>{{ contactInfoEditBtn === false ? 'mdi-pencil' : '' }}</v-icon>
 
-                                        {{
-                                            contactInfoEditBtn === true ?
-                                                langMap.main.save :
-                                                langMap.individuals.update_link
-
-                                        }}
-
+                                        {{ contactInfoEditBtn === true ? langMap.main.save : langMap.individuals.update_link }}
                                     </v-btn>
                                     <v-spacer></v-spacer>
                                 </v-card-actions>
@@ -943,7 +937,7 @@
                                                     name="name"
                                                     required
                                                     type="text"
-                                                ></v-text-field>
+                                                />
                                             </div>
                                             <div class="col-md-4">
                                                 <v-text-field
@@ -953,7 +947,7 @@
                                                     name="name"
                                                     required
                                                     type="text"
-                                                ></v-text-field>
+                                                />
                                             </div>
                                             <div class="col-md-4">
                                                 <v-text-field
@@ -963,22 +957,20 @@
                                                     name="name"
                                                     required
                                                     type="text"
-                                                ></v-text-field>
+                                                />
                                             </div>
                                             <div class="col-md-6">
-                                            <v-autocomplete
-                                                v-model="employeeForm.language_id"
-                                                :color="themeColor"
-                                                :error-messages="errors.language_id"
-                                                :item-color="themeColor"
-                                                :items="languages"
-                                                :label="this.$store.state.lang.lang_map.main.language"
-                                                item-text="name"
-                                                item-value="id"
-                                                lazy-validation
-                                                name="language"
-                                                prepend-icon="mdi-web"
-                                            />
+                                                <v-autocomplete
+                                                    v-model="employeeForm.language_id"
+                                                    :color="themeColor"
+                                                    :item-color="themeColor"
+                                                    :items="languages"
+                                                    :label="this.$store.state.lang.lang_map.main.language"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    name="language"
+                                                    prepend-icon="mdi-web"
+                                                />
                                             </div>
                                             <div class="col-md-6">
                                                 <v-text-field
@@ -989,14 +981,14 @@
                                                     required
                                                     type="text"
                                                     prepend-icon="mdi-mail"
-                                                ></v-text-field>
+                                                />
                                                 <v-checkbox
                                                     v-model="employeeForm.is_active"
                                                     :disabled="!checkRoleByIds([1,2,3])"
                                                     :label="langMap.main.give_access"
                                                     color="success"
                                                     hide-details
-                                                ></v-checkbox>
+                                                />
                                             </div>
                                             <v-btn
                                                 :color="themeColor"
@@ -1038,7 +1030,7 @@
                                                     hide-selected
                                                     item-text="user_data.full_name"
                                                     item-value="id"
-                                                ></v-autocomplete>
+                                                />
                                             </v-col>
                                             <v-text-field
                                                 v-model="employeeForm.description"
@@ -1047,7 +1039,7 @@
                                                 class="pa-1"
                                                 dense
                                                 type="text"
-                                            ></v-text-field>
+                                            />
                                         </div>
                                         <v-btn
                                             :color="themeColor"
@@ -1066,117 +1058,8 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-                <v-card class="elevation-12">
-                    <v-toolbar
-                        :color="themeColor"
-                        dark
-                        dense
-                        flat
-                    >
-                        <v-toolbar-title>{{ langMap.company.social_info }}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-                    <v-card-text>
-                        <v-list
-                            dense
-                            subheader
-                        >
-                            <v-list-item-group :color="themeColor">
-                                <v-list-item
-                                    v-for="(item) in client.socials"
-                                    :key="item.id"
-                                >
-                                    <v-list-item-icon v-if="item.type">
-                                        <v-icon v-text="item.type.icon"></v-icon>
-                                    </v-list-item-icon>
-                                    <v-list-item-content>
-                                        <v-list-item-title v-text="item.social_link"></v-list-item-title>
-                                        <v-list-item-subtitle v-if="item.type"
-                                                              v-text="localized(item.type)"></v-list-item-subtitle>
-                                    </v-list-item-content>
-                                    <v-list-item-action>
-                                        <v-icon
-                                            small
-                                            @click="editSocial(item)"
-                                        >
-                                            mdi-pencil
-                                        </v-icon>
-                                    </v-list-item-action>
-                                    <v-list-item-action>
-                                        <v-icon
-                                            small
-                                            @click="deleteSocial(item.id)"
-                                        >
-                                            mdi-delete
-                                        </v-icon>
-                                    </v-list-item-action>
-                                </v-list-item>
-
-                            </v-list-item-group>
-                        </v-list>
-                        <v-expansion-panels>
-                            <v-expansion-panel @click="resetSocial">
-                                <v-expansion-panel-header>
-                                    {{ langMap.company.new_social_item }}
-                                    <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-form>
-                                        <div class="row">
-                                            <v-col class="pa-1" cols="md-12">
-                                                <v-text-field
-                                                    v-model="socialForm.social_link"
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
-                                                    :label="langMap.main.link"
-                                                    dense
-                                                ></v-text-field>
-                                            </v-col>
-                                            <v-col class="pa-1" cols="12">
-                                                <v-select
-                                                    v-model="socialForm.social_type"
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
-                                                    :items="socialTypes"
-                                                    :label="langMap.main.type"
-                                                    dense
-                                                    item-value="id"
-                                                >
-                                                    <template slot="selection" slot-scope="data">
-                                                        <v-icon left small v-text="data.item.icon"></v-icon>
-                                                        {{ localized(data.item) }}
-                                                    </template>
-                                                    <template slot="item" slot-scope="data">
-                                                        <v-icon left small v-text="data.item.icon"></v-icon>
-                                                        {{ localized(data.item) }}
-                                                    </template>
-                                                </v-select>
-                                            </v-col>
-                                            <v-btn
-                                                :color="themeColor"
-                                                bottom
-                                                dark
-                                                fab
-                                                right
-                                                small
-                                                @click="submitNewData(client.id, socialForm, 'addSocial')"
-                                            >
-                                                <v-icon>mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-card-text>
-                </v-card>
-            </div>
-        </div>
+            </v-col>
+        </v-row>
 
         <v-row justify="center">
             <v-dialog v-model="updatePhoneDlg" max-width="600px" persistent>
@@ -1475,6 +1358,7 @@ export default {
             employees: [],
             client: {
                 client_name: '',
+                short_name: '',
                 client_description: '',
                 products: [
                     {
@@ -1497,7 +1381,9 @@ export default {
 
                         }
                     }
-                ]
+                ],
+                logo_url: '',
+                is_active: false
             },
             employeeForm: {
                 company_user_id: 0,
@@ -1523,7 +1409,8 @@ export default {
                 entity_id: '',
                 entity_type: 'App\\Client',
                 phone: '',
-                phone_type: ''
+                phone_type: '',
+                opened: null
             },
             addressForm: {
                 id: '',
@@ -1537,20 +1424,23 @@ export default {
                     city: '',
                     country_id: ''
                 },
-                address_type: ''
+                address_type: '',
+                opened: null
             },
             socialForm: {
                 id: '',
                 entity_id: '',
                 entity_type: 'App\\Client',
                 social_link: '',
-                social_type: ''
+                social_type: '',
+                opened: null,
             },
             emailForm: {
                 entity_id: '',
                 entity_type: 'App\\Client',
                 email: '',
-                email_type: ''
+                email_type: '',
+                opened: null,
             },
             supplierForm: {
                 client_id: null,
@@ -1569,7 +1459,9 @@ export default {
             updateEmailDlg: false,
             contactInfoForm: null,
             deleteProductDlg: false,
-            selectedProductId: null
+            selectedProductId: null,
+            logo: '',
+            newLogo:''
         }
     },
     mounted() {
@@ -1698,6 +1590,32 @@ export default {
             }
         },
         updateClient() {
+            this.snackbar = false;
+
+            if (this.newLogo) {
+                let formData = new FormData();
+                formData.append('logo', this.newLogo);
+                axios.post(
+                    `/api/client/${this.$route.params.id}/logo`,
+                    formData, {
+                        headers: {'content-type': 'multipart/form-data'}
+                    }
+                ).then(response => {
+                    this.newLogo = null;
+
+                    response = response.data;
+                    if (response.success === true) {
+                        this.logo = response.data.logo_url;
+                        this.client.logo_url = response.data.logo_url;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+
+                        return;
+                    }
+                });
+            }
             axios.patch(`/api/client/${this.$route.params.id}`, this.client).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -1772,15 +1690,17 @@ export default {
                 }
             });
         },
-        addPhone(form) {
-            axios.post('/api/phone', form).then(response => {
+        addPhone() {
+            this.phoneForm.entity_id = this.client.id;
+
+            axios.post('/api/phone', this.phoneForm).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.resetPhone();
                     this.getClient()
                     this.snackbarMessage = this.langMap.company.phone_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
-                    this.resetPhone();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1790,15 +1710,16 @@ export default {
             });
         },
         updatePhone() {
+            this.phoneForm.entity_id = this.client.id;
+
             axios.patch(`/api/phone/${this.phoneForm.id}`, this.phoneForm).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.phoneForm.id = '';
+                    this.resetPhone();
                     this.getClient();
                     this.snackbarMessage = this.langMap.company.phone_updated;
                     this.actionColor = 'success';
                     this.snackbar = true;
-                    this.resetPhone();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1824,15 +1745,17 @@ export default {
                 }
             });
         },
-        addSocial(form) {
-            axios.post('/api/social', form).then(response => {
+        addSocial() {
+            this.socialForm.entity_id = this.client.id;
+
+            axios.post('/api/social', this.socialForm).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.resetSocial();
                     this.getClient()
                     this.snackbarMessage = this.langMap.company.social_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
-                    this.resetSocial();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1841,15 +1764,16 @@ export default {
             });
         },
         updateSocial() {
+            this.socialForm.entity_id = this.client.id;
+
             axios.patch(`/api/social/${this.socialForm.id}`, this.socialForm).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.socialForm.id = '';
+                    this.resetSocial();
                     this.getClient()
                     this.snackbarMessage = this.langMap.company.social_updated;
                     this.actionColor = 'success'
                     this.snackbar = true;
-                    this.resetSocial();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1873,15 +1797,17 @@ export default {
                 }
             });
         },
-        addAddress(form) {
-            axios.post('/api/address', form).then(response => {
+        addAddress() {
+            this.addressForm.entity_id = this.client.id;
+
+            axios.post('/api/address', this.addressForm).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.resetAddress();
                     this.getClient()
                     this.snackbarMessage = this.langMap.company.address_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
-                    this.resetAddress();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1890,21 +1816,16 @@ export default {
             });
         },
         updateAddress() {
+            this.addressForm.entity_id = this.client.id;
+
             axios.patch(`/api/address/${this.addressForm.id}`, this.addressForm).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.addressForm.id = '';
-                    this.addressForm.address.street = '';
-                    this.addressForm.address.street2 = '';
-                    this.addressForm.address.street3 = '';
-                    this.addressForm.address.postal_code = '';
-                    this.addressForm.address.city = '';
-                    this.addressForm.address.country_id = '';
+                    this.resetAddress();
                     this.getClient()
                     this.snackbarMessage = this.langMap.company.address_updated;
                     this.actionColor = 'success'
                     this.snackbar = true;
-                    this.resetAddress();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1936,7 +1857,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = item.is_active === true ? this.langMap.company.employee_activated : this.langMap.company.employee_deactivated;
+                    this.snackbarMessage = item.is_active === true ? this.langMap.company.company_activated : this.langMap.company.company_deactivated;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -2083,8 +2004,10 @@ export default {
                 }
             });
         },
-        addEmail(form) {
-            axios.post('/api/email', form).then(response => {
+        addEmail() {
+            this.emailForm.entity_id = this.client.id;
+
+            axios.post('/api/email', this.emailForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
@@ -2100,6 +2023,8 @@ export default {
             });
         },
         updateEmail() {
+            this.emailForm.entity_id = this.client.id;
+
             axios.patch(`/api/email/${this.emailForm.id}`, this.emailForm).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -2202,7 +2127,8 @@ export default {
                 entity_id: '',
                     entity_type: 'App\\Client',
                     email: '',
-                    email_type: ''
+                    email_type: '',
+                    opened: null,
             };
         },
         resetPhone() {
@@ -2211,7 +2137,8 @@ export default {
                     entity_id: '',
                     entity_type: 'App\\Client',
                     phone: '',
-                    phone_type: ''
+                    phone_type: '',
+                    opened: null
             };
         },
         resetAddress() {
@@ -2227,7 +2154,8 @@ export default {
                         city: '',
                         country_id: ''
                 },
-                address_type: ''
+                address_type: '',
+                    opened: null
             };
         },
         resetProduct() {
@@ -2242,7 +2170,8 @@ export default {
                     entity_id: '',
                     entity_type: 'App\\Client',
                     social_link: '',
-                    social_type: ''
+                    social_type: '',
+                    opened: null
             }
         },
         updateItemsPerPage(options) {
@@ -2255,6 +2184,11 @@ export default {
             // console.log(this.singleUserForm.user);
             if (this.singleUserForm.user) {
                 this.singleUserForm.user = this.client.employees.find(x => x.employee.user_id === this.singleUserForm.user.id).employee.user_data;
+            }
+        },
+        newLogo(val) {
+            if (this.newLogo !== null) {
+                this.logo = URL.createObjectURL(this.newLogo)
             }
         }
     },

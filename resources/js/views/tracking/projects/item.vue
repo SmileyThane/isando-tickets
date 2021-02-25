@@ -19,7 +19,7 @@
                 <v-list-item three-line>
                     <v-list-item-content>
                         <div class="overline mb-4">
-                            Project
+                            {{ langMap.tracking.create_project.project }}
                         </div>
                         <v-list-item-title class="headline mb-1">
                             <span v-if="project">
@@ -39,8 +39,8 @@
                 v-model="tab"
                 :color="themeColor"
             >
-                <v-tab>Status</v-tab>
-                <v-tab>Settings</v-tab>
+                <v-tab>{{ langMap.tracking.create_project.status }}</v-tab>
+                <v-tab>{{ langMap.tracking.create_project.settings }}</v-tab>
 
                 <v-tabs-items
                     v-model="tab"

@@ -54,7 +54,8 @@ class UserController extends Controller
     public function authorizedRoleIds()
     {
         $companyUser = Auth::user()->employee;
-        return self::showResponse(true, $companyUser->roles->pluck('id')->toArray());
+        $roles = $companyUser->is_clientable ? [Role::IS_CLIENTABLE] : [];
+        return self::showResponse(true, array_merge($roles, $companyUser->roles->pluck('id')->toArray()));
     }
 
     public function updateRoles(Request $request)

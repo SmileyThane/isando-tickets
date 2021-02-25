@@ -13,190 +13,70 @@
         <template>
             <v-card flat>
                 <v-toolbar>
-                    <v-row>
-                        <v-col cols="11" lg="11" md="10" sm="10" v-if="mode">
-<!--                            Timer mode-->
-                            <v-row>
-                                <v-col cols="4" lg="4" md="4">
-                                    <v-text-field
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        placeholder="What are you working on?"
-                                        v-model="timerPanel.description"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-spacer></v-spacer>
-                                <v-col cols="2" lg="3" md="3" class="text-right">
-                                    <ProjectBtn
-                                        key="timerPanelProjectKey"
-                                        :color="themeColor"
-                                        :onChoosable="handlerProjectTimerPanel"
-                                        v-model="timerPanel.project"
-                                    ></ProjectBtn>
-
-                                    <TagBtn
-                                        key="timerPanelTagKey"
-                                        :color="themeColor"
-                                        :onChoosable="handlerTagsTimerPanel"
-                                        v-model="timerPanel.tags"
-                                    >
-                                    </TagBtn>
-
-                                    <v-btn
-                                        fab
-                                        :icon="!timerPanel.billable"
-                                        x-small
-                                        :color="themeColor"
-                                        @click="timerPanel.billable = !timerPanel.billable"
-                                    >
-                                        <v-icon center v-bind:class="{ 'white--text': timerPanel.billable }">
-                                            mdi-currency-usd
-                                        </v-icon>
-                                    </v-btn>
-                                </v-col>
-                                <v-col cols="1" lg="2" md="2">
-                                    <v-text-field
-                                        v-model="timerPanel.passedSeconds"
-                                        placeholder="00:00:00"
-                                        dense
-                                        hide-details="auto"
-                                        readonly
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="1" lg="1" md="1">
-                                    <v-btn
-                                        tile
-                                        small
-                                        :color="!timerPanel.start ? themeColor : 'error'"
-                                        style="color: white"
-                                        @click="actionStartNewTrack()"
-                                    >
-                                        <span v-if="!timerPanel.start">Start</span>
-                                        <span v-if="timerPanel.start">Stop</span>
-                                    </v-btn>
-                                </v-col>
-                            </v-row>
-                        </v-col>
-
-                        <v-col cols="11" lg="11" md="10" sm="10" v-if="!mode">
-<!--                            Manual mode-->
-                            <v-row>
-                                <v-col cols="4" lg="3" md="3" sm="8">
-                                    <v-text-field
-                                        outlined
-                                        dense
-                                        hide-details="auto"
-                                        placeholder="What are you working on?"
-                                        v-model="manualPanel.description"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-spacer></v-spacer>
-                                <v-col cols="2" lg="3" md="3" sm="4" class="text-right">
-                                    <ProjectBtn
-                                        key="manualPanelProjectKey"
-                                        :color="themeColor"
-                                        :onChoosable="handlerProjectManualPanel"
-                                        v-model="manualPanel.project"
-                                    ></ProjectBtn>
-
-                                    <TagBtn
-                                        key="manualPanelTagKey"
-                                        :color="themeColor"
-                                        :onChoosable="handlerTagsManualPanel"
-                                        v-model="manualPanel.tags"
-                                    >
-                                    </TagBtn>
-
-                                    <v-btn
-                                        :icon="!manualPanel.billable"
-                                        x-small
-                                        :color="themeColor"
-                                        fab
-                                        @click="manualPanel.billable = !manualPanel.billable"
-                                    >
-                                        <v-icon center v-bind:class="{ 'white--text': manualPanel.billable }">
-                                            mdi-currency-usd
-                                        </v-icon>
-                                    </v-btn>
-                                </v-col>
-                                <v-col cols="1" lg="1" md="1">
-                                    <TimeField
-                                        v-model="manualPanel.date_from"
-                                        style="max-width: 100px"
-                                        label="From"
-                                        placeholder="hh:mm"
-                                        format="HH:mm"
-                                    ></TimeField>
-                                </v-col>
-                                <v-col cols="1" lg="1" md="1">
-                                    <TimeField
-                                        v-model="manualPanel.date_to"
-                                        style="max-width: 100px"
-                                        label="To"
-                                        placeholder="hh:mm"
-                                        format="HH:mm"
-                                    ></TimeField>
-                                </v-col>
-                                <v-col cols="2" lg="2" md="2">
-                                    <template>
-                                        <v-menu
-                                            v-model="createDatePicker"
-                                            :close-on-content-click="false"
-                                            :nudge-right="40"
-                                            transition="scale-transition"
-                                            offset-y
-                                            min-width="auto"
-                                            left
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-text-field
-                                                    dense
-                                                    v-model="date"
-                                                    label="Date"
-                                                    placeholder="yyyy-mm-dd"
-                                                    prepend-icon="mdi-calendar"
-                                                    v-bind="attrs"
-                                                    v-on="on"
-                                                    hide-details="auto"
-                                                    class="date-picker__without-line"
-                                                    style="max-width: 1050px"
-                                                    @blur="handlerSetDate()"
-                                                ></v-text-field>
-                                            </template>
-                                            <v-date-picker
-                                                dense
-                                                v-model="date"
-                                                @input="createDatePicker = false"
-                                            ></v-date-picker>
-                                        </v-menu>
-                                    </template>
-                                </v-col>
-                                <v-col cols="1" lg="1" md="1">
-                                    <v-text-field
-                                        v-model="timeAdd"
-                                        placeholder="00:00:00"
-                                        dense
-                                        readonly
-                                        hide-details="auto"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="1" lg="1" md="1">
-                                    <v-btn
-                                        small
-                                        tile
-                                        :color="themeColor"
-                                        :loading="loadingCreateTrack"
-                                        :disabled="loadingCreateTrack"
-                                        style="color: white"
-                                        @click="actionCreateTrack()"
-                                    >
-                                        Add
-                                    </v-btn>
-                                </v-col>
-                            </v-row>
-                        </v-col>
-                        <v-col cols="1" lg="1" md="2" sm="2">
+                    <!-- Timer mode-->
+                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="mode">
+                        <div class="flex-grow-1 align-self-center">
+                            <v-text-field
+                                outlined
+                                dense
+                                hide-details="auto"
+                                placeholder="What are you working on?"
+                                v-model="timerPanel.description"
+                                style="max-width: 1000px"
+                            ></v-text-field>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <ProjectBtn
+                                key="timerPanelProjectKey"
+                                :color="themeColor"
+                                :onChoosable="handlerProjectTimerPanel"
+                                v-model="timerPanel.project"
+                            ></ProjectBtn>
+                        </div>
+                        <div class="mx-2 align-self-center">
+                            <TagBtn
+                                key="timerPanelTagKey"
+                                :color="themeColor"
+                                :onChoosable="handlerTagsTimerPanel"
+                                v-model="timerPanel.tags"
+                            >
+                            </TagBtn>
+                        </div>
+                        <div class="mx-2 align-self-center">
+                            <v-btn
+                                fab
+                                :icon="!timerPanel.billable"
+                                x-small
+                                :color="themeColor"
+                                @click="timerPanel.billable = !timerPanel.billable"
+                            >
+                                <v-icon center v-bind:class="{ 'white--text': timerPanel.billable }">
+                                    mdi-currency-usd
+                                </v-icon>
+                            </v-btn>
+                        </div>
+                        <div class="mx-3 align-self-center" style="max-width: 100px">
+                            <v-text-field
+                                v-model="timerPanel.passedSeconds"
+                                placeholder="00:00:00"
+                                dense
+                                hide-details="auto"
+                                readonly
+                            ></v-text-field>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <v-btn
+                                tile
+                                small
+                                :color="!timerPanel.start ? themeColor : 'error'"
+                                style="color: white"
+                                @click="actionStartNewTrack()"
+                            >
+                                <span v-if="!timerPanel.start">{{ langMap.tracking.tracker.start }}</span>
+                                <span v-if="timerPanel.start">{{ langMap.tracking.tracker.stop }}</span>
+                            </v-btn>
+                        </div>
+                        <div class="mx-1 d-flex flex-column">
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
@@ -211,7 +91,7 @@
                                         <v-icon v-bind:class="{ 'white--text': mode }">mdi-clock</v-icon>
                                     </v-btn>
                                 </template>
-                                <span>Timer</span>
+                                <span v-text="langMap.tracking.tracker.timer"></span>
                             </v-tooltip>
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
@@ -227,54 +107,225 @@
                                         <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
                                     </v-btn>
                                 </template>
-                                <span>Manual</span>
+                                <span v-text="langMap.tracking.tracker.manual"></span>
                             </v-tooltip>
-                        </v-col>
-                    </v-row>
+                        </div>
+                    </div>
+                    <!-- Manual mode-->
+                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!mode">
+                        <div class="flex-grow-1 align-self-center">
+                            <v-text-field
+                                outlined
+                                dense
+                                hide-details="auto"
+                                :placeholder="langMap.tracking.tracker.timer_panel_description"
+                                v-model="manualPanel.description"
+                                style="max-width: 1000px"
+                            ></v-text-field>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <ProjectBtn
+                                key="manualPanelProjectKey"
+                                :color="themeColor"
+                                :onChoosable="handlerProjectManualPanel"
+                                v-model="manualPanel.project"
+                            ></ProjectBtn>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <TagBtn
+                                key="manualPanelTagKey"
+                                :color="themeColor"
+                                :onChoosable="handlerTagsManualPanel"
+                                v-model="manualPanel.tags"
+                            >
+                            </TagBtn>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <v-btn
+                                :icon="!manualPanel.billable"
+                                x-small
+                                :color="themeColor"
+                                fab
+                                @click="manualPanel.billable = !manualPanel.billable"
+                            >
+                                <v-icon center v-bind:class="{ 'white--text': manualPanel.billable }">
+                                    mdi-currency-usd
+                                </v-icon>
+                            </v-btn>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <TimeField
+                                v-model="manualPanel.date_from"
+                                style="max-width: 100px"
+                                :label="langMap.tracking.tracker.from"
+                                placeholder="hh:mm"
+                                format="HH:mm"
+                            ></TimeField>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <TimeField
+                                v-model="manualPanel.date_to"
+                                style="max-width: 100px"
+                                :label="langMap.tracking.tracker.to"
+                                placeholder="hh:mm"
+                                format="HH:mm"
+                            ></TimeField>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <v-menu
+                                v-model="createDatePicker"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="auto"
+                                left
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                        dense
+                                        v-model="date"
+                                        :label="langMap.tracking.tracker.date"
+                                        placeholder="yyyy-mm-dd"
+                                        prepend-icon="mdi-calendar"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                        hide-details="auto"
+                                        class="date-picker__without-line mt-1"
+                                        style="min-width: 100px; max-width: 130px"
+                                        @blur="handlerSetDate()"
+                                    ></v-text-field>
+                                </template>
+                                <v-date-picker
+                                    dense
+                                    v-model="date"
+                                    @input="createDatePicker = false"
+                                ></v-date-picker>
+                            </v-menu>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <v-text-field
+                                v-model="timeAdd"
+                                placeholder="00:00:00"
+                                dense
+                                readonly
+                                hide-details="auto"
+                                style="max-width: 80px; text-align: center"
+                            ></v-text-field>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <v-btn
+                                small
+                                tile
+                                :color="themeColor"
+                                :loading="loadingCreateTrack"
+                                :disabled="loadingCreateTrack"
+                                style="color: white"
+                                @click="actionCreateTrack()"
+                            >
+                                {{langMap.tracking.tracker.add}}
+                            </v-btn>
+                        </div>
+                        <div class="mx-1 d-flex flex-column">
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        fab
+                                        x-small
+                                        :icon="!mode"
+                                        :color="themeColor"
+                                        @click="mode=true"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <v-icon v-bind:class="{ 'white--text': mode }">mdi-clock</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span v-text="langMap.tracking.tracker.timer"></span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        fab
+                                        x-small
+                                        :icon="mode"
+                                        :color="themeColor"
+                                        @click="mode=false"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span v-text="langMap.tracking.tracker.manual"></span>
+                            </v-tooltip>
+                        </div>
+                    </div>
                 </v-toolbar>
             </v-card>
         </template>
 
 <!--        dateRangePicker-->
         <template>
-            <v-row>
-                <v-col
-                    cols="12"
-                    offset-md="7"
-                    md="4"
-                    offset-lg="9"
-                    lg="2"
-                >
-                    <v-menu
+            <div class="d-flex flex-row-reverse mr-16">
+                <v-menu
                         ref="dateRangePicker"
                         v-model="dateRangePicker"
                         :close-on-content-click="false"
                         transition="scale-transition"
                         offset-y
-                        max-width="290px"
                         min-width="auto"
                         class="float-right"
+                        nudge-left="200px"
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-text-field
                                 v-model="dateRangeText"
-                                label="Date range"
-                                persistent-hint
-                                prepend-icon="mdi-calendar"
                                 v-bind="attrs"
                                 v-on="on"
                                 hide-details="auto"
+                                rounded
+                                readonly
+                                prepend-inner-icon="mdi-calendar"
+                                :style="{
+                                    'border-style': 'solid',
+                                    'border-color': themeColor,
+                                    'border-width': '2px',
+                                    'min-width': '280px',
+                                    'max-width': '300px'
+                                }"
+                                class="py-0 mt-3 mb-n3 dateRangePicker"
                             ></v-text-field>
                         </template>
-                        <v-date-picker
-                            v-model="dateRange"
-                            range
-                            no-title
-                            @input="handlerDateRange()"
-                        ></v-date-picker>
+                        <v-card>
+                            <v-row>
+                                <v-col cols="4" offset="1" class="pt-6 mb-n3">
+                                    <v-text-field
+                                        readonly
+                                        :label="langMap.tracking.tracker.period_from"
+                                        v-model="periodStart"
+                                        prepend-icon="mdi-calendar"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="4" offset="2" class="pt-6 mb-n3">
+                                    <v-text-field
+                                        readonly
+                                        :label="langMap.tracking.tracker.period_to"
+                                        v-model="periodEnd"
+                                        prepend-icon="mdi-calendar"
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <vc-date-picker
+                                v-model="dateRange"
+                                is-range
+                                :columns="2"
+                                mode="date"
+                                @input="handlerDateRange"
+                            ></vc-date-picker>
+                        </v-card>
                     </v-menu>
-                </v-col>
-            </v-row>
+            </div>
         </template>
 
         <br>
@@ -293,7 +344,7 @@
                         :color="themeColor"
                         style="color: white"
                     >
-                        <span v-if="moment(panelDate).format() === moment().format()">Today</span>
+                        <span v-if="moment(panelDate).format() === moment().format()">{{langMap.tracking.tracker.today}}</span>
                         <span v-else>{{ moment(panelDate).format('ddd, DD MMM YYYY')}}</span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -307,24 +358,39 @@
                                 >
                                     <template v-slot:item.description="props">
                                         <v-edit-dialog
-
                                             @save="save(props.item, 'description')"
                                             @cancel="cancel"
                                             @open="open"
                                             @close="save(props.item, 'description')"
                                         >
+                                            <span v-if="props.item.service">
+                                                    {{ props.item.service.name }}
+                                                    <v-icon x-small>mdi-checkbox-blank-circle</v-icon>
+                                                </span>
                                             <span class="text--secondary" v-if="!props.item.description">
-                                                Add description
+                                                {{langMap.tracking.tracker.add_description}}
                                             </span>
-                                            {{ props.item.description }}
+                                            <span v-else>
+                                                {{ props.item.description }}
+                                            </span>
                                             <template v-slot:input>
                                                 <v-text-field
                                                     v-model="props.item.description"
-                                                    label="Description"
-                                                    hint="Description"
+                                                    :label="langMap.tracking.tracker.description"
+                                                    :placeholder="langMap.tracking.tracker.description"
                                                     single-line
                                                     counter
                                                 ></v-text-field>
+                                                <v-select
+                                                    :items="$store.getters['Services/getServices']"
+                                                    :label="langMap.tracking.tracker.service_type"
+                                                    :placeholder="langMap.tracking.tracker.service_type"
+                                                    item-text="name"
+                                                    item-value="id"
+                                                    v-model="props.item.service"
+                                                    return-object
+                                                    dense
+                                                ></v-select>
                                             </template>
                                         </v-edit-dialog>
                                     </template>
@@ -429,8 +495,8 @@
                                         </v-menu>
                                     </template>
                                     <template v-slot:item.actions="props">
-                                        <v-row>
-                                            <v-col cols="6">
+                                        <div class="d-flex flex-row">
+                                            <div>
                                                 <v-btn
                                                     depressed
                                                     color="error"
@@ -447,8 +513,8 @@
                                                 >
                                                     <v-icon class="white--text">mdi-play-outline</v-icon>
                                                 </v-btn>
-                                            </v-col>
-                                            <v-col cols="6">
+                                            </div>
+                                            <div>
                                                 <v-menu
                                                     bottom
                                                     left
@@ -477,7 +543,7 @@
                                                                         <v-list-item-title
                                                                             @click="actionDuplicateTracking(props.item.id)"
                                                                         >
-                                                                            Duplicate
+                                                                            {{ langMap.tracking.tracker.duplicate }}
                                                                         </v-list-item-title>
                                                                     </v-list-item-content>
                                                                 </v-list-item>
@@ -487,7 +553,7 @@
                                                                             @click="actionDeleteTracking(props.item.id)"
                                                                             style="color: red"
                                                                         >
-                                                                            Delete
+                                                                            {{langMap.tracking.tracker.delete}}
                                                                         </v-list-item-title>
                                                                     </v-list-item-content>
                                                                 </v-list-item>
@@ -495,8 +561,8 @@
                                                         </v-list>
                                                     </v-card>
                                                 </v-menu>
-                                            </v-col>
-                                        </v-row>
+                                            </div>
+                                        </div>
                                     </template>
                                 </v-data-table>
 
@@ -515,6 +581,9 @@
 .date-picker__without-line.v-text-field:not(.v-input__has-state):hover>.v-input__control>.v-input__slot:before,
 .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:after{
     border: none !important;
+}
+.dateRangePicker input {
+    text-align: center;
 }
 </style>
 
@@ -564,59 +633,60 @@ export default {
             createDatePicker: false,
             /* Date range picker */
             dateRangePicker: false,
-            dateRange: [],
+            dateRange: {},
             /* Data table */
             headers: [
                 {
-                    text: 'Description',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.description,
                     align: 'start',
                     value: 'description',
                     width: '25%'
                 },
                 {
-                    text: 'Company',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.company,
                     value: 'project.client.name',
                     width: '20%'
                 },
                 {
-                    text: 'Project name',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.project_name,
                     value: 'project.name',
                     width: '20%'
                 },
                 {
-                    text: 'Tag',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.tag,
                     value: 'tags',
-                    width: '5%'
+                    width: '3%'
                 },
                 {
-                    text: 'Billable',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.billable,
                     value: 'billable',
-                    width: '5%'
+                    width: '3%'
                 },
                 {
-                    text: 'Start',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.start,
                     value: 'date_from',
-                    width: '5%'
+                    width: '3%'
                 },
                 {
-                    text: 'End',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.end,
                     value: 'date_to',
-                    width: '5%'
+                    width: '3%'
                 },
                 {
-                    text: 'Passed',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.passed,
                     value: 'passed',
                     width: '5%'
                 },
                 {
                     text: '',
                     value: 'date',
-                    width: '5%',
+                    width: '3%',
                     sortable: false
                 },
                 {
-                    text: 'Actions',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.actions,
                     value: 'actions',
+                    width: '10%',
                     sortable: false
                 }
             ],
@@ -657,17 +727,20 @@ export default {
         this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
         if (Helper.getKey('dateRange')) {
             this.dateRange = Helper.getKey('dateRange');
+            if (moment(this.dateRange.end).format(this.dateFormat) === moment().subtract(1, 'days').format(this.dateFormat)) {
+                this.dateRange.end = moment();
+                Helper.storeKey('dateRange', this.dateRange);
+            }
         } else {
-            this.dateRange = [
-                moment().subtract(1, 'days').format(this.dateFormat),
-                moment().format(this.dateFormat)
-            ];
+            this.dateRange = {
+                start: moment().subtract(1, 'days').format(this.dateFormat),
+                end: moment().format(this.dateFormat)
+            };
             Helper.storeKey('dateRange', this.dateRange);
         }
         this.timeFrom = moment().format();
         this.timeTo = moment().add(15, 'minutes').format();
         this.date = moment().format(this.dateFormat);
-        Helper.storeKey('dateFormat', this.dateFormat);
     },
     mounted() {
         this.__globalTimer();
@@ -676,6 +749,7 @@ export default {
         this.$store.dispatch('Products/getProductList', { search: null });
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Tags/getTagList');
+        this.$store.dispatch('Services/getServicesList', { search: null });
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeColor = color;
@@ -692,8 +766,8 @@ export default {
             if (this.attemptRepeat > 5) return;
             this.loading = true;
             const queryParams = new URLSearchParams({
-                date_from: this.dateRange[0] || null,
-                date_to: this.dateRange[1] || null
+                date_from: moment(this.dateRange.start).format(this.dateFormat) || null,
+                date_to: moment(this.dateRange.end).format(this.dateFormat) || null
             });
             return axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
                 .then(({ data }) => {
@@ -890,12 +964,9 @@ export default {
             };
         },
         handlerDateRange() {
-            if (this.dateRange.length === 2) {
-                this.dateRange.sort();
-                Helper.storeKey('dateRange', this.dateRange);
-                this.dateRangePicker = false;
-                this.debounceGetTracking();
-            }
+            Helper.storeKey('dateRange', this.dateRange);
+            this.dateRangePicker = false;
+            this.debounceGetTracking();
         },
         // handlerSetTimeFrom() {
         //     if (!this.timeFrom) {
@@ -981,7 +1052,6 @@ export default {
             item.date_from = moment(item.date_from).set(date).format();
             item.date_to = moment(item.date_from).add(seconds, "seconds").format();
             this.save(item, 'date_from');
-            console.log(item);
         }
     },
     computed: {
@@ -993,7 +1063,8 @@ export default {
             return this.helperConvertSecondsToTimeFormat(seconds);
         },
         dateRangeText () {
-            return this.dateRange.join(' ~ ')
+            const dateFormat = 'DD MMM YYYY';
+            return `${moment(this.dateRange.start).format(dateFormat)} - ${moment(this.dateRange.end).format(dateFormat)}`;
         },
         getPanelDates () {
             const items = this.tracking.reduce(function (acc, item) {
@@ -1021,6 +1092,12 @@ export default {
 
                 return Object.assign({}, entry, { name })
             })
+        },
+        periodStart () {
+            return moment(this.dateRange.start).format('DD/MM/YYYY');
+        },
+        periodEnd () {
+            return moment(this.dateRange.end).format('DD/MM/YYYY');
         }
     },
     watch: {

@@ -35,8 +35,8 @@
                     :search-input.sync="form.name"
                     hide-selected
                     return-object
-                    label="Tags"
-                    placeholder="Choose tags"
+                    :label="langMap.tracking.tag_btn.tags"
+                    :placeholder="langMap.tracking.tag_btn.choose_tags"
                     item-text="name"
                     item-id="id"
                     :items="$store.getters['Tags/getTags']"
@@ -48,7 +48,7 @@
                     <template v-slot:no-data>
                         <v-list-item>
                             <span class="subheading d-flex justify-start mr-auto">
-                                Create&nbsp;
+                                {{ langMap.tracking.tag_btn.create }}&nbsp;
                                 <v-chip
                                     label
                                     small
@@ -143,8 +143,9 @@ export default {
             type: Function
         }
     },
-    data: () => {
+    data() {
         return {
+            langMap: this.$store.state.lang.lang_map,
             isLoadingTags: false,
             form: {
                 name: '',

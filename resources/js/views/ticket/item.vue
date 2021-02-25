@@ -146,7 +146,7 @@
                     <v-card-text>
                         <v-form>
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-12 mt-2">
                                     <tiptap-vuetify
                                         v-model="ticketAnswer.answer"
                                         :extensions="extensions"
@@ -203,7 +203,7 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="noteDialog" max-width="480">
+            <v-dialog v-model="noteDialog" max-width="50%">
                 <v-card dense outlined>
                     <v-card-title class="headline" style="background-color: #F0F0F0;">
                         {{ langMap.ticket.add_internal_note }}
@@ -211,19 +211,29 @@
                     <v-card-text>
                         <v-form>
                             <div class="row">
-                                <div class="col-md-12">
-                                    <v-textarea
+                                <div class="col-md-12 mt-2">
+                                    <tiptap-vuetify
                                         v-model="ticketNotice.notice"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
-                                        :label="langMap.ticket.add_internal_note"
-                                        auto-grow
-                                        dense
-                                        prepend-icon="mdi-text"
-                                        row-height="25"
-                                        rows="1"
-                                    ></v-textarea>
+                                        :extensions="extensions"
+                                        :placeholder="langMap.ticket.add_internal_note"
+                                    />
                                 </div>
+                            </div>
+                            <div class="col-md-12">
+                                <v-select
+                                    :color="themeColor"
+                                    :item-color="themeColor"
+                                    v-model="selectedSignature"
+                                    :items="signatures"
+                                    :label="langMap.notification.signature"
+                                    item-value="signature"
+                                    item-text="name"
+                                    dense
+                                >
+                                    <template slot="selection" slot-scope="data">
+                                        <div class="text--black mt-3" v-html="data.item.signature"></div>
+                                    </template>
+                                </v-select>
                             </div>
                         </v-form>
                     </v-card-text>
@@ -524,7 +534,7 @@
                                             <span v-if="ticket.contact !== null" class="float-md-right text-md-right">
                                                 <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
                                                 >
@@ -631,7 +641,7 @@
                                             >
                                                 <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
                                                 >
@@ -691,7 +701,7 @@
                                             style="font-weight: bold;">
                                             <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
                                                 >
@@ -762,7 +772,7 @@
                                         <span class="text-left" style="font-weight: bold;">
                                             <v-avatar
                                                 size="2em"
-                                                class="mr-2"
+                                                class="mr-2 mb-2"
                                                 color="grey darken-1"
                                                 v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
                                             >
@@ -813,7 +823,7 @@
                                     <span class="text-left" style="font-weight: bold;">
                                         <v-avatar
                                             size="2em"
-                                            class="mr-2"
+                                            class="mr-2 mb-2"
                                             color="grey darken-1"
                                             v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
                                         >
@@ -856,7 +866,7 @@
                                  <span v-if="ticket.contact !== null" class="float-md-right text-md-right">
                                      <v-avatar
                                          size="2em"
-                                         class="mr-2"
+                                         class="mr-2 mb-2"
                                          color="grey darken-1"
                                          v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
                                      >
@@ -977,7 +987,7 @@
                                     <span class="float-md-right text-md-right">
                                         <v-avatar
                                             size="2em"
-                                            class="mr-2"
+                                            class="mr-2 mb-2"
                                             color="grey darken-1"
                                             v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
                                         >
@@ -1094,7 +1104,7 @@
 
                                                 <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
                                                 >
@@ -1129,7 +1139,7 @@
                                             <strong>
                                                 <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
                                                 >
@@ -1501,7 +1511,7 @@
                                             <strong class="text-left">
                                                 <v-avatar
                                                     size="2em"
-                                                    class="mr-2"
+                                                    class="mr-2 mb-2"
                                                     color="grey darken-1"
                                                     v-if="history.employee.user_data.avatar_url || history.employee.user_data.full_name"
                                                 >
@@ -2018,6 +2028,10 @@ export default {
             });
         },
         addTicketNotice() {
+            if (this.selectedSignature !== '') {
+                this.ticketNotice.notice += '<hr><br/>' + this.selectedSignature
+            }
+
             axios.post(`/api/ticket/${this.$route.params.id}/notice`, this.ticketNotice).then(response => {
                 response = response.data
                 if (response.success === true) {

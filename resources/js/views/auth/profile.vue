@@ -9,257 +9,784 @@
             >
                 {{ snackbarMessage }}
             </v-snackbar>
-            <v-col class="col-md-6">
-                <v-card class="elevation-6">
+            <v-col cols="6">
+                <v-card>
                     <v-toolbar
-                        dense
-                        :color="themeColor"
                         dark
+                        dense
                         flat
+                        :color="themeColor"
                     >
-                        <v-toolbar-title>{{this.$store.state.lang.lang_map.main.profile}}</v-toolbar-title>
+                        <v-toolbar-title>{{ langMap.main.profile }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="canceluserData">
-                            {{this.$store.state.lang.lang_map.main.cancel}}
+                        <v-btn color="white" icon @click="enableToEdit = true" v-if="!enableToEdit">
+                            <v-icon small dense>mdi-pencil</v-icon>
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateUser">
-                            {{this.$store.state.lang.lang_map.main.update}}
+                        <v-btn color="white" icon @click="cancelUserData" v-if="enableToEdit">
+                            <v-icon small dense>mdi-close</v-icon>
                         </v-btn>
                     </v-toolbar>
-                    <v-card-text>
-                        <v-form>
-                            <v-row>
-                                <v-col class="col-md-5">
-                                    <label>{{ langMap.profile.avatar }}</label>
 
-                                    <v-img
-                                        :src="avatar"
-                                        contain
-                                        style="z-index: 1; max-height: 20em; min-height: 10em;"
-                                    >
-                                        <v-file-input
-                                            v-model="newAvatar"
-                                            :color="themeColor"
-                                            :disabled="!enableToEdit"
-                                            accept="image/*"
-                                            dense
-                                            prepend-icon="mdi-camera"
-                                            style="z-index: 2; max-width: 1em;"
-                                        />
-                                    </v-img>
-                                </v-col>
-                                <v-col class="col-md-7">
-                                    <v-text-field
-                                        v-model="userData.number"
-                                        :color="themeColor"
-                                        :error-messages="errors.number"
-                                        :label="langMap.profile.personal_id"
-                                        :readonly="!enableToEdit"
-                                        dense
-                                        name="number"
-                                        type="text"
-                                        prepend-icon="mdi-picture-in-picture-top-right-outline"
-                                    />
-                                    <v-text-field
-                                        :color="themeColor"
-                                        :label="langMap.main.title_before_name"
-                                        name="title_before_name"
-                                        prepend-icon="mdi-book-account-outline"
-                                        type="text"
-                                        v-model="userData.title_before_name"
-                                        :error-messages="errors.title_before_name"
-                                        lazy-validation
-                                        :readonly="!enableToEdit"
-                                        dense
-                                    />
+                    <v-card-text v-if="!enableToEdit">
+                        <v-row>
+                            <v-col cols="2">
+                                <v-avatar
+                                    color="grey darken-1"
+                                    v-if="userData.avatar_url || userData.full_name"
+                                    size="80px"
+                                >
+                                    <v-img v-if="userData.avatar_url " :src="userData.avatar_url" size="100px" />
+                                    <div v-else-if="userData.full_name" class="white--text" size="100px">
+                                        {{ userData.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                    </div>
+                                </v-avatar>
+                                <v-icon v-else size="100px">mdi-account-circle</v-icon>
+                            </v-col>
+                            <v-col cols="4">
+                                <p v-if="userData.number" class="mb-3 font-weight-bold">{{ userData.number }}</p>
 
-                                    <v-text-field
-                                        :color="themeColor"
-                                        :label="langMap.main.title"
-                                        name="title"
-                                        prepend-icon="mdi-book-account-outline"
-                                        type="text"
-                                        v-model="userData.title"
-                                        :error-messages="errors.title"
-                                        lazy-validation
-                                        :readonly="!enableToEdit"
-                                        dense
-                                    />
+                                <h3 class="mb-3">{{ userData .title }} {{ userData.title_before_name}} {{ userData.full_name }}</h3>
 
-                                    <v-text-field
-                                        :color="themeColor"
-                                        :label="langMap.main.first_name"
-                                        name="name"
-                                        prepend-icon="mdi-book-account-outline"
-                                        type="text"
-                                        v-model="userData.name"
-                                        :error-messages="errors.name"
-                                        lazy-validation
-                                        required
-                                        :readonly="!enableToEdit"
-                                        dense
-                                    />
-                                    <v-text-field
-                                        :color="themeColor"
-                                        :label="langMap.main.middle_name"
-                                        name="middle_name"
-                                        prepend-icon="mdi-book-account-outline"
-                                        type="text"
-                                        v-model="userData.middle_name"
-                                        :error-messages="errors.middle_name"
-                                        lazy-validation
-                                        :readonly="!enableToEdit"
-                                        dense
-                                    />
-                                    <v-text-field
-                                        :color="themeColor"
-                                        :label="langMap.main.last_name"
-                                        name="surname"
-                                        prepend-icon="mdi-book-account-outline"
-                                        type="text"
-                                        v-model="userData.surname"
-                                        :error-messages="errors.surname"
-                                        lazy-validation
-                                        :readonly="!enableToEdit"
-                                        dense
-                                    />
-                                    <v-text-field
-                                        :color="themeColor"
-                                        id="password"
-                                        :label="langMap.main.password"
-                                        placeholder="********"
-                                        name="password"
-                                        prepend-icon="mdi-lock"
-                                        type="password"
-                                        v-model="userData.password"
-                                        :error-messages="errors.password"
-                                        lazy-validation
-                                        required
-                                        :readonly="!enableToEdit"
-                                        dense
-                                    />
-                                    <v-select
-                                        :label="langMap.main.country"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
-                                        name="country"
-                                        prepend-icon="mdi-map"
-                                        item-value="id"
-                                        :items="countries"
-                                        v-model="userData.country_id"
-                                        :error-messages="errors.country_id"
-                                        lazy-validation
-                                        :readonly="!enableToEdit"
-                                        required
-                                        dense>
-                                        <template slot="selection" slot-scope="data">
-                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
-                                        </template>
-                                        <template slot="item" slot-scope="data">
-                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
-                                        </template>
-                                    </v-select>
-                                    <v-text-field
-                                        :color="themeColor"
-                                        label="Anredeform"
-                                        name="anredeform"
-                                        prepend-icon="mdi-mail"
-                                        type="text"
-                                        v-model="userData.anredeform"
-                                        :error-messages="errors.anredeform"
-                                        lazy-validation
-                                        required
-                                        :readonly="!enableToEdit"
-                                        dense
-                                    />
-                                    <v-select
-                                        :label="langMap.main.language"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
-                                        name="language"
-                                        prepend-icon="mdi-web"
-                                        item-text="name"
-                                        item-value="id"
-                                        :items="languages"
-                                        v-model="userData.language_id"
-                                        :error-messages="errors.language_id"
-                                        lazy-validation
-                                        :readonly="!enableToEdit"
-                                        dense
-                                    />
-                                    <v-select
-                                        :label="langMap.main.timezone"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
-                                        name="timezone"
-                                        prepend-icon="mdi-timetable"
-                                        item-text="text"
-                                        item-value="id"
-                                        :items="timezones"
-                                        v-model="userData.timezone_id"
-                                        :error-messages="errors.timezone_id"
-                                        lazy-validation
-                                        :readonly="!enableToEdit"
-                                        dense
-                                    />
-                                </v-col>
-                            </v-row>
-                        </v-form>
+                                <hr/>
+
+                                <div v-if="userData.emails && userData.emails.length > 0" class="mb-3">
+                                    <p v-for="(item, i) in userData.emails"  :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        {{ item.email }}
+                                    </p>
+                                </div>
+
+                                <div v-if="userData.phones && userData.phones.length > 0">
+                                    <hr/>
+                                    <p v-for="(item, i) in userData.phones"  :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        {{ item.phone }}
+                                    </p>
+                                </div>
+                            </v-col>
+                            <v-col cols="6">
+                                <div v-if="userData.addresses && userData.addresses.length > 0" class="mb-3">
+                                    <p v-for="(item, i) in userData.addresses"  :key="item.id" class="mb-1">
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2 mb-2" />
+
+                                        <span v-if="item.street">{{ item.street }}</span>
+                                        <span v-if="item.street2">, {{ item.street2 }}</span>
+                                        <span v-if="item.street3">, {{ item.street3 }}</span>
+                                        <br/>{{ item.postal_code }} {{ item.city }}
+                                        <br/><span v-if="item.country">{{ localized(item.country) }}</span>
+                                    </p>
+                                </div>
+
+                                <div v-if="userData.socials && userData.socials.length > 0">
+                                    <hr/>
+                                    <p v-for="(item, i) in userData.socials"  :key="item.id" class="mb-0">
+                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        {{ item.social_link }}
+                                    </p>
+                                </div>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="6">
+                                <hr/>
+
+                                <p class="mb-0">
+                                    <v-icon v-if="notificationStatuses.includes(101)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                    {{ langMap.profile.new_assigned_to_me }}
+                                </p>
+
+                                <p class="mb-0">
+                                    <v-icon v-if="notificationStatuses.includes(201)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                    {{ langMap.profile.new_assigned_to_team }}
+                                </p>
+
+                                <p class="mb-0">
+                                    <v-icon v-if="notificationStatuses.includes(301)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                    {{ langMap.profile.new_assigned_to_company }}
+                                </p>
+
+                                <p class="mb-0">
+                                    <v-icon v-if="notificationStatuses.includes(103)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                    {{ langMap.profile.client_response_assigned_to_me }}
+                                </p>
+                            </v-col>
+                            <v-col cols="6">
+                                <hr/>
+
+                                <p class="mb-0">
+                                    <v-icon v-if="notificationStatuses.includes(102)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                    {{ langMap.profile.update_assigned_to_me }}
+                                </p>
+
+                                <p class="mb-0">
+                                    <v-icon v-if="notificationStatuses.includes(202)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                    {{ langMap.profile.update_assigned_to_team }}
+                                </p>
+
+                                <p class="mb-0">
+                                    <v-icon v-if="notificationStatuses.includes(302)" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                    {{ langMap.profile.update_assigned_to_company }}
+                                </p>
+                            </v-col>
+                        </v-row>
+
+                        <v-row>
+                            <v-col cols="6">
+                                <hr/>
+
+                                <p class="mb-0" v-if="langs && langs.length > 0">
+                                    <v-icon left small dense :color="themeColor">mdi-web</v-icon>
+                                    {{ langs[userData.language_id].name }}
+                                </p>
+                            </v-col>
+                            <v-col cols="6">
+                                <hr/>
+
+                                <p class="mb-0">
+                                    <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                    {{ langMap.individuals.active }}
+                                </p>
+
+                                <p class="mb-0">
+                                    <v-icon v-if="userData.is_active" small dense left color="success">mdi-check-circle</v-icon>
+                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                    {{ langMap.main.give_access }}
+                                </p>
+                            </v-col>
+                        </v-row>
+
                     </v-card-text>
-                </v-card>
+                    <v-expand-transition>
+                        <v-card v-if="enableToEdit" class="transition-fast-in-fast-out">
+                            <v-card-text>
+                                <v-form>
+                                    <v-row>
+                                        <v-col cols="2">
+                                            <label>{{ langMap.profile.avatar }}</label>
+                                            <v-avatar size="80px">
+                                                <v-img :src="avatar" style="z-index: 1;">
+                                                    <v-file-input
+                                                        v-model="newAvatar"
+                                                        color="white"
+                                                        accept="image/*"
+                                                        dense
+                                                        prepend-icon="mdi-camera"
+                                                        icon
+                                                        style="z-index: 2; max-width: 1em;"
+                                                        class="mt-7 ml-7"
+                                                    />
+                                                </v-img>
+                                            </v-avatar>
+                                        </v-col>
+                                        <v-col cols="10">
+                                            <v-row>
+                                                <v-col cols="4">
+                                                    <v-text-field
+                                                        v-model="userData.number"
+                                                        :color="themeColor"
+                                                        :error-messages="errors.number"
+                                                        :label="langMap.profile.personal_id"
+                                                        dense
+                                                        name="number"
+                                                        type="text"
+                                                        prepend-icon="mdi-picture-in-picture-top-right-outline"
+                                                    />
+                                                </v-col>
+                                                <v-col cols="4">
+                                                    <v-text-field
+                                                        v-model="userData.title_before_name"
+                                                        :color="themeColor"
+                                                        :error-messages="errors.title_before_name"
+                                                        :label="langMap.main.title_before_name"
+                                                        dense
+                                                        lazy-validation
+                                                        name="title_before_name"
+                                                        prepend-icon="mdi-book-account-outline"
+                                                        type="text"
+                                                    />
+                                                </v-col>
+                                                <v-col cols="4">
+                                                    <v-text-field
+                                                        v-model="userData.title"
+                                                        :color="themeColor"
+                                                        :error-messages="errors.title"
+                                                        :label="langMap.main.title"
+                                                        dense
+                                                        lazy-validation
+                                                        name="title"
+                                                        prepend-icon="mdi-book-account-outline"
+                                                        type="text"
+                                                    />
+                                                </v-col>
+                                                <v-col cols="4">
+                                                    <v-text-field
+                                                        v-model="userData.name"
+                                                        :color="themeColor"
+                                                        :error-messages="errors.name"
+                                                        :label="langMap.main.first_name"
+                                                        dense
+                                                        lazy-validation
+                                                        name="name"
+                                                        prepend-icon="mdi-book-account-outline"
+                                                        required
+                                                        type="text"
+                                                    />
+                                                </v-col>
+                                                <v-col cols="4">
+                                                    <v-text-field
+                                                        v-model="userData.middle_name"
+                                                        :color="themeColor"
+                                                        :error-messages="errors.middle_name"
+                                                        :label="langMap.main.middle_name"
+                                                        dense
+                                                        lazy-validation
+                                                        name="middle_name"
+                                                        prepend-icon="mdi-book-account-outline"
+                                                        type="text"
+                                                    />
+                                                </v-col>
+                                                <v-col cols="4">
+                                                    <v-text-field
+                                                        v-model="userData.surname"
+                                                        :color="themeColor"
+                                                        :error-messages="errors.surname"
+                                                        :label="langMap.main.last_name"
+                                                        dense
+                                                        lazy-validation
+                                                        name="surname"
+                                                        prepend-icon="mdi-book-account-outline"
+                                                        type="text"
+                                                    />
+                                                </v-col>
+                                            </v-row>
+                                        </v-col>
+                                    </v-row>
 
-                <v-spacer>&nbsp;</v-spacer>
+                                    <v-spacer>&nbsp;</v-spacer>
+                                    <hr/>
+                                    <v-spacer>&nbsp;</v-spacer>
 
-                <v-card class="elevation-6">
-                    <v-toolbar
-                        dense
-                        :color="themeColor"
-                        dark
-                        flat
-                    >
-                        <v-toolbar-title>
-                            {{langMap.profile.email_signatures}}
-                        </v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-
-                    <v-card-text>
-                        <v-form>
-                            <v-row>
-                                <v-col class="col-md-12">
-                                    <v-list
-                                        dense
-                                        subheader
-                                    >
-                                        <v-list-item-group :color="themeColor">
-                                            <v-list-item
-                                                v-for="(item, i) in userData.email_signatures"
-                                                :key="item.id"
-                                            >
-                                                <v-list-item-content>
-                                                    <v-list-item-title v-text="item.name"></v-list-item-title>
+                                    <h3>{{ langMap.individuals.contact_info }}</h3>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-list-item v-for="(item, i) in userData.emails" :key="item.id">
+                                                <v-list-item-icon v-if="item.type">
+                                                    <v-icon v-text="item.type.icon" small dense />
+                                                </v-list-item-icon>
+                                                <v-list-item-content class="mr-2">
+                                                    <v-list-item-title v-text="item.email"></v-list-item-title>
+                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
                                                 </v-list-item-content>
                                                 <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="editEmailSignature(item)"
-                                                    >
-                                                        mdi-pencil
-                                                    </v-icon>
+                                                    <v-icon small @click="editEmail(item)">mdi-pencil</v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action>
-                                                    <v-icon small @click="deleteEmailSignature(item.id)">
-                                                        mdi-delete
-                                                    </v-icon>
+                                                <v-list-item-action v-if="item.email_type === 1">
+                                                    <v-icon :title="langMap.profile.login_email" small>mdi-lock</v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action v-else>
+                                                    <v-icon small @click="deleteEmail(item.id)">mdi-delete</v-icon>
                                                 </v-list-item-action>
                                             </v-list-item>
-                                        </v-list-item-group>
-                                    </v-list>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-list-item v-for="(item, i) in userData.phones" :key="item.id">
+                                                <v-list-item-icon v-if="item.type">
+                                                    <v-icon v-text="item.type.icon" small dense />
+                                                </v-list-item-icon>
+                                                <v-list-item-content class="mr-2">
+                                                    <v-list-item-title v-text="item.phone"></v-list-item-title>
+                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon small @click="editPhone(item)">mdi-pencil</v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action>
+                                                    <v-icon small @click="deletePhone(item.id)">mdi-delete</v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-expansion-panels v-model="emailForm.opened" accordion>
+                                                <v-expansion-panel>
+                                                    <v-expansion-panel-header>
+                                                        {{ langMap.main.new_email }}
+                                                        <template v-slot:actions>
+                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                        </template>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-form>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field
+                                                                        v-model="emailForm.email"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.email"
+                                                                        dense
+                                                                    />
+                                                                    <v-select
+                                                                        v-model="emailForm.email_type"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :items="emailTypes"
+                                                                        :label="langMap.main.type"
+                                                                        dense
+                                                                        item-value="id"
+                                                                    >
+                                                                        <template slot="selection" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                        <template slot="item" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+
+                                                                    </v-select>
+                                                                </v-col>
+                                                                <v-btn
+                                                                    :color="themeColor"
+                                                                    bottom
+                                                                    dark
+                                                                    fab
+                                                                    right
+                                                                    small
+                                                                    @click="addEmail"
+                                                                >
+                                                                    <v-icon>mdi-plus</v-icon>
+                                                                </v-btn>
+                                                            </v-row>
+                                                        </v-form>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+                                            </v-expansion-panels>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-expansion-panels v-model="phoneForm.opened" accordion>
+                                                <v-expansion-panel>
+                                                    <v-expansion-panel-header>
+                                                        {{ langMap.main.new_phone }}
+                                                        <template v-slot:actions>
+                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                        </template>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-form>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field
+                                                                        v-model="phoneForm.phone"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.phone"
+                                                                        dense
+                                                                    />
+                                                                    <v-select
+                                                                        v-model="phoneForm.phone_type"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :items="phoneTypes"
+                                                                        :label="langMap.main.type"
+                                                                        dense
+                                                                        item-value="id"
+                                                                    >
+                                                                        <template slot="selection" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                        <template slot="item" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                    </v-select>
+                                                                </v-col>
+                                                                <v-btn
+                                                                    :color="themeColor"
+                                                                    bottom
+                                                                    dark
+                                                                    fab
+                                                                    right
+                                                                    small
+                                                                    @click="addPhone"
+                                                                >
+                                                                    <v-icon>mdi-plus</v-icon>
+                                                                </v-btn>
+                                                            </v-row>
+                                                        </v-form>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+                                            </v-expansion-panels>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-list-item v-for="(item, i) in userData.addresses" :key="item.id">
+                                                <v-list-item-icon v-if="item.type">
+                                                    <v-icon v-text="item.type.icon" small dense />
+                                                </v-list-item-icon>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="">
+                                                        <span v-if="item.street">{{ item.street }}</span>
+                                                        <span v-if="item.street2">, {{ item.street2 }}</span>
+                                                        <span v-if="item.street3">, {{ item.street3 }}</span>
+                                                        <br/>{{ item.postal_code }}&nbsp;&nbsp;{{ item.city }}
+                                                        <br/><span v-if="item.country">{{ localized(item.country) }}</span>
+                                                    </v-list-item-title>
+                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action>
+                                                    <v-icon small @click="deleteAddress(item.id)">mdi-delete</v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-list-item v-for="(item, i) in userData.socials" :key="item.id">
+                                                <v-list-item-icon v-if="item.type">
+                                                    <v-icon v-text="item.type.icon" small dense />
+                                                </v-list-item-icon>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="item.social_link" />
+                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action>
+                                                    <v-icon small @click="deleteAddress(item.id)">mdi-delete</v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-expansion-panels v-model="addressForm.opened" accordion>
+                                                <v-expansion-panel>
+                                                    <v-expansion-panel-header>
+                                                        {{ langMap.main.new_address }}
+                                                        <template v-slot:actions>
+                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                        </template>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-form>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field
+                                                                        v-model="addressForm.address.street"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.address_line1"
+                                                                        dense
+                                                                    />
+                                                                    <v-text-field
+                                                                        v-model="addressForm.address.street2"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.address_line2"
+                                                                        dense
+                                                                    />
+                                                                    <v-text-field
+                                                                        v-model="addressForm.address.street3"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.address_line3"
+                                                                        dense
+
+                                                                    />
+                                                                    <v-text-field
+                                                                        v-model="addressForm.address.postal_code"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.postal_code"
+                                                                        dense
+                                                                    />
+                                                                    <v-text-field
+                                                                        v-model="addressForm.address.city"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.city"
+                                                                        dense
+                                                                    />
+                                                                    <v-select
+                                                                        v-model="addressForm.address.country_id"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :items="countries"
+                                                                        :label="langMap.main.country"
+                                                                        dense
+                                                                        item-value="id"
+                                                                    >
+                                                                        <template slot="selection" slot-scope="data">
+                                                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                                                        </template>
+                                                                        <template slot="item" slot-scope="data">
+                                                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                                                        </template>
+                                                                    </v-select>
+                                                                    <v-select
+                                                                        v-model="addressForm.address_type"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :items="addressTypes"
+                                                                        :label="langMap.main.type"
+                                                                        dense
+                                                                        item-value="id"
+                                                                    >
+                                                                        <template slot="selection" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                        <template slot="item" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                    </v-select>
+                                                                </v-col>
+                                                                <v-btn
+                                                                    :color="themeColor"
+                                                                    bottom
+                                                                    dark
+                                                                    fab
+                                                                    right
+                                                                    small
+                                                                    @click="addAddress"
+                                                                >
+                                                                    <v-icon>mdi-plus</v-icon>
+                                                                </v-btn>
+                                                            </v-row>
+                                                        </v-form>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+                                            </v-expansion-panels>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-expansion-panels v-model="socialForm.opened" accordion>
+                                                <v-expansion-panel>
+                                                    <v-expansion-panel-header>
+                                                        {{ langMap.company.new_social_item }}
+                                                        <template v-slot:actions>
+                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                        </template>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-form>
+                                                            <v-row>
+                                                                <v-col cols="12">
+                                                                    <v-text-field
+                                                                        v-model="socialForm.social_link"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :label="langMap.main.link"
+                                                                        dense
+                                                                    />
+                                                                    <v-select
+                                                                        v-model="socialForm.social_type"
+                                                                        :color="themeColor"
+                                                                        :item-color="themeColor"
+                                                                        :items="socialTypes"
+                                                                        :label="langMap.main.type"
+                                                                        dense
+                                                                        item-value="id"
+                                                                    >
+                                                                        <template slot="selection" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                        <template slot="item" slot-scope="data">
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                        </template>
+                                                                    </v-select>
+                                                                </v-col>
+                                                                <v-btn
+                                                                    :color="themeColor"
+                                                                    bottom
+                                                                    dark
+                                                                    fab
+                                                                    right
+                                                                    small
+                                                                    @click="addSocial"
+                                                                >
+                                                                    <v-icon>mdi-plus</v-icon>
+                                                                </v-btn>
+                                                            </v-row>
+                                                        </v-form>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+                                            </v-expansion-panels>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-spacer>&nbsp;</v-spacer>
+                                    <hr/>
+                                    <v-spacer>&nbsp;</v-spacer>
+
+                                    <h3>{{ langMap.profile.notifications_settings }}</h3>
+
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-checkbox
+                                                :color="themeColor"
+                                                v-model="notificationStatuses"
+                                                :value="101"
+                                                :label="langMap.profile.new_assigned_to_me"
+                                                dense
+                                            />
+                                            <v-checkbox
+                                                :color="themeColor"
+                                                v-model="notificationStatuses"
+                                                :value="201"
+                                                :label="langMap.profile.new_assigned_to_team"
+                                                dense
+                                            />
+                                            <v-checkbox
+                                                :color="themeColor"
+                                                v-model="notificationStatuses"
+                                                :value="301"
+                                                :label="langMap.profile.new_assigned_to_company"
+                                                dense
+                                            />
+                                            <v-checkbox
+                                                :color="themeColor"
+                                                v-model="notificationStatuses"
+                                                :value="103"
+                                                :label="langMap.profile.client_response_assigned_to_me"
+                                                dense
+                                            />
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-checkbox
+                                                :color="themeColor"
+                                                v-model="notificationStatuses"
+                                                :value="102"
+                                                :label="langMap.profile.update_assigned_to_me"
+                                                dense
+                                            />
+                                            <v-checkbox
+                                                :color="themeColor"
+                                                v-model="notificationStatuses"
+                                                :value="202"
+                                                :label="langMap.profile.update_assigned_to_team"
+                                                dense
+                                            />
+                                            <v-checkbox
+                                                :color="themeColor"
+                                                v-model="notificationStatuses"
+                                                :value="302"
+                                                :label="langMap.profile.update_assigned_to_company"
+                                                dense
+                                            />
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-spacer>&nbsp;</v-spacer>
+                                    <hr/>
+                                    <v-spacer>&nbsp;</v-spacer>
+
+                                    <v-row>
+                                        <v-col cols="3">
+                                            <v-autocomplete
+                                                v-model="userData.language_id"
+                                                :color="themeColor"
+                                                :item-color="themeColor"
+                                                :items="languages"
+                                                :label="langMap.main.language"
+                                                dense
+                                                item-text="name"
+                                                item-value="id"
+                                                lazy-validation
+                                                name="language"
+                                                prepend-icon="mdi-web"
+                                            />
+                                        </v-col>
+                                        <v-col cols="3">
+                                            &nbsp;
+                                        </v-col>
+                                        <v-col cols="3">
+                                            <v-checkbox
+                                                v-model="userData.status"
+                                                :label="langMap.individuals.active"
+                                                :color="themeColor"
+                                                dense
+                                                hide-details
+                                                @change="updateStatus"
+                                            />
+                                        </v-col>
+                                        <v-col cols="3">
+                                            <v-checkbox
+                                                v-model="userData.is_active"
+                                                :label="langMap.main.give_access"
+                                                :color="themeColor"
+                                                dense
+                                                hide-details
+                                                @change="showIsAccessedModal(userData)"
+                                            />
+                                        </v-col>
+                                    </v-row>
+                                </v-form>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn
+                                    text
+                                    color="grey darken"
+                                    @click="cancelUserData"
+                                >
+                                    {{ langMap.main.cancel}}
+                                </v-btn>
+                                <v-btn
+                                    text
+                                    :color="themeColor"
+                                    @click="updateUser"
+                                >
+                                    {{ langMap.main.save}}
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-expand-transition>
+                </v-card>
+            </v-col>
+            <v-col cols="6">
+                <v-card>
+                    <v-toolbar
+                        dark
+                        dense
+                        flat
+                        :color="themeColor"
+                    >
+                        <v-toolbar-title>{{ langMap.profile.email_signatures }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-list-item v-for="(item, i) in userData.email_signatures" :key="item.id">
+                                        <v-list-item-content>
+                                            <v-list-item-title v-text="item.name"></v-list-item-title>
+                                        </v-list-item-content>
+                                        <v-list-item-action>
+                                            <v-icon small @click="editEmailSignature(item)">
+                                                mdi-pencil
+                                            </v-icon>
+                                        </v-list-item-action>
+                                        <v-list-item-action>
+                                            <v-icon small @click="deleteEmailSignature(item.id)">
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-list-item-action>
+                                    </v-list-item>
                                 </v-col>
-                                <v-col class="col-md-12">
-                                    <v-expansion-panels>
-                                        <v-expansion-panel @click="resetEmailSignature">
+                                <v-col cols="12">
+                                    <v-expansion-panels v-model="emailSignatureForm.opened" accordion>
+                                        <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{langMap.profile.new_email_signature}}
                                                 <template v-slot:actions>
@@ -268,8 +795,8 @@
                                             </v-expansion-panel-header>
                                             <v-expansion-panel-content>
                                                 <v-form>
-                                                    <div class="row">
-                                                        <v-col cols="12" class="pa-1">
+                                                    <v-row>
+                                                        <v-col cols="12">
                                                             <v-text-field
                                                                 :color="themeColor"
                                                                 :item-color="themeColor"
@@ -278,7 +805,7 @@
                                                                 dense
                                                             />
                                                         </v-col>
-                                                        <v-col cols="12" class="pa-1">
+                                                        <v-col cols="12">
                                                             <tiptap-vuetify
                                                                 ref="body"
                                                                 aria-rowcount="7"
@@ -287,7 +814,7 @@
                                                                 :extensions="extensions"
                                                                 :placeholder="langMap.profile.signature"
                                                                 :label="langMap.profile.signature"
-                                                            ></tiptap-vuetify>
+                                                            />
                                                         </v-col>
                                                         <v-btn
                                                             dark
@@ -300,446 +827,7 @@
                                                         >
                                                             <v-icon>mdi-plus</v-icon>
                                                         </v-btn>
-                                                    </div>
-                                                </v-form>
-                                            </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                    </v-expansion-panels>
-                                </v-col>
-                            </v-row>
-                        </v-form>
-                    </v-card-text>
-                </v-card>
-
-                <v-card class="elevation-6">
-                    <v-toolbar
-                        dense
-                        :color="themeColor"
-                        dark
-                        flat
-                    >
-                        <v-toolbar-title>{{langMap.profile.notifications_settings}}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="canceluserData">
-                            {{this.$store.state.lang.lang_map.main.cancel}}
-                        </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateNotificationsSettings">
-                            {{this.$store.state.lang.lang_map.main.update}}
-                        </v-btn>
-                    </v-toolbar>
-
-                    <v-card-text>
-                        <v-form>
-                            <v-row>
-                                <v-col cols="6">
-                                    <v-checkbox
-                                        :color="themeColor"
-                                        v-model="notificationStatuses"
-                                        :value="101"
-                                        :label="langMap.profile.new_assigned_to_me"
-                                        dense
-                                        :readonly="!enableToEdit"
-                                    >
-                                    </v-checkbox>
-
-                                    <v-checkbox
-                                        :color="themeColor"
-                                        v-model="notificationStatuses"
-                                        :value="201"
-                                        :label="langMap.profile.new_assigned_to_team"
-                                        dense
-                                        :readonly="!enableToEdit"
-                                    >
-                                    </v-checkbox>
-
-                                    <v-checkbox
-                                        :color="themeColor"
-                                        v-model="notificationStatuses"
-                                        :value="301"
-                                        :label="langMap.profile.new_assigned_to_company"
-                                        dense
-                                        :readonly="!enableToEdit"
-                                    >
-                                    </v-checkbox>
-
-                                    <v-checkbox
-                                        :color="themeColor"
-                                        v-model="notificationStatuses"
-                                        :value="103"
-                                        :label="langMap.profile.client_response_assigned_to_me"
-                                        dense
-                                        :readonly="!enableToEdit"
-                                    >
-                                    </v-checkbox>
-                                </v-col>
-                                <v-col cols="6">
-                                    <v-checkbox
-                                        :color="themeColor"
-                                        v-model="notificationStatuses"
-                                        :value="102"
-                                        :label="langMap.profile.update_assigned_to_me"
-                                        dense
-                                        :readonly="!enableToEdit"
-                                    >
-                                    </v-checkbox>
-
-                                    <v-checkbox
-                                        :color="themeColor"
-                                        v-model="notificationStatuses"
-                                        :value="202"
-                                        :label="langMap.profile.update_assigned_to_team"
-                                        dense
-                                        :readonly="!enableToEdit"
-                                    >
-                                    </v-checkbox>
-
-                                    <v-checkbox
-                                        :color="themeColor"
-                                        v-model="notificationStatuses"
-                                        :value="302"
-                                        :label="langMap.profile.update_assigned_to_company"
-                                        dense
-                                        :readonly="!enableToEdit"
-                                    >
-                                    </v-checkbox>
-                                </v-col>
-
-                            </v-row>
-                        </v-form>
-                    </v-card-text>
-                </v-card>
-
-            </v-col>
-            <v-col class="col-md-6">
-                <v-card class="elevation-6">
-                    <v-toolbar
-                        dense
-                        :color="themeColor"
-                        dark
-                        flat
-                    >
-                        <v-toolbar-title>
-                            {{this.$store.state.lang.lang_map.individuals.contact_info}}
-                        </v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-
-                    <v-card-text>
-                        <v-form>
-                            <v-row>
-                                <v-col class="col-md-12">
-                                    <v-list
-                                        dense
-                                        subheader
-                                    >
-                                        <v-list-item-group :color="themeColor">
-                                            <v-list-item
-                                                v-for="(item, i) in userData.emails"
-                                                :key="item.id"
-                                            >
-                                                <v-list-item-icon v-if="item.type">
-                                                    <v-icon v-text="item.type.icon"></v-icon>
-                                                </v-list-item-icon>
-                                                <v-list-item-content>
-                                                    <v-list-item-title v-text="item.email"></v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type"
-                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
-                                                </v-list-item-content>
-                                                <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="editEmail(item)"
-                                                    >
-                                                        mdi-pencil
-                                                    </v-icon>
-                                                </v-list-item-action>
-                                                <v-list-item-action v-if="item.email_type === 1">
-                                                    <v-icon small :title="langMap.profile.login_email">
-                                                        mdi-lock
-                                                    </v-icon>
-                                                </v-list-item-action>
-                                                <v-list-item-action v-else>
-                                                    <v-icon small @click="deleteEmail(item.id)">
-                                                        mdi-delete
-                                                    </v-icon>
-                                                </v-list-item-action>
-                                            </v-list-item>
-
-                                            <v-list-item
-                                                v-for="(item, i) in userData.phones"
-                                                :key="item.id"
-                                            >
-                                                <v-list-item-icon v-if="item.type"><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
-                                                <v-list-item-content>
-                                                    <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type"
-                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
-                                                </v-list-item-content>
-                                                <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="editPhone(item)"
-                                                    >
-                                                        mdi-pencil
-                                                    </v-icon>
-                                                </v-list-item-action>
-                                                <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="deletePhone(item.id)"
-                                                    >
-                                                        mdi-delete
-                                                    </v-icon>
-                                                </v-list-item-action>
-                                            </v-list-item>
-                                            <v-list-item
-                                                v-for="(item, i) in userData.addresses"
-                                                :key="item.id"
-                                            >
-                                                <v-list-item-icon v-if="item.type"><v-icon left v-text="item.type.icon"></v-icon></v-list-item-icon>
-                                                <v-list-item-content>
-                                                    <v-list-item-title v-text="">
-                                                        <span v-if="item.street">{{item.street}}, </span>
-                                                        <span v-if="item.street2">{{item.street2}}, </span>
-                                                        <span v-if="item.street3">{{item.street3}}</span>
-                                                        <br>{{item.postal_code}}&nbsp;&nbsp;{{item.city}},
-                                                        <span v-if="item.country">{{localized(item.country)}}</span>
-                                                    </v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type"
-                                                                          v-text="localized(item.type)"></v-list-item-subtitle>
-                                                </v-list-item-content>
-                                                <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="editAddress(item)"
-                                                    >
-                                                        mdi-pencil
-                                                    </v-icon>
-                                                </v-list-item-action>
-                                                <v-list-item-action>
-                                                    <v-icon
-                                                        small
-                                                        @click="deleteAddress(item.id)"
-                                                    >
-                                                        mdi-delete
-                                                    </v-icon>
-                                                </v-list-item-action>
-                                            </v-list-item>
-                                        </v-list-item-group>
-                                    </v-list>
-                                </v-col>
-                                <v-col class="col-md-12">
-                                    <v-expansion-panels>
-                                        <v-expansion-panel @click="resetEmail">
-                                            <v-expansion-panel-header>
-                                                {{this.$store.state.lang.lang_map.main.new_email}}
-                                                <template v-slot:actions>
-                                                    <v-icon color="submit">mdi-plus</v-icon>
-                                                </template>
-                                            </v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                <v-form>
-                                                    <div class="row">
-                                                        <v-col cols="md-6" class="pa-1">
-                                                            <v-text-field
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                v-model="emailForm.email"
-                                                                :label="langMap.main.email"
-                                                                dense
-                                                            />
-                                                        </v-col>
-                                                        <v-col cols="6" class="pa-1">
-                                                            <v-select
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                item-value="id"
-                                                                v-model="emailForm.email_type"
-                                                                :items="emailTypes"
-                                                                :label="langMap.main.type"
-                                                                dense
-                                                            >
-                                                                <template slot="selection" slot-scope="data">
-                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
-                                                                </template>
-                                                                <template slot="item" slot-scope="data">
-                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
-                                                                </template>
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-btn
-                                                            dark
-                                                            fab
-                                                            right
-                                                            bottom
-                                                            small
-                                                            :color="themeColor"
-                                                            @click="addEmail"
-                                                        >
-                                                            <v-icon>mdi-plus</v-icon>
-                                                        </v-btn>
-                                                    </div>
-                                                </v-form>
-                                            </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                        <v-expansion-panel @click="resetPhone">
-                                            <v-expansion-panel-header>
-                                                {{this.$store.state.lang.lang_map.main.phone}}
-                                                <template v-slot:actions>
-                                                    <v-icon color="submit">mdi-plus</v-icon>
-                                                </template>
-                                            </v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                <v-form>
-                                                    <div class="row">
-                                                        <v-col cols="md-6" class="pa-1">
-                                                            <v-text-field
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                v-model="phoneForm.phone"
-                                                                :label="langMap.main.phone"
-                                                                dense
-                                                            />
-                                                        </v-col>
-                                                        <v-col cols="6" class="pa-1">
-                                                            <v-select
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                item-value="id"
-                                                                v-model="phoneForm.phone_type"
-                                                                :items="phoneTypes"
-                                                                :label="langMap.main.type"
-                                                                dense
-                                                            >
-                                                                <template slot="selection" slot-scope="data">
-                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
-                                                                </template>
-                                                                <template slot="item" slot-scope="data">
-                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
-                                                                </template>
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-btn
-                                                            dark
-                                                            fab
-                                                            right
-                                                            bottom
-                                                            small
-                                                            :color="themeColor"
-                                                            @click="addPhone"
-                                                        >
-                                                            <v-icon>mdi-plus</v-icon>
-                                                        </v-btn>
-                                                    </div>
-                                                </v-form>
-                                            </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                        <v-expansion-panel @click="resetAddress">
-                                            <v-expansion-panel-header>
-                                                {{this.$store.state.lang.lang_map.main.address}}
-                                                <template v-slot:actions>
-                                                    <v-icon color="submit">mdi-plus</v-icon>
-                                                </template>
-                                            </v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                <v-form>
-                                                    <div class="row">
-                                                        <v-col cols="md-12" class="pa-1">
-                                                            <v-text-field
-                                                                no-resize
-                                                                rows="3"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                v-model="addressForm.address.street"
-                                                                :label="langMap.main.address_line1"
-                                                                dense
-                                                            />
-                                                            <v-text-field
-                                                                no-resize
-                                                                rows="3"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                v-model="addressForm.address.street2"
-                                                                :label="langMap.main.address_line2"
-                                                                dense
-                                                            />
-                                                            <v-text-field
-                                                                no-resize
-                                                                rows="3"
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                v-model="addressForm.address.street3"
-                                                                :label="langMap.main.address_line3"
-                                                                dense
-                                                            />
-                                                        </v-col>
-                                                        <v-col cols="md-6" class="pa-1">
-                                                            <v-text-field
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                v-model="addressForm.address.postal_code"
-                                                                :label="langMap.main.postal_code"
-                                                                dense
-                                                            />
-                                                        </v-col>
-                                                        <v-col cols="md-6" class="pa-1">
-                                                            <v-text-field
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                v-model="addressForm.address.city"
-                                                                :label="langMap.main.city"
-                                                                dense
-                                                            />
-                                                        </v-col>
-                                                        <v-col cols="md-6" class="pa-1">
-                                                            <v-select
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                item-value="id"
-                                                                v-model="addressForm.address.country_id"
-                                                                :items="countries"
-                                                                :label="langMap.main.country"
-                                                                dense
-                                                            >
-                                                                <template slot="selection" slot-scope="data">
-                                                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
-                                                                </template>
-                                                                <template slot="item" slot-scope="data">
-                                                                    ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
-                                                                </template>
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-col cols="6" class="pa-1">
-                                                            <v-select
-                                                                :color="themeColor"
-                                                                :item-color="themeColor"
-                                                                item-value="id"
-                                                                v-model="addressForm.address_type"
-                                                                :items="addressTypes"
-                                                                :label="langMap.main.type"
-                                                                dense
-                                                            >
-                                                                <template slot="selection" slot-scope="data">
-                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
-                                                                </template>
-                                                                <template slot="item" slot-scope="data">
-                                                                    <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
-                                                                </template>
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-btn
-                                                            dark
-                                                            fab
-                                                            right
-                                                            bottom
-                                                            small
-                                                            :color="themeColor"
-                                                            @click="addAddress"
-                                                        >
-                                                            <v-icon>mdi-plus</v-icon>
-                                                        </v-btn>
-                                                    </div>
+                                                    </v-row>
                                                 </v-form>
                                             </v-expansion-panel-content>
                                         </v-expansion-panel>
@@ -752,21 +840,20 @@
 
                 <v-spacer>&nbsp;</v-spacer>
 
-                <v-card class="elevation-6">
+                <v-card>
                     <v-toolbar
-                        dense
-                        :color="themeColor"
                         dark
+                        dense
                         flat
+                        :color="themeColor"
                     >
-                        <v-toolbar-title>{{langMap.profile.user_theme_color}}</v-toolbar-title>
+                        <v-toolbar-title>{{ langMap.profile.user_theme_color }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 4px" @click="canceluserDataSettings">
-                            {{this.$store.state.lang.lang_map.main.cancel}}
+                        <v-btn color="white" icon @click="enableToEditColor = true" v-if="!enableToEditColor">
+                            <v-icon small dense>mdi-pencil</v-icon>
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="userDataSettings">
-                            {{this.langMap.main.update}}
+                        <v-btn color="white" icon @click="cancelUserDataSettings" v-if="enableToEditColor">
+                            <v-icon small dense>mdi-close</v-icon>
                         </v-btn>
                     </v-toolbar>
 
@@ -778,20 +865,19 @@
                                         dot-size="25"
                                         mode="hexa"
                                         v-model="themeColorNew"
-                                        :disabled="!enableToEdit"
-                                    ></v-color-picker>
+                                        :disabled="!enableToEditColor"
+                                    />
                                 </v-col>
                                 <v-col cols="6">
                                     <v-checkbox
                                         :color="themeColor"
-                                        :readonly="!enableToEdit"
+                                        :readonly="!enableToEditColor"
                                         v-model="resetThemeColorFlag"
                                         :value="1"
                                         @change="resetThemeColor()"
                                     >
                                         <template v-slot:label>
-                                            {{ langMap.profile.revert_to_company_theme_color }}
-                                            <v-icon x-large right :color="companySettings.theme_color">mdi-checkbox-blank</v-icon>
+                                            {{ langMap.profile.revert_to_company_theme_color }} <v-icon x-large right :color="companySettings.theme_color">mdi-checkbox-blank</v-icon>
                                         </template>
                                     </v-checkbox>
 
@@ -799,7 +885,7 @@
 
                                     <v-checkbox
                                         :color="themeColor"
-                                        :readonly="!enableToEdit"
+                                        :readonly="!enableToEditColor"
                                         v-model="themeColorDlg"
                                         :value="1"
                                         :label="langMap.profile.show_speed_panel"></v-checkbox>
@@ -807,6 +893,23 @@
                             </v-row>
                         </v-form>
                     </v-card-text>
+                    <v-card-actions v-if="enableToEditColor">
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            text
+                            color="grey darken"
+                            @click="cancelUserDataSettings"
+                        >
+                            {{ langMap.main.cancel}}
+                        </v-btn>
+                        <v-btn
+                            text
+                            :color="themeColor"
+                            @click="updateUserDataSettings"
+                        >
+                            {{ langMap.main.save}}
+                        </v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
@@ -1027,7 +1130,6 @@
                         </v-container>
                     </v-card-text>
                     <v-card-actions>
-
                         <v-btn color="red" text @click="updateEmailSignatureDlg=false; resetEmailSignature()">{{langMap.main.cancel}}</v-btn>
                         <v-btn :color="themeColor" text @click="updateEmailSignatureDlg=false; updateEmailSignature()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
@@ -1073,6 +1175,7 @@ export default {
             snackbarMessage: '',
             errors: [],
             enableToEdit: false,
+            enableToEditColor: false,
             themeColor: this.$store.state.themeColor,
             langMap: this.$store.state.lang.lang_map,
             userData: {
@@ -1099,7 +1202,8 @@ export default {
                 entity_id: '',
                 entity_type: 'App\\User',
                 phone: '',
-                phone_type: ''
+                phone_type: '',
+                opened: null
             },
             addressForm: {
                 entity_id: '',
@@ -1112,24 +1216,37 @@ export default {
                     city: '',
                     country_id: ''
                 },
-                address_type: ''
+                address_type: '',
+                opened: null
             },
             emailForm: {
                 entity_id: '',
                 entity_type: 'App\\User',
                 email: '',
-                email_type: ''
+                email_type: '',
+                opened: null
             },
             emailSignatureForm: {
                 entity_id: '',
                 entity_type: 'App\\User',
                 name: '',
-                signature: ''
+                signature: '',
+                opened: null
+            },
+            socialForm: {
+                id: '',
+                entity_id: '',
+                entity_type: 'App\\User',
+                social_link: '',
+                social_type: '',
+                opened: null
             },
             phoneTypes: [],
             addressTypes: [],
             emailTypes: [],
+            socialTypes:[],
             languages: [],
+            langs: [],
             timezones: [],
             countries: [],
             themeColorNew: this.$store.state.themeColor,
@@ -1143,6 +1260,7 @@ export default {
             updateAddressDlg: false,
             updateEmailDlg: false,
             updateEmailSignatureDlg: false,
+            updateSocialDlg: false,
             extensions: [
                 History,
                 Blockquote,
@@ -1175,6 +1293,7 @@ export default {
         this.getPhoneTypes();
         this.getAddressTypes();
         this.getEmailTypes();
+        this.getSocialTypes();
         this.getLanguages();
         this.getTimeZones();
         this.getCountries();
@@ -1225,10 +1344,14 @@ export default {
             });
         },
         getLanguages() {
+            let that = this;
             axios.get('/api/lang').then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.languages = response.data
+                    this.languages = response.data;
+                    response.data.forEach(function (item) {
+                        that.langs[item.id] = item;
+                    });
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1292,13 +1415,12 @@ export default {
             axios.post('/api/user', this.userData).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.userData.password = ''
-                    this.getUser()
+                    this.updateNotificationsSettings();
+
                     this.snackbarMessage = this.langMap.main.update_successful;
                     this.actionColor = 'success'
                     this.snackbar = true
                     this.enableToEdit = false
-                    window.location.reload()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1306,7 +1428,7 @@ export default {
                 }
             });
         },
-        canceluserData() {
+        cancelUserData() {
             this.enableToEdit = false;
             this.getUser();
         },
@@ -1325,6 +1447,8 @@ export default {
                     this.snackbarMessage = this.langMap.profile.notifications_settings_updated;
                     this.actionColor = 'success';
                     this.snackbar = true;
+
+                    window.location.reload()
                 } else {
                     this.getUser();
                     this.snackbarMessage = this.langMap.main.generic_error;
@@ -1357,12 +1481,26 @@ export default {
                 }
             });
         },
+        getSocialTypes() {
+            axios.get(`/api/social_types`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.socialTypes = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
         addPhone() {
             this.phoneForm.entity_id = this.userData.id
 
             axios.post('/api/phone', this.phoneForm).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.resetPhone();
+
                     this.getUser()
                     this.snackbarMessage = this.langMap.company.phone_created;
                     this.actionColor = 'success'
@@ -1380,7 +1518,8 @@ export default {
             axios.patch(`/api/phone/${this.phoneForm.id}`, this.phoneForm).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.phoneForm.id = '';
+                    this.resetPhone();
+
                     this.getUser();
                     this.snackbarMessage = this.langMap.company.phone_updated;
                     this.actionColor = 'success';
@@ -1415,7 +1554,8 @@ export default {
                 entity_id: '',
                 entity_type: 'App\\User',
                 phone: '',
-                phone_type: ''
+                phone_type: '',
+                opened: null
             }
         },
         addAddress() {
@@ -1424,6 +1564,8 @@ export default {
             axios.post('/api/address', this.addressForm).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.resetAddress();
+
                     this.getUser()
                     this.snackbarMessage = this.langMap.company.address_created;
                     this.actionColor = 'success'
@@ -1440,13 +1582,8 @@ export default {
             axios.patch(`/api/address/${this.addressForm.id}`, this.addressForm).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.addressForm.id = '';
-                    this.addressForm.address.street = '';
-                    this.addressForm.address.street2 = '';
-                    this.addressForm.address.street3 = '';
-                    this.addressForm.address.postal_code = '';
-                    this.addressForm.address.city = '';
-                    this.addressForm.address.country_id = '';
+                    this.resetAddress();
+
                     this.getUser()
                     this.snackbarMessage = this.langMap.company.address_updated;
                     this.actionColor = 'success'
@@ -1487,7 +1624,8 @@ export default {
                     city: '',
                     country_id: ''
                 },
-                address_type: ''
+                address_type: '',
+                opened: null
             }
         },
         getUserSettings() {
@@ -1511,7 +1649,7 @@ export default {
                 return true;
             });
         },
-        userDataSettings() {
+        updateUserDataSettings() {
             this.snackbar = false;
 
             axios.post('/api/user/settings', {theme_color: this.themeColorNew}).then(response => {
@@ -1524,7 +1662,7 @@ export default {
                         EventBus.$emit('update-theme-color', this.themeColorNew);
                     }
                     localStorage.themeColorDlg = this.themeColorDlg == 1 ? 0 : 1;
-                    this.enableToEdit = false;
+                    this.enableToEditColor = false;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1533,8 +1671,8 @@ export default {
                 return true;
             });
         },
-        canceluserDataSettings() {
-            this.enableToEdit = false;
+        cancelUserDataSettings() {
+            this.enableToEditColor = false;
             this.getUser();
             this.getCompanySettings();
             if (!this.companySettings.override_user_theme) {
@@ -1580,6 +1718,74 @@ export default {
             this.addressForm.address.city = item.city;
             this.addressForm.address.country_id = item.country ? item.country.id : 0;
         },
+        addSocial() {
+            this.socialForm.entity_id = this.userData.id
+
+            axios.post('/api/social', this.socialForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.resetSocial();
+
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.company.social_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateSocial() {
+            axios.patch(`/api/social/${this.socialForm.id}`, this.socialForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.resetSocial();
+
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.company.social_updated;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        deleteSocial(id) {
+            axios.delete(`/api/social/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.company.social_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        resetSocial() {
+            this.socialForm = {
+                id: '',
+                entity_id: '',
+                entity_type: 'App\\User',
+                social_link: '',
+                social_type: '',
+                opened: null
+            }
+        },
+        editSocial(item) {
+            this.updateSocialDlg = true;
+
+            this.socialForm.id = item.id;
+            this.socialForm.social_link = item.social_link;
+            this.socialForm.social_type = item.type ? item.type.id : 0;
+        },
         getEmailTypes() {
             axios.get(`/api/email_types`).then(response => {
                 response = response.data
@@ -1597,6 +1803,8 @@ export default {
             axios.post('/api/email', this.emailForm).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.resetEmail();
+
                     this.getUser()
                     this.snackbarMessage = this.langMap.company.email_created;
                     this.actionColor = 'success'
@@ -1613,7 +1821,8 @@ export default {
             axios.patch(`/api/email/${this.emailForm.id}`, this.emailForm).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.emailForm.id = '';
+                    this.resetEmail();
+
                     this.getUser();
                     this.snackbarMessage = this.langMap.company.email_updated;
                     this.actionColor = 'success';
@@ -1656,7 +1865,8 @@ export default {
                 entity_id: '',
                 entity_type: 'App\\User',
                 email: '',
-                email_type: ''
+                email_type: '',
+                opened: null
             };
         },
         addEmailSignature() {
@@ -1724,7 +1934,8 @@ export default {
                 entity_id: '',
                 entity_type: 'App\\User',
                 name: '',
-                signature: ''
+                signature: '',
+                opened: null
             };
         }
     }

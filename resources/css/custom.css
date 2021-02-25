@@ -19,3 +19,17 @@
 .v-text-field.v-input--is-readonly>.v-input__control>.v-input__slot .v-input__append-inner {
     display: none;
 }
+
+.v-card--reveal {
+    bottom: 0;
+    opacity: 1 !important;
+    position: absolute;
+    width: 100%;
+}
+
+hr.lighten {
+    border: none;
+    height: 1px;
+    color: #eee;
+    background-color: #eee;
+}

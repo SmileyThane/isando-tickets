@@ -18,7 +18,7 @@
                     <v-icon>
                         mdi-plus-circle-outline
                     </v-icon>
-                    &nbsp;&nbsp;Project
+                    &nbsp;&nbsp;{{langMap.tracking.project_btn.project}}
                 </span>
                 <span v-if="selectedProject">
                     {{ selectedProject.name }}
@@ -35,14 +35,14 @@
             >
                 <v-expansion-panel>
                     <v-expansion-panel-header>
-                        Choose project
+                        {{langMap.tracking.project_btn.choose_project}}
                     </v-expansion-panel-header>
                     <v-expansion-panel-content
                         style="min-height: 380px; max-height: 380px"
                     >
                         <v-text-field
-                            label="Project"
-                            placeholder="Start typing to Search"
+                            :label="langMap.tracking.project_btn.project"
+                            :placeholder="langMap.tracking.project_btn.start_typing_to_search"
                             autofocus
                             clearable
                             v-model="search"
@@ -86,7 +86,7 @@
                 </v-expansion-panel>
                 <v-expansion-panel>
                     <v-expansion-panel-header>
-                        Create new project
+                        {{langMap.tracking.project_btn.create_new_project}}
                     </v-expansion-panel-header>
                     <v-expansion-panel-content
                         style="min-height: 380px; max-height: 380px;"
@@ -95,8 +95,8 @@
                             <v-list-item>
                                 <v-text-field
                                     v-model="form.name"
-                                    label="Project name"
-                                    placeholder="Type the project name here"
+                                    :label="langMap.tracking.project_btn.project_name"
+                                    :placeholder="langMap.tracking.project_btn.type_project_name_here"
                                     clearable
                                     required
                                     full-width
@@ -111,8 +111,8 @@
                                     color="white"
                                     item-text="name"
                                     item-value="id"
-                                    label="Product"
-                                    placeholder="Start typing to Search"
+                                    :label="langMap.tracking.project_btn.product"
+                                    :placeholder="langMap.tracking.project_btn.start_typing_to_search"
                                     return-object
                                     clearable
                                     required
@@ -127,8 +127,8 @@
                                     color="white"
                                     item-text="name"
                                     item-value="id"
-                                    label="Client"
-                                    placeholder="Start typing to Search"
+                                    :label="langMap.tracking.project_btn.client"
+                                    :placeholder="langMap.tracking.project_btn.start_typing_to_search"
                                     return-object
                                     clearable
                                     required
@@ -140,7 +140,7 @@
                                     hide-details
                                     class="ma-0 pa-0"
                                     solo
-                                    label="Color"
+                                    :label="langMap.tracking.project_btn.color"
                                     required
                                 >
                                     <template v-slot:append>
@@ -166,7 +166,7 @@
                                 text
                                 @click="resetNewProjectForm(); menu = false"
                             >
-                                Cancel
+                                {{langMap.tracking.project_btn.cancel}}
                             </v-btn>
                             <v-btn
                                 color="success"
@@ -174,7 +174,7 @@
                                 :disabled="!createProjectValid"
                                 @click="createNewProject"
                             >
-                                Save
+                                {{langMap.tracking.project_btn.save}}
                             </v-btn>
                         </v-card-actions>
                     </v-expansion-panel-content>
@@ -220,8 +220,9 @@ export default {
             required: true
         }
     },
-    data: () => {
+    data() {
         return {
+            langMap: this.$store.state.lang.lang_map,
             shown: false,
             panels: 0,
             menu: false,

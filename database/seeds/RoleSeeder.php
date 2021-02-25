@@ -54,5 +54,12 @@ class RoleSeeder extends Seeder
                 'guard_name' => 'web'
             ]
         );
+        DB::table('roles')->updateOrInsert(
+            ['id' => 7],
+            [
+                'name' => 'company_admin_tracking',
+                'guard_name' => 'web'
+            ]
+        );
     }
 }

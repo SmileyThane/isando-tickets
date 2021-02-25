@@ -7,12 +7,16 @@ import Routes from './routes'
 import store from './store'
 import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import moment from 'moment'
+import VCalendar from 'v-calendar'
 import 'tiptap-vuetify/dist/main.css'
 import 'vuetify/dist/vuetify.min.css'
 import '../css/custom.css'
 
 Vue.use(Vuetify)
 Vue.use(VueRouter)
+Vue.use(VCalendar, {
+    componentPrefix: 'vc'
+})
 Vue.prototype.moment = moment
 
 const router = new VueRouter({

@@ -115,6 +115,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('all', 'API\ClientController@all');
         Route::post('client/is_active', 'API\ClientController@changeIsActive');
         Route::get('recipients', 'API\ClientController@recipientsTree');
+        Route::post('client/{id}/logo', 'API\ClientController@updateLogo');
 
         //team management
         Route::get('team', 'API\TeamController@get');
@@ -200,12 +201,20 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::patch('/tracker/{tracking}', 'TrackingController@update');
                 Route::post('/tracker/{tracking}/duplicate', 'TrackingController@duplicate');
                 Route::delete('/tracker/{tracking}', 'TrackingController@delete');
+
         });
+
+        // Tags
         Route::get('/tags', 'API\TagController@get');
         Route::post('/tags', 'API\TagController@create');
         Route::patch('/tags/{tag}', 'API\TagController@update');
         Route::delete('/tags/{tag}', 'API\TagController@delete');
 
+        // Services
+        Route::get('/services', 'API\ServiceController@get');
+        Route::post('/services', 'API\ServiceController@create');
+        Route::patch('/services/{service}', 'API\ServiceController@update');
+        Route::delete('/services/{service}', 'API\ServiceController@delete');
     });
 
     //language management

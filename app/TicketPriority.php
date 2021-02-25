@@ -9,7 +9,7 @@ class TicketPriority extends Model
 {
     protected $table = 'ticket_priorities';
 
-    protected $fillable = ['id', 'name'];
+    protected $fillable = ['id', 'name', 'color'];
 
     protected $langId;
 

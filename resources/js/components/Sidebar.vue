@@ -221,8 +221,9 @@
             </v-list-group>
         </v-list>
         <v-divider></v-divider>
-        <v-list dense>
+        <v-list dense v-if="checkRoleByIds([1,2,4,7])">
             <v-list-group
+                v-if="checkRoleByIds([1,2,4,7])"
                 :style="'background-color: ' + 'white' + ';'"
                 :value="sidebarGroups"
                 color="#757575"
@@ -237,6 +238,7 @@
                     </v-list-item-content>
                 </template>
                 <v-list-item
+                    v-if="checkRoleByIds([1,2,4,7])"
                     link
                     style="background-color:white;"
                     to="/tracking/dashboard"
@@ -250,6 +252,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
+                    v-if="checkRoleByIds([1,2,4,7])"
                     link
                     style="background-color:white;"
                     to="/tracking/tracker"
@@ -263,6 +266,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
+                    v-if="checkRoleByIds([1,2,4,7])"
                     link
                     style="background-color:white;"
                     to="/tracking/calendar"
@@ -276,6 +280,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
+                    v-if="checkRoleByIds([1,2,4,7])"
                     link
                     style="background-color:white;"
                     to="/tracking/projects"
@@ -289,6 +294,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
+                    v-if="checkRoleByIds([1,2,4,7])"
                     link
                     style="background-color:white;"
                     to="/tracking/reports"
@@ -302,6 +308,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
+                    v-if="checkRoleByIds([1,2,4,7])"
                     link
                     style="background-color:white;"
                     to="/tracking/settings"
@@ -333,7 +340,7 @@
                     </v-list-item-content>
                 </template>
                 <v-list-item
-
+                    v-if="!checkRoleByIds([6, 101])"
                     link
                     style="background-color:white;"
                     to="/notify"
