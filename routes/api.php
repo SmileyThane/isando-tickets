@@ -228,5 +228,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('custom_license/{id}', 'API\CustomLicenseController@find');
     Route::put('custom_license/{id}', 'API\CustomLicenseController@update');
     Route::get('custom_license/{id}/history', 'API\CustomLicenseController@history');
+    Route::get('custom_license/{id}/users', 'API\CustomLicenseController@users');
 });
 
