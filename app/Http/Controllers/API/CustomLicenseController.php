@@ -25,6 +25,11 @@ class CustomLicenseController extends Controller
         return self::showResponse(true, $this->customLicenseRepository->find($id));
     }
 
+    public function users($id)
+    {
+        return self::showResponse(true, $this->customLicenseRepository->manageUsers($id));
+    }
+
     public function history($id)
     {
         return self::showResponse(true, $this->customLicenseRepository->itemHistory($id));
