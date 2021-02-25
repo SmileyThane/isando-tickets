@@ -31,6 +31,7 @@ class CustomLicenseRepository
         if ($parsedResult['status'] === 'SUCCESS') {
             return $parsedResult['body'];
         }
+        return null;
     }
 
     private function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true)
@@ -48,6 +49,18 @@ class CustomLicenseRepository
         return $response->getBody();
     }
 
+    public function manageUsers($id)
+    {
+        $client = \App\Client::find($id);
+        $ixArmaId = $client->customLicense->remote_client_id;
+        $result = $this->makeIxArmaRequest("/api/v1/app/user/$ixArmaId/page/0", []);
+        $parsedResult = json_decode($result->getContents(), true);
+        if ($parsedResult['status'] === 'SUCCESS') {
+            return $parsedResult['body'];
+        }
+        return null;
+    }
+
     public function itemHistory($id)
     {
         $client = \App\Client::find($id);
@@ -55,9 +68,9 @@ class CustomLicenseRepository
         $result = $this->makeIxArmaRequest("/api/v1/app/license/history/$ixArmaId/page/0", []);
         $parsedResult = json_decode($result->getContents(), true);
         if ($parsedResult['status'] === 'SUCCESS') {
-            return $parsedResult['body'];
+            return array_reverse($parsedResult['body']);
         }
-
+        return null;
     }
 
     public function create()
@@ -70,10 +83,15 @@ class CustomLicenseRepository
         $client = \App\Client::find($id);
         $ixArmaId = $client->customLicense->remote_client_id;
         $data = [
-            'newAllowedUsers' =>   $request->usersAllowed,
+            'newAllowedUsers' => $request->usersAllowed,
             'newExpires' => Carbon::parse($request->expiresAt)->format('m/d/Y')
         ];
         $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", $data, 'PUT');
+        if ($request->active === true) {
+            $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/renew", $data, 'GET');
+        } else {
+            $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/suspend", $data, 'GET');
+        }
         $parsedResult = json_decode($result->getContents(), true);
         if ($parsedResult['status'] === 'SUCCESS') {
             return $parsedResult['body'];
