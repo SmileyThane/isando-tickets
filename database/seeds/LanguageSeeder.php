@@ -56,7 +56,9 @@ class LanguageSeeder extends Seeder
                             'tracking_calendar' => 'Calendar',
                             'tracking_projects' => 'Projects',
                             'tracking_reports' => 'Reports',
-                            'tracking_settings' => 'Settings'
+                            'tracking_settings' => 'Settings',
+                            'custom_licenses' => 'Licenses',
+                            'custom_license' => 'License'
                         ],
                     'tracking' =>
                         [
@@ -609,7 +611,9 @@ class LanguageSeeder extends Seeder
                             'tracking_calendar' => 'Calendar',
                             'tracking_projects' => 'Projects',
                             'tracking_reports' => 'Reports',
-                            'tracking_settings' => 'Settings'
+                            'tracking_settings' => 'Settings',
+                            'custom_licenses' => 'Licenses',
+                            'custom_license' => 'License'
                         ],
                         'tracking' => [
                             'name' => 'Name',
