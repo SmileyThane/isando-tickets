@@ -86,15 +86,12 @@
                             class="elevation-1"
                             hide-default-footer
                         >
-                            <!--                            <template v-slot:item.has_tracker="{ item }">-->
-                            <!--                                <v-icon @click="showItem(item)" class="justify-center" v-if="item">-->
-                            <!--                                    {{-->
-                            <!--                                        item.has_tracker === 1 ?-->
-                            <!--                                            'mdi-check-circle-outline' :-->
-                            <!--                                            'mdi-cancel'-->
-                            <!--                                    }}-->
-                            <!--                                </v-icon>-->
-                            <!--                            </template>-->
+                            <template v-slot:item.lastActivationChange="{ item }">
+                                {{
+                                    item.lastActivationChange > 0 ?
+                                        moment(item.lastActivationChange).format('DD-MM-YYYY') : ''
+                                }}
+                            </template>
                         </v-data-table>
                     </div>
                 </v-card>
@@ -129,12 +126,13 @@
                             <strong>Total users:</strong> {{ license.usersAllowed }}
                             <strong>Assigned users:</strong> {{ usersAssigned }}
                             <strong>Users available:</strong> {{ license.usersLeft }}
+                            <strong>Active:</strong> {{ license.active }}
                         </p>
 
                         <v-menu
-                            :disabled="!enableToEditLicense"
                             v-model="menu2"
                             :close-on-content-click="false"
+                            :disabled="!enableToEditLicense"
                             :nudge-right="40"
                             class="ma-2"
                             min-width="auto"
@@ -158,21 +156,23 @@
                                 @input="menu2 = false;"
                             ></v-date-picker>
                         </v-menu>
-
-                        <v-checkbox
-                            :readonly="!enableToEditLicense"
-                            v-model="license.active"
-                            :color="themeColor"
-                            class="ma-2"
-                            hide-details
-                            label="Active"
-                        >
-                        </v-checkbox>
                         <v-card
                             v-if="enableToEditLicense"
                             class="mx-auto"
                             outlined
                         >
+                            <div class="overline mx-2">
+
+                            </div>
+                            <v-btn
+                                v-if="enableToEditLicense"
+                                :color="license.active ? 'red' :'green'"
+                                class="ma-2"
+                                @click="license.active = !license.active"
+                            >
+                                {{ license.active ? 'suspend' : 'renew' }}
+                            </v-btn>
+
                             <div class="overline mx-2">
                                 additional licenses
                             </div>
@@ -233,13 +233,14 @@ export default {
             themeColor: this.$store.state.themeColor,
             langMap: this.$store.state.lang.lang_map,
             licenseUserHeaders: [
-                {text: 'id', value: 'id'},
+                // {text: 'id', value: 'id'},
                 {text: `username`, value: 'username'},
                 {text: `phone`, value: 'phoneNumber', sortable: false},
                 {text: `platform`, value: 'platform', sortable: false},
                 {text: `licensed`, value: 'licensed', sortable: false},
                 {text: `active`, value: 'active', sortable: false},
-                {text: `created_at`, value: 'createdAtString', sortable: false},
+                {text: `expired_at`, value: 'trialExpirationAtString', sortable: false},
+                {text: `last_activation`, value: 'lastActivationChange', sortable: false},
             ],
             menu2: false,
             snackbar: false,
