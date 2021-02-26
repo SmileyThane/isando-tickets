@@ -362,6 +362,7 @@
                                             @cancel="cancel"
                                             @open="open"
                                             @close="save(props.item, 'description')"
+                                            :ref="`dialog${props.item.id}`"
                                         >
                                             <span v-if="props.item.service">
                                                     {{ props.item.service.name }}
@@ -391,6 +392,12 @@
                                                     return-object
                                                     dense
                                                 ></v-select>
+                                                <v-btn
+                                                    class="float-right mb-2"
+                                                    text
+                                                    color="success"
+                                                    @click="$refs[`dialog${props.item.id}`][0].isActive = false"
+                                                >Save</v-btn>
                                             </template>
                                         </v-edit-dialog>
                                     </template>
