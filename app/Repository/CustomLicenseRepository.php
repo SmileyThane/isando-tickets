@@ -4,10 +4,12 @@
 namespace App\Repository;
 
 
+use App\IxarmaAuthorization;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Psr\Http\Message\StreamInterface;
 
 class CustomLicenseRepository
@@ -23,21 +25,6 @@ class CustomLicenseRepository
         return $clients->paginate($request->per_page ?? $clients->count());
     }
 
-    public function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true): StreamInterface
-    {
-        $guzzle = new Client([
-            'base_uri' => env('IXARMA_BASE_URL'),
-        ]);
-        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJhZG1pbi5peGFybWEiLCJ1cG4iOiJhZG1pbi5peGFybWEiLCJleHAiOjE2NDUyNzYxNjQsImFkZHJlc3MiOiIxMTExMTExMTExMTExMTExMTExMTExMTEiLCJncm91cHMiOlsiSVhBUk1BX0FETUlOIl0sImlhdCI6MTYxMzc0MDE2NCwianRpIjoiNDg1Mjk3ZDctZGZiNy00ZDE3LWI0NjItYjYzZDQ1OGJhNTk2In0.PreHkqWUoD4pTzcmck6Rq26V8BsOn7_tZMs_eqGCiJGViKBA3yf3tmz-61nU10JwRKMF34Koqpkx9ncS0x3lXCMreCfg8l8FDLj-qjCzmRP6dKvo-AlJsVN8xBGttfCMd9lHXogemLDb1kk7ta20Qx49S-dGMbFR5dCGmgBC3F7F05k3gW7YMDdTPBIMBv43_UbGMTa9q2316RjbPwtvjqFQlJgcdU6H7rquaETiZO8RERiyzYRA1pPv2-ZQgMilVSC1vC90xrd68CG3gJy6yr_5aAKR5zWlwcmIs4_9GYQH_3ex0FWRi9UtWEKiRyYG-r2Uxi0hlnCdBjDlGC8c5A';
-        $response = $guzzle->request($method, $uri, [
-            RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token],
-            'Content-type' => 'application/json',
-            'Accept' => '*/*',
-            RequestOptions::JSON => $parameters
-        ]);
-        return $response->getBody();
-    }
-
     public function find($id)
     {
         $client = \App\Client::find($id);
@@ -48,6 +35,45 @@ class CustomLicenseRepository
             return $parsedResult['body'];
         }
         return null;
+    }
+
+    public function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true): ?StreamInterface
+    {
+        try {
+            $guzzle = new Client([
+                'base_uri' => env('IXARMA_BASE_URL'),
+            ]);
+            $ixArmaAuthorization = IxarmaAuthorization::where('company_id', Auth::user()->employee->company_id)->first();
+            $token = $ixArmaAuthorization ? $ixArmaAuthorization->auth_token : '';
+            $response = $guzzle->request($method, $uri, [
+                RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token],
+                'Content-type' => 'application/json',
+                'Accept' => '*/*',
+                RequestOptions::JSON => $parameters
+            ]);
+
+            return $response->getBody();
+        } catch (\Throwable $throwable) {
+            $this->ixArmaLogin();
+            return null;
+        }
+    }
+
+    private function ixArmaLogin()
+    {
+        $companyId = Auth::user()->employee->company_id;
+        IxarmaAuthorization::where('company_id', $companyId)->delete();
+        $data = ['login' => env('IXARMA_ADMIN_LOGIN'), 'password' => env('IXARMA_ADMIN_PASSWORD')];
+        $result = $this->makeIxArmaRequest("/api/v1/user/login", $data, 'POST');
+        $parsedResult = json_decode($result->getContents(), true);
+        if ($parsedResult['status'] === 'SUCCESS') {
+            $authObject = $parsedResult['body'];
+            IxarmaAuthorization::create(['company_id' => $companyId, 'auth_token' => $authObject['token']]);
+
+            return true;
+        }
+
+        return $parsedResult['message'];
     }
 
     public function manageUsers($id)
