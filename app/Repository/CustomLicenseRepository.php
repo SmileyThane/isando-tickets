@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
+use Psr\Http\Message\StreamInterface;
 
 class CustomLicenseRepository
 {
@@ -18,23 +19,11 @@ class CustomLicenseRepository
         if ($request->search) {
             $request['page'] = 1;
         }
-        $clients = $clients->has('customLicense')->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
+        $clients = $clients->has('customLicense')->with('customLicense')->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
         return $clients->paginate($request->per_page ?? $clients->count());
     }
 
-    public function find($id)
-    {
-        $client = \App\Client::find($id);
-        $ixArmaId = $client->customLicense->remote_client_id;
-        $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", []);
-        $parsedResult = json_decode($result->getContents(), true);
-        if ($parsedResult['status'] === 'SUCCESS') {
-            return $parsedResult['body'];
-        }
-        return null;
-    }
-
-    private function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true)
+    public function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true): StreamInterface
     {
         $guzzle = new Client([
             'base_uri' => env('IXARMA_BASE_URL'),
@@ -47,6 +36,18 @@ class CustomLicenseRepository
             RequestOptions::JSON => $parameters
         ]);
         return $response->getBody();
+    }
+
+    public function find($id)
+    {
+        $client = \App\Client::find($id);
+        $ixArmaId = $client->customLicense->remote_client_id;
+        $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", []);
+        $parsedResult = json_decode($result->getContents(), true);
+        if ($parsedResult['status'] === 'SUCCESS') {
+            return $parsedResult['body'];
+        }
+        return null;
     }
 
     public function manageUsers($id)
