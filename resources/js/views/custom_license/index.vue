@@ -97,7 +97,7 @@
                                         (
                                             item.custom_license !== null &&
                                             item.custom_license.ixarma_object !== null &&
-                                            item.custom_license.ixarma_object.active === true
+                                            item.custom_license.ixarma_object.limits.active !== false
                                         ) ?
                                             'mdi-check-circle-outline' :
                                             'mdi-cancel'
