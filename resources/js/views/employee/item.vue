@@ -926,11 +926,7 @@
                         <span class="headline">{{ langMap.company.update_info }}: {{ userData.full_name }}</span>
                     </v-card-title>
                     <v-card-text>
-                        {{
-                            userData.is_active === true ?
-                                this.$store.state.lang.lang_map.main.give_access :
-                                this.$store.state.lang.lang_map.individuals.unlink
-                        }}
+                        {{ userData.is_active === true ? langMap.individuals.give_access : langMap.individuals.remove_accees }}
                         <v-select
                             v-model="primaryEmailId"
                             :color="themeColor"
