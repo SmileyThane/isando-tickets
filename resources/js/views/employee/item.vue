@@ -926,7 +926,7 @@
                         <span class="headline">{{ langMap.company.update_info }}: {{ userData.full_name }}</span>
                     </v-card-title>
                     <v-card-text>
-                        {{ userData.is_active === true ? langMap.individuals.give_access : langMap.individuals.remove_accees }}
+                        {{ userData.is_active === true ? langMap.individuals.give_access : langMap.individuals.remove_access }}
                         <v-select
                             v-model="primaryEmailId"
                             :color="themeColor"
@@ -1771,7 +1771,7 @@ export default {
             request.is_active = this.selectedIsAccessedItem.is_active
             this.singleUserForm.role_ids = this.selectedIsAccessedItem.is_active == true ? [6] : [];
             this.singleUserForm.user = this.userData
-            this.singleUserForm.company_user_id = this.userData.employee.id
+            this.singleUserForm.company_user_id = this.userData.employee ? this.userData.employee.id : null;
             axios.post(`/api/user/is_active`, request).then(response => {
                 response = response.data
                 this.isAccessedDialog = false
@@ -1853,7 +1853,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = this.langMap.company.employee_created;
+                    this.snackbarMessage = this.langMap.company.employee_linked;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
