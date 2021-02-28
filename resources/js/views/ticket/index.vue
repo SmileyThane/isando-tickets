@@ -200,7 +200,7 @@
                 {{ item.product ? item.product.full_name : '' }}
             </template>
             <template v-slot:item.assigned_person="{ item }">
-                <div v-if="item.assigned_person" class="justify-center" @click="showItem(item)">
+                <div v-if="item.assigned_person && item.assigned_person.user_data" class="justify-center" @click="showItem(item)">
                     {{ item.assigned_person.user_data.full_name }}
                 </div>
                 <div v-else> {{ langMap.ticket.no_assigned }}</div>
@@ -215,9 +215,9 @@
                     </v-spacer>
                     <h3>{{ item.number }}</h3>
                     <p><strong>{{ langMap.ticket.contact_name }}:</strong>
-                        {{ item.contact ? item.contact.user_data.full_name : '' }}</p>
+                        {{ item.contact && item.contact.user_data ? item.contact.user_data.full_name : '' }}</p>
                     <p><strong>{{ langMap.ticket.contact_email }}:</strong>
-                        {{ item.contact ? item.contact.user_data.email : '' }}</p>
+                        {{ item.contact && item.contact.user_data ? item.contact.user_data.email : '' }}</p>
                     <p><strong>{{ langMap.ticket.due_date }}:</strong> {{ item.due_date }}</p>
                     <p><strong>{{ langMap.ticket.access_details }}:</strong> {{ item.access_details }}</p>
                     <p><strong>{{ langMap.main.actions }}:</strong></p>
@@ -386,6 +386,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
                 {text: `${this.$store.state.lang.lang_map.main.category}`, value: 'category.name'},
                 {text: `${this.$store.state.lang.lang_map.ticket.company_from}`, value: 'from.name'},
+                {text: `${this.$store.state.lang.lang_map.ticket.contact_name}`, value: 'contact.user_data.full_name'},
                 {text: `${this.$store.state.lang.lang_map.ticket.subject}`, value: 'name'},
                 {text: `${this.$store.state.lang.lang_map.ticket.product_name}`, value: 'product.name'},
                 {text: `${this.$store.state.lang.lang_map.team.members}`, value: 'assigned_person'},
