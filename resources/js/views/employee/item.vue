@@ -1853,7 +1853,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = this.langMap.company.employee_linked;
+                    this.snackbarMessage = this.langMap.company.employee_added;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
