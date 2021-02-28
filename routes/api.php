@@ -43,6 +43,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('user/settings', 'API\UserController@updateSettings');
         Route::post('user/notifications', 'API\UserController@setNotifications');
         Route::post('user/avatar', 'API\UserController@updateAvatar');
+        Route::delete('user/delete/{id}', 'API\UserController@delete');
+        Route::post('user/restore', 'API\UserController@restoreDeleted');
 
         //company management
         Route::get('company/{id?}', 'API\CompanyController@find');

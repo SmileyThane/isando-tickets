@@ -143,7 +143,7 @@
                             <v-col cols="6">
                                 <hr class="lighten" />
 
-                                <p class="mb-0" v-if="langs && langs.length > 0">
+                                <p class="mb-0" v-if="langs && langs.length > 0 && userData">
                                     <v-icon left small dense :color="themeColor" :title="langMap.main.language">mdi-web</v-icon>
                                     {{ langs[userData.language_id].name }}
                                 </p>
@@ -151,7 +151,12 @@
                             <v-col cols="6">
                                 <hr class="lighten" />
 
-                                <p class="mb-0">
+                                <p class="mb-0" v-if="userData.deleted_at">
+                                    <v-icon v-if="userData.deleted_at" small dense left color="red">mdi-cancel</v-icon>
+                                    {{ langMap.individuals.deleted }}
+                                </p>
+
+                                <p class="mb-0" v-if="!userData.deleted_at">
                                     <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.individuals.active }}
@@ -734,6 +739,22 @@
                                 </v-form>
                             </v-card-text>
                             <v-card-actions>
+                                <v-btn
+                                    v-if="!userData.deleted_at"
+                                    text
+                                    color="red"
+                                    @click="deleteUser"
+                                >
+                                    {{ langMap.individuals.delete}}
+                                </v-btn>
+                                <v-btn
+                                    v-if="userData.deleted_at"
+                                    text
+                                    color="green darken"
+                                    @click="restoreUser"
+                                >
+                                    {{ langMap.individuals.restore}}
+                                </v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn
                                     text
@@ -1240,7 +1261,8 @@ export default {
                 status: '',
                 notification_statuses: [],
                 number: '',
-                avatar_url: ''
+                avatar_url: '',
+                deleted_at: null
             },
             notificationStatuses: [],
             singleUserForm: {
@@ -1591,6 +1613,36 @@ export default {
                 }
 
             });
+        },
+        deleteUser() {
+            axios.delete(`/api/user/delete/${this.userData.id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.individuals.deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        restoreUser() {
+                axios.post('/api/user/restore', {id: this.userData.id}).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.snackbarMessage = this.langMap.individuals.restored;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
         },
         deletePhone(id) {
             axios.delete(`/api/phone/${id}`).then(response => {

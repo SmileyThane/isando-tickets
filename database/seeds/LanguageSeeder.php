@@ -332,6 +332,11 @@ class LanguageSeeder extends Seeder
                             'unlink' => 'Are you sure that you want to unlink this user from this company? ',
                             'status' => 'Status',
                             'social_info' => 'Social media',
+                            'with_trashed' => 'Display deleted',
+                            'delete' => 'Delete',
+                            'restore' => 'Restore',
+                            'deleted' => 'Deleted',
+                            'restored' => 'Restored',
                         ],
                     'ticket' =>
                         [
@@ -941,6 +946,11 @@ class LanguageSeeder extends Seeder
                             'unlink' => 'Sind Sie sicher, dass Sie den Link löschen wollen?',
                             'status' => 'Status',
                             'social_info' => 'Social Media',
+                            'with_trashed' => 'Anzeige gelöscht',
+                            'delete' => 'Löschen',
+                            'restore' => 'Wiederherstellen',
+                            'deleted' => 'Gelöscht',
+                            'restored' => 'Restauriert',
                         ],
                         'ticket' => [
                             'merged_abbr' => 'ZGF',

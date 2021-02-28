@@ -100,6 +100,16 @@ class UserController extends Controller
     {
         return self::showResponse(true, $this->userRepo->updateAvatar($request));
     }
+
+    public function delete(Request $request, $id)
+    {
+        return self::showResponse(true, $this->userRepo->delete($id));
+    }
+
+    public function restoreDeleted(Request $request)
+    {
+        return self::showResponse(true, $this->userRepo->restoreDeleted($request->id));
+    }
 }
 
 
