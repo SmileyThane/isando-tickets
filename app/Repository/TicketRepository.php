@@ -83,6 +83,7 @@ class TicketRepository
                             case 'id':
                                 $query->where('id', 'like', '%' . trim($request->search) . '%');
                                 break;
+                            case 'contact.user_data.full_name':
                             case 'contact':
                                 $search = trim($request->search);
                                 $query->whereHas('contact.userData', function ($q) use ($search) {
@@ -134,6 +135,20 @@ class TicketRepository
                 $ticketResult = $ticketResult->sortBy('from_company_name', SORT_NATURAL, false);
             } else {
                 $ticketResult = $ticketResult->sortByDesc('from_company_name', SORT_NATURAL, true);
+            }
+        } elseif ($orderedField === 'contact.user_data.full_name') {
+            $ticketResult = $ticketResult->get();
+            if ($orderedDirection === 'asc') {
+                $ticketResult = $ticketResult->sortBy('contact.userData.name', SORT_NATURAL, false);
+            } else {
+                $ticketResult = $ticketResult->sortByDesc('contact.userData.name', SORT_NATURAL, true);
+            }
+        } elseif ($orderedField === 'category.name') {
+            $ticketResult = $ticketResult->get();
+            if ($orderedDirection === 'asc') {
+                $ticketResult = $ticketResult->sortBy('category.name', SORT_NATURAL, false);
+            } else {
+                $ticketResult = $ticketResult->sortByDesc('category.name', SORT_NATURAL, true);
             }
         } else {
             $ticketResult = $ticketResult->orderBy($orderedField, $orderedDirection);

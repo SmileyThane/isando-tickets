@@ -108,7 +108,8 @@ class LanguageSeeder extends Seeder
                                 'end' => 'End',
                                 'passed' => 'Passed',
                                 'actions' => 'Actions',
-                                'service_type' => 'Service type'
+                                'service_type' => 'Service type',
+                                'save' => 'Save'
                             ],
                             'settings' => [
                                 'tags' => 'Tags',
@@ -329,9 +330,16 @@ class LanguageSeeder extends Seeder
                             'new_employee' => 'Link to contact',
                             'update_link' => 'Update link',
                             'is_active' => 'System access',
+                            'give_access' => 'Select primary email address for access to the system:',
+                            'remove_access' => 'Remove system access from this user?',
                             'unlink' => 'Are you sure that you want to unlink this user from this company? ',
                             'status' => 'Status',
                             'social_info' => 'Social media',
+                            'with_trashed' => 'Display deleted',
+                            'delete' => 'Delete',
+                            'restore' => 'Restore',
+                            'deleted' => 'Deleted',
+                            'restored' => 'Restored',
                         ],
                     'ticket' =>
                         [
@@ -735,7 +743,8 @@ class LanguageSeeder extends Seeder
                                 'end' => 'End',
                                 'passed' => 'Passed',
                                 'actions' => 'Actions',
-                                'service_type' => 'Service type'
+                                'service_type' => 'Service type',
+                                'save' => 'Save'
                             ],
                             'settings' => [
                                 'tags' => 'Tags',
@@ -938,9 +947,16 @@ class LanguageSeeder extends Seeder
                             'new_employee' => 'Mitarbeiter hinzufügen',
                             'update_link' => 'Link aktualisieren',
                             'is_active' => 'Systemzugriff',
+                            'give_access' => 'Wählen Sie die E-Mail Adresse für den Zugriff auf das System aus:',
+                            'remove_access' => 'Systemzugriff von diesem Benutzer entfernen?',
                             'unlink' => 'Sind Sie sicher, dass Sie den Link löschen wollen?',
                             'status' => 'Status',
                             'social_info' => 'Social Media',
+                            'with_trashed' => 'Anzeige gelöscht',
+                            'delete' => 'Löschen',
+                            'restore' => 'Wiederherstellen',
+                            'deleted' => 'Gelöscht',
+                            'restored' => 'Restauriert',
                         ],
                         'ticket' => [
                             'merged_abbr' => 'ZGF',

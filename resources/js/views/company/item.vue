@@ -841,6 +841,19 @@
                                 <v-expansion-panel-content style="padding-bottom: 0">
                                     <v-form>
                                         <div class="row">
+                                            <div class="col-md-12">
+                                                <v-select
+                                                    :color="themeColor"
+                                                    :label="langMap.main.category"
+                                                    name="category_id"
+                                                    prepend-icon="mdi-rename-box"
+                                                    v-model="productForm.category_id"
+                                                    :items="productCategoriesFlat"
+                                                    :item-color="themeColor"
+                                                    item-value="id"
+                                                    item-text="full_name"
+                                                />
+                                            </div>
                                             <div class="col-md-6">
                                                 <v-text-field
                                                     v-model="productForm.product_name"
@@ -1830,6 +1843,9 @@ export default {
             productForm: {
                 product_name: '',
                 product_description: '',
+                product_code: '',
+                category_id: null,
+                files:[]
             },
             productHeaders: [
                 {
@@ -2151,9 +2167,14 @@ export default {
             axios.post('/api/product', formData, config).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.getCompany()
+                    this.getCompany();
+                    this.snackbarMessage = this.langMap.product.product_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
                 }
             });
         },

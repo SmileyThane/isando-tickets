@@ -391,13 +391,14 @@
                                                     v-model="props.item.service"
                                                     return-object
                                                     dense
+                                                    @input="$refs[`dialog${props.item.id}`][0].isActive = false"
                                                 ></v-select>
                                                 <v-btn
                                                     class="float-right mb-2"
                                                     text
                                                     color="success"
                                                     @click="$refs[`dialog${props.item.id}`][0].isActive = false"
-                                                >Save</v-btn>
+                                                >{{langMap.tracking.tracker.save}}</v-btn>
                                             </template>
                                         </v-edit-dialog>
                                     </template>

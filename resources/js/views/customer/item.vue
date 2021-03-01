@@ -1559,12 +1559,12 @@ export default {
                     }
                 });
         },
-        addEmployee() {
+        addEmployee(update = false) {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = this.langMap.company.employee_created;
+                    this.snackbarMessage = update ? this.langMap.company.employee_updated : this.langMap.company.employee_added;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1580,7 +1580,7 @@ export default {
                 this.employeeForm.client_id = this.contactInfoForm.client_id
                 this.employeeForm.company_user_id = this.contactInfoForm.company_user_id
                 this.employeeForm.description = this.contactInfoForm.description
-                this.addEmployee();
+                this.addEmployee(true);
                 this.contactInfoModal = false
                 this.contactInfoEditBtn = false
                 this.getClient()

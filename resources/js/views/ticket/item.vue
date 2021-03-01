@@ -627,6 +627,7 @@
                             <div v-for="answer in child_ticket.answers"
                                  v-if="child_ticket.answers.length > 0"
                                  :key="answer.id"
+                                 class="ticket--answer"
                             >
                                 <v-card
                                     class="mx-auto"
@@ -761,6 +762,7 @@
                         </div>
                         <div v-for="answer in ticket.answers"
                              :key="answer.id"
+                             class="ticket--answer"
                         >
                             <v-card
                                 class="mx-auto"

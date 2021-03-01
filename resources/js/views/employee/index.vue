@@ -108,7 +108,7 @@
                             </v-expansion-panel-content>
                         </v-expansion-panel>
                     </v-expansion-panels>
-                    <div class="card-header"></div>
+                    <v-spacer>&nbsp;</v-spacer>
 
                     <div class="card-body">
                         <v-data-table
@@ -127,10 +127,17 @@
                         >
                             <template v-slot:top>
                                 <v-row>
-                                    <v-col md="10" sm="12">
+                                    <v-col md="6" sm="12">
                                         <v-text-field v-model="employeesSearch" :color="themeColor"
                                                       :label="langMap.main.search"
                                                       class="mx-4" @input="getEmployees"></v-text-field>
+                                    </v-col>
+                                    <v-col md="4" sm="12">
+                                        <v-checkbox v-model="withTrashed"  :color="themeColor"
+                                                    value="1"
+                                                    dense
+                                                    :label="langMap.individuals.with_trashed"
+                                                    class="mx-4" @change="getEmployees"/>
                                     </v-col>
                                     <v-col md="2" sm="12">
                                         <v-select
@@ -187,21 +194,14 @@
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.user_data.is_active="{ item }">
-                                <v-icon v-if="item" @click="showItem(item)">
-                                    {{
-                                        item.user_data.is_active === 1 ?
-                                            'mdi-check-circle-outline' :
-                                            'mdi-cancel'
-                                    }}
+                                <v-icon v-if="item && item.deleted_at" @click="showItem(item)" color="red darken" :title="langMap.individuals.deleted">mdi-cancel</v-icon>
+                                <v-icon v-if="item && !item.deleted_at" @click="showItem(item)">
+                                    {{ item.user_data.is_active === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
                                 </v-icon>
                             </template>
                             <template v-slot:item.user_data.status="{ item }">
                                 <v-icon v-if="item" @click="showItem(item)">
-                                    {{
-                                        item.user_data.status === 1 ?
-                                            'mdi-check-circle-outline' :
-                                            'mdi-cancel'
-                                    }}
+                                    {{item.user_data.status === 1 ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
                                 </v-icon>
                             </template>
                             <template v-slot:item.assigned_to_clients.clients="{ item }">
@@ -286,6 +286,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.individuals.status}`, value: 'user_data.status', align: 'center'},
                 {text: `${this.$store.state.lang.lang_map.main.client}`, value: 'assigned_to_clients.clients'},
             ],
+            withTrashed: false,
             employeesSearch: '',
             employeeErrors: [],
             contacts: [],
@@ -330,7 +331,8 @@ export default {
                     sort_by: this.options.sortBy[0],
                     sort_val: this.options.sortDesc[0],
                     per_page: this.options.itemsPerPage,
-                    page: this.options.page
+                    page: this.options.page,
+                    with_trashed: this.withTrashed
                 }
             }).then(
                 response => {

@@ -143,7 +143,7 @@
                             <v-col cols="6">
                                 <hr class="lighten" />
 
-                                <p class="mb-0" v-if="langs && langs.length > 0">
+                                <p class="mb-0" v-if="langs && langs.length > 0 && userData">
                                     <v-icon left small dense :color="themeColor" :title="langMap.main.language">mdi-web</v-icon>
                                     {{ langs[userData.language_id].name }}
                                 </p>
@@ -151,7 +151,12 @@
                             <v-col cols="6">
                                 <hr class="lighten" />
 
-                                <p class="mb-0">
+                                <p class="mb-0" v-if="userData.deleted_at">
+                                    <v-icon v-if="userData.deleted_at" small dense left color="red">mdi-cancel</v-icon>
+                                    {{ langMap.individuals.deleted }}
+                                </p>
+
+                                <p class="mb-0" v-if="!userData.deleted_at">
                                     <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>
                                     <v-icon v-else small dense left>mdi-cancel</v-icon>
                                     {{ langMap.individuals.active }}
@@ -734,6 +739,22 @@
                                 </v-form>
                             </v-card-text>
                             <v-card-actions>
+                                <v-btn
+                                    v-if="!userData.deleted_at"
+                                    text
+                                    color="red"
+                                    @click="deleteUser"
+                                >
+                                    {{ langMap.individuals.delete}}
+                                </v-btn>
+                                <v-btn
+                                    v-if="userData.deleted_at"
+                                    text
+                                    color="green darken"
+                                    @click="restoreUser"
+                                >
+                                    {{ langMap.individuals.restore}}
+                                </v-btn>
                                 <v-spacer></v-spacer>
                                 <v-btn
                                     text
@@ -905,11 +926,7 @@
                         <span class="headline">{{ langMap.company.update_info }}: {{ userData.full_name }}</span>
                     </v-card-title>
                     <v-card-text>
-                        {{
-                            userData.is_active === true ?
-                                this.$store.state.lang.lang_map.main.give_access :
-                                this.$store.state.lang.lang_map.individuals.unlink
-                        }}
+                        {{ userData.is_active === true ? langMap.individuals.give_access : langMap.individuals.remove_access }}
                         <v-select
                             v-model="primaryEmailId"
                             :color="themeColor"
@@ -1240,7 +1257,8 @@ export default {
                 status: '',
                 notification_statuses: [],
                 number: '',
-                avatar_url: ''
+                avatar_url: '',
+                deleted_at: null
             },
             notificationStatuses: [],
             singleUserForm: {
@@ -1592,6 +1610,36 @@ export default {
 
             });
         },
+        deleteUser() {
+            axios.delete(`/api/user/delete/${this.userData.id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getUser()
+                    this.snackbarMessage = this.langMap.individuals.deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        restoreUser() {
+                axios.post('/api/user/restore', {id: this.userData.id}).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getUser()
+                        this.snackbarMessage = this.langMap.individuals.restored;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
         deletePhone(id) {
             axios.delete(`/api/phone/${id}`).then(response => {
                 response = response.data
@@ -1723,7 +1771,7 @@ export default {
             request.is_active = this.selectedIsAccessedItem.is_active
             this.singleUserForm.role_ids = this.selectedIsAccessedItem.is_active == true ? [6] : [];
             this.singleUserForm.user = this.userData
-            this.singleUserForm.company_user_id = this.userData.employee.id
+            this.singleUserForm.company_user_id = this.userData.employee ? this.userData.employee.id : null;
             axios.post(`/api/user/is_active`, request).then(response => {
                 response = response.data
                 this.isAccessedDialog = false
@@ -1805,7 +1853,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getUser()
-                    this.snackbarMessage = this.langMap.company.employee_created;
+                    this.snackbarMessage = this.langMap.company.employee_added;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
