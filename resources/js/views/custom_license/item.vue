@@ -418,6 +418,7 @@ export default {
             axios.get(`/api/custom_license/${this.$route.params.id}/user/${remoteId}/${isLicensed}`).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.getLicense();
                     this.getLicenseUsers();
                     // this.licenseUsers = response.data.entities
                 } else {
