@@ -76,11 +76,25 @@ class CustomLicenseRepository
         return $parsedResult['message'];
     }
 
-    public function manageUsers($id)
+    public function getUsers($id)
     {
         $client = \App\Client::find($id);
         $ixArmaId = $client->customLicense->remote_client_id;
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$ixArmaId/page/0", []);
+        $parsedResult = json_decode($result->getContents(), true);
+        if ($parsedResult['status'] === 'SUCCESS') {
+            return $parsedResult['body'];
+        }
+        return null;
+    }
+
+    public function manageUser($id, $remoteUserId, $isLicensed)
+    {
+
+        $client = \App\Client::find($id);
+        $ixArmaId = $client->customLicense->remote_client_id;
+        $activationAction = $isLicensed === 'true' ? 'deactivate' : 'activate';
+        $result = $this->makeIxArmaRequest("/api/v1/app/user/$ixArmaId/$remoteUserId/$activationAction", []);
         $parsedResult = json_decode($result->getContents(), true);
         if ($parsedResult['status'] === 'SUCCESS') {
             return $parsedResult['body'];
