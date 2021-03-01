@@ -108,7 +108,8 @@ class LanguageSeeder extends Seeder
                                 'end' => 'End',
                                 'passed' => 'Passed',
                                 'actions' => 'Actions',
-                                'service_type' => 'Service type'
+                                'service_type' => 'Service type',
+                                'save' => 'Save'
                             ],
                             'settings' => [
                                 'tags' => 'Tags',
@@ -742,7 +743,8 @@ class LanguageSeeder extends Seeder
                                 'end' => 'End',
                                 'passed' => 'Passed',
                                 'actions' => 'Actions',
-                                'service_type' => 'Service type'
+                                'service_type' => 'Service type',
+                                'save' => 'Save'
                             ],
                             'settings' => [
                                 'tags' => 'Tags',
