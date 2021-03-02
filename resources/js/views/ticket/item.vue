@@ -321,7 +321,8 @@
                            @click="answerDialog = true"
                     >{{ langMap.ticket.create_answer }}
                     </v-btn>
-                    <v-btn :color="!linkBlock ? '#f2f2f2' : themeColor"
+                    <v-btn v-if="!checkRoleByIds([6, 101])"
+                           :color="!linkBlock ? '#f2f2f2' : themeColor"
                            :outlined="linkBlock"
                            class="ma-2 d-sm-none d-md-flex"
                            small
@@ -329,7 +330,7 @@
                     >
                         {{ langMap.main.link }}
                     </v-btn>
-                    <v-btn v-if="ticket.parent_id !== null || ticket.child_tickets !== null"
+                    <v-btn v-if="!checkRoleByIds([6, 101]) && (ticket.parent_id !== null || ticket.child_tickets !== null)"
                            :color="!mergeBlock ? '#f2f2f2' : themeColor"
                            :outlined="mergeBlock"
                            class="ma-2 d-sm-none d-md-flex"
@@ -345,13 +346,15 @@
                     >
                         {{ langMap.ticket.ticket_history }}
                     </v-btn>
-                    <v-btn :color="this.ticket.is_spam ? 'red' : '#f2f2f2'" class="ma-2 d-sm-none d-md-flex"
+                    <v-btn v-if="!checkRoleByIds([6, 101])"
+                           :color="this.ticket.is_spam ? 'red' : '#f2f2f2'" class="ma-2 d-sm-none d-md-flex"
                            small
                            @click="markAsSpam"
                     >
                         Spam
                     </v-btn>
-                    <v-btn class="ma-2 d-sm-none d-md-flex" color="#f2f2f2" small
+                    <v-btn v-if="!checkRoleByIds([6, 101])"
+                           class="ma-2 d-sm-none d-md-flex" color="#f2f2f2" small
                            @click="ticketDeleteProcess"
                     >
                         {{ langMap.main.delete }}
@@ -1004,7 +1007,8 @@
                             </span>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
-                                <v-btn class="float-md-right"
+                                <v-btn v-if="!checkRoleByIds([6, 101])"
+                                       class="float-md-right"
                                        color="white" small
                                        style="color: black;"
                                        @click="true"
@@ -1068,7 +1072,7 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <br/>
-                <v-expansion-panels v-model="notesPanel" multiple>
+                <v-expansion-panels v-if="!checkRoleByIds([6, 101])" v-model="notesPanel" multiple>
                     <v-expansion-panel>
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
@@ -1798,6 +1802,15 @@ export default {
         })
     },
     methods: {
+        checkRoleByIds(ids) {
+            let roleExists = false;
+            ids.forEach(id => {
+                if (roleExists === false) {
+                    roleExists = this.$store.state.roles.includes(id)
+                }
+            });
+            return roleExists
+        },
         selectSearchCategory(item) {
             this.searchLabel = item.name
         },
