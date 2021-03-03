@@ -44,6 +44,7 @@
                     small-chips
                     clearable
                     @input="onUpdate"
+                    ref="tagSelector"
                 >
                     <template v-slot:no-data>
                         <v-list-item>
@@ -54,6 +55,7 @@
                                     small
                                     :color="form.color"
                                     :text-color="invertColor(form.color)"
+                                    @click.stop.prevent="onClickNewTag"
                                 >
                                 {{ form.name }}
                             </v-chip>
@@ -166,7 +168,7 @@ export default {
         },
         __createTag(name) {
             if (typeof name !== 'string') return;
-            this.$store.dispatch('Tags/createTag', this.form)
+            return this.$store.dispatch('Tags/createTag', this.form)
                 .then(createdTag => {
                     this.selectedTags = this.selectedTags.map(tag => {
                         if (typeof tag === 'string' && tag === createdTag.name) {
@@ -174,6 +176,7 @@ export default {
                         }
                         return tag;
                     });
+                    return createdTag;
                 });
         },
         onUpdate($event) {
@@ -200,6 +203,17 @@ export default {
         },
         invertColor(hex, bw = true) {
             return Helper.invertColor(hex, bw)
+        },
+        onClickNewTag() {
+            this.__createTag(this.form.name)
+                .then(tag => {
+                    this.form = {
+                        name: '',
+                        color: Helper.genRandomColor()
+                    };
+                    this.debounceGetTags();
+                    this.selectedTags.push(tag);
+                });
         }
     },
     computed: {
