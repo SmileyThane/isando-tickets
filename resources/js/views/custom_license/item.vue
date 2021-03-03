@@ -92,6 +92,14 @@
                                         moment(item.lastActivationChange).format('DD-MM-YYYY') : ''
                                 }}
                             </template>
+                            <template v-slot:item.licensed="{ item }">
+                                <v-btn
+                                    outlined
+                                    @click="manageLicenseUsers(item.id, item.licensed)"
+                                >
+                                    <v-icon>{{ item.licensed ? 'mdi-check-circle-outline' : 'mdi-cancel' }}</v-icon>
+                                </v-btn>
+                            </template>
                         </v-data-table>
                     </div>
                 </v-card>
@@ -396,6 +404,23 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.licenseUsers = response.data.entities
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+
+            });
+        },
+        manageLicenseUsers(remoteId, isLicensed) {
+            // console.log(remoteId);
+            // console.log(isLicensed);
+            axios.get(`/api/custom_license/${this.$route.params.id}/user/${remoteId}/${isLicensed}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getLicense();
+                    this.getLicenseUsers();
+                    // this.licenseUsers = response.data.entities
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
