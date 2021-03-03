@@ -15,6 +15,18 @@
                 <v-toolbar>
                     <!-- Timer mode-->
                     <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="mode">
+                        <div class="mx-2 align-self-center">
+                            <v-select
+                                :items="$store.getters['Services/getServices']"
+                                :placeholder="langMap.tracking.tracker.service_type"
+                                hide-details
+                                item-text="name"
+                                item-value="id"
+                                v-model="timerPanel.service"
+                                return-object
+                                style="max-width: 150px;"
+                            ></v-select>
+                        </div>
                         <div class="flex-grow-1 align-self-center">
                             <v-text-field
                                 outlined
@@ -113,6 +125,18 @@
                     </div>
                     <!-- Manual mode-->
                     <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!mode">
+                        <div class="mx-2 align-self-center">
+                            <v-select
+                                :items="$store.getters['Services/getServices']"
+                                :placeholder="langMap.tracking.tracker.service_type"
+                                hide-details
+                                item-text="name"
+                                item-value="id"
+                                v-model="manualPanel.service"
+                                return-object
+                                style="max-width: 150px;"
+                            ></v-select>
+                        </div>
                         <div class="flex-grow-1 align-self-center">
                             <v-text-field
                                 outlined
@@ -702,6 +726,7 @@ export default {
             /* Data */
             tracking: [],
             manualPanel: {
+                service: null,
                 description: null,
                 project: null,
                 tags: [],
@@ -714,6 +739,7 @@ export default {
             },
             nameLimit: 255,
             timerPanel: {
+                service: null,
                 trackId: null,
                 passedSeconds: '00:00:00',
                 start: null,
@@ -944,6 +970,7 @@ export default {
         resetManualPanel() {
             this.manualPanel = {
                 ...this.manualPanel,
+                service: null,
                 description: null,
                 projectId: null,
                 tags: [],
@@ -958,6 +985,7 @@ export default {
         resetTimerPanel() {
             this.timerPanel = {
                 ...this.timerPanel,
+                service: null,
                 trackId: null,
                 start: null,
                 billable: false,

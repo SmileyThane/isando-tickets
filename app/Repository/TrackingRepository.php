@@ -96,6 +96,14 @@ class TrackingRepository
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
         $tracking->save();
+        if ($request->has('service') && !is_null($request->service)) {
+            if (!is_null($request->service)) {
+                $service = Service::with('Company')->find($request->service['id']);
+                $tracking->Services()->sync([$service->id]);
+            } else {
+                $tracking->Services()->sync([]);
+            }
+        }
         $this->logTracking($tracking->id, TrackingLogger::CREATE, null, $tracking);
         if ($request->has('tags')) {
             foreach ($request->tags as $tag) {
