@@ -30,11 +30,19 @@ class CustomLicenseRepository
 
     public function find($id)
     {
+        $result = [];
         $client = \App\Client::find($id);
         $ixArmaId = $client->customLicense->remote_client_id;
-        $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", []);
-        $parsedResult = json_decode($result->getContents(), true);
-        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+
+        $response = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", []);
+        $parsedResult = json_decode($response->getContents(), true);
+        $result['limits'] = $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+
+        $response = $this->makeIxArmaRequest("/api/v1/company/$ixArmaId", []);
+        $parsedResult = json_decode($response->getContents(), true);
+        $result['info'] = $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+
+        return $result;
     }
 
     public function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true): ?StreamInterface
