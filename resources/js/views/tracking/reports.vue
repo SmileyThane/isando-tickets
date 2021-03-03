@@ -30,6 +30,7 @@
             </div>
         </div>
         <div class="d-flex flex-row">
+            <!-- PERIOD -->
             <div class="d-inline-flex flex-glow-1 mr-2" style="width: 40%; max-height: 55px">
                 <v-expansion-panels
                     v-model="activePeriod"
@@ -106,6 +107,7 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
             </div>
+            <!-- ROUNDING -->
             <div class="d-inline-flex flex-glow-1 mx-2" style="width: 30%">
                 <v-select
                     prepend-inner-icon="mdi-approximately-equal"
@@ -118,6 +120,7 @@
                 >
                 </v-select>
             </div>
+            <!-- SORTING  -->
             <div class="d-inline-flex flex-glow-1 ml-2" style="width: 30%">
                 <v-select
                     :prepend-inner-icon="builder.sort.icon"
@@ -138,6 +141,7 @@
                 </v-select>
             </div>
         </div>
+        <!-- GROUPING -->
         <v-card
             outlined
             class="d-flex px-6 py-2 flex-row"
@@ -159,9 +163,10 @@
                     :key="groupItem.value"
                     outlined
                     :color="themeColor"
-                    class="square d-inline-flex"
+                    class="square d-inline-flex mr-3 ml-2"
                     x-small
                     style="border-color: rgba(0,0,0,0)"
+                    @dblclick="dblClickSelectGroupItem(groupItem)"
                 >
                     <v-icon>{{groupItem.icon}}</v-icon>
                     {{groupItem.text}}
@@ -173,7 +178,7 @@
                 @start="draggable = true"
                 @end="draggable = false"
                 :style="{ 'min-width': '40%' }"
-                class="d-inline-block order-last dragNDrop"
+                class="d-inline-block order-last dragNDrop common"
                 :class="{ 'active': draggable }"
             >
                 <v-btn
@@ -181,7 +186,7 @@
                     :key="groupItem.value"
                     outlined
                     :color="themeColor"
-                    class="square d-inline-flex"
+                    class="square d-inline-flex mr-3 ml-2"
                     x-small
                     text
                     style="border-color: rgba(0,0,0,0)"
@@ -191,6 +196,29 @@
                     {{groupItem.text}}
                 </v-btn>
             </draggable>
+        </v-card>
+        <v-card
+            outlined
+            class="d-flex px-6 py-2 mt-3 flex-row"
+        >
+            <div class="d-inline-flex">
+                Filter entries:
+            </div>
+            <div class="d-inline-flex flex-grow-1 mx-4">
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row">
+                        <a class="mx-2 d-inline-flex" :style="{ color: themeColor }">Co-workers</a>
+                        <a class="mx-2 d-inline-flex" :style="{ color: themeColor }">Clients&projects</a>
+                        <a class="mx-2 d-inline-flex" :style="{ color: themeColor }">Clients</a>
+                        <a class="mx-2 d-inline-flex" :style="{ color: themeColor }">Services</a>
+                        <a class="mx-2 d-inline-flex" :style="{ color: themeColor }">Billable</a>
+                        <div class="d-inline-flex flex-grow-1"></div>
+                    </div>
+                    <div class="d-inline-block">
+                        123412
+                    </div>
+                </div>
+            </div>
         </v-card>
     </v-container>
 </template>
@@ -217,13 +245,28 @@
     border-style: dashed;
     border-color: white;
 }
+.dragNDrop button {
+    cursor: move;
+}
 .dragNDrop.active {
     border-width: 1px;
     border-style: dashed;
     border-color: rgba(0,0,0,.12);
 }
-.dragNDrop > button:after {
-
+.dragNDrop:not(.common) > button:not(:last-of-type):after {
+    font: normal normal normal 24px/1 "Material Design Icons";
+    text-transform: none !important;
+    speak: none;
+    line-height: inherit;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: "\F0142";
+    position: absolute;
+    top: 50%;
+    right: -25px;
+    font-weight: bold;
+    color: #a1a3a4;
+    transform: translateY(-50%);
 }
 </style>
 
