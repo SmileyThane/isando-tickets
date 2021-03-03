@@ -140,67 +140,57 @@
         </div>
         <v-card
             outlined
-            class="d-flex flex-row px-6 py-2"
+            class="d-flex px-6 py-2 flex-row"
         >
-            <div class="d-inline-flex align-center" style="min-width: 200px">
+            <div class="d-inline-flex align-center order-first" style="min-width: 150px">
                 Group entries by...
             </div>
-            <div class="d-inline-flex">
+            <draggable
+                :options="{ group:'grouping' }"
+                v-model="builder.group"
+                @start="draggable = true"
+                @end="draggable = false"
+                :style="{ 'min-width': '45%' }"
+                class="d-inline-flex order-2 dragNDrop"
+                :class="{ 'active': draggable }"
+            >
                 <v-btn
+                    v-for="groupItem in builder.group"
+                    :key="groupItem.value"
                     outlined
                     :color="themeColor"
-                    class="square"
+                    class="square d-inline-flex"
                     x-small
+                    style="border-color: rgba(0,0,0,0)"
                 >
-                    <v-icon>mdi-calendar-today</v-icon>
-                    Day
+                    <v-icon>{{groupItem.icon}}</v-icon>
+                    {{groupItem.text}}
                 </v-btn>
-            </div>
-            <v-spacer></v-spacer>
-            <div class="d-inline-flex">
+            </draggable>
+            <draggable
+                :options="{ group:'grouping' }"
+                v-model="groupItems"
+                @start="draggable = true"
+                @end="draggable = false"
+                :style="{ 'min-width': '40%' }"
+                class="d-inline-block order-last dragNDrop"
+                :class="{ 'active': draggable }"
+            >
                 <v-btn
+                    v-for="groupItem in groupItems"
+                    :key="groupItem.value"
                     outlined
                     :color="themeColor"
-                    class="square"
+                    class="square d-inline-flex"
                     x-small
+                    text
+                    style="border-color: rgba(0,0,0,0)"
+                    @dblclick="dblClickSelectGroupItem(groupItem)"
                 >
-                    <v-icon>mdi-format-quote-open</v-icon>
-                    Description
+                    <v-icon>{{groupItem.icon}}</v-icon>
+                    {{groupItem.text}}
                 </v-btn>
-            </div>
-            <div class="d-inline-flex">
-                <v-btn
-                    outlined
-                    :color="themeColor"
-                    class="square"
-                    x-small
-                >
-                    <v-icon>mdi-calendar-week</v-icon>
-                    Week
-                </v-btn>
-            </div>
-            <div class="d-inline-flex">
-                <v-btn
-                    outlined
-                    :color="themeColor"
-                    class="square"
-                    x-small
-                >
-                    <v-icon>mdi-currency-usd</v-icon>
-                    Billability
-                </v-btn>
-            </div>
-            <div class="d-inline-flex">
-                <v-btn
-                    outlined
-                    :color="themeColor"
-                    class="square"
-                    x-small
-                >
-                    <v-icon>mdi-calendar-month</v-icon>
-                    Month
-                </v-btn>
-            </div>
+            </draggable>
         </v-card>
     </v-container>
 </template>
@@ -222,14 +212,31 @@
 .v-btn.square > span {
     flex-direction: column;
 }
+.dragNDrop {
+    border-width: 1px;
+    border-style: dashed;
+    border-color: white;
+}
+.dragNDrop.active {
+    border-width: 1px;
+    border-style: dashed;
+    border-color: rgba(0,0,0,.12);
+}
+.dragNDrop > button:after {
+
+}
 </style>
 
 <script>
 import EventBus from "../../components/EventBus";
 import * as Helper from "./helper";
 import moment from "moment-timezone";
+import draggable from "vuedraggable";
 
 export default {
+    components: {
+        draggable
+    },
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
@@ -238,6 +245,7 @@ export default {
             snackbar: false,
             actionColor: '',
             activePeriod: null,
+            draggable: false,
             builder: {
                 reportName: 'New report',
                 report: null,
@@ -250,7 +258,8 @@ export default {
                     icon: 'mdi-sort-alphabetical-ascending',
                     value: 'alph-asc',
                     text: 'A - Z and chronologically'
-                }
+                },
+                group: []
             },
             roundingItems: [
                 {
@@ -325,6 +334,33 @@ export default {
                     value: 'revenue-asc',
                     text: 'Revenue, ascending'
                 },
+            ],
+            groupItems: [
+                {
+                    icon: "mdi-calendar-today",
+                    text: "Day",
+                    value: "day"
+                },
+                {
+                    icon: "mdi-format-quote-open",
+                    text: "Description",
+                    value: "description"
+                },
+                {
+                    icon: "mdi-calendar-week",
+                    text: "Week",
+                    value: "week"
+                },
+                {
+                    icon: "mdi-currency-usd",
+                    text: "Billability",
+                    value: "billability"
+                },
+                {
+                    icon: "mdi-calendar-month",
+                    text: "Month",
+                    value: "month"
+                }
             ]
         }
     },
@@ -405,6 +441,12 @@ export default {
         },
         onClickOutsideHandler () {
             this.activePeriod = null
+        },
+        dblClickSelectGroupItem(groupItem) {
+            this.groupItems = this.groupItems.concat(this.builder.group);
+            this.groupItems = this.groupItems.filter(i => i.value !== groupItem.value);
+            this.builder.group = [];
+            this.builder.group.push(groupItem);
         }
     },
     watch: {
