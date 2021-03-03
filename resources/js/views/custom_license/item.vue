@@ -21,10 +21,10 @@
                         <v-spacer></v-spacer>
                         <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
-                               @click="cancelUpdateClient">
+                               @click="enableToEdit = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateClient">
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" >
                             {{ langMap.main.update }}
                         </v-btn>
 
@@ -62,6 +62,21 @@
                             hide-details
                             @change="changeIsActiveClient(client)"
                         ></v-checkbox>
+                        <v-divider></v-divider>
+                        <br>
+                        <label>Connection links</label>
+                        <div v-for="(id, key) in client.connection_links">
+                            <v-text-field
+                                v-model="client.connection_links[key]"
+                                :color="themeColor"
+                                :label="langMap.company.link"
+                                :readonly="!enableToEdit"
+                                dense
+                                prepend-icon="mdi-link"
+                                required
+                                type="text"
+                            ></v-text-field>
+                        </div>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
@@ -281,6 +296,7 @@ export default {
             client: {
                 client_name: '',
                 client_description: '',
+                connection_links: [],
                 products: [
                     {
                         product_data: {}
@@ -374,7 +390,8 @@ export default {
             axios.get(`/api/custom_license/${this.$route.params.id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.license = response.data
+                    this.license = response.data.limits
+                    this.client.connection_links = response.data.info.serverUrls
                     this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
                     this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
                     this.getLicenseHistory();
