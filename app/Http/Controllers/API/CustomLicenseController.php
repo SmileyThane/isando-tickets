@@ -27,7 +27,12 @@ class CustomLicenseController extends Controller
 
     public function users($id)
     {
-        return self::showResponse(true, $this->customLicenseRepository->manageUsers($id));
+        return self::showResponse(true, $this->customLicenseRepository->getUsers($id));
+    }
+
+    public function manageUser($id, $remoteUserId, $isLicensed)
+    {
+        return self::showResponse(true, $this->customLicenseRepository->manageUser($id, $remoteUserId, $isLicensed));
     }
 
     public function history($id)

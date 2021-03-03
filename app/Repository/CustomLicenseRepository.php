@@ -11,6 +11,7 @@ use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Psr\Http\Message\StreamInterface;
+use Throwable;
 
 class CustomLicenseRepository
 {
@@ -21,7 +22,9 @@ class CustomLicenseRepository
         if ($request->search) {
             $request['page'] = 1;
         }
-        $clients = $clients->has('customLicense')->with('customLicense')->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
+        $clients = $clients->has('customLicense')
+            ->with('customLicense')
+            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
         return $clients->paginate($request->per_page ?? $clients->count());
     }
 
@@ -31,10 +34,7 @@ class CustomLicenseRepository
         $ixArmaId = $client->customLicense->remote_client_id;
         $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", []);
         $parsedResult = json_decode($result->getContents(), true);
-        if ($parsedResult['status'] === 'SUCCESS') {
-            return $parsedResult['body'];
-        }
-        return null;
+        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
     }
 
     public function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true): ?StreamInterface
@@ -53,7 +53,7 @@ class CustomLicenseRepository
             ]);
 
             return $response->getBody();
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             $this->ixArmaLogin();
             return null;
         }
@@ -76,11 +76,21 @@ class CustomLicenseRepository
         return $parsedResult['message'];
     }
 
-    public function manageUsers($id)
+    public function getUsers($id)
     {
         $client = \App\Client::find($id);
         $ixArmaId = $client->customLicense->remote_client_id;
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$ixArmaId/page/0", []);
+        $parsedResult = json_decode($result->getContents(), true);
+        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+    }
+
+    public function manageUser($id, $remoteUserId, $isLicensed)
+    {
+        $client = \App\Client::find($id);
+        $ixArmaId = $client->customLicense->remote_client_id;
+        $activationAction = $isLicensed === 'true' ? 'deactivate' : 'activate';
+        $result = $this->makeIxArmaRequest("/api/v1/app/user/$ixArmaId/$remoteUserId/$activationAction", []);
         $parsedResult = json_decode($result->getContents(), true);
         if ($parsedResult['status'] === 'SUCCESS') {
             return $parsedResult['body'];
@@ -114,17 +124,14 @@ class CustomLicenseRepository
             'newExpires' => Carbon::parse($request->expiresAt)->format('m/d/Y')
         ];
         $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", $data, 'PUT');
-        if ($request->active === true) {
-            $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/renew", $data, 'GET');
-        } else {
-            $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/suspend", $data, 'GET');
-        }
         $parsedResult = json_decode($result->getContents(), true);
-        if ($parsedResult['status'] === 'SUCCESS') {
-            return $parsedResult['body'];
+        if ($request->active === true) {
+            $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/renew", $data, 'GET');
         } else {
-            return $parsedResult['message'];
+            $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/suspend", $data, 'GET');
         }
+
+        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
     }
 
     public function delete()
