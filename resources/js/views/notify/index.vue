@@ -19,7 +19,7 @@
                                 <v-expansion-panel-header @click.native.stop="addNotification()">
                                     {{langMap.company.new_notification_template}}
                                     <template v-slot:actions>
-                                        <v-icon color="submit" @click="addNotification()">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`" @click="addNotification()">mdi-plus</v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                             </v-expansion-panel>
@@ -44,8 +44,8 @@
                                     <v-col sm="12" md="2">
                                         <v-select
                                             class="mx-4"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             v-model="options.itemsPerPage"
@@ -62,7 +62,7 @@
                                 <v-icon small :title="langMap.main.delete" @click.native.stop="removeNotification(item)">mdi-delete</v-icon>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination :color="themeColor"
+                                <v-pagination :color="themeBgColor"
                                               v-model="options.page"
                                               :length="lastPage"
                                               circle
@@ -79,7 +79,9 @@
         <template>
             <v-dialog v-model="removeNotificationDialog" persistent max-width="480">
                 <v-card>
-                    <v-card-title class="headline">{{langMap.main.delete_selected}}?</v-card-title>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{langMap.main.delete_selected}}?
+                    </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeNotificationDialog = false">
@@ -105,11 +107,12 @@ export default {
         return {
             snackbar: false,
             actionColor: '',
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             totalNotifications: 0,
             lastPage: 0,
-            loading: this.themeColor,
+            loading: this.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
             options: {
                 page: 1,
@@ -137,8 +140,11 @@ export default {
         this.getNotifications();
 
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {
@@ -147,7 +153,7 @@ export default {
             return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
         },
         getNotifications() {
-            this.loading = this.themeColor
+            this.loading = this.themeBgColor
             // console.log(this.options);
             if (this.options.sortDesc.length <= 0) {
                 this.options.sortBy[0] = 'id'

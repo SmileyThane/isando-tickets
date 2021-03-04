@@ -27,19 +27,19 @@
                     </v-alert>
                     <v-card class="elevation-12">
                         <v-toolbar
-                            :color="themeColor"
+                            :color="themeBgColor"
                             dark
                             dense
                             flat
                         >
-                            <v-toolbar-title>Reset password</v-toolbar-title>
+                            <v-toolbar-title :style="`color: ${themeFgColor};`">Reset password</v-toolbar-title>
                             <v-spacer></v-spacer>
                         </v-toolbar>
                         <v-card-text>
                             <v-form>
                                 <v-text-field
                                     v-model="email"
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     autocomplete="new-email"
                                     label="Email"
                                     name="email"
@@ -56,7 +56,7 @@
                                 <v-list-item to="/login">Back to login</v-list-item>
                             </v-list>
                             <v-spacer></v-spacer>
-                            <v-btn :color="themeColor" style="color: white;" @click="handleSubmit">Reset</v-btn>
+                            <v-btn :color="themeBgColor" style="color: white;" @click="handleSubmit">Reset</v-btn>
                         </v-card-actions>
                     </v-card>
 
@@ -76,7 +76,7 @@ export default {
             alert: false,
             message: false,
             email: "",
-            themeColor: this.$store.state.themeColor
+            themeBgColor: this.$store.state.themeBgColor
         }
     },
     mounted() {
@@ -84,8 +84,11 @@ export default {
             this.$router.push('tickets')
         }
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {

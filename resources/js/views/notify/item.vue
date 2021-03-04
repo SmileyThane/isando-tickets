@@ -12,12 +12,12 @@
             <v-col cols="4">
                 <v-card class="elevation-12">
                     <v-toolbar
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dense
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.notification.template}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.template}}</v-toolbar-title>
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
@@ -37,11 +37,11 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.notification.recipients}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.recipients}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                         <v-btn color="white" style="color: black;" @click="addRecipient(); updateRecipientsDlg = true">
                             {{langMap.main.update}}
@@ -57,7 +57,7 @@
                                             ref="tree1"
                                             :items="template.recipients"
                                             dense
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                         >
                                             <template v-slot:prepend="{ item }">
                                                 <v-icon small v-if="item.entity_type === 'App\\Client'">
@@ -92,11 +92,11 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.notification.attributes}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.attributes}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -115,7 +115,7 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-text-field
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                                 dense
                                                 v-model="dueDate"
                                                 :label="langMap.notification.due_date"
@@ -126,7 +126,7 @@
                                             ></v-text-field>
                                         </template>
                                         <v-date-picker
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             v-model="dueDate"
                                             no-title
                                             @input="datepickerMenu = false"
@@ -136,8 +136,8 @@
                                 <v-col cols="12" class="pa-3">
                                     <v-select
                                         ref="priority"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         v-model="template.priority"
                                         :items="priorities"
                                         :label="langMap.notification.priority"
@@ -151,8 +151,8 @@
                                 <v-col cols="12" class="pa-3">
                                     <v-select
                                         ref="type"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         v-model="template.notification_type_id"
                                         :items="notificationTypes"
                                         :label="langMap.notification.notification_type"
@@ -177,11 +177,11 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.notification.details}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.details}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -191,7 +191,7 @@
 
                                     <v-text-field
                                         red="subject"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         v-model="template.name"
                                         :label="langMap.notification.subject"
                                         dense
@@ -203,7 +203,7 @@
                                     <tiptap-vuetify
                                         ref="body"
                                         aria-rowcount="20"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         v-model="template.text"
                                         :extensions="extensions"
                                         :placeholder="langMap.notification.text"
@@ -213,8 +213,8 @@
                                 </v-col>
                                 <v-col cols="12" class="pa-3">
                                     <v-select
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         v-model="selectedSignatureId"
                                         :items="signatures"
                                         :label="langMap.notification.signature"
@@ -237,11 +237,11 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.notification.attachments}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.attachments}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
@@ -253,7 +253,7 @@
                                         dense
                                         subheader
                                     >
-                                        <v-list-item-group :color="themeColor">
+                                        <v-list-item-group :color="themeBgColor">
                                             <v-list-item
                                                 v-for="(item, i) in attachments"
                                                 :key="item.id"
@@ -261,7 +261,7 @@
                                                 <v-list-item-content>
                                                     <v-file-input
                                                         dense
-                                                        :color="themeColor"
+                                                        :color="themeBgColor"
                                                         v-model="attachments[i]"
                                                         :label="langMap.notification.select_file"
                                                         show-size
@@ -276,7 +276,7 @@
                                                         right
                                                         bottom
                                                         small
-                                                        :color="themeColor"
+                                                        :color="themeBgColor"
                                                         @click="attachments.splice(i, 1)"
                                                     >
                                                         <v-icon x-small>mdi-delete</v-icon>
@@ -290,7 +290,7 @@
                                             <v-expansion-panel-header @click.native.stop="attachments.push({})">
                                                 {{langMap.notification.new_attachment}}
                                                 <template v-slot:actions>
-                                                    <v-icon color="submit" @click="attachments.push({})">mdi-plus</v-icon>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`" @click="attachments.push({})">mdi-plus</v-icon>
                                                 </template>
                                             </v-expansion-panel-header>
                                         </v-expansion-panel>
@@ -307,18 +307,18 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.actions}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.main.actions}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
                         <v-row>
                             <v-col cols="12" class="pa-3">
                                 <v-btn
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     dark
                                     @click="saveAsDlg = true"
                                     class="mr-3"
@@ -327,7 +327,7 @@
                                 </v-btn>
 
                                 <v-btn
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     dark
                                     @click="send()"
                                     class="mr-3"
@@ -360,17 +360,17 @@
         <v-row justify="center">
             <v-dialog v-model="saveAsDlg" persistent max-width="600px">
                 <v-card>
-                    <v-card-title>
-                        <span class="headline">{{langMap.main.save_as}}</span>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{langMap.main.save_as}}
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <div class="row">
                                 <v-col cols="6" class="pa-3">
-                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="template.name" :label="langMap.main.name" dense></v-text-field>
+                                    <v-text-field :color="themeBgColor" :item-color="themeBgColor" v-model="template.name" :label="langMap.main.name" dense></v-text-field>
                                 </v-col>
                                 <v-col cols="6" class="pa-3">
-                                    <v-text-field :color="themeColor" :item-color="themeColor" v-model="template.description" :label="langMap.main.description" dense></v-text-field>
+                                    <v-text-field :color="themeBgColor" :item-color="themeBgColor" v-model="template.description" :label="langMap.main.description" dense></v-text-field>
                                 </v-col>
                             </div>
                         </v-container>
@@ -378,14 +378,16 @@
                     <v-card-actions>
 
                         <v-btn color="red" text @click="saveAsDlg=false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn :color="themeColor" text @click="saveAsDlg=false; saveAsTemplate()">{{langMap.main.save}}</v-btn>
+                        <v-btn :color="themeBgColor" text @click="saveAsDlg=false; saveAsTemplate()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
 
             <v-dialog v-model="deleteDlg" persistent max-width="480">
                 <v-card>
-                    <v-card-title class="headline">{{langMap.notification.delete_template}}</v-card-title>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{langMap.notification.delete_template}}
+                    </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="deleteDlg = false">
@@ -400,8 +402,8 @@
 
             <v-dialog v-model="updateRecipientsDlg" persistent max-width="800px">
                 <v-card>
-                    <v-card-title>
-                        <span class="headline">{{langMap.notification.recipients}}</span>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{langMap.notification.recipients}}
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -417,7 +419,7 @@
                                         hide-details
                                         clearable
                                         clear-icon="mdi-close-circle-outline"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         class="pa-3"
                                     ></v-text-field>
                                     <perfect-scrollbar>
@@ -430,8 +432,8 @@
                                             open-on-click
                                             item-disabled="disabled"
                                             dense
-                                            :color="themeColor"
-                                            :selected-color="themeColor"
+                                            :color="themeBgColor"
+                                            :selected-color="themeBgColor"
                                         >
                                             <template v-slot:prepend="{ item }">
                                                 <v-icon small v-if="item.entity_type === 'App\\Client'">
@@ -461,7 +463,7 @@
 
                                     <v-btn
                                         style="color: white;"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         :title="langMap.notification.add_selected"
                                         class="pa-3 mt-10"
                                         @click="addRecipient"
@@ -471,7 +473,7 @@
                                     <v-spacer>&nbsp;</v-spacer>
                                     <v-btn
                                         style="color: white;"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         :title="langMap.notification.delete_selected"
                                         class="pa-3"
                                         @click="deleteRecipient"
@@ -489,7 +491,7 @@
                                         hide-details
                                         clearable
                                         clear-icon="mdi-close-circle-outline"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         class="pa-3"
                                     ></v-text-field>
                                     <perfect-scrollbar>
@@ -502,8 +504,8 @@
                                             :search="dstSearch"
                                             item-disabled="locked"
                                             dense
-                                            :color="themeColor"
-                                            :selected-color="themeColor"
+                                            :color="themeBgColor"
+                                            :selected-color="themeBgColor"
                                         >
                                             <template v-slot:prepend="{ item }">
                                                 <v-icon small v-if="item.entity_type === 'App\\Client'">
@@ -533,7 +535,7 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-btn color="red" text @click="updateRecipientsDlg=false">{{langMap.main.cancel}}</v-btn>
-                        <v-btn :color="themeColor" text @click="updateRecipientsDlg=false; updateRecipients()">{{langMap.main.update}}</v-btn>
+                        <v-btn :color="themeBgColor" text @click="updateRecipientsDlg=false; updateRecipients()">{{langMap.main.update}}</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -588,7 +590,8 @@ export default {
 
     data() {
         return {
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
             templateId: this.$route.params.id,
             snackbar: false,
@@ -654,8 +657,11 @@ export default {
         this.getRecipients();
 
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {

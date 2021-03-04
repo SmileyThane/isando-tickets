@@ -25,7 +25,7 @@
                             >
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         style="color: white"
                                         v-bind="attrs"
                                         v-on="on"
@@ -35,7 +35,7 @@
                                 </template>
 
                                 <v-card>
-                                    <v-card-title class="headline">
+                                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                                         {{ langMap.tracking.settings.create_tag_title }}
                                     </v-card-title>
 
@@ -174,7 +174,7 @@
                                 <template v-slot:item.actions="props">
                                     <v-btn
                                         icon
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         @click="removeTag(props.item.id)"
                                     >
                                         <v-icon>mdi-delete</v-icon>
@@ -193,7 +193,7 @@
                             >
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         style="color: white"
                                         v-bind="attrs"
                                         v-on="on"
@@ -203,7 +203,7 @@
                                 </template>
 
                                 <v-card>
-                                    <v-card-title class="headline">
+                                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                                         {{ langMap.tracking.settings.create_service_title }}
                                     </v-card-title>
 
@@ -267,7 +267,7 @@
                                 <template v-slot:item.actions="props">
                                     <v-btn
                                         icon
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         @click="removeService(props.item.id)"
                                     >
                                         <v-icon>mdi-delete</v-icon>
@@ -294,7 +294,8 @@ export default {
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
@@ -355,8 +356,11 @@ export default {
     },
     mounted() {
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
         this.debounceGetTags();
         this.debounceGetServices();

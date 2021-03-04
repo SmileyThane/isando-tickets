@@ -57,7 +57,7 @@ const app = new Vue({
         this.$store.state.roles = this.$store.state.lang = null
         store.dispatch('getLanguage');
         store.dispatch('getRoles');
-        store.dispatch('getThemeColor');
+        store.dispatch('getThemeBgColor');
         store.dispatch('getAppVersion');
     }
 });

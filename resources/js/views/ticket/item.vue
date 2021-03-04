@@ -6,7 +6,7 @@
             opacity="0.45"
         >
             <v-progress-circular
-                :color="themeColor"
+                :color="themeBgColor"
                 :rotate="360"
                 :size="150"
                 :value="progressBuffer"
@@ -27,7 +27,9 @@
         <template>
             <v-dialog v-model="serverAccessDialog" max-width="480">
                 <v-card dense outlined>
-                    <v-card-title class="headline" style="background-color: #F0F0F0;">Server access</v-card-title>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        Server access
+                    </v-card-title>
                     <v-card-text>
                         <v-label v-if="ticket.connection_details">
                             {{ langMap.ticket.ip_address }}:
@@ -53,12 +55,12 @@
         <template>
             <v-dialog v-model="updateDialog" max-width="60%">
                 <v-card dense outlined>
-                    <v-card-title class="headline" style="background-color: #F0F0F0;">
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                         <span class="text-capitalize">{{ langMap.main.edit }}</span>
                         <v-spacer></v-spacer>
-                        <v-btn :color="themeColor" darken-1 text @click="updateDialog = false">{{ langMap.main.cancel }}
+                        <v-btn :color="themeBgColor" darken-1 text @click="updateDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeColor" dark @click="updateTicket">{{ langMap.main.update }}
+                        <v-btn :color="themeBgColor" dark @click="updateTicket">{{ langMap.main.update }}
                         </v-btn>
                     </v-card-title>
                     <v-card-text>
@@ -67,15 +69,15 @@
                             <v-col cols="12">
                                 <v-text-field
                                     v-model="ticket.original_name"
-                                    :color="themeColor"
-                                    :item-color="themeColor"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
                                     :label="langMap.ticket.subject"
                                     dense
                                 />
                                 <v-autocomplete
                                     v-model="from"
-                                    :color="themeColor"
-                                    :item-color="themeColor"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
                                     :items="suppliers"
                                     :label="langMap.ticket.company_from"
                                     dense
@@ -85,8 +87,8 @@
                                 />
                                 <v-autocomplete
                                     v-model="ticket.contact_company_user_id"
-                                    :color="themeColor"
-                                    :item-color="themeColor"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
                                     :items="contacts"
                                     :label="langMap.ticket.company_contact"
                                     dense
@@ -97,8 +99,8 @@
                             <v-col cols="12">
                                 <v-textarea
                                     v-model="ticket.availability"
-                                    :color="themeColor"
-                                    :item-color="themeColor"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
                                     :label="langMap.ticket.availability_description"
                                     auto-grow
                                     dense
@@ -110,8 +112,8 @@
                             <v-col cols="12" md="6">
                                 <v-textarea
                                     v-model="ticket.connection_details"
-                                    :color="themeColor"
-                                    :item-color="themeColor"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
                                     :label="langMap.ticket.ip_address"
                                     auto-grow
                                     dense
@@ -123,8 +125,8 @@
                             <v-col cols="12" md="6">
                                 <v-textarea
                                     v-model="ticket.access_details"
-                                    :color="themeColor"
-                                    :item-color="themeColor"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
                                     :label="langMap.ticket.access_details"
                                     auto-grow
                                     dense
@@ -141,7 +143,8 @@
         <template>
             <v-dialog v-model="answerDialog" max-width="50%">
                 <v-card dense outlined>
-                    <v-card-title class="headline" style="background-color: #F0F0F0;">{{ langMap.ticket.create_answer }}
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.ticket.create_answer }}
                     </v-card-title>
                     <v-card-text>
                         <v-form>
@@ -155,8 +158,8 @@
                                 </div>
                                 <div class="col-md-12">
                                     <v-select
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         v-model="selectedSignature"
                                         :items="signatures"
                                         :label="langMap.notification.signature"
@@ -171,8 +174,8 @@
                                 </div>
                                 <div class="col-md-12">
                                     <v-file-input
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         :label="langMap.ticket.add_attachments"
                                         :show-size="1000"
                                         chips
@@ -183,7 +186,7 @@
                                     >
                                         <template v-slot:selection="{ index, text }">
                                             <v-chip
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                             >
                                                 {{ text }}
                                             </v-chip>
@@ -196,7 +199,7 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="answerDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeColor" dark @click="addTicketAnswer">{{ langMap.main.create }}
+                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer">{{ langMap.main.create }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -205,7 +208,7 @@
         <template>
             <v-dialog v-model="noteDialog" max-width="50%">
                 <v-card dense outlined>
-                    <v-card-title class="headline" style="background-color: #F0F0F0;">
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                         {{ langMap.ticket.add_internal_note }}
                     </v-card-title>
                     <v-card-text>
@@ -221,8 +224,8 @@
                             </div>
                             <div class="col-md-12">
                                 <v-select
-                                    :color="themeColor"
-                                    :item-color="themeColor"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
                                     v-model="selectedSignature"
                                     :items="signatures"
                                     :label="langMap.notification.signature"
@@ -240,7 +243,7 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="noteDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeColor" dark @click="addTicketNotice">{{ langMap.main.create }}
+                        <v-btn :color="themeBgColor" dark @click="addTicketNotice">{{ langMap.main.create }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -249,12 +252,14 @@
         <template>
             <v-dialog v-model="ticketLinkDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="headline">{{ langMap.main.link }}</v-card-title>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.main.link }}
+                    </v-card-title>
                     <v-card-text>
                         <v-autocomplete
                             v-model="linkTicketForm.parent_ticket_id"
-                            :color="themeColor"
-                            :item-color="themeColor"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
                             :items="tickets"
                             :label="langMap.ticket.subject"
                             dense
@@ -263,8 +268,8 @@
                         />
                         <v-autocomplete
                             v-model="linkTicketForm.child_ticket_id"
-                            :color="themeColor"
-                            :item-color="themeColor"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
                             :items="tickets"
                             :label="langMap.ticket.subject"
                             dense
@@ -275,7 +280,7 @@
                         <br/>
                         <v-textarea
                             v-model="linkTicketForm.merge_comment"
-                            :color="themeColor"
+                            :color="themeBgColor"
                             :label="langMap.main.description"
                             auto-grow
                             dense
@@ -285,10 +290,10 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn :color="themeColor" darken-1 text @click="ticketLinkDialog = false">
+                        <v-btn :color="themeBgColor" darken-1 text @click="ticketLinkDialog = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeColor" darken-1 text @click="linkTicket()">
+                        <v-btn :color="themeBgColor" darken-1 text @click="linkTicket()">
                             {{ langMap.main.link }}
                         </v-btn>
                     </v-card-actions>
@@ -298,7 +303,9 @@
         <template>
             <v-dialog v-model="removeTicketDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title>{{ langMap.main.delete_selected }}?</v-card-title>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.main.delete_selected }}?
+                    </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeTicketDialog = false">{{ langMap.main.cancel }}
@@ -317,12 +324,12 @@
                 sm="12"
             >
                 <v-toolbar class="rounded-lg elevation-2" color="#F0F0F0" dense>
-                    <v-btn :color="themeColor" class="ma-2" small style="color: white;"
+                    <v-btn :color="themeBgColor" class="ma-2" small style="color: white;"
                            @click="answerDialog = true"
                     >{{ langMap.ticket.create_answer }}
                     </v-btn>
                     <v-btn v-if="!checkRoleByIds([6, 101])"
-                           :color="!linkBlock ? '#f2f2f2' : themeColor"
+                           :color="!linkBlock ? '#f2f2f2' : themeBgColor"
                            :outlined="linkBlock"
                            class="ma-2 d-sm-none d-md-flex"
                            small
@@ -331,7 +338,7 @@
                         {{ langMap.main.link }}
                     </v-btn>
                     <v-btn v-if="!checkRoleByIds([6, 101]) && (ticket.parent_id !== null || ticket.child_tickets !== null)"
-                           :color="!mergeBlock ? '#f2f2f2' : themeColor"
+                           :color="!mergeBlock ? '#f2f2f2' : themeBgColor"
                            :outlined="mergeBlock"
                            class="ma-2 d-sm-none d-md-flex"
                            small
@@ -668,7 +675,7 @@
                                                     v-if="answer.attachments.length > 0"
                                                 >
                                                     <v-chip
-                                                        :color="themeColor"
+                                                        :color="themeBgColor"
                                                         :href="attachment.link"
                                                         class="ma-2"
                                                         text-color="white"
@@ -798,7 +805,7 @@
                                                 v-for="attachment in answer.attachments"
                                             >
                                                 <v-chip
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :href="attachment.link"
                                                     class="ma-2"
                                                     text-color="white"
@@ -1023,9 +1030,9 @@
                             <v-form>
                                 <v-autocomplete
                                     v-model="ticket.to_team_id"
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     :disabled="selectionDisabled"
-                                    :item-color="themeColor"
+                                    :item-color="themeBgColor"
                                     :items="teams"
                                     :label="langMap.sidebar.team"
                                     dense
@@ -1035,9 +1042,9 @@
                                 ></v-autocomplete>
                                 <v-autocomplete
                                     v-model="ticket.to_company_user_id"
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     :disabled="selectionDisabled"
-                                    :item-color="themeColor"
+                                    :item-color="themeBgColor"
                                     :items="employees"
                                     :label="langMap.team.members"
                                     dense
@@ -1052,7 +1059,7 @@
                                         <!--                                        ({{ data.item.employee.user_data.email }})-->
                                     </template>
                                 </v-autocomplete>
-                                <v-btn :color="themeColor"
+                                <v-btn :color="themeBgColor"
                                        class="ma-2"
                                        small
                                        style="color: white;"
@@ -1203,7 +1210,7 @@
                             </template>
                         </v-expansion-panel-header>
                         <v-expansion-panel-content>
-                            <v-text-field v-model="ticketsSearch" :color="themeColor" :label="langMap.main.search"
+                            <v-text-field v-model="ticketsSearch" :color="themeBgColor" :label="langMap.main.search"
                                           @input="getTickets">
                                 <template slot="prepend">
                                     <v-menu
@@ -1243,12 +1250,12 @@
                             <v-list
                                 dense
                             >
-                                <v-list-item-group :color="themeColor">
+                                <v-list-item-group :color="themeBgColor">
                                     <!--                                <v-subheader>Parent</v-subheader>-->
                                     <v-list-item
                                         v-for="(item, i) in ticket.merged_parent"
                                         :key="item.id"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         link
                                         @click="showTicket(item.parent_ticket_data.id)"
                                     >
@@ -1337,13 +1344,13 @@
                             <v-list
                                 dense
                             >
-                                <v-list-item-group :color="themeColor">
+                                <v-list-item-group :color="themeBgColor">
                                     <v-list-item
 
                                         v-for="(item, i) in ticket.child_tickets"
                                         v-if="ticket.child_tickets"
                                         :key="item.id"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                     >
                                         <v-list-item-title>
                                             <v-tooltip bottom>
@@ -1374,7 +1381,7 @@
                                     </v-list-item>
                                 </v-list-item-group>
                             </v-list>
-                            <v-text-field v-model="ticketsSearch" :color="themeColor" :label="langMap.main.search"
+                            <v-text-field v-model="ticketsSearch" :color="themeBgColor" :label="langMap.main.search"
                                           @input="getTickets">
                                 <template slot="prepend">
                                     <v-menu
@@ -1415,11 +1422,11 @@
                                 <v-list
                                     dense
                                 >
-                                    <v-list-item-group :color="themeColor">
+                                    <v-list-item-group :color="themeBgColor">
                                         <v-list-item
                                             v-for="(item, i) in tickets"
                                             :key="item.id"
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             @click="showTicket(item.parent_ticket_data.id)"
                                         >
                                             <v-list-item-title>
@@ -1427,9 +1434,9 @@
                                                     <v-checkbox
                                                         :key="item.id"
                                                         v-model="mergeTicketForm.child_ticket_id"
-                                                        :color="themeColor"
+                                                        :color="themeBgColor"
                                                         :disabled="item.parent_id !== null"
-                                                        :item-color="themeColor"
+                                                        :item-color="themeBgColor"
                                                         :value="item.id"
                                                         dense
                                                         hide-details
@@ -1446,7 +1453,7 @@
                                                 <v-tooltip top>
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-icon v-on="on"
-                                                                :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeColor"
+                                                                :color="mergeTicketForm.parent_ticket_id === item.id ? 'red' : themeBgColor"
                                                                 :disabled="!mergeTicketForm.child_ticket_id.includes(item.id)"
                                                                 dark
                                                                 style="float: right"
@@ -1477,7 +1484,7 @@
                             <br/>
                             <v-textarea
                                 v-model="mergeTicketForm.merge_comment"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 auto-grow
                                 dense
                                 label="Add a note..."
@@ -1599,7 +1606,8 @@ export default {
             snackbar: false,
             actionColor: '',
             snackbarMessage: '',
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             selectionDisabled: false,
             assignPanel: [],
             notesPanel: [],
@@ -1798,7 +1806,7 @@ export default {
         // }
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+            that.themeBgColor = color;
         })
     },
     methods: {

@@ -45,7 +45,7 @@
         <v-list dense>
             <v-list-item
                 v-show="localDrawer"
-                :style="'background-color:' + 'white' + ';'"
+                style="background-color: white;"
                 @click.stop="localDrawer = !localDrawer"
             >
                 <v-list-item-action>
@@ -56,21 +56,21 @@
                 </v-list-item-content>
             </v-list-item>
             <v-list-item
-                :style="'background-color:' + 'white' + ';'"
+                style="background-color: white;"
                 dense
                 link to="/home">
                 <v-list-item-action>
                     <v-icon>mdi-home</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
-                    <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.home }}</v-list-item-title>
+                    <v-list-item-title>{{ langMap.sidebar.home }}</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
         </v-list>
         <v-divider></v-divider>
         <v-list dense>
             <v-list-item
-                :style="'background-color:' + 'white' + ';'"
+                style="background-color: white;"
                 dense
                 link
                 to="/knowledge-base">
@@ -79,7 +79,7 @@
                 </v-list-item-action>
                 <v-list-item-content>
                     <v-list-item-title>
-                        {{ this.$store.state.lang.lang_map.sidebar.knowledge_base }}
+                        {{ langMap.sidebar.knowledge_base }}
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
@@ -87,7 +87,7 @@
         <v-divider></v-divider>
         <v-list dense>
             <v-list-item
-                :style="'background-color:' + 'white' + ';'"
+                style="background-color: white;"
                 dense
                 link
                 to="/custom_license">
@@ -96,7 +96,7 @@
                 </v-list-item-action>
                 <v-list-item-content>
                     <v-list-item-title>
-                        {{ this.$store.state.lang.lang_map.sidebar.custom_licenses }}
+                        {{ langMap.sidebar.custom_licenses }}
                     </v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
@@ -105,7 +105,7 @@
         <v-list dense>
             <v-list-group
                 v-if="checkRoleByIds([1,2,3,4,5])"
-                :style="'background-color: ' + 'white' + ';'"
+                style="background-color: white;"
                 :value="sidebarGroups"
                 color="#757575"
                 multiple
@@ -119,7 +119,7 @@
                     </v-list-item-content>
                 </template>
                 <v-list-item
-                    :color="'#757575'"
+                    color="#757575"
                     link
                     style="background-color:white;"
                     to="/all"
@@ -128,11 +128,11 @@
                         <v-icon>mdi-contacts-outline</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.all }}</v-list-item-title>
+                        <v-list-item-title>{{ langMap.sidebar.all }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    v-if="checkRoleByIds([1,2,3,4,5])" :color="'#757575'"
+                    v-if="checkRoleByIds([1,2,3,4,5])" color="#757575"
                     link
                     style="background-color:white;"
                     to="/customer"
@@ -141,11 +141,11 @@
                         <v-icon>mdi-factory</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.customers }}</v-list-item-title>
+                        <v-list-item-title>{{ langMap.sidebar.customers }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    v-if="checkRoleByIds([1,2,3,4,5])" :color="'#757575'"
+                    v-if="checkRoleByIds([1,2,3,4,5])" color="#757575"
                     link
                     style="background-color:white;"
                     to="/employee"
@@ -154,11 +154,11 @@
                         <v-icon>mdi-account</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.individuals }}</v-list-item-title>
+                        <v-list-item-title>{{ langMap.sidebar.individuals }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    v-if="checkRoleByIds([1,2,3,4,5])" :color="'#757575'"
+                    v-if="checkRoleByIds([1,2,3,4,5])" color="#757575"
                     link
                     style="background-color:white;"
                     to="/product"
@@ -167,18 +167,15 @@
                         <v-icon> mdi-monitor-clean</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.products }}</v-list-item-title>
+                        <v-list-item-title>{{ langMap.sidebar.products }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list-group>
         </v-list>
-        <v-divider
-            v-if="checkRoleByIds([1,2,3,4,5])"
-        >&nbsp;
-        </v-divider>
+        <v-divider v-if="checkRoleByIds([1,2,3,4,5])">&nbsp;</v-divider>
         <v-list dense>
             <v-list-group
-                :style="'background-color: ' + 'white' + ';'"
+                style="background-color: white;"
                 :value="sidebarGroups"
                 color="#757575"
                 multiple
@@ -192,7 +189,7 @@
                     </v-list-item-content>
                 </template>
                 <v-list-item
-                    :color="'#757575'" link
+                    color="#757575" link
                     style="background-color:white;"
                     to="/tickets"
                 >
@@ -200,13 +197,13 @@
                         <v-icon>mdi-format-list-numbered</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.ticket_list }}
-                            {{ this.$store.state.lang.lang_map.sidebar.list }}
+                        <v-list-item-title>{{ langMap.sidebar.ticket_list }}
+                            {{ langMap.sidebar.list }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    :color="'#757575'" link
+                    color="#757575" link
                     style="background-color:white;"
                     to="/ticket_create"
                 >
@@ -214,7 +211,7 @@
                         <v-icon>mdi-shape-rectangle-plus</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.create_ticket }}
+                        <v-list-item-title>{{ langMap.sidebar.create_ticket }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -224,15 +221,13 @@
         <v-list dense v-if="checkRoleByIds([1,2,4,7])">
             <v-list-group
                 v-if="checkRoleByIds([1,2,4,7])"
-                :style="'background-color: ' + 'white' + ';'"
+                style="background-color: white;"
                 :value="sidebarGroups"
                 color="#757575"
                 multiple
                 prepend-icon="mdi-alarm"
             >
-                <template
-                    v-slot:activator
-                >
+                <template v-slot:activator>
                     <v-list-item-content>
                         <v-list-item-title>{{ timeTracking }}</v-list-item-title>
                     </v-list-item-content>
@@ -247,7 +242,7 @@
                         <v-icon>mdi-view-dashboard-outline</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.tracking_dashboard }}
+                        <v-list-item-title>{{ langMap.sidebar.tracking_dashboard }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -261,7 +256,7 @@
                         <v-icon>mdi-alarm</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.tracking_tracker }}
+                        <v-list-item-title>{{ langMap.sidebar.tracking_tracker }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -275,7 +270,7 @@
                         <v-icon>mdi-calendar</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.tracking_calendar }}
+                        <v-list-item-title>{{ langMap.sidebar.tracking_calendar }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -289,7 +284,7 @@
                         <v-icon>mdi-folder-account-outline</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.tracking_projects }}
+                        <v-list-item-title>{{ langMap.sidebar.tracking_projects }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -303,7 +298,7 @@
                         <v-icon>mdi-chart-areaspline</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.tracking_reports }}
+                        <v-list-item-title>{{ langMap.sidebar.tracking_reports }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -317,7 +312,7 @@
                         <v-icon>mdi-tune-vertical</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.tracking_settings }}
+                        <v-list-item-title>{{ langMap.sidebar.tracking_settings }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -326,7 +321,7 @@
         <v-divider></v-divider>
         <v-list dense>
             <v-list-group
-                :style="'background-color: ' + 'white' + ';'"
+                style="background-color: white;"
                 :value="sidebarGroups"
                 color="#757575"
                 multiple
@@ -349,7 +344,7 @@
                         <v-icon>mdi-email-send-outline</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.notify_customers }}
+                        <v-list-item-title>{{ langMap.sidebar.notify_customers }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -362,7 +357,7 @@
                         <v-icon>mdi-history</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.notifications_history }}
+                        <v-list-item-title>{{ langMap.sidebar.notifications_history }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -371,7 +366,7 @@
         <v-divider>&nbsp;</v-divider>
         <v-list dense>
             <v-list-group
-                :style="'background-color: ' + 'white' + ';'"
+                style="background-color: white;"
                 :value="sidebarGroups"
                 color="#757575"
                 multiple
@@ -395,7 +390,7 @@
                         <v-icon>mdi-office-building</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.companies }}</v-list-item-title>
+                        <v-list-item-title>{{ langMap.sidebar.companies }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
@@ -408,7 +403,7 @@
                         <v-icon>mdi-account-box-multiple-outline</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.teams }}</v-list-item-title>
+                        <v-list-item-title>{{ langMap.sidebar.teams }}</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
@@ -421,7 +416,7 @@
                         <v-icon>mdi-folder-cog-outline</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.system_settings }}
+                        <v-list-item-title>{{ langMap.sidebar.system_settings }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -436,7 +431,7 @@
                         <v-icon>mdi-cogs</v-icon>
                     </v-list-item-action>
                     <v-list-item-content>
-                        <v-list-item-title>{{this.$store.state.lang.lang_map.sidebar.general_settings}}
+                        <v-list-item-title>{{langMap.sidebar.general_settings}}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
@@ -454,6 +449,9 @@ export default {
     props: {value: {type: Boolean}},
     data() {
         return {
+            langMap: this.$store.state.lang.lang_map,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             firstAlias: '',
             secondAlias: '',
             companyLogo: '',
@@ -466,8 +464,7 @@ export default {
             settings: '',
             notifications: '',
             timeTracking: '',
-            sidebarGroups: [],
-            themeColor: this.$store.state.themeColor
+            sidebarGroups: []
         }
     },
     watch: {
@@ -486,15 +483,18 @@ export default {
         this.getCompanyLogo();
         this.getCompanySettings();
 
-        this.ticket = this.$store.state.lang.lang_map.sidebar.ticket;
-        this.customers = this.$store.state.lang.lang_map.sidebar.customers
-        this.notifications = this.$store.state.lang.lang_map.sidebar.notifications
-        this.settings = this.$store.state.lang.lang_map.sidebar.settings
-        this.timeTracking = this.$store.state.lang.lang_map.sidebar.time_tracking
+        this.ticket = this.langMap.sidebar.ticket;
+        this.customers = this.langMap.sidebar.customers
+        this.notifications = this.langMap.sidebar.notifications
+        this.settings = this.langMap.sidebar.settings
+        this.timeTracking = this.langMap.sidebar.time_tracking
 
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+        EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
         EventBus.$on('update-navbar-style', function (style) {
             that.navbarStyle = style;
@@ -539,8 +539,8 @@ export default {
             });
         },
         changeAppTitle() {
-            this.$store.state.pageName = this.$store.state.lang.lang_map.sidebar[this.$route.name]
-            document.title = this.firstAlias + ' | ' + this.$store.state.lang.lang_map.sidebar[this.$route.name]
+            this.$store.state.pageName = this.langMap.sidebar[this.$route.name]
+            document.title = this.firstAlias + ' | ' + this.langMap.sidebar[this.$route.name]
         }
     }
 }
