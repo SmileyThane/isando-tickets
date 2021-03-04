@@ -24,7 +24,7 @@
                                @click="enableToEdit = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" >
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="clientUpdate">
                             {{ langMap.main.update }}
                         </v-btn>
 
@@ -65,18 +65,34 @@
                         <v-divider></v-divider>
                         <br>
                         <label>Connection links</label>
-                        <div v-for="(id, key) in client.connection_links">
-                            <v-text-field
-                                v-model="client.connection_links[key]"
-                                :color="themeColor"
-                                :label="langMap.company.link"
-                                :readonly="!enableToEdit"
-                                dense
-                                prepend-icon="mdi-link"
-                                required
-                                type="text"
-                            ></v-text-field>
-                        </div>
+                        <v-text-field
+                            v-for="(id, key) in client.connection_links" :key="key"
+                            v-model="client.connection_links[key]"
+                            :color="themeColor"
+                            :label="langMap.company.link"
+                            :readonly="!enableToEdit"
+                            dense
+                            prepend-icon="mdi-link"
+                            required
+                            type="text"
+                        >
+                            <template v-slot:append>
+                                <v-icon
+                                    color="red"
+                                    @click="removeConnectionLink(key)"
+                                >
+                                    mdi-cancel
+                                </v-icon>
+                            </template>
+                        </v-text-field>
+                        <v-btn
+                            v-if="enableToEdit"
+                            color="green"
+                            outlined
+                            @click="addConnectionLink"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
@@ -296,7 +312,7 @@ export default {
             client: {
                 client_name: '',
                 client_description: '',
-                connection_links: [],
+                connection_links: [""],
                 products: [
                     {
                         product_data: {}
@@ -355,7 +371,6 @@ export default {
     },
     mounted() {
         this.getClient();
-        this.getLicense();
         this.getLicenseUsers();
         this.getRoles();
         this.getLanguages();
@@ -378,6 +393,7 @@ export default {
                     this.client.client_name = response.data.name
                     this.client.client_description = response.data.description
                     this.$store.state.pageName = this.client.client_name
+                    this.getLicense()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -391,10 +407,11 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.license = response.data.limits
-                    this.client.connection_links = response.data.info.serverUrls
+                    this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
                     this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
                     this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
                     this.getLicenseHistory();
+                    console.log(this.client.connection_links);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -450,7 +467,7 @@ export default {
             this.license.usersAllowed += count
         },
         updateLicense() {
-            axios.put(`/api/custom_license/${this.$route.params.id}`, this.license).then(response => {
+            axios.put(`/api/custom_license/${this.$route.params.id}/limits`, this.license).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.license = response.data
@@ -513,19 +530,29 @@ export default {
             });
             return roleExists
         },
-    },
-    watch: {
-        clientUpdates(value) {
-            this.clientIsLoaded = true;
-            if (this.singleUserForm.user) {
-                this.singleUserForm.user = this.client.employees.find(x => x.employee.user_id === this.singleUserForm.user.id).employee.user_data;
-            }
-        }
-    },
-    computed: {
-        clientUpdates: function () {
-            return this.client
+        clientUpdate() {
+            axios.put(`/api/custom_license/${this.$route.params.id}`, this.client).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient();
+                    this.enableToEdit = false;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
         },
+        addConnectionLink() {
+            this.client.connection_links.push(" ");
+            console.log(this.client.connection_links);
+            this.$forceUpdate();
+        },
+        removeConnectionLink(id) {
+            this.client.connection_links.splice(id, 1);
+            console.log(this.client.connection_links);
+            this.$forceUpdate();
+        }
     }
 }
 </script>
