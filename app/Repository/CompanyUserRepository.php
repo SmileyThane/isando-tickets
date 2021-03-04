@@ -53,6 +53,7 @@ class CompanyUserRepository
         $freeCompanyUsers = CompanyUser::where([['company_id', $employee->company_id], ['is_clientable', true]])->withTrashed($request->with_trashed);
 
         $companyUsers = CompanyUser::whereIn('id', array_merge($clientCompanyUsers->get()->pluck('company_user_id')->toArray(), $freeCompanyUsers->get()->pluck('id')->toArray()))
+            ->has('userData')
             ->with(['userData' => function ($query) use ($request) {
                 $query->withTrashed($request->with_trashed);
             }, 'assignedToClients.clients', 'userData.emails.type'])
