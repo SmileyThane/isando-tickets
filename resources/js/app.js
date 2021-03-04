@@ -11,7 +11,10 @@ import VCalendar from 'v-calendar'
 import 'tiptap-vuetify/dist/main.css'
 import 'vuetify/dist/vuetify.min.css'
 import '../css/custom.css'
+import PerfectScrollbar from 'vue2-perfect-scrollbar'
+import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
 
+Vue.use(PerfectScrollbar)
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 Vue.use(VCalendar, {
