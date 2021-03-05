@@ -580,18 +580,16 @@ import {
     TiptapVuetify,
     Underline
 } from 'tiptap-vuetify';
-import { PerfectScrollbar } from 'vue2-perfect-scrollbar';
 
 export default {
     components: {
-        TiptapVuetify,
-        PerfectScrollbar
+        TiptapVuetify
     },
 
     data() {
         return {
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
             templateId: this.$route.params.id,
             snackbar: false,

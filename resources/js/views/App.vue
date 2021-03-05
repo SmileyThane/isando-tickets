@@ -8,16 +8,14 @@
         <sidebar v-if="isLoaded && isAuthorized === true" v-model="drawer"></sidebar>
         <app-header v-if="isLoaded && isAuthorized === true" v-model="drawer"></app-header>
 
+
         <perfect-scrollbar style="height: 100vh;">
-
-        <v-content v-if="isLoaded"
-                       :style="isAuthorized === false ? 'background-image: url(/login_bg.jpg); background-size: cover;' : ''">
-                <speed-panel v-if="isLoaded && isAuthorized === true" v-model="drawer"></speed-panel>
-                <router-view></router-view>
-            </v-content>
+        <v-main v-if="isLoaded" :style="isAuthorized === false ? 'background-image: url(/login_bg.jpg); background-size: cover;' : ''">
+            <router-view></router-view>
+        </v-main>
         </perfect-scrollbar>
+        <speed-panel v-if="isLoaded && isAuthorized === true" v-model="drawer"></speed-panel>
         <appFooter v-if="isAuthorized === true"></appFooter>
-
     </v-app>
 </template>
 

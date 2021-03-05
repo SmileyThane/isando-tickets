@@ -27,7 +27,6 @@ const router = new VueRouter({
     routes: Routes
 });
 
-
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         axios.get('/api/auth/check').then(response => {

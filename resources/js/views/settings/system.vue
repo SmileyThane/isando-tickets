@@ -266,14 +266,14 @@
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.countries }}</v-toolbar-title>
-
                     </v-toolbar>
 
                     <v-card-text>
                         <v-form>
                             <v-row>
-                                <v-col class="col-md-12">
-                                    <v-list class="overflow-y-auto" dense style="max-height: 15em" subheader>
+                                <v-col class="col-md-12" style="max-height: 20em">
+                                    <perfect-scrollbar style="height: 100%">
+                                    <v-list dense subheader>
                                         <v-list-item-group :color="themeBgColor">
                                             <v-list-item
                                                 v-for="(item, i) in countries"
@@ -291,6 +291,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
+                                    </perfect-scrollbar>
                                 </v-col>
                             </v-row>
                         </v-form>
