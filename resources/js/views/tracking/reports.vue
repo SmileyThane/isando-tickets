@@ -8,12 +8,6 @@
         >
             {{ snackbarMessage }}
         </v-snackbar>
-        <v-alert
-            outlined
-            type="info"
-        >
-            Coming soon
-        </v-alert>
         <div class="d-flex flex-row">
             <div class="d-inline-flex flex-grow-1">
                 <v-select
@@ -205,21 +199,101 @@
                 Filter entries:
             </div>
             <div class="d-inline-flex flex-grow-1 mx-4">
-                <div class="d-flex flex-column">
+                <div class="d-flex flex-column" style="width: 100%">
                     <div class="d-flex flex-row">
-                        <a class="mx-2 d-inline-flex" :style="{ color: themeColor }">Co-workers</a>
-                        <a class="mx-2 d-inline-flex" :style="{ color: themeColor }">Clients&projects</a>
-                        <a class="mx-2 d-inline-flex" :style="{ color: themeColor }">Clients</a>
-                        <a class="mx-2 d-inline-flex" :style="{ color: themeColor }">Services</a>
-                        <a class="mx-2 d-inline-flex" :style="{ color: themeColor }">Billable</a>
+                        <a
+                            class="mx-2 d-inline-flex"
+                            :class="{ 'text-decoration-underline': builder.filters.find(i => i.value === filter.value) }"
+                            :style="{ color: themeColor }"
+                            v-for="filter in availableFilters"
+                            :key="filter.value"
+                            @click="activateFilter(filter)"
+                        >
+                            {{ filter.text }}
+                        </a>
                         <div class="d-inline-flex flex-grow-1"></div>
                     </div>
-                    <div class="d-inline-block">
-                        123412
+                    <div
+                        class="d-inline-block mx-2 mt-3"
+                        v-if="builder.filters.length"
+                    >
+                        <div class="d-flex flex-column">
+                            <div
+                                class="d-inline-flex"
+                                v-for="filter in builder.filters"
+                                :key="filter.value"
+                            >
+                                <v-select
+                                    :items="$store.getters[filter.store] || filter.items"
+                                    :label="filter.text"
+                                    return-object
+                                    item-text="name"
+                                    item-value="id"
+                                    outlined
+                                    :multiple="filter.multiply"
+                                    dense
+                                    clearable
+                                    style="max-width: 900px; width: 100%"
+                                ></v-select>
+                                <v-btn
+                                    color="danger"
+                                    icon
+                                    class="mx-4"
+                                    @click="activateFilter(filter)"
+                                >
+                                    <v-icon>mdi-close-thick</v-icon>
+                                </v-btn>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </v-card>
+        <div class="d-flex py-2 mt-3 flex-row">
+            <div class="d-inline-block flex-grow-0 mr-2">
+                <div class="d-flex flex-column align-stretch">
+                    <v-card
+                        class="d-inline-flex mb-2 align-content-start pa-6"
+                        outlined
+                    >
+                        <div class="d-flex flex-column">
+                            <v-icon x-large class="d-inline-flex">mdi-clock-outline</v-icon>
+                            <span class="d-inline-block text-center">Total time</span>
+                            <span class="d-inline-block text-center">40:08 h</span>
+                        </div>
+                    </v-card>
+                    <v-card
+                        class="d-inline-flex mt-2 align-content-end pa-6"
+                        outlined
+                        x-large
+                    >
+                        <div class="d-flex flex-column">
+                            <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
+                            <span class="d-inline-block text-center">Revenue</span>
+                            <span class="d-inline-block text-center">0 ₽</span>
+                        </div>
+                    </v-card>
+                </div>
+            </div>
+            <v-card
+                class="d-inline-block flex-grow-1 ml-2"
+                outlined
+            >
+                <v-sparkline
+                    :value="chart.value"
+                    :gradient="chart.gradient"
+                    :smooth="chart.radius || false"
+                    :padding="chart.padding"
+                    :line-width="chart.width"
+                    :stroke-linecap="chart.lineCap"
+                    :gradient-direction="chart.gradientDirection"
+                    :fill="chart.fill"
+                    :type="chart.type"
+                    :auto-line-width="chart.autoLineWidth"
+                    auto-draw
+                ></v-sparkline>
+            </v-card>
+        </div>
     </v-container>
 </template>
 
@@ -276,6 +350,15 @@ import * as Helper from "./helper";
 import moment from "moment-timezone";
 import draggable from "vuedraggable";
 
+const gradients = [
+    ['#222'],
+    ['#42b3f4'],
+    ['red', 'orange', 'yellow'],
+    ['purple', 'violet'],
+    ['#00c6ff', '#F0F', '#FF0'],
+    ['#f72047', '#ffd200', '#1feaea'],
+];
+
 export default {
     components: {
         draggable
@@ -302,7 +385,8 @@ export default {
                     value: 'alph-asc',
                     text: 'A - Z and chronologically'
                 },
-                group: []
+                group: [],
+                filters: []
             },
             roundingItems: [
                 {
@@ -404,15 +488,82 @@ export default {
                     text: "Month",
                     value: "month"
                 }
-            ]
+            ],
+            availableFilters: [
+                {
+                    value: 'coworkers',
+                    text: 'Co-workers',
+                    store: '',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'clients&projects',
+                    text: 'Clients&projects',
+                    store: 'Projects/getProjects',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'clients',
+                    text: 'Clients',
+                    store: 'Clients/getClients',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'services',
+                    text: 'Services',
+                    store: 'Services/getServices',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'billable',
+                    text: 'Billable',
+                    store: null,
+                    items: [
+                        {
+                            id: 1,
+                            name: 'Billable'
+                        },
+                        {
+                            id: 0,
+                            name: 'Non-billable'
+                        }
+                    ],
+                    selected: null,
+                    multiply: false
+                }
+            ],
+            chart: {
+                width: 2,
+                radius: 10,
+                padding: 8,
+                lineCap: 'round',
+                gradient: [this.$store.state.themeColor],
+                value: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0],
+                gradientDirection: 'top',
+                gradients,
+                fill: false,
+                type: 'trend',
+                autoLineWidth: false,
+            }
         }
     },
     created() {
-        moment.updateLocale('en', {
+        moment.updateLocale(this.$store.state.lang.short_code, {
             week: {
                 dow: 1,
             },
         });
+        this.$store.dispatch('Clients/getClientList', { search: null });
+        this.$store.dispatch('Services/getServicesList', { search: null });
+        this.$store.dispatch('Projects/getProjectList', { search: null });
     },
     mounted() {
         // this.getTickets()
@@ -490,10 +641,17 @@ export default {
             this.groupItems = this.groupItems.filter(i => i.value !== groupItem.value);
             this.builder.group = [];
             this.builder.group.push(groupItem);
+        },
+        activateFilter(filter) {
+            const index = this.builder.filters.findIndex(i => i.value === filter.value);
+            if (index < 0) {
+                filter.selected = [];
+                this.builder.filters.push(filter);
+            } else {
+                this.builder.filters.splice(index, 1);
+            }
         }
     },
-    watch: {
-
-    },
+    computed: {},
 }
 </script>
