@@ -805,7 +805,11 @@ export default {
             });
             return axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
                 .then(({ data }) => {
-                    this.tracking = data.data;
+                    this.tracking = data.data.map(i => ({
+                        ...i,
+                        date: moment(i.date_from).format('YYYY-MM-DD'),
+                        date_picker: false
+                    }));
                     this.loading = false;
                     this.attemptRepeat = 0;
                     return data;
@@ -1056,7 +1060,7 @@ export default {
         },
         filterTracking(date) {
             const self = this;
-            return this.getItems.filter(function(item) {
+            return this.tracking.filter(function(item) {
                 return moment(item.date_from).format(self.dateFormat) === date;
             });
         },
@@ -1111,15 +1115,6 @@ export default {
             this.panels = panels.map((i,k) => k);
             return panels;
         },
-        getItems () {
-            return this.tracking.map(track => {
-                return {
-                    ...track,
-                    date: moment(track.date_from).format('YYYY-MM-DD'),
-                    date_picker: false
-                };
-            });
-        },
         getFilteredProjects() {
             return this.$store.getters['Projects/getProjects'].map(entry => {
                 const name = entry.name.length > this.nameLimit
@@ -1171,6 +1166,7 @@ export default {
             }).forEach(i => {
                 const index = this.tracking.indexOf(i);
                 this.tracking[index].passed = this.helperCalculatePassedTime(i.date_from, moment());
+                this.tracking[index].date_picker = this.tracking[index].date_picker ?? false;
             });
             // Update timerPanel
             if (this.timerPanel.start) {
