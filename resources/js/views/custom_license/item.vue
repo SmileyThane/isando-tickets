@@ -24,7 +24,7 @@
                                @click="enableToEdit = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" >
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="clientUpdate">
                             {{ langMap.main.update }}
                         </v-btn>
 
@@ -254,7 +254,7 @@ export default {
 
         return {
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
             licenseUserHeaders: [
                 // {text: 'id', value: 'id'},
@@ -297,7 +297,7 @@ themeBgColor: this.$store.state.themeBgColor,
             client: {
                 client_name: '',
                 client_description: '',
-                connection_links: [],
+                connection_links: [""],
                 products: [
                     {
                         product_data: {}
@@ -356,7 +356,6 @@ themeBgColor: this.$store.state.themeBgColor,
     },
     mounted() {
         this.getClient();
-        this.getLicense();
         this.getLicenseUsers();
         this.getRoles();
         this.getLanguages();
@@ -382,6 +381,7 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.client.client_name = response.data.name
                     this.client.client_description = response.data.description
                     this.$store.state.pageName = this.client.client_name
+                    this.getLicense()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -395,10 +395,11 @@ themeBgColor: this.$store.state.themeBgColor,
                 response = response.data
                 if (response.success === true) {
                     this.license = response.data.limits
-                    this.client.connection_links = response.data.info.serverUrls
+                    this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
                     this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
                     this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
                     this.getLicenseHistory();
+                    console.log(this.client.connection_links);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -454,7 +455,7 @@ themeBgColor: this.$store.state.themeBgColor,
             this.license.usersAllowed += count
         },
         updateLicense() {
-            axios.put(`/api/custom_license/${this.$route.params.id}`, this.license).then(response => {
+            axios.put(`/api/custom_license/${this.$route.params.id}/limits`, this.license).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.license = response.data
@@ -517,19 +518,29 @@ themeBgColor: this.$store.state.themeBgColor,
             });
             return roleExists
         },
-    },
-    watch: {
-        clientUpdates(value) {
-            this.clientIsLoaded = true;
-            if (this.singleUserForm.user) {
-                this.singleUserForm.user = this.client.employees.find(x => x.employee.user_id === this.singleUserForm.user.id).employee.user_data;
-            }
-        }
-    },
-    computed: {
-        clientUpdates: function () {
-            return this.client
+        clientUpdate() {
+            axios.put(`/api/custom_license/${this.$route.params.id}`, this.client).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient();
+                    this.enableToEdit = false;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
         },
+        addConnectionLink() {
+            this.client.connection_links.push(" ");
+            console.log(this.client.connection_links);
+            this.$forceUpdate();
+        },
+        removeConnectionLink(id) {
+            this.client.connection_links.splice(id, 1);
+            console.log(this.client.connection_links);
+            this.$forceUpdate();
+        }
     }
 }
 </script>

@@ -44,4 +44,9 @@ class CustomLicenseController extends Controller
     {
         return self::showResponse(true, $this->customLicenseRepository->update($request, $id));
     }
+
+    public function updateLimits(Request $request, $id)
+    {
+        return self::showResponse(true, $this->customLicenseRepository->updateLimits($request, $id));
+    }
 }
