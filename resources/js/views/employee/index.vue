@@ -16,7 +16,7 @@
                             <v-expansion-panel-header>
                                 {{ langMap.individuals.add_new }}
                                 <template v-slot:actions>
-                                    <v-icon color="submit">mdi-plus</v-icon>
+                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                 </template>
                             </v-expansion-panel-header>
                             <v-expansion-panel-content>
@@ -24,7 +24,7 @@
                                     <div class="row">
                                         <v-text-field
                                             v-model="employeeForm.name"
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             :error-messages="employeeErrors.name"
                                             :label="langMap.main.name"
                                             class="col-md-4"
@@ -35,7 +35,7 @@
                                         ></v-text-field>
                                         <v-text-field
                                             v-model="employeeForm.middle_name"
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             :error-messages="employeeErrors.middle_name"
                                             :label="this.$store.state.lang.lang_map.main.middle_name"
                                             class="col-md-4"
@@ -46,7 +46,7 @@
                                         ></v-text-field>
                                         <v-text-field
                                             v-model="employeeForm.surname"
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             :error-messages="employeeErrors.surname"
                                             :label="this.$store.state.lang.lang_map.main.last_name"
                                             class="col-md-4"
@@ -57,7 +57,7 @@
                                         ></v-text-field>
                                         <v-text-field
                                             v-model="employeeForm.email"
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             :error-messages="employeeErrors.email"
                                             :label="langMap.main.email"
                                             class="col-md-4"
@@ -68,7 +68,7 @@
                                         ></v-text-field>
                                         <v-autocomplete
                                             v-model="employeeForm.client_id"
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             :error-messages="employeeErrors.client_id"
                                             :items="customers"
                                             :label="langMap.customer.customer"
@@ -82,8 +82,8 @@
                                         ></v-autocomplete>
                                         <v-autocomplete
                                             v-model="employeeForm.language_id"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             :items="languages"
                                             :label="this.$store.state.lang.lang_map.main.language"
                                             class="col-md-4"
@@ -94,14 +94,14 @@
                                             name="language"
                                         />
                                         <v-btn
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             bottom
                                             dark
                                             fab
                                             right
                                             @click="addEmployee"
                                         >
-                                            <v-icon>mdi-plus</v-icon>
+                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                         </v-btn>
                                     </div>
                                 </v-form>
@@ -128,12 +128,12 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col md="6" sm="12">
-                                        <v-text-field v-model="employeesSearch" :color="themeColor"
+                                        <v-text-field v-model="employeesSearch" :color="themeBgColor"
                                                       :label="langMap.main.search"
                                                       class="mx-4" @input="getEmployees"></v-text-field>
                                     </v-col>
                                     <v-col md="4" sm="12">
-                                        <v-checkbox v-model="withTrashed"  :color="themeColor"
+                                        <v-checkbox v-model="withTrashed"  :color="themeBgColor"
                                                     value="1"
                                                     dense
                                                     :label="langMap.individuals.with_trashed"
@@ -141,8 +141,8 @@
                                     </v-col>
                                     <v-col md="2" sm="12">
                                         <v-select
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             class="mx-4"
@@ -154,7 +154,7 @@
                             </template>
                             <template v-slot:footer>
                                 <v-pagination v-model="options.page"
-                                              :color="themeColor"
+                                              :color="themeBgColor"
                                               :length="lastPage"
                                               :page="options.page"
                                               :total-visible="5"
@@ -226,7 +226,9 @@
         <template>
             <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title>{{ langMap.main.delete_selected }}?</v-card-title>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.main.delete_selected }} ?
+                    </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
@@ -252,11 +254,12 @@ export default {
         return {
             snackbar: false,
             actionColor: '',
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             totalEmployees: 0,
             lastPage: 0,
-            loading: this.themeColor,
+            loading: this.themeBgColor,
             expanded: [],
             languages: [],
             singleExpand: false,
@@ -306,8 +309,11 @@ export default {
         this.getClients();
         this.getLanguages();
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {
@@ -316,7 +322,7 @@ export default {
             return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
         },
         getEmployees() {
-            this.loading = this.themeColor
+            this.loading = this.themeBgColor
             // console.log(this.options);
             if (this.options.sortDesc.length <= 0) {
                 this.options.sortBy[0] = 'id'

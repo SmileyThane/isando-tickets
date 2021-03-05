@@ -1,69 +1,28 @@
 <template>
     <v-app-bar
-        :color="themeColor"
+        :color="themeBgColor"
         app
         dark
     >
         <v-app-bar-nav-icon
             v-show="!localDrawer"
             @click.stop="localDrawer = !localDrawer"
+            :color="themeFgColor"
         ></v-app-bar-nav-icon>
 
-        <v-icon
-            @click="back()"
-        >
+        <v-icon :color="themeFgColor" @click="back()">
             mdi-arrow-left
         </v-icon>
         <v-spacer></v-spacer>
-        <v-toolbar-title
-        >{{ this.$store.state.pageName }}
-        </v-toolbar-title>
+        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ this.$store.state.pageName }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <!--        <v-text-field-->
-        <!--            class="text-center"-->
-        <!--            dense-->
-        <!--            hide-details="auto"-->
-        <!--            :label="searchLabel"-->
-        <!--        >-->
-        <!--            <template slot="append">-->
-        <!--                <v-menu-->
-        <!--                    rounded-->
-        <!--                    transition="slide-y-transition"-->
-        <!--                    bottom-->
-        <!--                >-->
-        <!--                    <template v-slot:activator="{ on: menu, attrs }">-->
-        <!--                        <v-btn-->
-        <!--                            text-->
-        <!--                            v-bind="attrs"-->
-        <!--                            v-on="{...menu}"-->
-        <!--                        >-->
-        <!--                            <v-icon color="white">$expand</v-icon>-->
-        <!--                        </v-btn>-->
-        <!--                    </template>-->
-        <!--                    <v-list-->
-        <!--                        dense-->
-        <!--                    >-->
-        <!--                        <v-list-item-->
-        <!--                            link-->
-        <!--                            v-for="item in searchCategories"-->
-        <!--                            :key="item.id"-->
-        <!--                            @click="selectSearchCategory(item)"-->
-        <!--                        >-->
-        <!--                            <v-list-item-title>-->
-        <!--                                {{ item.name }}-->
-        <!--                            </v-list-item-title>-->
-        <!--                        </v-list-item>-->
-        <!--                    </v-list>-->
-        <!--                </v-menu>-->
-        <!--            </template>-->
-        <!--        </v-text-field>-->
         <v-menu
             bottom
             left
         >
             <template v-slot:activator="{ on }">
                 <v-btn v-on="on" icon>
-                    <v-icon>mdi-dots-vertical</v-icon>
+                    <v-icon :color="themeFgColor">mdi-dots-vertical</v-icon>
                 </v-btn>
             </template>
 
@@ -122,7 +81,8 @@ export default {
                 }
             ],
             searchLabel: this.$store.state.lang.lang_map.main.search,
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor
         }
     },
     watch: {
@@ -136,8 +96,11 @@ export default {
     mounted() {
         this.getUsername();
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+        EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {
@@ -156,7 +119,7 @@ export default {
         logout(e) {
             e.preventDefault()
             localStorage.removeItem('auth_token')
-            localStorage.removeItem('themeColor')
+            localStorage.removeItem('themeBgColor')
             window.open('/login', '_self')
         },
         selectSearchCategory(item) {

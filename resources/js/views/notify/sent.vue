@@ -13,19 +13,19 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.main.details}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.main.details}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
-                        <v-label :color="themeColor">{{langMap.notification.subject}}:</v-label> <span>{{template.subject}}</span>
+                        <v-label :color="themeBgColor">{{langMap.notification.subject}}:</v-label> <span>{{template.subject}}</span>
                         <v-spacer>&nbsp;</v-spacer>
-                        <v-label :color="themeColor">{{langMap.notification.sender}}:</v-label> <span>{{template.sender.full_name}}</span>
+                        <v-label :color="themeBgColor">{{langMap.notification.sender}}:</v-label> <span>{{template.sender.full_name}}</span>
                         <v-spacer>&nbsp;</v-spacer>
-                        <v-label :color="themeColor">{{langMap.notification.sent_at}}:</v-label> <span>{{moment(template.created_at).format('YYYY-DD-MM hh:mm')}}</span>
+                        <v-label :color="themeBgColor">{{langMap.notification.sent_at}}:</v-label> <span>{{moment(template.created_at).format('YYYY-DD-MM hh:mm')}}</span>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
@@ -35,17 +35,17 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.notification.attributes}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.attributes}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
-                        <v-label :color="themeColor">{{langMap.notification.notification_type}}:</v-label> <span><v-icon :color="themeColor" small left v-text="template.type.icon"></v-icon> {{ localized(template.type) }}</span>
+                        <v-label :color="themeBgColor">{{langMap.notification.notification_type}}:</v-label> <span><v-icon :color="themeBgColor" small left v-text="template.type.icon"></v-icon> {{ localized(template.type) }}</span>
                         <v-spacer>&nbsp;</v-spacer>
-                        <v-label :color="themeColor">{{langMap.notification.priority}}:</v-label> <span>{{priorities[template.priority]}}</span>
+                        <v-label :color="themeBgColor">{{langMap.notification.priority}}:</v-label> <span>{{priorities[template.priority]}}</span>
                     </v-card-text>
                 </v-card>
 
@@ -54,17 +54,17 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.notification.attachments}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.attachments}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
                     <v-card-text>
-                        <v-chip class="ma-1" v-for="item in template.attachments" :key="item" outlined :color="themeColor">
-                            <v-icon dense x-small left :color="themeColor">mdi-file</v-icon>{{item}}
+                        <v-chip class="ma-1" v-for="item in template.attachments" :key="item" outlined :color="themeBgColor">
+                            <v-icon dense x-small left :color="themeBgColor">mdi-file</v-icon>{{item}}
                         </v-chip>
                     </v-card-text>
                 </v-card>
@@ -74,17 +74,17 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.notification.recipients}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.recipients}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
 
                     <v-card-text>
-                        <v-chip class="ma-1" v-for="item in template.recipients" :key="item.address" outlined :color="themeColor">
-                            <v-icon dense x-small left :color="themeColor">mdi-email</v-icon>{{item.address}}
+                        <v-chip class="ma-1" v-for="item in template.recipients" :key="item.address" outlined :color="themeBgColor">
+                            <v-icon dense x-small left :color="themeBgColor">mdi-email</v-icon>{{item.address}}
                         </v-chip>
                     </v-card-text>
                 </v-card>
@@ -94,11 +94,11 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.notification.text}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.notification.text}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -118,7 +118,8 @@ export default {
 
     data() {
         return {
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
             templateId: this.$route.params.id,
             snackbar: false,
@@ -153,8 +154,11 @@ export default {
         this.getTemplate();
 
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {

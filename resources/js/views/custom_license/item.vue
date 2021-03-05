@@ -12,14 +12,14 @@
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{ langMap.company.info }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
                                @click="enableToEdit = false">
                             {{ langMap.main.cancel }}
@@ -33,7 +33,7 @@
                         <v-form>
                             <v-text-field
                                 v-model="client.client_name"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :disabled="!checkRoleByIds([1,2,3])"
                                 :label="langMap.company.name"
                                 :readonly="!enableToEdit"
@@ -45,7 +45,7 @@
                             ></v-text-field>
                             <v-text-field
                                 v-model="client.client_description"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :label="langMap.company.description"
                                 :readonly="!enableToEdit"
                                 dense
@@ -68,7 +68,7 @@
                         <div v-for="(id, key) in client.connection_links">
                             <v-text-field
                                 v-model="client.connection_links[key]"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :label="langMap.company.link"
                                 :readonly="!enableToEdit"
                                 dense
@@ -84,12 +84,12 @@
                 </v-spacer>
                 <v-card class="elevation-12">
                     <v-toolbar
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{ 'License Users' }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ 'License Users' }}</v-toolbar-title>
                     </v-toolbar>
                     <div class="card-body">
                         <v-data-table
@@ -123,12 +123,12 @@
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         dense
                         flat
                     >
-                        <v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
                             <span class="text-left">{{ langMap.sidebar.custom_license }} </span>
 
                         </v-toolbar-title>
@@ -167,7 +167,7 @@
                                     v-model="license.expiresAt"
                                     v-bind="attrs"
                                     v-on="on"
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     class="ma-2"
                                     prepend-icon="mdi-calendar"
                                     readonly
@@ -175,7 +175,7 @@
                             </template>
                             <v-date-picker
                                 v-model="license.expiresAt"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 @input="menu2 = false;"
                             ></v-date-picker>
                         </v-menu>
@@ -217,12 +217,12 @@
                 </v-spacer>
                 <v-card class="elevation-12">
                     <v-toolbar
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{ langMap.notification.history }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.notification.history }}</v-toolbar-title>
                     </v-toolbar>
                     <v-card-text>
                         <v-list
@@ -253,7 +253,8 @@ export default {
     data() {
 
         return {
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
             licenseUserHeaders: [
                 // {text: 'id', value: 'id'},
@@ -361,8 +362,11 @@ export default {
         this.getLanguages();
         this.getCountries();
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {

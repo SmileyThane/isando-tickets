@@ -14,13 +14,13 @@
                 <v-card class="elevation-12 without-bottom">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.product.info}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.product.info}}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateProduct">
                             {{langMap.main.cancel}}
                         </v-btn>
@@ -31,21 +31,21 @@
                     <v-card-text>
                         <v-form>
                             <v-select
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :label="langMap.main.category"
                                 name="category_id"
                                 prepend-icon="mdi-rename-box"
                                 v-model="product.category_id"
                                 :readonly="!enableToEdit"
                                 :items="categories"
-                                :item-color="themeColor"
+                                :item-color="themeBgColor"
                                 item-value="id"
                                 item-text="full_name"
                                 dense
                             />
 
                             <v-text-field
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :label="langMap.main.name"
                                 name="name"
                                 prepend-icon="mdi-rename-box"
@@ -59,7 +59,7 @@
                             <v-textarea
                                 rows="1"
                                 auto-grow
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :label="langMap.main.description"
                                 name="description"
                                 prepend-icon="mdi-comment-text"
@@ -71,7 +71,7 @@
                                 dense
                             ></v-textarea>
                             <v-text-field
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :label="langMap.product.code"
                                 name="code"
                                 prepend-icon="mdi-rename-box"
@@ -90,7 +90,7 @@
                                 v-if="product.attachments.length > 0"
                             >
                                 <v-chip
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     :href="attachment.link"
                                     class="ma-2"
                                     text-color="white"
@@ -106,11 +106,11 @@
                 <v-card class="elevation-12">
                     <v-toolbar
                         dense
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         flat
                     >
-                        <v-toolbar-title>{{langMap.product.product_clients}}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{langMap.product.product_clients}}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -147,7 +147,7 @@
                                 <v-expansion-panel-header>
                                     {{langMap.customer.add_new}}
                                     <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -155,8 +155,8 @@
                                         <div class="row">
                                             <v-col cols="md-12">
                                                 <v-autocomplete
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
                                                     item-text="name"
                                                     item-value="id"
                                                     v-model="supplierForm.client_id"
@@ -169,10 +169,10 @@
                                                 fab
                                                 right
                                                 bottom
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                                 @click="addProductClient"
                                             >
-                                                <v-icon>mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -187,7 +187,9 @@
         <v-row justify="center">
             <v-dialog v-model="deleteCustomerDlg" persistent max-width="480">
                 <v-card>
-                    <v-card-title>{{langMap.product.unlink_product}}?</v-card-title>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{langMap.product.unlink_product}}?
+                    </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="deleteCustomerDlg = false">
@@ -214,7 +216,8 @@
             return {
                 snackbar: false,
                 actionColor: '',
-                themeColor: this.$store.state.themeColor,
+                themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
                 snackbarMessage: '',
                 enableToEdit: false,
                 errors: [],
@@ -261,7 +264,7 @@
             this.getCategories();
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
-                that.themeColor = color;
+                that.themeBgColor = color;
             });
         },
         methods: {

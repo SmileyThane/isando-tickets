@@ -22,11 +22,11 @@
                     <v-card>
                         <v-toolbar
                             dense
-                            :color="themeColor"
+                            :color="themeBgColor"
                             dark
                             flat
                         >
-                            <v-toolbar-title>Registration</v-toolbar-title>
+                            <v-toolbar-title :style="`color: ${themeFgColor};`">Registration</v-toolbar-title>
                             <v-spacer></v-spacer>
                         </v-toolbar>
 
@@ -36,7 +36,7 @@
                                 <v-col cols="12" md="6">
                                     <v-card-text>
                                         <v-text-field
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             label="Company name"
                                             name="company_name"
                                             prepend-icon="mdi-account"
@@ -49,7 +49,7 @@
                                 <v-col cols="12" md="6">
                                     <v-card-text>
                                         <v-text-field
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             label="Company number"
                                             name="company_number"
                                             prepend-icon="mdi-account"
@@ -62,7 +62,7 @@
                                 <v-col cols="12" md="4">
                                     <v-card-text>
                                         <v-text-field
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             label="Your name"
                                             name="name"
                                             prepend-icon="mdi-account"
@@ -75,7 +75,7 @@
                                 <v-col cols="12" md="4">
                                     <v-card-text>
                                         <v-text-field
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             label="Email"
                                             name="email"
                                             prepend-icon="mdi-account"
@@ -89,8 +89,8 @@
                                     <v-card-text>
                                         <v-select
                                             label="Select plan"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             item-text="name"
                                             item-value="id"
                                             :items="plan"
@@ -103,7 +103,7 @@
 
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn :color="themeColor" style="color: white;" @click="handleSubmit">Register</v-btn>
+                            <v-btn :color="themeBgColor" style="color: white;" @click="handleSubmit">Register</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-col>
@@ -129,7 +129,7 @@
                     payment_description: 'Free site registration'
                 },
                 plan: [],
-                themeColor: this.$store.state.themeColor
+                themeBgColor: this.$store.state.themeBgColor
             }
         },
         mounted() {
@@ -139,7 +139,7 @@
             this.getPlans();
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
-                that.themeColor = color;
+                that.themeBgColor = color;
             });
         },
         methods: {
