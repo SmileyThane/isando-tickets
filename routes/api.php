@@ -204,7 +204,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::post('/tracker/{tracking}/duplicate', 'TrackingController@duplicate');
                 Route::delete('/tracker/{tracking}', 'TrackingController@delete');
 
-        });
+            });
 
         // Tags
         Route::get('/tags', 'API\TagController@get');
@@ -238,6 +238,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('custom_license', 'API\CustomLicenseController@index');
     Route::get('custom_license/{id}', 'API\CustomLicenseController@find');
     Route::put('custom_license/{id}', 'API\CustomLicenseController@update');
+    Route::put('custom_license/{id}/limits', 'API\CustomLicenseController@updateLimits');
     Route::get('custom_license/{id}/history', 'API\CustomLicenseController@history');
     Route::get('custom_license/{id}/users', 'API\CustomLicenseController@users');
     Route::get('custom_license/{id}/user/{remoteUserId}/{idLicensed}', 'API\CustomLicenseController@manageUser');

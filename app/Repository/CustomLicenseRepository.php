@@ -30,14 +30,22 @@ class CustomLicenseRepository
 
     public function find($id)
     {
+        $result = [];
         $client = \App\Client::find($id);
         $ixArmaId = $client->customLicense->remote_client_id;
-        $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", []);
-        $parsedResult = json_decode($result->getContents(), true);
-        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+
+        $response = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", []);
+        $parsedResult = json_decode($response->getContents(), true);
+        $result['limits'] = $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+
+        $response = $this->makeIxArmaRequest("/api/v1/company/$ixArmaId", []);
+        $parsedResult = json_decode($response->getContents(), true);
+        $result['info'] = $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+
+        return $result;
     }
 
-    public function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true): ?StreamInterface
+    public function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true)
     {
         try {
             $guzzle = new Client([
@@ -46,7 +54,7 @@ class CustomLicenseRepository
             $ixArmaAuthorization = IxarmaAuthorization::where('company_id', Auth::user()->employee->company_id)->first();
             $token = $ixArmaAuthorization ? $ixArmaAuthorization->auth_token : '';
             $response = $guzzle->request($method, $uri, [
-                RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token],
+                RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token, 'fileType' => ''],
                 'Content-type' => 'application/json',
                 'Accept' => '*/*',
                 RequestOptions::JSON => $parameters
@@ -55,7 +63,7 @@ class CustomLicenseRepository
             return $response->getBody();
         } catch (Throwable $throwable) {
             $this->ixArmaLogin();
-            return null;
+            return $throwable;
         }
     }
 
@@ -115,7 +123,7 @@ class CustomLicenseRepository
 
     }
 
-    public function update(Request $request, $id)
+    public function updateLimits(Request $request, $id)
     {
         $client = \App\Client::find($id);
         $ixArmaId = $client->customLicense->remote_client_id;
@@ -131,6 +139,20 @@ class CustomLicenseRepository
             $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/suspend", $data, 'GET');
         }
 
+        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+    }
+
+    public function update(Request $request, $id)
+    {
+        $client = (new ClientRepository())->update($request, $id);
+        $ixArmaId = $client->customLicense->remote_client_id;
+        $data = [
+            'name' => $request->name,
+            'serverUrls' => $request->connection_links,
+//            'email' => 'testco@example.com'
+        ];
+        $result = $this->makeIxArmaRequest("/api/v1/company/$ixArmaId", $data, 'PUT');
+        $parsedResult = json_decode($result->getContents(), true);
         return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
     }
 

@@ -37,3 +37,7 @@ hr.lighten {
 .ticket--answer img {
     width: 100%
 }
+
+.ps__rail-y {
+    z-index: 999999;
+}

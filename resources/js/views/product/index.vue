@@ -19,7 +19,7 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.product.add_new }}
                                     <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -28,20 +28,20 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <v-select
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :label="langMap.main.category"
                                                     name="category_id"
                                                     prepend-icon="mdi-rename-box"
                                                     v-model="productForm.category_id"
                                                     :items="categories"
-                                                    :item-color="themeColor"
+                                                    :item-color="themeBgColor"
                                                     item-value="id"
                                                     item-text="full_name"
                                                 />
                                             </div>
                                             <div class="col-md-4">
                                                 <v-text-field
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :label="langMap.main.name"
                                                     name="product_name"
                                                     type="text"
@@ -52,7 +52,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-textarea
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :label="langMap.main.description"
                                                     name="product_description"
                                                     v-model="productForm.product_description"
@@ -63,7 +63,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-text-field
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :label="langMap.product.code"
                                                     name="product_code"
                                                     v-model="productForm.product_code"
@@ -72,8 +72,8 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-file-input
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
                                                     :label="langMap.ticket.add_attachments"
                                                     :show-size="1000"
                                                     chips
@@ -83,7 +83,7 @@
                                                 >
                                                     <template v-slot:selection="{ index, text }">
                                                         <v-chip
-                                                            :color="themeColor"
+                                                            :color="themeBgColor"
                                                         >
                                                             {{ text }}
                                                         </v-chip>
@@ -96,10 +96,10 @@
                                                 fab
                                                 right
                                                 bottom
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                                 @click="addProduct"
                                             >
-                                                <v-icon>mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -124,14 +124,14 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getProducts" v-model="productsSearch" :color="themeColor"
+                                        <v-text-field @input="getProducts" v-model="productsSearch" :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
                                             class="mx-4"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             v-model="options.itemsPerPage"
@@ -141,7 +141,7 @@
                                 </v-row>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination :color="themeColor"
+                                <v-pagination :color="themeBgColor"
                                               v-model="options.page"
                                               :length="lastPage"
                                               circle
@@ -193,7 +193,9 @@
         <template>
             <v-dialog v-model="removeProductDialog" persistent max-width="480">
                 <v-card>
-                    <v-card-title>{{langMap.main.delete_selected}}?</v-card-title>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{langMap.main.delete_selected}}?
+                    </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeProductDialog = false">{{langMap.main.cancel}}
@@ -222,11 +224,12 @@
                 snackbarMessage: '',
                 totalProducts: 0,
                 lastPage: 0,
-                loading: this.themeColor,
+                loading: this.themeBgColor,
                 expanded: [],
                 singleExpand: false,
                 langMap: this.$store.state.lang.lang_map,
-                themeColor: this.$store.state.themeColor,
+                themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
                 options: {
                     page: 1,
                     sortDesc: [false],
@@ -265,12 +268,12 @@
 
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
-                that.themeColor = color;
+                that.themeBgColor = color;
             });
         },
         methods: {
             getProducts() {
-                this.loading = this.themeColor
+                this.loading = this.themeBgColor
                 if (this.options.sortDesc.length <= 0) {
                     this.options.sortBy[0] = 'id'
                     this.options.sortDesc[0] = false

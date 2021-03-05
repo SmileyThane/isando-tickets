@@ -31,14 +31,14 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getCompanies" v-model="companiesSearch" :color="themeColor"
+                                        <v-text-field @input="getCompanies" v-model="companiesSearch" :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
                                             class="mx-4"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             v-model="options.itemsPerPage"
@@ -48,7 +48,7 @@
                                 </v-row>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination :color="themeColor"
+                                <v-pagination :color="themeBgColor"
                                               v-model="options.page"
                                               :length="lastPage"
                                               circle
@@ -99,7 +99,8 @@
         <template>
             <v-dialog v-model="removeCompanyDialog" persistent max-width="480">
                 <v-card>
-                    <v-card-title>{{langMap.main.delete_selected}} {{langMap.main.company}}?
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{langMap.main.delete_selected}} {{langMap.main.company}}?
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
@@ -126,11 +127,12 @@
                 clientId: 6,
                 snackbar: false,
                 actionColor: '',
-                themeColor: this.$store.state.themeColor,
+                themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
                 snackbarMessage: '',
                 totalCompanies: 0,
                 lastPage: 0,
-                loading: this.themeColor,
+                loading: this.themeBgColor,
                 langMap: this.$store.state.lang.lang_map,
                 expanded: [],
                 singleExpand: false,
@@ -166,7 +168,7 @@
             this.getCompanies();
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
-                that.themeColor = color;
+                that.themeBgColor = color;
             });
         },
         methods: {

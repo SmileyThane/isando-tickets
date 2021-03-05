@@ -18,11 +18,12 @@ export default new Vuex.Store({
         roles: {},
         lang: {},
         pageName: '',
-        themeColor: '#60695D',
+        themeFgColor: '#FFFFFF',
+        themeBgColor: '#6AA75D',
         appVersion: ''
     },
     getters: {
-        roles: state => [state.roles, state.lang, state.pageName, state.themeColor, state.appVersion]
+        roles: state => [state.roles, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion]
     },
     mutations: {
         setRoles(state, roles) {
@@ -34,9 +35,13 @@ export default new Vuex.Store({
         setPageName(state, pageName) {
             state.pageName = pageName;
         },
-        setThemeColor(state, themeColor) {
-            state.themeColor = themeColor;
-            EventBus.$emit('update-theme-color', themeColor);
+        setThemeFgColor(state, color) {
+            state.themeFgColor = color;
+            EventBus.$emit('update-theme-fg-color', color);
+        },
+        setThemeBgColor(state, color) {
+            state.themeBgColor = color;
+            EventBus.$emit('update-theme-bg-color', color);
         },
         setAppVersion(state, version) {
             state.appVersion = version;
@@ -45,84 +50,117 @@ export default new Vuex.Store({
     actions: {
         getRoles({commit}) {
             return new Promise((resolve, reject) => {
-                axios.get('/api/user/roles/id')
-                    .then(result => {
+                axios.get('/api/user/roles/id').then(result => {
                         commit('setRoles', result.data.data);
                         resolve();
-                    })
-                    .catch(error => {
+                    }).catch(error => {
                         reject(error.response && error.response.data.message || 'Error.');
                     });
             });
         },
         getLanguage({commit}) {
             return new Promise((resolve, reject) => {
-                axios.get('/api/lang/map')
-                    .then(result => {
-                        if (result.data.success === true && result.data.data.lang_map !== null) {
-                            commit('setLang', result.data.data);
-                            resolve();
-                        } else {
-                            console.log('ERROR: broken_lang_object!');
-                        }
-                    })
-
-                    .catch(error => {
+                axios.get('/api/lang/map').then(result => {
+                    if (result.data.success === true && result.data.data.lang_map !== null) {
+                        commit('setLang', result.data.data);
+                        resolve();
+                    } else {
+                        console.log('ERROR: broken_lang_object!');
+                    }
+                }).catch(error => {
                         reject(error.response && error.response.data.message || 'Error.');
                     });
             });
         },
-        getThemeColor({commit}) {
+        getThemeBgColor({commit}) {
             return new Promise((resolve, reject) => {
                 let override = false;
-                let color = '';
-                if (localStorage.themeColor) {
-                    commit('setThemeColor', localStorage.themeColor);
-                    resolve();
+                let fgColor = '#FFFFFF';
+                let bgColor = '#6AA75D';
+
+                let colorIsSet = true;
+                if (localStorage.themeFgColor) {
+                    commit('setThemeFgColor', localStorage.themeFgColor);
+                } else {
+                    colorIsSet = false;
                 }
+                if (localStorage.themeBgColor) {
+                    commit('setThemeBgColor', localStorage.themeBgColor);
+                } else {
+                    if (localStorage.themeBgColor) {
+                        commit('setThemeBgColor', localStorage.themeBgColor);
+                    } else {
+                        colorIsSet = false;
+                    }
+                }
+
+                if (colorIsSet) {
+                    return resolve();
+                }
+
                 axios.get('/api/main_company/settings').then(response => {
                     response = response.data;
                     if (response.success === true && response.data.theme_color) {
-                        color = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
+                        if (response.data.hasOwnProperty('theme_fg_color')) {
+                            fgColor = response.data.theme_fg_color;
+                        }
+                        if (response.data.hasOwnProperty('theme_bg_color')) {
+                            bgColor = response.data.theme_bg_color;
+                        } else if (response.data.hasOwnProperty('theme_color')) {
+                            bgColor = response.data.theme_color;
+                        }
+
                         override = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
 
                         if (override) {
-                            localStorage.themeColor = color;
-                            commit('setThemeColor', color);
-                            resolve();
-                        } else {
-                            axios.get('/api/user/settings').then(response => {
-                                response = response.data;
-                                if (response.success === true && response.data.hasOwnProperty('theme_color')) {
-                                    localStorage.themeColor = response.data.theme_color;
-                                    commit('setThemeColor', response.data.theme_color);
-                                    resolve();
-                                } else {
-                                    localStorage.themeColor = color;
-                                    commit('setThemeColor', color);
-                                    resolve();
-                                }
-                            }).catch(error => {
-                                reject(error.response && error.response.data.message || 'Error.');
-                            });
+                            localStorage.themeFgColor = fgColor;
+                            commit('setThemeFgColor', fgColor);
+
+                            localStorage.themeBgColor = bgColor;
+                            commit('setThemeBgColor', bgColor);
+
+                            localStorage.themeColorDlg = 1;
+
+                            return resolve();
                         }
+
+                        axios.get('/api/user/settings').then(response => {
+                            response = response.data;
+                            if (response.success === true) {
+                                if (response.data.hasOwnProperty('theme_fg_color')) {
+                                    fgColor = response.data.theme_fg_color;
+                                }
+                                if (response.data.hasOwnProperty('theme_bg_color')) {
+                                    bgColor = response.data.theme_bg_color;
+                                } else if (response.data.hasOwnProperty('theme_color')) {
+                                    bgColor = response.data.theme_color;
+                                }
+                            }
+
+                            localStorage.themeFgColor = fgColor;
+                            commit('setThemeFgColor', fgColor);
+
+                            localStorage.themeBgColor = bgColor;
+                            commit('setThemeBgColor', bgColor);
+
+                            return resolve();
+                        }).catch(error => {
+                            return reject(error.response && error.response.data.message || 'Error.');
+                        });
                     }
                 }).catch(error => {
-                    reject(error.response && error.response.data.message || 'Error.');
+                    return reject(error.response && error.response.data.message || 'Error.');
                 });
             });
         },
         getAppVersion({commit}) {
             return new Promise((resolve, reject) => {
-                axios.get('/api/version')
-                    .then(result => {
+                axios.get('/api/version').then(result => {
                         if (result.data.success === true)
                             localStorage.appVersion = result.data.data;
                         commit('setAppVersion', result.data.data);
                         resolve();
-                    })
-
-                    .catch(error => {
+                    }).catch(error => {
                         reject(error.response && error.response.data.message || 'Error.');
                     });
             });

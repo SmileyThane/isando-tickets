@@ -37,7 +37,7 @@
         <template>
             <v-tabs
                 v-model="tab"
-                :color="themeColor"
+                :color="themeBgColor"
             >
                 <v-tab>{{ langMap.tracking.create_project.status }}</v-tab>
                 <v-tab>{{ langMap.tracking.create_project.settings }}</v-tab>
@@ -167,7 +167,7 @@
                                             <v-btn
                                                 class="ma-2"
                                                 outlined
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                                 v-bind="attrs"
                                                 v-on="on"
                                             >
@@ -175,7 +175,7 @@
                                             </v-btn>
                                         </template>
                                         <v-card>
-                                            <v-card-title class="headline grey lighten-2">
+                                            <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                                                 Set rate
                                             </v-card-title>
 
@@ -245,7 +245,7 @@
                                             <v-card-actions>
                                                 <v-spacer></v-spacer>
                                                 <v-btn
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     text
                                                     @click="rateDialog = false"
                                                 >
@@ -280,7 +280,8 @@ export default {
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
@@ -320,8 +321,11 @@ export default {
         this.__getClients();
         this.__getProject(this.$route.params.id);
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {

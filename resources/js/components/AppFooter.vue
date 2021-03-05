@@ -1,10 +1,10 @@
 <template>
     <v-footer
-        :color="themeColor"
+        :color="themeBgColor"
         app
     >
-        <span class="white--text">&copy; ISANDO 2021</span>
-        <span class="white--text" style="margin-left: auto;" v-if="$store.state.lang && $store.state.lang.lang_map">{{ $store.state.lang.lang_map.main.version }} {{ $store.state.appVersion }}</span>
+        <span :style="`color: ${themeFgColor};`">&copy; ISANDO 2021</span>
+        <span :style="`color: ${themeFgColor}; margin-left: auto;`" v-if="$store.state.lang && $store.state.lang.lang_map">{{ $store.state.lang.lang_map.main.version }} {{ $store.state.appVersion }}</span>
     </v-footer>
 </template>
 
@@ -15,14 +15,18 @@
         name: "AppFooter",
         data() {
             return {
-                themeColor: this.$store.state.themeColor
+                themeFgColor: this.$store.state.themeFgColor,
+                themeBgColor: this.$store.state.themeBgColor
             }
         },
         mounted() {
             let that = this;
-            EventBus.$on('update-theme-color', function (color) {
-                that.themeColor = color;
+            EventBus.$on('update-theme-fg-color', function (color) {
+                that.themeFgColor = color;
             });
-        },
+            EventBus.$on('update-theme-bg-color', function (color) {
+                that.themeBgColor = color;
+            });
+        }
     }
 </script>
