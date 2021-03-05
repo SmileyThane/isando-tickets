@@ -65,8 +65,9 @@
                         <v-divider></v-divider>
                         <br>
                         <label>Connection links</label>
-                        <div v-for="(id, key) in client.connection_links">
                             <v-text-field
+                                v-for="(id, key) in client.connection_links"
+                                :key="key"
                                 v-model="client.connection_links[key]"
                                 :color="themeBgColor"
                                 :label="langMap.company.link"
@@ -75,8 +76,23 @@
                                 prepend-icon="mdi-link"
                                 required
                                 type="text"
-                            ></v-text-field>
-                        </div>
+                            ><template v-slot:append>
+                                <v-icon
+                                    color="red"
+                                    @click="removeConnectionLink(key)"
+                                >
+                                    mdi-cancel
+                                </v-icon>
+                            </template>
+                            </v-text-field>
+                            <v-btn
+                                v-if="enableToEdit"
+                                color="green"
+                                outlined
+                                @click="addConnectionLink"
+                            >
+                                <v-icon>mdi-plus</v-icon>
+                            </v-btn>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
@@ -195,7 +211,6 @@
                             >
                                 {{ license.active ? 'suspend' : 'renew' }}
                             </v-btn>
-
                             <div class="overline mx-2">
                                 additional licenses
                             </div>
