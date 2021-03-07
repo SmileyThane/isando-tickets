@@ -48,22 +48,30 @@ class CompanyUserRepository
                 'supplier_type' => Company::class,
                 'supplier_id' => $employee->company_id
             ])->get()->pluck('id')->toArray();
-        $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds)->get()->pluck('company_user_id')->toArray();
-        $freeCompanyUsers = CompanyUser::where([['company_id', $employee->company_id], ['is_clientable', true]])->get()->pluck('id')->toArray();
 
-        $companyUsers = CompanyUser::whereIn('id', array_merge($clientCompanyUsers, $freeCompanyUsers));
+        $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds)->withTrashed($request->with_trashed);
+        $freeCompanyUsers = CompanyUser::where([['company_id', $employee->company_id], ['is_clientable', true]])->withTrashed($request->with_trashed);
+
+        $companyUsers = CompanyUser::whereIn('id', array_merge($clientCompanyUsers->get()->pluck('company_user_id')->toArray(), $freeCompanyUsers->get()->pluck('id')->toArray()))
+            ->has('userData')
+            ->with(['userData' => function ($query) use ($request) {
+                $query->withTrashed($request->with_trashed);
+            }, 'assignedToClients.clients', 'userData.emails.type'])
+            ->withTrashed($request->with_trashed);
+
         if ($request->search) {
             $request['page'] = 1;
-            $companyUsers->whereHas(
+            $companyUsers = $companyUsers->whereHas(
                 'userData',
                 function ($query) use ($request) {
                     $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('surname', 'like', $request->search . '%');
+                        ->orWhere('surname', 'like', $request->search . '%')
+                        ->withTrashed($request->with_trashed);
                 }
             );
         }
+        $companyUsers = $companyUsers->get();
 
-        $companyUsers = $companyUsers->with(['assignedToClients.clients', 'userData.emails.type'])->get();
 
         $orderFunc = function ($item, $key) use ($orderBy) {
             switch ($orderBy) {
@@ -104,7 +112,7 @@ class CompanyUserRepository
 
     public function find($id)
     {
-        return CompanyUser::find($id);
+        return CompanyUser::withTrashed()->find($id);
     }
 
     public function delete($id)

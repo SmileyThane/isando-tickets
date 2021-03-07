@@ -29,7 +29,7 @@
                             :complete="e1 > n"
                             :step="n"
                             :editable="editable"
-                            :color="themeColor"
+                            :color="themeBgColor"
                         >
                             <!--                            Step {{ n }}-->
                         </v-stepper-step>
@@ -52,8 +52,8 @@
                                         <v-select
 
                                             :label="langMap.ticket.company_from"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             item-text="name"
                                             item-value="item"
                                             :items="suppliers"
@@ -63,8 +63,8 @@
                                     </div>
                                     <v-col cols="md-6">
                                         <v-autocomplete
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             item-text="name"
                                             item-value="item"
                                             v-model="ticketForm.to"
@@ -76,8 +76,8 @@
                                     <div class="col-md-6">
                                         <v-select
                                             :label="langMap.ticket.product_name"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             item-text="full_name"
                                             item-value="id"
                                             :items="products"
@@ -86,8 +86,8 @@
                                     </div>
                                     <v-col cols="md-6">
                                         <v-autocomplete
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             item-text="user_data.full_name"
                                             item-value="id"
                                             v-model="ticketForm.contact_company_user_id"
@@ -100,8 +100,8 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
                                                     :label="langMap.ticket.availability"
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
                                                     auto-grow
                                                     outlined
                                                     rows="1"
@@ -123,8 +123,8 @@
                                 <div class="row">
                                     <v-col cols="md-6">
                                         <v-text-field
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             :label="langMap.ticket.subject"
                                             v-model="ticketForm.name"
                                         ></v-text-field>
@@ -132,8 +132,8 @@
                                     <div class="col-md-2">
                                         <v-select
                                             :label="langMap.ticket.priority"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             item-text="name"
                                             item-value="id"
                                             :items="priorities"
@@ -150,8 +150,8 @@
                                     <div class="col-md-2">
                                         <v-select
                                             :label="langMap.main.type"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             item-text="name"
                                             item-value="id"
                                             :items="types"
@@ -168,8 +168,8 @@
                                     <div class="col-md-2">
                                         <v-select
                                             :label="langMap.main.category"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             item-text="name"
                                             item-value="id"
                                             :items="categories"
@@ -179,8 +179,8 @@
                                     <v-col cols="12">
                                         <v-textarea
                                             :label="langMap.main.description"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             auto-grow
                                             outlined
                                             rows="3"
@@ -196,8 +196,8 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
                                                     :label="langMap.ticket.ip_address"
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
                                                     auto-grow
                                                     outlined
                                                     rows="3"
@@ -215,8 +215,8 @@
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-textarea
                                                     :label="langMap.ticket.access_details"
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
                                                     auto-grow
                                                     outlined
                                                     rows="3"
@@ -236,15 +236,15 @@
                                     chips
                                     multiple
                                     :label="langMap.main.attachments"
-                                    :color="themeColor"
-                                    :item-color="themeColor"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
                                     prepend-icon="mdi-paperclip"
                                     :show-size="1000"
                                     v-on:change="onFileChange('ticketForm')"
                                 >
                                     <template v-slot:selection="{ index, text }">
                                         <v-chip
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                         >
                                             {{ text }}
                                         </v-chip>
@@ -297,7 +297,8 @@
                 altLabels: true,
                 editable: true,
                 langMap: this.$store.state.lang.lang_map,
-                themeColor: this.$store.state.themeColor,
+                themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
                 ticketForm: {
                     from: '',
                     from_entity_type: '',
@@ -350,7 +351,7 @@
             // this.getCompany()
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
-                that.themeColor = color;
+                that.themeBgColor = color;
             });
         },
         methods: {

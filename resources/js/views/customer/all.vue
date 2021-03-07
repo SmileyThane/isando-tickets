@@ -24,14 +24,14 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getCustomers()" v-model="customersSearch" :color="themeColor"
+                                        <v-text-field @input="getCustomers()" v-model="customersSearch" :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
                                         <v-select
                                             class="mx-4"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             v-model="options.itemsPerPage"
@@ -103,7 +103,7 @@
                                 </v-icon>
                             </template>
                             <template v-slot:footer>
-                                <v-pagination :color="themeColor"
+                                <v-pagination :color="themeBgColor"
                                               v-model="options.page"
                                               :length="lastPage"
                                               circle
@@ -131,10 +131,11 @@
                 snackbar: false,
                 actionColor: '',
                 snackbarMessage: '',
-                themeColor: this.$store.state.themeColor,
+                themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
                 totalCustomers: 0,
                 lastPage: 0,
-                loading: this.themeColor,
+                loading: this.themeBgColor,
                 langMap: this.$store.state.lang.lang_map,
                 options: {
                     page: 1,
@@ -163,7 +164,7 @@
         mounted() {
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
-                that.themeColor = color;
+                that.themeBgColor = color;
             });
         },
         methods: {
@@ -172,7 +173,7 @@
                 return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
             },
             getCustomers() {
-                this.loading = this.themeColor;
+                this.loading = this.themeBgColor;
                 if (this.options.sortDesc.length <= 0) {
                     this.options.sortBy[0] = 'id';
                     this.options.sortDesc[0] = false;

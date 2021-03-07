@@ -15,15 +15,15 @@
                         dark
                         dense
                         flat
-                        :color="themeColor"
+                        :color="themeBgColor"
                     >
-                        <v-toolbar-title>{{ langMap.company.info }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn color="white" icon @click="enableToEdit = true" v-if="!enableToEdit">
-                            <v-icon small dense>mdi-pencil</v-icon>
+                        <v-btn :color="themeBgColor" icon @click="enableToEdit = true" v-if="!enableToEdit">
+                            <v-icon :color="themeFgColor" small dense>mdi-pencil</v-icon>
                         </v-btn>
-                        <v-btn color="white" icon @click="cancelUpdateClient" v-if="enableToEdit">
-                            <v-icon small dense>mdi-close</v-icon>
+                        <v-btn :color="themeBgColor" icon @click="cancelUpdateClient" v-if="enableToEdit">
+                            <v-icon :color="themeFgColor" small dense>mdi-close</v-icon>
                         </v-btn>
                     </v-toolbar>
 
@@ -120,7 +120,7 @@
                                                 <v-col cols="6">
                                                     <v-text-field
                                                         v-model="client.client_name"
-                                                        :color="themeColor"
+                                                        :color="themeBgColor"
                                                         :label="langMap.company.name"
                                                         dense
                                                         prepend-icon="mdi-book-account-outline"
@@ -131,7 +131,7 @@
                                                 <v-col cols="6">
                                                     <v-text-field
                                                         v-model="client.short_name"
-                                                        :color="themeColor"
+                                                        :color="themeBgColor"
                                                         :label="langMap.company.short_name"
                                                         dense
                                                         prepend-icon="mdi-book-account-outline"
@@ -142,7 +142,7 @@
                                                     <v-textarea
                                                         rows="3"
                                                         v-model="client.client_description"
-                                                        :color="themeColor"
+                                                        :color="themeBgColor"
                                                         :placeholder="langMap.company.description"
                                                         dense
                                                         prepend-icon="mdi-book-account-outline"
@@ -204,7 +204,7 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.main.new_email }}
                                                         <template v-slot:actions>
-                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -213,15 +213,15 @@
                                                                 <v-col cols="12">
                                                                     <v-text-field
                                                                         v-model="emailForm.email"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :label="langMap.main.email"
                                                                         dense
                                                                     />
                                                                     <v-select
                                                                         v-model="emailForm.email_type"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :items="emailTypes"
                                                                         :label="langMap.main.type"
                                                                         dense
@@ -237,7 +237,7 @@
                                                                     </v-select>
                                                                 </v-col>
                                                                 <v-btn
-                                                                    :color="themeColor"
+                                                                    :color="themeBgColor"
                                                                     bottom
                                                                     dark
                                                                     fab
@@ -245,7 +245,7 @@
                                                                     small
                                                                     @click="addEmail"
                                                                 >
-                                                                    <v-icon>mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -259,7 +259,7 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.main.new_phone }}
                                                         <template v-slot:actions>
-                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -268,15 +268,15 @@
                                                                 <v-col cols="12">
                                                                     <v-text-field
                                                                         v-model="phoneForm.phone"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :label="langMap.main.phone"
                                                                         dense
                                                                     />
                                                                     <v-select
                                                                         v-model="phoneForm.phone_type"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :items="phoneTypes"
                                                                         :label="langMap.main.type"
                                                                         dense
@@ -291,7 +291,7 @@
                                                                     </v-select>
                                                                 </v-col>
                                                                 <v-btn
-                                                                    :color="themeColor"
+                                                                    :color="themeBgColor"
                                                                     bottom
                                                                     dark
                                                                     fab
@@ -299,7 +299,7 @@
                                                                     small
                                                                     @click="addPhone"
                                                                 >
-                                                                    <v-icon>mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -357,7 +357,7 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.main.new_address }}
                                                         <template v-slot:actions>
-                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -366,44 +366,44 @@
                                                                 <v-col cols="12">
                                                                     <v-text-field
                                                                         v-model="addressForm.address.street"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :label="langMap.main.address_line1"
                                                                         dense
                                                                     />
                                                                     <v-text-field
                                                                         v-model="addressForm.address.street2"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :label="langMap.main.address_line2"
                                                                         dense
                                                                     />
                                                                     <v-text-field
                                                                         v-model="addressForm.address.street3"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :label="langMap.main.address_line3"
                                                                         dense
 
                                                                     />
                                                                     <v-text-field
                                                                         v-model="addressForm.address.postal_code"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :label="langMap.main.postal_code"
                                                                         dense
                                                                     />
                                                                     <v-text-field
                                                                         v-model="addressForm.address.city"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :label="langMap.main.city"
                                                                         dense
                                                                     />
                                                                     <v-select
                                                                         v-model="addressForm.address.country_id"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :items="countries"
                                                                         :label="langMap.main.country"
                                                                         dense
@@ -418,8 +418,8 @@
                                                                     </v-select>
                                                                     <v-select
                                                                         v-model="addressForm.address_type"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :items="addressTypes"
                                                                         :label="langMap.main.type"
                                                                         dense
@@ -434,7 +434,7 @@
                                                                     </v-select>
                                                                 </v-col>
                                                                 <v-btn
-                                                                    :color="themeColor"
+                                                                    :color="themeBgColor"
                                                                     bottom
                                                                     dark
                                                                     fab
@@ -442,7 +442,7 @@
                                                                     small
                                                                     @click="addAddress"
                                                                 >
-                                                                    <v-icon>mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -456,7 +456,7 @@
                                                     <v-expansion-panel-header>
                                                         {{ langMap.company.new_social_item }}
                                                         <template v-slot:actions>
-                                                            <v-icon color="submit">mdi-plus</v-icon>
+                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
@@ -465,15 +465,15 @@
                                                                 <v-col cols="12">
                                                                     <v-text-field
                                                                         v-model="socialForm.social_link"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :label="langMap.main.link"
                                                                         dense
                                                                     />
                                                                     <v-select
                                                                         v-model="socialForm.social_type"
-                                                                        :color="themeColor"
-                                                                        :item-color="themeColor"
+                                                                        :color="themeBgColor"
+                                                                        :item-color="themeBgColor"
                                                                         :items="socialTypes"
                                                                         :label="langMap.main.type"
                                                                         dense
@@ -488,7 +488,7 @@
                                                                     </v-select>
                                                                 </v-col>
                                                                 <v-btn
-                                                                    :color="themeColor"
+                                                                    :color="themeBgColor"
                                                                     bottom
                                                                     dark
                                                                     fab
@@ -496,7 +496,7 @@
                                                                     small
                                                                     @click="addSocial"
                                                                 >
-                                                                    <v-icon>mdi-plus</v-icon>
+                                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                                                 </v-btn>
                                                             </v-row>
                                                         </v-form>
@@ -515,7 +515,7 @@
                                             <v-checkbox
                                                 v-model="client.is_active"
                                                 :label="langMap.customer.active"
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                                 dense
                                                 hide-details
                                                 @change="changeIsActiveClient(client)"
@@ -535,7 +535,7 @@
                                 </v-btn>
                                 <v-btn
                                     text
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     @click="updateClient"
                                 >
                                     {{ langMap.main.save}}
@@ -554,9 +554,9 @@
                         dark
                         dense
                         flat
-                        :color="themeColor"
+                        :color="themeBgColor"
                     >
-                        <v-toolbar-title>{{ langMap.product.info }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.product.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -597,7 +597,7 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.product.add_new }}
                                     <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -606,8 +606,8 @@
                                             <v-col cols="md-12">
                                                 <v-autocomplete
                                                     v-model="supplierForm.product_id"
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
                                                     :items="products"
                                                     :label="langMap.main.products"
                                                     item-text="name"
@@ -615,14 +615,14 @@
                                                 />
                                             </v-col>
                                             <v-btn
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                                 bottom
                                                 dark
                                                 fab
                                                 right
                                                 @click="addProductClient"
                                             >
-                                                <v-icon>mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -638,9 +638,9 @@
                         dark
                         dense
                         flat
-                        :color="themeColor"
+                        :color="themeBgColor"
                     >
-                        <v-toolbar-title>{{ langMap.company.company_contacts }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.company_contacts }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
@@ -662,7 +662,7 @@
                                     >
                                         <v-card-text style="padding: 5px 10px;">
                                             <v-tooltip top
-                                                       :color="themeColor"
+                                                       :color="themeBgColor"
                                             >
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <span v-on="on">
@@ -746,7 +746,9 @@
                         <template>
                             <v-dialog v-model="removeEmployeeDialog" max-width="480" persistent>
                                 <v-card>
-                                    <v-card-title>{{ langMap.company.delete_employee_msg }}</v-card-title>
+                                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                                        {{ langMap.company.delete_employee_msg }}
+                                    </v-card-title>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="grey darken-1" text @click="removeEmployeeDialog = false">
@@ -762,7 +764,9 @@
                         <template>
                             <v-dialog v-model="unlinkEmployeeDialog" max-width="520" persistent>
                                 <v-card>
-                                    <v-card-title>{{ langMap.individuals.unlink }}</v-card-title>
+                                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                                        {{ langMap.individuals.unlink }}
+                                    </v-card-title>
                                     <v-card-actions>
                                         <v-spacer></v-spacer>
                                         <v-btn color="grey darken-1" text @click="unlinkEmployeeDialog = false">
@@ -777,7 +781,9 @@
                         </template>
                         <v-dialog v-if="contactInfoForm !== null" v-model="contactInfoModal" max-width="600">
                             <v-card>
-                                <v-card-title>{{ langMap.individuals.contact_info }}</v-card-title>
+                                <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                                    {{ langMap.individuals.contact_info }}
+                                </v-card-title>
                                 <v-card-text>
                                     <v-row>
                                             <span
@@ -840,7 +846,7 @@
                                                 <br>
                                                 <v-text-field
                                                     v-model="contactInfoForm.description"
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :label="langMap.main.description"
                                                     :readonly="contactInfoEditBtn === false"
                                                     dense
@@ -923,7 +929,7 @@
                                 <v-expansion-panel-header>
                                     {{ langMap.company.new_contact }}
                                     <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -932,7 +938,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     v-model="employeeForm.name"
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :label="langMap.main.name"
                                                     name="name"
                                                     required
@@ -942,7 +948,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     v-model="employeeForm.middle_name"
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :label="langMap.main.middle_name"
                                                     name="name"
                                                     required
@@ -952,7 +958,7 @@
                                             <div class="col-md-4">
                                                 <v-text-field
                                                     v-model="employeeForm.surname"
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :label="langMap.main.last_name"
                                                     name="name"
                                                     required
@@ -962,8 +968,8 @@
                                             <div class="col-md-6">
                                                 <v-autocomplete
                                                     v-model="employeeForm.language_id"
-                                                    :color="themeColor"
-                                                    :item-color="themeColor"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
                                                     :items="languages"
                                                     :label="this.$store.state.lang.lang_map.main.language"
                                                     item-text="name"
@@ -975,7 +981,7 @@
                                             <div class="col-md-6">
                                                 <v-text-field
                                                     v-model="employeeForm.email"
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :label="langMap.main.email"
                                                     name="email"
                                                     required
@@ -991,14 +997,14 @@
                                                 />
                                             </div>
                                             <v-btn
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                                 bottom
                                                 dark
                                                 fab
                                                 right
                                                 @click="addEmployee"
                                             >
-                                                <v-icon>mdi-plus</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                             </v-btn>
                                         </div>
                                     </v-form>
@@ -1013,7 +1019,7 @@
                                 <v-expansion-panel-header>
                                     {{ this.$store.state.lang.lang_map.individuals.new_employee }}
                                     <template v-slot:actions>
-                                        <v-icon color="submit">mdi-plus</v-icon>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                     </template>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
@@ -1022,7 +1028,7 @@
                                             <v-col class="pa-1" cols="md-12">
                                                 <v-autocomplete
                                                     v-model="employeeForm.company_user_id"
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     :error-messages="employeeForm.id"
                                                     :items="employees"
                                                     :placeholder="this.$store.state.lang.lang_map.main.search"
@@ -1034,7 +1040,7 @@
                                             </v-col>
                                             <v-text-field
                                                 v-model="employeeForm.description"
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                                 :label="this.$store.state.lang.lang_map.main.description"
                                                 class="pa-1"
                                                 dense
@@ -1042,7 +1048,7 @@
                                             />
                                         </div>
                                         <v-btn
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             bottom
                                             dark
                                             fab
@@ -1050,7 +1056,7 @@
                                             small
                                             @click="addEmployee"
                                         >
-                                            <v-icon>mdi-plus</v-icon>
+                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                         </v-btn>
                                     </v-form>
                                 </v-expansion-panel-content>
@@ -1064,19 +1070,19 @@
         <v-row justify="center">
             <v-dialog v-model="updatePhoneDlg" max-width="600px" persistent>
                 <v-card>
-                    <v-card-title>
-                        <span class="headline">{{ langMap.company.update_phone }}</span>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.company.update_phone }}
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <div class="row">
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-text-field v-model="phoneForm.phone" :color="themeColor" :item-color="themeColor"
+                                    <v-text-field v-model="phoneForm.phone" :color="themeBgColor" :item-color="themeBgColor"
                                                   :label="langMap.main.phone" dense></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-select v-model="phoneForm.phone_type" :color="themeColor"
-                                              :item-color="themeColor" :items="phoneTypes" :label="langMap.main.type"
+                                    <v-select v-model="phoneForm.phone_type" :color="themeBgColor"
+                                              :item-color="themeBgColor" :items="phoneTypes" :label="langMap.main.type"
                                               dense item-value="id">
                                         <template slot="selection" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
@@ -1094,7 +1100,7 @@
                     <v-card-actions>
 
                         <v-btn color="red" text @click="updatePhoneDlg=false; resetPhone()">{{ langMap.main.cancel }}</v-btn>
-                        <v-btn :color="themeColor" text @click="updatePhoneDlg=false; updatePhone()">
+                        <v-btn :color="themeBgColor" text @click="updatePhoneDlg=false; updatePhone()">
                             {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
@@ -1103,20 +1109,20 @@
 
             <v-dialog v-model="updateSocialDlg" max-width="600px" persistent>
                 <v-card>
-                    <v-card-title>
-                        <span class="headline">{{ langMap.company.update_social }}</span>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.company.update_social }}
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <div class="row">
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-text-field v-model="socialForm.social_link" :color="themeColor"
-                                                  :item-color="themeColor" :label="langMap.main.link"
+                                    <v-text-field v-model="socialForm.social_link" :color="themeBgColor"
+                                                  :item-color="themeBgColor" :label="langMap.main.link"
                                                   dense></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-select v-model="socialForm.social_type" :color="themeColor"
-                                              :item-color="themeColor" :items="socialTypes" :label="langMap.main.type"
+                                    <v-select v-model="socialForm.social_type" :color="themeBgColor"
+                                              :item-color="themeBgColor" :items="socialTypes" :label="langMap.main.type"
                                               dense item-value="id">
                                         <template slot="selection" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
@@ -1134,7 +1140,7 @@
                     <v-card-actions>
 
                         <v-btn color="red" text @click="updateSocialDlg=false; resetSocial()">{{ langMap.main.cancel }}</v-btn>
-                        <v-btn :color="themeColor" text @click="updateSocialDlg=false; updateSocial()">
+                        <v-btn :color="themeBgColor" text @click="updateSocialDlg=false; updateSocial()">
                             {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
@@ -1143,8 +1149,8 @@
 
             <v-dialog v-model="updateAddressDlg" max-width="600px" persistent>
                 <v-card>
-                    <v-card-title>
-                        <span class="headline">{{ langMap.company.update_address }}</span>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.company.update_address }}
                     </v-card-title>
                     <v-card-text>
                         <v-container>
@@ -1152,8 +1158,8 @@
                                 <v-col class="pa-1" cols="md-12">
                                     <v-text-field
                                         v-model="addressForm.address.street"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         :label="langMap.main.address_line1"
                                         dense
                                         no-resize
@@ -1161,8 +1167,8 @@
                                     ></v-text-field>
                                     <v-text-field
                                         v-model="addressForm.address.street2"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         :label="langMap.main.address_line2"
                                         dense
                                         no-resize
@@ -1170,8 +1176,8 @@
                                     ></v-text-field>
                                     <v-text-field
                                         v-model="addressForm.address.street3"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         :label="langMap.main.address_line3"
                                         dense
                                         no-resize
@@ -1181,8 +1187,8 @@
                                 <v-col class="pa-1" cols="md-6">
                                     <v-text-field
                                         v-model="addressForm.address.postal_code"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         :label="langMap.main.postal_code"
                                         dense
                                     ></v-text-field>
@@ -1190,8 +1196,8 @@
                                 <v-col class="pa-1" cols="md-6">
                                     <v-text-field
                                         v-model="addressForm.address.city"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         :label="langMap.main.city"
                                         dense
                                     ></v-text-field>
@@ -1199,8 +1205,8 @@
                                 <v-col class="pa-1" cols="md-6">
                                     <v-select
                                         v-model="addressForm.address.country_id"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         :items="countries"
                                         :label="langMap.main.country"
                                         dense
@@ -1217,8 +1223,8 @@
                                 <v-col class="pa-1" cols="6">
                                     <v-select
                                         v-model="addressForm.address_type"
-                                        :color="themeColor"
-                                        :item-color="themeColor"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
                                         :items="addressTypes"
                                         :label="langMap.main.type"
                                         dense
@@ -1241,7 +1247,7 @@
                     <v-card-actions>
 
                         <v-btn color="red" text @click="updateAddressDlg=false; resetAddress()">{{ langMap.main.cancel }}</v-btn>
-                        <v-btn :color="themeColor" text @click="updateAddressDlg=false; updateAddress()">
+                        <v-btn :color="themeBgColor" text @click="updateAddressDlg=false; updateAddress()">
                             {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
@@ -1250,19 +1256,19 @@
 
             <v-dialog v-model="updateEmailDlg" max-width="600px" persistent>
                 <v-card>
-                    <v-card-title>
-                        <span class="headline">{{ langMap.company.update_email }}</span>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.company.update_email }}
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <div class="row">
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-text-field v-model="emailForm.email" :color="themeColor" :item-color="themeColor"
+                                    <v-text-field v-model="emailForm.email" :color="themeBgColor" :item-color="themeBgColor"
                                                   :label="langMap.main.email" dense></v-text-field>
                                 </v-col>
                                 <v-col class="pa-1" cols="md-6">
-                                    <v-select v-model="emailForm.email_type" :color="themeColor"
-                                              :item-color="themeColor" :items="emailTypes" :label="langMap.main.type"
+                                    <v-select v-model="emailForm.email_type" :color="themeBgColor"
+                                              :item-color="themeBgColor" :items="emailTypes" :label="langMap.main.type"
                                               dense item-value="id">
                                         <template slot="selection" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
@@ -1280,7 +1286,7 @@
                     <v-card-actions>
 
                         <v-btn color="red" text @click="updateEmailDlg=false; resetEmail()">{{ langMap.main.cancel }}</v-btn>
-                        <v-btn :color="themeColor" text @click="updateEmailDlg=false; updateEmail()">
+                        <v-btn :color="themeBgColor" text @click="updateEmailDlg=false; updateEmail()">
                             {{ langMap.main.save }}
                         </v-btn>
                     </v-card-actions>
@@ -1289,7 +1295,9 @@
 
             <v-dialog v-model="deleteProductDlg" max-width="480" persistent>
                 <v-card>
-                    <v-card-title>{{ langMap.product.unlink_product }}?</v-card-title>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.product.unlink_product }}?
+                    </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="deleteProductDlg = false">
@@ -1317,7 +1325,8 @@ export default {
     data() {
 
         return {
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
             headers: [
                 {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'user_data'},
@@ -1477,8 +1486,11 @@ export default {
         this.getEmployees();
         this.employeeForm.client_id = parseInt(this.$route.params.id);
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {
@@ -1559,12 +1571,12 @@ export default {
                     }
                 });
         },
-        addEmployee() {
+        addEmployee(update = false) {
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = this.langMap.company.employee_created;
+                    this.snackbarMessage = update ? this.langMap.company.employee_updated : this.langMap.company.employee_added;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -1580,7 +1592,7 @@ export default {
                 this.employeeForm.client_id = this.contactInfoForm.client_id
                 this.employeeForm.company_user_id = this.contactInfoForm.company_user_id
                 this.employeeForm.description = this.contactInfoForm.description
-                this.addEmployee();
+                this.addEmployee(true);
                 this.contactInfoModal = false
                 this.contactInfoEditBtn = false
                 this.getClient()

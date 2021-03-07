@@ -108,7 +108,8 @@ class LanguageSeeder extends Seeder
                                 'end' => 'End',
                                 'passed' => 'Passed',
                                 'actions' => 'Actions',
-                                'service_type' => 'Service type'
+                                'service_type' => 'Service type',
+                                'save' => 'Save'
                             ],
                             'settings' => [
                                 'tags' => 'Tags',
@@ -329,9 +330,16 @@ class LanguageSeeder extends Seeder
                             'new_employee' => 'Link to contact',
                             'update_link' => 'Update link',
                             'is_active' => 'System access',
+                            'give_access' => 'Select primary email address for access to the system:',
+                            'remove_access' => 'Remove system access from this user?',
                             'unlink' => 'Are you sure that you want to unlink this user from this company? ',
                             'status' => 'Status',
                             'social_info' => 'Social media',
+                            'with_trashed' => 'Display deleted',
+                            'delete' => 'Delete',
+                            'restore' => 'Restore',
+                            'deleted' => 'Deleted',
+                            'restored' => 'Restored',
                         ],
                     'ticket' =>
                         [
@@ -531,8 +539,11 @@ class LanguageSeeder extends Seeder
                             'default_timezone' => 'Default timezone',
                             'languages' => 'Languages',
                             'countries' => 'Countries',
-                            'company_theme_color' => 'Company theme color',
-                            'override_user_theme_color' => 'Override personal theme color',
+                            'company_theme_fg_color' => 'Company theme text color',
+                            'company_theme_bg_color' => 'Company theme background color',
+                            'automate_theme_fg_color' => 'Set theme text color automatically',
+                            'automate_theme_fg_color_hint' => 'Set text color automatically to fit background color',
+                            'override_user_theme_color' => 'Override personal theme colors',
                             'override_user_theme_color_hint' => 'The change of the company theme color impacts all clients and all company users who did not select personal theme color',
                             'phone_types' => 'Phone types',
                             'new_phone_type' => 'Add new phone type',
@@ -570,7 +581,9 @@ class LanguageSeeder extends Seeder
                         ],
                     'profile' =>
                         [
-                            'user_theme_color' => 'Personal theme color',
+                            'user_theme_colors' => 'Personal theme colors',
+                            'user_theme_fg_color' => 'Personal theme text color',
+                            'user_theme_bg_color' => 'Personal theme background color',
                             'show_speed_panel' => 'Show color floating gear',
                             'revert_to_company_theme_color' => 'Change to default color',
                             'login_email' => 'Login Email',
@@ -735,7 +748,8 @@ class LanguageSeeder extends Seeder
                                 'end' => 'End',
                                 'passed' => 'Passed',
                                 'actions' => 'Actions',
-                                'service_type' => 'Service type'
+                                'service_type' => 'Service type',
+                                'save' => 'Save'
                             ],
                             'settings' => [
                                 'tags' => 'Tags',
@@ -938,9 +952,16 @@ class LanguageSeeder extends Seeder
                             'new_employee' => 'Mitarbeiter hinzufügen',
                             'update_link' => 'Link aktualisieren',
                             'is_active' => 'Systemzugriff',
+                            'give_access' => 'Wählen Sie die E-Mail Adresse für den Zugriff auf das System aus:',
+                            'remove_access' => 'Systemzugriff von diesem Benutzer entfernen?',
                             'unlink' => 'Sind Sie sicher, dass Sie den Link löschen wollen?',
                             'status' => 'Status',
                             'social_info' => 'Social Media',
+                            'with_trashed' => 'Anzeige gelöscht',
+                            'delete' => 'Löschen',
+                            'restore' => 'Wiederherstellen',
+                            'deleted' => 'Gelöscht',
+                            'restored' => 'Restauriert',
                         ],
                         'ticket' => [
                             'merged_abbr' => 'ZGF',
@@ -1133,7 +1154,10 @@ class LanguageSeeder extends Seeder
                             'default_timezone' => 'Standard Zeitzone',
                             'languages' => 'Sprachen',
                             'countries' => 'Länder',
-                            'company_theme_color' => 'Firmenmotivfarbe',
+                            'company_theme_fg_color' => 'Textfarbe des Firmenthemas',
+                            'company_theme_bg_color' => 'Hintergrundfarbe des Firmenthemas',
+                            'automate_theme_fg_color' => 'Stellen Sie die Textfarbe des Themas automatisch ein',
+                            'automate_theme_fg_color_hint' => 'Stellen Sie die Textfarbe automatisch auf die Hintergrundfarbe ein',
                             'override_user_theme_color' => 'Überschreiben Sie die Farbe des persönlichen Themas',
                             'override_user_theme_color_hint' => 'Die Änderung der Hintergrundfarbe hat Auswirkungen auf alle Kunden und Firmenbenutzer, die keine persönliche Hintergrundfarbe gewählt haben',
                             'phone_types' => 'Telefontypen',
@@ -1171,7 +1195,9 @@ class LanguageSeeder extends Seeder
                             'employee_number_example' => 'Beispiel: ',
                         ],
                         'profile' => [
-                            'user_theme_color' => 'Persönliche Hintergrundfarbe',
+                            'user_theme_colors' => 'Persönliche Themenfarben',
+                            'user_theme_fg_color' => 'Persönliche Textfarbe',
+                            'user_theme_bg_color' => 'Persönliche Hintergrundfarbe',
                             'show_speed_panel' => 'Colour floating bar anzeigen',
                             'revert_to_company_theme_color' => 'Farbe des Firmenthemas benutzen',
                             'login_email' => 'Einloggen E-Mail',

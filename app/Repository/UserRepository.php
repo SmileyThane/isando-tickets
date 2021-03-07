@@ -4,13 +4,19 @@
 namespace App\Repository;
 
 
+use App\Address;
+use App\ClientCompanyUser;
 use App\Company;
+use App\CompanyUser;
 use App\CompanyUserNotification;
 use App\Email;
+use App\EmailSignature;
 use App\EmailType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
 use App\Notifications\ResetPasswordEmail;
+use App\Phone;
+use App\Social;
 use App\UserNotificationStatus;
 use App\Role;
 use App\Settings;
@@ -60,7 +66,7 @@ class UserRepository
 
     public function find($id, $with = [])
     {
-        return  User::where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type', 'emailSignatures', 'notificationStatuses'], $with))->first();
+        return  User::withTrashed()->where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type', 'emailSignatures', 'notificationStatuses'], $with))->first();
     }
 
     public function create(Request $request)
@@ -97,9 +103,41 @@ class UserRepository
         $result = false;
         $user = User::find($id);
         if ($user) {
+            Address::where('entity_type', User::class)->where('entity_id', $id)->delete();
+            Phone::where('entity_type', User::class)->where('entity_id', $id)->delete();
+            Social::where('entity_type', User::class)->where('entity_id', $id)->delete();
             Email::where('entity_type', User::class)->where('entity_id', $id)->delete();
+//            Settings::where('entity_type', User::class)->where('entity_id', $id)->delete();
+//            EmailSignature::where('entity_type', User::class)->where('entity_id', $id)->delete();
+//            UserNotificationStatus::where('user_id', $id)->delete();
+
+            ClientCompanyUser::whereIn('company_user_id', CompanyUser::where('user_id', $id)->pluck('id')->toArray())->delete();
+            CompanyUser::where('user_id', $id)->delete();
 
             $user->delete();
+            $result = true;
+        }
+        return $result;
+    }
+
+    public function restoreDeleted($id): bool
+    {
+        $result = false;
+
+        $user = User::withTrashed()->find($id);
+        if ($user) {
+            Address::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
+            Phone::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
+            Social::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
+            Email::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
+//            Settings::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
+//            EmailSignature::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
+//            UserNotificationStatus::withTrashed()->where('user_id', $id)->restore();
+
+            ClientCompanyUser::withTrashed()->whereIn('company_user_id', CompanyUser::where('user_id', $id)->pluck('id')->toArray())->restore();
+            CompanyUser::withTrashed()->where('user_id', $id)->delete();
+
+            $user->restore();
             $result = true;
         }
         return $result;
@@ -178,8 +216,12 @@ class UserRepository
         ]);
         $data = $settings->data;
 
-        if ($request->has('theme_color')) {
-            $data['theme_color'] = $request->theme_color;
+        if ($request->has('theme_fg_color')) {
+            $data['theme_fg_color'] = $request->theme_fg_color;
+        }
+
+        if ($request->has('theme_bg_color')) {
+            $data['theme_bg_color'] = $request->theme_bg_color;
         }
 
         $settings->data = $data;

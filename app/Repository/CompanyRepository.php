@@ -232,8 +232,12 @@ class CompanyRepository
             $data['ticket_number_format'] = $request->ticket_number_format;
         }
 
-        if ($request->has('theme_color')) {
-            $data['theme_color'] = $request->theme_color;
+        if ($request->has('theme_fg_color')) {
+            $data['theme_fg_color'] = $request->theme_fg_color;
+        }
+
+        if ($request->has('theme_bg_color')) {
+            $data['theme_bg_color'] = $request->theme_bg_color;
         }
 
         if ($request->has('override_user_theme')) {

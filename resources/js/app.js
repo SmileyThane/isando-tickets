@@ -11,7 +11,10 @@ import VCalendar from 'v-calendar'
 import 'tiptap-vuetify/dist/main.css'
 import 'vuetify/dist/vuetify.min.css'
 import '../css/custom.css'
+import PerfectScrollbar from 'vue2-perfect-scrollbar'
+import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
 
+Vue.use(PerfectScrollbar)
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 Vue.use(VCalendar, {
@@ -23,7 +26,6 @@ const router = new VueRouter({
     mode: 'history',
     routes: Routes
 });
-
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
@@ -57,7 +59,7 @@ const app = new Vue({
         this.$store.state.roles = this.$store.state.lang = null
         store.dispatch('getLanguage');
         store.dispatch('getRoles');
-        store.dispatch('getThemeColor');
+        store.dispatch('getThemeBgColor');
         store.dispatch('getAppVersion');
     }
 });

@@ -3,10 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Social extends Model
 {
-    //
+    use SoftDeletes;
 
     protected $fillable = ['entity_id', 'entity_type', 'social_link', 'social_type'];
 

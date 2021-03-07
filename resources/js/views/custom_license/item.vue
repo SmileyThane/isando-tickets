@@ -12,19 +12,19 @@
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{ langMap.company.info }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
-                               @click="cancelUpdateClient">
+                               @click="enableToEdit = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateClient">
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="clientUpdate">
                             {{ langMap.main.update }}
                         </v-btn>
 
@@ -33,7 +33,7 @@
                         <v-form>
                             <v-text-field
                                 v-model="client.client_name"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :disabled="!checkRoleByIds([1,2,3])"
                                 :label="langMap.company.name"
                                 :readonly="!enableToEdit"
@@ -45,7 +45,7 @@
                             ></v-text-field>
                             <v-text-field
                                 v-model="client.client_description"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :label="langMap.company.description"
                                 :readonly="!enableToEdit"
                                 dense
@@ -62,6 +62,37 @@
                             hide-details
                             @change="changeIsActiveClient(client)"
                         ></v-checkbox>
+                        <v-divider></v-divider>
+                        <br>
+                        <label>Connection links</label>
+                            <v-text-field
+                                v-for="(id, key) in client.connection_links"
+                                :key="key"
+                                v-model="client.connection_links[key]"
+                                :color="themeBgColor"
+                                :label="langMap.company.link"
+                                :readonly="!enableToEdit"
+                                dense
+                                prepend-icon="mdi-link"
+                                required
+                                type="text"
+                            ><template v-slot:append>
+                                <v-icon
+                                    color="red"
+                                    @click="removeConnectionLink(key)"
+                                >
+                                    mdi-cancel
+                                </v-icon>
+                            </template>
+                            </v-text-field>
+                            <v-btn
+                                v-if="enableToEdit"
+                                color="green"
+                                outlined
+                                @click="addConnectionLink"
+                            >
+                                <v-icon>mdi-plus</v-icon>
+                            </v-btn>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
@@ -69,12 +100,12 @@
                 </v-spacer>
                 <v-card class="elevation-12">
                     <v-toolbar
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{ 'License Users' }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ 'License Users' }}</v-toolbar-title>
                     </v-toolbar>
                     <div class="card-body">
                         <v-data-table
@@ -92,6 +123,14 @@
                                         moment(item.lastActivationChange).format('DD-MM-YYYY') : ''
                                 }}
                             </template>
+                            <template v-slot:item.licensed="{ item }">
+                                <v-btn
+                                    outlined
+                                    @click="manageLicenseUsers(item.id, item.licensed)"
+                                >
+                                    <v-icon>{{ item.licensed ? 'mdi-check-circle-outline' : 'mdi-cancel' }}</v-icon>
+                                </v-btn>
+                            </template>
                         </v-data-table>
                     </div>
                 </v-card>
@@ -100,12 +139,12 @@
             <div class="col-md-6">
                 <v-card class="elevation-12">
                     <v-toolbar
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         dense
                         flat
                     >
-                        <v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
                             <span class="text-left">{{ langMap.sidebar.custom_license }} </span>
 
                         </v-toolbar-title>
@@ -144,7 +183,7 @@
                                     v-model="license.expiresAt"
                                     v-bind="attrs"
                                     v-on="on"
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     class="ma-2"
                                     prepend-icon="mdi-calendar"
                                     readonly
@@ -152,7 +191,7 @@
                             </template>
                             <v-date-picker
                                 v-model="license.expiresAt"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 @input="menu2 = false;"
                             ></v-date-picker>
                         </v-menu>
@@ -172,7 +211,6 @@
                             >
                                 {{ license.active ? 'suspend' : 'renew' }}
                             </v-btn>
-
                             <div class="overline mx-2">
                                 additional licenses
                             </div>
@@ -194,12 +232,12 @@
                 </v-spacer>
                 <v-card class="elevation-12">
                     <v-toolbar
-                        :color="themeColor"
+                        :color="themeBgColor"
                         dark
                         dense
                         flat
                     >
-                        <v-toolbar-title>{{ langMap.notification.history }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.notification.history }}</v-toolbar-title>
                     </v-toolbar>
                     <v-card-text>
                         <v-list
@@ -230,7 +268,8 @@ export default {
     data() {
 
         return {
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
             licenseUserHeaders: [
                 // {text: 'id', value: 'id'},
@@ -273,6 +312,7 @@ export default {
             client: {
                 client_name: '',
                 client_description: '',
+                connection_links: [""],
                 products: [
                     {
                         product_data: {}
@@ -331,14 +371,16 @@ export default {
     },
     mounted() {
         this.getClient();
-        this.getLicense();
         this.getLicenseUsers();
         this.getRoles();
         this.getLanguages();
         this.getCountries();
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {
@@ -354,6 +396,7 @@ export default {
                     this.client.client_name = response.data.name
                     this.client.client_description = response.data.description
                     this.$store.state.pageName = this.client.client_name
+                    this.getLicense()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -366,10 +409,12 @@ export default {
             axios.get(`/api/custom_license/${this.$route.params.id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.license = response.data
+                    this.license = response.data.limits
+                    this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
                     this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
                     this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
                     this.getLicenseHistory();
+                    console.log(this.client.connection_links);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -404,11 +449,28 @@ export default {
 
             });
         },
+        manageLicenseUsers(remoteId, isLicensed) {
+            // console.log(remoteId);
+            // console.log(isLicensed);
+            axios.get(`/api/custom_license/${this.$route.params.id}/user/${remoteId}/${isLicensed}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getLicense();
+                    this.getLicenseUsers();
+                    // this.licenseUsers = response.data.entities
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+
+            });
+        },
         appendLicenseItems(count = 0) {
             this.license.usersAllowed += count
         },
         updateLicense() {
-            axios.put(`/api/custom_license/${this.$route.params.id}`, this.license).then(response => {
+            axios.put(`/api/custom_license/${this.$route.params.id}/limits`, this.license).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.license = response.data
@@ -471,19 +533,29 @@ export default {
             });
             return roleExists
         },
-    },
-    watch: {
-        clientUpdates(value) {
-            this.clientIsLoaded = true;
-            if (this.singleUserForm.user) {
-                this.singleUserForm.user = this.client.employees.find(x => x.employee.user_id === this.singleUserForm.user.id).employee.user_data;
-            }
-        }
-    },
-    computed: {
-        clientUpdates: function () {
-            return this.client
+        clientUpdate() {
+            axios.put(`/api/custom_license/${this.$route.params.id}`, this.client).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getClient();
+                    this.enableToEdit = false;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
         },
+        addConnectionLink() {
+            this.client.connection_links.push(" ");
+            console.log(this.client.connection_links);
+            this.$forceUpdate();
+        },
+        removeConnectionLink(id) {
+            this.client.connection_links.splice(id, 1);
+            console.log(this.client.connection_links);
+            this.$forceUpdate();
+        }
     }
 }
 </script>

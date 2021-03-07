@@ -33,3 +33,11 @@ hr.lighten {
     color: #eee;
     background-color: #eee;
 }
+
+.ticket--answer img {
+    width: 100%
+}
+
+.ps__rail-y {
+    z-index: 999999;
+}

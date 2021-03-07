@@ -15,6 +15,18 @@
                 <v-toolbar>
                     <!-- Timer mode-->
                     <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="mode">
+                        <div class="mx-2 align-self-center">
+                            <v-select
+                                :items="$store.getters['Services/getServices']"
+                                :placeholder="langMap.tracking.tracker.service_type"
+                                hide-details
+                                item-text="name"
+                                item-value="id"
+                                v-model="timerPanel.service"
+                                return-object
+                                style="max-width: 150px;"
+                            ></v-select>
+                        </div>
                         <div class="flex-grow-1 align-self-center">
                             <v-text-field
                                 outlined
@@ -28,7 +40,7 @@
                         <div class="mx-3 align-self-center">
                             <ProjectBtn
                                 key="timerPanelProjectKey"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :onChoosable="handlerProjectTimerPanel"
                                 v-model="timerPanel.project"
                             ></ProjectBtn>
@@ -36,7 +48,7 @@
                         <div class="mx-2 align-self-center">
                             <TagBtn
                                 key="timerPanelTagKey"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :onChoosable="handlerTagsTimerPanel"
                                 v-model="timerPanel.tags"
                             >
@@ -47,7 +59,7 @@
                                 fab
                                 :icon="!timerPanel.billable"
                                 x-small
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 @click="timerPanel.billable = !timerPanel.billable"
                             >
                                 <v-icon center v-bind:class="{ 'white--text': timerPanel.billable }">
@@ -68,7 +80,7 @@
                             <v-btn
                                 tile
                                 small
-                                :color="!timerPanel.start ? themeColor : 'error'"
+                                :color="!timerPanel.start ? themeBgColor : 'error'"
                                 style="color: white"
                                 @click="actionStartNewTrack()"
                             >
@@ -83,7 +95,7 @@
                                         fab
                                         x-small
                                         :icon="!mode"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         @click="mode=true"
                                         v-bind="attrs"
                                         v-on="on"
@@ -99,7 +111,7 @@
                                         fab
                                         x-small
                                         :icon="mode"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         @click="mode=false"
                                         v-bind="attrs"
                                         v-on="on"
@@ -113,6 +125,18 @@
                     </div>
                     <!-- Manual mode-->
                     <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!mode">
+                        <div class="mx-2 align-self-center">
+                            <v-select
+                                :items="$store.getters['Services/getServices']"
+                                :placeholder="langMap.tracking.tracker.service_type"
+                                hide-details
+                                item-text="name"
+                                item-value="id"
+                                v-model="manualPanel.service"
+                                return-object
+                                style="max-width: 150px;"
+                            ></v-select>
+                        </div>
                         <div class="flex-grow-1 align-self-center">
                             <v-text-field
                                 outlined
@@ -126,7 +150,7 @@
                         <div class="mx-1 align-self-center">
                             <ProjectBtn
                                 key="manualPanelProjectKey"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :onChoosable="handlerProjectManualPanel"
                                 v-model="manualPanel.project"
                             ></ProjectBtn>
@@ -134,7 +158,7 @@
                         <div class="mx-1 align-self-center">
                             <TagBtn
                                 key="manualPanelTagKey"
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :onChoosable="handlerTagsManualPanel"
                                 v-model="manualPanel.tags"
                             >
@@ -144,7 +168,7 @@
                             <v-btn
                                 :icon="!manualPanel.billable"
                                 x-small
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 fab
                                 @click="manualPanel.billable = !manualPanel.billable"
                             >
@@ -217,7 +241,7 @@
                             <v-btn
                                 small
                                 tile
-                                :color="themeColor"
+                                :color="themeBgColor"
                                 :loading="loadingCreateTrack"
                                 :disabled="loadingCreateTrack"
                                 style="color: white"
@@ -233,7 +257,7 @@
                                         fab
                                         x-small
                                         :icon="!mode"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         @click="mode=true"
                                         v-bind="attrs"
                                         v-on="on"
@@ -249,7 +273,7 @@
                                         fab
                                         x-small
                                         :icon="mode"
-                                        :color="themeColor"
+                                        :color="themeBgColor"
                                         @click="mode=false"
                                         v-bind="attrs"
                                         v-on="on"
@@ -289,7 +313,7 @@
                                 prepend-inner-icon="mdi-calendar"
                                 :style="{
                                     'border-style': 'solid',
-                                    'border-color': themeColor,
+                                    'border-color': themeBgColor,
                                     'border-width': '2px',
                                     'min-width': '280px',
                                     'max-width': '300px'
@@ -341,7 +365,7 @@
                     :key="index"
                 >
                     <v-expansion-panel-header
-                        :color="themeColor"
+                        :color="themeBgColor"
                         style="color: white"
                     >
                         <span v-if="moment(panelDate).format() === moment().format()">{{langMap.tracking.tracker.today}}</span>
@@ -391,13 +415,14 @@
                                                     v-model="props.item.service"
                                                     return-object
                                                     dense
+                                                    @input="$refs[`dialog${props.item.id}`][0].isActive = false"
                                                 ></v-select>
                                                 <v-btn
                                                     class="float-right mb-2"
                                                     text
                                                     color="success"
                                                     @click="$refs[`dialog${props.item.id}`][0].isActive = false"
-                                                >Save</v-btn>
+                                                >{{langMap.tracking.tracker.save}}</v-btn>
                                             </template>
                                         </v-edit-dialog>
                                     </template>
@@ -410,7 +435,7 @@
                                         >
                                             <ProjectBtn
                                                 :key="props.item.id"
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                                 v-model="props.item.project"
                                                 @blur="save(props.item, 'project', props.item.project)"
                                                 @input="save(props.item, 'project', props.item.project)"
@@ -420,7 +445,7 @@
                                     <template v-slot:item.tags="props">
                                         <TagBtn
                                             :key="props.item.id"
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             v-model="props.item.tags"
                                             @blur="save(props.item, 'tags', props.item.tags)"
                                         ></TagBtn>
@@ -430,7 +455,7 @@
                                             fab
                                             :icon="!props.item.billable"
                                             x-small
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             @click="props.item.billable = !props.item.billable; save(props.item, 'billable')"
                                         >
                                             <v-icon center v-bind:class="{ 'white--text': props.item.billable }">
@@ -489,7 +514,7 @@
                                                     icon
                                                     v-bind="attrs"
                                                     v-on="on"
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                 >
                                                     <v-icon>mdi-calendar</v-icon>
                                                 </v-btn>
@@ -514,7 +539,7 @@
                                                 </v-btn>
                                                 <v-btn
                                                     depressed
-                                                    :color="themeColor"
+                                                    :color="themeBgColor"
                                                     v-if="props.item.status == 'stopped'"
                                                     @click="actionStartTrackingAsId(props.item.id)"
                                                 >
@@ -528,7 +553,7 @@
                                                 >
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-btn
-                                                            :color="themeColor"
+                                                            :color="themeBgColor"
                                                             icon
                                                             v-bind="attrs"
                                                             v-on="on"
@@ -619,7 +644,8 @@ export default {
             dateFormat: 'YYYY-MM-DD',
             timeFormat: 'HH:mm',
             langMap: this.$store.state.lang.lang_map,
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             /* Snackbar */
             snackbarMessage: '',
             snackbar: false,
@@ -701,6 +727,7 @@ export default {
             /* Data */
             tracking: [],
             manualPanel: {
+                service: null,
                 description: null,
                 project: null,
                 tags: [],
@@ -713,6 +740,7 @@ export default {
             },
             nameLimit: 255,
             timerPanel: {
+                service: null,
                 trackId: null,
                 passedSeconds: '00:00:00',
                 start: null,
@@ -758,8 +786,11 @@ export default {
         this.$store.dispatch('Tags/getTagList');
         this.$store.dispatch('Services/getServicesList', { search: null });
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {
@@ -778,7 +809,11 @@ export default {
             });
             return axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
                 .then(({ data }) => {
-                    this.tracking = data.data;
+                    this.tracking = data.data.map(i => ({
+                        ...i,
+                        date: moment(i.date_from).format('YYYY-MM-DD'),
+                        date_picker: false
+                    }));
                     this.loading = false;
                     this.attemptRepeat = 0;
                     return data;
@@ -943,6 +978,7 @@ export default {
         resetManualPanel() {
             this.manualPanel = {
                 ...this.manualPanel,
+                service: null,
                 description: null,
                 projectId: null,
                 tags: [],
@@ -957,6 +993,7 @@ export default {
         resetTimerPanel() {
             this.timerPanel = {
                 ...this.timerPanel,
+                service: null,
                 trackId: null,
                 start: null,
                 billable: false,
@@ -1027,7 +1064,7 @@ export default {
         },
         filterTracking(date) {
             const self = this;
-            return this.getItems.filter(function(item) {
+            return this.tracking.filter(function(item) {
                 return moment(item.date_from).format(self.dateFormat) === date;
             });
         },
@@ -1082,15 +1119,6 @@ export default {
             this.panels = panels.map((i,k) => k);
             return panels;
         },
-        getItems () {
-            return this.tracking.map(track => {
-                return {
-                    ...track,
-                    date: moment(track.date_from).format('YYYY-MM-DD'),
-                    date_picker: false
-                };
-            });
-        },
         getFilteredProjects() {
             return this.$store.getters['Projects/getProjects'].map(entry => {
                 const name = entry.name.length > this.nameLimit
@@ -1142,6 +1170,7 @@ export default {
             }).forEach(i => {
                 const index = this.tracking.indexOf(i);
                 this.tracking[index].passed = this.helperCalculatePassedTime(i.date_from, moment());
+                this.tracking[index].date_picker = this.tracking[index].date_picker ?? false;
             });
             // Update timerPanel
             if (this.timerPanel.start) {
