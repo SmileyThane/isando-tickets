@@ -73,7 +73,7 @@ class ProductRepository
             $products = $products->sortByDesc($orderFunc);
         }
 
-        return $products->paginate($request->per_page ?? $products->count());
+        return $products->paginate($request->per_page ?? $products->count() + 1);
     }
 
     public function find($id)
