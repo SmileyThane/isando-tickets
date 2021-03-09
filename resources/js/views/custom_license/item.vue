@@ -238,6 +238,7 @@
                                     v-if="enableToEditLicense"
                                     :color="license.active ? 'red' :'green'"
                                     class="ma-2"
+                                    dark
                                     @click="license.active = !license.active"
                                 >
                                     {{ license.active ? 'suspend' : 'renew' }}
