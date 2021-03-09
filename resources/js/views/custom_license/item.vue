@@ -135,7 +135,11 @@
                                     outlined
                                     @click="manageLicenseUsers(item.id, item.licensed)"
                                 >
-                                    <v-icon>{{ item.licensed ? 'mdi-check-circle-outline' : 'mdi-cancel' }}</v-icon>
+                                    <v-icon
+                                        :color="item.licensed ? 'green' :'red'"
+                                    >
+                                        {{ item.licensed ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
+                                    </v-icon>
                                 </v-btn>
                             </template>
                         </v-data-table>
@@ -512,6 +516,10 @@ export default {
                 if (response.success === true) {
                     this.license = response.data
                     this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
+                    this.enableToEditLicense = false;
+                    this.snackbarMessage = this.license = this.langMap.main.update_successful;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
                     this.enableToEditLicense = false;
                     this.getLicense()
                     this.getLicenseUsers()
