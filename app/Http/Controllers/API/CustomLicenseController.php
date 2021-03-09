@@ -32,7 +32,8 @@ class CustomLicenseController extends Controller
 
     public function manageUser($id, $remoteUserId, $isLicensed)
     {
-        return self::showResponse(true, $this->customLicenseRepository->manageUser($id, $remoteUserId, $isLicensed));
+        $result = $this->customLicenseRepository->manageUser($id, $remoteUserId, $isLicensed);
+        return self::showResponse(is_array($result), $result);
     }
 
     public function history($id)
@@ -47,7 +48,8 @@ class CustomLicenseController extends Controller
 
     public function updateLimits(Request $request, $id)
     {
-        return self::showResponse(true, $this->customLicenseRepository->updateLimits($request, $id));
+        $result = $this->customLicenseRepository->updateLimits($request, $id);
+        return self::showResponse(is_array($result), $result);
     }
 
     public function unassignedIxarmaUsersList()
