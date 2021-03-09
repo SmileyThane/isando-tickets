@@ -30,7 +30,7 @@
                         <v-text-field
                             @input="debounceGetProjects"
                             v-model="trackingProjectSearch"
-                            :color="themeColor"
+                            :color="themeBgColor"
                             :label="langMap.main.search"
                             class="mx-4"
                             clearable
@@ -39,8 +39,8 @@
                     <v-col sm="12" md="2">
                         <v-select
                             class="mx-4"
-                            :color="themeColor"
-                            :item-color="themeColor"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
                             :items="footerProps.itemsPerPageOptions"
                             :label="langMap.main.items_per_page"
                             v-model="options.itemsPerPage"
@@ -50,8 +50,8 @@
                     <v-col sm="12" md="2" class="pt-6">
                         <v-btn
                             style="color: white;"
-                            :color="themeColor"
-                            :item-color="themeColor"
+                            :color="themeBgColor"
+                            :item-color="themeBgColor"
                             elevation="2"
                             @click="dialog=true"
                         >{{ langMap.tracking.create_project.btn_title }}</v-btn>
@@ -59,7 +59,7 @@
                 </v-row>
             </template>
             <template v-slot:footer>
-                <v-pagination :color="themeColor"
+                <v-pagination :color="themeBgColor"
                               v-model="options.page"
                               :length="lastPage"
                               circle
@@ -83,13 +83,13 @@
                     max-width="520"
                 >
                     <v-card>
-                        <v-card-title class="headline">
+                        <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                             {{ langMap.tracking.create_project.modal_title }}
                         </v-card-title>
                         <v-card-text>
                             <v-text-field
-                                :color="themeColor"
-                                :item-color="themeColor"
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
                                 :label="langMap.tracking.create_project.name"
                                 v-model="project.name"
                             ></v-text-field>
@@ -156,7 +156,8 @@ export default {
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
@@ -205,7 +206,7 @@ export default {
         this.debounceGetClients();
         let self = this;
         EventBus.$on('update-theme-color', function (color) {
-            self.themeColor = color;
+            self.themeBgColor = color;
         });
         this.options.itemsPerPage = Helper.getKey('itemsPerPage');
         this.footerProps.itemsPerPage = Helper.getKey('itemsPerPage');

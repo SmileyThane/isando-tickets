@@ -29,15 +29,15 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col md="10" sm="12">
-                                        <v-text-field v-model="customersSearch" :color="themeColor"
+                                        <v-text-field v-model="customersSearch" :color="themeBgColor"
                                                       :label="langMap.main.search"
                                                       class="mx-4" @input="getClients"></v-text-field>
                                     </v-col>
                                     <v-col md="2" sm="12">
                                         <v-select
                                             v-model="options.itemsPerPage"
-                                            :color="themeColor"
-                                            :item-color="themeColor"
+                                            :color="themeBgColor"
+                                            :item-color="themeBgColor"
                                             :items="footerProps.itemsPerPageOptions"
                                             :label="langMap.main.items_per_page"
                                             class="mx-4"
@@ -48,7 +48,7 @@
                             </template>
                             <template v-slot:footer>
                                 <v-pagination v-model="options.page"
-                                              :color="themeColor"
+                                              :color="themeBgColor"
                                               :length="lastPage"
                                               :page="options.page"
                                               :total-visible="5"
@@ -121,7 +121,9 @@
         <template>
             <v-dialog v-model="removeCustomerDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title>{{ langMap.main.delete_selected }}?</v-card-title>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.main.delete_selected }}?
+                    </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeCustomerDialog = false">
@@ -147,11 +149,12 @@ export default {
         return {
             snackbar: false,
             actionColor: '',
-            themeColor: this.$store.state.themeColor,
+            themeFgColor: this.$store.state.themeFgColor,
+themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             totalCustomers: 0,
             lastPage: 0,
-            loading: this.themeColor,
+            loading: this.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
             expanded: [],
             singleExpand: false,
@@ -190,13 +193,16 @@ export default {
     },
     mounted() {
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {
         getClients() {
-            this.loading = this.themeColor
+            this.loading = this.themeBgColor
             if (this.options.sortDesc.length <= 0) {
                 this.options.sortBy[0] = 'id'
                 this.options.sortDesc[0] = false

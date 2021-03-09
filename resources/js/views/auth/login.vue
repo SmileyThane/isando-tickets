@@ -21,19 +21,19 @@
                     </v-alert>
                     <v-card class="elevation-12">
                         <v-toolbar
-                            :color="themeColor"
+                            :color="themeBgColor"
                             dark
                             dense
                             flat
                         >
-                            <v-toolbar-title>Authorization</v-toolbar-title>
+                            <v-toolbar-title :style="`color: ${themeFgColor};`">Authorization</v-toolbar-title>
                             <v-spacer></v-spacer>
                         </v-toolbar>
                         <v-card-text>
                             <v-form>
                                 <v-text-field
                                     v-model="email"
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     autocomplete="new-email"
                                     label="Login"
                                     name="email"
@@ -45,7 +45,7 @@
                                 <v-text-field
                                     id="password"
                                     v-model="password"
-                                    :color="themeColor"
+                                    :color="themeBgColor"
                                     autocomplete="new-password"
                                     label="Password"
                                     name="password"
@@ -60,7 +60,7 @@
                                 >
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn
-                                            :color="themeColor"
+                                            :color="themeBgColor"
                                             outlined
                                             style="max-width: 36px; min-width: 36px;"
 
@@ -68,7 +68,7 @@
                                             <v-icon
                                                 v-bind="attrs"
                                                 v-on="on"
-                                                :color="themeColor"
+                                                :color="themeBgColor"
                                   na.              dark
                                             >
                                                 mdi-two-factor-authentication
@@ -86,7 +86,7 @@
                                 <v-list-item to="/reset-password">Forgot your password? </v-list-item>
                             </v-list>
                             <v-spacer></v-spacer>
-                            <v-btn :color="themeColor" style="color: white;" @click="handleSubmit">Login</v-btn>
+                            <v-btn :color="themeBgColor" style="color: white;" @click="handleSubmit">Login</v-btn>
                         </v-card-actions>
                     </v-card>
 
@@ -106,7 +106,7 @@ export default {
             alert: false,
             email: "",
             password: "",
-            themeColor: this.$store.state.themeColor
+            themeBgColor: this.$store.state.themeBgColor
         }
     },
     mounted() {
@@ -114,8 +114,11 @@ export default {
             this.$router.push('tickets')
         }
         let that = this;
-        EventBus.$on('update-theme-color', function (color) {
-            that.themeColor = color;
+        EventBus.$on('update-theme-fg-color', function (color) {
+            that.themeFgColor = color;
+        });
+       EventBus.$on('update-theme-bg-color', function (color) {
+            that.themeBgColor = color;
         });
     },
     methods: {

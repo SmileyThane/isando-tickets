@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
     <title>{{env('APP_NAME')}}</title>
 
@@ -18,4 +18,10 @@
 </div>
 <script src="{{asset('js/app.js')}}"></script>
 </body>
+<style>
+    html {
+        overflow-y: hidden;
+        overflow-x: hidden;
+    }
+</style>
 </html>
