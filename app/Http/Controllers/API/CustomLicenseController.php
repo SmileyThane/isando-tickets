@@ -49,4 +49,14 @@ class CustomLicenseController extends Controller
     {
         return self::showResponse(true, $this->customLicenseRepository->updateLimits($request, $id));
     }
+
+    public function unassignedIxarmaUsersList()
+    {
+        return self::showResponse(true, $this->customLicenseRepository->unassignedIxarmaUsersList());
+    }
+
+    public function assignToIxarmaCompany(Request $request)
+    {
+        return self::showResponse(true, $this->customLicenseRepository->assignToIxarmaCompany($request));
+    }
 }
