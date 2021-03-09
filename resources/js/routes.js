@@ -6,6 +6,7 @@ import Product from './views/product/index'
 import SingleProduct from './views/product/item'
 import CustomLicenses from './views/custom_license/index'
 import CustomLicense from './views/custom_license/item'
+import CustomLicenseUnassignedUsers from './views/custom_license/unassigned'
 import Team from './views/team/index'
 import SingleTeam from './views/team/item'
 import Employee from './views/employee/index'
@@ -299,5 +300,13 @@ export default [
             requiresAuth: true,
         },
         component: CustomLicenses
+    },
+    {
+        path: '/custom_license_unassigned',
+        name: 'custom_license_unassigned',
+        meta: {
+            requiresAuth: true,
+        },
+        component: CustomLicenseUnassignedUsers
     },
 ];
