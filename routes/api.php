@@ -196,6 +196,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 //Additional tracking routes
                 Route::get('/clients', 'BaseController@getClientList');
                 Route::get('/products', 'BaseController@getProductList');
+                Route::get('/coworkers', 'BaseController@getCoworkers');
 
                 //Tracker
                 Route::get('/tracker', 'TrackingController@get');
@@ -204,6 +205,8 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::post('/tracker/{tracking}/duplicate', 'TrackingController@duplicate');
                 Route::delete('/tracker/{tracking}', 'TrackingController@delete');
 
+                // Reports
+                Route::post('/reports', 'ReportController@generate');
             });
 
         // Tags
