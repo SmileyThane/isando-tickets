@@ -413,7 +413,7 @@ themeBgColor: this.$store.state.themeBgColor,
             filters: [],
             queryArray: [],
             tempFilter: [],
-            filterId: null
+            filterId: ''
         }
     },
     mounted() {
