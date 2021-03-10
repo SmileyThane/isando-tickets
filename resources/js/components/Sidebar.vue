@@ -101,6 +101,20 @@
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                <v-list-item
+                    style="background-color: white;"
+                    dense
+                    link
+                    to="/custom_license_unassigned">
+                    <v-list-item-action>
+                        <v-icon>mdi-cellphone-erase</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-content>
+                        <v-list-item-title>
+                            {{ langMap.sidebar.custom_licenses }}
+                        </v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list>
             <v-divider></v-divider>
             <v-list dense>

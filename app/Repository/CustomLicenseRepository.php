@@ -10,7 +10,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Psr\Http\Message\StreamInterface;
 use Throwable;
 
 class CustomLicenseRepository
@@ -152,6 +151,21 @@ class CustomLicenseRepository
 //            'email' => 'testco@example.com'
         ];
         $result = $this->makeIxArmaRequest("/api/v1/company/$ixArmaId", $data, 'PUT');
+        $parsedResult = json_decode($result->getContents(), true);
+        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+    }
+
+    public function unassignedIxarmaUsersList()
+    {
+        $result = $this->makeIxArmaRequest("/api/v1/app/user/unassigned/page/0", []);
+        $parsedResult = json_decode($result->getContents(), true);
+        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+    }
+
+    public function assignToIxarmaCompany(Request $request)
+    {
+//        dd("/api/v1/app/user/$request->user_id/assign/$request->company_id");
+        $result = $this->makeIxArmaRequest("/api/v1/app/user/$request->user_id/assign/$request->company_id", []);
         $parsedResult = json_decode($result->getContents(), true);
         return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
     }

@@ -75,7 +75,10 @@ class TicketRepository
             $ticketIds = $tickets->pluck('id')->toArray();
         }
         $ticketResult = Ticket::whereIn('id', $ticketIds);
-        if (($request->has('search') && !empty($request->search)) || $request->has('filter_id')) {
+        if (
+            ($request->has('search') && !empty($request->search)) ||
+            ($request->has('filter_id') && $request->filter_id !== null)
+        ) {
             $ticketResult->where(
                 static function ($query) use ($request) {
                     if ($request->has('search_param')) {
@@ -154,12 +157,13 @@ class TicketRepository
             $ticketResult = $ticketResult->orderBy($orderedField, $orderedDirection);
         }
 //        dd(DB::getQueryLog());
-        return $ticketResult = $ticketResult->paginate($request->per_page ?? count($ticketIds));
+        return $ticketResult->paginate($request->per_page ?? count($ticketIds));
     }
 
     private function ticketRoleFilter($companyUser, $tickets)
     {
-        if (!$companyUser->hasRole(Role::COMPANY_CLIENT)) {
+        $roles = $companyUser->roleIds();
+        if (!in_array(Role::COMPANY_CLIENT, $roles, true)) {
             $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
             $tickets->orWhere([['from_entity_type', Company::class], ['from_entity_id', $companyUser->company_id]]);
         } else {
@@ -177,7 +181,7 @@ class TicketRepository
                     ->whereIn('to_entity_id', $clientIds);
             });
         }
-        if ($companyUser->hasRole(Role::LICENSE_OWNER) || $companyUser->hasRole(Role::ADMIN)) {
+        if (in_array([Role::LICENSE_OWNER, Role::ADMIN], $roles, true)) {
             $products = ProductCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($products) {
                 $productsIds = $products->pluck('id')->toArray();
@@ -187,7 +191,7 @@ class TicketRepository
             }
 
         }
-        if ($companyUser->hasRole(Role::MANAGER)) {
+        if (in_array(Role::MANAGER, $roles, true)) {
             $teams = TeamCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($teams) {
                 $teamsIds = $teams->pluck('id')->toArray();
@@ -196,7 +200,7 @@ class TicketRepository
                 }
             }
         }
-        if ($companyUser->hasRole(Role::COMPANY_CLIENT)) {
+        if (in_array(Role::COMPANY_CLIENT, $roles, true)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', Auth::user()->employee->id)->first();
             if ($clientCompanyUser) {
                 $tickets->orWhere(function ($query) use ($clientCompanyUser) {
