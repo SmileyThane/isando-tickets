@@ -40,7 +40,7 @@
                                 </v-avatar>
                             </v-col>
                             <v-col :cols="client.logo_url ? 4 : 6">
-                                <h3 class="mb-3">{{ client.client_name }} <span v-if="client.short_name">| {{ client.short_name }}</span></h3>
+                                <h3 class="mb-3">{{ client.client_name }}</h3>
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
 
                                 <div v-if="client.emails && client.emails.length > 0" class="mb-3">
