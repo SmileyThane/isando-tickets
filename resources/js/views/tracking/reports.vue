@@ -93,7 +93,7 @@
                                     <v-date-picker
                                         no-title
                                         v-model="builder.period.end"
-                                        @input="activePeriod = null"
+                                        @input="activePeriod = null; genPreview()"
                                     ></v-date-picker>
                                 </div>
                             </div>
@@ -126,6 +126,7 @@
                     item-value="value"
                     v-model="builder.sort"
                     return-object
+                    @input="genPreview"
                 >
                     <template v-slot:item="{ parent, item, on, attrs }">
                         <span>
@@ -162,7 +163,6 @@
                     x-small
                     style="border-color: rgba(0,0,0,0)"
                     @dblclick="dblClickSelectGroupItem(groupItem)"
-                    disabled
                 >
                     <v-icon>{{groupItem.icon}}</v-icon>
                     {{groupItem.text}}
@@ -187,7 +187,6 @@
                     text
                     style="border-color: rgba(0,0,0,0)"
                     @dblclick="dblClickSelectGroupItem(groupItem)"
-                    disabled
                 >
                     <v-icon>{{groupItem.icon}}</v-icon>
                     {{groupItem.text}}
@@ -265,7 +264,9 @@
                         <div class="d-flex flex-column">
                             <v-icon x-large class="d-inline-flex">mdi-clock-outline</v-icon>
                             <span class="d-inline-block text-center">Total time</span>
-                            <span class="d-inline-block text-center">40:08 h</span>
+                            <span class="d-inline-block text-center">
+                                {{ helperConvertSecondsToTimeFormat(totalTime) }}
+                            </span>
                         </div>
                     </v-card>
                     <v-card
@@ -276,7 +277,7 @@
                         <div class="d-flex flex-column">
                             <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
                             <span class="d-inline-block text-center">Revenue</span>
-                            <span class="d-inline-block text-center">0 ₽</span>
+                            <span class="d-inline-block text-center">0 €</span>
                         </div>
                     </v-card>
                 </div>
@@ -303,6 +304,40 @@
         </div>
         <!-- DATA -->
         <v-card class="d-flex flex-column">
+            <v-data-table
+                :headers="reportData.headers"
+                :items="reportData.entities"
+                item-key="id"
+                class="elevation-1"
+            >
+                <template v-slot:item.project.client.name="{ item }">
+                    <span v-if="item.project && item.project.client">{{ item.project.client.name }}</span>
+                </template>
+                <template v-slot:item.project.name="{ item }">
+                    <span v-if="item.project">{{ item.project.name }}</span>
+                </template>
+                <template v-slot:item.billable="{ item }">
+                    <v-btn
+                        fab
+                        :icon="!item.billable"
+                        x-small
+                        :color="themeBgColor"
+                    >
+                        <v-icon center v-bind:class="{ 'white--text': item.billable }">
+                            mdi-currency-usd
+                        </v-icon>
+                    </v-btn>
+                </template>
+                <template v-slot:item.date_from="{ item }">
+                    <span v-if="item.date_from">{{ moment(item.date_from).format('YYYY-MM-DD HH:mm') }}</span>
+                </template>
+                <template v-slot:item.date_to="{ item }">
+                    <span v-if="item.date_to">{{ moment(item.date_to).format('YYYY-MM-DD HH:mm') }}</span>
+                </template>
+                <template v-slot:item.passed="{ item }">
+                    {{ helperConvertSecondsToTimeFormat(helperCalculatePassedTime(item.date_from, item.date_to)) }}
+                </template>
+            </v-data-table>
             <v-card-actions class="white justify-center">
                 <v-dialog
                     v-model="dialogExportPDF"
@@ -526,16 +561,8 @@ export default {
                     text: 'Rounding to full 5 min.'
                 },
                 {
-                    value: 6,
-                    text: 'Rounding to full 6 min.'
-                },
-                {
                     value: 10,
                     text: 'Rounding to full 10 min.'
-                },
-                {
-                    value: 12,
-                    text: 'Rounding to full 12 min.'
                 },
                 {
                     value: 15,
@@ -703,19 +730,19 @@ export default {
                 }
             },
             reportData: {
-                expanded: [],
-                dessertHeaders: [
+                headers: [
                     { text: 'Description', value: 'description' },
-                    { text: 'Client', value: 'client' },
+                    { text: 'Client', value: 'project.client.name' },
                     {
                         text: 'Project',
                         align: 'start',
                         sortable: false,
-                        value: 'project',
+                        value: 'project.name',
                     },
                     { text: 'Billable', value: 'billable' },
                     { text: 'Date from', value: 'date_from' },
                     { text: 'Date to', value: 'date_to' },
+                    { text: 'Passed', value: 'passed' },
                     { text: '', value: 'data-table-expand' },
                 ],
                 entities: []
@@ -833,6 +860,7 @@ export default {
                 this.report.pdf.period = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
             }
             this.activePeriod = null;
+            this.genPreview();
         },
         onClickOutsideHandler () {
             this.activePeriod = null
@@ -867,15 +895,43 @@ export default {
             axios.post('/api/tracking/reports', this.builder)
                 .then(({ data: { data } }) => {
                     this.reportData.entities = data;
+
                 })
                 .catch(err => {
                     this.snackbarMessage = 'Something went wrong';
                     this.actionColor = 'error'
                     this.snackbar = true;
                 });
+        },
+        helperAddZeros(num, len) {
+            while((""+num).length < len) num = "0" + num;
+            return num.toString();
+        },
+        helperConvertSecondsToTimeFormat(seconds) {
+            if (!seconds) {
+                return `00:00:00`;
+            }
+            const h = Math.floor(seconds / 60 / 60);
+            const m = Math.floor((seconds - h * 60 * 60) / 60);
+            const s = seconds - (m * 60) - (h * 60 * 60);
+            return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
+        },
+        helperCalculatePassedTime(date_from, date_to) {
+            if (moment(date_from) > moment(date_to)) {
+                date_to = moment(date_to).add(1, 'day');
+            }
+            return moment(date_to).diff(moment(date_from), 'seconds');
+        },
+    },
+    computed: {
+        totalTime: function() {
+            let total = 0;
+            this.reportData.entities.map(i => {
+                total += this.helperCalculatePassedTime(i.date_from, i.date_to);
+            });
+            return total;
         }
     },
-    computed: {},
     watch: {}
 }
 </script>

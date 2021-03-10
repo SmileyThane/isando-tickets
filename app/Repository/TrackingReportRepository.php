@@ -45,7 +45,12 @@ class TrackingReportRepository
                 ];
             })
             ->filter(function ($item) {
-                return $item['selected'];
+                if (is_array($item['selected']) && count($item['selected'])) {
+                    return true;
+                } elseif (is_numeric($item['selected'])) {
+                    return true;
+                }
+                return false;
             });
 
         $tracking = Tracking::with('Project.Client')
@@ -140,7 +145,8 @@ class TrackingReportRepository
                         );
                         break;
                     case 'billable':
-                        $tracking->where('tracking.billable', '=', $filter['selected']);
+//                        dd($filter['selected']);
+                        $tracking->where('tracking.billable', '=', (int)$filter['selected']);
                         break;
                 }
             }
