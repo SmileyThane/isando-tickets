@@ -1,38 +1,12 @@
-<template>
-
-</template>
-
-<style>
-
-</style>
-
 <script>
 
 import { Bar } from 'vue-chartjs';
 
 export default {
-    extends: {
-        Bar
-    },
-    props: ['chartdata', 'options'],
-    data: () => ({
-        chartdata: {
-            labels: ['Январь', 'Февраль'],
-            datasets: [
-                {
-                    label: 'Данные 1',
-                    backgroundColor: '#f87979',
-                    data: [40, 20]
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    }),
+    extends: Bar,
+    props: ['data', 'options'],
     mounted() {
-        this.renderChart(this.chartdata, this.options);
+        this.renderChart(this.data, this.options);
     }
 }
 </script>

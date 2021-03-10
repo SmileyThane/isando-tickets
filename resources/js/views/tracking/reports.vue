@@ -18,8 +18,8 @@
             </div>
             <div class="d-inline-flex mx-16">
                 <v-btn
-                    :color="themeColor"
-                    :style="{ color: invertColor(themeColor) }"
+                    :color="themeBgColor"
+                    :style="{ color: invertColor(themeBgColor) }"
                 >Save</v-btn>
             </div>
         </div>
@@ -56,22 +56,22 @@
                         >
                             <div class="d-flex flex-row">
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('today')" :style="{ color: themeColor }">Today</a>
-                                    <a class="text-decoration-none" @click="setPeriod('yesterday')" :style="{ color: themeColor }">Yesterday</a>
-                                    <a class="text-decoration-none" @click="setPeriod('last7days')" :style="{ color: themeColor }">Last 7 days</a>
-                                    <a class="text-decoration-none" @click="setPeriod('last28days')" :style="{ color: themeColor }">Last 28 days</a>
+                                    <a class="text-decoration-none" @click="setPeriod('today')" :style="{ color: themeBgColor }">Today</a>
+                                    <a class="text-decoration-none" @click="setPeriod('yesterday')" :style="{ color: themeBgColor }">Yesterday</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last7days')" :style="{ color: themeBgColor }">Last 7 days</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last28days')" :style="{ color: themeBgColor }">Last 28 days</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')" :style="{ color: themeColor }">This week</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')" :style="{ color: themeColor }">Last week</a>
-                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')" :style="{ color: themeColor }">This month</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')" :style="{ color: themeColor }">Last month</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')" :style="{ color: themeBgColor }">This week</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')" :style="{ color: themeBgColor }">Last week</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')" :style="{ color: themeBgColor }">This month</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')" :style="{ color: themeBgColor }">Last month</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')" :style="{ color: themeColor }">This quarter</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')" :style="{ color: themeColor }">Last quarter</a>
-                                    <a class="text-decoration-none" @click="setPeriod('thisYear')" :style="{ color: themeColor }">This year</a>
-                                    <a class="text-decoration-none" @click="setPeriod('totalTime')" :style="{ color: themeColor }">Total time</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')" :style="{ color: themeBgColor }">This quarter</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')" :style="{ color: themeBgColor }">Last quarter</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisYear')" :style="{ color: themeBgColor }">This year</a>
+                                    <a class="text-decoration-none" @click="setPeriod('totalTime')" :style="{ color: themeBgColor }">Total time</a>
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
@@ -111,6 +111,7 @@
                     item-text="text"
                     item-value="value"
                     v-model="builder.round"
+                    disabled
                 >
                 </v-select>
             </div>
@@ -137,8 +138,8 @@
         </div>
         <!-- GROUPING -->
         <v-card
-            outlined
             class="d-flex px-6 py-2 flex-row"
+            outlined
         >
             <div class="d-inline-flex align-center order-first" style="min-width: 150px">
                 Group entries by...
@@ -156,11 +157,12 @@
                     v-for="groupItem in builder.group"
                     :key="groupItem.value"
                     outlined
-                    :color="themeColor"
+                    :color="themeBgColor"
                     class="square d-inline-flex mr-3 ml-2"
                     x-small
                     style="border-color: rgba(0,0,0,0)"
                     @dblclick="dblClickSelectGroupItem(groupItem)"
+                    disabled
                 >
                     <v-icon>{{groupItem.icon}}</v-icon>
                     {{groupItem.text}}
@@ -179,18 +181,20 @@
                     v-for="groupItem in groupItems"
                     :key="groupItem.value"
                     outlined
-                    :color="themeColor"
+                    :color="themeBgColor"
                     class="square d-inline-flex mr-3 ml-2"
                     x-small
                     text
                     style="border-color: rgba(0,0,0,0)"
                     @dblclick="dblClickSelectGroupItem(groupItem)"
+                    disabled
                 >
                     <v-icon>{{groupItem.icon}}</v-icon>
                     {{groupItem.text}}
                 </v-btn>
             </draggable>
         </v-card>
+        <!-- FILTERING. Generated automatically -->
         <v-card
             outlined
             class="d-flex px-6 py-2 mt-3 flex-row"
@@ -204,10 +208,10 @@
                         <a
                             class="mx-2 d-inline-flex"
                             :class="{ 'text-decoration-underline': builder.filters.find(i => i.value === filter.value) }"
-                            :style="{ color: themeColor }"
+                            :style="{ color: themeBgColor }"
                             v-for="filter in availableFilters"
                             :key="filter.value"
-                            @click="activateFilter(filter)"
+                            @click="toggleFilter(filter)"
                         >
                             {{ filter.text }}
                         </a>
@@ -226,7 +230,6 @@
                                 <v-select
                                     :items="$store.getters[filter.store] || filter.items"
                                     :label="filter.text"
-                                    return-object
                                     item-text="name"
                                     item-value="id"
                                     outlined
@@ -234,12 +237,14 @@
                                     dense
                                     clearable
                                     style="max-width: 900px; width: 100%"
+                                    v-model="filter.selected"
+                                    @input="genPreview"
                                 ></v-select>
                                 <v-btn
                                     color="danger"
                                     icon
                                     class="mx-4"
-                                    @click="activateFilter(filter)"
+                                    @click="toggleFilter(filter)"
                                 >
                                     <v-icon>mdi-close-thick</v-icon>
                                 </v-btn>
@@ -249,6 +254,7 @@
                 </div>
             </div>
         </v-card>
+        <!-- CHARTS -->
         <div class="d-flex py-2 mt-3 flex-row">
             <div class="d-inline-block flex-grow-0 mr-2">
                 <div class="d-flex flex-column align-stretch">
@@ -279,21 +285,143 @@
                 class="d-inline-block flex-grow-1 ml-2"
                 outlined
             >
-                <v-sparkline
-                    :value="chart.value"
-                    :gradient="chart.gradient"
-                    :smooth="chart.radius || false"
-                    :padding="chart.padding"
-                    :line-width="chart.width"
-                    :stroke-linecap="chart.lineCap"
-                    :gradient-direction="chart.gradientDirection"
-                    :fill="chart.fill"
-                    :type="chart.type"
-                    :auto-line-width="chart.autoLineWidth"
-                    auto-draw
-                ></v-sparkline>
+                <div class="d-flex flex-row">
+                    <div class="d-inline-flex px-3 py-3">
+                        <DoughnutChart
+                            :data="chart.data"
+                            :options="chart.options"
+                        ></DoughnutChart>
+                    </div>
+                    <div class="d-inline-flex px-3 py-3">
+                        <BarChart
+                            :data="chart.data"
+                            :options="chart.options"
+                        ></BarChart>
+                    </div>
+                </div>
             </v-card>
         </div>
+        <!-- DATA -->
+        <v-card class="d-flex flex-column">
+            <v-card-actions class="white justify-center">
+                <v-dialog
+                    v-model="dialogExportPDF"
+                    persistent
+                    max-width="600px"
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            :color="themeBgColor"
+                            :style="{ color: invertColor(themeBgColor) }"
+                            v-bind="attrs"
+                            v-on="on"
+                            class="mx-3"
+                        >
+                            <v-icon>mdi-file-pdf-box-outline</v-icon>
+                            Create PDF
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-title>
+                            <span class="headline">Create PDF</span>
+                        </v-card-title>
+                        <v-card-text>
+                            <!-- FORM -->
+                            <div class="d-flex flex-column">
+                                <div class="d-inline-block">
+                                    <v-text-field
+                                        label="Name of the report"
+                                        v-model="report.pdf.name"
+                                    ></v-text-field>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-text-field
+                                        label="Co-workers"
+                                        v-model="report.pdf.coworkers"
+                                    ></v-text-field>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-text-field
+                                        label="Period"
+                                        v-model="report.pdf.period"
+                                    ></v-text-field>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-select
+                                        :items="report.groupItems"
+                                        item-text="text"
+                                        item-value="value"
+                                        label="Group"
+                                        v-model="report.pdf.group"
+                                    >
+                                    </v-select>
+                                </div>
+                            </div>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="error"
+                                text
+                                @click="dialogExportPDF = false"
+                            >
+                                Cancel
+                            </v-btn>
+                            <v-btn
+                                color="success"
+                                text
+                                @click="dialogExportPDF = false"
+                            >
+                                Create
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-dialog
+                    v-model="dialogExportCSV"
+                    persistent
+                    max-width="600px"
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            :color="themeBgColor"
+                            :style="{ color: invertColor(themeBgColor) }"
+                            v-bind="attrs"
+                            v-on="on"
+                            class="mx-3"
+                        >
+                            <v-icon>mdi-file-delimited-outline</v-icon>
+                            CSV Export
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-title>
+                            <span class="headline">CSV Export</span>
+                        </v-card-title>
+                        <v-card-text>
+                            <!-- FORM -->
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="error"
+                                text
+                                @click="dialogExportCSV = false"
+                            >
+                                Cancel
+                            </v-btn>
+                            <v-btn
+                                color="success"
+                                text
+                                @click="dialogExportCSV = false"
+                            >
+                                Export
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-card-actions>
+        </v-card>
     </v-container>
 </template>
 
@@ -349,32 +477,27 @@ import EventBus from "../../components/EventBus";
 import * as Helper from "./helper";
 import moment from "moment-timezone";
 import draggable from "vuedraggable";
-
-const gradients = [
-    ['#222'],
-    ['#42b3f4'],
-    ['red', 'orange', 'yellow'],
-    ['purple', 'violet'],
-    ['#00c6ff', '#F0F', '#FF0'],
-    ['#f72047', '#ffd200', '#1feaea'],
-];
+import BarChart from "./components/bar-chart";
+import DoughnutChart from "./components/doughnut-chart";
 
 export default {
     components: {
-        draggable
+        draggable,
+        DoughnutChart,
+        BarChart
     },
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
             activePeriod: null,
             draggable: false,
             builder: {
-                reportName: 'New report',
+                reportName: 'Report',
                 report: null,
                 period: {
                     start: moment().subtract(1, 'months').format('YYYY-MM-DD'),
@@ -442,26 +565,26 @@ themeBgColor: this.$store.state.themeBgColor,
                     value: 'chron-desc',
                     text: 'A - Z and chronologically descending'
                 },
-                {
-                    icon: 'mdi-sort-numeric-descending',
-                    value: 'duration-desc',
-                    text: 'Duration, descending'
-                },
-                {
-                    icon: 'mdi-sort-numeric-ascending',
-                    value: 'duration-asc',
-                    text: 'Duration, ascending'
-                },
-                {
-                    icon: 'mdi-sort-descending',
-                    value: 'revenue-desc',
-                    text: 'Revenue, descending'
-                },
-                {
-                    icon: 'mdi-sort-ascending',
-                    value: 'revenue-asc',
-                    text: 'Revenue, ascending'
-                },
+                // {
+                //     icon: 'mdi-sort-numeric-descending',
+                //     value: 'duration-desc',
+                //     text: 'Duration, descending'
+                // },
+                // {
+                //     icon: 'mdi-sort-numeric-ascending',
+                //     value: 'duration-asc',
+                //     text: 'Duration, ascending'
+                // },
+                // {
+                //     icon: 'mdi-sort-descending',
+                //     value: 'revenue-desc',
+                //     text: 'Revenue, descending'
+                // },
+                // {
+                //     icon: 'mdi-sort-ascending',
+                //     value: 'revenue-asc',
+                //     text: 'Revenue, ascending'
+                // },
             ],
             groupItems: [
                 {
@@ -494,7 +617,7 @@ themeBgColor: this.$store.state.themeBgColor,
                 {
                     value: 'coworkers',
                     text: 'Co-workers',
-                    store: '',
+                    store: 'Team/getCoworkers',
                     items: [],
                     selected: [],
                     multiply: true
@@ -542,17 +665,81 @@ themeBgColor: this.$store.state.themeBgColor,
                 }
             ],
             chart: {
-                width: 2,
-                radius: 10,
-                padding: 8,
-                lineCap: 'round',
-                gradient: [this.$store.state.themeColor],
-                value: [0, 2, 5, 9, 5, 10, 3, 5, 0, 0, 1, 8, 2, 9, 0],
-                gradientDirection: 'top',
-                gradients,
-                fill: false,
-                type: 'trend',
-                autoLineWidth: false,
+                data: {
+                    labels: [
+                        "January",
+                        "February",
+                        "March",
+                        "April",
+                        "May",
+                        "June",
+                        "July",
+                        "August",
+                        "September",
+                        "October",
+                        "November",
+                        "December"
+                    ],
+                    datasets: [
+                        {
+                            label: "Data One",
+                            backgroundColor: [Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor()],
+                            data: [2, 5, 9, 5, 10, 3, 5, 0, 1, 8, 2, 9]
+                        },
+                        {
+                            label: "Data Two",
+                            backgroundColor: [Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor()],
+                            data: [9, 5, 10, 3, 5, 0, 1, 8, 2, 9, 2, 5]
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    percentageInnerCutout : 90,
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            },
+            reportData: {
+                expanded: [],
+                dessertHeaders: [
+                    { text: 'Description', value: 'description' },
+                    { text: 'Client', value: 'client' },
+                    {
+                        text: 'Project',
+                        align: 'start',
+                        sortable: false,
+                        value: 'project',
+                    },
+                    { text: 'Billable', value: 'billable' },
+                    { text: 'Date from', value: 'date_from' },
+                    { text: 'Date to', value: 'date_to' },
+                    { text: '', value: 'data-table-expand' },
+                ],
+                entities: []
+            },
+            dialogExportPDF: false,
+            dialogExportCSV: false,
+            dialogPrint: false,
+            report: {
+                groupItems: [
+                    {
+                        value: 1,
+                        text: 'Sort chronologically & do not group'
+                    },
+                    {
+                        value: 2,
+                        text: 'Group by service (Coming soon)'
+                    }
+                ],
+                pdf: {
+                    name: 'Report',
+                    coworkers: null,
+                    period: '',
+                    group: 1
+                }
             }
         }
     },
@@ -565,16 +752,17 @@ themeBgColor: this.$store.state.themeBgColor,
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Projects/getProjectList', { search: null });
+        this.$store.dispatch('Team/getCoworkers', { search: null });
     },
     mounted() {
-        // this.getTickets()
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
+        this.setPeriod();
     },
     methods: {
         invertColor(hex, bw = true) {
@@ -635,6 +823,15 @@ themeBgColor: this.$store.state.themeBgColor,
             }
             this.builder.period.start = start ? start.format('YYYY-MM-DD') : start;
             this.builder.period.end = end.format('YYYY-MM-DD');
+            if (this.builder.period.start) {
+                if (this.builder.period.start === this.builder.period.end) {
+                    this.report.pdf.period = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
+                } else {
+                    this.report.pdf.period = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                }
+            } else {
+                this.report.pdf.period = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+            }
             this.activePeriod = null;
         },
         onClickOutsideHandler () {
@@ -646,16 +843,39 @@ themeBgColor: this.$store.state.themeBgColor,
             this.builder.group = [];
             this.builder.group.push(groupItem);
         },
-        activateFilter(filter) {
+        toggleFilter(filter) {
             const index = this.builder.filters.findIndex(i => i.value === filter.value);
             if (index < 0) {
                 filter.selected = [];
                 this.builder.filters.push(filter);
             } else {
                 this.builder.filters.splice(index, 1);
+                if (filter.value === 'coworkers') {
+                    this.report.pdf.coworkers = '';
+                }
             }
+        },
+        genPreview() {
+            const coworkers = this.builder.filters.find(i => i.value === 'coworkers');
+            if (coworkers) {
+                const list = this.$store.getters['Team/getCoworkers'];
+                this.report.pdf.coworkers = list.filter(x => coworkers.selected.indexOf(x.id) >= 0)
+                                                .map(i => i.full_name)
+                                                .join(', ');
+
+            }
+            axios.post('/api/tracking/reports', this.builder)
+                .then(({ data: { data } }) => {
+                    this.reportData.entities = data;
+                })
+                .catch(err => {
+                    this.snackbarMessage = 'Something went wrong';
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                });
         }
     },
     computed: {},
+    watch: {}
 }
 </script>
