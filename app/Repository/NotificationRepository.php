@@ -148,10 +148,12 @@ class NotificationRepository
 
         $notifications = new Collection([]);
         if ($companyUser->is_clientable || in_array(Role::COMPANY_CLIENT, $roles)) {
-            $notifications = SentNotification::where('entity_type', Company::class)->where('entity_id', $companyId)->with(['type', 'sender'])->get();
+//           $notifications = SentNotification::where('entity_type', Company::class)->where('entity_id', $companyId)->with(['type', 'sender'])->get();
             foreach (Auth::user()->emails as $email) {
-                $notifications->merge(SentNotification::whereNotNull(DB::raw("JSON_SEARCH(recipients, 'one', '".$email->email."')"))->get());
+                $notifications = $notifications->merge(SentNotification::whereNotNull(DB::raw("JSON_SEARCH(recipients, 'one', '".$email->email."')"))->with(['type', 'sender'])->get());
             }
+
+            $notifications = $notifications->unique();
         } else {
             $notifications = SentNotification::where('entity_type', Company::class)->where('entity_id', $companyId)->with(['type', 'sender'])->get();
         }
