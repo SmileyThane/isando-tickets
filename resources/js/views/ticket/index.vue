@@ -32,7 +32,7 @@
                         <v-text-field
                             v-model="ticketsSearch"
                             :color="themeBgColor"
-                            :disabled="filterId !== null"
+                            :disabled="filterId !== ''"
                             :label="langMap.main.search"
                             class="ma-2"
                             hide-details
@@ -71,7 +71,7 @@
                         >
                             <template v-slot:append-outer>
                                 <v-icon
-                                    :disabled="filterId === null"
+                                    :disabled="filterId === ''"
                                     @click="removeFilter"
                                 >
                                     mdi-delete
@@ -468,7 +468,7 @@ themeBgColor: this.$store.state.themeBgColor,
             });
         },
         removeFilter() {
-            this.filterId = null
+            this.filterId = ''
             this.getTickets()
         },
         getProducts() {
@@ -569,10 +569,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.snackbar = true;
                     this.removeTicketDialog = false
                 } else {
-                    this.snackbarMessage = 'Ticket delete error'
+                    this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
-                    this.snackbar = true;
-                }
+                    this.snackbar = true;                }
             });
         },
         mergeTicketProcess(id) {
@@ -592,6 +591,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.mergeTicketDialog = false
                 } else {
                     console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
             });
         },
@@ -608,7 +610,6 @@ themeBgColor: this.$store.state.themeBgColor,
             this.options.itemsPerPage = value
             localStorage.itemsPerPage = value;
             this.options.page = 1
-            // console.log(value)
         },
         manageSortableField(value) {
             if (value === 'last_update') return 'updated_at'
@@ -624,9 +625,9 @@ themeBgColor: this.$store.state.themeBgColor,
     },
     watch: {
         options: {
-            handler() {
-                this.getTickets()
-            },
+            handler: _.debounce(function(v) {
+                    this.getTickets()
+                },100),
             deep: true,
         },
     },
