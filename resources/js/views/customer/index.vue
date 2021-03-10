@@ -106,14 +106,7 @@
                                 </v-row>
                             </template>
                             <template v-slot:item.logo="{ item }">
-                                <v-avatar
-                                    size="2em"
-                                    color="grey darken-1"
-                                    tile
-                                    v-if="item.logo_url"
-                                >
-                                    <v-img :src="item.logo_url" />
-                                </v-avatar>
+                                <v-img :src="item.logo_url" style="max-width: 10em; max-height: 2em" />
                             </template>
                             <template v-slot:footer>
                                 <v-pagination :color="themeBgColor"
