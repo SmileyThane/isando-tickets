@@ -146,6 +146,7 @@ export default {
                 {text: 'ID', value: 'id'},
                 {text: `username`, value: 'username'},
                 {text: `phone`, value: 'phoneNumber', sortable: false},
+                {text: `IP address`, value: 'serverIp'},
                 {text: `platform`, value: 'platform', sortable: false},
                 {text: `licensed`, value: 'licensed', sortable: false},
                 {text: `active`, value: 'active', sortable: false},
