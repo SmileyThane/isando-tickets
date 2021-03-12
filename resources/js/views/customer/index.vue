@@ -106,14 +106,21 @@
                                 </v-row>
                             </template>
                             <template v-slot:item.logo="{ item }">
-                                <v-avatar
-                                    size="2em"
-                                    color="grey darken-1"
-                                    tile
-                                    v-if="item.logo_url"
-                                >
-                                    <v-img :src="item.logo_url" />
-                                </v-avatar>
+                                <v-img :src="item.logo_url" style="max-width: 10em; max-height: 2em" />
+                            </template>
+                            <template v-slot:item.email="{item}">
+                                <span v-if="item.contact_email && item.contact_email.email">
+                                    <v-icon v-if="item.contact_email.type" x-small dense v-text="item.contact_email.type.icon" :title="localized(item.contact_email.type)"></v-icon>
+                                    {{item.contact_email.email}}
+                                </span>
+                                <span v-else>&nbsp;</span>
+                            </template>
+                            <template v-slot:item.phone="{item}">
+                                <span v-if="item.contact_phone && item.contact_phone.phone">
+                                    <v-icon v-if="item.contact_phone.type" x-small dense v-text="item.contact_phone.type.icon" :title="localized(item.contact_phone.type)"></v-icon>
+                                    {{item.contact_phone.phone}}
+                                </span>
+                                <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:footer>
                                 <v-pagination :color="themeBgColor"
@@ -205,7 +212,7 @@
                 snackbar: false,
                 actionColor: '',
                 themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+                themeBgColor: this.$store.state.themeBgColor,
                 snackbarMessage: '',
                 totalCustomers: 0,
                 lastPage: 0,
@@ -232,7 +239,8 @@ themeBgColor: this.$store.state.themeBgColor,
                     },
                     {text: `${this.$store.state.lang.lang_map.company.logo}`, value: 'logo', align: 'center', sortable: false},
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
-                    {text: `${this.$store.state.lang.lang_map.company.short_name}`, value: 'short_name'},
+                    {text: this.$store.state.lang.lang_map.main.email, value: 'email', sortable: false},
+                    {text: this.$store.state.lang.lang_map.main.phone, value: 'phone', sortable: false},
                     {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
                     {text: `${this.$store.state.lang.lang_map.customer.active}`, value: 'is_active'},
                 ],
@@ -258,6 +266,10 @@ themeBgColor: this.$store.state.themeBgColor,
             });
         },
         methods: {
+            localized(item, field = 'name') {
+                let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
+                return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
+            },
             getClients() {
                 this.loading = this.themeBgColor
                 // console.log(this.options);
