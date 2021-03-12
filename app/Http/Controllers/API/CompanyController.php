@@ -4,8 +4,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Repository\CompanyRepository;
-use App\Repository\CompanyUserRepository;
+use App\Repositories\CompanyRepository;
+use App\Repositories\CompanyUserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Repository\EmailRepository;
+use App\Repositories\EmailRepository;
 use Illuminate\Http\Request;
 
 class EmailController extends Controller

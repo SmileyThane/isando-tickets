@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Repository\CustomLicenseRepository;
+use App\Repositories\CustomLicenseRepository;
 use Illuminate\Http\Request;
 
 class CustomLicenseController extends Controller

@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
-use App\Repository\RoleRepository;
-use App\Repository\UserRepository;
+use App\Repositories\RoleRepository;
+use App\Repositories\UserRepository;
 use App\Role;
 use App\User;
 use Illuminate\Http\JsonResponse;

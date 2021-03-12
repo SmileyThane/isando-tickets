@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 
 use App\Company;
 use App\Http\Controllers\Controller;
-use App\Repository\TeamRepository;
-use App\Repository\UserRepository;
+use App\Repositories\TeamRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

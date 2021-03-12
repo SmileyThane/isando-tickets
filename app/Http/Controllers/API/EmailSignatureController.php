@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Repository\EmailSignatureRepository;
+use App\Repositories\EmailSignatureRepository;
 use Illuminate\Http\Request;
 
 class EmailSignatureController extends Controller

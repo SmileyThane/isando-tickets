@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Notifications\NewTicket;
-use App\Repository\TicketRepository;
+use App\Repositories\TicketRepository;
 use App\Role;
 use App\Team;
 use App\Ticket;

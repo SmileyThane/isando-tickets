@@ -5,9 +5,9 @@ namespace App\Http\Controllers\API;
 
 use App\ClientCompanyUser;
 use App\Http\Controllers\Controller;
-use App\Repository\ClientRepository;
-use App\Repository\CompanyUserRepository;
-use App\Repository\UserRepository;
+use App\Repositories\ClientRepository;
+use App\Repositories\CompanyUserRepository;
+use App\Repositories\UserRepository;
 use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
