@@ -5,7 +5,9 @@ namespace App\Repository;
 
 
 use App\Tracking;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class TrackingReportRepository
@@ -32,9 +34,6 @@ class TrackingReportRepository
     }
 
     public function generate(Request $request) {
-        $periodStart    = $request->period['start'];
-        $periodEnd      = $request->period['end'];
-        $round          = $request->round;
         $sorting        = $request->sort['value'];
         $grouping       = collect($request->group)->map(function ($item) { return $item['value']; });
         $filtering      = collect($request->filters)
@@ -88,37 +87,37 @@ class TrackingReportRepository
                 //break;
         }
 
-        if ($grouping->isNotEmpty()) {
-            $fields = collect(['id', 'description', 'user_id', 'project_id', 'date_from', 'date_to', 'status', 'billable', 'billed', 'created_at', 'updated_at']);
-            foreach ($grouping as $group) {
-                switch ($group) {
-                    case 'day':
-                        // TODO
-                        break;
-                    case 'week':
-                        // TODO
-                        break;
-                    case 'month':
-                        // TODO
-                        break;
-                    case 'description':
-                        $tracking->groupBy('tracking.description');
-                        $fields = $fields->filter(function ($item) use ($group) {
-                            return $item !== $group;
-                        });
-                        break;
-                    case 'billability':
-                        $tracking->groupBy('tracking.billable');
-                        $fields = $fields->filter(function ($item) use ($group) {
-                            return $item !== 'billable';
-                        });
-                        break;
-                }
-            }
-            foreach ($fields as $field) {
-                $tracking->groupBy("tracking.{$field}");
-            }
-        }
+//        if ($grouping->isNotEmpty()) {
+//            $fields = collect(['id', 'description', 'user_id', 'project_id', 'date_from', 'date_to', 'status', 'billable', 'billed', 'created_at', 'updated_at']);
+//            foreach ($grouping as $group) {
+//                switch ($group) {
+//                    case 'day':
+//                        // TODO
+//                        break;
+//                    case 'week':
+//                        // TODO
+//                        break;
+//                    case 'month':
+//                        // TODO
+//                        break;
+//                    case 'description':
+//                        $tracking->groupBy('tracking.description');
+//                        $fields = $fields->filter(function ($item) use ($group) {
+//                            return $item !== $group;
+//                        });
+//                        break;
+//                    case 'billability':
+//                        $tracking->groupBy('tracking.billable');
+//                        $fields = $fields->filter(function ($item) use ($group) {
+//                            return $item !== 'billable';
+//                        });
+//                        break;
+//                }
+//            }
+//            foreach ($fields as $field) {
+//                $tracking->groupBy("tracking.{$field}");
+//            }
+//        }
 
         if ($filtering->isNotEmpty()) {
             foreach ($filtering as $filter) {
@@ -152,7 +151,68 @@ class TrackingReportRepository
             }
         }
 
-        return $tracking->get();
+        $tracks = $tracking->get();
+//            ->map(function ($item) {
+//                $obj = new \stdClass();
+//                $obj->id = $item->id;
+//                $obj->description = $item->description;
+//                $obj->date_from = $item->date_from;
+//                $obj->date_to = $item->date_to;
+//                $obj->billable = $item->billable;
+//                return $obj;
+//            });
+
+        if ($grouping->isEmpty()) return $tracks;
+
+        $group = $grouping->shift();
+        $items = $this->makeList($group, $tracks);
+
+        return array_values($this->makeStructure($grouping->toArray(), 0, $items));
+
+    }
+
+    protected function getData($tracking, $field = 'description') {
+        switch ($field) {
+            case 'month':
+                return Carbon::parse($tracking->date_from)->format('F Y');
+            case 'week':
+                $startWeek = Carbon::parse($tracking->date_from)->startOfWeek(Carbon::MONDAY);
+                $endWeek = Carbon::parse($tracking->date_from)->endOfWeek(Carbon::SUNDAY);
+                return 'Week of '
+                    . $startWeek->format('j M')
+                    . ' ('
+                        . $startWeek->format('D j M Y')
+                        . ' - '
+                        . $endWeek->format('D j M Y')
+                    . ')';
+            case 'day':
+                return Carbon::parse($tracking->date_from)->format('l, j M');
+            case 'description':
+                return $tracking->description ?? 'None';
+            case 'billability':
+                return $tracking->billable ? 'Billable' : 'Non-billable';
+        }
+        return null;
+    }
+
+    protected function makeList($group, $trackings) {
+        $items = [];
+        foreach ($trackings as $tracking) {
+            $data = $this->getData($tracking, $group);
+            $items[$data]['name'] = $data;
+            $items[$data]['children'][] = $tracking;
+        }
+        return $items;
+    }
+
+    protected function makeStructure($grouping, $groupIndex, $tracks) {
+        if (!isset($grouping[$groupIndex])) return $tracks;
+        foreach ($tracks as $key => $track) {
+            $list = $this->makeList($grouping[$groupIndex], $track['children']);
+            $tracks[$key]['name'] = $key;
+            $tracks[$key]['children'] = array_values($this->makeStructure($grouping, $groupIndex+1, $list));
+        }
+        return array_values($tracks);
     }
 
 }

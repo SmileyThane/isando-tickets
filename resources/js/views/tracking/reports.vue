@@ -289,13 +289,13 @@
                 <div class="d-flex flex-row">
                     <div class="d-inline-flex px-3 py-3">
                         <DoughnutChart
-                            :data="chart.data"
+                            :data="doughnutData"
                             :options="chart.options"
                         ></DoughnutChart>
                     </div>
                     <div class="d-inline-flex px-3 py-3">
                         <BarChart
-                            :data="chart.data"
+                            :data="chart.bar"
                             :options="chart.options"
                         ></BarChart>
                     </div>
@@ -304,40 +304,46 @@
         </div>
         <!-- DATA -->
         <v-card class="d-flex flex-column">
-            <v-data-table
-                :headers="reportData.headers"
+
+            <v-treeview
                 :items="reportData.entities"
-                item-key="id"
-                class="elevation-1"
+                item-children="children"
+                item-key="name"
+                dense
+                open-on-click
             >
-                <template v-slot:item.project.client.name="{ item }">
-                    <span v-if="item.project && item.project.client">{{ item.project.client.name }}</span>
+                <template v-slot:label="{ item, selected, active, open }">
+                    <div v-if="item.children">
+                        {{ item.name }}
+                    </div>
+                    <div v-else class="d-flex flex-row">
+                        <div class="d-inline-flex flex-grow-1">
+                            <div class="d-flex flex-column">
+                                <div class="d-inline-flex">
+                                    {{ moment(item.date_from).format('DD MMM YYYY') }} /
+                                    <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>None</span> /
+                                    <span v-if="item.project">{{ item.project.name }}</span><span v-else>None</span> /
+                                    <span v-if="item.service">{{ item.service.name }}</span><span v-else>None</span>
+                                </div>
+                                <div class="d-inline-flex" style="opacity: 0.6">
+                                    <span v-if="item.description">{{ item.description }}</span><span v-else>None</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-inline-flex flex-grow-0">
+                            <div class="d-flex flex-column">
+                                <div class="d-inline-block text-right">
+                                    {{ helperConvertSecondsToTimeFormat(helperCalculatePassedTime(item.date_from, item.date_to)) }}
+                                </div>
+                                <div class="d-inline-block text-right">
+                                    {{ moment(item.date_from).format('HH:mm') }} - {{ moment(item.date_to).format('HH:mm') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </template>
-                <template v-slot:item.project.name="{ item }">
-                    <span v-if="item.project">{{ item.project.name }}</span>
-                </template>
-                <template v-slot:item.billable="{ item }">
-                    <v-btn
-                        fab
-                        :icon="!item.billable"
-                        x-small
-                        :color="themeBgColor"
-                    >
-                        <v-icon center v-bind:class="{ 'white--text': item.billable }">
-                            mdi-currency-usd
-                        </v-icon>
-                    </v-btn>
-                </template>
-                <template v-slot:item.date_from="{ item }">
-                    <span v-if="item.date_from">{{ moment(item.date_from).format('YYYY-MM-DD HH:mm') }}</span>
-                </template>
-                <template v-slot:item.date_to="{ item }">
-                    <span v-if="item.date_to">{{ moment(item.date_to).format('YYYY-MM-DD HH:mm') }}</span>
-                </template>
-                <template v-slot:item.passed="{ item }">
-                    {{ helperConvertSecondsToTimeFormat(helperCalculatePassedTime(item.date_from, item.date_to)) }}
-                </template>
-            </v-data-table>
+            </v-treeview>
+
             <v-card-actions class="white justify-center">
                 <v-dialog
                     v-model="dialogExportPDF"
@@ -692,7 +698,7 @@ export default {
                 }
             ],
             chart: {
-                data: {
+                bar: {
                     labels: [
                         "January",
                         "February",
@@ -709,13 +715,8 @@ export default {
                     ],
                     datasets: [
                         {
-                            label: "Data One",
-                            backgroundColor: [Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor()],
-                            data: [2, 5, 9, 5, 10, 3, 5, 0, 1, 8, 2, 9]
-                        },
-                        {
                             label: "Data Two",
-                            backgroundColor: [Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor()],
+                            backgroundColor: Helper.genRandomColor(),
                             data: [9, 5, 10, 3, 5, 0, 1, 8, 2, 9, 2, 5]
                         }
                     ]
@@ -862,7 +863,7 @@ export default {
             this.activePeriod = null;
             this.genPreview();
         },
-        onClickOutsideHandler () {
+        onClickOutsideHandler() {
             this.activePeriod = null
         },
         dblClickSelectGroupItem(groupItem) {
@@ -930,8 +931,33 @@ export default {
                 total += this.helperCalculatePassedTime(i.date_from, i.date_to);
             });
             return total;
+        },
+        doughnutData: function() {
+            let data = {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Data One",
+                        backgroundColor: [Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor()],
+                        data: [2]
+                    }
+                ]
+            };
+            if (this.reportData.entities.length) {
+                this.reportData.entities.map(i => {
+                    data.labels.push(i.children);
+                });
+            } else {
+                data.labels.push('All data');
+            }
+
+            return data;
         }
     },
-    watch: {}
+    watch: {
+        'builder.group': function() {
+            this.genPreview();
+        }
+    }
 }
 </script>
