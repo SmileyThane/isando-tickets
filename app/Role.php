@@ -6,17 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    protected $table = 'roles';
+    public const SUPERADMIN = 1;
+    public const LICENSE_OWNER = 2;
+    public const ADMIN = 3;
+    public const MANAGER = 4;
+    public const USER = 5;
+    public const COMPANY_CLIENT = 6;
+    public const IS_CLIENTABLE = 101;
 
-    const SUPERADMIN = 1;
-    const LICENSE_OWNER = 2;
-    const ADMIN = 3;
-    const MANAGER = 4;
-    const USER = 5;
-    const COMPANY_CLIENT = 6;
-
-    const HIGH_PRIVIGIES = [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER];
+    //staff
+    public const HIGH_PRIVIGIES = [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER];
 
     // this is a virtual role
-    const IS_CLIENTABLE = 101;
+    protected $table = 'roles';
 }
