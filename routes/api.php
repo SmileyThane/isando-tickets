@@ -107,7 +107,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::delete('email/{id}', 'API\EmailController@delete');
 
         //client management
-        Route::get('client', 'API\ClientController@get');
+        Route::get('client', 'API\ClientController@clients');
         Route::get('supplier', 'API\ClientController@suppliers');
         Route::post('client', 'API\ClientController@create');
         Route::get('client/{id}', 'API\ClientController@find');
