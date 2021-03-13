@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Notifications\NewTicket;
+use App\Permission;
 use App\Repositories\TicketRepository;
 use App\Role;
 use App\Team;
@@ -26,8 +27,11 @@ class TicketController extends Controller
 
     public function get(Request $request)
     {
-        $tickets = $this->ticketRepo->all($request);
-        return self::showResponse(true, $tickets);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {
+            return self::showResponse(true, $this->ticketRepo->all($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function priorities()
@@ -44,6 +48,7 @@ class TicketController extends Controller
     public function types()
     {
         $types = TicketType::where('name', '!=', null);
+
         if ($companyUser = Auth::user()->employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $types->where('id', '!=', TicketType::INTERNAL);
         }
@@ -52,15 +57,20 @@ class TicketController extends Controller
 
     public function find($id)
     {
-        $ticket = $this->ticketRepo->find($id);
-        return self::showResponse(true, $ticket);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {
+            return self::showResponse(true, $this->ticketRepo->find($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function create(Request $request)
     {
         $success = false;
         $result = $this->ticketRepo->validate($request);
-        if ($result === true) {
+        $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS);
+
+        if ($result && $hasAccess) {
             $result = $this->ticketRepo->create($request);
             $employees = $this->ticketRepo->filterEmployeesByRoles($result->to->employees, [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER, Role::USER, Role::COMPANY_CLIENT]);
             $this->ticketRepo->emailEmployees($employees, $result, NewTicket::class);
@@ -71,94 +81,133 @@ class TicketController extends Controller
 
     public function update(Request $request, $id)
     {
-        $success = false;
         $result = $this->ticketRepo->validate($request);
-        if ($result === true) {
-            $result = $this->ticketRepo->update($request, $id);
-            $success = true;
+        $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS);
+
+        if ($result && $hasAccess) {
+            return self::showResponse($this->ticketRepo->update($request, $id));
         }
-        return self::showResponse($success, $result);
+        return self::showResponse(false);
     }
 
     public function delete($id)
     {
-        $result = $this->ticketRepo->delete($id);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_DELETE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->delete($id));
+        }
+        return self::showResponse(false);
     }
 
     public function markAsSpam(Request $request)
     {
-        $result = $this->ticketRepo->markAsSpam($request->id);
-        return self::showResponse(true, $result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->ticketRepo->markAsSpam($request->id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function attachTeam(Request $request, $id)
     {
-        $result = $this->ticketRepo->attachTeam($request, $id);
-        $employees = Team::find($request->team_id)->employees;
-        $ticket = Ticket::find($id);
-        $this->ticketRepo->emailEmployees($employees, $ticket, NewTicket::class);
+        $result = false;
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            $result = $this->ticketRepo->attachTeam($request, $id);
+            $employees = Team::find($request->team_id)->employees;
+            $ticket = Ticket::find($id);
+            $this->ticketRepo->emailEmployees($employees, $ticket, NewTicket::class);
+        }
+
         return self::showResponse($result);
     }
 
     public function attachEmployee(Request $request, $id)
     {
-        $result = $this->ticketRepo->attachEmployee($request, $id);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->attachEmployee($request, $id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function attachContact(Request $request, $id)
     {
-        $result = $this->ticketRepo->attachContact($request, $id);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->attachContact($request, $id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function addAnswer(Request $request, $id)
     {
-        $result = $this->ticketRepo->addAnswer($request, $id);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->addAnswer($request, $id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function addNotice(Request $request, $id)
     {
-        $result = $this->ticketRepo->addNotice($request, $id);
-        return self::showResponse($result);
+        if ( Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->addNotice($request, $id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function addMerge(Request $request)
     {
-        $result = $this->ticketRepo->addMerge($request);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->addMerge($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function removeMerge($id)
     {
-        $result = $this->ticketRepo->removeMerge($id);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->removeMerge($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function addLink(Request $request)
     {
-        $result = $this->ticketRepo->addLink($request);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->ticketRepo->addLink($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function addFilter(Request $request)
     {
-        $result = $this->ticketRepo->addFilter($request);
-        return self::showResponse(true, $result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {
+            return self::showResponse(true, $this->ticketRepo->addFilter($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function getFilters()
     {
-        $result = $this->ticketRepo->getFilters();
-        return self::showResponse(true, $result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {
+            return self::showResponse(true, $this->ticketRepo->getFilters());
+        }
+
+        return self::showResponse(false);
     }
 
     public function getFilterParameters(Request $request)
     {
-        $result = $this->ticketRepo->getFilterParameters($request);
-        return self::showResponse(true, $result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {
+            return self::showResponse(true, $this->ticketRepo->getFilterParameters($request));
+        }
+
+        return self::showResponse(false);
     }
 
 }
