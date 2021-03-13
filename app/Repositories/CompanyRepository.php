@@ -39,7 +39,7 @@ class CompanyRepository
     public function find($request, $id)
     {
         $employee = Auth::user()->employee;
-        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
+        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $company = $clientCompanyUser->clients()->with('employees.employee.userData');
         } else {

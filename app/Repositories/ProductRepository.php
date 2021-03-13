@@ -33,7 +33,7 @@ class ProductRepository
         $employee = Auth::user()->employee()->with('assignedToClients')->first();
         $companyId = $employee->company_id;
         $productIds = null;
-        if (!$employee->hasRole(Role::COMPANY_CLIENT)) {
+        if (!$employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $productIds = CompanyProduct::where('company_id', $companyId);
         } else {
             $clientIds = $employee->assignedToClients->pluck('client_id')->toArray();

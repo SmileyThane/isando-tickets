@@ -16,6 +16,7 @@ use App\Settings;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -35,6 +36,7 @@ class CompanyUserRepository
 
     public function all(Request $request)
     {
+//                        DB::enableQueryLog();
         if ($request->sort_by && strpos($request->sort_by, '.')) {
             $request->sort_by = substr($request->sort_by, strrpos($request->sort_by, '.') + 1);
         }
@@ -43,7 +45,7 @@ class CompanyUserRepository
         $request->sort_by = null;
 
         $employee = Auth::user()->employee;
-        $clientIds = $employee->hasRole(Role::COMPANY_CLIENT) ? null :
+        $clientIds = $employee->hasRoleId(Role::COMPANY_CLIENT) ? null :
             Client::where([
                 'supplier_type' => Company::class,
                 'supplier_id' => $employee->company_id
@@ -107,6 +109,7 @@ class CompanyUserRepository
             $companyUsers = $companyUsers->sortByDesc($orderFunc);
         }
 
+//                dd(DB::getQueryLog());
         return $companyUsers->paginate($request->per_page ?? $companyUsers->count());
     }
 
@@ -119,7 +122,7 @@ class CompanyUserRepository
     {
         $result = false;
         $companyUser = CompanyUser::find($id);
-        if ($companyUser && !$companyUser->hasRole(Role::LICENSE_OWNER)) {
+        if ($companyUser && !$companyUser->hasRoleId(Role::LICENSE_OWNER)) {
             User::where('id', $companyUser->user_id)->delete();
             ClientCompanyUser::where('company_user_id', $companyUser->id)->delete();
             $companyUser->delete();

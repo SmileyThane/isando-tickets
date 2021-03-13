@@ -41,6 +41,15 @@ class CompanyUser extends Model
         return ModelHasRole::where(['model_id' => $this->attributes['id'], 'model_type' => self::class])->get()->pluck('role_id')->toArray();
     }
 
+    public function hasRoleId($id)
+    {
+        $roleIds = $this->roleIds();
+        if ($roleIds) {
+            return in_array($id, $roleIds, true);
+        }
+        return false;
+    }
+
     public function assignedToTeams(): HasMany
     {
         return $this->hasMany(TeamCompanyUser::class, 'company_user_id', 'id');

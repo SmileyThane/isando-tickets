@@ -162,8 +162,7 @@ class TicketRepository
 
     private function ticketRoleFilter($companyUser, $tickets)
     {
-        $roles = $companyUser->roleIds();
-        if (!in_array(Role::COMPANY_CLIENT, $roles, true)) {
+        if (!$companyUser->hasRoleId(Role::COMPANY_CLIENT)) {
             $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
             $tickets->orWhere([['from_entity_type', Company::class], ['from_entity_id', $companyUser->company_id]]);
         } else {
@@ -181,7 +180,7 @@ class TicketRepository
                     ->whereIn('to_entity_id', $clientIds);
             });
         }
-        if (in_array([Role::LICENSE_OWNER, Role::ADMIN], $roles, true)) {
+        if ($companyUser->hasRoleId([Role::LICENSE_OWNER, Role::ADMIN])) {
             $products = ProductCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($products) {
                 $productsIds = $products->pluck('id')->toArray();
@@ -191,7 +190,7 @@ class TicketRepository
             }
 
         }
-        if (in_array(Role::MANAGER, $roles, true)) {
+        if ($companyUser->hasRoleId(Role::MANAGER)) {
             $teams = TeamCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($teams) {
                 $teamsIds = $teams->pluck('id')->toArray();
@@ -200,7 +199,7 @@ class TicketRepository
                 }
             }
         }
-        if (in_array(Role::COMPANY_CLIENT, $roles, true)) {
+        if ($companyUser->hasRoleId(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', Auth::user()->employee->id)->first();
             if ($clientCompanyUser) {
                 $tickets->orWhere(function ($query) use ($clientCompanyUser) {
@@ -405,7 +404,7 @@ class TicketRepository
             $this->fileRepo->store($file, $ticketAnswer->id, TicketAnswer::class);
         }
         $employee = $employeeId !== null ? CompanyUser::find($employeeId) : Auth::user()->employee;
-        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
+        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $request->status_id = 3;
         } else {
             $request->status_id = 4;
@@ -510,13 +509,9 @@ class TicketRepository
 
     public function filterEmployeesByRoles($employees, $roles)
     {
-        return $employees->filter(function ($item) use ($roles) {
-            if ($item !== null && $item->roles !== null) {
-                foreach ($item->roles as $role) {
-                    if (in_array($role->id, $roles, true)) {
-                        return $item;
-                    }
-                }
+        return $employees->filter(static function ($item) use ($roles) {
+            if ($item && $item->hasRoleId($roles)) {
+                return $item;
             }
             return null;
         });

@@ -167,7 +167,7 @@ class EmailReceiverRepository
         if ($email) {
             $userFrom = User::where(['is_active' => true, 'id' => $email->entity_id])->first();
         }
-        if ($userFrom && $userFrom->employee->hasRole(Role::COMPANY_CLIENT)) {
+        if ($userFrom && $userFrom->employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $userFrom->employee->id)->first();
             if ($clientCompanyUser) {
                 $fromEntityId = $clientCompanyUser->client_id;

@@ -59,7 +59,7 @@ class ClientRepository
         $companyId = $employee->company_id;
         $company = Company::find($companyId);
         $suppliers[] = ['name' => $company->name, 'item' => [Company::class => $companyId]];
-        if (!$employee->hasRole(Role::COMPANY_CLIENT)) {
+        if (!$employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $clients = $company->clients;
         } else {
             $clients = ClientCompanyUser::where('company_user_id', $employee->id)->first()->clients()->paginate(1000);
@@ -158,7 +158,7 @@ class ClientRepository
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
         $clientIds = [];
-        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
+        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
         } else {
@@ -289,7 +289,7 @@ class ClientRepository
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
-        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
+        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
             $company = $clientCompanyUser->clients()->with('employees.employee.userData');
@@ -382,7 +382,7 @@ class ClientRepository
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
-        if ($employee->hasRole(Role::COMPANY_CLIENT)) {
+        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
         } else {
