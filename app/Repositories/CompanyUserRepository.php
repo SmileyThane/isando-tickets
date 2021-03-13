@@ -174,9 +174,9 @@ class CompanyUserRepository
                     }
                 }
             }
-            return Controller::showResponse(true, $companyUser);
+            return $companyUser;
         }
-        return Controller::showResponse(false, $isValid);
+        return $isValid;
     }
 
     public function validate($request)
