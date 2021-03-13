@@ -43,4 +43,12 @@ class Permission extends Model
     public const IXARMA_READ_ACCESS = 25;
     public const IXARMA_WRITE_ACCESS = 26;
     public const IXARMA_DELETE_ACCESS = 27;
+
+    public const SETTINGS_READ_ACCESS = 28;
+    public const SETTINGS_WRITE_ACCESS = 29;
+    public const SETTINGS_DELETE_ACCESS = 30;
+
+    public const TEAM_READ_ACCESS = 31;
+    public const TEAM_WRITE_ACCESS = 32;
+    public const TEAM_DELETE_ACCESS = 33;
 }
