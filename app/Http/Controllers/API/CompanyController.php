@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\CompanyUser;
 use App\Http\Controllers\Controller;
 use App\Permission;
 use App\Repositories\CompanyRepository;
@@ -65,10 +66,11 @@ class CompanyController extends Controller
     public function invite(Request $request)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::COMPANY_WRITE_ACCESS)) {
-            return $this->companyUserRepo->invite($request);
+            $result = $this->companyUserRepo->invite($request);
+            return self::showResponse($result instanceof CompanyUser, $result);
         }
 
-        return null;
+        return self::showResponse(false);
     }
 
     public function removeEmployee($id): JsonResponse
