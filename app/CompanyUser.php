@@ -50,6 +50,16 @@ class CompanyUser extends Model
         return false;
     }
 
+    public function hasPermissionId($id)
+    {
+        $id = is_int($id) ? [$id] : $id;
+        $roleIds = $this->roleIds();
+        if ($roleIds) {
+            return RoleHasPermission::whereIn('role_id', $roleIds)->whereIn('permission_id', $id)->exists();
+        }
+        return false;
+    }
+
     public function assignedToTeams(): HasMany
     {
         return $this->hasMany(TeamCompanyUser::class, 'company_user_id', 'id');
