@@ -56,7 +56,7 @@ class CompanyRepository
         }
         return $id ? $company->with(['employees' => function ($query) {
             $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
-            if (Auth::user()->employee->hasAnyRole(Role::COMPANY_CLIENT, Role::USER)) {
+            if (Auth::user()->employee->hasRoleId([Role::COMPANY_CLIENT, Role::USER])) {
                 $result->where('user_id', Auth::id());
             }
             return $result->get();
