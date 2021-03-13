@@ -58,6 +58,12 @@ class UserController extends Controller
         return self::showResponse(true, array_merge($roles, $companyUser->roles->pluck('id')->toArray()));
     }
 
+    public function authorizedPermissionIds()
+    {
+        $companyUser = Auth::user()->employee;
+        return self::showResponse(true, $companyUser->getPermissionIds);
+    }
+
     public function updateRoles(Request $request)
     {
         $request->model_type = CompanyUser::class;
