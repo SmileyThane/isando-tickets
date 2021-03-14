@@ -4,8 +4,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Permission;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -18,65 +20,88 @@ class ProductController extends Controller
 
     public function get(Request $request)
     {
-        $clients = $this->productRepo->all($request);
-        return self::showResponse(true, $clients);
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_READ_ACCESS)) {
+            return self::showResponse(true, $this->productRepo->all($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function find($id)
     {
-        $client = $this->productRepo->find($id);
-        return self::showResponse(true, $client);
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_READ_ACCESS)) {
+            return self::showResponse(true, $this->productRepo->find($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function create(Request $request)
     {
-        $success = false;
-        $result = $this->productRepo->validate($request);
-        if ($result === true) {
-            $result = $this->productRepo->create($request);
-            $success = true;
+        $isValid = $this->productRepo->validate($request);
+        $hasAccess = Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS);
+
+        if ($isValid && $hasAccess) {
+            return self::showResponse(true, $this->productRepo->create($request));
         }
-        return self::showResponse($success, $result);
+
+        return self::showResponse(false);
     }
 
     public function update(Request $request, $id)
     {
-        $success = false;
-        $result = $this->productRepo->validate($request);
-        if ($result === true) {
-            $result = $this->productRepo->update($request, $id);
-            $success = true;
+        $isValid = $this->productRepo->validate($request);
+        $hasAccess = Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS);
+
+        if ($isValid && $hasAccess) {
+            return self::showResponse(true, $this->productRepo->update($request, $id));
         }
-        return self::showResponse($success, $result);
+
+        return self::showResponse(false);
     }
 
     public function delete($id)
     {
-        $result = $this->productRepo->delete($id);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_DELETE_ACCESS)) {
+            return self::showResponse($this->productRepo->delete($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function attachEmployee(Request $request)
     {
-        $result = $this->productRepo->attachEmployee($request);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
+            return self::showResponse($this->productRepo->attachEmployee($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function detachEmployee($id)
     {
-        $result = $this->productRepo->detachEmployee($id);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
+            return self::showResponse($this->productRepo->detachEmployee($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function attachClient(Request $request)
     {
-        $result = $this->productRepo->attachClient($request);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->productRepo->attachClient($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function detachClient($id)
     {
-        $result = $this->productRepo->detachClient($id);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->productRepo->detachClient($id));
+        }
+
+        return self::showResponse(false);
     }
 }
