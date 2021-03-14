@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\Company;
 use App\Http\Controllers\Controller;
+use App\Permission;
 use App\Repositories\TeamRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -23,57 +24,75 @@ class TeamController extends Controller
 
     public function get(Request $request)
     {
-        $teams = $this->teamRepo->all($request);
-        return self::showResponse(true, $teams);
+        if (Auth::user()->employee->hasPermissionId(Permission::TEAM_READ_ACCESS)) {
+            return self::showResponse(true, $this->teamRepo->all($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function find($id)
     {
-        $team = $this->teamRepo->find($id);
-        return self::showResponse(true, $team);
+        if (Auth::user()->employee->hasPermissionId(Permission::TEAM_READ_ACCESS)) {
+            return self::showResponse(true, $this->teamRepo->find($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function create(Request $request)
     {
-        $success = false;
         if (!array_key_exists('owner_id', $request->all())) {
             $request['owner_id'] = Auth::user()->employee->company_id;
             $request['owner_type'] = Company::class;
         }
-        $result = $this->teamRepo->validate($request);
-        if ($result === true) {
-            $result = $this->teamRepo->create($request);
-            $success = true;
+
+        $isValid = $this->teamRepo->validate($request);
+        $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TEAM_WRITE_ACCESS);
+
+        if ($isValid && $hasAccess) {
+            return self::showResponse(true, $this->teamRepo->create($request));
         }
-        return self::showResponse($success, $result);
+
+        return self::showResponse(false);
     }
 
     public function update(Request $request, $id)
     {
-        $success = false;
-        $result = $this->teamRepo->validate($request, false);
-        if ($result === true) {
-            $result = $this->teamRepo->update($request, $id);
-            $success = true;
+        $isValid = $this->teamRepo->validate($request, false);
+        $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TEAM_WRITE_ACCESS);
+
+        if ($isValid && $hasAccess) {
+            return self::showResponse(true, $this->teamRepo->update($request, $id));
         }
-        return self::showResponse($success, $result);
+
+        return self::showResponse(false);
     }
 
-    public function delete(Request $request, $id)
+    public function delete($id)
     {
-        $result = $this->teamRepo->delete($id);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TEAM_DELETE_ACCESS)) {
+            return self::showResponse($this->teamRepo->delete($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function attach(Request $request)
     {
-        $result = $this->teamRepo->attach($request);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TEAM_WRITE_ACCESS)) {
+            return self::showResponse($this->teamRepo->attach($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function detach(Request $request, $id)
     {
-        $result = $this->teamRepo->detach($request, $id);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::TEAM_WRITE_ACCESS)) {
+            return self::showResponse($this->teamRepo->detach($request, $id));
+        }
+
+        return self::showResponse(false);
     }
 }
