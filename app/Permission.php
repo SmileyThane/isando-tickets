@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Permission extends Model
 {
-    //
+    //standard permissions
 
     public const TICKET_READ_ACCESS = 1;
     public const TICKET_WRITE_ACCESS = 2;
@@ -51,4 +51,6 @@ class Permission extends Model
     public const TEAM_READ_ACCESS = 31;
     public const TEAM_WRITE_ACCESS = 32;
     public const TEAM_DELETE_ACCESS = 33;
+
+    //custom permissions
 }

@@ -12,6 +12,7 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
+        //original permissions
         DB::table('permissions')->updateOrInsert(
             ['id' => 1],
             [
@@ -243,5 +244,7 @@ class PermissionSeeder extends Seeder
                 'guard_name' => 'web'
             ]
         );
+
+        //custom permissions
     }
 }
