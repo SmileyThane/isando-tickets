@@ -52,6 +52,7 @@ class TicketController extends Controller
         if ($companyUser = Auth::user()->employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $types->where('id', '!=', TicketType::INTERNAL);
         }
+
         return self::showResponse(true, $types->get());
     }
 
@@ -76,6 +77,7 @@ class TicketController extends Controller
             $this->ticketRepo->emailEmployees($employees, $result, NewTicket::class);
             $success = true;
         }
+
         return self::showResponse($success, $result);
     }
 
@@ -87,6 +89,7 @@ class TicketController extends Controller
         if ($result && $hasAccess) {
             return self::showResponse($this->ticketRepo->update($request, $id));
         }
+
         return self::showResponse(false);
     }
 
@@ -95,6 +98,7 @@ class TicketController extends Controller
         if (Auth::user()->employee->hasPermissionId(Permission::TICKET_DELETE_ACCESS)) {
             return self::showResponse($this->ticketRepo->delete($id));
         }
+
         return self::showResponse(false);
     }
 
@@ -149,7 +153,7 @@ class TicketController extends Controller
 
     public function addNotice(Request $request, $id)
     {
-        if ( Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
             return self::showResponse($this->ticketRepo->addNotice($request, $id));
         }
 
