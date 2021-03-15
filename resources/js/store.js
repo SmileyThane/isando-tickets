@@ -17,6 +17,7 @@ export default new Vuex.Store({
     },
     state: {
         roles: {},
+        permissions: {},
         lang: {},
         pageName: '',
         themeFgColor: '#FFFFFF',
@@ -24,11 +25,14 @@ export default new Vuex.Store({
         appVersion: ''
     },
     getters: {
-        roles: state => [state.roles, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion]
+        roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion]
     },
     mutations: {
         setRoles(state, roles) {
             state.roles = roles;
+        },
+        setPermissions(state, permissions) {
+            state.permissions = permissions;
         },
         setLang(state, lang) {
             state.lang = lang;
@@ -57,6 +61,16 @@ export default new Vuex.Store({
                     }).catch(error => {
                         reject(error.response && error.response.data.message || 'Error.');
                     });
+            });
+        },
+        getPermissions({commit}) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/user/permissions/id').then(result => {
+                    commit('setPermissions', result.data.data);
+                    resolve();
+                }).catch(error => {
+                    reject(error.response && error.response.data.message || 'Error.');
+                });
             });
         },
         getLanguage({commit}) {
