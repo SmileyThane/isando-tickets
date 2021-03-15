@@ -47,11 +47,6 @@ class UserController extends Controller
         return self::showResponse($success, $result ?? $isValid);
     }
 
-    public function roles()
-    {
-        return self::showResponse(true, Role::all());
-    }
-
     public function authorizedRoleIds()
     {
         $companyUser = Auth::user()->employee;
