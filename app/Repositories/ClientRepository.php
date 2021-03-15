@@ -53,6 +53,29 @@ class ClientRepository
         return $clients->paginate($request->per_page ?? $clients->count());
     }
 
+    public function getClients($request)
+    {
+        $employee = Auth::user()->employee;
+        $companyId = $employee->company_id;
+        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+            $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
+            $clients = Client::where('id', $clientCompanyUser->client_id);
+        } else {
+            $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
+        }
+
+        if ($request->search) {
+            $clients->where(
+                function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('short_name', 'like', $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
+                }
+            );
+        }
+        return $clients;
+    }
+
     public function suppliers()
     {
         $employee = Auth::user()->employee;
@@ -62,11 +85,13 @@ class ClientRepository
         if (!$employee->hasRoleId(Role::COMPANY_CLIENT)) {
             $clients = $company->clients;
         } else {
-            $clients = ClientCompanyUser::where('company_user_id', $employee->id)->first()->clients()->paginate(1000);
+            $clientsArray = ClientCompanyUser::where('company_user_id', $employee->id)->first()->clients();
+            $clients = $clientsArray->paginate($clientsArray->count());
         }
         foreach ($clients as $client) {
             $suppliers[] = ['name' => $client->name, 'item' => [Client::class => $client->id]];
         }
+
         return $suppliers;
     }
 
@@ -376,28 +401,5 @@ class ClientRepository
         $client->logo_url = Storage::url($file);
         $client->save();
         return $client;
-    }
-
-    public function getClients($request)
-    {
-        $employee = Auth::user()->employee;
-        $companyId = $employee->company_id;
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
-            $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
-            $clients = Client::where('id', $clientCompanyUser->client_id);
-        } else {
-            $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
-        }
-
-        if ($request->search) {
-            $clients->where(
-                function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('short_name', 'like', $request->search . '%')
-                        ->orWhere('description', 'like', '%' . $request->search . '%');
-                }
-            );
-        }
-        return $clients;
     }
 }
