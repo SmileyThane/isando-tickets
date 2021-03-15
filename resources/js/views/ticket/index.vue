@@ -43,13 +43,13 @@
                     </v-col>
                     <v-col md="2" sm="12">
                         <v-select
+                            v-model="options.itemsPerPage"
                             :color="themeBgColor"
                             :item-color="themeBgColor"
                             :items="footerProps.itemsPerPageOptions"
                             :label="langMap.main.items_per_page"
                             class="ma-2"
                             hide-details
-                            v-model="options.itemsPerPage"
                             @change="updateItemsCount"
                         ></v-select>
                     </v-col>
@@ -200,7 +200,8 @@
                 {{ item.product ? item.product.full_name : '' }}
             </template>
             <template v-slot:item.assigned_person="{ item }">
-                <div v-if="item.assigned_person && item.assigned_person.user_data" class="justify-center" @click="showItem(item)">
+                <div v-if="item.assigned_person && item.assigned_person.user_data" class="justify-center"
+                     @click="showItem(item)">
                     {{ item.assigned_person.user_data.full_name }}
                 </div>
                 <div v-else> {{ langMap.ticket.no_assigned }}</div>
@@ -268,7 +269,7 @@
         <template>
             <v-dialog v-model="removeTicketDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.main.delete_selected }}?
                     </v-card-title>
                     <v-card-actions>
@@ -285,7 +286,7 @@
         <template>
             <v-dialog v-model="mergeTicketDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.main.link }}
                     </v-card-title>
                     <v-card-text>
@@ -345,7 +346,7 @@ export default {
         return {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             clientId: 6,
             snackbar: false,
             actionColor: '',
@@ -422,7 +423,7 @@ themeBgColor: this.$store.state.themeBgColor,
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
         this.getTicketFilterParameters()
@@ -538,9 +539,15 @@ themeBgColor: this.$store.state.themeBgColor,
                 .then(
                     response => {
                         response = response.data
-                        this.tickets = response.data.data
-                        this.totalTickets = response.data.total
-                        this.lastPage = response.data.last_page
+                        if (response.success === true) {
+                            this.tickets = response.data.data
+                            this.totalTickets = response.data.total
+                            this.lastPage = response.data.last_page
+                        } else {
+                            this.snackbarMessage = this.langMap.main.generic_error;
+                            this.actionColor = 'error'
+                            this.snackbar = true;
+                        }
                         this.loading = false
                     });
         },
@@ -571,7 +578,8 @@ themeBgColor: this.$store.state.themeBgColor,
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
-                    this.snackbar = true;                }
+                    this.snackbar = true;
+                }
             });
         },
         mergeTicketProcess(id) {
@@ -625,9 +633,9 @@ themeBgColor: this.$store.state.themeBgColor,
     },
     watch: {
         options: {
-            handler: _.debounce(function(v) {
-                    this.getTickets()
-                },100),
+            handler: _.debounce(function (v) {
+                this.getTickets()
+            }, 100),
             deep: true,
         },
     },

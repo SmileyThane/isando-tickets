@@ -8,11 +8,11 @@ use App\Http\Controllers\API\Tracking\Traits\Clients;
 use App\Http\Controllers\API\Tracking\Traits\Products;
 use App\Http\Controllers\API\Tracking\Traits\Team;
 use App\Http\Controllers\Controller;
-use App\Repository\ServiceRepository;
-use App\Repository\TeamRepository;
-use App\Repository\TrackingReportRepository;
-use App\Repository\TrackingRepository;
-use App\Repository\TrackingProjectRepository;
+use App\Repositories\ServiceRepository;
+use App\Repositories\TeamRepository;
+use App\Repositories\TrackingReportRepository;
+use App\Repositories\TrackingRepository;
+use App\Repositories\TrackingProjectRepository;
 
 class BaseController extends Controller
 {

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Country;
-use App\Repository\EmailReceiverRepository;
+use App\Repositories\EmailReceiverRepository;
 use App\TimeZone;
 use Illuminate\Http\Request;
 

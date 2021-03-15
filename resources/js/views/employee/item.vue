@@ -1823,7 +1823,7 @@ themeBgColor: this.$store.state.themeBgColor,
             });
         },
         updateRole() {
-            axios.patch(`/api/roles`, this.singleUserForm).then(response => {
+            axios.patch(`/api/user/roles`, this.singleUserForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     // this.getClient()

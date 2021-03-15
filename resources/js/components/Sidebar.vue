@@ -525,6 +525,15 @@ export default {
             });
             return roleExists
         },
+        checkPermissionByIds(ids) {
+            let permissionExists = false;
+            ids.forEach(id => {
+                if (permissionExists === false) {
+                    permissionExists = this.$store.state.permissions.includes(id)
+                }
+            });
+            return permissionExists
+        },
         getCompanyName() {
             axios.get(`/api/main_company/name`)
                 .then(

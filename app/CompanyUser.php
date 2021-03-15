@@ -36,9 +36,37 @@ class CompanyUser extends Model
         return Role::whereIn('id', $roleIds)->get();
     }
 
+    public function getPermissionIds()
+    {
+        $roleIds = $this->roleIds();
+        if ($roleIds) {
+            return RoleHasPermission::whereIn('role_id', $roleIds)->get()->pluck('permission_id')->toArray();
+        }
+        return [];
+    }
+
     public function roleIds()
     {
         return ModelHasRole::where(['model_id' => $this->attributes['id'], 'model_type' => self::class])->get()->pluck('role_id')->toArray();
+    }
+
+    public function hasRoleId($id)
+    {
+        $roleIds = $this->roleIds();
+        if ($roleIds) {
+            return in_array($id, $roleIds, true);
+        }
+        return false;
+    }
+
+    public function hasPermissionId($id)
+    {
+        $id = is_int($id) ? [$id] : $id;
+        $roleIds = $this->roleIds();
+        if ($roleIds) {
+            return RoleHasPermission::whereIn('role_id', $roleIds)->whereIn('permission_id', $id)->exists();
+        }
+        return false;
     }
 
     public function assignedToTeams(): HasMany

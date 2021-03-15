@@ -210,7 +210,7 @@ themeBgColor: this.$store.state.themeBgColor,
             if (this.totalCustomers < this.options.itemsPerPage) {
                 this.options.page = 1
             }
-            axios.get('api/custom_license', {
+            axios.get('/api/custom_license', {
                 params: {
                     search: this.customersSearch,
                     sort_by: this.options.sortBy[0],
