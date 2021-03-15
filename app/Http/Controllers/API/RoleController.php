@@ -7,6 +7,7 @@ use App\Permission;
 use App\Repositories\RoleRepository;
 use App\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
@@ -29,12 +30,19 @@ class RoleController extends Controller
 
     public function getRolesWithPermissions()
     {
-        return self::showResponse(true, $this->roleRepo->getRolesWithPermissions());
+        if (Auth::user()->employee->hasRoleId(Role::SUPERADMIN)) {
+            return self::showResponse(true, $this->roleRepo->getRolesWithPermissions());
+        }
+        return self::showResponse(false);
+
     }
 
     public function mergeRolesWithPermissions(Request $request)
     {
-        return self::showResponse(true, $this->roleRepo->mergeRolesWithPermissions($request->data));
+        if (Auth::user()->employee->hasRoleId(Role::LICENSE_OWNER)) {
+            return self::showResponse(true, $this->roleRepo->mergeRolesWithPermissions($request->data));
+        }
+        return self::showResponse(false);
     }
 
 }
