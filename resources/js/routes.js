@@ -31,6 +31,7 @@ import TrackingProjectItem from './views/tracking/projects/item'
 import TrackingReports from './views/tracking/reports'
 import TrackingSettings from './views/tracking/settings'
 import ResetPassword from './views/auth/reset-password'
+import RoleManagement from './views/superadmin/roles'
 
 
 export default [
@@ -308,5 +309,13 @@ export default [
             requiresAuth: true,
         },
         component: CustomLicenseUnassignedUsers
+    },
+    {
+        path: '/admin/role',
+        name: 'admin_role',
+        meta: {
+            requiresAuth: true,
+        },
+        component: RoleManagement
     },
 ];

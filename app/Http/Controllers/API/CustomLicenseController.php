@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Repository\CustomLicenseRepository;
+use App\Permission;
+use App\Repositories\CustomLicenseRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CustomLicenseController extends Controller
 {
@@ -17,48 +19,84 @@ class CustomLicenseController extends Controller
 
     public function index(Request $request)
     {
-        return self::showResponse(true, $this->customLicenseRepository->index($request));
+        if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_READ_ACCESS)) {
+            return self::showResponse(true, $this->customLicenseRepository->index($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function find($id)
     {
-        return self::showResponse(true, $this->customLicenseRepository->find($id));
+        if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_READ_ACCESS)) {
+            return self::showResponse(true, $this->customLicenseRepository->find($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function users($id)
     {
-        return self::showResponse(true, $this->customLicenseRepository->getUsers($id));
+        if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_READ_ACCESS)) {
+            return self::showResponse(true, $this->customLicenseRepository->getUsers($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function manageUser($id, $remoteUserId, $isLicensed)
     {
-        $result = $this->customLicenseRepository->manageUser($id, $remoteUserId, $isLicensed);
-        return self::showResponse(is_array($result), $result);
+        if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {
+            $result = $this->customLicenseRepository->manageUser($id, $remoteUserId, $isLicensed);
+            return self::showResponse(is_array($result), $result);
+        }
+
+        return self::showResponse(false);
     }
 
     public function history($id)
     {
-        return self::showResponse(true, $this->customLicenseRepository->itemHistory($id));
+        if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_READ_ACCESS)) {
+            return self::showResponse(true, $this->customLicenseRepository->itemHistory($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function update(Request $request, $id)
     {
-        return self::showResponse(true, $this->customLicenseRepository->update($request, $id));
+        if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->customLicenseRepository->update($request, $id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function updateLimits(Request $request, $id)
     {
-        $result = $this->customLicenseRepository->updateLimits($request, $id);
-        return self::showResponse(is_array($result), $result);
+        if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {
+            $result = $this->customLicenseRepository->updateLimits($request, $id);
+            return self::showResponse(is_array($result), $result);
+        }
+
+        return self::showResponse(false);
     }
 
     public function unassignedIxarmaUsersList()
     {
-        return self::showResponse(true, $this->customLicenseRepository->unassignedIxarmaUsersList());
+        if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->customLicenseRepository->unassignedIxarmaUsersList());
+        }
+
+        return self::showResponse(false);
     }
 
     public function assignToIxarmaCompany(Request $request)
     {
-        return self::showResponse(true, $this->customLicenseRepository->assignToIxarmaCompany($request));
+        if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->customLicenseRepository->assignToIxarmaCompany($request));
+        }
+
+        return self::showResponse(false);
     }
 }

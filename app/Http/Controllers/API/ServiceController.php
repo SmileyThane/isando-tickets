@@ -4,7 +4,7 @@
 namespace App\Http\Controllers\API;
 
 
-use App\Repository\ServiceRepository;
+use App\Repositories\ServiceRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

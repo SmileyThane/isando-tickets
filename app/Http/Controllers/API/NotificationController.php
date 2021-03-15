@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Mail\Notification;
-use App\Repository\NotificationRepository;
+use App\Repositories\NotificationRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
