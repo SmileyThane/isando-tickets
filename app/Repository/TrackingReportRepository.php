@@ -7,7 +7,6 @@ namespace App\Repository;
 use App\Tracking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class TrackingReportRepository
@@ -215,4 +214,11 @@ class TrackingReportRepository
         return array_values($tracks);
     }
 
+    public function genPDF($request) {
+        return '';
+    }
+
+    public function genCSV($request) {
+        return '';
+    }
 }

@@ -974,6 +974,7 @@ export default {
                 data.datasets = [];
                 let values = [];
                 let labels = [];
+                let colors = [];
                 this.reportData.entities.map(i => {
                     data.labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
@@ -985,9 +986,13 @@ export default {
                         values.push(this.helperCalculatePassedTime(i.date_from, i.date_to));
                     }
                 });
+                const c = Helper.genRandomColor();
+                for (let i = 0; i <= values.length - 1; i++) {
+                    colors.push(c);
+                }
                 data.datasets.push({
                     label: labels,
-                    backgroundColor: [Helper.genRandomColor()],
+                    backgroundColor: colors,
                     data: values
                 });
                 return data;
