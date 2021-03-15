@@ -23,7 +23,7 @@
                                 }}
                             </v-toolbar-title>
                             <v-spacer></v-spacer>
-                            <v-icon v-if="!canBeEdited" :color="themeFgColor" @click="canBeEdited = true">mdi-pencil
+                            <v-icon v-if="!canBeEdited && checkRoleByIds([1])" :color="themeFgColor" @click="canBeEdited = true">mdi-pencil
                             </v-icon>
                             <v-btn v-if="canBeEdited" color="white" style="color: black; margin-right: 10px"
                                    @click="canBeEdited = false">
@@ -157,7 +157,16 @@ export default {
                 }
             });
             this.canBeEdited = false;
-        }
+        },
+        checkRoleByIds(ids) {
+            let roleExists = false;
+            ids.forEach(id => {
+                if (roleExists === false) {
+                    roleExists = this.$store.state.roles.includes(id)
+                }
+            });
+            return roleExists
+        },
     },
     watch: {},
 }
