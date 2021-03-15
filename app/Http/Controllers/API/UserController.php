@@ -57,7 +57,7 @@ class UserController extends Controller
     public function authorizedPermissionIds()
     {
         $companyUser = Auth::user()->employee;
-        return self::showResponse(true, $companyUser->getPermissionIds);
+        return self::showResponse(true, $companyUser->getPermissionIds());
     }
 
     public function updateRoles(Request $request)
