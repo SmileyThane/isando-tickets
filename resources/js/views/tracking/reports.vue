@@ -254,7 +254,10 @@
             </div>
         </v-card>
         <!-- CHARTS -->
-        <div class="d-flex py-2 mt-3 flex-row">
+        <div
+            class="d-flex py-2 mt-3 flex-row"
+            v-if="doughnutData || barData"
+        >
             <div class="d-inline-block flex-grow-0 mr-2">
                 <div class="d-flex flex-column align-stretch">
                     <v-card
@@ -295,7 +298,8 @@
                     </div>
                     <div class="d-inline-flex px-3 py-3">
                         <BarChart
-                            :data="chart.bar"
+                            v-if="barData"
+                            :data="barData"
                             :options="chart.options"
                         ></BarChart>
                     </div>
@@ -528,6 +532,7 @@ export default {
         BarChart
     },
     data() {
+        const self = this;
         return {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
@@ -698,35 +703,23 @@ export default {
                 }
             ],
             chart: {
-                bar: {
-                    labels: [
-                        "January",
-                        "February",
-                        "March",
-                        "April",
-                        "May",
-                        "June",
-                        "July",
-                        "August",
-                        "September",
-                        "October",
-                        "November",
-                        "December"
-                    ],
-                    datasets: [
-                        {
-                            label: "Data Two",
-                            backgroundColor: Helper.genRandomColor(),
-                            data: [9, 5, 10, 3, 5, 0, 1, 8, 2, 9, 2, 5]
-                        }
-                    ]
-                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: true,
                     percentageInnerCutout : 90,
                     legend: {
-                        position: 'bottom'
+                        display: false,
+                        position: 'right'
+                    },
+                    tooltips: {
+                        callbacks: {
+                            title: function (tooltipItem, data, a, b) {
+                                return data.labels[tooltipItem[0].index] ?? 'Title';
+                            },
+                            label: function(tooltipItem, data) {
+                                return self.helperConvertSecondsToTimeFormat(data.datasets[0].data[tooltipItem.index]);
+                            }
+                        }
                     }
                 }
             },
@@ -923,38 +916,89 @@ export default {
             }
             return moment(date_to).diff(moment(date_from), 'seconds');
         },
+        calculateTime(entries, seconds = 0) {
+            if (!entries) return seconds;
+            entries.map(i => {
+                if (i.children) {
+                    seconds += this.calculateTime(i.children);
+                } else {
+                    seconds += this.helperCalculatePassedTime(i.date_from, i.date_to);
+                }
+            });
+            return seconds;
+        }
     },
     computed: {
         totalTime: function() {
-            let total = 0;
-            this.reportData.entities.map(i => {
-                total += this.helperCalculatePassedTime(i.date_from, i.date_to);
-            });
-            return total;
+            return this.calculateTime(this.reportData.entities);
         },
         doughnutData: function() {
-            let data = {
-                labels: [],
-                datasets: [
-                    {
-                        label: "Data One",
-                        backgroundColor: [Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor(), Helper.genRandomColor()],
-                        data: [2]
-                    }
-                ]
-            };
             if (this.reportData.entities.length) {
+                let data = {
+                    labels: [],
+                    datasets: []
+                };
+                data.datasets = [];
+                let values = [];
+                let labels = [];
                 this.reportData.entities.map(i => {
-                    data.labels.push(i.children);
+                    data.labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    if (i.name) {
+                        labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    }
+                    if (i.children) {
+                        values.push(this.calculateTime(i.children));
+                    } else {
+                        values.push(this.helperCalculatePassedTime(i.date_from, i.date_to));
+                    }
                 });
-            } else {
-                data.labels.push('All data');
+                let colors = [];
+                for (let i = 0; i <= values.length - 1; i++) {
+                    colors.push(Helper.genRandomColor());
+                }
+                data.datasets.push({
+                    label: labels,
+                    backgroundColor: colors,
+                    data: values
+                });
+                return data;
             }
-
-            return data;
+            return null;
+        },
+        barData: function() {
+            if (this.reportData.entities.length) {
+                let data = {
+                    labels: [],
+                    datasets: []
+                };
+                data.datasets = [];
+                let values = [];
+                let labels = [];
+                this.reportData.entities.map(i => {
+                    data.labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    if (i.name) {
+                        labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    }
+                    if (i.children) {
+                        values.push(this.calculateTime(i.children));
+                    } else {
+                        values.push(this.helperCalculatePassedTime(i.date_from, i.date_to));
+                    }
+                });
+                data.datasets.push({
+                    label: labels,
+                    backgroundColor: [Helper.genRandomColor()],
+                    data: values
+                });
+                return data;
+            }
+            return null;
         }
     },
     watch: {
+        'builder.filters': function() {
+            this.genPreview();
+        },
         'builder.group': function() {
             this.genPreview();
         }
