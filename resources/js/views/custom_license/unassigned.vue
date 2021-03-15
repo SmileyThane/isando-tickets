@@ -94,7 +94,7 @@
                 <v-card-text>
                     <v-select :color="themeBgColor" :item-color="themeBgColor"
                               v-model="unassignedUserForm.company_id" :items="customers"
-                              item-value="custom_license.remote_client_id"
+                              item-value="id"
                               item-text="name"
                               dense :label="langMap.main.company">
                     </v-select>
@@ -216,7 +216,7 @@ export default {
         },
         getClients() {
             this.loading = this.themeBgColor
-            axios.get('/api/custom_license', {
+            axios.get('/api/client', {
             }).then(response => {
                 this.loading = false
                 response = response.data
