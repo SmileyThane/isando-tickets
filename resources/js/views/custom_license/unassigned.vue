@@ -192,7 +192,7 @@ export default {
             if (this.totalCustomers < this.options.itemsPerPage) {
                 this.options.page = 1
             }
-            axios.get('api/custom_license_unassigned', {
+            axios.get('/api/custom_license_unassigned', {
                 params: {
                     search: this.customersSearch,
                     sort_by: this.options.sortBy[0],
@@ -216,7 +216,7 @@ export default {
         },
         getClients() {
             this.loading = this.themeBgColor
-            axios.get('api/custom_license', {
+            axios.get('/api/custom_license', {
             }).then(response => {
                 this.loading = false
                 response = response.data
@@ -241,7 +241,7 @@ export default {
             this.assignCompanyDialog = true
         },
         assignToIxarmaCompany() {
-            axios.post('api/custom_license_unassigned/assign', this.unassignedUserForm, {
+            axios.post('/api/custom_license_unassigned/assign', this.unassignedUserForm, {
             }).then(response => {
                 response = response.data
                 if (response.success === true) {
