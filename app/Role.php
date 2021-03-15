@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Role extends Model
 {
@@ -19,4 +20,15 @@ class Role extends Model
 
     // this is a virtual role
     protected $table = 'roles';
+
+    public function permissions(): HasMany
+    {
+        return $this->hasMany(RoleHasPermission::class, 'role_id', 'id');
+    }
+
+    public function permissionIds()
+    {
+        $permissionIds = RoleHasPermission::where('role_id', $this->id)->get();
+        return $permissionIds ? $permissionIds->pluck('permission_id')->toArray() : [];
+    }
 }
