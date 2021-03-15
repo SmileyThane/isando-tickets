@@ -4,6 +4,7 @@
 namespace App\Repositories;
 
 
+use App\CustomLicense;
 use App\IxarmaAuthorization;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -117,11 +118,6 @@ class CustomLicenseRepository
         return null;
     }
 
-    public function create()
-    {
-
-    }
-
     public function updateLimits(Request $request, $id)
     {
         $client = \App\Client::find($id);
@@ -164,10 +160,37 @@ class CustomLicenseRepository
 
     public function assignToIxarmaCompany(Request $request)
     {
-//        dd("/api/v1/app/user/$request->user_id/assign/$request->company_id");
+        $clientLicense = \App\Client::find($request->company_id)->customLicense;
+        if ($clientLicense === null) {
+            $newLicense = $this->create($request->company_id);
+                if (is_string($newLicense)){
+                    return $newLicense;
+                }
+            $request->company_id = $newLicense['id'];
+        } else {
+            $request->company_id = $clientLicense->remote_client_id;
+        }
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$request->user_id/assign/$request->company_id", []);
         $parsedResult = json_decode($result->getContents(), true);
         return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+    }
+
+    public function create($id)
+    {
+        $client = \App\Client::find($id);
+        $data = [
+            'name' => $client->name,
+            'email' => $client->contact_email->email,
+        ];
+        $result = $this->makeIxArmaRequest("/api/v1/company", $data, 'POST');
+        $parsedResult = json_decode($result->getContents(), true);
+        if ($parsedResult['status'] === 'SUCCESS') {
+            $ixarmaCompany = $parsedResult['body'];
+            CustomLicense::query()->insert(['remote_client_id' => $ixarmaCompany['id'], 'client_id' => $id]);
+            return $ixarmaCompany;
+        }
+
+        return $parsedResult['message'];
     }
 
     public function delete()
