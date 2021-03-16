@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Country;
 use App\Repository\EmailReceiverRepository;
 use App\TimeZone;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -19,14 +20,13 @@ class HomeController extends Controller
      */
     public function __construct(EmailReceiverRepository $emailReceiverRepo)
     {
-//        $this->middleware('auth');
         $this->emailReceiverRepo = $emailReceiverRepo;
     }
 
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return Renderable
      */
 
     public function index()
@@ -34,7 +34,7 @@ class HomeController extends Controller
         return view('app');
     }
 
-    public function receiveMail(Request $request, $type = 'answer')
+    public function receiveMail(Request $request, $type = 'answer'): void
     {
         $this->emailReceiverRepo->receiveMail($type);
     }
