@@ -25,7 +25,7 @@
         </div>
         <div class="d-flex flex-row">
             <!-- PERIOD -->
-            <div class="d-inline-flex flex-glow-1 mr-2" style="width: 40%; max-height: 55px">
+            <div class="d-inline-flex flex-glow-1 mr-2" style="width: 550px; min-width: 550px; max-height: 55px">
                 <v-expansion-panels
                     v-model="activePeriod"
                     accordion
@@ -83,18 +83,16 @@
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
-                                <div class="d-inline-flex flex-grow-1">
-                                    <v-date-picker
+                                <div class="d-inline-flex">
+                                    <vc-date-picker
+                                        ref="calendar"
+                                        v-model="dateRange"
+                                        is-range
                                         no-title
-                                        v-model="builder.period.start"
-                                    ></v-date-picker>
-                                </div>
-                                <div class="d-inline-flex flex-grow-1">
-                                    <v-date-picker
-                                        no-title
-                                        v-model="builder.period.end"
+                                        :columns="2"
+                                        mode="date"
                                         @input="activePeriod = null; genPreview()"
-                                    ></v-date-picker>
+                                    ></vc-date-picker>
                                 </div>
                             </div>
                         </v-expansion-panel-content>
@@ -102,7 +100,7 @@
                 </v-expansion-panels>
             </div>
             <!-- ROUNDING -->
-            <div class="d-inline-flex flex-glow-1 mx-2" style="width: 30%">
+            <div class="d-inline-flex flex-glow-1 mx-2" style="">
                 <v-select
                     prepend-inner-icon="mdi-approximately-equal"
                     placeholder="Rounding up of times"
@@ -116,7 +114,7 @@
                 </v-select>
             </div>
             <!-- SORTING  -->
-            <div class="d-inline-flex flex-glow-1 ml-2" style="width: 30%">
+            <div class="d-inline-flex flex-glow-1 ml-2" style="">
                 <v-select
                     :prepend-inner-icon="builder.sort.icon"
                     placeholder="Sorting"
@@ -861,8 +859,15 @@ export default {
                     start = null;
                     end = moment().endOf('years');
             }
-            this.builder.period.start = start ? start.format('YYYY-MM-DD') : start;
-            this.builder.period.end = end.format('YYYY-MM-DD');
+            this.builder.period.start = start ? start.toDate() : start;
+            this.builder.period.end = end.toDate();
+            // const calendar = this.$refs.calendar;
+            // if (calendar) {
+            //     console.log(calendar);
+            //     calendar.updateValue(new Date(this.builder.period.start), {
+            //         formatInput: true
+            //     });
+            // }
             if (this.builder.period.start) {
                 if (this.builder.period.start === this.builder.period.end) {
                     this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
@@ -1041,6 +1046,14 @@ export default {
                 return data;
             }
             return null;
+        },
+        dateRange: {
+            set (val) {
+                this.builder.period = val;
+            },
+            get () {
+                return this.builder.period;
+            }
         }
     },
     watch: {
