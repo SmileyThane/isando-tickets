@@ -1,4 +1,4 @@
-<table width="100%" cellspacing="0" cellpadding="3">
+<table width="100%" cellspacing="0" cellpadding="3" border="1">
     <thead>
         <tr style="border-top: 1px solid #000; border-bottom: 1px solid #000;">
             <th align="center">Date</th>
@@ -29,7 +29,7 @@
         </tr>
     @empty
         <tr>
-            <td colspan="10">No data</td>
+            <td align="center" colspan="10">No data</td>
         </tr>
     @endforelse
     </tbody>
