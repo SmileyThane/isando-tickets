@@ -127,9 +127,30 @@
                                 }}
                             </template>
                             <template v-slot:item.trialExpirationAtString="{ item }">
-                                {{
-                                    moment(item.trialExpirationAtString).format('DD-MM-YYYY')
-                                }}
+                                <v-menu
+                                    v-model="trialExpirationModal"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="auto"
+                                    @click.stop.prevent="trialExpirationModal = true"
+                                >
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-text-field
+                                            v-model="item.trialExpirationAtString"
+                                            prepend-icon="mdi-calendar"
+                                            readonly
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        ></v-text-field>
+                                    </template>
+                                    <v-date-picker
+                                        :color="themeBgColor"
+                                        v-model="item.lastActivationChange"
+                                        @input="trialExpirationModal = false"
+                                    ></v-date-picker>
+                                </v-menu>
                             </template>
                             <template v-slot:item.licensed="{ item }">
                                 <v-btn
@@ -143,10 +164,12 @@
                                     </v-icon>
                                 </v-btn>
                             </template>
+                            <template>
+
+                            </template>
                         </v-data-table>
                     </div>
                 </v-card>
-
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -389,6 +412,7 @@ export default {
                 role_ids: [],
                 company_user_id: 0
             },
+            trialExpirationModal: false,
             clientIsLoaded: false,
             employees: [],
             licenseValues: [10, 20, 50, 100, 500, 1000],
