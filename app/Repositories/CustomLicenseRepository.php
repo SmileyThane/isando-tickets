@@ -123,6 +123,7 @@ class CustomLicenseRepository
         $client = \App\Client::find($id);
         $ixArmaId = $client->customLicense->remote_client_id;
         $data = [
+            'newTrialDays' => $request->trialPeriodDays,
             'newAllowedUsers' => $request->usersAllowed,
             'newExpires' => Carbon::parse($request->expiresAt)->format('m/d/Y')
         ];
