@@ -415,7 +415,7 @@
                             <v-btn
                                 color="success"
                                 text
-                                @click="dialogExportPDF = false"
+                                @click="createFile('pdf'); dialogExportPDF = false"
                             >
                                 Create
                             </v-btn>
@@ -458,7 +458,7 @@
                             <v-btn
                                 color="success"
                                 text
-                                @click="dialogExportCSV = false"
+                                @click="createFile('csv'); dialogExportCSV = false"
                             >
                                 Export
                             </v-btn>
@@ -892,6 +892,7 @@ export default {
 
                 })
                 .catch(err => {
+                    console.log(err);
                     this.snackbarMessage = 'Something went wrong';
                     this.actionColor = 'error'
                     this.snackbar = true;
@@ -926,6 +927,27 @@ export default {
                 }
             });
             return seconds;
+        },
+        createFile(format) {
+            axios.post(`/api/tracking/reports?format=${format}`, { ...this.builder, ...this.report.pdf }, {
+                responseType: 'blob'
+            })
+                .then(res => {
+                    // const filename = res.headers['content-disposition'].split('filename=')[1].split(';')[0];
+
+                    const url = window.URL.createObjectURL(new Blob([res.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', `Report.${format}`);
+                    document.body.appendChild(link);
+                    link.click();
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.snackbarMessage = 'Something went wrong';
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                })
         }
     },
     computed: {

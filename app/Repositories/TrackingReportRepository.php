@@ -7,7 +7,10 @@ namespace App\Repositories;
 use App\Tracking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use PDF;
+use Illuminate\Support\Facades\File;
 
 class TrackingReportRepository
 {
@@ -32,7 +35,7 @@ class TrackingReportRepository
         return true;
     }
 
-    public function generate(Request $request) {
+    protected function getData(Request $request) {
         $sorting        = $request->sort['value'];
         $grouping       = collect($request->group)->map(function ($item) { return $item['value']; });
         $filtering      = collect($request->filters)
@@ -161,6 +164,17 @@ class TrackingReportRepository
 //                return $obj;
 //            });
 
+        return [
+            'tracks' => $tracks,
+            'grouping' => $grouping
+        ];
+    }
+
+    public function generate(Request $request) {
+        $result = $this->getData($request);
+        $grouping = $result['grouping'];
+        $tracks = $result['tracks'];
+
         if ($grouping->isEmpty()) return $tracks;
 
         $group = $grouping->shift();
@@ -170,7 +184,7 @@ class TrackingReportRepository
 
     }
 
-    protected function getData($tracking, $field = 'description') {
+    protected function getFieldData($tracking, $field = 'description') {
         switch ($field) {
             case 'month':
                 return Carbon::parse($tracking->date_from)->format('F Y');
@@ -197,7 +211,7 @@ class TrackingReportRepository
     protected function makeList($group, $trackings) {
         $items = [];
         foreach ($trackings as $tracking) {
-            $data = $this->getData($tracking, $group);
+            $data = $this->getFieldData($tracking, $group);
             $items[$data]['name'] = $data;
             $items[$data]['children'][] = $tracking;
         }
@@ -214,8 +228,123 @@ class TrackingReportRepository
         return array_values($tracks);
     }
 
-    public function genPDF($request) {
-        return '';
+    protected function prepareForPdf(string $html)
+    {
+
+        $html = preg_replace('/[\000-\031\200-\377]/', '', $html);
+
+        // Workaround for embedded images in TCPDF library
+        $html = preg_replace('/data:image\/.+?;base64,\\s*/si', '@', $html);
+
+        // Workaround for hidding node titles
+        $html = preg_replace('/<h2.+?field\-\-label\-hidden.+?<\/h2>/si', '', $html);
+
+        // Remove scripts
+        $html = preg_replace('/<script.*?>.+?<\/script>/si', '', $html);
+
+        // Remove CDATA
+        $html = preg_replace('/<\!\[CDATA\[(.+?)\]\]>/si', '$1', $html);
+
+        // Remove comments from styles
+        $html = preg_replace_callback('/<style(.+?)>(.+?)<\/style>/si', function ($matches) {
+            return '<style' . $matches[1] . '>' . preg_replace('/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/si', '', $matches[2]) . '</style>';
+        }, $html);
+
+        return $html;
+    }
+
+    protected function getMargins($side = null)
+    {
+        $default = [
+            'left' => config('tcpdf.margin_left'),
+            'right' => config('tcpdf.margin_right'),
+            'top' => config('tcpdf.margin_top'),
+            'bottom' => config('tcpdf.margin_bottom'),
+            'header' => config('tcpdf.margin_header'),
+            'footer' => config('tcpdf.margin_footer'),
+        ];
+
+        return $side ? $default[strtolower($side)] : $default;
+    }
+
+    public function genPDF($request, $htmlFormat = false) {
+        // Page title
+        PDF::changeFormat(config('tcpdf.page_format'));
+        PDF::setPageOrientation(config('tcpdf.page_orientation'));
+
+        PDF::setMargins($this->getMargins('left'), $this->getMargins('top'), $this->getMargins('right'));
+        PDF::setAutoPageBreak(true, $this->getMargins('bottom'));
+
+        $reportName = $request->get('name', 'Report');
+        PDF::SetTitle($reportName);
+
+        $html = '';
+        $cssPath = storage_path('app') . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'pdf.css';
+        if (file_exists($cssPath)) {
+            $styles = '<style type="text/css">' . PHP_EOL . File::get($cssPath) . PHP_EOL . '</style>';
+            $html = $this->prepareForPdf($styles);
+        }
+
+        // PREPARING DATA
+        $data = $this->getData($request)['tracks'];
+        $user = Auth::user();
+        $period = $request->get('period');
+
+        PDF::SetAuthor($user->full_name);
+
+        // HEADER
+        PDF::setHeaderMargin($this->getMargins('header'));
+        $self = $this;
+        PDF::setHeaderCallback(function () use ($self, $reportName, $user, $period) {
+            $html = $self->prepareForPdf(view('tracking.pdf.header', [
+                'reportName' => $reportName,
+                'user'       => $user,
+                'period'     => $period
+            ]));
+            PDF::writeHTML($html, true, false, true, false, '');
+        });
+
+        // FOOTER
+        PDF::setFooterMargin($this->getMargins('bottom'));
+        $self = $this;
+        PDF::setFooterCallback(function () use ($self) {
+            $html = $self->prepareForPdf(view('tracking.pdf.footer'));
+            PDF::writeHTML($html, true, false, true, false, '');
+        });
+
+        // PAGE 1. TITLE
+        PDF::SetPrintHeader(false);
+        PDF::SetPrintFooter(false);
+        PDF::AddPage();
+
+        $html = $html . PHP_EOL . $this->prepareForPdf(view('tracking.pdf.layout', [
+                'reportName' => $reportName,
+                'user'       => $user,
+                'period'     => $period,
+                'totalTime'  => '18:00 h'
+        ]));
+        PDF::WriteHTML($html, true, false, true, false, '');
+
+        PDF::EndPage();
+
+        // PAGE 2 and next
+        PDF::SetPrintHeader(true);
+        PDF::SetPrintFooter(true);
+        PDF::AddPage();
+        PDF::setPageOrientation('l');
+        $html = $this->prepareForPdf(view('tracking.pdf.page', [
+            'data' => $data
+        ]));
+        PDF::WriteHTML($html, true, false, true, false, '');
+        PDF::EndPage();
+
+        // GENERATE FILE
+        $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
+        if ($htmlFormat) {
+            return $html;
+        }
+        PDF::Output($tmpFileName, 'F');
+        return File::get($tmpFileName);
     }
 
     public function genCSV($request) {

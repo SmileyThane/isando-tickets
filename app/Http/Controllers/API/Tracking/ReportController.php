@@ -21,8 +21,9 @@ class ReportController extends BaseController
     {
         $result = null;
         switch (strtolower($request[0]->query->get('format', 'json'))) {
-            case 'pdf': return $this->trackingReportRepo->genPDF($request); break;
-            case 'csv': return $this->trackingReportRepo->genCSV($request); break;
+            case 'pdf': return $this->trackingReportRepo->genPDF(array_shift($request)); break;
+            case 'csv': return $this->trackingReportRepo->genCSV(array_shift($request)); break;
+            case 'html': return $this->trackingReportRepo->genPDF(array_shift($request), true); break;
             default:
                 try {
                     $result = parent::callAction($method, $request);
