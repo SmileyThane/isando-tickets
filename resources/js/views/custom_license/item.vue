@@ -19,7 +19,8 @@
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil
+                        </v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
                                @click="enableToEdit = false">
                             {{ langMap.main.cancel }}
@@ -65,18 +66,19 @@
                         <v-divider></v-divider>
                         <br>
                         <label>Connection links</label>
-                            <v-text-field
-                                v-for="(id, key) in client.connection_links"
-                                :key="key"
-                                v-model="client.connection_links[key]"
-                                :color="themeBgColor"
-                                :label="langMap.company.link"
-                                :readonly="!enableToEdit"
-                                dense
-                                prepend-icon="mdi-link"
-                                required
-                                type="text"
-                            ><template v-slot:append>
+                        <v-text-field
+                            v-for="(id, key) in client.connection_links"
+                            :key="key"
+                            v-model="client.connection_links[key]"
+                            :color="themeBgColor"
+                            :label="langMap.company.link"
+                            :readonly="!enableToEdit"
+                            dense
+                            prepend-icon="mdi-link"
+                            required
+                            type="text"
+                        >
+                            <template v-slot:append>
                                 <v-icon
                                     color="red"
                                     @click="removeConnectionLink(key)"
@@ -84,15 +86,15 @@
                                     mdi-cancel
                                 </v-icon>
                             </template>
-                            </v-text-field>
-                            <v-btn
-                                v-if="enableToEdit"
-                                color="green"
-                                outlined
-                                @click="addConnectionLink"
-                            >
-                                <v-icon>mdi-plus</v-icon>
-                            </v-btn>
+                        </v-text-field>
+                        <v-btn
+                            v-if="enableToEdit"
+                            color="green"
+                            outlined
+                            @click="addConnectionLink"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
@@ -123,12 +125,21 @@
                                         moment(item.lastActivationChange).format('DD-MM-YYYY') : ''
                                 }}
                             </template>
+                            <template v-slot:item.trialExpirationAtString="{ item }">
+                                {{
+                                    moment(item.trialExpirationAtString).format('DD-MM-YYYY')
+                                }}
+                            </template>
                             <template v-slot:item.licensed="{ item }">
                                 <v-btn
                                     outlined
                                     @click="manageLicenseUsers(item.id, item.licensed)"
                                 >
-                                    <v-icon>{{ item.licensed ? 'mdi-check-circle-outline' : 'mdi-cancel' }}</v-icon>
+                                    <v-icon
+                                        :color="item.licensed ? 'green' :'red'"
+                                    >
+                                        {{ item.licensed ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
+                                    </v-icon>
                                 </v-btn>
                             </template>
                         </v-data-table>
@@ -159,62 +170,87 @@
                         </v-btn>
                     </v-toolbar>
                     <v-card-text>
-                        <p
-                            class="ma-2"
-                        >
-                            <strong>Total users:</strong> {{ license.usersAllowed }}
-                            <strong>Assigned users:</strong> {{ usersAssigned }}
-                            <strong>Users available:</strong> {{ license.usersLeft }}
-                            <strong>Active:</strong> {{ license.active }}
-                        </p>
-
-                        <v-menu
-                            v-model="menu2"
-                            :close-on-content-click="false"
-                            :disabled="!enableToEditLicense"
-                            :nudge-right="40"
-                            class="ma-2"
-                            min-width="auto"
-                            offset-y
-                            transition="scale-transition"
-                        >
-                            <template v-slot:activator="{ on, attrs }">
-                                <v-text-field
+                        <v-row>
+                            <v-col md="6">
+                                <v-list
+                                    flat
+                                >
+                                    <v-list-item-group
+                                        :color="themeBgColor"
+                                    >
+                                        <v-list-item
+                                        >
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-account-group</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Total users'"></v-list-item-title>
+                                                <v-list-item-subtitle
+                                                    v-text="license.usersAllowed"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-account-multiple-minus</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Assigned users'"></v-list-item-title>
+                                                <v-list-item-subtitle v-text="usersAssigned"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-account-multiple-plus</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Users available'"></v-list-item-title>
+                                                <v-list-item-subtitle v-text="license.usersLeft"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-license</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Active'"></v-list-item-title>
+                                                <v-list-item-subtitle v-text="license.active"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </v-list-item-group>
+                                </v-list>
+                            </v-col>
+                            <v-col md="6">
+                                <v-date-picker
                                     v-model="license.expiresAt"
-                                    v-bind="attrs"
-                                    v-on="on"
                                     :color="themeBgColor"
-                                    class="ma-2"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                ></v-text-field>
-                            </template>
-                            <v-date-picker
-                                v-model="license.expiresAt"
-                                :color="themeBgColor"
-                                @input="menu2 = false;"
-                            ></v-date-picker>
-                        </v-menu>
-                        <v-card
-                            v-if="enableToEditLicense"
-                            class="mx-auto"
-                            outlined
-                        >
-                            <div class="overline mx-2">
-
-                            </div>
-                            <v-btn
+                                    :first-day-of-week="1"
+                                    :locale="calendarLocale"
+                                    :readonly="!enableToEditLicense"
+                                ></v-date-picker>
+                            </v-col>
+                        </v-row>
+                        <v-expand-transition>
+                            <v-card
                                 v-if="enableToEditLicense"
-                                :color="license.active ? 'red' :'green'"
-                                class="ma-2"
-                                @click="license.active = !license.active"
+                                class="mx-auto"
+                                outlined
                             >
-                                {{ license.active ? 'suspend' : 'renew' }}
-                            </v-btn>
-                            <div class="overline mx-2">
-                                additional licenses
-                            </div>
-                            <span v-for="(licenseValue, index) in licenseValues" :key="index">
+                                <div class="overline mx-2">
+
+                                </div>
+                                <v-btn
+                                    v-if="enableToEditLicense"
+                                    :color="license.active ? 'red' :'green'"
+                                    class="ma-2"
+                                    dark
+                                    @click="license.active = !license.active"
+                                >
+                                    {{ license.active ? 'suspend' : 'renew' }}
+                                </v-btn>
+                                <div class="overline mx-2">
+                                    additional licenses
+                                </div>
+                                <span v-for="(licenseValue, index) in licenseValues" :key="index">
                                 <v-btn
                                     class="ma-2"
                                     color="grey darken-1"
@@ -224,7 +260,8 @@
                                 </v-btn>
                                 <br v-if="index === (licenseValues.length/2) - 1">
                             </span>
-                        </v-card>
+                            </v-card>
+                        </v-expand-transition>
                     </v-card-text>
                 </v-card>
                 <v-spacer>
@@ -237,7 +274,10 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.notification.history }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.notification.history
+                            }}
+                        </v-toolbar-title>
                     </v-toolbar>
                     <v-card-text>
                         <v-list
@@ -271,6 +311,7 @@ export default {
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
             langMap: this.$store.state.lang.lang_map,
+            calendarLocale: this.$store.state.lang.locale.replace("_", "-").toLowerCase(),
             licenseUserHeaders: [
                 // {text: 'id', value: 'id'},
                 {text: `username`, value: 'username'},
@@ -379,7 +420,7 @@ export default {
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
@@ -411,7 +452,7 @@ export default {
                 if (response.success === true) {
                     this.license = response.data.limits
                     this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
-                    this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
+                    this.license.expiresAt = this.moment(response.data.limits.expiresAt).format('YYYY-MM-DD')
                     this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
                     this.getLicenseHistory();
                     console.log(this.client.connection_links);
@@ -476,12 +517,19 @@ export default {
                     this.license = response.data
                     this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
                     this.enableToEditLicense = false;
+                    this.snackbarMessage = this.license = this.langMap.main.update_successful;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                    this.enableToEditLicense = false;
                     this.getLicense()
                     this.getLicenseUsers()
                 } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.snackbarMessage = this.license = response.error;
                     this.actionColor = 'error';
                     this.snackbar = true;
+                    this.enableToEditLicense = false;
+                    this.getLicense()
+                    this.getLicenseUsers()
                 }
 
             });

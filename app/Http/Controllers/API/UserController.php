@@ -5,8 +5,9 @@ namespace App\Http\Controllers\API;
 
 use App\CompanyUser;
 use App\Http\Controllers\Controller;
-use App\Repository\RoleRepository;
-use App\Repository\UserRepository;
+use App\Permission;
+use App\Repositories\RoleRepository;
+use App\Repositories\UserRepository;
 use App\Role;
 use App\User;
 use Illuminate\Http\JsonResponse;
@@ -46,11 +47,6 @@ class UserController extends Controller
         return self::showResponse($success, $result ?? $isValid);
     }
 
-    public function roles()
-    {
-        return self::showResponse(true, Role::all());
-    }
-
     public function authorizedRoleIds()
     {
         $companyUser = Auth::user()->employee;
@@ -58,16 +54,29 @@ class UserController extends Controller
         return self::showResponse(true, array_merge($roles, $companyUser->roles->pluck('id')->toArray()));
     }
 
+    public function authorizedPermissionIds()
+    {
+        $companyUser = Auth::user()->employee;
+        return self::showResponse(true, $companyUser->getPermissionIds());
+    }
+
     public function updateRoles(Request $request)
     {
-        $request->model_type = CompanyUser::class;
-        $result = $this->roleRepo->updateRoles($request);
-        return self::showResponse($result);
+        if (Auth::user()->employee->hasPermissionId(Permission::COMPANY_WRITE_ACCESS)) {
+            $request->model_type = CompanyUser::class;
+            return self::showResponse($this->roleRepo->updateRoles($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function changeIsActive(Request $request)
     {
-        return self::showResponse($this->userRepo->changeIsActive($request));
+        if (Auth::user()->employee->hasPermissionId(Permission::SETTINGS_WRITE_ACCESS)) {
+            return self::showResponse($this->userRepo->changeIsActive($request));
+        }
+
+        return self::showResponse(false);
     }
 
 
@@ -83,12 +92,20 @@ class UserController extends Controller
 
     public function getSettings(Request $request, $id = null): JsonResponse
     {
-        return self::showResponse(true, $this->userRepo->getSettings($id));
+        if (Auth::user()->employee->hasPermissionId(Permission::SETTINGS_READ_ACCESS)) {
+            return self::showResponse(true, $this->userRepo->getSettings($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function updateSettings(Request $request, $id = null): JsonResponse
     {
-        return self::showResponse(true, $this->userRepo->updateSettings($request, $id));
+        if (Auth::user()->employee->hasPermissionId(Permission::SETTINGS_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->userRepo->updateSettings($request, $id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function setNotifications(Request $request): JsonResponse
@@ -111,7 +128,3 @@ class UserController extends Controller
         return self::showResponse(true, $this->userRepo->restoreDeleted($request->id));
     }
 }
-
-
-// Happy 25th birthday, Hleb!!!
-//happy new year!

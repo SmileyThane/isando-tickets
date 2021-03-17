@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Repository\FileRepository;
+use App\Repositories\FileRepository;
 use Illuminate\Http\Request;
 
 class FileController extends Controller

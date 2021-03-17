@@ -30,17 +30,10 @@
                     <v-card-text v-if="!enableToEdit">
                         <v-row>
                             <v-col cols="2" v-if="client.logo_url">
-                                <v-avatar
-                                    color="grey darken-1"
-                                    v-if="client.logo_url"
-                                    size="80px"
-                                    tile
-                                >
-                                    <v-img :src="client.logo_url" size="80px" />
-                                </v-avatar>
+                                <v-img v-if="client.logo_url" :src="client.logo_url" style="max-width: 80px; max-height: 80px" />
                             </v-col>
                             <v-col :cols="client.logo_url ? 4 : 6">
-                                <h3 class="mb-3">{{ client.client_name }} <span v-if="client.short_name">| {{ client.short_name }}</span></h3>
+                                <h3 class="mb-3">{{ client.client_name }}</h3>
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
 
                                 <div v-if="client.emails && client.emails.length > 0" class="mb-3">
@@ -100,8 +93,7 @@
                                     <v-row>
                                         <v-col cols="2">
                                             <label>{{ langMap.company.logo }}</label>
-                                            <v-avatar size="80px" tile>
-                                                <v-img :src="logo" style="z-index: 1;">
+                                                <v-img :src="logo" style="z-index: 1; max-height: 80px; max-width: 80px">
                                                     <v-file-input
                                                         v-model="newLogo"
                                                         color="white"
@@ -113,7 +105,6 @@
                                                         class="mt-7 ml-7"
                                                     />
                                                 </v-img>
-                                            </v-avatar>
                                         </v-col>
                                         <v-col cols="10">
                                             <v-row>

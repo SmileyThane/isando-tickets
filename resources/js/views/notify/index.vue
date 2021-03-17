@@ -162,7 +162,7 @@ themeBgColor: this.$store.state.themeBgColor,
             if (this.totalNotifications < this.options.itemsPerPage) {
                 this.options.page = 1
             }
-            axios.get('api/notifications', {
+            axios.get('/api/notifications', {
                 params: {
                     sort_by: this.options.sortBy[0],
                     sort_val: this.options.sortDesc[0],

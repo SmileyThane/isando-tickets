@@ -28,8 +28,11 @@ Route::get('version', 'API\AuthController@getAppVersion');
 Route::group(['middleware' => 'auth:api'], function () {
     Route::get('auth/check', 'Controller@checkAuth');
     Route::get('logout', 'API\AuthController@logout');
-    Route::get('roles', 'API\UserController@roles');
-    Route::patch('roles', 'API\UserController@updateRoles');
+    Route::get('roles', 'API\RoleController@roles');
+    Route::get('roles/full', 'API\RoleController@getRolesWithPermissions');
+    Route::put('roles/full', 'API\RoleController@mergeRolesWithPermissions');
+    Route::get('permissions', 'API\RoleController@permissions');
+
 
     Route::group(['middleware' => 'setLanguage'], function () {
         //user management
@@ -39,6 +42,8 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('user/invite', 'API\UserController@sendInvite');
         Route::post('user/is_active', 'API\UserController@changeIsActive');
         Route::get('user/roles/id', 'API\UserController@authorizedRoleIds');
+        Route::patch('user/roles', 'API\UserController@updateRoles');
+        Route::get('user/permissions/id', 'API\UserController@authorizedPermissionIds');
         Route::get('user/settings', 'API\UserController@getSettings');
         Route::post('user/settings', 'API\UserController@updateSettings');
         Route::post('user/notifications', 'API\UserController@setNotifications');
@@ -106,7 +111,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::delete('email/{id}', 'API\EmailController@delete');
 
         //client management
-        Route::get('client', 'API\ClientController@get');
+        Route::get('client', 'API\ClientController@clients');
         Route::get('supplier', 'API\ClientController@suppliers');
         Route::post('client', 'API\ClientController@create');
         Route::get('client/{id}', 'API\ClientController@find');
@@ -196,6 +201,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 //Additional tracking routes
                 Route::get('/clients', 'BaseController@getClientList');
                 Route::get('/products', 'BaseController@getProductList');
+                Route::get('/coworkers', 'BaseController@getCoworkers');
 
                 //Tracker
                 Route::get('/tracker', 'TrackingController@get');
@@ -204,6 +210,8 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::post('/tracker/{tracking}/duplicate', 'TrackingController@duplicate');
                 Route::delete('/tracker/{tracking}', 'TrackingController@delete');
 
+                // Reports
+                Route::post('/reports', 'ReportController@generate');
             });
 
         // Tags

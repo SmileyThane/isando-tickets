@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Repository\AddressRepository;
+use App\Repositories\AddressRepository;
 use Illuminate\Http\Request;
 
 class AddressController extends Controller
