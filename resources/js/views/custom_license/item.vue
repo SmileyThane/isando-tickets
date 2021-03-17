@@ -118,6 +118,7 @@
                             :options.sync="options"
                             class="elevation-1"
                             hide-default-footer
+                            @click:row="showAssignDialog"
                         >
                             <template v-slot:item.lastActivationChange="{ item }">
                                 {{
@@ -133,7 +134,7 @@
                             <template v-slot:item.licensed="{ item }">
                                 <v-btn
                                     outlined
-                                    @click="manageLicenseUsers(item.id, item.licensed)"
+                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed)"
                                 >
                                     <v-icon
                                         :color="item.licensed ? 'green' :'red'"
@@ -216,6 +217,24 @@
                                                 <v-list-item-subtitle v-text="license.active"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon> mdi-calendar-weekend-outline</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Trial days'"></v-list-item-title>
+                                                <v-text-field
+                                                    style="max-width: 50px"
+                                                    v-model="license.trialPeriodDays"
+                                                    :color="themeBgColor"
+                                                    v-if="enableToEditLicense"
+                                                    dense
+                                                    name="trial_days"
+                                                    type="text"
+                                                ></v-text-field>
+                                                <v-list-item-subtitle v-if="!enableToEditLicense" v-text="license.trialPeriodDays"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
                                     </v-list-item-group>
                                 </v-list>
                             </v-col>
@@ -296,6 +315,30 @@
                 </v-card>
             </div>
         </div>
+        <v-dialog v-model="assignCompanyDialog" max-width="480" persistent>
+            <v-card>
+                <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                    {{ langMap.main.assign }}
+                </v-card-title>
+                <v-card-text>
+                    <v-select :color="themeBgColor" :item-color="themeBgColor"
+                              v-model="reassignedUserForm.company_id" :items="customers"
+                              item-value="id"
+                              item-text="name"
+                              dense :label="langMap.main.company">
+                    </v-select>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="grey darken-1" text @click="assignCompanyDialog = false">
+                        {{ langMap.main.cancel }}
+                    </v-btn>
+                    <v-btn color="red darken-1" text @click="assignToIxarmaCompany">
+                        {{ langMap.main.assign }}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -385,6 +428,12 @@ export default {
                 client_id: 0,
                 is_active: false
             },
+            reassignedUserForm: {
+                user_id: '',
+                company_id: ''
+            },
+            assignCompanyDialog: false,
+            customers: [],
             contactInfoModal: false,
             contactInfoEditBtn: false,
             roles: [
@@ -603,6 +652,47 @@ export default {
             this.client.connection_links.splice(id, 1);
             console.log(this.client.connection_links);
             this.$forceUpdate();
+        },
+        getClients() {
+            this.loading = this.themeBgColor
+            axios.get('/api/client', {
+            }).then(response => {
+                this.loading = false
+                response = response.data
+                if (response.success === true) {
+                    this.customers = response.data.data
+                    this.totalCustomers = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.reassignedUserForm.company_id = this.client.id
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        showAssignDialog(item) {
+            this.reassignedUserForm.user_id = item.id
+            this.getClients();
+            this.assignCompanyDialog = true
+        },
+        assignToIxarmaCompany() {
+            axios.post('/api/custom_license_unassigned/assign', this.reassignedUserForm, {
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.getLicenseUsers();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+            // console.log(this.reassignedUserForm);
+            this.assignCompanyDialog = false
         }
     }
 }
