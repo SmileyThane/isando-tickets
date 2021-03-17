@@ -305,8 +305,9 @@
                             <v-list-item
                                 v-for="(item, index) in licenseHistory"
                                 :key="index"
+                                v-if="item.diff.length > 0"
                             >
-                                <v-list-item-title>
+                                <v-list-item-title >
                                     {{ item.diff }}
                                 </v-list-item-title>
                             </v-list-item>
