@@ -388,7 +388,7 @@
                                 <div class="d-inline-block">
                                     <v-text-field
                                         label="Period"
-                                        v-model="report.pdf.period"
+                                        v-model="report.pdf.periodText"
                                     ></v-text-field>
                                 </div>
                                 <div class="d-inline-block">
@@ -397,7 +397,7 @@
                                         item-text="text"
                                         item-value="value"
                                         label="Group"
-                                        v-model="report.pdf.group"
+                                        v-model="report.pdf.groupSel"
                                     >
                                     </v-select>
                                 </div>
@@ -415,7 +415,7 @@
                             <v-btn
                                 color="success"
                                 text
-                                @click="createFile('pdf'); dialogExportPDF = false"
+                                @click="createFile('pdf')"
                             >
                                 Create
                             </v-btn>
@@ -758,8 +758,8 @@ export default {
                 pdf: {
                     name: 'Report',
                     coworkers: null,
-                    period: '',
-                    group: 1
+                    periodText: '',
+                    groupSel: 1
                 }
             }
         }
@@ -846,12 +846,12 @@ export default {
             this.builder.period.end = end.format('YYYY-MM-DD');
             if (this.builder.period.start) {
                 if (this.builder.period.start === this.builder.period.end) {
-                    this.report.pdf.period = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
                 } else {
-                    this.report.pdf.period = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
                 }
             } else {
-                this.report.pdf.period = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
             }
             this.activePeriod = null;
             this.genPreview();
@@ -941,6 +941,8 @@ export default {
                     link.setAttribute('download', `Report.${format}`);
                     document.body.appendChild(link);
                     link.click();
+                    this.dialogExportPDF = false;
+                    this.dialogExportCSV = false;
                 })
                 .catch(err => {
                     console.log(err);

@@ -288,9 +288,24 @@ class TrackingReportRepository
         // PREPARING DATA
         $data = $this->getData($request)['tracks'];
         $user = Auth::user();
-        $period = $request->get('period');
+        $period = $request->get('periodText');
 
         PDF::SetAuthor($user->full_name);
+
+        // PAGE 1. TITLE
+        PDF::SetPrintHeader(false);
+        PDF::SetPrintFooter(false);
+        PDF::AddPage();
+
+        $html = $html . PHP_EOL . $this->prepareForPdf(view('tracking.pdf.layout', [
+                'reportName' => $reportName,
+                'user'       => $user,
+                'period'     => $period,
+                'totalTime'  => '18:00 h'
+        ]));
+        PDF::WriteHTML($html, true, false, true, false, '');
+
+        PDF::EndPage();
 
         // HEADER
         PDF::setHeaderMargin($this->getMargins('header'));
@@ -312,24 +327,9 @@ class TrackingReportRepository
             PDF::writeHTML($html, true, false, true, false, '');
         });
 
-        // PAGE 1. TITLE
-        PDF::SetPrintHeader(false);
-        PDF::SetPrintFooter(false);
-        PDF::AddPage();
-
-        $html = $html . PHP_EOL . $this->prepareForPdf(view('tracking.pdf.layout', [
-                'reportName' => $reportName,
-                'user'       => $user,
-                'period'     => $period,
-                'totalTime'  => '18:00 h'
-        ]));
-        PDF::WriteHTML($html, true, false, true, false, '');
-
-        PDF::EndPage();
-
         // PAGE 2 and next
-        PDF::SetPrintHeader(true);
-        PDF::SetPrintFooter(true);
+        PDF::SetPrintHeader();
+        PDF::SetPrintFooter();
         PDF::AddPage();
         PDF::setPageOrientation('l');
         $html = $this->prepareForPdf(view('tracking.pdf.page', [
