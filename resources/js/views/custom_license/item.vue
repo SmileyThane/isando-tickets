@@ -195,7 +195,7 @@
                                                 <v-icon>mdi-account-multiple-minus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'Assigned users'"></v-list-item-title>
+                                                <v-list-item-title v-text="'New users'"></v-list-item-title>
                                                 <v-list-item-subtitle v-text="usersAssigned"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
