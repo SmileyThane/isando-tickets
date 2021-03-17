@@ -348,7 +348,10 @@
                 </template>
             </v-treeview>
 
-            <v-card-actions class="white justify-center">
+            <v-card-actions
+                class="white justify-center"
+                v-if="reportData.entities.length"
+            >
                 <v-dialog
                     v-model="dialogExportPDF"
                     persistent
@@ -555,7 +558,13 @@ export default {
                     value: 'alph-asc',
                     text: 'A - Z and chronologically'
                 },
-                group: [],
+                group: [
+                    {
+                        icon: "mdi-domain",
+                        text: "Services",
+                        value: "service"
+                    }
+                ],
                 filters: []
             },
             roundingItems: [
@@ -631,9 +640,9 @@ export default {
                     value: "day"
                 },
                 {
-                    icon: "mdi-format-quote-open",
-                    text: "Description",
-                    value: "description"
+                    icon: "mdi-folder-account-outline",
+                    text: "Projects",
+                    value: "project"
                 },
                 {
                     icon: "mdi-calendar-week",
@@ -646,10 +655,20 @@ export default {
                     value: "billability"
                 },
                 {
+                    icon: "mdi-account",
+                    text: "Clients",
+                    value: "client"
+                },
+                {
                     icon: "mdi-calendar-month",
                     text: "Month",
                     value: "month"
-                }
+                },
+                {
+                    icon: "mdi-account-multiple",
+                    text: "Co-workers",
+                    value: "coworker"
+                },
             ],
             availableFilters: [
                 {

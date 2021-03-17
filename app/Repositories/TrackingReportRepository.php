@@ -204,6 +204,14 @@ class TrackingReportRepository
                 return $tracking->description ?? 'None';
             case 'billability':
                 return $tracking->billable ? 'Billable' : 'Non-billable';
+            case 'service':
+                return $tracking->service ? $tracking->service->name : 'None';
+            case 'project':
+                return $tracking->project ? $tracking->project->name : 'None';
+            case 'client':
+                return $tracking->project && $tracking->project->client ? $tracking->project->client->name : 'None';
+            case 'coworker':
+                return $tracking->user->full_name;
         }
         return null;
     }
