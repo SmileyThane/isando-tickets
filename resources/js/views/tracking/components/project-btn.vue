@@ -18,9 +18,15 @@
                     <v-icon>
                         mdi-plus-circle-outline
                     </v-icon>
-                    &nbsp;&nbsp;{{langMap.tracking.project_btn.project}}
+                    &nbsp;&nbsp;{{langMap.tracking.project_btn.project_or_ticket}}
                 </span>
                 <span v-if="selectedProject">
+                    <span v-if="selectedProject && selectedProject.from">
+                        Ticket: {{ selectedProject.number }}.
+                    </span>
+                    <span v-else>
+                        Project:
+                    </span>
                     {{ selectedProject.name }}
                 </span>
             </v-btn>
@@ -179,6 +185,60 @@
                         </v-card-actions>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
+                <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        {{langMap.tracking.project_btn.choose_ticket}}
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content
+                        style="min-height: 380px; max-height: 380px;"
+                    >
+                        <v-text-field
+                            :label="langMap.tracking.project_btn.ticket"
+                            :placeholder="langMap.tracking.project_btn.start_typing_to_search"
+                            autofocus
+                            clearable
+                            v-model="searchTicket"
+                            style="max-width: 90%"
+                        >
+                        </v-text-field>
+                        <perfect-scrollbar>
+                            <v-treeview
+                                :items="$store.getters['Tickets/getTreeTickets']"
+                                item-children="tickets"
+                                item-text="number"
+                                item-key="id"
+                                dense
+                                class="text-left"
+                                :selected-color="color"
+                                activatable
+                                hoverable
+                                open-on-click
+                                return-object
+                                style="min-height: 300px; max-height: 300px;"
+                                @update:active="selectTicket"
+                            >
+                                <template v-slot:prepend="{ item }">
+                                    <v-icon small v-if="item.from_entity_type === 'App\\Company'">
+                                        mdi-factory
+                                    </v-icon>
+                                    <v-icon small v-else-if="item.from_entity_type === 'App\\Client'">
+                                        mdi-account
+                                    </v-icon>
+                                    <v-icon v-else>mdi-folder-account-outline</v-icon>
+                                </template>
+                                <template v-slot:label="{ item }">
+                                    <span v-if="item.projects">
+                                        {{ item.name }}
+                                    </span>
+                                    <span v-else>
+                                    {{ item.number }}
+                                    <small>({{ item.name }})</small>
+                                </span>
+                                </template>
+                            </v-treeview>
+                        </perfect-scrollbar>
+                    </v-expansion-panel-content>
+                </v-expansion-panel>
             </v-expansion-panels>
         </v-card>
     </v-menu>
@@ -234,6 +294,7 @@ export default {
             isCreatingProject: false,
             searchProduct: null,
             searchClient: null,
+            searchTicket: null,
             colorMenu: false,
             form: {
                 name: '',
@@ -247,6 +308,7 @@ export default {
         this.debounceGetProjects = _.debounce(this.__getProjects, 1000);
         this.debounceGetProducts = _.debounce(this.__getProducts, 1000);
         this.debounceGetClients = _.debounce(this.__getClients, 1000);
+        this.debounceGetTickets = _.debounce(this.__getTickets, 1000);
     },
     mounted() {
         // this.debounceGetProducts();
@@ -261,6 +323,9 @@ export default {
         },
         __getClients() {
             this.$store.dispatch('Clients/getClientList', { search: this.searchClient });
+        },
+        __getTickets() {
+            this.$store.dispatch('Tickets/getTicketList', { search: this.searchTicket });
         },
         resetNewProjectForm() {
             this.form = {
@@ -282,10 +347,22 @@ export default {
         selectProject(project) {
             this.selectedProject = project.shift();
             this.shown = false;
+        },
+        selectTicket(ticket) {
+            this.selectedTicket = ticket.shift();
+            this.shown = false;
         }
     },
     computed: {
         selectedProject: {
+            get() {
+                return this.value;
+            },
+            set(val) {
+                this.$emit('input', val);
+            }
+        },
+        selectedTicket: {
             get() {
                 return this.value;
             },
@@ -329,6 +406,9 @@ export default {
     watch: {
         search() {
             this.debounceGetProjects();
+        },
+        searchTicket() {
+            this.debounceGetTickets();
         }
     }
 };

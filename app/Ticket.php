@@ -208,6 +208,10 @@ class Ticket extends Model
             ->with('childTicketData');
     }
 
+    public function Trackers() {
+        return $this->morphMany('App\Tracking', 'entity');
+    }
+
     public function getMergedParentInfoAttribute(): string
     {
         if ($this->parent_id !== null && $this->unifier_id) {

@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Client;
 use App\Product;
 use App\Tag;
+use App\Ticket;
 use App\TrackingProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -164,4 +165,19 @@ class TrackingProjectRepository
         return $products->get();
     }
 
+    public function getTickets(Request $request) {
+        $companyUser = Auth::user()->employee;
+        $tickets = Ticket::query();
+        $tickets->where(function ($ticketsQuery) use ($companyUser) {
+            $ticketsQuery->where('to_company_user_id', $companyUser->id)
+                ->orWhere('contact_company_user_id', $companyUser->id);
+        });
+        if ($request->has('search')) {
+            $tickets->where(function($query) use ($request) {
+                $query->where('name', 'like', '%' . trim($request->search) . '%')
+                    ->orWhere('description', 'like', '%' . trim($request->search) . '%');
+            });
+        }
+        return $tickets->get();
+    }
 }
