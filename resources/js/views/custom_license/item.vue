@@ -129,13 +129,18 @@
                                 ></v-text-field>
                             </template>
                             <template v-slot:item.trialExpirationAtString="{ item }">
+                                <div
+                                    @click.stop.prevent="selectedUserId = item.id; trialExpirationModal = true"
+                                >
                                     <v-text-field
                                         v-model="item.trialExpirationAtString"
                                         :color="themeBgColor"
                                         prepend-icon="mdi-calendar"
                                         readonly
-                                        @click.stop.prevent="selectedUserId = item.id; trialExpirationModal = true"
+
                                     ></v-text-field>
+
+                                </div>
                             </template>
                             <template v-slot:item.licensed="{ item }">
                                 <v-btn
@@ -278,16 +283,32 @@
                                 <div class="overline mx-2">
                                     additional licenses
                                 </div>
-                                <span v-for="(licenseValue, index) in licenseValues" :key="index">
-                                <v-btn
-                                    class="ma-2"
-                                    color="grey darken-1"
-                                    outlined
-                                    @click="appendLicenseItems(licenseValue)">
-                                    {{ 'up to ' + licenseValue }}
-                                </v-btn>
-                                <br v-if="index === (licenseValues.length/2) - 1">
-                            </span>
+                                <v-row>
+                                    <v-col md="6">
+                                        <span v-for="(licenseValue, index) in licenseValues" :key=" '+' + index">
+                                            <v-btn
+                                                class="ma-2"
+                                                color="grey darken-1"
+                                                outlined
+                                                @click="appendLicenseItems(licenseValue)">
+                                                {{ 'Plus ' + licenseValue }}
+                                            </v-btn>
+                                            <br v-if="index === (licenseValues.length/2) - 1">
+                                        </span>
+                                    </v-col>
+                                    <v-col md="6">
+                                        <span v-for="(licenseValue, index) in licenseValues" :key="'-' + index">
+                                            <v-btn
+                                                class="ma-2"
+                                                color="grey darken-1"
+                                                outlined
+                                                @click="spendLicenseItems(licenseValue)">
+                                                {{ 'Minus ' + licenseValue }}
+                                            </v-btn>
+                                            <br v-if="index === (licenseValues.length/2) - 1">
+                                        </span>
+                                    </v-col>
+                                </v-row>
                             </v-card>
                         </v-expand-transition>
                     </v-card-text>
@@ -304,7 +325,7 @@
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">
                             {{
-                            langMap.notification.history
+                                langMap.notification.history
                             }}
                         </v-toolbar-title>
                     </v-toolbar>
@@ -358,21 +379,21 @@
             width="290px"
         >
             <v-date-picker
-                :color="themeBgColor"
                 v-model="tempExpDate"
+                :color="themeBgColor"
                 scrollable
             >
                 <v-spacer></v-spacer>
                 <v-btn
-                    text
                     color="cancel"
+                    text
                     @click="trialExpirationModal = false"
                 >
                     Cancel
                 </v-btn>
                 <v-btn
-                    text
                     :color="themeBgColor"
+                    text
                     @click="setUserTrialDateItem"
                 >
                     OK
@@ -576,11 +597,19 @@ export default {
                     let users = []
                     for (let key in response.data.entities) {
 
-                        response.data.entities[key].lastActivationChangeString =
-                            this.moment(response.data.entities[key].lastActivationChangeString).format('DD-MM-YYYY')
+                        if (response.data.entities[key].lastActivationChangeString !== "01/01/1970") {
+                            response.data.entities[key].lastActivationChangeString =
+                                this.moment(response.data.entities[key].lastActivationChangeString).format('DD-MM-YYYY')
+                        } else {
+                            response.data.entities[key].lastActivationChangeString = ''
+                        }
 
-                        response.data.entities[key].trialExpirationAtString =
-                            this.moment(response.data.entities[key].trialExpirationAtString).format('DD-MM-YYYY')
+                        if (response.data.entities[key].trialExpirationAtString !== "01/01/1970") {
+                            response.data.entities[key].trialExpirationAtString =
+                                this.moment(response.data.entities[key].trialExpirationAtString).format('DD-MM-YYYY')
+                        } else {
+                            response.data.entities[key].trialExpirationAtString = ''
+                        }
                         users.push(response.data.entities[key])
                     }
                     this.licenseUsers = users
@@ -611,6 +640,11 @@ export default {
         },
         appendLicenseItems(count = 0) {
             this.license.usersAllowed += count
+        },
+        spendLicenseItems(count = 0) {
+            if (this.license.usersAllowed - count > 0) {
+                this.license.usersAllowed -= count
+            }
         },
         updateLicense() {
             axios.put(`/api/custom_license/${this.$route.params.id}/limits`, this.license).then(response => {
