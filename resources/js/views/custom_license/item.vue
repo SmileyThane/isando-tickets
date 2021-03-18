@@ -291,7 +291,7 @@
                                                 color="grey darken-1"
                                                 outlined
                                                 @click="appendLicenseItems(licenseValue)">
-                                                {{ 'Plus ' + licenseValue }}
+                                                {{ '+' + licenseValue }}
                                             </v-btn>
                                             <br v-if="index === (licenseValues.length/2) - 1">
                                         </span>
@@ -303,7 +303,7 @@
                                                 color="grey darken-1"
                                                 outlined
                                                 @click="spendLicenseItems(licenseValue)">
-                                                {{ 'Minus ' + licenseValue }}
+                                                {{ '-' + licenseValue }}
                                             </v-btn>
                                             <br v-if="index === (licenseValues.length/2) - 1">
                                         </span>
