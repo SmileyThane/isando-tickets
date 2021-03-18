@@ -350,6 +350,7 @@
                             <vc-date-picker
                                 v-model="dateRange"
                                 is-range
+                                :step="1"
                                 :columns="2"
                                 mode="date"
                                 @input="handlerDateRange"

@@ -90,6 +90,7 @@
                                         :value.sync="builder.period"
                                         is-range
                                         no-title
+                                        :step="1"
                                         :columns="2"
                                         mode="range"
                                         @input="activePeriod = null; genPreview()"
