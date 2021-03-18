@@ -106,6 +106,16 @@ class CustomLicenseRepository
         return null;
     }
 
+    public function setUserTrial(Request $request, $id)
+    {
+        $data = [
+            'trialExpirationDate' => Carbon::parse($request->trialExpirationDate)->format('m/d/Y')
+        ];
+        $result = $this->makeIxArmaRequest("/api/v1/app/user/$id/trial", $data, 'PUT');
+        $parsedResult = json_decode($result->getContents(), true);
+        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+    }
+
     public function itemHistory($id)
     {
         $client = \App\Client::find($id);
