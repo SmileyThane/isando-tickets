@@ -349,7 +349,7 @@
 
             <v-card-actions
                 class="white justify-center"
-                v-if="reportData.entities.length"
+                v-if="reportData.entities && reportData.entities.length"
             >
                 <v-dialog
                     v-model="dialogExportPDF"
@@ -989,7 +989,7 @@ export default {
             return this.calculateTime(this.reportData.entities);
         },
         doughnutData: function() {
-            if (this.reportData.entities.length) {
+            if (this.reportData.entities && this.reportData.entities.length) {
                 let data = {
                     labels: [],
                     datasets: []
@@ -1022,7 +1022,7 @@ export default {
             return null;
         },
         barData: function() {
-            if (this.reportData.entities.length) {
+            if (this.reportData.entities && this.reportData.entities.length) {
                 let data = {
                     labels: [],
                     datasets: []
