@@ -86,11 +86,12 @@
                                 <div class="d-inline-flex">
                                     <vc-date-picker
                                         ref="calendar"
-                                        v-model="dateRange"
+                                        v-model.sync="builder.period"
+                                        :value.sync="builder.period"
                                         is-range
                                         no-title
                                         :columns="2"
-                                        mode="date"
+                                        mode="range"
                                         @input="activePeriod = null; genPreview()"
                                     ></vc-date-picker>
                                 </div>
@@ -100,7 +101,7 @@
                 </v-expansion-panels>
             </div>
             <!-- ROUNDING -->
-            <div class="d-inline-flex flex-glow-1 mx-2" style="">
+            <div class="d-inline-flex flex-glow-1 mx-2 hidden-sm-and-up" style="">
                 <v-select
                     prepend-inner-icon="mdi-approximately-equal"
                     placeholder="Rounding up of times"
@@ -806,7 +807,7 @@ export default {
         invertColor(hex, bw = true) {
             return Helper.invertColor(hex.substr(0, 7), bw);
         },
-        setPeriod(periodKey = 'today') {
+        async setPeriod(periodKey = 'today') {
             let start = null;
             let end = null;
             switch (periodKey) {
@@ -859,15 +860,22 @@ export default {
                     start = null;
                     end = moment().endOf('years');
             }
-            this.builder.period.start = start ? start.toDate() : start;
-            this.builder.period.end = end.toDate();
-            // const calendar = this.$refs.calendar;
-            // if (calendar) {
-            //     console.log(calendar);
-            //     calendar.updateValue(new Date(this.builder.period.start), {
-            //         formatInput: true
-            //     });
-            // }
+            this.builder.period.start = start ? moment(start).toDate() : start;
+            this.builder.period.end = moment(end).toDate();
+            const calendar = this.$refs.calendar;
+            if (calendar) {
+                await calendar.updateValue({
+                    start: this.builder.period.start ? moment(this.builder.period.start).toDate() : moment('2020-01-01').toDate(),
+                    end: moment(this.builder.period.end).toDate()
+                }, {
+                    formatInput: true,
+                    hidePopover: false
+                });
+                calendar.$refs.calendar.showPageRange({
+                    from: this.builder.period.start,
+                    to: this.builder.period.end
+                });
+            }
             if (this.builder.period.start) {
                 if (this.builder.period.start === this.builder.period.end) {
                     this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
@@ -1046,14 +1054,6 @@ export default {
                 return data;
             }
             return null;
-        },
-        dateRange: {
-            set (val) {
-                this.builder.period = val;
-            },
-            get () {
-                return this.builder.period;
-            }
         }
     },
     watch: {
