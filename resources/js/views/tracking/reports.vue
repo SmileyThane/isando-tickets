@@ -25,7 +25,7 @@
         </div>
         <div class="d-flex flex-row">
             <!-- PERIOD -->
-            <div class="d-inline-flex flex-glow-1 mr-2" style="width: 550px; min-width: 550px; max-height: 55px">
+            <div class="d-inline-flex flex-glow-0 mr-2" style="width: 550px; min-width: 550px; max-height: 55px">
                 <v-expansion-panels
                     v-model="activePeriod"
                     accordion
@@ -101,7 +101,7 @@
                 </v-expansion-panels>
             </div>
             <!-- ROUNDING -->
-            <div class="d-inline-flex flex-glow-1 mx-2 hidden-sm-and-up" style="">
+            <div class="d-inline-flex flex-glow-1 mx-2 hidden-sm-and-up" style="width: 100%">
                 <v-select
                     prepend-inner-icon="mdi-approximately-equal"
                     placeholder="Rounding up of times"
@@ -115,7 +115,7 @@
                 </v-select>
             </div>
             <!-- SORTING  -->
-            <div class="d-inline-flex flex-glow-1 ml-2" style="">
+            <div class="d-inline-flex flex-glow-1 ml-2" style="width: 100%">
                 <v-select
                     :prepend-inner-icon="builder.sort.icon"
                     placeholder="Sorting"
