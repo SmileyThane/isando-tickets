@@ -120,16 +120,22 @@
                             hide-default-footer
                             @click:row="showAssignDialog"
                         >
-                            <template v-slot:item.lastActivationChange="{ item }">
-                                {{
-                                    item.lastActivationChange > 0 ?
-                                        moment(item.lastActivationChange).format('DD-MM-YYYY') : ''
-                                }}
+                            <template v-slot:item.lastActivationChangeString="{ item }">
+                                <v-text-field
+                                    v-model="item.lastActivationChangeString"
+                                    :color="themeBgColor"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                ></v-text-field>
                             </template>
                             <template v-slot:item.trialExpirationAtString="{ item }">
-                                {{
-                                    moment(item.trialExpirationAtString).format('DD-MM-YYYY')
-                                }}
+                                    <v-text-field
+                                        v-model="item.trialExpirationAtString"
+                                        :color="themeBgColor"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        @click.stop.prevent="selectedUserId = item.id; trialExpirationModal = true"
+                                    ></v-text-field>
                             </template>
                             <template v-slot:item.licensed="{ item }">
                                 <v-btn
@@ -143,10 +149,12 @@
                                     </v-icon>
                                 </v-btn>
                             </template>
+                            <template>
+
+                            </template>
                         </v-data-table>
                     </div>
                 </v-card>
-
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -195,7 +203,7 @@
                                                 <v-icon>mdi-account-multiple-minus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'Assigned users'"></v-list-item-title>
+                                                <v-list-item-title v-text="'New users'"></v-list-item-title>
                                                 <v-list-item-subtitle v-text="usersAssigned"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
@@ -224,15 +232,16 @@
                                             <v-list-item-content>
                                                 <v-list-item-title v-text="'Trial days'"></v-list-item-title>
                                                 <v-text-field
-                                                    style="max-width: 50px"
+                                                    v-if="enableToEditLicense"
                                                     v-model="license.trialPeriodDays"
                                                     :color="themeBgColor"
-                                                    v-if="enableToEditLicense"
                                                     dense
                                                     name="trial_days"
+                                                    style="max-width: 50px"
                                                     type="text"
                                                 ></v-text-field>
-                                                <v-list-item-subtitle v-if="!enableToEditLicense" v-text="license.trialPeriodDays"></v-list-item-subtitle>
+                                                <v-list-item-subtitle v-if="!enableToEditLicense"
+                                                                      v-text="license.trialPeriodDays"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
                                     </v-list-item-group>
@@ -293,8 +302,9 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
-                                langMap.notification.history
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{
+                            langMap.notification.history
                             }}
                         </v-toolbar-title>
                     </v-toolbar>
@@ -304,6 +314,7 @@
                         >
                             <v-list-item
                                 v-for="(item, index) in licenseHistory"
+                                v-if="item.diff.length > 0"
                                 :key="index"
                             >
                                 <v-list-item-title>
@@ -321,11 +332,11 @@
                     {{ langMap.main.assign }}
                 </v-card-title>
                 <v-card-text>
-                    <v-select :color="themeBgColor" :item-color="themeBgColor"
-                              v-model="reassignedUserForm.company_id" :items="customers"
-                              item-value="id"
-                              item-text="name"
-                              dense :label="langMap.main.company">
+                    <v-select v-model="reassignedUserForm.company_id" :color="themeBgColor"
+                              :item-color="themeBgColor" :items="customers"
+                              :label="langMap.main.company"
+                              dense
+                              item-text="name" item-value="id">
                     </v-select>
                 </v-card-text>
                 <v-card-actions>
@@ -338,6 +349,35 @@
                     </v-btn>
                 </v-card-actions>
             </v-card>
+        </v-dialog>
+        <v-dialog
+            ref="dialog"
+            v-model="trialExpirationModal"
+            :return-value.sync="tempExpDate"
+            persistent
+            width="290px"
+        >
+            <v-date-picker
+                :color="themeBgColor"
+                v-model="tempExpDate"
+                scrollable
+            >
+                <v-spacer></v-spacer>
+                <v-btn
+                    text
+                    color="cancel"
+                    @click="trialExpirationModal = false"
+                >
+                    Cancel
+                </v-btn>
+                <v-btn
+                    text
+                    :color="themeBgColor"
+                    @click="setUserTrialDateItem"
+                >
+                    OK
+                </v-btn>
+            </v-date-picker>
         </v-dialog>
     </v-container>
 </template>
@@ -363,9 +403,11 @@ export default {
                 {text: `licensed`, value: 'licensed', sortable: false},
                 {text: `active`, value: 'active', sortable: false},
                 {text: `expired_at`, value: 'trialExpirationAtString', sortable: false},
-                {text: `last_activation`, value: 'lastActivationChange', sortable: false},
+                {text: `last_activation`, value: 'lastActivationChangeString', sortable: false},
             ],
             menu2: false,
+            tempExpDate: null,
+            selectedUserId: null,
             snackbar: false,
             actionColor: '',
             snackbarMessage: '',
@@ -388,6 +430,7 @@ export default {
                 role_ids: [],
                 company_user_id: 0
             },
+            trialExpirationModal: false,
             clientIsLoaded: false,
             employees: [],
             licenseValues: [10, 20, 50, 100, 500, 1000],
@@ -530,7 +573,17 @@ export default {
             axios.get(`/api/custom_license/${this.$route.params.id}/users`).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.licenseUsers = response.data.entities
+                    let users = []
+                    for (let key in response.data.entities) {
+
+                        response.data.entities[key].lastActivationChangeString =
+                            this.moment(response.data.entities[key].lastActivationChangeString).format('DD-MM-YYYY')
+
+                        response.data.entities[key].trialExpirationAtString =
+                            this.moment(response.data.entities[key].trialExpirationAtString).format('DD-MM-YYYY')
+                        users.push(response.data.entities[key])
+                    }
+                    this.licenseUsers = users
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -655,8 +708,7 @@ export default {
         },
         getClients() {
             this.loading = this.themeBgColor
-            axios.get('/api/client', {
-            }).then(response => {
+            axios.get('/api/client', {}).then(response => {
                 this.loading = false
                 response = response.data
                 if (response.success === true) {
@@ -677,22 +729,41 @@ export default {
             this.assignCompanyDialog = true
         },
         assignToIxarmaCompany() {
-            axios.post('/api/custom_license_unassigned/assign', this.reassignedUserForm, {
-            }).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.snackbarMessage = this.langMap.main.update_successful;
-                    this.actionColor = 'success'
-                    this.snackbar = true;
-                    this.getLicenseUsers();
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error'
-                    this.snackbar = true;
-                }
-            });
+            axios.post('/api/custom_license_unassigned/assign', this.reassignedUserForm, {})
+                .then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.main.update_successful;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.getLicenseUsers();
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
             // console.log(this.reassignedUserForm);
             this.assignCompanyDialog = false
+        },
+        setUserTrialDateItem() {
+            axios.put(`/api/custom_license_user/${this.selectedUserId}/trial`, {'trialExpirationDate': this.tempExpDate}, {})
+                .then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.main.update_successful;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.getLicenseUsers();
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            // console.log(this.selectedUserId);
+            // console.log(item);
+            this.trialExpirationModal = false
         }
     }
 }
