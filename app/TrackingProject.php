@@ -21,7 +21,7 @@ class TrackingProject extends Model
     }
 
     public function Trackers() {
-        return $this->hasMany('App\Tracking', 'project_id', 'id');
+        return $this->morphMany('App\Tracking', 'entity');
     }
 
     public function getTrackedAttribute() {

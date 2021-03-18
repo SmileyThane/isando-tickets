@@ -25,7 +25,7 @@
         </div>
         <div class="d-flex flex-row">
             <!-- PERIOD -->
-            <div class="d-inline-flex flex-glow-1 mr-2" style="width: 550px; min-width: 550px; max-height: 55px">
+            <div class="d-inline-flex flex-glow-0 mr-2" style="width: 550px; min-width: 550px; max-height: 55px">
                 <v-expansion-panels
                     v-model="activePeriod"
                     accordion
@@ -90,6 +90,7 @@
                                         :value.sync="builder.period"
                                         is-range
                                         no-title
+                                        :step="1"
                                         :columns="2"
                                         mode="range"
                                         @input="activePeriod = null; genPreview()"
@@ -101,7 +102,7 @@
                 </v-expansion-panels>
             </div>
             <!-- ROUNDING -->
-            <div class="d-inline-flex flex-glow-1 mx-2 hidden-sm-and-up" style="">
+            <div class="d-inline-flex flex-glow-1 mx-2 hidden-sm-and-up" style="width: 100%">
                 <v-select
                     prepend-inner-icon="mdi-approximately-equal"
                     placeholder="Rounding up of times"
@@ -115,7 +116,7 @@
                 </v-select>
             </div>
             <!-- SORTING  -->
-            <div class="d-inline-flex flex-glow-1 ml-2" style="">
+            <div class="d-inline-flex flex-glow-1 ml-2" style="width: 100%">
                 <v-select
                     :prepend-inner-icon="builder.sort.icon"
                     placeholder="Sorting"
@@ -349,7 +350,7 @@
 
             <v-card-actions
                 class="white justify-center"
-                v-if="reportData.entities.length"
+                v-if="reportData.entities && reportData.entities.length"
             >
                 <v-dialog
                     v-model="dialogExportPDF"
@@ -989,7 +990,7 @@ export default {
             return this.calculateTime(this.reportData.entities);
         },
         doughnutData: function() {
-            if (this.reportData.entities.length) {
+            if (this.reportData.entities && this.reportData.entities.length) {
                 let data = {
                     labels: [],
                     datasets: []
@@ -1022,7 +1023,7 @@ export default {
             return null;
         },
         barData: function() {
-            if (this.reportData.entities.length) {
+            if (this.reportData.entities && this.reportData.entities.length) {
                 let data = {
                     labels: [],
                     datasets: []

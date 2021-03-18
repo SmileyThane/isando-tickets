@@ -54,8 +54,7 @@ class TrackingReportRepository
                 return false;
             });
 
-        $tracking = Tracking::with('Project.Client')
-            ->with('User.employee.assignedToTeams');
+        $tracking = Tracking::with('User.employee.assignedToTeams');
 
         if ($request->has('period') && isset($request->period['start'])) {
             $tracking->where('tracking.date_from', '>=', $request->period['start']);

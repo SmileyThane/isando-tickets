@@ -64,8 +64,6 @@ class TrackingRepository
                 Carbon::parse($request->date_from)->startOfDay(),
                 Carbon::parse($request->date_to)->endOfDay()
             ])
-            ->with('Project.Product')
-            ->with('Project.Client')
             ->with('Tags')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
             ->orderBy('id', 'desc')
@@ -94,7 +92,10 @@ class TrackingRepository
         $tracking->status = $request->status;
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
-        if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
+        if ($request->has('entity')) {
+            $tracking->entity_id = $request->entity['id'];
+            $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
+        }
         $tracking->save();
         if ($request->has('service') && !is_null($request->service)) {
             if (!is_null($request->service)) {
@@ -137,7 +138,10 @@ class TrackingRepository
         }
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
-        if ($request->has('project')) { $tracking->project_id = $request->project['id']; }
+        if ($request->has('entity')) {
+            $tracking->entity_id = $request->entity['id'];
+            $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
+        }
         if ($request->has('service')) {
             if (!is_null($request->service)) {
                 $service = Service::with('Company')->find($request->service['id']);

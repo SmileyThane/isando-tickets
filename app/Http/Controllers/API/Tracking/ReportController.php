@@ -29,7 +29,7 @@ class ReportController extends BaseController
                     $result = parent::callAction($method, $request);
                     return self::showResponse(true, $result);
                 } catch (\Exception $exception) {
-                    return self::showResponse(false, $result);
+                    return self::showResponse(false, $exception->getMessage());
                 }
         }
     }

@@ -9,6 +9,13 @@
             {{ snackbarMessage }}
         </v-snackbar>
 
+<!--        <v-overlay :value="loading">-->
+<!--            <v-progress-circular-->
+<!--                indeterminate-->
+<!--                size="64"-->
+<!--            ></v-progress-circular>-->
+<!--        </v-overlay>-->
+
 <!--        panel-->
         <template>
             <v-card flat>
@@ -42,7 +49,7 @@
                                 key="timerPanelProjectKey"
                                 :color="themeBgColor"
                                 :onChoosable="handlerProjectTimerPanel"
-                                v-model="timerPanel.project"
+                                v-model="timerPanel.entity"
                             ></ProjectBtn>
                         </div>
                         <div class="mx-2 align-self-center">
@@ -152,7 +159,7 @@
                                 key="manualPanelProjectKey"
                                 :color="themeBgColor"
                                 :onChoosable="handlerProjectManualPanel"
-                                v-model="manualPanel.project"
+                                v-model="manualPanel.entity"
                             ></ProjectBtn>
                         </div>
                         <div class="mx-1 align-self-center">
@@ -343,6 +350,7 @@
                             <vc-date-picker
                                 v-model="dateRange"
                                 is-range
+                                :step="1"
                                 :columns="2"
                                 mode="date"
                                 @input="handlerDateRange"
@@ -426,19 +434,25 @@
                                             </template>
                                         </v-edit-dialog>
                                     </template>
-                                    <template v-slot:item.project.name="props">
+                                    <template v-slot:item.entity="props">
+                                        <span v-if="props.item.entity && props.item.entity.client">
+                                            {{ props.item.entity.client.name }}
+                                        </span>
+                                        <span v-else-if="props.item.entity">{{ props.item.entity.from_company_name }}</span>
+                                    </template>
+                                    <template v-slot:item.entity.name="props">
                                         <v-edit-dialog
-                                            @save="save(props.item, 'project', props.item.project)"
+                                            @save="save(props.item, 'entity', props.item.entity)"
                                             @cancel="cancel"
                                             @open="open"
-                                            @close="save(props.item, 'project', props.item.project)"
+                                            @close="save(props.item, 'entity', props.item.entity)"
                                         >
                                             <ProjectBtn
                                                 :key="props.item.id"
                                                 :color="themeBgColor"
-                                                v-model="props.item.project"
-                                                @blur="save(props.item, 'project', props.item.project)"
-                                                @input="save(props.item, 'project', props.item.project)"
+                                                v-model="props.item.entity"
+                                                @blur="save(props.item, 'entity', props.item.entity)"
+                                                @input="save(props.item, 'entity', props.item.entity)"
                                             ></ProjectBtn>
                                         </v-edit-dialog>
                                     </template>
@@ -636,6 +650,7 @@ export default {
     },
     data() {
         return {
+            loading: false,
             attemptRepeat: 0,
             tz: {
                 name: moment.tz.guess(),
@@ -677,12 +692,12 @@ themeBgColor: this.$store.state.themeBgColor,
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.company,
-                    value: 'project.client.name',
+                    value: 'entity',
                     width: '20%'
                 },
                 {
-                    text: this.$store.state.lang.lang_map.tracking.tracker.project_name,
-                    value: 'project.name',
+                    text: this.$store.state.lang.lang_map.tracking.tracker.project_name_ticket_name,
+                    value: 'entity.name',
                     width: '20%'
                 },
                 {
@@ -729,7 +744,8 @@ themeBgColor: this.$store.state.themeBgColor,
             manualPanel: {
                 service: null,
                 description: null,
-                project: null,
+                entity: null,
+                entity_type: null,
                 tags: [],
                 billable: false,
                 date_from: moment().format(),
@@ -746,7 +762,8 @@ themeBgColor: this.$store.state.themeBgColor,
                 start: null,
                 billable: false,
                 description: null,
-                project: null,
+                entity: null,
+                entity_type: null,
                 tags: [],
                 status: 'started',
                 date_from: moment(),
@@ -785,6 +802,7 @@ themeBgColor: this.$store.state.themeBgColor,
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Tags/getTagList');
         this.$store.dispatch('Services/getServicesList', { search: null });
+        this.$store.dispatch('Tickets/getTicketList', { search: null });
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1051,10 +1069,10 @@ themeBgColor: this.$store.state.themeBgColor,
             return this.date;
         },
         handlerProjectTimerPanel(data) {
-            this.timerPanel.project = data.project;
+            this.timerPanel.entity = data.project;
         },
         handlerProjectManualPanel(data) {
-            this.manualPanel.project = data.project;
+            this.manualPanel.entity = data.project;
         },
         handlerTagsTimerPanel(data) {
             this.timerPanel.tags  = data.tags;
@@ -1074,6 +1092,10 @@ themeBgColor: this.$store.state.themeBgColor,
             }
             if (newValue) {
                 item[fieldName] = newValue;
+            }
+            if (fieldName === 'entity') {
+                item.entity_id = item.entity && item.entity.id ? item.entity.id : item.entity_id;
+                item.entity_type = item.entity && item.entity.from ? 'App\\Ticket' : 'App\\TrackingProject';
             }
             this.__updateTrackingById(item.id, item);
         },
@@ -1177,6 +1199,12 @@ themeBgColor: this.$store.state.themeBgColor,
                 const seconds = moment().diff(moment(this.timerPanel.start), 'seconds');
                 this.timerPanel.passedSeconds = this.helperConvertSecondsToTimeFormat(seconds);
             }
+        },
+        'timerPanel.entity': function () {
+            this.timerPanel.entity_type = this.timerPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
+        },
+        'manualPanel.entity': function () {
+            this.manualPanel.entity_type = this.manualPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
         }
     },
 }

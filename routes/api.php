@@ -202,6 +202,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::get('/clients', 'BaseController@getClientList');
                 Route::get('/products', 'BaseController@getProductList');
                 Route::get('/coworkers', 'BaseController@getCoworkers');
+                Route::get('/tickets', 'BaseController@getTickets');
 
                 //Tracker
                 Route::get('/tracker', 'TrackingController@get');
