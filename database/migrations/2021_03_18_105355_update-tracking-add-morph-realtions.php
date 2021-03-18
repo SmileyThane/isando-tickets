@@ -15,7 +15,7 @@ class UpdateTrackingAddMorphRealtions extends Migration
     {
         Schema::table('tracking', static function (Blueprint $table) {
             $table->dropForeign('tracking_tracking_projects_id_fk');
-            $table->dropIndex('tracking_tracking_projects_id_fk');
+//            $table->dropIndex('tracking_tracking_projects_id_fk');
             $table->renameColumn('project_id', 'entity_id')->change();
         });
         Schema::table('tracking', static function (Blueprint $table) {
