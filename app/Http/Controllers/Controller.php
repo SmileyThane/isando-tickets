@@ -24,7 +24,7 @@ class Controller extends BaseController
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function checkAuth(): JsonResponse
     {

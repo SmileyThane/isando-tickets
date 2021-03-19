@@ -87,7 +87,7 @@ class TicketController extends Controller
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS);
 
         if ($result && $hasAccess) {
-            return self::showResponse($this->ticketRepo->update($request, $id));
+            return self::showResponse(true, $this->ticketRepo->update($request, $id));
         }
 
         return self::showResponse(false);

@@ -245,7 +245,7 @@ export default {
             }).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.snackbarMessage = '';
+                    this.snackbarMessage = this.langMap.main.update_successful;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {

@@ -25,7 +25,7 @@
         </div>
         <div class="d-flex flex-row">
             <!-- PERIOD -->
-            <div class="d-inline-flex flex-glow-1 mr-2" style="width: 40%; max-height: 55px">
+            <div class="d-inline-flex flex-glow-0 mr-2" style="width: 550px; min-width: 550px; max-height: 55px">
                 <v-expansion-panels
                     v-model="activePeriod"
                     accordion
@@ -83,18 +83,18 @@
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
-                                <div class="d-inline-flex flex-grow-1">
-                                    <v-date-picker
+                                <div class="d-inline-flex">
+                                    <vc-date-picker
+                                        ref="calendar"
+                                        v-model.sync="builder.period"
+                                        :value.sync="builder.period"
+                                        is-range
                                         no-title
-                                        v-model="builder.period.start"
-                                    ></v-date-picker>
-                                </div>
-                                <div class="d-inline-flex flex-grow-1">
-                                    <v-date-picker
-                                        no-title
-                                        v-model="builder.period.end"
+                                        :step="1"
+                                        :columns="2"
+                                        mode="range"
                                         @input="activePeriod = null; genPreview()"
-                                    ></v-date-picker>
+                                    ></vc-date-picker>
                                 </div>
                             </div>
                         </v-expansion-panel-content>
@@ -102,7 +102,7 @@
                 </v-expansion-panels>
             </div>
             <!-- ROUNDING -->
-            <div class="d-inline-flex flex-glow-1 mx-2" style="width: 30%">
+            <div class="d-inline-flex flex-glow-1 mx-2 hidden-sm-and-up" style="width: 100%">
                 <v-select
                     prepend-inner-icon="mdi-approximately-equal"
                     placeholder="Rounding up of times"
@@ -116,7 +116,7 @@
                 </v-select>
             </div>
             <!-- SORTING  -->
-            <div class="d-inline-flex flex-glow-1 ml-2" style="width: 30%">
+            <div class="d-inline-flex flex-glow-1 ml-2" style="width: 100%">
                 <v-select
                     :prepend-inner-icon="builder.sort.icon"
                     placeholder="Sorting"
@@ -348,7 +348,10 @@
                 </template>
             </v-treeview>
 
-            <v-card-actions class="white justify-center">
+            <v-card-actions
+                class="white justify-center"
+                v-if="reportData.entities && reportData.entities.length"
+            >
                 <v-dialog
                     v-model="dialogExportPDF"
                     persistent
@@ -388,7 +391,7 @@
                                 <div class="d-inline-block">
                                     <v-text-field
                                         label="Period"
-                                        v-model="report.pdf.period"
+                                        v-model="report.pdf.periodText"
                                     ></v-text-field>
                                 </div>
                                 <div class="d-inline-block">
@@ -397,7 +400,7 @@
                                         item-text="text"
                                         item-value="value"
                                         label="Group"
-                                        v-model="report.pdf.group"
+                                        v-model="report.pdf.groupSel"
                                     >
                                     </v-select>
                                 </div>
@@ -415,7 +418,7 @@
                             <v-btn
                                 color="success"
                                 text
-                                @click="dialogExportPDF = false"
+                                @click="createFile('pdf')"
                             >
                                 Create
                             </v-btn>
@@ -458,7 +461,7 @@
                             <v-btn
                                 color="success"
                                 text
-                                @click="dialogExportCSV = false"
+                                @click="createFile('csv'); dialogExportCSV = false"
                             >
                                 Export
                             </v-btn>
@@ -555,7 +558,13 @@ export default {
                     value: 'alph-asc',
                     text: 'A - Z and chronologically'
                 },
-                group: [],
+                group: [
+                    {
+                        icon: "mdi-domain",
+                        text: "Services",
+                        value: "service"
+                    }
+                ],
                 filters: []
             },
             roundingItems: [
@@ -631,9 +640,9 @@ export default {
                     value: "day"
                 },
                 {
-                    icon: "mdi-format-quote-open",
-                    text: "Description",
-                    value: "description"
+                    icon: "mdi-folder-account-outline",
+                    text: "Projects",
+                    value: "project"
                 },
                 {
                     icon: "mdi-calendar-week",
@@ -646,10 +655,20 @@ export default {
                     value: "billability"
                 },
                 {
+                    icon: "mdi-account",
+                    text: "Clients",
+                    value: "client"
+                },
+                {
                     icon: "mdi-calendar-month",
                     text: "Month",
                     value: "month"
-                }
+                },
+                {
+                    icon: "mdi-account-multiple",
+                    text: "Co-workers",
+                    value: "coworker"
+                },
             ],
             availableFilters: [
                 {
@@ -758,8 +777,8 @@ export default {
                 pdf: {
                     name: 'Report',
                     coworkers: null,
-                    period: '',
-                    group: 1
+                    periodText: '',
+                    groupSel: 1
                 }
             }
         }
@@ -789,7 +808,7 @@ export default {
         invertColor(hex, bw = true) {
             return Helper.invertColor(hex.substr(0, 7), bw);
         },
-        setPeriod(periodKey = 'today') {
+        async setPeriod(periodKey = 'today') {
             let start = null;
             let end = null;
             switch (periodKey) {
@@ -842,16 +861,30 @@ export default {
                     start = null;
                     end = moment().endOf('years');
             }
-            this.builder.period.start = start ? start.format('YYYY-MM-DD') : start;
-            this.builder.period.end = end.format('YYYY-MM-DD');
+            this.builder.period.start = start ? moment(start).toDate() : start;
+            this.builder.period.end = moment(end).toDate();
+            const calendar = this.$refs.calendar;
+            if (calendar) {
+                await calendar.updateValue({
+                    start: this.builder.period.start ? moment(this.builder.period.start).toDate() : moment('2020-01-01').toDate(),
+                    end: moment(this.builder.period.end).toDate()
+                }, {
+                    formatInput: true,
+                    hidePopover: false
+                });
+                calendar.$refs.calendar.showPageRange({
+                    from: this.builder.period.start,
+                    to: this.builder.period.end
+                });
+            }
             if (this.builder.period.start) {
                 if (this.builder.period.start === this.builder.period.end) {
-                    this.report.pdf.period = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
                 } else {
-                    this.report.pdf.period = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
                 }
             } else {
-                this.report.pdf.period = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
             }
             this.activePeriod = null;
             this.genPreview();
@@ -892,6 +925,7 @@ export default {
 
                 })
                 .catch(err => {
+                    console.log(err);
                     this.snackbarMessage = 'Something went wrong';
                     this.actionColor = 'error'
                     this.snackbar = true;
@@ -926,6 +960,29 @@ export default {
                 }
             });
             return seconds;
+        },
+        createFile(format) {
+            axios.post(`/api/tracking/reports?format=${format}`, { ...this.builder, ...this.report.pdf }, {
+                responseType: 'blob'
+            })
+                .then(res => {
+                    // const filename = res.headers['content-disposition'].split('filename=')[1].split(';')[0];
+
+                    const url = window.URL.createObjectURL(new Blob([res.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', `Report.${format}`);
+                    document.body.appendChild(link);
+                    link.click();
+                    this.dialogExportPDF = false;
+                    this.dialogExportCSV = false;
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.snackbarMessage = 'Something went wrong';
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                })
         }
     },
     computed: {
@@ -933,7 +990,7 @@ export default {
             return this.calculateTime(this.reportData.entities);
         },
         doughnutData: function() {
-            if (this.reportData.entities.length) {
+            if (this.reportData.entities && this.reportData.entities.length) {
                 let data = {
                     labels: [],
                     datasets: []
@@ -966,7 +1023,7 @@ export default {
             return null;
         },
         barData: function() {
-            if (this.reportData.entities.length) {
+            if (this.reportData.entities && this.reportData.entities.length) {
                 let data = {
                     labels: [],
                     datasets: []

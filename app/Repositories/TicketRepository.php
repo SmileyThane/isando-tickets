@@ -122,7 +122,7 @@ class TicketRepository
             $ticketResult->where('is_spam', 1);
         }
         if ($request->minified && $request->minified === 'true') {
-            return $ticketResult->select('id', 'name', 'from_entity_id', 'from_entity_type', 'updated_at')->paginate(count($ticketIds));
+            return $ticketResult->select('id', 'name', 'from_entity_id', 'from_entity_type', 'created_at', 'updated_at')->paginate(count($ticketIds));
         }
 
         $ticketResult
