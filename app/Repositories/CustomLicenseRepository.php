@@ -155,6 +155,7 @@ class CustomLicenseRepository
         $data = [
             'name' => $request->name,
             'serverUrls' => $request->connection_links,
+            'aliases' => $request->aliases,
 //            'email' => 'testco@example.com'
         ];
         $result = $this->makeIxArmaRequest("/api/v1/company/$ixArmaId", $data, 'PUT');
