@@ -18,7 +18,6 @@ export default {
             axios.get(`/api/tracking/tickets?${queryParams.toString()}`)
                 .then(({ data: { success, data: { data }, error } }) => {
                     if (success) {
-                        console.log(success, data, error);
                         commit('GET_TICKETS', data)
                         commit('GET_TREE_TICKETS', data)
                     }
