@@ -1899,8 +1899,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.suppliers = response.data
                     this.progressBuffer = this.progressBuffer + 20;
                 } else {
-                    console.log('error')
-                }
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;                }
             });
         },
         getProducts() {
@@ -1910,7 +1911,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.products = response.data.data
                     this.progressBuffer = this.progressBuffer + 10;
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
 
             });
@@ -1922,7 +1925,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.priorities = response.data
                     this.progressBuffer = this.progressBuffer + 10;
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
 
             });
@@ -1934,8 +1939,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.types = response.data
                     this.progressBuffer = this.progressBuffer + 10;
                 } else {
-                    console.log('error')
-                }
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;                }
 
             });
         },
@@ -1963,8 +1969,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     }
                     // this.ticketForm.contact_company_user_id = this.employees[0].id
                 } else {
-                    console.log('error')
-                }
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;                }
 
             });
         },
@@ -1976,7 +1983,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.teams = response.data.data
                     this.progressBuffer = this.progressBuffer + 10;
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
             });
         },
@@ -1985,15 +1994,11 @@ themeBgColor: this.$store.state.themeBgColor,
                 this.selectionDisabled = true
             }
             if (this.ticket.to_team_id !== null) {
-                // if (this.ticket.to_company_user_id) {
-                //     this.selectionDisabled = true
-                // }
                 this.assignPanel = [0];
                 axios.get(`/api/team/${this.ticket.to_team_id}`).then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.employees = response.data.employees
-                        // console.log(this.employees);
                     }
                 });
 
@@ -2010,9 +2015,10 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.updateDialog = false
                     this.teamAssignPanel = []
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
-                // this.submitEdit = this.fromEdit = this.contactEdit = this.priorityEdit = this.ipEdit = this.detailsEdit = false
             });
         },
         closeTicket() {
@@ -2046,7 +2052,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.getTicket()
                     this.answerDialog = false
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
             });
         },
@@ -2062,7 +2070,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.getTicket()
                     this.noteDialog = false
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
             });
         },
@@ -2081,17 +2091,9 @@ themeBgColor: this.$store.state.themeBgColor,
             this.manageThirdColumn()
         },
         hideMergeBlock() {
-            // if (this.thirdColumn === true) {
-            //     this.thirdColumn = false
-            // }
-            // this.manageThirdColumn()
             this.mergeBlock = false
         },
         hideLinkBlock() {
-            // if (this.thirdColumn === true) {
-            //     this.thirdColumn = false
-            // }
-            // this.manageThirdColumn()
             this.linkBlock = false
         },
         manageThirdColumn() {
@@ -2121,7 +2123,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.mergeTicketForm.parent_ticket_id = null
                     this.mergeTicketForm.merge_comment = null
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
             });
         },
@@ -2132,7 +2136,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.getTickets()
                     this.getTicket()
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
             });
         },
@@ -2149,7 +2155,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.snackbar = true;
                     this.getTicket();
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
             });
         },
@@ -2174,7 +2182,9 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.linkTicketForm.child_ticket_id = null
                     this.ticketLinkDialog = false
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
             });
         },
