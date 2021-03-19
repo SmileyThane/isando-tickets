@@ -1201,10 +1201,10 @@ themeBgColor: this.$store.state.themeBgColor,
             }
         },
         'timerPanel.entity': function () {
-            this.timerPanel.entity_type = this.timerPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
+            this.timerPanel.entity_type = this.timerPanel.entity && this.timerPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
         },
         'manualPanel.entity': function () {
-            this.manualPanel.entity_type = this.manualPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
+            this.manualPanel.entity_type = this.manualPanel && this.manualPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
         }
     },
 }
