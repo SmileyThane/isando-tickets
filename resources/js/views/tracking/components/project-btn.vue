@@ -82,9 +82,9 @@
                                         {{ item.name }}
                                     </span>
                                     <span v-else>
-                                    {{ item.name }}
-                                    <small>({{ item.product.name }})</small>
-                                </span>
+                                        {{ item.name }}
+                                        <small>({{ item.product.name }})</small>
+                                    </span>
                                 </template>
                             </v-treeview>
                         </perfect-scrollbar>
@@ -227,13 +227,13 @@
                                     <v-icon v-else>mdi-folder-account-outline</v-icon>
                                 </template>
                                 <template v-slot:label="{ item }">
-                                    <span v-if="item.projects">
+                                    <span v-if="item.tickets">
                                         {{ item.name }}
                                     </span>
                                     <span v-else>
-                                    {{ item.number }}
-                                    <small>({{ item.name }})</small>
-                                </span>
+                                        {{ item.number }}
+                                        <small>({{ item.name }})</small>
+                                    </span>
                                 </template>
                             </v-treeview>
                         </perfect-scrollbar>
