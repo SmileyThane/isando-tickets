@@ -27,7 +27,9 @@ class Tracking extends Model
             if ($this->entity_type === TrackingProject::class) {
                 return $this->entity_type::with('Client')->with('Product')->find($this->entity_id);
             }
-            return $this->entity_type::find($this->entity_id);
+            if ($this->entity_type === Ticket::class) {
+                return $this->entity_type::with('assignedPerson')->find($this->entity_id);
+            }
         }
         return null;
     }

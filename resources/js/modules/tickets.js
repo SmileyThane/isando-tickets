@@ -7,12 +7,21 @@ export default {
     actions: {
         getTicketList({commit}, { search }) {
             const queryParams = new URLSearchParams({
-                search: search ?? ''
+                search: search ?? '',
+                minified: true,
+                sort_by:'id',
+                sort_val:true,
+                with_spam:false,
+                per_page:30,
+                page:1
             });
             axios.get(`/api/tracking/tickets?${queryParams.toString()}`)
-                .then(({ data: { success, data } }) => {
-                    commit('GET_TICKETS', data)
-                    commit('GET_TREE_TICKETS', data)
+                .then(({ data: { success, data: { data }, error } }) => {
+                    if (success) {
+                        console.log(success, data, error);
+                        commit('GET_TICKETS', data)
+                        commit('GET_TREE_TICKETS', data)
+                    }
                 })
         }
     },

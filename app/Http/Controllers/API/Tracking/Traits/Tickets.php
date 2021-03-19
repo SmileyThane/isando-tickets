@@ -9,7 +9,9 @@ trait Tickets
 {
     public function getTickets(Request $request)
     {
-        $tickets = $this->trackingProjectsRepo->getTickets($request);
-        return self::showResponse((bool)$tickets, $tickets);
+//        $tickets = $this->trackingProjectsRepo->getTickets($request);
+        $tickets = $this->ticketRepo->all($request);
+//        dd($tickets);
+        return self::showResponse(true, $tickets);
     }
 }
