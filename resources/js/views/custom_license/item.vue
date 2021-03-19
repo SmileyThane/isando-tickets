@@ -71,7 +71,6 @@
                             :key="key"
                             v-model="client.connection_links[key]"
                             :color="themeBgColor"
-                            :label="langMap.company.link"
                             :readonly="!enableToEdit"
                             dense
                             prepend-icon="mdi-link"
@@ -87,11 +86,53 @@
                                 </v-icon>
                             </template>
                         </v-text-field>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
                         <v-btn
                             v-if="enableToEdit"
                             color="green"
                             outlined
                             @click="addConnectionLink"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-divider></v-divider>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <label>Aliases</label>
+                        <v-text-field
+                            v-for="(id, key) in client.aliases"
+                            :key="key"
+                            v-model="client.aliases[key]"
+                            :color="themeBgColor"
+                            :readonly="!enableToEdit"
+                            dense
+                            prepend-icon="mdi-text"
+                            required
+                            type="text"
+                        >
+                            <template v-slot:append>
+                                <v-icon
+                                    color="red"
+                                    @click="removeAlias(key)"
+                                >
+                                    mdi-cancel
+                                </v-icon>
+                            </template>
+                        </v-text-field>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-btn
+                            v-if="enableToEdit"
+                            color="green"
+                            outlined
+                            @click="addAlias"
                         >
                             <v-icon>mdi-plus</v-icon>
                         </v-btn>
@@ -461,6 +502,7 @@ export default {
                 client_name: '',
                 client_description: '',
                 connection_links: [""],
+                aliases: [""],
                 products: [
                     {
                         product_data: {}
@@ -565,10 +607,11 @@ export default {
                 if (response.success === true) {
                     this.license = response.data.limits
                     this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
+                    this.client.aliases = response.data.info !== null ? response.data.info.aliases : [""]
                     this.license.expiresAt = this.moment(response.data.limits.expiresAt).format('YYYY-MM-DD')
                     this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
                     this.getLicenseHistory();
-                    console.log(this.client.connection_links);
+                    // console.log(this.client.connection_links);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -732,12 +775,22 @@ export default {
         },
         addConnectionLink() {
             this.client.connection_links.push(" ");
-            console.log(this.client.connection_links);
+            // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
         removeConnectionLink(id) {
             this.client.connection_links.splice(id, 1);
-            console.log(this.client.connection_links);
+            // console.log(this.client.connection_links);
+            this.$forceUpdate();
+        },
+        addAlias() {
+            this.client.aliases.push(" ");
+            // console.log(this.client.connection_links);
+            this.$forceUpdate();
+        },
+        removeAlias(id) {
+            this.client.aliases.splice(id, 1);
+            // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
         getClients() {
