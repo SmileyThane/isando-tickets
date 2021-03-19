@@ -8,7 +8,7 @@ export default {
         getTicketList({commit}, { search }) {
             const queryParams = new URLSearchParams({
                 search: search ?? '',
-                minified: true,
+                minified: false,
                 sort_by:'id',
                 sort_val:true,
                 with_spam:false,
@@ -27,7 +27,7 @@ export default {
     },
     mutations: {
         GET_TICKETS(state, tickets) {
-            state.tickets = tickets
+            state.tickets = tickets.filter(i => i.from)
         },
         GET_TREE_TICKETS(state, tickets) {
             let companies = [];
