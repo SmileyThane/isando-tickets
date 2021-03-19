@@ -31,6 +31,7 @@ export default {
         },
         GET_TREE_TICKETS(state, tickets) {
             let companies = [];
+            tickets = tickets.filter(i => i.from);
             tickets.forEach(i => {
                 if (!companies.find(x => x.id === i.from.id)) {
                     companies.push({ ...i.from, tickets: [] })
