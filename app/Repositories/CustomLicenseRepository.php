@@ -28,7 +28,7 @@ class CustomLicenseRepository
         return $clients->paginate($request->per_page ?? $clients->count());
     }
 
-    public function find($id)
+    public function find($id): array
     {
         $result = [];
         $client = \App\Client::find($id);
@@ -175,9 +175,9 @@ class CustomLicenseRepository
         $clientLicense = \App\Client::find($request->company_id)->customLicense;
         if ($clientLicense === null) {
             $newLicense = $this->create($request->company_id);
-                if (is_string($newLicense)){
-                    return $newLicense;
-                }
+            if (is_string($newLicense)) {
+                return $newLicense;
+            }
             $request->company_id = $newLicense['id'];
         } else {
             $request->company_id = $clientLicense->remote_client_id;
@@ -205,9 +205,9 @@ class CustomLicenseRepository
         return $parsedResult['message'];
     }
 
-    public function delete()
+    public function delete(): bool
     {
-
+        return true;
     }
 
 
