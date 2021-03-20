@@ -28,18 +28,18 @@
     "vuetifyjs-mix-extension": "0.0.8"
   },
   "dependencies": {
+    "@tinymce/tinymce-vue": "^3.2.8",
     "chart.js": "^2.9.4",
     "moment": "^2.26.0",
     "moment-timezone": "^0.5.32",
-    "tiptap-vuetify": "^2.24.0",
     "v-calendar": "^2.2.3",
     "vee-validate": "^3.3.3",
     "vue-chartjs": "^3.5.1",
     "vue-moment": "^4.1.0",
     "vue-router": "^3.3.2",
     "vue2-perfect-scrollbar": "^1.5.0",
-    "vuedraggable": "^2.24.3",
     "vuebar": "^0.0.20",
+    "vuedraggable": "^2.24.3",
     "vuetify": "^2.2.32",
     "vuex": "^3.5.1"
   }
