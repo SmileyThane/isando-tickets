@@ -595,28 +595,6 @@ export default {
                 {id: 2, name: this.$store.state.lang.lang_map.notification.priority_medium},
                 {id: 3, name: this.$store.state.lang.lang_map.notification.priority_low}
             ],
-            extensions: [
-                History,
-                Blockquote,
-                Link,
-                Underline,
-                Strike,
-                Italic,
-                ListItem,
-                BulletList,
-                OrderedList,
-                [Heading, {
-                    options: {
-                        levels: [1, 2, 3]
-                    }
-                }],
-                Bold,
-                Code,
-                HorizontalRule,
-                Paragraph,
-                Image,
-                HardBreak
-            ],
             srcSearch: '',
             dstSearch: '',
             toAdd: [],

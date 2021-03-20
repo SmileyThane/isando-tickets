@@ -1255,28 +1255,6 @@ export default {
             updateEmailDlg: false,
             updateEmailSignatureDlg: false,
             updateSocialDlg: false,
-            extensions: [
-                History,
-                Blockquote,
-                Link,
-                Underline,
-                Strike,
-                Italic,
-                ListItem,
-                BulletList,
-                OrderedList,
-                [Heading, {
-                    options: {
-                        levels: [1, 2, 3]
-                    }
-                }],
-                Bold,
-                Code,
-                HorizontalRule,
-                Paragraph,
-                Image,
-                HardBreak
-            ],
             avatar: '',
             newAvatar: null,
         }
