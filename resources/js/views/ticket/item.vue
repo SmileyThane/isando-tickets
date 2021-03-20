@@ -150,11 +150,10 @@
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12 mt-2">
-                                    <tiptap-vuetify
+                                    <Tinymce
                                         v-model="ticketAnswer.answer"
-                                        :extensions="extensions"
                                         :placeholder="langMap.ticket.answer_description"
-                                    />
+                                    ></Tinymce>
                                 </div>
                                 <div class="col-md-12">
                                     <v-select
@@ -215,9 +214,8 @@
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12 mt-2">
-                                    <tiptap-vuetify
+                                    <Tinymce
                                         v-model="ticketNotice.notice"
-                                        :extensions="extensions"
                                         :placeholder="langMap.ticket.add_internal_note"
                                     />
                                 </div>
@@ -1555,30 +1553,10 @@
 </template>
 
 <script>
-import {
-    Blockquote,
-    Bold,
-    BulletList,
-    Code,
-    HardBreak,
-    Heading,
-    History,
-    HorizontalRule,
-    Image,
-    Italic,
-    Link,
-    ListItem,
-    OrderedList,
-    Paragraph,
-    Strike,
-    TiptapVuetify,
-    Underline
-} from 'tiptap-vuetify'
 
 import EventBus from "../../components/EventBus";
 
 export default {
-    components: {TiptapVuetify},
     data() {
         return {
             extensions: [

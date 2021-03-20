@@ -806,15 +806,14 @@
                                                             />
                                                         </v-col>
                                                         <v-col cols="12">
-                                                            <tiptap-vuetify
+                                                            <Tinymce
                                                                 ref="body"
                                                                 aria-rowcount="7"
                                                                 :color="themeBgColor"
                                                                 v-model="emailSignatureForm.signature"
-                                                                :extensions="extensions"
                                                                 :placeholder="langMap.profile.signature"
                                                                 :label="langMap.profile.signature"
-                                                            />
+                                                            ></Tinymce>
                                                         </v-col>
                                                         <v-btn
                                                             dark
@@ -1133,15 +1132,12 @@
                                         dense
                                     />                                </v-col>
                                 <v-col cols="12" class="pa-1">
-                                    <tiptap-vuetify
+                                    <Tinymce
                                         ref="body"
                                         aria-rowcount="7"
-                                        :color="themeBgColor"
                                         v-model="emailSignatureForm.signature"
-                                        :extensions="extensions"
                                         :placeholder="langMap.profile.signature"
-                                        :label="langMap.profile.signature"
-                                    ></tiptap-vuetify>
+                                    />
                                 </v-col>
                             </div>
                         </v-container>
@@ -1161,30 +1157,8 @@
 <script>
 
 import EventBus from "../../components/EventBus";
-import {
-    Blockquote,
-    Bold,
-    BulletList,
-    Code,
-    HardBreak,
-    Heading,
-    History,
-    HorizontalRule,
-    Image,
-    Italic,
-    Link,
-    ListItem,
-    OrderedList,
-    Paragraph,
-    Strike,
-    TiptapVuetify,
-    Underline
-} from 'tiptap-vuetify';
 
 export default {
-    components: {
-        TiptapVuetify
-    },
     data() {
         return {
             snackbar: false,
