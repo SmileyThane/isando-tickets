@@ -58,7 +58,7 @@ class LanguageSeeder extends Seeder
                             'tracking_reports' => 'Reports',
                             'tracking_settings' => 'Settings',
                             'custom_licenses' => 'Licenses',
-                            'custom_license' => 'License'
+                            'custom_license' => 'License',
                         ],
                     'tracking' =>
                         [
@@ -649,6 +649,12 @@ class LanguageSeeder extends Seeder
                             'sender' => 'Sender',
                             'sent_at' => 'Sent at',
                         ],
+                    'kb' => [
+                        'create_knowledge' => 'Create new knowledge',
+                        'category' => 'Category',
+                        'name' => 'Knowledge name',
+                        'details' => 'Knowledge details'
+                    ],
                     'exceptions' =>
                         [],
                 ])
@@ -699,7 +705,7 @@ class LanguageSeeder extends Seeder
                             'tracking_reports' => 'Reports',
                             'tracking_settings' => 'Settings',
                             'custom_licenses' => 'Licenses',
-                            'custom_license' => 'License'
+                            'custom_license' => 'License',
                         ],
                         'tracking' => [
                             'name' => 'Name',

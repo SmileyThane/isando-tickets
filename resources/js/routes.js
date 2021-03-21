@@ -31,6 +31,7 @@ import TrackingProjectItem from './views/tracking/projects/item'
 import TrackingReports from './views/tracking/reports'
 import TrackingSettings from './views/tracking/settings'
 import ResetPassword from './views/auth/reset-password'
+import KnowledgeBase from './views/knowledge_base/index'
 
 
 export default [
@@ -302,11 +303,11 @@ export default [
         component: CustomLicenses
     },
     {
-        path: '/custom_license_unassigned',
-        name: 'custom_license_unassigned',
+        path: '/knowledge_base',
+        name: 'know',
         meta: {
             requiresAuth: true,
         },
-        component: CustomLicenseUnassignedUsers
+        component: KnowledgeBase
     },
 ];

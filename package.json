@@ -38,8 +38,8 @@
     "vue-moment": "^4.1.0",
     "vue-router": "^3.3.2",
     "vue2-perfect-scrollbar": "^1.5.0",
-    "vuedraggable": "^2.24.3",
     "vuebar": "^0.0.20",
+    "vuedraggable": "^2.24.3",
     "vuetify": "^2.2.32",
     "vuex": "^3.5.1"
   }
