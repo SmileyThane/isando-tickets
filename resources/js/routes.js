@@ -305,7 +305,7 @@ export default [
     },
     {
         path: '/knowledge_base',
-        name: 'know',
+        name: 'knowledge_base',
         meta: {
             requiresAuth: true,
         },

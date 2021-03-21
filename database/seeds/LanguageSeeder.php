@@ -654,10 +654,17 @@ class LanguageSeeder extends Seeder
                             'sent_at' => 'Sent at',
                         ],
                     'kb' => [
-                        'create_knowledge' => 'Create new knowledge',
-                        'category' => 'Category',
-                        'name' => 'Knowledge name',
-                        'details' => 'Knowledge details'
+                        'find' => 'Find',
+                        'filter' => 'Filter',
+                        'tags' => 'Tags',
+                        'no_tags' => 'No tags found',
+                        'articles' => 'Articles',
+                        'open_category' => 'Open category',
+                        'read_article' => 'Read article',
+                        'create_category' => 'Add category',
+                        'create_article' => 'Add knowledge',
+                        'category_details' => 'Category details',
+                        'parent_category' => 'Parent category',
                     ],
                     'exceptions' =>
                         [],

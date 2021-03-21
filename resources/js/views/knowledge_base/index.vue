@@ -3,42 +3,136 @@
         <v-snackbar v-model="snackbar" :bottom="true" :color="actionColor" :right="true">
             {{ snackbarMessage }}
         </v-snackbar>
-        <v-row>
-            <v-col v-for="card in cards" :key="card.id" cols="6">
-            </v-col>
-            <v-col v-if="!checkRoleByIds([6, 101])" cols="6">
-                <v-card dense outlined>
-                    <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.kb.create_knowledge }}</v-toolbar-title>
-                    </v-toolbar>
-                    <v-card-text>
-                        <v-form>
-                        <v-text-field :color="themeBgColor" v-model="cardForm.icon" :items="cardIcons" :label="langMap.main.icon" :append-outer-icon="cardForm.icon" />
-                        <v-expansion-panels v-model="createCardPanels" multiple>
-                            <v-expansion-panel v-for="language in languages" :key="language.id">
-                                <v-expansion-panel-header>{{ language.name }}</v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-text-field :color="themeBgColor" v-model="cardForm.name[language.locale]" :label="langMap.kb.knowledge_name" />
-                                    <tinymce v-model="cardForm.details[language.locale]" :placeholder="langMap.kb.knowledge_details" />
+        <v-toolbar floating class="mb-2 mr-2">
+            <v-text-field v-model="search" hide-details append-icon="mdi-magnify" single-line :label="langMap.main.search" :color="themeBgColor" />
+            <span v-if="tags.length < 1" class="ml-2">{{ langMap.kb.no_tags }}</span>
+            <span v-else class="ml-2">{{ langMap.kb.tags }}:</span>
+            <v-chip v-for="tag in tags" :key="tag.id" label small class="ml-2" :color="tagColor(tag.id)" :text-color="invertColor(tagColor(tag.id))" @click="tag.on = !tag.on">
+                <v-icon v-if="tag.on" small left :color="invertColor(tagColor(tag.id))">mdi-check</v-icon>
+                {{ tag.name }}
+            </v-chip>
+            <v-btn class="ml-2" text :color="themeBgColor" v-text="langMap.kb.find" />
 
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                        </v-form>
+            <v-spacer></v-spacer>
+            <v-menu bottom>
+                <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" icon>
+                        <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                </template>
+
+                <v-list>
+                    <v-list-item>
+                        <v-list-item-title link @click="updateCategoryDlg = true">{{ langMap.kb.create_category }}</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item>
+                        <v-list-item-title link @click="createArticle">{{ langMap.kb.create_article }}</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
+        </v-toolbar>
+        <v-row>
+            <v-col v-for="category in categories" :key="'c'+category.id" cols="4">
+                <v-card outlined>
+                    <v-card-title>
+                        <v-icon large left :color="themeBgColor" v-text="category.icon ? category.icon : 'mdi-help'" />
+                        {{ localized(category) }}
+                    </v-card-title>
+                    <v-card-text style="height: 6em;">
+                        <v-tooltip v-if="localized(category, 'description')" :color="themeBgColor" bottom :style="`color: ${themeFgColor}l`">
+                            <template v-slot:activator="{ on, attrs }">
+                                <p class="lim" v-bind="attrs" v-on="on">{{ localized(category, 'description') }}</p>
+                            </template>
+                            <span>{{ localized(category, 'description') }}</span>
+                        </v-tooltip>
+                        <p>{{ langMap.kb.articles }}: 12</p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="grey darken-1" text @click="cancelCreateCard">{{ langMap.main.cancel }}</v-btn>
-                        <v-btn :color="themeBgColor" :style="`color: ${themeFgColor};`" dark @click="createCard">{{ langMap.main.create }}</v-btn>
+                        <v-btn text :color="themeBgColor" v-text="langMap.kb.open_category" @click="openCategory(category.id)" />
+                    </v-card-actions>
+                </v-card>
+            </v-col>
+            <v-col v-for="article in articles" :key="'a'+article.id" cols="4">
+                <v-card outlined>
+                    <v-card-title>{{ localized(article) }}</v-card-title>
+                    <v-card-text style="height: 10em;">
+                        <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tagColor(tag.id)" :text-color="invertColor(tagColor(tag.id))"/>
+
+                        <v-spacer>&nbsp;</v-spacer>
+                        <v-tooltip v-if="localized(article, 'summary')" :color="themeBgColor" bottom :style="`color: ${themeFgColor}l`">
+                            <template v-slot:activator="{ on, attrs }">
+                                <p v-bind="attrs" v-on="on">{{ localized(article, 'summary') }}</p>
+                            </template>
+                            <span>{{ stripHtml(localized(article, 'content')) }}</span>
+                        </v-tooltip>
+
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn text :color="themeBgColor" v-text="langMap.kb.read_article" @click="readArticle(article.id)" />
                     </v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
+        <v-row justify="center">
+            <v-dialog v-model="updateCategoryDlg" max-width="600px" persistent>
+                <v-card outlined>
+                    <v-card-title>{{ langMap.kb.category_details }}</v-card-title>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="6">
+                                <v-select v-model="categoryForm.parent_id" :items="categories" :label="langMap.kb.categories" item-value="id">
+                                    <template slot="selection" slot-scope="data">
+                                        {{ localized(data.item, 'full_name') }}
+                                    </template>
+                                    <template slot="item" slot-scope="data">
+                                        {{ localized(data.item, 'full_name') }}
+                                    </template>
+                                </v-select>
+                            </v-col>
+                            <v-col cols="6">
+                                <v-combobox v-model="categoryForm.icon" :items="categoryIcons" :prepend-icon="categoryForm.icon" hide-selected :label="langMap.main.icon" :color="themeBgColor" />
+                            </v-col>
+                            <v-col cols="12">
+                                <v-expansion-panels>
+                                    <v-expansion-panel>
+                                        <v-expansion-panel-header>English</v-expansion-panel-header>
+                                        <v-expansion-panel-content>
+                                            <v-text-field v-model="categoryForm.name" :label="langMap.main.name" hide-details single-line :color="themeBgColor"/>
+                                            <v-text-field v-model="categoryForm.description" :label="langMap.main.description" hide-details single-line :color="themeBgColor"/>
+                                        </v-expansion-panel-content>
+                                    </v-expansion-panel>
+                                    <v-expansion-panel>
+                                        <v-expansion-panel-header>Deutsch</v-expansion-panel-header>
+                                        <v-expansion-panel-content>
+                                            <v-text-field v-model="categoryForm.name_en" :label="langMap.main.name" hide-details single-line :color="themeBgColor"/>
+                                            <v-text-field v-model="categoryForm.description_en" :label="langMap.main.description" hide-details single-line :color="themeBgColor"/>
+                                        </v-expansion-panel-content>
+                                    </v-expansion-panel>
+                                </v-expansion-panels>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn text left v-text="langMap.main.cancel" @click="updateCategoryDlg=false; clearCategoryForm();" />
+                        <v-btn text v-text="langMap.main.create" @click="createCategory" :color="themeBgColor" />
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-row>
     </v-container>
 </template>
 
+<style scoped>
+>>> .lim{
+    max-height: 2em;
+    overflow: hidden;
+}
+
+</style>
 
 <script>
 import EventBus from '../../components/EventBus';
+import * as Helper from '../tracking/helper';
 
 export default {
     data() {
@@ -50,38 +144,26 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
-            extensions: [
-                History,
-                Blockquote,
-                Link,
-                Underline,
-                Strike,
-                Italic,
-                ListItem,
-                BulletList,
-                OrderedList,
-                [Heading, {
-                    options: {
-                        levels: [1, 2, 3]
-                    }
-                }],
-                Bold,
-                Code,
-                HorizontalRule,
-                Paragraph,
-                Image,
-                HardBreak
-            ],
-            languages: [],
-            cardIcons: [],
-            cards: [],
-            cardForm: {
-                id: '',
+            search: '',
+            categories: [],
+            articles: [],
+            tags: [],
+            tagColors: [],
+            updateCategoryDlg: false,
+            categoryForm: {
+                id: null,
+                parent_id: this.$route.query.category,
+                name: '',
+                name_de: '',
+                description: '',
+                description_de: '',
                 icon: '',
-                name: [],
-                details: []
             },
-            createCardPanels: []
+            categoryIcons: [
+                'mdi-help',
+                'mdi-help-circle',
+                'mdi-rocket',
+            ]
         }
     },
     mounted() {
@@ -93,7 +175,9 @@ export default {
             that.themeBgColor = color;
         });
 
-        this.getLanguages();
+        this.getTags();
+        this.getCategoties();
+        this.getArticles();
     },
     methods: {
         checkRoleByIds(ids) {
@@ -105,32 +189,69 @@ export default {
             });
             return roleExists
         },
-        getLanguages() {
-            axios.get('/api/lang/all').then(response => {
-                response = response.data;
-                if (response.success === true) {
-                    this.languages = response.data;
-
-                    //this.cancelCreateCard();
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.errorType = 'error';
-                    this.alert = true;
-                }
-            });
+        localized(item, field = 'name') {
+            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
+            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
+        },
+        limitTo (str, count = 50) {
+            if (!str) return '';
+            if (String(str).length <= count) return str;
+            return String(str).substring(0, count) + '...';
+        },
+        tagColor(i) {
+            if (!this.tagColors[i]) {
+                this.tagColors[i] = Helper.genRandomColor();
+            }
+            return this.tagColors[i];
+        },
+        invertColor(color) {
+            return Helper.invertColor(color);
+        },
+        getTags() {
+            this.tags = [{id: 1, name: 'zzz', on:true},{id: 3, name: 'something', on: false}, {id:2, name: 'test', on: true}];
+        },
+        getCategoties() {
+            this.categories = [
+                {id: 1, name: 'category1', description: 'category1 description', icon: 'mdi-help'},
+                {id: 2, name: 'category2', description: 'category2 long description, lorem, ispum vse dela long description, lorem, ispum vse dela long description, lorem, ispum vse dela', icon: 'mdi-help-circle'},
+                {id: 3, name: 'category3', description: 'category3 description', icon: 'mdi-account'},
+                {id: 4, name: 'category4', description: 'category4 description', icon: 'mdi-rocket'}
+            ];
+        },
+        getArticles() {
+            this.articles = [
+                {id: 1, name: 'article 1', content: 'article 1 content long long long text placed here and lorem ipsum as well long long long text placed here and lorem ipsum as well', tags: [{id: 1, name: 'zzz'}, {id:2, name: 'test'}]},
+                {id: 2, name: 'article 2', content: 'article 2 content long long long text placed here and lorem ipsum as well long long long text placed here and lorem ipsum as well', tags: [{id:2, name: 'test'}]},
+                {id: 3, name: 'article 3', content: 'article 3 content long long long text placed here and lorem ipsum as well long long long text placed here and lorem ipsum as well', tags: [{id: 1, name: 'zzz'}, {id:2, name: 'test'}]},
+                {id: 4, name: 'article 4', content: 'article 4 content long long long text placed here and lorem ipsum as well long long long text placed here and lorem ipsum as well', tags: [{id: 1, name: 'zzz'},{id: 3, name: 'something'}, {id:2, name: 'test'}]}
+            ];
+        },
+        openCategory(id) {
+            this.$router.push(`?category=${id}`);
 
         },
-        cancelCreateCard() {
-            this.cardForm = {
-                id: '',
+        readArticle(id) {
+            this.$router.push(`/knowledge_base/${id}`);
+        },
+        createArticle() {
+            this.$router.push('/knowledge_base/create');
+        },
+        clearCategoryForm() {
+            this.categoryForm = {
+                id: null,
+                parent_id: this.$route.query.category,
+                name: '',
+                name_de: '',
+                description: '',
+                description_de: '',
                 icon: '',
-                name: [],
-                details: []
             };
-            this.createCardPanels = [];
         },
-        createCard() {
-
+        createCategory() {
+            this.updateCategoryDlg = false;
+            this.categoryForm.id = Math.floor(Math.random()*1000);
+            this.categories.push(this.categoryForm);
+            this.clearCategoryForm();
         },
     }
 }
