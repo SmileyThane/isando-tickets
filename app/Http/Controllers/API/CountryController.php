@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 
 
 use App\Http\Controllers\Controller;
-use App\Repository\CountryRepository;
+use App\Repositories\CountryRepository;
 use Illuminate\Http\Request;
 
 

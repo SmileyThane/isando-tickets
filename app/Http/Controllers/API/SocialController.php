@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Repository\SocialRepository;
+use App\Repositories\SocialRepository;
 use Illuminate\Http\Request;
 
 class SocialController extends Controller

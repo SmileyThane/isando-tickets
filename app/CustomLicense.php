@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Repository\CustomLicenseRepository;
+use App\Repositories\CustomLicenseRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 

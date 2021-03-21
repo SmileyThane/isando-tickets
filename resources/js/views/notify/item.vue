@@ -200,15 +200,13 @@
                                     </v-text-field>
                                 </v-col>
                                 <v-col cols="12" class="pa-3">
-                                    <tiptap-vuetify
+                                    <Tinymce
                                         ref="body"
                                         aria-rowcount="20"
-                                        :color="themeBgColor"
                                         v-model="template.text"
-                                        :extensions="extensions"
                                         :placeholder="langMap.notification.text"
                                         required
-                                    ></tiptap-vuetify>
+                                    />
                                     <v-spacer>&nbsp;</v-spacer>
                                 </v-col>
                                 <v-col cols="12" class="pa-3">
@@ -561,31 +559,8 @@
 
 <script>
 import EventBus from "../../components/EventBus";
-import {
-    Blockquote,
-    Bold,
-    BulletList,
-    Code,
-    HardBreak,
-    Heading,
-    History,
-    HorizontalRule,
-    Image,
-    Italic,
-    Link,
-    ListItem,
-    OrderedList,
-    Paragraph,
-    Strike,
-    TiptapVuetify,
-    Underline
-} from 'tiptap-vuetify';
 
 export default {
-    components: {
-        TiptapVuetify
-    },
-
     data() {
         return {
             themeFgColor: this.$store.state.themeFgColor,
@@ -619,28 +594,6 @@ export default {
                 {id: 1, name: this.$store.state.lang.lang_map.notification.priority_high},
                 {id: 2, name: this.$store.state.lang.lang_map.notification.priority_medium},
                 {id: 3, name: this.$store.state.lang.lang_map.notification.priority_low}
-            ],
-            extensions: [
-                History,
-                Blockquote,
-                Link,
-                Underline,
-                Strike,
-                Italic,
-                ListItem,
-                BulletList,
-                OrderedList,
-                [Heading, {
-                    options: {
-                        levels: [1, 2, 3]
-                    }
-                }],
-                Bold,
-                Code,
-                HorizontalRule,
-                Paragraph,
-                Image,
-                HardBreak
             ],
             srcSearch: '',
             dstSearch: '',

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 
 
 use App\Http\Controllers\Controller;
-use App\Repository\LanguageRepository;
+use App\Repositories\LanguageRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 

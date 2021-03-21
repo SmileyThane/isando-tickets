@@ -32,6 +32,7 @@ import TrackingReports from './views/tracking/reports'
 import TrackingSettings from './views/tracking/settings'
 import ResetPassword from './views/auth/reset-password'
 import KnowledgeBase from './views/knowledge_base/index'
+import RoleManagement from './views/superadmin/roles'
 
 
 export default [
@@ -309,5 +310,13 @@ export default [
             requiresAuth: true,
         },
         component: KnowledgeBase
+    },
+    {
+        path: '/admin/role',
+        name: 'admin_role',
+        meta: {
+            requiresAuth: true,
+        },
+        component: RoleManagement
     },
 ];

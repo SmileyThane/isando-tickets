@@ -3,9 +3,11 @@
 
 namespace App\Http\Controllers\API;
 
+use App\CompanyUser;
 use App\Http\Controllers\Controller;
-use App\Repository\CompanyRepository;
-use App\Repository\CompanyUserRepository;
+use App\Permission;
+use App\Repositories\CompanyRepository;
+use App\Repositories\CompanyUserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,69 +43,120 @@ class CompanyController extends Controller
 
     public function find(Request $request, $id = null): JsonResponse
     {
-        $company = $this->companyRepo->find($request, $id);
-        return self::showResponse(true, $company);
+        $hasAccess = Auth::user()->employee->hasPermissionId([
+            Permission::COMPANY_READ_ACCESS,
+            Permission::CLIENT_READ_ACCESS
+        ]);
+        if ($hasAccess) {
+            return self::showResponse(true, $this->companyRepo->find($request, $id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function update(Request $request, $id): JsonResponse
     {
-        $company = $this->companyRepo->update($request, $id);
-        return self::showResponse(true, $company);
+        if (Auth::user()->employee->hasPermissionId(Permission::COMPANY_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->companyRepo->update($request, $id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function invite(Request $request)
     {
-        return $this->companyUserRepo->invite($request);
+        if (Auth::user()->employee->hasPermissionId(Permission::COMPANY_WRITE_ACCESS)) {
+            $result = $this->companyUserRepo->invite($request);
+            return self::showResponse($result instanceof CompanyUser, $result);
+        }
+
+        return self::showResponse(false);
     }
 
     public function removeEmployee($id): JsonResponse
     {
-        return self::showResponse($this->companyUserRepo->delete($id));
+        if (Auth::user()->employee->hasPermissionId(Permission::COMPANY_DELETE_ACCESS)) {
+            return self::showResponse($this->companyUserRepo->delete($id));
+        }
 
+        return self::showResponse(false);
     }
 
     public function attachProduct(Request $request): JsonResponse
     {
-        return self::showResponse($this->companyRepo->attachProduct($request));
+        if (Auth::user()->employee->hasPermissionId(Permission::COMPANY_WRITE_ACCESS)) {
+            return self::showResponse($this->companyRepo->attachProduct($request));
+        }
+
+        return self::showResponse(false);
     }
 
     public function getIndividuals(Request $request): JsonResponse
     {
-        return self::showResponse(true, $this->companyUserRepo->all($request));
+        if (Auth::user()->employee->hasPermissionId(Permission::INDIVIDUAL_READ_ACCESS)) {
+            return self::showResponse(true, $this->companyUserRepo->all($request));
+        }
+        return self::showResponse(false);
     }
 
     public function attachProductCategory(Request $request): JsonResponse
     {
-        return self::showResponse($this->companyRepo->attachProductCategory($request->name, $request->company_id, $request->parent_id));
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
+            return self::showResponse($this->companyRepo->attachProductCategory(
+                $request->name, $request->company_id, $request->parent_id
+            ));
+        }
+
+        return self::showResponse(false);
     }
 
     public function detachProductCategory($id): JsonResponse
     {
-        return self::showResponse($this->companyRepo->detachProductCategory($id));
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
+            return self::showResponse($this->companyRepo->detachProductCategory($id));
+        }
+        return self::showResponse(false);
     }
 
-    public function getProductCategoriesTree(Request $request, $id = null): JsonResponse
+    public function getProductCategoriesTree($id = null): JsonResponse
     {
-        return self::showResponse(true, $this->companyRepo->getProductCategoriesTree($id));
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->companyRepo->getProductCategoriesTree($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function getProductCategoriesFlat(Request $request, $id = null): JsonResponse
     {
-        return self::showResponse(true, $this->companyRepo->getProductCategoriesFlat($id));
+        if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_READ_ACCESS)) {
+            return self::showResponse(true, $this->companyRepo->getProductCategoriesFlat($id));
+        }
+
+        return self::showResponse(false);
     }
 
     public function getSettings(Request $request, $id = null): JsonResponse
     {
-        return self::showResponse(true, $this->companyRepo->getSettings($id));
+        if (Auth::user()->employee->hasPermissionId(Permission::SETTINGS_READ_ACCESS)) {
+            return self::showResponse(true, $this->companyRepo->getSettings($id));
+        }
+        return self::showResponse(false);
     }
 
     public function updateSettings(Request $request, $id = null): JsonResponse
     {
-        return self::showResponse(true, $this->companyRepo->updateSettings($request, $id));
+        if (Auth::user()->employee->hasPermissionId(Permission::SETTINGS_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->companyRepo->updateSettings($request, $id));
+        }
+        return self::showResponse(false);
     }
 
     public function updateLogo(Request $request, $id = null)
     {
-        return self::showResponse(true, $this->companyRepo->updateLogo($request, $id));
+        if (Auth::user()->employee->hasPermissionId(Permission::SETTINGS_WRITE_ACCESS)) {
+            return self::showResponse(true, $this->companyRepo->updateLogo($request, $id));
+        }
+        return self::showResponse(false);
     }
 }

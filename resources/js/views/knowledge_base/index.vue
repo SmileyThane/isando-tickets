@@ -19,8 +19,8 @@
                                 <v-expansion-panel-header>{{ language.name }}</v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <v-text-field :color="themeBgColor" v-model="cardForm.name[language.locale]" :label="langMap.kb.knowledge_name" />
-                                    <tiptap-vuetify v-model="cardForm.details[language.locale]" :extensions="extensions" :placeholder="langMap.kb.knowledge_details" />
-                                    
+                                    <tinymce v-model="cardForm.details[language.locale]" :placeholder="langMap.kb.knowledge_details" />
+
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>
@@ -39,30 +39,8 @@
 
 <script>
 import EventBus from '../../components/EventBus';
-import {
-    Blockquote,
-    Bold,
-    BulletList,
-    Code,
-    HardBreak,
-    Heading,
-    History,
-    HorizontalRule,
-    Image,
-    Italic,
-    Link,
-    ListItem,
-    OrderedList,
-    Paragraph,
-    Strike,
-    TiptapVuetify,
-    Underline
-} from 'tiptap-vuetify';
 
 export default {
-    components: {
-        TiptapVuetify
-    },
     data() {
         return {
             snackbar: false,

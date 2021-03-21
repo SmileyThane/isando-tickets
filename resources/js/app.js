@@ -5,15 +5,15 @@ import VueRouter from 'vue-router'
 import App from './views/App'
 import Routes from './routes'
 import store from './store'
-import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import moment from 'moment'
 import VCalendar from 'v-calendar'
-import 'tiptap-vuetify/dist/main.css'
 import 'vuetify/dist/vuetify.min.css'
 import '../css/custom.css'
 import PerfectScrollbar from 'vue2-perfect-scrollbar'
 import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
+import Tinymce from "./components/Tinymce";
 
+Vue.component('Tinymce', Tinymce)
 Vue.use(PerfectScrollbar)
 Vue.use(Vuetify)
 Vue.use(VueRouter)
@@ -45,10 +45,7 @@ router.beforeEach((to, from, next) => {
 })
 
 const vuetify = new Vuetify();
-Vue.use(TiptapVuetifyPlugin, {
-    vuetify,
-    iconsGroup: 'mdi'
-})
+
 const app = new Vue({
     el: '#app',
     components: {App},
@@ -56,9 +53,12 @@ const app = new Vue({
     router,
     store,
     created() {
-        this.$store.state.roles = this.$store.state.lang = null
+        this.$store.state.roles =
+            this.$store.state.permissions =
+                this.$store.state.lang = null;
         store.dispatch('getLanguage');
         store.dispatch('getRoles');
+        store.dispatch('getPermissions');
         store.dispatch('getThemeBgColor');
         store.dispatch('getAppVersion');
     }

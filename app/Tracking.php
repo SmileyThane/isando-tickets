@@ -9,16 +9,29 @@ class Tracking extends Model
 {
     protected $table = 'tracking';
 
+    protected $fillable = [
+        'entity_id',
+        'entity_type'
+    ];
+
     protected $appends = [
-        'passed', 'service'
+        'passed', 'service', 'entity'
     ];
 
     public function User() {
         return $this->hasOne('App\User', 'id', 'user_id');
     }
 
-    public function Project() {
-        return $this->hasOne('App\TrackingProject', 'id', 'project_id');
+    public function getEntityAttribute() {
+        if (isset($this->entity_type)) {
+            if ($this->entity_type === TrackingProject::class) {
+                return $this->entity_type::with('Client')->with('Product')->find($this->entity_id);
+            }
+            if ($this->entity_type === Ticket::class) {
+                return $this->entity_type::with('assignedPerson')->find($this->entity_id);
+            }
+        }
+        return null;
     }
 
     public function Tags() {

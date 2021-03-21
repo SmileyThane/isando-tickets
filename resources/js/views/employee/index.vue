@@ -331,7 +331,7 @@ themeBgColor: this.$store.state.themeBgColor,
             if (this.totalEmployees < this.options.itemsPerPage) {
                 this.options.page = 1
             }
-            axios.get('api/employee', {
+            axios.get('/api/employee', {
                 params: {
                     search: this.employeesSearch,
                     sort_by: this.options.sortBy[0],

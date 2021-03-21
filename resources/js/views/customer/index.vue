@@ -280,7 +280,7 @@
                 if (this.totalCustomers < this.options.itemsPerPage) {
                     this.options.page = 1
                 }
-                axios.get('api/client', {
+                axios.get('/api/client', {
                     params: {
                         search: this.customersSearch,
                         sort_by: this.options.sortBy[0],
@@ -318,7 +318,7 @@
                 // console.log(this.clientForm);
             },
             getSuppliers() {
-                axios.get('api/supplier').then(response => {
+                axios.get('/api/supplier').then(response => {
                     response = response.data
                     if (response.success === true) {
                         this.suppliers = response.data

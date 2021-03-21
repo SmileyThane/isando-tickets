@@ -71,7 +71,6 @@
                             :key="key"
                             v-model="client.connection_links[key]"
                             :color="themeBgColor"
-                            :label="langMap.company.link"
                             :readonly="!enableToEdit"
                             dense
                             prepend-icon="mdi-link"
@@ -87,11 +86,53 @@
                                 </v-icon>
                             </template>
                         </v-text-field>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
                         <v-btn
                             v-if="enableToEdit"
                             color="green"
                             outlined
                             @click="addConnectionLink"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-divider></v-divider>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <label>Aliases</label>
+                        <v-text-field
+                            v-for="(id, key) in client.aliases"
+                            :key="key"
+                            v-model="client.aliases[key]"
+                            :color="themeBgColor"
+                            :readonly="!enableToEdit"
+                            dense
+                            prepend-icon="mdi-text"
+                            required
+                            type="text"
+                        >
+                            <template v-slot:append>
+                                <v-icon
+                                    color="red"
+                                    @click="removeAlias(key)"
+                                >
+                                    mdi-cancel
+                                </v-icon>
+                            </template>
+                        </v-text-field>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-btn
+                            v-if="enableToEdit"
+                            color="green"
+                            outlined
+                            @click="addAlias"
                         >
                             <v-icon>mdi-plus</v-icon>
                         </v-btn>
@@ -118,22 +159,34 @@
                             :options.sync="options"
                             class="elevation-1"
                             hide-default-footer
+                            @click:row="showAssignDialog"
                         >
-                            <template v-slot:item.lastActivationChange="{ item }">
-                                {{
-                                    item.lastActivationChange > 0 ?
-                                        moment(item.lastActivationChange).format('DD-MM-YYYY') : ''
-                                }}
+                            <template v-slot:item.lastActivationChangeString="{ item }">
+                                <v-text-field
+                                    v-model="item.lastActivationChangeString"
+                                    :color="themeBgColor"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                ></v-text-field>
                             </template>
                             <template v-slot:item.trialExpirationAtString="{ item }">
-                                {{
-                                    moment(item.trialExpirationAtString).format('DD-MM-YYYY')
-                                }}
+                                <div
+                                    @click.stop.prevent="selectedUserId = item.id; trialExpirationModal = true"
+                                >
+                                    <v-text-field
+                                        v-model="item.trialExpirationAtString"
+                                        :color="themeBgColor"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+
+                                    ></v-text-field>
+
+                                </div>
                             </template>
                             <template v-slot:item.licensed="{ item }">
                                 <v-btn
                                     outlined
-                                    @click="manageLicenseUsers(item.id, item.licensed)"
+                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed)"
                                 >
                                     <v-icon
                                         :color="item.licensed ? 'green' :'red'"
@@ -142,10 +195,12 @@
                                     </v-icon>
                                 </v-btn>
                             </template>
+                            <template>
+
+                            </template>
                         </v-data-table>
                     </div>
                 </v-card>
-
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -194,7 +249,7 @@
                                                 <v-icon>mdi-account-multiple-minus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'Assigned users'"></v-list-item-title>
+                                                <v-list-item-title v-text="'New users'"></v-list-item-title>
                                                 <v-list-item-subtitle v-text="usersAssigned"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
@@ -214,6 +269,25 @@
                                             <v-list-item-content>
                                                 <v-list-item-title v-text="'Active'"></v-list-item-title>
                                                 <v-list-item-subtitle v-text="license.active"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon> mdi-calendar-weekend-outline</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Trial days'"></v-list-item-title>
+                                                <v-text-field
+                                                    v-if="enableToEditLicense"
+                                                    v-model="license.trialPeriodDays"
+                                                    :color="themeBgColor"
+                                                    dense
+                                                    name="trial_days"
+                                                    style="max-width: 50px"
+                                                    type="text"
+                                                ></v-text-field>
+                                                <v-list-item-subtitle v-if="!enableToEditLicense"
+                                                                      v-text="license.trialPeriodDays"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
                                     </v-list-item-group>
@@ -250,16 +324,32 @@
                                 <div class="overline mx-2">
                                     additional licenses
                                 </div>
-                                <span v-for="(licenseValue, index) in licenseValues" :key="index">
-                                <v-btn
-                                    class="ma-2"
-                                    color="grey darken-1"
-                                    outlined
-                                    @click="appendLicenseItems(licenseValue)">
-                                    {{ 'up to ' + licenseValue }}
-                                </v-btn>
-                                <br v-if="index === (licenseValues.length/2) - 1">
-                            </span>
+                                <v-row>
+                                    <v-col md="6">
+                                        <span v-for="(licenseValue, index) in licenseValues" :key=" '+' + index">
+                                            <v-btn
+                                                class="ma-2"
+                                                color="grey darken-1"
+                                                outlined
+                                                @click="appendLicenseItems(licenseValue)">
+                                                {{ '+' + licenseValue }}
+                                            </v-btn>
+                                            <br v-if="index === (licenseValues.length/2) - 1">
+                                        </span>
+                                    </v-col>
+                                    <v-col md="6">
+                                        <span v-for="(licenseValue, index) in licenseValues" :key="'-' + index">
+                                            <v-btn
+                                                class="ma-2"
+                                                color="grey darken-1"
+                                                outlined
+                                                @click="spendLicenseItems(licenseValue)">
+                                                {{ '-' + licenseValue }}
+                                            </v-btn>
+                                            <br v-if="index === (licenseValues.length/2) - 1">
+                                        </span>
+                                    </v-col>
+                                </v-row>
                             </v-card>
                         </v-expand-transition>
                     </v-card-text>
@@ -274,7 +364,8 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            {{
                                 langMap.notification.history
                             }}
                         </v-toolbar-title>
@@ -285,6 +376,7 @@
                         >
                             <v-list-item
                                 v-for="(item, index) in licenseHistory"
+                                v-if="item.diff.length > 0"
                                 :key="index"
                             >
                                 <v-list-item-title>
@@ -296,6 +388,59 @@
                 </v-card>
             </div>
         </div>
+        <v-dialog v-model="assignCompanyDialog" max-width="480" persistent>
+            <v-card>
+                <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                    {{ langMap.main.assign }}
+                </v-card-title>
+                <v-card-text>
+                    <v-select v-model="reassignedUserForm.company_id" :color="themeBgColor"
+                              :item-color="themeBgColor" :items="customers"
+                              :label="langMap.main.company"
+                              dense
+                              item-text="name" item-value="id">
+                    </v-select>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="grey darken-1" text @click="assignCompanyDialog = false">
+                        {{ langMap.main.cancel }}
+                    </v-btn>
+                    <v-btn color="red darken-1" text @click="assignToIxarmaCompany">
+                        {{ langMap.main.assign }}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+        <v-dialog
+            ref="dialog"
+            v-model="trialExpirationModal"
+            :return-value.sync="tempExpDate"
+            persistent
+            width="290px"
+        >
+            <v-date-picker
+                v-model="tempExpDate"
+                :color="themeBgColor"
+                scrollable
+            >
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="cancel"
+                    text
+                    @click="trialExpirationModal = false"
+                >
+                    Cancel
+                </v-btn>
+                <v-btn
+                    :color="themeBgColor"
+                    text
+                    @click="setUserTrialDateItem"
+                >
+                    OK
+                </v-btn>
+            </v-date-picker>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -320,9 +465,11 @@ export default {
                 {text: `licensed`, value: 'licensed', sortable: false},
                 {text: `active`, value: 'active', sortable: false},
                 {text: `expired_at`, value: 'trialExpirationAtString', sortable: false},
-                {text: `last_activation`, value: 'lastActivationChange', sortable: false},
+                {text: `last_activation`, value: 'lastActivationChangeString', sortable: false},
             ],
             menu2: false,
+            tempExpDate: null,
+            selectedUserId: null,
             snackbar: false,
             actionColor: '',
             snackbarMessage: '',
@@ -345,6 +492,7 @@ export default {
                 role_ids: [],
                 company_user_id: 0
             },
+            trialExpirationModal: false,
             clientIsLoaded: false,
             employees: [],
             licenseValues: [10, 20, 50, 100, 500, 1000],
@@ -354,6 +502,7 @@ export default {
                 client_name: '',
                 client_description: '',
                 connection_links: [""],
+                aliases: [""],
                 products: [
                     {
                         product_data: {}
@@ -385,6 +534,12 @@ export default {
                 client_id: 0,
                 is_active: false
             },
+            reassignedUserForm: {
+                user_id: '',
+                company_id: ''
+            },
+            assignCompanyDialog: false,
+            customers: [],
             contactInfoModal: false,
             contactInfoEditBtn: false,
             roles: [
@@ -452,10 +607,11 @@ export default {
                 if (response.success === true) {
                     this.license = response.data.limits
                     this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
+                    this.client.aliases = response.data.info !== null ? response.data.info.aliases : [""]
                     this.license.expiresAt = this.moment(response.data.limits.expiresAt).format('YYYY-MM-DD')
                     this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
                     this.getLicenseHistory();
-                    console.log(this.client.connection_links);
+                    // console.log(this.client.connection_links);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -481,7 +637,25 @@ export default {
             axios.get(`/api/custom_license/${this.$route.params.id}/users`).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.licenseUsers = response.data.entities
+                    let users = []
+                    for (let key in response.data.entities) {
+
+                        if (response.data.entities[key].lastActivationChangeString !== "01/01/1970") {
+                            response.data.entities[key].lastActivationChangeString =
+                                this.moment(response.data.entities[key].lastActivationChangeString).format('DD-MM-YYYY')
+                        } else {
+                            response.data.entities[key].lastActivationChangeString = ''
+                        }
+
+                        if (response.data.entities[key].trialExpirationAtString !== "01/01/1970") {
+                            response.data.entities[key].trialExpirationAtString =
+                                this.moment(response.data.entities[key].trialExpirationAtString).format('DD-MM-YYYY')
+                        } else {
+                            response.data.entities[key].trialExpirationAtString = ''
+                        }
+                        users.push(response.data.entities[key])
+                    }
+                    this.licenseUsers = users
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -509,6 +683,11 @@ export default {
         },
         appendLicenseItems(count = 0) {
             this.license.usersAllowed += count
+        },
+        spendLicenseItems(count = 0) {
+            if (this.license.usersAllowed - count > 0) {
+                this.license.usersAllowed -= count
+            }
         },
         updateLicense() {
             axios.put(`/api/custom_license/${this.$route.params.id}/limits`, this.license).then(response => {
@@ -596,13 +775,82 @@ export default {
         },
         addConnectionLink() {
             this.client.connection_links.push(" ");
-            console.log(this.client.connection_links);
+            // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
         removeConnectionLink(id) {
             this.client.connection_links.splice(id, 1);
-            console.log(this.client.connection_links);
+            // console.log(this.client.connection_links);
             this.$forceUpdate();
+        },
+        addAlias() {
+            this.client.aliases.push(" ");
+            // console.log(this.client.connection_links);
+            this.$forceUpdate();
+        },
+        removeAlias(id) {
+            this.client.aliases.splice(id, 1);
+            // console.log(this.client.connection_links);
+            this.$forceUpdate();
+        },
+        getClients() {
+            this.loading = this.themeBgColor
+            axios.get('/api/client', {}).then(response => {
+                this.loading = false
+                response = response.data
+                if (response.success === true) {
+                    this.customers = response.data.data
+                    this.totalCustomers = response.data.total
+                    this.lastPage = response.data.last_page
+                    this.reassignedUserForm.company_id = this.client.id
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        showAssignDialog(item) {
+            this.reassignedUserForm.user_id = item.id
+            this.getClients();
+            this.assignCompanyDialog = true
+        },
+        assignToIxarmaCompany() {
+            axios.post('/api/custom_license_unassigned/assign', this.reassignedUserForm, {})
+                .then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.main.update_successful;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.getLicenseUsers();
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            // console.log(this.reassignedUserForm);
+            this.assignCompanyDialog = false
+        },
+        setUserTrialDateItem() {
+            axios.put(`/api/custom_license_user/${this.selectedUserId}/trial`, {'trialExpirationDate': this.tempExpDate}, {})
+                .then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.snackbarMessage = this.langMap.main.update_successful;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.getLicenseUsers();
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            // console.log(this.selectedUserId);
+            // console.log(item);
+            this.trialExpirationModal = false
         }
     }
 }

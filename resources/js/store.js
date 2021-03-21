@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import EventBus from "./components/EventBus";
-import {Clients, Products, Projects, Tags, Services, Tracking, Team} from './modules';
+import {Clients, Products, Projects, Tags, Services, Tracking, Team, Tickets} from './modules';
 
 Vue.use(Vuex);
 
@@ -13,10 +13,12 @@ export default new Vuex.Store({
         Clients: Clients,
         Services: Services,
         Tracking,
-        Team
+        Team,
+        Tickets
     },
     state: {
         roles: {},
+        permissions: {},
         lang: {},
         pageName: '',
         themeFgColor: '#FFFFFF',
@@ -24,11 +26,14 @@ export default new Vuex.Store({
         appVersion: ''
     },
     getters: {
-        roles: state => [state.roles, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion]
+        roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion]
     },
     mutations: {
         setRoles(state, roles) {
             state.roles = roles;
+        },
+        setPermissions(state, permissions) {
+            state.permissions = permissions;
         },
         setLang(state, lang) {
             state.lang = lang;
@@ -57,6 +62,16 @@ export default new Vuex.Store({
                     }).catch(error => {
                         reject(error.response && error.response.data.message || 'Error.');
                     });
+            });
+        },
+        getPermissions({commit}) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/user/permissions/id').then(result => {
+                    commit('setPermissions', result.data.data);
+                    resolve();
+                }).catch(error => {
+                    reject(error.response && error.response.data.message || 'Error.');
+                });
             });
         },
         getLanguage({commit}) {
