@@ -92,7 +92,7 @@ class TrackingRepository
         $tracking->status = $request->status;
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
-        if ($request->has('entity')) {
+        if ($request->has('entity') && $request->entity && $request->entity_type) {
             $tracking->entity_id = $request->entity['id'];
             $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
         }
@@ -138,7 +138,7 @@ class TrackingRepository
         }
         if ($request->has('billable')) { $tracking->billable = $request->billable; }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
-        if ($request->has('entity')) {
+        if ($request->has('entity') && $request->entity && $request->entity_type) {
             $tracking->entity_id = $request->entity['id'];
             $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
         }
