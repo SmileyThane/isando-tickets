@@ -10,7 +10,7 @@
            'insertdatetime media table paste code wordcount searchreplace emoticons'
          ],
          toolbar:
-           'undo redo | formatselect | bold italic backcolor forecolor| \
+           'undo redo | formatselect fontsizeselect | bold italic backcolor forecolor| \
            alignleft aligncenter alignright alignjustify searchreplace| \
            bullist numlist outdent indent emoticons| removeformat'
        }"
