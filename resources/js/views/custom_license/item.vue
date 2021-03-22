@@ -155,7 +155,7 @@
                         <v-icon class="ma-2" :color="themeFgColor" @click="historyDialog = true">
                             mdi-history
                         </v-icon>
-                        <v-icon v-if="!enableToEditLicense" @click="enableToEditLicense = true">mdi-pencil</v-icon>
+                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="enableToEditLicense = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEditLicense" color="white" style="color: black; margin-right: 10px"
                                @click="enableToEditLicense = !enableToEditLicense; getLicense();">
                             {{ langMap.main.cancel }}
