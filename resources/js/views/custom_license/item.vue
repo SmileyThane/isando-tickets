@@ -138,69 +138,6 @@
                         </v-btn>
                     </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-                <v-card class="elevation-12">
-                    <v-toolbar
-                        :color="themeBgColor"
-                        dark
-                        dense
-                        flat
-                    >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ 'License Users' }}</v-toolbar-title>
-                    </v-toolbar>
-                    <div class="card-body">
-                        <v-data-table
-                            :footer-props="footerProps"
-                            :headers="licenseUserHeaders"
-                            :items="licenseUsers"
-                            :loading-text="langMap.main.loading"
-                            :options.sync="options"
-                            class="elevation-1"
-                            hide-default-footer
-                            @click:row="showAssignDialog"
-                        >
-                            <template v-slot:item.lastActivationChangeString="{ item }">
-                                <v-text-field
-                                    v-model="item.lastActivationChangeString"
-                                    :color="themeBgColor"
-                                    prepend-icon="mdi-calendar"
-                                    readonly
-                                ></v-text-field>
-                            </template>
-                            <template v-slot:item.trialExpirationAtString="{ item }">
-                                <div
-                                    @click.stop.prevent="selectedUserId = item.id; trialExpirationModal = true"
-                                >
-                                    <v-text-field
-                                        v-model="item.trialExpirationAtString"
-                                        :color="themeBgColor"
-                                        prepend-icon="mdi-calendar"
-                                        readonly
-
-                                    ></v-text-field>
-
-                                </div>
-                            </template>
-                            <template v-slot:item.licensed="{ item }">
-                                <v-btn
-                                    outlined
-                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed)"
-                                >
-                                    <v-icon
-                                        :color="item.licensed ? 'green' :'red'"
-                                    >
-                                        {{ item.licensed ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
-                                    </v-icon>
-                                </v-btn>
-                            </template>
-                            <template>
-
-                            </template>
-                        </v-data-table>
-                    </div>
-                </v-card>
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -215,6 +152,9 @@
 
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
+                        <v-icon class="ma-2" :color="themeFgColor" @click="historyDialog = true">
+                            mdi-history
+                        </v-icon>
                         <v-icon v-if="!enableToEditLicense" @click="enableToEditLicense = true">mdi-pencil</v-icon>
                         <v-btn v-if="enableToEditLicense" color="white" style="color: black; margin-right: 10px"
                                @click="enableToEditLicense = !enableToEditLicense; getLicense();">
@@ -354,9 +294,8 @@
                         </v-expand-transition>
                     </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
+            </div>
+            <div class="col-md-12">
                 <v-card class="elevation-12">
                     <v-toolbar
                         :color="themeBgColor"
@@ -364,30 +303,97 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">
-                            {{
-                                langMap.notification.history
-                            }}
-                        </v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ 'License Users' }}</v-toolbar-title>
                     </v-toolbar>
-                    <v-card-text>
-                        <v-list
-                            dense
+                    <div class="card-body">
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="licenseUserHeaders"
+                            :items="licenseUsers"
+                            :loading-text="langMap.main.loading"
+                            :options.sync="options"
+                            class="elevation-1"
+                            hide-default-footer
+                            @click:row="showAssignDialog"
                         >
-                            <v-list-item
-                                v-for="(item, index) in licenseHistory"
-                                v-if="item.diff.length > 0"
-                                :key="index"
-                            >
-                                <v-list-item-title>
-                                    {{ item.diff }}
-                                </v-list-item-title>
-                            </v-list-item>
-                        </v-list>
-                    </v-card-text>
+                            <template v-slot:item.lastActivationChangeString="{ item }">
+                                <v-text-field
+                                    v-model="item.lastActivationChangeString"
+                                    :color="themeBgColor"
+                                    prepend-icon="mdi-calendar"
+                                    readonly
+                                ></v-text-field>
+                            </template>
+                            <template v-slot:item.trialExpirationAtString="{ item }">
+                                <div
+                                    @click.stop.prevent="selectedUserId = item.id; trialExpirationModal = true"
+                                >
+                                    <v-text-field
+                                        v-model="item.trialExpirationAtString"
+                                        :color="themeBgColor"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+
+                                    ></v-text-field>
+
+                                </div>
+                            </template>
+                            <template v-slot:item.licensed="{ item }">
+                                <v-btn
+                                    outlined
+                                    @click.stop.prevent="manageLicenseUsers(item.id, item.licensed)"
+                                >
+                                    <v-icon
+                                        :color="item.licensed ? 'green' :'red'"
+                                    >
+                                        {{ item.licensed ? 'mdi-check-circle-outline' : 'mdi-cancel' }}
+                                    </v-icon>
+                                </v-btn>
+                            </template>
+                            <template>
+
+                            </template>
+                        </v-data-table>
+                    </div>
                 </v-card>
             </div>
         </div>
+        <v-dialog v-model="historyDialog" max-width="50%">
+            <v-card class="elevation-12">
+                <v-toolbar
+                    :color="themeBgColor"
+                    dark
+                    dense
+                    flat
+                >
+                    <v-toolbar-title :style="`color: ${themeFgColor};`">
+                        {{
+                            langMap.notification.history
+                        }}
+                    </v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-btn color="white" style="color: black; margin-right: 10px"
+                           @click="historyDialog = false">
+                        {{ langMap.main.cancel }}
+                    </v-btn>
+                </v-toolbar>
+                <v-card-text>
+                    <v-list
+                        dense
+                    >
+                        <v-list-item
+                            v-for="(item, index) in licenseHistory"
+                            v-if="item.diff.length > 0"
+                            :key="index"
+                        >
+                            <v-list-item-title>
+                                {{ item.diff }}
+                            </v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
         <v-dialog v-model="assignCompanyDialog" max-width="480" persistent>
             <v-card>
                 <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
@@ -462,6 +468,8 @@ export default {
                 {text: `username`, value: 'username'},
                 {text: `phone`, value: 'phoneNumber', sortable: false},
                 {text: `platform`, value: 'platform', sortable: false},
+                {text: `IP`, value: 'serverIp', sortable: false},
+                {text: `Organisation`, value: 'orgPath', sortable: false},
                 {text: `licensed`, value: 'licensed', sortable: false},
                 {text: `active`, value: 'active', sortable: false},
                 {text: `expired_at`, value: 'trialExpirationAtString', sortable: false},
@@ -485,6 +493,7 @@ export default {
             enableToEdit: false,
             enableToEditLicense: false,
             rolesDialog: false,
+            historyDialog: false,
             licenseHistory: [],
             licenseUsers: [],
             singleUserForm: {
