@@ -61,13 +61,13 @@ class TicketRepository
 
     public function all(Request $request)
     {
-//                DB::enableQueryLog();
+//        DB::enableQueryLog();
         $ticketIds = [];
         $companyUser = Auth::user()->employee;
         $tickets = Ticket::query();
         $tickets = $this->ticketRoleFilter($companyUser, $tickets);
         $tickets->orWhere('from_company_user_id', $companyUser->id);
-        $tickets->orWhere(function ($ticketsQuery) use ($companyUser) {
+        $tickets->orWhere(static function ($ticketsQuery) use ($companyUser) {
             $ticketsQuery->where('to_company_user_id', $companyUser->id)
                 ->orWhere('contact_company_user_id', $companyUser->id);
         })->select('id');
@@ -89,11 +89,11 @@ class TicketRepository
                             case 'contact.user_data.full_name':
                             case 'contact':
                                 $search = trim($request->search);
-                                $query->whereHas('contact.userData', function ($q) use ($search) {
-                                    $q->where(function ($_query) use ($search) {
+                                $query->whereHas('contact.userData', static function ($q) use ($search) {
+                                    $q->where(static function ($_query) use ($search) {
                                         $_query->where('name', 'LIKE', '%' . $search . '%')
                                             ->orWhere('surname', 'LIKE', '%' . $search . '%')
-                                            ->orWhereHas('emails', function ($_q) use ($search) {
+                                            ->orWhereHas('emails', static function ($_q) use ($search) {
                                                 $_q->where('email', 'LIKE', '%' . $search . '%');
                                             });
                                     });
@@ -127,8 +127,8 @@ class TicketRepository
 
         $ticketResult
             ->with(
-                'creator.userData', 'assignedPerson.userData',
-                'contact.userData', 'product', 'team',
+                'assignedPerson.userData',
+                'contact.userData', 'product',
                 'priority', 'status', 'category');
         $orderedField = $request->sort_by ?? 'id';
         $orderedDirection = $request->sort_val === 'false' ? 'asc' : 'desc';
@@ -162,7 +162,8 @@ class TicketRepository
 
     private function ticketRoleFilter($companyUser, $tickets)
     {
-        if (!$companyUser->hasRoleId(Role::COMPANY_CLIENT)) {
+        $roleIds = $companyUser->roleIds();
+        if (!in_array(Role::COMPANY_CLIENT, $roleIds, true)) {
             $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
             $tickets->orWhere([['from_entity_type', Company::class], ['from_entity_id', $companyUser->company_id]]);
         } else {
@@ -180,7 +181,7 @@ class TicketRepository
                     ->whereIn('to_entity_id', $clientIds);
             });
         }
-        if ($companyUser->hasRoleId([Role::LICENSE_OWNER, Role::ADMIN])) {
+        if (in_array([Role::LICENSE_OWNER, Role::ADMIN], $roleIds, true)) {
             $products = ProductCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($products) {
                 $productsIds = $products->pluck('id')->toArray();
@@ -190,7 +191,7 @@ class TicketRepository
             }
 
         }
-        if ($companyUser->hasRoleId(Role::MANAGER)) {
+        if (in_array(Role::MANAGER, $roleIds, true)) {
             $teams = TeamCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($teams) {
                 $teamsIds = $teams->pluck('id')->toArray();
@@ -199,16 +200,16 @@ class TicketRepository
                 }
             }
         }
-        if ($companyUser->hasRoleId(Role::COMPANY_CLIENT)) {
+        if (in_array(Role::COMPANY_CLIENT, $roleIds, true)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', Auth::user()->employee->id)->first();
             if ($clientCompanyUser) {
-                $tickets->orWhere(function ($query) use ($clientCompanyUser) {
+                $tickets->orWhere(static function ($query) use ($clientCompanyUser) {
                     $query->where('replicated_to_entity_type', Client::class)
                         ->where('replicated_to_entity_id', $clientCompanyUser->client_id);
                 });
             }
         } else {
-            $tickets->orWhere(function ($query) {
+            $tickets->orWhere(static function ($query) {
                 $query->where('replicated_to_entity_type', Company::class)
                     ->where('replicated_to_entity_id', Auth::user()->employee->company_id);
             });
