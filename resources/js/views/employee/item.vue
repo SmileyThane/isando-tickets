@@ -273,6 +273,23 @@
                                                         type="text"
                                                     />
                                                 </v-col>
+                                                <v-col cols="4">
+                                                    <v-text-field
+                                                        v-model="userData.password"
+                                                        :color="themeBgColor"
+                                                        :error-messages="errors.password"
+                                                        :label="langMap.main.password"
+                                                        dense
+                                                        lazy-validation
+                                                        :append-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+                                                        :type="isPasswordVisible ? 'text' : 'password'"
+                                                        class="input-group--focused"
+                                                        @click:append="isPasswordVisible = !isPasswordVisible"
+                                                        name="password"
+                                                        prepend-icon="mdi-lock"
+                                                    />
+
+                                                </v-col>
                                             </v-row>
                                         </v-col>
                                     </v-row>
@@ -1319,6 +1336,7 @@ themeBgColor: this.$store.state.themeBgColor,
             socialTypes: [],
             emailTypes: [],
             isCustomersLoading: false,
+            isPasswordVisible: false,
             customers: [],
             countries: [],
             updatePhoneDlg: false,

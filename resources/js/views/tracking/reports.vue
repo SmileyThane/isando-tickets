@@ -447,7 +447,32 @@
                             <span class="headline">CSV Export</span>
                         </v-card-title>
                         <v-card-text>
-                            <!-- FORM -->
+                            <div class="d-flex flex-column">
+                                <div class="d-inline-block">
+                                    <v-select
+                                        :items="csvFormGroupingEntries"
+                                        v-model="report.csv.group"
+                                        item-value="text"
+                                        item-text="text"
+                                        return-object
+                                        label="Grouped times"
+                                    ></v-select>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-select
+                                        :items="csvForm.timeFormatItems"
+                                        v-model="report.csv.timeFormat"
+                                        label="Time format"
+                                    ></v-select>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-select
+                                        :items="csvForm.dateFormatItems"
+                                        v-model="report.csv.dateFormat"
+                                        label="Date format"
+                                    ></v-select>
+                                </div>
+                            </div>
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
@@ -767,11 +792,13 @@ export default {
                 groupItems: [
                     {
                         value: 1,
-                        text: 'Sort chronologically & do not group'
+                        text: 'Sort chronologically & do not group',
+                        items: []
                     },
                     {
                         value: 2,
-                        text: 'Group by service (Coming soon)'
+                        text: 'Group by service (Coming soon)',
+                        items: []
                     }
                 ],
                 pdf: {
@@ -779,7 +806,58 @@ export default {
                     coworkers: null,
                     periodText: '',
                     groupSel: 1
+                },
+                csv: {
+                    group: null,
+                    timeFormat: 1,
+                    dateFormat: 1
                 }
+            },
+            csvForm: {
+                groupItems: [
+                    {
+                        value: 'all_no_group',
+                        text: 'All single entries, sorted based on the grouping',
+                        items: []
+                    },
+                    {
+                        value: 'all_chron',
+                        text: 'All single entries, chronologically sorted',
+                        items: []
+                    }
+                ],
+                timeFormatItems: [
+                    {
+                        value: 1,
+                        text: 'Time in seconds'
+                    },
+                    {
+                        value: 2,
+                        text: 'Time in minutes (mm:ss)'
+                    },
+                    {
+                        value: 3,
+                        text: 'Time in minutes (decimal)'
+                    },
+                    {
+                        value: 4,
+                        text: 'Time in hours (hh:mm)'
+                    },
+                    {
+                        value: 5,
+                        text: 'Time in hours (decimal)'
+                    }
+                ],
+                dateFormatItems: [
+                    {
+                        value: 1,
+                        text: 'Machine-readable (YYYY-MM-DD)'
+                    },
+                    {
+                        value: 2,
+                        text: 'In text form (as in the report)'
+                    }
+                ],
             }
         }
     },
@@ -877,15 +955,6 @@ export default {
                     to: this.builder.period.end
                 });
             }
-            if (this.builder.period.start) {
-                if (this.builder.period.start === this.builder.period.end) {
-                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
-                } else {
-                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
-                }
-            } else {
-                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
-            }
             this.activePeriod = null;
             this.genPreview();
         },
@@ -962,7 +1031,7 @@ export default {
             return seconds;
         },
         createFile(format) {
-            axios.post(`/api/tracking/reports?format=${format}`, { ...this.builder, ...this.report.pdf }, {
+            axios.post(`/api/tracking/reports?format=${format}`, { ...this.builder, ...this.report[format] }, {
                 responseType: 'blob'
             })
                 .then(res => {
@@ -1055,6 +1124,20 @@ export default {
                 return data;
             }
             return null;
+        },
+        csvFormGroupingEntries: function () {
+            let items = [];
+            let k = this.builder.group.length;
+            this.builder.group.map((x, i) => {
+                const groups = this.builder.group.filter((v, i) => i < k);
+                items.push({
+                    text: groups.map(v => v.text).join(' / '),
+                    items: groups,
+                    value: 'custom'
+                });
+                k--;
+            });
+            return items.concat(this.csvForm.groupItems);
         }
     },
     watch: {
@@ -1063,6 +1146,17 @@ export default {
         },
         'builder.group': function() {
             this.genPreview();
+        },
+        'builder.period': function () {
+            if (this.builder.period.start) {
+                if (this.builder.period.start === this.builder.period.end) {
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
+                } else {
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                }
+            } else {
+                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+            }
         }
     }
 }

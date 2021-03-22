@@ -7,12 +7,12 @@
          plugins: [
            'advlist autolink lists link image charmap print preview anchor',
            'searchreplace visualblocks code fullscreen',
-           'insertdatetime media table paste code wordcount'
+           'insertdatetime media table paste code wordcount searchreplace emoticons'
          ],
          toolbar:
-           'undo redo | formatselect | bold italic backcolor | \
-           alignleft aligncenter alignright alignjustify | \
-           bullist numlist outdent indent | removeformat'
+           'undo redo | formatselect fontsizeselect | bold italic backcolor forecolor| \
+           alignleft aligncenter alignright alignjustify searchreplace| \
+           bullist numlist outdent indent emoticons| removeformat'
        }"
         api-key="2v20ajrzng0ftoh79hde6tj4xavm9ej7au8gq939q914sb0w"
         @input="handleInput"

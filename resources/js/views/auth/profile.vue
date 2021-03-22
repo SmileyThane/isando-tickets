@@ -266,6 +266,23 @@
                                                         type="text"
                                                     />
                                                 </v-col>
+                                                <v-col cols="4">
+                                                    <v-text-field
+                                                        v-model="userData.password"
+                                                        :color="themeBgColor"
+                                                        :error-messages="errors.password"
+                                                        :label="langMap.main.password"
+                                                        dense
+                                                        lazy-validation
+                                                        :append-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
+                                                        :type="isPasswordVisible ? 'text' : 'password'"
+                                                        class="input-group--focused"
+                                                        @click:append="isPasswordVisible = !isPasswordVisible"
+                                                        name="password"
+                                                        prepend-icon="mdi-lock"
+                                                    />
+
+                                                </v-col>
                                             </v-row>
                                         </v-col>
                                     </v-row>
@@ -705,20 +722,20 @@
                                                 prepend-icon="mdi-web"
                                             />
                                         </v-col>
-                                        <v-col cols="3">
+                                        <v-col cols="9">
                                             &nbsp;
                                         </v-col>
-                                        <v-col cols="3">
-                                            <v-checkbox
-                                                v-model="userData.status"
-                                                :label="langMap.individuals.active"
-                                                :color="themeBgColor"
-                                                dense
-                                                hide-details
-                                                @change="updateStatus"
-                                            />
-                                        </v-col>
-                                        <v-col cols="3">
+<!--                                        <v-col cols="3">-->
+<!--                                            <v-checkbox-->
+<!--                                                v-model="userData.status"-->
+<!--                                                :label="langMap.individuals.active"-->
+<!--                                                :color="themeBgColor"-->
+<!--                                                dense-->
+<!--                                                hide-details-->
+<!--                                                @change="updateStatus"-->
+<!--                                            />-->
+<!--                                        </v-col>-->
+                                        <v-col cols="12">
                                             <v-checkbox
                                                 v-model="userData.is_active"
                                                 :label="langMap.main.give_access"
@@ -1250,6 +1267,7 @@ export default {
                 override_user_theme: false
             },
             resetThemeBgColorFlag: 0,
+            isPasswordVisible: false,
             updatePhoneDlg: false,
             updateAddressDlg: false,
             updateEmailDlg: false,
