@@ -955,15 +955,6 @@ export default {
                     to: this.builder.period.end
                 });
             }
-            if (this.builder.period.start) {
-                if (this.builder.period.start === this.builder.period.end) {
-                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
-                } else {
-                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
-                }
-            } else {
-                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
-            }
             this.activePeriod = null;
             this.genPreview();
         },
@@ -1155,6 +1146,17 @@ export default {
         },
         'builder.group': function() {
             this.genPreview();
+        },
+        'builder.period': function () {
+            if (this.builder.period.start) {
+                if (this.builder.period.start === this.builder.period.end) {
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
+                } else {
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                }
+            } else {
+                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+            }
         }
     }
 }
