@@ -706,7 +706,7 @@ export default {
                 },
                 {
                     value: 'clients&projects',
-                    text: 'Clients&projects',
+                    text: 'Projects',
                     store: 'Projects/getProjects',
                     items: [],
                     selected: [],
@@ -1156,6 +1156,22 @@ export default {
                 }
             } else {
                 this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+            }
+        },
+        activePeriod: function () {
+            const calendar = this.$refs.calendar;
+            if (calendar) {
+                if (moment(this.builder.period.start).format('YYYY-MM') !== moment(this.builder.period.end).format('YYYY-MM')) {
+                    calendar.$refs.calendar.showPageRange({
+                        from: moment(this.builder.period.start).toDate(),
+                        to: moment(this.builder.period.end).toDate()
+                    });
+                } else {
+                    calendar.$refs.calendar.showPageRange({
+                        from: moment(this.builder.period.start).subtract(1, 'months').toDate(),
+                        to: moment(this.builder.period.end).toDate()
+                    });
+                }
             }
         }
     }
