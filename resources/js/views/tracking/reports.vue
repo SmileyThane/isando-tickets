@@ -17,10 +17,62 @@
                 ></v-select>
             </div>
             <div class="d-inline-flex mx-16">
-                <v-btn
-                    :color="themeBgColor"
-                    :style="{ color: invertColor(themeBgColor) }"
-                >Save</v-btn>
+                <v-dialog
+                    v-model="dialogSave"
+                    persistent
+                    max-width="600px"
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            :color="themeBgColor"
+                            :style="{ color: invertColor(themeBgColor) }"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            Save
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-title class="headline">
+                            Save report
+                        </v-card-title>
+                        <v-card-text>
+                            <div class="d-flex flex-column">
+                                <div class="d-inline-block">
+                                    <v-text-field
+                                        placeholder="Report name"
+                                        required
+                                    ></v-text-field>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-list dense>
+                                        <v-subheader>REPORTS</v-subheader>
+                                        <v-list-item-group
+                                            color="primary"
+                                        >
+                                            <v-list-item
+                                            >
+                                                <v-list-item-content>
+                                                    <v-list-item-title></v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                </div>
+                            </div>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="green darken-1"
+                                text
+                                @click="dialogSave = false"
+                            >
+                                Close
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
             </div>
         </div>
         <div class="d-flex flex-row">
@@ -458,20 +510,20 @@
                                         label="Grouped times"
                                     ></v-select>
                                 </div>
-                                <div class="d-inline-block">
-                                    <v-select
-                                        :items="csvForm.timeFormatItems"
-                                        v-model="report.csv.timeFormat"
-                                        label="Time format"
-                                    ></v-select>
-                                </div>
-                                <div class="d-inline-block">
-                                    <v-select
-                                        :items="csvForm.dateFormatItems"
-                                        v-model="report.csv.dateFormat"
-                                        label="Date format"
-                                    ></v-select>
-                                </div>
+<!--                                <div class="d-inline-block">-->
+<!--                                    <v-select-->
+<!--                                        :items="csvForm.timeFormatItems"-->
+<!--                                        v-model="report.csv.timeFormat"-->
+<!--                                        label="Time format"-->
+<!--                                    ></v-select>-->
+<!--                                </div>-->
+<!--                                <div class="d-inline-block">-->
+<!--                                    <v-select-->
+<!--                                        :items="csvForm.dateFormatItems"-->
+<!--                                        v-model="report.csv.dateFormat"-->
+<!--                                        label="Date format"-->
+<!--                                    ></v-select>-->
+<!--                                </div>-->
                             </div>
                         </v-card-text>
                         <v-card-actions>
@@ -706,7 +758,7 @@ export default {
                 },
                 {
                     value: 'clients&projects',
-                    text: 'Clients&projects',
+                    text: 'Projects',
                     store: 'Projects/getProjects',
                     items: [],
                     selected: [],
@@ -788,6 +840,7 @@ export default {
             dialogExportPDF: false,
             dialogExportCSV: false,
             dialogPrint: false,
+            dialogSave: false,
             report: {
                 groupItems: [
                     {
@@ -808,9 +861,13 @@ export default {
                     groupSel: 1
                 },
                 csv: {
-                    group: null,
-                    timeFormat: 1,
-                    dateFormat: 1
+                    group: {
+                        value: 'all_no_group',
+                        text: 'All single entries, sorted based on the grouping',
+                        items: []
+                    },
+                    timeFormat: 4,
+                    dateFormat: 2
                 }
             },
             csvForm: {
@@ -1031,6 +1088,13 @@ export default {
             return seconds;
         },
         createFile(format) {
+            if (format === 'csv' && this.report.csv.group && this.report.csv.group.value === 'all_chron') {
+                this.builder.sort = {
+                    icon: 'mdi-sort-alphabetical-ascending',
+                    value: 'alph-asc',
+                    text: 'A - Z and chronologically'
+                };
+            }
             axios.post(`/api/tracking/reports?format=${format}`, { ...this.builder, ...this.report[format] }, {
                 responseType: 'blob'
             })
@@ -1156,6 +1220,22 @@ export default {
                 }
             } else {
                 this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+            }
+        },
+        activePeriod: function () {
+            const calendar = this.$refs.calendar;
+            if (calendar) {
+                if (moment(this.builder.period.start).format('YYYY-MM') !== moment(this.builder.period.end).format('YYYY-MM')) {
+                    calendar.$refs.calendar.showPageRange({
+                        from: moment(this.builder.period.start).toDate(),
+                        to: moment(this.builder.period.end).toDate()
+                    });
+                } else {
+                    calendar.$refs.calendar.showPageRange({
+                        from: moment(this.builder.period.start).subtract(1, 'months').toDate(),
+                        to: moment(this.builder.period.end).toDate()
+                    });
+                }
             }
         }
     }

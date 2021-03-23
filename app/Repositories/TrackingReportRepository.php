@@ -8,6 +8,7 @@ use App\Tracking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 
@@ -385,14 +386,93 @@ class TrackingReportRepository
         return response()->download($tmpFileName)->deleteFileAfterSend();
     }
 
+    protected function prepareDataForCSV($entities, $items = []) {
+        $entities = (array)$entities;
+        foreach ($entities as $entity) {
+            if (isset($entity['children'])) {
+                Log::debug($entity['name']);
+                $items = array_merge($items, $this->prepareDataForCSV($entity['children']));
+            } else {
+                Log::debug($entity['id']);
+                array_push($items, $entity);
+            }
+        }
+        return $items;
+    }
+
+    protected function getDataCSV($tracking) {
+        try {
+            $row = [];
+            $row[] = $tracking['user'] ? $tracking['user']['full_name'] : '';
+            $row[] = $tracking['user'] ? $tracking['user']['id'] : '';
+            if ($tracking['entity'] && isset($tracking['entity']['from'])) {
+                $row[] = $tracking['entity'] && $tracking['entity']['from_company_name'] ? $tracking['entity']['from_company_name'] : '';
+                $row[] = $tracking['entity'] && $tracking['entity']['from']['id'] ? $tracking['entity']['from']['id'] : '';
+            } else {
+                $row[] = $tracking['entity'] && $tracking['entity']['client'] ? $tracking['entity']['client']['name'] : '';
+                $row[] = $tracking['entity'] && $tracking['entity']['client'] ? $tracking['entity']['client']['id'] : '';
+            }
+            $row[] = $tracking['entity'] ? $tracking['entity']['name'] : '';
+            $row[] = $tracking['entity'] ? $tracking['entity']['id'] : '';
+            $row[] = $tracking['service'] ? $tracking['service']['name'] : '';
+            $row[] = $tracking['service'] ? $tracking['service']['id'] : '';
+            $row[] = 0;
+            $row[] = '';
+            $row[] = $tracking['description'];
+            $row[] = $tracking['billable'] ? 1 : 0;
+            $row[] = 0;
+            $row[] = round(0, 2);
+            $row[] = Carbon::parse($tracking['date_from'])->format('Y-m-d H:i:s');
+            $row[] = Carbon::parse($tracking['date_to'])->format('Y-m-d H:i:s');
+            $row[] = 0;
+            $row[] = 0;
+            $row[] = 0;
+            $row[] = 0;
+            $row[] = 0;
+            return implode(';', $row);
+        } catch (\Exception $exception) {
+            dd($exception->getMessage(), $exception->getLine(), $tracking);
+        }
+    }
+
+    protected function getHeaderCSV() {
+        return implode(';', [
+            'Co-worker',
+            'Personnel number',
+            'Customer',
+            'Customer number',
+            'Project',
+            'Project number',
+            'Service/Lump sum',
+            'Service/Lump sum number',
+            'Amount (Lump sums)',
+            'Unit (Lump sums)',
+            'Description',
+            'Billable',
+            'Billed',
+            'Hourly rate in CHF',
+            'Start',
+            'End',
+            'Amount',
+            'Correction of time in seconds',
+            'Time clocked',
+            'Clocked offline',
+            'Revenue in CHF'
+        ]) . "\n";
+    }
+
     public function genCSV($request) {
         if (isset($request->group) && $request->group['value'] === 'custom') {
             $data = $this->generate($request);
         } else {
             $data = $this->getData($request)['tracks']->toArray();
         }
-        $data = collect($data);
 
-        return '';
+        $result = $this->prepareDataForCSV($data);
+        foreach ($result as $key => $item) {
+            $result[$key] = $this->getDataCSV($item);
+        }
+
+        return $this->getHeaderCSV() . implode("\n", $result);
     }
 }
