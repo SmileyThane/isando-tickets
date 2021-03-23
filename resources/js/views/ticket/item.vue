@@ -27,7 +27,7 @@
         <template>
             <v-dialog v-model="serverAccessDialog" max-width="480">
                 <v-card dense outlined>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         Server access
                     </v-card-title>
                     <v-card-text>
@@ -55,10 +55,12 @@
         <template>
             <v-dialog v-model="updateDialog" max-width="60%">
                 <v-card dense outlined>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         <span class="text-capitalize">{{ langMap.main.edit }}</span>
                         <v-spacer></v-spacer>
-                        <v-btn :color="themeBgColor" darken-1 text @click="updateDialog = false">{{ langMap.main.cancel }}
+                        <v-btn :color="themeBgColor" darken-1 text @click="updateDialog = false">{{
+                                langMap.main.cancel
+                            }}
                         </v-btn>
                         <v-btn :color="themeBgColor" dark @click="updateTicket">{{ langMap.main.update }}
                         </v-btn>
@@ -143,7 +145,7 @@
         <template>
             <v-dialog v-model="answerDialog" max-width="50%">
                 <v-card dense outlined>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.ticket.create_answer }}
                     </v-card-title>
                     <v-card-text>
@@ -157,14 +159,14 @@
                                 </div>
                                 <div class="col-md-12">
                                     <v-select
+                                        v-model="selectedSignature"
                                         :color="themeBgColor"
                                         :item-color="themeBgColor"
-                                        v-model="selectedSignature"
                                         :items="signatures"
                                         :label="langMap.notification.signature"
-                                        item-value="signature"
-                                        item-text="name"
                                         dense
+                                        item-text="name"
+                                        item-value="signature"
                                     >
                                         <template slot="selection" slot-scope="data">
                                             <div class="text--black mt-3" v-html="data.item.signature"></div>
@@ -207,7 +209,7 @@
         <template>
             <v-dialog v-model="noteDialog" max-width="50%">
                 <v-card dense outlined>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.ticket.add_internal_note }}
                     </v-card-title>
                     <v-card-text>
@@ -222,14 +224,14 @@
                             </div>
                             <div class="col-md-12">
                                 <v-select
+                                    v-model="selectedSignature"
                                     :color="themeBgColor"
                                     :item-color="themeBgColor"
-                                    v-model="selectedSignature"
                                     :items="signatures"
                                     :label="langMap.notification.signature"
-                                    item-value="signature"
-                                    item-text="name"
                                     dense
+                                    item-text="name"
+                                    item-value="signature"
                                 >
                                     <template slot="selection" slot-scope="data">
                                         <div class="text--black mt-3" v-html="data.item.signature"></div>
@@ -250,7 +252,7 @@
         <template>
             <v-dialog v-model="ticketLinkDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.main.link }}
                     </v-card-title>
                     <v-card-text>
@@ -301,7 +303,7 @@
         <template>
             <v-dialog v-model="removeTicketDialog" max-width="480" persistent>
                 <v-card>
-                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.main.delete_selected }}?
                     </v-card-title>
                     <v-card-actions>
@@ -335,12 +337,13 @@
                     >
                         {{ langMap.main.link }}
                     </v-btn>
-                    <v-btn v-if="!checkRoleByIds([6, 101]) && (ticket.parent_id !== null || ticket.child_tickets !== null)"
-                           :color="!mergeBlock ? '#f2f2f2' : themeBgColor"
-                           :outlined="mergeBlock"
-                           class="ma-2 d-sm-none d-md-flex"
-                           small
-                           @click="showMergeBlock"
+                    <v-btn
+                        v-if="!checkRoleByIds([6, 101]) && (ticket.parent_id !== null || ticket.child_tickets !== null)"
+                        :color="!mergeBlock ? '#f2f2f2' : themeBgColor"
+                        :outlined="mergeBlock"
+                        class="ma-2 d-sm-none d-md-flex"
+                        small
+                        @click="showMergeBlock"
                     >
                         {{ langMap.ticket.merge }}
                     </v-btn>
@@ -381,7 +384,7 @@
                                     dot
                                     inline
                                 >
-<!--                                    <strong>{{ langMap.ticket_statuses[ticket.status.name] }}</strong>-->
+                                    <!--                                    <strong>{{ langMap.ticket_statuses[ticket.status.name] }}</strong>-->
                                     <strong>{{ ticket.status.name }}</strong>
                                 </v-badge>
                             </v-btn>
@@ -415,7 +418,7 @@
                                     dot
                                     inline
                                 >
-<!--                                    <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>-->
+                                    <!--                                    <strong>{{ langMap.ticket_priorities[ticket.priority.name] }}</strong>-->
                                     <strong>{{ ticket.priority.name }}</strong>
                                 </v-badge>
                             </v-btn>
@@ -435,7 +438,7 @@
                                         dot
                                         inline
                                     >
-<!--                                        <strong>{{ langMap.ticket_priorities[priority.name] }}</strong>-->
+                                        <!--                                        <strong>{{ langMap.ticket_priorities[priority.name] }}</strong>-->
                                         <strong>{{ priority.name }}</strong>
                                     </v-badge>
                                 </v-list-item-title>
@@ -453,7 +456,7 @@
                                 class="ma-2 float-md-right"
                                 small
                             >
-<!--                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>-->
+                                <!--                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>-->
                                 <strong>{{ ticket.ticket_type.name }}</strong>
 
                             </v-btn>
@@ -468,7 +471,7 @@
                                 @click="changeType(type.id)"
                             >
                                 <v-list-item-title>
-<!--                                    <strong>{{ langMap.ticket_types[type.name] }}</strong>-->
+                                    <!--                                    <strong>{{ langMap.ticket_types[type.name] }}</strong>-->
                                     <strong>{{ type.name }}</strong>
                                 </v-list-item-title>
                             </v-list-item>
@@ -541,17 +544,21 @@
                                             <strong>{{ langMap.ticket.reported_by }}: </strong>
                                             <span v-if="ticket.contact !== null" class="float-md-right text-md-right">
                                                 <v-avatar
-                                                    size="2em"
+                                                    v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
                                                     class="mr-2 mb-2"
                                                     color="grey darken-1"
-                                                    v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
+                                                    size="2em"
                                                 >
-                                                    <v-img v-if="ticket.contact.user_data.avatar_url" :src="ticket.contact.user_data.avatar_url" />
-                                                    <span v-else-if="ticket.contact.user_data.full_name" class="white--text">
-                                                    {{ ticket.contact.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    <v-img v-if="ticket.contact.user_data.avatar_url"
+                                                           :src="ticket.contact.user_data.avatar_url"/>
+                                                    <span v-else-if="ticket.contact.user_data.full_name"
+                                                          class="white--text">
+                                                    {{
+                                                            ticket.contact.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                        }}
                                                     </span>
                                                    </v-avatar>
-                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
                                                 {{ ticket.contact.user_data.full_name }}
                                                 <br/>
                                                 {{ ticket.from.name }}
@@ -649,21 +656,27 @@
                                                 style="font-weight: bold;"
                                             >
                                                 <v-avatar
-                                                    size="2em"
+                                                    v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
                                                     class="mr-2 mb-2"
                                                     color="grey darken-1"
-                                                    v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
+                                                    size="2em"
                                                 >
-                                                    <v-img v-if="answer.employee.user_data.avatar_url" :src="answer.employee.user_data.avatar_url" />
-                                                    <span v-else-if="answer.employee.user_data.full_name" class="white--text">
-                                                        {{ answer.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    <v-img v-if="answer.employee.user_data.avatar_url"
+                                                           :src="answer.employee.user_data.avatar_url"/>
+                                                    <span v-else-if="answer.employee.user_data.full_name"
+                                                          class="white--text">
+                                                        {{
+                                                            answer.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                        }}
                                                     </span>
                                                 </v-avatar>
-                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
                                                 {{ answer.employee.user_data.full_name }}
 
-                                                {{ answer.created_at_time !== '' ? answer.created_at_time : answer.created_at }} - {{ ticket.name }}:
+                                                {{
+                                                    answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
+                                                }} - {{ ticket.name }}:
                                             </span>
                                             <div v-html="answer.answer"></div>
                                             <v-col v-if="answer.attachments.length > 0 " cols="12">
@@ -709,24 +722,30 @@
                                             class="text-left"
                                             style="font-weight: bold;">
                                             <v-avatar
-                                                    size="2em"
-                                                    class="mr-2 mb-2"
-                                                    color="grey darken-1"
-                                                    v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
-                                                >
-                                                    <v-img v-if="ticket.creator.user_data.avatar_url" :src="ticket.creator.user_data.avatar_url" />
-                                                    <span v-else-if="ticket.creator.user_data.full_name" class="white--text">
-                                                        {{ ticket.creator.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
+                                                class="mr-2 mb-2"
+                                                color="grey darken-1"
+                                                size="2em"
+                                            >
+                                                    <v-img v-if="ticket.creator.user_data.avatar_url"
+                                                           :src="ticket.creator.user_data.avatar_url"/>
+                                                    <span v-else-if="ticket.creator.user_data.full_name"
+                                                          class="white--text">
+                                                        {{
+                                                            ticket.creator.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                        }}
                                                     </span>
                                                 </v-avatar>
-                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
                                                 {{ ticket.creator.user_data.full_name }}
-                                                {{ ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at }} - {{ ticket.name }}:
+                                                {{
+                                                ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at
+                                            }} - {{ ticket.name }}:
                                         </span>
                                         <div v-html="child_ticket.description"></div>
-                                        <span class="caption text-center"
-                                              v-if="ticket.merge_comment"
+                                        <span v-if="ticket.merge_comment"
+                                              class="caption text-center"
                                         >
                                                 ({{ ticket.merge_comment }})
                                         </span>
@@ -755,8 +774,8 @@
                                         >
                                              {{ ticket.merged_child_info }}
                                         </span>
-                                        <span class="caption text-center"
-                                              v-if="ticket.merge_comment"
+                                        <span v-if="ticket.merge_comment"
+                                              class="caption text-center"
                                         >
                                                 ({{ ticket.merge_comment }})
                                     </span>
@@ -781,20 +800,26 @@
                                     <v-list-item-content>
                                         <span class="text-left" style="font-weight: bold;">
                                             <v-avatar
-                                                size="2em"
+                                                v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
                                                 class="mr-2 mb-2"
                                                 color="grey darken-1"
-                                                v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
+                                                size="2em"
                                             >
-                                                    <v-img v-if="answer.employee.user_data.avatar_url" :src="answer.employee.user_data.avatar_url" />
-                                                    <span v-else-if="answer.employee.user_data.full_name" class="white--text">
-                                                        {{ answer.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    <v-img v-if="answer.employee.user_data.avatar_url"
+                                                           :src="answer.employee.user_data.avatar_url"/>
+                                                    <span v-else-if="answer.employee.user_data.full_name"
+                                                          class="white--text">
+                                                        {{
+                                                            answer.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                        }}
                                                     </span>
                                                 </v-avatar>
-                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
                                             {{ answer.employee.user_data.full_name }}
-                                            {{ answer.created_at_time !== '' ? answer.created_at_time : answer.created_at }}:
+                                            {{
+                                                answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
+                                            }}:
                                         </span>
                                         <div v-html="answer.answer"></div>
                                         <v-col v-if="answer.attachments.length > 0 " cols="12">
@@ -829,23 +854,29 @@
                         >
                             <v-list-item>
                                 <v-list-item-content>
-<!--                                    <span v-text="ticket.merge_comment"></span>-->
+                                    <!--                                    <span v-text="ticket.merge_comment"></span>-->
                                     <span class="text-left" style="font-weight: bold;">
                                         <v-avatar
-                                            size="2em"
+                                            v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
                                             class="mr-2 mb-2"
                                             color="grey darken-1"
-                                            v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
+                                            size="2em"
                                         >
-                                                    <v-img v-if="ticket.creator.user_data.avatar_url" :src="ticket.creator.user_data.avatar_url" />
-                                                    <span v-else-if="ticket.creator.user_data.full_name" class="white--text">
-                                                        {{ ticket.creator.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    <v-img v-if="ticket.creator.user_data.avatar_url"
+                                                           :src="ticket.creator.user_data.avatar_url"/>
+                                                    <span v-else-if="ticket.creator.user_data.full_name"
+                                                          class="white--text">
+                                                        {{
+                                                            ticket.creator.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                        }}
                                                     </span>
                                                 </v-avatar>
-                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
                                                 {{ ticket.creator.user_data.full_name }}
-                                                {{ ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at }} - {{ ticket.name }}:
+                                                {{
+                                            ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at
+                                        }} - {{ ticket.name }}:
                                     </span>
                                     <div v-html="ticket.description"></div>
                                 </v-list-item-content>
@@ -875,18 +906,21 @@
                                  <strong>{{ langMap.ticket.reported_by }}: </strong>
                                  <span v-if="ticket.contact !== null" class="float-md-right text-md-right">
                                      <v-avatar
-                                         size="2em"
+                                         v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
                                          class="mr-2 mb-2"
                                          color="grey darken-1"
-                                         v-if="ticket.contact.user_data.avatar_url || ticket.contact.user_data.full_name"
+                                         size="2em"
                                      >
-                                         <v-img v-if="ticket.contact.user_data.avatar_url" :src="ticket.contact.user_data.avatar_url" />
+                                         <v-img v-if="ticket.contact.user_data.avatar_url"
+                                                :src="ticket.contact.user_data.avatar_url"/>
                                          <span v-else-if="ticket.contact.user_data.full_name" class="white--text">
-                                            {{ ticket.contact.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                            {{
+                                                 ticket.contact.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                             }}
                                          </span>
                                      </v-avatar>
 
-                                     <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                     <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
                                      {{ ticket.contact.user_data.full_name }}
                                      <br/>
                                      {{ ticket.from.name }}
@@ -996,14 +1030,18 @@
                                 <strong>{{ langMap.team.members }}: </strong>
                                     <span class="float-md-right text-md-right">
                                         <v-avatar
-                                            size="2em"
+                                            v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
                                             class="mr-2 mb-2"
                                             color="grey darken-1"
-                                            v-if="ticket.assigned_person.user_data.avatar_url || ticket.assigned_person.user_data.full_name"
+                                            size="2em"
                                         >
-                                         <v-img v-if="ticket.assigned_person.user_data.avatar_url" :src="ticket.assigned_person.user_data.avatar_url" />
-                                         <span v-else-if="ticket.assigned_person.user_data.full_name" class="white--text">
-                                            {{ ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                         <v-img v-if="ticket.assigned_person.user_data.avatar_url"
+                                                :src="ticket.assigned_person.user_data.avatar_url"/>
+                                         <span v-else-if="ticket.assigned_person.user_data.full_name"
+                                               class="white--text">
+                                            {{
+                                                 ticket.assigned_person.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                             }}
                                          </span>
                                         </v-avatar>
                                         {{ ticket.assigned_person.user_data.full_name }}
@@ -1111,20 +1149,24 @@
                                     <v-list-item three-line>
                                         <v-list-item-content class="custom-small-text">
                                             <strong>
-                                                {{childTicket.number}} |
+                                                {{ childTicket.number }} |
 
                                                 <v-avatar
-                                                    size="2em"
+                                                    v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
                                                     class="mr-2 mb-2"
                                                     color="grey darken-1"
-                                                    v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
+                                                    size="2em"
                                                 >
-                                                    <v-img v-if="noticeItem.employee.user_data.avatar_url" :src="noticeItem.employee.user_data.avatar_url" />
-                                                    <span v-else-if="noticeItem.employee.user_data.full_name" class="white--text">
-                                                        {{ noticeItem.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    <v-img v-if="noticeItem.employee.user_data.avatar_url"
+                                                           :src="noticeItem.employee.user_data.avatar_url"/>
+                                                    <span v-else-if="noticeItem.employee.user_data.full_name"
+                                                          class="white--text">
+                                                        {{
+                                                            noticeItem.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                        }}
                                                     </span>
                                                 </v-avatar>
-                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
                                                 {{ noticeItem.employee.user_data.full_name }}
 
@@ -1149,17 +1191,21 @@
                                         <v-list-item-content class="custom-small-text">
                                             <strong>
                                                 <v-avatar
-                                                    size="2em"
+                                                    v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
                                                     class="mr-2 mb-2"
                                                     color="grey darken-1"
-                                                    v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
+                                                    size="2em"
                                                 >
-                                                    <v-img v-if="noticeItem.employee.user_data.avatar_url" :src="noticeItem.employee.user_data.avatar_url" />
-                                                    <span v-else-if="noticeItem.employee.user_data.full_name" class="white--text">
-                                                        {{ noticeItem.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                                    <v-img v-if="noticeItem.employee.user_data.avatar_url"
+                                                           :src="noticeItem.employee.user_data.avatar_url"/>
+                                                    <span v-else-if="noticeItem.employee.user_data.full_name"
+                                                          class="white--text">
+                                                        {{
+                                                            noticeItem.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                        }}
                                                     </span>
                                                 </v-avatar>
-                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
                                                 {{ noticeItem.employee.user_data.full_name }}
 
@@ -1177,21 +1223,23 @@
                 </v-expansion-panels>
 
             </v-col>
-            <v-col
-                v-show="thirdColumn"
-                :md="thirdColumnSize"
-                cols="12"
-                sm="12"
-            >
-                <v-expansion-panels
-                    v-model="thirdColumnPanels"
-                    multiple
+            <v-scale-transition>
+                <v-col
+                    v-show="thirdColumn"
+                    :md="thirdColumnSize"
+                    cols="12"
+                    sm="12"
                 >
-                    <v-expansion-panel
-                        v-if="linkBlock">
-                        <v-expansion-panel-header
-                            style="background:#F0F0F0;"
-                        >
+                    <v-expand-transition>
+                        <div v-show="linkBlock">
+                            <v-expansion-panels
+                                v-model="thirdColumnPanels"
+                                multiple
+                            >
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header
+                                        style="background:#F0F0F0;"
+                                    >
                             <span>
                                 <strong>Linked tickets</strong>
                                 <v-badge
@@ -1202,232 +1250,254 @@
                                 >
                                 </v-badge>
                             </span>
-                            <template v-slot:actions>
-                                <v-icon @click.native.stop="hideLinkBlock">mdi-close</v-icon>
-                                <!--                                <v-icon>$expand</v-icon>-->
-                            </template>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            <v-text-field v-model="ticketsSearch" :color="themeBgColor" :label="langMap.main.search"
-                                          @input="getTickets">
-                                <template slot="prepend">
-                                    <v-menu
-                                        bottom
-                                        rounded
-                                        transition="slide-y-transition"
-                                    >
-                                        <template v-slot:activator="{ on: menu, attrs }">
-                                            <v-btn
-                                                v-bind="attrs"
-                                                v-on="{...menu}"
-                                                text
-                                            >
+                                        <template v-slot:actions>
+                                            <v-icon @click.native.stop="hideLinkBlock">mdi-close</v-icon>
+                                            <!--                                <v-icon>$expand</v-icon>-->
+                                        </template>
+                                    </v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-text-field v-model="ticketsSearch" :color="themeBgColor"
+                                                      :label="langMap.main.search"
+                                                      @input="getTickets">
+                                            <template slot="prepend">
+                                                <v-menu
+                                                    bottom
+                                                    rounded
+                                                    transition="slide-y-transition"
+                                                >
+                                                    <template v-slot:activator="{ on: menu, attrs }">
+                                                        <v-btn
+                                                            v-bind="attrs"
+                                                            v-on="{...menu}"
+                                                            text
+                                                        >
                                                 <span v-if="searchLabel !== ''">
                                                     {{ searchLabel }}
                                                 </span>
-                                                <v-icon v-else>$expand</v-icon>
-                                            </v-btn>
-                                        </template>
+                                                            <v-icon v-else>$expand</v-icon>
+                                                        </v-btn>
+                                                    </template>
+                                                    <v-list
+                                                        dense
+                                                    >
+                                                        <v-list-item
+                                                            v-for="item in searchCategories"
+                                                            :key="item.id"
+                                                            link
+                                                            @click="selectSearchCategory(item)"
+                                                        >
+                                                            <v-list-item-title>
+                                                                {{ item.name }}
+                                                            </v-list-item-title>
+                                                        </v-list-item>
+                                                    </v-list>
+                                                </v-menu>
+                                            </template>
+                                        </v-text-field>
                                         <v-list
                                             dense
                                         >
-                                            <v-list-item
-                                                v-for="item in searchCategories"
-                                                :key="item.id"
-                                                link
-                                                @click="selectSearchCategory(item)"
-                                            >
-                                                <v-list-item-title>
-                                                    {{ item.name }}
-                                                </v-list-item-title>
-                                            </v-list-item>
-                                        </v-list>
-                                    </v-menu>
-                                </template>
-                            </v-text-field>
-                            <v-list
-                                dense
-                            >
-                                <v-list-item-group :color="themeBgColor">
-                                    <!--                                <v-subheader>Parent</v-subheader>-->
-                                    <v-list-item
-                                        v-for="(item, i) in ticket.merged_parent"
-                                        :key="item.id"
-                                        :color="themeBgColor"
-                                        link
-                                        @click="showTicket(item.parent_ticket_data.id)"
-                                    >
-                                        <v-tooltip bottom>
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-list-item-title v-on="on">
+                                            <v-list-item-group :color="themeBgColor">
+                                                <!--                                <v-subheader>Parent</v-subheader>-->
+                                                <v-list-item
+                                                    v-for="(item, i) in ticket.merged_parent"
+                                                    :key="item.id"
+                                                    :color="themeBgColor"
+                                                    link
+                                                    @click="showTicket(item.parent_ticket_data.id)"
+                                                >
+                                                    <v-tooltip bottom>
+                                                        <template v-slot:activator="{ on, attrs }">
+                                                            <v-list-item-title v-on="on">
                                             <span>
-                                                {{ item.parent_ticket_data.number }} | {{ item.parent_ticket_data.name }}
+                                                {{ item.parent_ticket_data.number }} | {{
+                                                    item.parent_ticket_data.name
+                                                }}
                                             </span>
-                                                    <br/>
-                                                    <span style="font-weight: lighter;">
-                                                    {{ item.parent_ticket_data.creator !== null && item.parent_ticket_data.creator.user_data !== null ? item.parent_ticket_data.creator.user_data.full_name : '' }},
-                                                    {{ item.parent_ticket_data.from !== null ? item.parent_ticket_data.from.name : '' }}
+                                                                <br/>
+                                                                <span style="font-weight: lighter;">
+                                                    {{
+                                                                        item.parent_ticket_data.creator !== null && item.parent_ticket_data.creator.user_data !== null ? item.parent_ticket_data.creator.user_data.full_name : ''
+                                                                    }},
+                                                    {{
+                                                                        item.parent_ticket_data.from !== null ? item.parent_ticket_data.from.name : ''
+                                                                    }}
                                             </span>
-                                                    <br/>
-                                                    <span style="font-weight: lighter;">
+                                                                <br/>
+                                                                <span style="font-weight: lighter;">
                                                     {{ item.parent_ticket_data.last_update }}
                                             </span>
-                                                </v-list-item-title>
-                                            </template>
+                                                            </v-list-item-title>
+                                                        </template>
+                                                        <span>
+                                                {{ item.parent_ticket_data.number }} | {{
+                                                                item.parent_ticket_data.name
+                                                            }}
+                                            </span>
+                                                    </v-tooltip>
+                                                </v-list-item>
+                                                <!--                                <v-subheader>Child</v-subheader>-->
+                                                <v-list-item
+                                                    v-for="(item, i) in ticket.merged_child"
+                                                    :key="item.id"
+                                                    link
+                                                    @click="showTicket(item.child_ticket_data.id)"
+                                                >
+                                                    <v-tooltip bottom>
+                                                        <template v-slot:activator="{ on, attrs }">
+                                                            <v-list-item-title v-on="on">
                                             <span>
-                                                {{ item.parent_ticket_data.number }} | {{item.parent_ticket_data.name }}
+                                                    {{ item.child_ticket_data.number }} | {{
+                                                    item.child_ticket_data.name
+                                                }}
                                             </span>
-                                        </v-tooltip>
-                                    </v-list-item>
-                                    <!--                                <v-subheader>Child</v-subheader>-->
-                                    <v-list-item
-                                        v-for="(item, i) in ticket.merged_child"
-                                        :key="item.id"
-                                        link
-                                        @click="showTicket(item.child_ticket_data.id)"
-                                    >
-                                        <v-tooltip bottom>
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-list-item-title v-on="on">
-                                            <span>
-                                                    {{ item.child_ticket_data.number }} | {{ item.child_ticket_data.name }}
+                                                                <br/>
+                                                                <span style="font-weight: lighter;">
+                                                    {{
+                                                                        item.child_ticket_data.creator !== null && item.child_ticket_data.creator.user_data !== null ? item.child_ticket_data.creator.user_data.full_name : ''
+                                                                    }},
+                                                    {{
+                                                                        item.child_ticket_data.from !== null ? item.child_ticket_data.from.name : ''
+                                                                    }}
                                             </span>
-                                                    <br/>
-                                                    <span style="font-weight: lighter;">
-                                                    {{ item.child_ticket_data.creator !== null && item.child_ticket_data.creator.user_data !== null ? item.child_ticket_data.creator.user_data.full_name : '' }},
-                                                    {{ item.child_ticket_data.from !== null ? item.child_ticket_data.from.name : '' }}
-                                            </span>
-                                                    <br/>
-                                                    <span style="font-weight: lighter;">
+                                                                <br/>
+                                                                <span style="font-weight: lighter;">
                                                     {{ item.child_ticket_data.last_update }}
                                             </span>
-                                                </v-list-item-title>
-                                            </template>
-                                            <span>
+                                                            </v-list-item-title>
+                                                        </template>
+                                                        <span>
                                                 {{ item.child_ticket_data.number }} | {{ item.child_ticket_data.name }}
                                             </span>
-                                        </v-tooltip>
+                                                    </v-tooltip>
 
-                                    </v-list-item>
-                                </v-list-item-group>
-                            </v-list>
-                            <br/>
-                            <v-btn
-                                color="#f2f2f2"
-                                small
-                                @click="linkTicketProcess()"
+                                                </v-list-item>
+                                            </v-list-item-group>
+                                        </v-list>
+                                        <br/>
+                                        <v-btn
+                                            color="#f2f2f2"
+                                            small
+                                            @click="linkTicketProcess()"
+                                        >
+                                            New {{ langMap.main.link }}
+                                        </v-btn>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+                            <br>
+                        </div>
+                    </v-expand-transition>
+                    <v-expand-transition>
+                        <div v-show="mergeBlock">
+                            <v-expansion-panels
+                                multiple
                             >
-                                New {{ langMap.main.link }}
-                            </v-btn>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
-                <br v-if="linkBlock">
-                <v-expansion-panels
-                    multiple
-                >
-                    <v-expansion-panel v-if="mergeBlock">
-                        <v-expansion-panel-header
-                            style="background:#F0F0F0;"
-                        >
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header
+                                        style="background:#F0F0F0;"
+                                    >
                             <span>
-                                <strong>{{langMap.ticket.merged_abbr}} tickets</strong>
+                                <strong>{{ langMap.ticket.merged_abbr }} tickets</strong>
                             </span>
 
-                            <template v-slot:actions>
-                                <v-icon @click.native.stop="hideMergeBlock">mdi-close</v-icon>
-                            </template>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            <v-list
-                                dense
-                            >
-                                <v-list-item-group :color="themeBgColor">
-                                    <v-list-item
+                                        <template v-slot:actions>
+                                            <v-icon @click.native.stop="hideMergeBlock">mdi-close</v-icon>
+                                        </template>
+                                    </v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <v-list
+                                            dense
+                                        >
+                                            <v-list-item-group :color="themeBgColor">
+                                                <v-list-item
 
-                                        v-for="(item, i) in ticket.child_tickets"
-                                        v-if="ticket.child_tickets"
-                                        :key="item.id"
-                                        :color="themeBgColor"
-                                    >
-                                        <v-list-item-title>
-                                            <v-tooltip bottom>
-                                                <template v-slot:activator="{ on, attrs }">
+                                                    v-for="(item, i) in ticket.child_tickets"
+                                                    v-if="ticket.child_tickets"
+                                                    :key="item.id"
+                                                    :color="themeBgColor"
+                                                >
+                                                    <v-list-item-title>
+                                                        <v-tooltip bottom>
+                                                            <template v-slot:activator="{ on, attrs }">
                                                         <span v-on="on">
                                                     {{ item.number }}|{{ item.name }}
                                                 </span>
-                                                </template>
-                                                <span>{{ item.number }}|{{ item.name }}</span>
-                                            </v-tooltip>
-                                            <v-tooltip top>
-                                                <template v-slot:activator="{ on, attrs }">
+                                                            </template>
+                                                            <span>{{ item.number }}|{{ item.name }}</span>
+                                                        </v-tooltip>
+                                                        <v-tooltip top>
+                                                            <template v-slot:activator="{ on, attrs }">
 
-                                                    <v-icon v-on="on"
-                                                            color="red"
-                                                            small
-                                                            style="float: right"
-                                                            @click="mergeTicketForm.parent_ticket_id === item.id ? null: removeMerge(item.id)"
-                                                    >
-                                                        {{ mergeTicketForm.parent_ticket_id === item.id ? 'mdi-medal-outline' : 'mdi-cancel' }}
-                                                    </v-icon>
-                                                </template>
-                                                <span>{{ langMap.main.cancel }}</span>
-                                            </v-tooltip>
+                                                                <v-icon v-on="on"
+                                                                        color="red"
+                                                                        small
+                                                                        style="float: right"
+                                                                        @click="mergeTicketForm.parent_ticket_id === item.id ? null: removeMerge(item.id)"
+                                                                >
+                                                                    {{
+                                                                        mergeTicketForm.parent_ticket_id === item.id ? 'mdi-medal-outline' : 'mdi-cancel'
+                                                                    }}
+                                                                </v-icon>
+                                                            </template>
+                                                            <span>{{ langMap.main.cancel }}</span>
+                                                        </v-tooltip>
 
-                                        </v-list-item-title>
+                                                    </v-list-item-title>
 
-                                    </v-list-item>
-                                </v-list-item-group>
-                            </v-list>
-                            <v-text-field v-model="ticketsSearch" :color="themeBgColor" :label="langMap.main.search"
-                                          @input="getTickets">
-                                <template slot="prepend">
-                                    <v-menu
-                                        bottom
-                                        rounded
-                                        transition="slide-y-transition"
-                                    >
-                                        <template v-slot:activator="{ on: menu, attrs }">
-                                            <v-btn
-                                                v-bind="attrs"
-                                                v-on="{...menu}"
-                                                text
-                                            >
+                                                </v-list-item>
+                                            </v-list-item-group>
+                                        </v-list>
+                                        <v-text-field v-model="ticketsSearch" :color="themeBgColor"
+                                                      :label="langMap.main.search"
+                                                      @input="getTickets">
+                                            <template slot="prepend">
+                                                <v-menu
+                                                    bottom
+                                                    rounded
+                                                    transition="slide-y-transition"
+                                                >
+                                                    <template v-slot:activator="{ on: menu, attrs }">
+                                                        <v-btn
+                                                            v-bind="attrs"
+                                                            v-on="{...menu}"
+                                                            text
+                                                        >
                                                 <span v-if="searchLabel !== ''">
                                                     {{ searchLabel }}
                                                 </span>
-                                                <v-icon v-else>$expand</v-icon>
-                                            </v-btn>
-                                        </template>
-                                        <v-list
-                                            dense
-                                        >
-                                            <v-list-item
-                                                v-for="item in searchCategories"
-                                                :key="item.id"
-                                                link
-                                                @click="selectSearchCategory(item)"
+                                                            <v-icon v-else>$expand</v-icon>
+                                                        </v-btn>
+                                                    </template>
+                                                    <v-list
+                                                        dense
+                                                    >
+                                                        <v-list-item
+                                                            v-for="item in searchCategories"
+                                                            :key="item.id"
+                                                            link
+                                                            @click="selectSearchCategory(item)"
+                                                        >
+                                                            <v-list-item-title>
+                                                                {{ item.name }}
+                                                            </v-list-item-title>
+                                                        </v-list-item>
+                                                    </v-list>
+                                                </v-menu>
+                                            </template>
+                                        </v-text-field>
+                                        <div style="max-height: 390px; overflow-y: auto;">
+                                            <v-list
+                                                dense
                                             >
-                                                <v-list-item-title>
-                                                    {{ item.name }}
-                                                </v-list-item-title>
-                                            </v-list-item>
-                                        </v-list>
-                                    </v-menu>
-                                </template>
-                            </v-text-field>
-                            <div style="max-height: 390px; overflow-y: auto;">
-                                <v-list
-                                    dense
-                                >
-                                    <v-list-item-group :color="themeBgColor">
-                                        <v-list-item
-                                            v-for="(item, i) in tickets"
-                                            :key="item.id"
-                                            :color="themeBgColor"
-                                            @click="showTicket(item.parent_ticket_data.id)"
-                                        >
-                                            <v-list-item-title>
+                                                <v-list-item-group :color="themeBgColor">
+                                                    <v-list-item
+                                                        v-for="(item, i) in tickets"
+                                                        :key="item.id"
+                                                        :color="themeBgColor"
+                                                        @click="showTicket(item.parent_ticket_data.id)"
+                                                    >
+                                                        <v-list-item-title>
                                                 <span>
                                                     <v-checkbox
                                                         :key="item.id"
@@ -1464,89 +1534,100 @@
                                                 </v-tooltip>
                                                 </span>
 
-                                                <br/>
-                                                <span style="font-weight: lighter;">
-                                                    {{ item.creator !== null && item.creator.user_data !== null ? item.creator.user_data.full_name : '' }},
+                                                            <br/>
+                                                            <span style="font-weight: lighter;">
+                                                    {{
+                                                                    item.creator !== null && item.creator.user_data !== null ? item.creator.user_data.full_name : ''
+                                                                }},
                                                     {{ item.from !== null ? item.from.name : '' }}
                                                 </span>
-                                                <br/>
-                                                <span style="font-weight: lighter;">
+                                                            <br/>
+                                                            <span style="font-weight: lighter;">
                                                     {{ item.last_update }}
                                                 </span>
-                                            </v-list-item-title>
+                                                        </v-list-item-title>
 
-                                        </v-list-item>
-                                    </v-list-item-group>
-                                </v-list>
-                            </div>
-                            <br/>
-                            <v-textarea
-                                v-model="mergeTicketForm.merge_comment"
-                                :color="themeBgColor"
-                                auto-grow
-                                dense
-                                label="Add a note..."
-                                row-height="25"
-                                rows="2"
-                            />
-                            <v-spacer></v-spacer>
-                            <v-btn color="red" text>{{ langMap.main.cancel }}
-                            </v-btn>
-                            <v-btn color="green" text @click="mergeTicket()">
-                                {{ langMap.ticket.merge }}
-                            </v-btn>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
-                <br v-if="mergeBlock">
-                <v-expansion-panels>
-                    <v-expansion-panel>
-                        <v-expansion-panel-header
-                            style="background:#F0F0F0;"
-                        >
+                                                    </v-list-item>
+                                                </v-list-item-group>
+                                            </v-list>
+                                        </div>
+                                        <br/>
+                                        <v-textarea
+                                            v-model="mergeTicketForm.merge_comment"
+                                            :color="themeBgColor"
+                                            auto-grow
+                                            dense
+                                            label="Add a note..."
+                                            row-height="25"
+                                            rows="2"
+                                        />
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="red" text>{{ langMap.main.cancel }}
+                                        </v-btn>
+                                        <v-btn color="green" text @click="mergeTicket()">
+                                            {{ langMap.ticket.merge }}
+                                        </v-btn>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+                            <br>
+                        </div>
+                    </v-expand-transition>
+
+
+                    <v-expansion-panels>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header
+                                style="background:#F0F0F0;"
+                            >
                             <span>
                                 <strong>{{ langMap.ticket.ticket_history }}</strong>
                             </span>
-                            <template v-slot:actions>
-                                <v-icon @click.native.stop="manageThirdColumn">mdi-close</v-icon>
-                            </template>
-                        </v-expansion-panel-header>
-                        <v-expansion-panel-content>
-                            <v-list dense>
-                                <v-list-item-group>
-                                    <v-list-item
-                                        v-for="(history, i) in ticket.histories"
-                                        :key="history.id"
-                                    >
-                                        <v-list-item-title>
-                                            <strong class="text-left">
-                                                <v-avatar
-                                                    size="2em"
-                                                    class="mr-2 mb-2"
-                                                    color="grey darken-1"
-                                                    v-if="history.employee.user_data.avatar_url || history.employee.user_data.full_name"
-                                                >
-                                                    <v-img v-if="history.employee.user_data.avatar_url" :src="history.employee.user_data.avatar_url" />
-                                                    <span v-else-if="history.employee.user_data.full_name" class="white--text">
-                                                        {{ history.employee.user_data.full_name.split(/\s/).reduce((response,word)=> response+=word.slice(0,1),'').substr(0, 2).toLocaleUpperCase() }}
+                                <template v-slot:actions>
+                                    <v-icon @click.native.stop="manageThirdColumn">mdi-close</v-icon>
+                                </template>
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <v-list dense>
+                                    <v-list-item-group>
+                                        <v-list-item
+                                            v-for="(history, i) in ticket.histories"
+                                            :key="history.id"
+                                        >
+                                            <v-list-item-title>
+                                                <strong class="text-left">
+                                                    <v-avatar
+                                                        v-if="history.employee.user_data.avatar_url || history.employee.user_data.full_name"
+                                                        class="mr-2 mb-2"
+                                                        color="grey darken-1"
+                                                        size="2em"
+                                                    >
+                                                        <v-img v-if="history.employee.user_data.avatar_url"
+                                                               :src="history.employee.user_data.avatar_url"/>
+                                                        <span v-else-if="history.employee.user_data.full_name"
+                                                              class="white--text">
+                                                        {{
+                                                                history.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
+                                                            }}
                                                     </span>
-                                                </v-avatar>
-                                                <v-icon v-else large class="mr-2">mdi-account-circle</v-icon>
+                                                    </v-avatar>
+                                                    <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
-                                                {{ history.employee.user_data.full_name }}
+                                                    {{ history.employee.user_data.full_name }}
 
-                                                {{ history.created_at }}:
-                                            </strong>
-                                            <p>{{ history.description }}</p>
-                                        </v-list-item-title>
-                                    </v-list-item>
-                                </v-list-item-group>
-                            </v-list>
-                        </v-expansion-panel-content>
-                    </v-expansion-panel>
-                </v-expansion-panels>
+                                                    {{ history.created_at }}:
+                                                </strong>
+                                                <p>{{ history.description }}</p>
+                                            </v-list-item-title>
+                                        </v-list-item>
+                                    </v-list-item-group>
+                                </v-list>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
 
-            </v-col>
+                </v-col>
+            </v-scale-transition>
         </v-row>
     </v-container>
 
@@ -1563,7 +1644,7 @@ export default {
             actionColor: '',
             snackbarMessage: '',
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             selectionDisabled: false,
             assignPanel: [],
             notesPanel: [],
@@ -1796,6 +1877,7 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.$store.state.pageName = '#' + this.ticket.id + ' | ' + this.ticket.number + ' | ' + this.ticket.name
                     this.spamButtonColor = this.ticket.is_spam ? 'red' : '#f2f2f2'
                     this.mergeTicketForm.parent_ticket_id = this.ticket.id
+
                     this.selectTeam();
                     this.getContacts(this.from)
                     if (this.ticket.notices.length > 0) {
@@ -1820,33 +1902,33 @@ themeBgColor: this.$store.state.themeBgColor,
         getTickets() {
             let search = this.ticketsSearch;
             axios.get('/api/ticket', {
-                    params: {
-                        search_param: this.searchLabel,
-                        search: this.ticketsSearch,
-                        minified: 1,
-                    }
-                }).then(response => {
-                    if (this.ticketsSearch === search) {
-                        response = response.data
-                        let result = response.data.data
-                        if (result.length > 1) {
-                            let elementPos = result.map(function (x) {
-                                return x.id;
-                            }).indexOf(this.ticket.id);
-                            if (elementPos !== -1) {
-                                let temp = result[0]
-                                result[0] = result[elementPos]
-                                result[elementPos] = temp
-                            }
+                params: {
+                    search_param: this.searchLabel,
+                    search: this.ticketsSearch,
+                    minified: true,
+                }
+            }).then(response => {
+                if (this.ticketsSearch === search) {
+                    response = response.data
+                    let result = response.data.data
+                    if (result.length > 1) {
+                        let elementPos = result.map(function (x) {
+                            return x.id;
+                        }).indexOf(this.ticket.id);
+                        if (elementPos !== -1) {
+                            let temp = result[0]
+                            result[0] = result[elementPos]
+                            result[elementPos] = temp
                         }
-                        if (this.ticketsSearch === '') {
-                            this.mergeParentTickets = result
-                            this.linkParentTickets = result
-                        }
-                        this.mergeTicketForm.child_ticket_id = [this.ticket.id]
-                        this.tickets = result
                     }
-                });
+                    if (this.ticketsSearch === '') {
+                        this.mergeParentTickets = result
+                        this.linkParentTickets = result
+                    }
+                    this.mergeTicketForm.child_ticket_id = [this.ticket.id]
+                    this.tickets = result
+                }
+            });
         },
         getSuppliers() {
             axios.get('/api/supplier').then(response => {
@@ -1857,7 +1939,8 @@ themeBgColor: this.$store.state.themeBgColor,
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
-                    this.snackbar = true;                }
+                    this.snackbar = true;
+                }
             });
         },
         getProducts() {
@@ -1897,7 +1980,8 @@ themeBgColor: this.$store.state.themeBgColor,
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
-                    this.snackbar = true;                }
+                    this.snackbar = true;
+                }
 
             });
         },
@@ -1927,7 +2011,8 @@ themeBgColor: this.$store.state.themeBgColor,
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
-                    this.snackbar = true;                }
+                    this.snackbar = true;
+                }
 
             });
         },
