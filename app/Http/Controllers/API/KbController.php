@@ -22,30 +22,37 @@ class KbController extends Controller
     }
 
     public function listCategories(Request $request) {
-        return self::showResponse(true, $this->kbRepo->getCategoriesTree($request->category_id, $request->search));
+        return self::showResponse(true, $this->kbRepo->getCategories($request->category_id, $request->search));
     }
+
+    public function categoriesTree(Request $request) {
+        return self::showResponse(true, $this->kbRepo->getCategoriesTree());
+    }
+
     public function addCategory(Request $request) {
         return self::showResponse(true, $this->kbRepo->createCategory(
             Auth::user()->employee->companyData->id,
             $request->parent_id,
-            $request->name,
+            $request->name ?? '',
             $request->name_de,
-            $request->descripton,
-            $request->descripton_de,
-            $request->icon
+            $request->description,
+            $request->description_de,
+            $request->icon ?? 'mdi-help'
         ));
     }
+
     public function editCategory(Request $request, $id) {
         return self::showResponse(true, $this->kbRepo->updateCategory(
             $id,
             $request->parent_id,
-            $request->name,
+            $request->name ?? '',
             $request->name_de,
-            $request->descripton,
-            $request->descripton_de,
-            $request->icon
+            $request->description,
+            $request->description_de,
+            $request->icon ?? 'mdi-help'
         ));
     }
+
     public function deleteCategory(Request $request, $id) {
         return self::showResponse($this->kbRepo->deleteCategory($id));
     }
@@ -53,32 +60,35 @@ class KbController extends Controller
     public function listArticles(Request $request) {
         return self::showResponse(true, $this->kbRepo->getArticles($request->category_id, $request->search));
     }
+
     public function getArticle(Request $request, $id) {
         return self::showResponse(true, $this->kbRepo->getArticle($id));
     }
+
     public function addArticle(Request $request) {
 
         $article = $this->kbRepo->createArticle(
             Auth::user()->employee->companyData->id,
             $request->category_id,
-            $request->name,
+            $request->name ?? '',
             $request->name_de,
             $request->summary,
             $request->summary_de,
-            $request->content,
+            $request->input('content'),
             $request->content_de,
             $request->tags
         );
 
         return self::showResponse(true, $article);
     }
+
     public function editArticle(Request $request, $id) {
         $article = $this->kbRepo->updateArticle(
             $id,
             $request->category_id,
-            $request->name,
+            $request->name ?? '',
             $request->name_de,
-            $request->content,
+            $request->input('content'),
             $request->content_de,
             $request->summary,
             $request->summary_de,
@@ -87,6 +97,7 @@ class KbController extends Controller
 
         return self::showResponse(true, $article);
     }
+
     public function deleteArticle(Request $request, $id) {
         return self::showResponse($this->kbRepo->deleteArticle($id));
     }

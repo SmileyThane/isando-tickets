@@ -15,7 +15,7 @@ class KbCategory extends Model
 
     protected $fillable = ['name', 'name_de', 'description', 'description_de', 'icon', 'company_id', 'parent_id'];
 
-    protected $appends = ['articles_count'];
+    protected $appends = ['articles_count', 'categories_count'];
 
     public function company(): BelongsTo
     {
@@ -30,6 +30,11 @@ class KbCategory extends Model
     public function getArticlesCountAttribute(): int
     {
         return $this->hasMany(KbArticle::class, 'category_id', 'id')->count();
+    }
+
+    public function getCategoriesCountAttribute(): int
+    {
+        return $this->hasMany(KbCategory::class, 'parent_id', 'id')->count();
     }
 
     public function getFullNameAttribute(): string

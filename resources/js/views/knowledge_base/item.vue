@@ -8,6 +8,11 @@
                 {{ localized(article) }}
             </v-card-title>
             <v-card-text>
+                <div v-if="article.category">
+                    <h2>{{ localized(article.category) }}</h2>
+                    <v-spacer>&nbsp;</v-spacer>
+                </div>
+
                 <div v-if="article.tags && article.tags.length > 0">
                     <h4 class="mb-2">{{ langMap.kb.tags}}</h4>
                     <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tagColor(tag.id)" :text-color="invertColor(tagColor(tag.id))"/>
@@ -120,7 +125,7 @@ export default {
             return (zeros + str).slice(-len);
         },
         getArticle() {
-            axios.get(`/api/kb/article/${this.$router.params.id}`).then(response => {
+            axios.get(`/api/kb/article/${this.$route.params.id}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     this.article = response.data;
@@ -132,7 +137,11 @@ export default {
             });
         },
         openCategory() {
-            this.$router.push(`/knowledge_base?category=${this.article.category_id}`);
+            if (this.article.category_id) {
+                this.$router.push(`/knowledge_base?category=${this.article.category_id}`);
+            } else {
+                this.$router.push('/knowledge_base');
+            }
         },
         download(url) {
             window.open(url, '_blank');

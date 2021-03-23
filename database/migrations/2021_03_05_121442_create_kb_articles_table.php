@@ -16,6 +16,7 @@ class CreateKbArticlesTable extends Migration
         Schema::create('kb_articles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained('companies');
+            $table->foreignId('category_id')->nullable()->constrained('kb_categories');
             $table->string('name');
             $table->string('name_de')->nullable();
             $table->string('summary');

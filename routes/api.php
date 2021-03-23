@@ -257,6 +257,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     // knowledge base
     Route::get('kb/categories', 'API\KbController@listCategories');
+    Route::get('kb/categories/tree', 'API\KbController@categoriesTree');
     Route::post('kb/category', 'API\KbController@addCategory');
     Route::put('kb/category/{id}', 'API\KbController@editCategory');
     Route::delete('kb/category/{id}', 'API\KbController@deleteCategory');

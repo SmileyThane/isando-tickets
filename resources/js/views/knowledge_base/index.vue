@@ -7,11 +7,13 @@
             <v-text-field v-model="search" hide-details append-icon="mdi-magnify" single-line :label="langMap.main.search" :color="themeBgColor" />
             <span v-if="tags.length < 1" class="ml-2">{{ langMap.kb.no_tags }}</span>
             <span v-else class="ml-2">{{ langMap.kb.tags }}:</span>
-            <v-chip v-for="tag in tags" :key="tag.id" label small class="ml-2" :color="tagColor(tag.id)" :text-color="invertColor(tagColor(tag.id))" @click="tag.on = !tag.on">
-                <v-icon v-if="tag.on" small left :color="invertColor(tagColor(tag.id))">mdi-check</v-icon>
+            <v-chip-group column>
+            <v-chip v-for="tag in tags" :key="tag.id" label small class="ml-2" :color="tagColor(tag.id)" :text-color="invertColor(tagColor(tag.id))" @click="refreshTags(tag.id)">
+                <v-icon v-if="activeTags.includes(tag.id)" small left :color="invertColor(tagColor(tag.id))">mdi-check</v-icon>
                 {{ tag.name }}
             </v-chip>
-            <v-btn class="ml-2" text :color="themeBgColor" v-text="langMap.kb.find" />
+            </v-chip-group>
+            <v-btn class="ml-2" text :color="themeBgColor" v-text="langMap.kb.find" @click="openCategory($route.query.category) "/>
 
             <v-spacer></v-spacer>
             <v-menu bottom>
@@ -39,7 +41,7 @@
         </v-toolbar>
         <v-row>
             <v-col v-for="category in categories" :key="'c'+category.id" cols="4">
-                <v-card outlined>
+                <v-card outlined :class="category.id == $route.query.category ? 'parent' : ''">
                     <v-card-title>
                         <v-icon large left :color="themeBgColor" v-text="category.icon ? category.icon : 'mdi-help'" />
                         {{ localized(category) }}
@@ -51,10 +53,15 @@
                             </template>
                             <span>{{ localized(category, 'description') }}</span>
                         </v-tooltip>
-                        <p>{{ langMap.kb.articles }}: 12</p>
+                        <p>
+                            {{ langMap.kb.articles }}: {{ category.articles_count }} <br/>
+                            {{ langMap.kb.categories }}: {{ category.categories_count }}
+                        </p>
+
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn text :color="themeBgColor" v-text="langMap.kb.open_category" @click="openCategory(category.id)" />
+                        <v-btn v-if="category.id == $route.query.category" text :color="themeBgColor" v-text="langMap.kb.return_to_parent" @click="openCategory(category.parent_id)" />
+                        <v-btn v-else text :color="themeBgColor" v-text="langMap.kb.open_category" @click="openCategory(category.id)" />
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -69,7 +76,7 @@
                             <template v-slot:activator="{ on, attrs }">
                                 <p v-bind="attrs" v-on="on">{{ localized(article, 'summary') }}</p>
                             </template>
-                            <span>{{ stripHtml(localized(article, 'content')) }}</span>
+                            <span>{{ localized(article, 'summary') }}</span>
                         </v-tooltip>
 
                     </v-card-text>
@@ -88,14 +95,14 @@
                             <v-col cols="4">
                                 <label>{{ langMap.kb.parent_category }}</label>
                                 <perfect-scrollbar>
-                                <v-treeview activatable :items="categories" v-model="categoryForm.parent_id" :color="themeBgColor">
-                                    <template v-slot:prepend="{ item }">
-                                        <v-icon small>mdi-folder</v-icon>
-                                    </template>
-                                    <template v-slot:label="{ item }">
-                                        {{ localized(item) }}
-                                    </template>
-                                </v-treeview>
+                                    <v-treeview activatable :items="categoriesTree" item-key="id" :color="themeBgColor" @update:active="refreshCategoryForm">
+                                        <template v-slot:prepend="{ item }">
+                                            <v-icon>mdi-folder</v-icon>
+                                        </template>
+                                        <template v-slot:label="{ item }">
+                                            {{ localized(item) }}
+                                        </template>
+                                    </v-treeview>
                                 </perfect-scrollbar>
                             </v-col>
                             <v-col cols="8">
@@ -131,15 +138,16 @@
 </template>
 
 <style scoped>
->>> .lim{
-    max-height: 2em;
+>>> .parent {
+    background: #fafafa !important;
+}
+
+>>> .lim {
+    max-height: 1.5em;
     overflow: hidden;
 }
 >>>.ps {
      max-height: 20em;
-}
->>>.v-treeview--dense .v-treeview-node__root {
-    min-height: 1.1em;
 }
 </style>
 
@@ -159,13 +167,15 @@ export default {
             themeBgColor: this.$store.state.themeBgColor,
             search: '',
             categories: [],
+            categoriesTree: [],
             articles: [],
             tags: [],
             tagColors: [],
+            activeTags: [],
             updateCategoryDlg: false,
             categoryForm: {
                 id: null,
-                parent_id: this.$route.query.category,
+                parent_id: this.$route.query.category ? this.$route.query.category: null,
                 name: '',
                 name_de: '',
                 description: '',
@@ -190,6 +200,7 @@ export default {
 
         this.getTags();
         this.getCategoties();
+        this.getCategotiesTree();
         this.getArticles();
     },
     methods: {
@@ -243,25 +254,68 @@ export default {
         },
         getTags() {
             this.tags = [{id: 1, name: 'zzz', on:true},{id: 3, name: 'something', on: false}, {id:2, name: 'test', on: true}];
+            axios.get('/api/tags').then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.tags = response.data;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+                }
+            });
         },
         getCategoties() {
-            this.categories = [
-                {id: 1, name: 'category1', description: 'category1 description', icon: 'mdi-help'},
-                {id: 2, name: 'category2', description: 'category2 long description, lorem, ispum vse dela long description, lorem, ispum vse dela long description, lorem, ispum vse dela', icon: 'mdi-help-circle'},
-                {id: 3, name: 'category3', description: 'category3 description', icon: 'mdi-account'},
-                {id: 4, name: 'category4', description: 'category4 description', icon: 'mdi-rocket'}
-            ];
+            axios.get('/api/kb/categories', {
+                params: {
+                    search: this.search,
+                    category_id: this.$route.query.category ? this.$route.query.category: null
+                }
+            }).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.categories = response.data;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+                }
+            });
+        },
+        getCategotiesTree() {
+            axios.get('/api/kb/categories/tree').then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.categoriesTree = response.data;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+                }
+            });
         },
         getArticles() {
-            this.articles = [
-                {id: 1, name: 'article 1', content: 'article 1 content long long long text placed here and lorem ipsum as well long long long text placed here and lorem ipsum as well', tags: [{id: 1, name: 'zzz'}, {id:2, name: 'test'}]},
-                {id: 2, name: 'article 2', content: 'article 2 content long long long text placed here and lorem ipsum as well long long long text placed here and lorem ipsum as well', tags: [{id:2, name: 'test'}]},
-                {id: 3, name: 'article 3', content: 'article 3 content long long long text placed here and lorem ipsum as well long long long text placed here and lorem ipsum as well', tags: [{id: 1, name: 'zzz'}, {id:2, name: 'test'}]},
-                {id: 4, name: 'article 4', content: 'article 4 content long long long text placed here and lorem ipsum as well long long long text placed here and lorem ipsum as well', tags: [{id: 1, name: 'zzz'},{id: 3, name: 'something'}, {id:2, name: 'test'}]}
-            ];
+            axios.get('/api/kb/articles', {
+                params: {
+                    search: this.search,
+                    category_id: this.$route.query.category ? this.$route.query.category: null,
+                    tags: this.activeTags
+                }
+            }).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.articles = response.data;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+                }
+            });
         },
         openCategory(id) {
-            this.$router.push(`?category=${id}`);
+            this.$route.query.category = id;
+            this.getCategoties();
+            this.getArticles();
         },
         readArticle(id) {
             this.$router.push(`/knowledge_base/${id}`);
@@ -272,7 +326,7 @@ export default {
         clearCategoryForm() {
             this.categoryForm = {
                 id: null,
-                parent_id: this.$route.query.category,
+                parent_id: this.$route.query.category ? this.$route.query.category: null,
                 name: '',
                 name_de: '',
                 description: '',
@@ -282,10 +336,33 @@ export default {
         },
         createCategory() {
             this.updateCategoryDlg = false;
-            this.categoryForm.id = Math.floor(Math.random()*1000);
-            this.categories.push(this.categoryForm);
-            this.clearCategoryForm();
+
+            axios.post('/api/kb/category', this.categoryForm).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.clearCategoryForm();
+                    this.getCategoties();
+
+                    this.snackbarMessage = this.langMap.kb.category_created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+                }
+            });
         },
+        refreshCategoryForm(parent) {
+            this.categoryForm.parent_id = parent.length > 0 ? parent[0] : null;
+        },
+        refreshTags(id) {
+            if (this.activeTags.includes(id)) {
+                this.activeTags.splice(this.activeTags.indexOf(id));
+            } else {
+                this.activeTags.push(id);
+            }
+        }
     }
 }
 </script>

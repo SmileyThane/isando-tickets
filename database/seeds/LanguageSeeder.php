@@ -660,13 +660,16 @@ class LanguageSeeder extends Seeder
                         'attachments' => 'Attached documents',
                         'no_tags' => 'No tags found',
                         'articles' => 'Articles',
+                        'categories' => 'Categories',
                         'open_category' => 'Open category',
+                        'return_to_parent' => 'Return to parent',
                         'read_article' => 'Read article',
                         'create_category' => 'Add category',
                         'create_article' => 'Add knowledge',
                         'category_details' => 'Category details',
                         'parent_category' => 'Parent category',
-                        'back_to_category' => 'Back to category'
+                        'back_to_category' => 'Back to category',
+                        'category_created' => 'Category created',
                     ],
                     'exceptions' =>
                         [],
