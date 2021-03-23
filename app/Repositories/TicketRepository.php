@@ -20,7 +20,6 @@ use App\TicketNotice;
 use App\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
@@ -121,8 +120,14 @@ class TicketRepository
         if ($request->with_spam === "true") {
             $ticketResult->where('is_spam', 1);
         }
-        if ($request->minified && $request->minified === 'true') {
-            return $ticketResult->select('id', 'name', 'from_entity_id', 'from_entity_type', 'created_at', 'updated_at')->paginate(count($ticketIds));
+        if ($request->minified && $request->minified === "true") {
+            return $ticketResult
+                ->with('creator.userData')
+                ->select(
+                    'id', 'name', 'from_entity_id', 'from_company_user_id',
+                    'from_entity_type', 'created_at', 'updated_at'
+                )
+                ->paginate(count($ticketIds));
         }
 
         $ticketResult
