@@ -22,11 +22,17 @@
                 </template>
 
                 <v-list>
-                    <v-list-item>
-                        <v-list-item-title link @click="updateCategoryDlg = true">{{ langMap.kb.create_category }}</v-list-item-title>
+                    <v-list-item link>
+                        <v-list-item-title @click="updateCategoryDlg = true">{{ langMap.kb.create_category }}</v-list-item-title>
+                        <v-list-item-action>
+                            <v-icon :color="themeBgColor">mdi-folder-plus-outline</v-icon>
+                        </v-list-item-action>
                     </v-list-item>
-                    <v-list-item>
-                        <v-list-item-title link @click="createArticle">{{ langMap.kb.create_article }}</v-list-item-title>
+                    <v-list-item link>
+                        <v-list-item-title @click="createArticle">{{ langMap.kb.create_article }}</v-list-item-title>
+                        <v-list-item-action>
+                            <v-icon :color="themeBgColor">mdi-file-plus-outline</v-icon>
+                        </v-list-item-action>
                     </v-list-item>
                 </v-list>
             </v-menu>
@@ -79,20 +85,22 @@
                     <v-card-title>{{ langMap.kb.category_details }}</v-card-title>
                     <v-card-text>
                         <v-row>
-                            <v-col cols="6">
-                                <v-select v-model="categoryForm.parent_id" :items="categories" :label="langMap.kb.categories" item-value="id">
-                                    <template slot="selection" slot-scope="data">
-                                        {{ localized(data.item, 'full_name') }}
+                            <v-col cols="4">
+                                <label>{{ langMap.kb.parent_category }}</label>
+                                <perfect-scrollbar>
+                                <v-treeview activatable :items="categories" v-model="categoryForm.parent_id" :color="themeBgColor">
+                                    <template v-slot:prepend="{ item }">
+                                        <v-icon small>mdi-folder</v-icon>
                                     </template>
-                                    <template slot="item" slot-scope="data">
-                                        {{ localized(data.item, 'full_name') }}
+                                    <template v-slot:label="{ item }">
+                                        {{ localized(item) }}
                                     </template>
-                                </v-select>
+                                </v-treeview>
+                                </perfect-scrollbar>
                             </v-col>
-                            <v-col cols="6">
+                            <v-col cols="8">
                                 <v-combobox v-model="categoryForm.icon" :items="categoryIcons" :prepend-icon="categoryForm.icon" hide-selected :label="langMap.main.icon" :color="themeBgColor" />
-                            </v-col>
-                            <v-col cols="12">
+
                                 <v-expansion-panels>
                                     <v-expansion-panel>
                                         <v-expansion-panel-header>English</v-expansion-panel-header>
@@ -127,7 +135,12 @@
     max-height: 2em;
     overflow: hidden;
 }
-
+>>>.ps {
+     max-height: 20em;
+}
+>>>.v-treeview--dense .v-treeview-node__root {
+    min-height: 1.1em;
+}
 </style>
 
 <script>
@@ -204,8 +217,29 @@ export default {
             }
             return this.tagColors[i];
         },
-        invertColor(color) {
-            return Helper.invertColor(color);
+        invertColor(hex) {
+            if (hex.indexOf('#') === 0) {
+                hex = hex.slice(1);
+            }
+            if (hex.length === 3) {
+                hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+            }
+            if (hex.length !== 6) {
+                this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                this.errorType = 'error';
+                this.alert = true;
+
+                return hex;
+            }
+            let r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
+                g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
+                b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
+            return '#' + this.padZero(r) + this.padZero(g) + this.padZero(b);
+        },
+        padZero(str, len) {
+            len = len || 2;
+            let zeros = new Array(len).join('0');
+            return (zeros + str).slice(-len);
         },
         getTags() {
             this.tags = [{id: 1, name: 'zzz', on:true},{id: 3, name: 'something', on: false}, {id:2, name: 'test', on: true}];
@@ -228,7 +262,6 @@ export default {
         },
         openCategory(id) {
             this.$router.push(`?category=${id}`);
-
         },
         readArticle(id) {
             this.$router.push(`/knowledge_base/${id}`);

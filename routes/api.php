@@ -254,5 +254,18 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('custom_license_unassigned/assign', 'API\CustomLicenseController@assignToIxarmaCompany');
     Route::get('custom_license/{id}/user/{remoteUserId}/{idLicensed}', 'API\CustomLicenseController@manageUser');
     Route::put('custom_license_user/{remoteUserId}/trial', 'API\CustomLicenseController@setUserTrial');
+
+    // knowledge base
+    Route::get('kb/categories', 'API\KbController@listCategories');
+    Route::post('kb/category', 'API\KbController@addCategory');
+    Route::put('kb/category/{id}', 'API\KbController@editCategory');
+    Route::delete('kb/category/{id}', 'API\KbController@deleteCategory');
+    Route::get('kb/articles', 'API\KbController@listArticles');
+    Route::get('kb/article/{id}', 'API\KbController@getArticle');
+    Route::post('kb/article', 'API\KbController@addArticle');
+    Route::put('kb/article/{id}', 'API\KbController@editArticle');
+    Route::delete('kb/article/{id}', 'API\KbController@deleteArticle');
+    Route::delete('kb/file/{id}', 'API\KbController@deleteFile');
+
 });
 

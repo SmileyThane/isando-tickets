@@ -555,8 +555,6 @@
 }
 </style>
 
-<style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
-
 <script>
 import EventBus from "../../components/EventBus";
 

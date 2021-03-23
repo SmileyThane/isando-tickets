@@ -32,6 +32,8 @@ import TrackingReports from './views/tracking/reports'
 import TrackingSettings from './views/tracking/settings'
 import ResetPassword from './views/auth/reset-password'
 import KnowledgeBase from './views/knowledge_base/index'
+import KnowledgeBaseArticle from './views/knowledge_base/item'
+import KnowledgeBaseCreate from './views/knowledge_base/create'
 import RoleManagement from './views/superadmin/roles'
 
 
@@ -310,6 +312,22 @@ export default [
             requiresAuth: true,
         },
         component: KnowledgeBase
+    },
+    {
+        path: '/knowledge_base/create',
+        name: 'knowledge_base_create',
+        meta: {
+            requiresAuth: true,
+        },
+        component: KnowledgeBaseCreate
+    },
+    {
+        path: '/knowledge_base/:id',
+        name: 'knowledge_base_article',
+        meta: {
+            requiresAuth: true,
+        },
+        component: KnowledgeBaseArticle
     },
     {
         path: '/admin/role',

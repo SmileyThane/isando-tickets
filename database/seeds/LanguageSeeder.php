@@ -657,6 +657,7 @@ class LanguageSeeder extends Seeder
                         'find' => 'Find',
                         'filter' => 'Filter',
                         'tags' => 'Tags',
+                        'attachments' => 'Attached documents',
                         'no_tags' => 'No tags found',
                         'articles' => 'Articles',
                         'open_category' => 'Open category',
@@ -665,6 +666,7 @@ class LanguageSeeder extends Seeder
                         'create_article' => 'Add knowledge',
                         'category_details' => 'Category details',
                         'parent_category' => 'Parent category',
+                        'back_to_category' => 'Back to category'
                     ],
                     'exceptions' =>
                         [],
