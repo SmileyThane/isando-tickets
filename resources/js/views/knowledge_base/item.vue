@@ -9,7 +9,7 @@
             </v-card-title>
             <v-card-text>
                 <div v-if="article.category">
-                    <h2>{{ localized(article.category) }}</h2>
+                    <h3>{{ localized(article.category) }}</h3>
                     <v-spacer>&nbsp;</v-spacer>
                 </div>
 

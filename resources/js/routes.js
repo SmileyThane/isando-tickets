@@ -322,6 +322,14 @@ export default [
         component: KnowledgeBaseCreate
     },
     {
+        path: '/knowledge_base/:id/edit',
+        name: 'knowledge_base_update',
+        meta: {
+            requiresAuth: true,
+        },
+        component: KnowledgeBaseCreate
+    },
+    {
         path: '/knowledge_base/:id',
         name: 'knowledge_base_article',
         meta: {

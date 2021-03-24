@@ -53,18 +53,28 @@ class KbRepository
     public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon) {
         return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon'));
     }
+
     public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon) {
-        return KbCategory::firstOrUpdate($id, compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon'));
+        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon'));
     }
+
     public function deleteCategory($id) {
-        return KbCategory::delete($id);
+        return KbCategory::find($id)->delete();
     }
 
     public function getArticles($category_id, $search) {
-        return KbArticle::where('category_id',$category_id)->where(function($query) use ($search) {
-            $query->where('name', 'like', $search.'%')->orWhere('name_de', 'like', $search.'%')
-                ->orWhere('summary', 'like', $search.'%')->orWhere('summary_de', 'like', $search.'%');
-        })->get();
+        $articles = KbArticle::orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
+        if ($category_id) {
+            $articles = $articles->where('category_id',$category_id);
+        }
+        if (!empty($search)) {
+            $articles = $articles->where(function ($query) use ($search) {
+                $query->where('name', 'like', $search . '%')->orWhere('name_de', 'like', $search . '%')
+                    ->orWhere('summary', 'like', $search . '%')->orWhere('summary_de', 'like', $search . '%');
+            });
+        }
+
+        return $articles->get();
     }
 
     public function getArticle($id) {
@@ -75,7 +85,7 @@ class KbRepository
         $article = KbArticle::create(compact('company_id', 'category_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'tags', 'files'));
 
         foreach ($tags as $tag) {
-            $article->tags()->attach($tag['id']);
+            $article->tags()->attach($tag);
         }
 
         foreach ($files as $file) {
@@ -86,7 +96,7 @@ class KbRepository
     }
 
     public function updateArticle($id, $category_id, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $files = []) {
-        $article = KbArticle::firstOrCreate($id, compact('category_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'tags', 'files'));
+        $article = KbArticle::updateOrCreate(compact('id'), compact('category_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'tags', 'files'));
 
         foreach ($article->tags as $tag) {
             $article->tags()->detach($tag->id);
@@ -104,6 +114,6 @@ class KbRepository
     }
 
     public function deleteArticle($id) {
-        return KbArticle::delete($id);
+        return KbArticle::find($id)->delete();
     }
 }

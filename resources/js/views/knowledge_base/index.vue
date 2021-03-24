@@ -45,6 +45,29 @@
                     <v-card-title>
                         <v-icon large left :color="themeBgColor" v-text="category.icon ? category.icon : 'mdi-help'" />
                         {{ localized(category) }}
+                        <v-spacer></v-spacer>
+                        <v-menu bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" icon>
+                                    <v-icon>mdi-dots-vertical</v-icon>
+                                </v-btn>
+                            </template>
+
+                            <v-list>
+                                <v-list-item link>
+                                    <v-list-item-title @click="editCategory(category)">{{ langMap.kb.edit }}</v-list-item-title>
+                                    <v-list-item-action>
+                                        <v-icon :color="themeBgColor">mdi-folder-edit-outline</v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+                                <v-list-item link>
+                                    <v-list-item-title @click="deleteCategory(category)">{{ langMap.kb.delete }}</v-list-item-title>
+                                    <v-list-item-action>
+                                        <v-icon :color="themeBgColor">mdi-folder-remove-outline</v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
                     </v-card-title>
                     <v-card-text style="height: 6em;">
                         <v-tooltip v-if="localized(category, 'description')" :color="themeBgColor" bottom :style="`color: ${themeFgColor}l`">
@@ -67,18 +90,37 @@
             </v-col>
             <v-col v-for="article in articles" :key="'a'+article.id" cols="4">
                 <v-card outlined>
-                    <v-card-title>{{ localized(article) }}</v-card-title>
-                    <v-card-text style="height: 10em;">
-                        <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tagColor(tag.id)" :text-color="invertColor(tagColor(tag.id))"/>
-
-                        <v-spacer>&nbsp;</v-spacer>
-                        <v-tooltip v-if="localized(article, 'summary')" :color="themeBgColor" bottom :style="`color: ${themeFgColor}l`">
-                            <template v-slot:activator="{ on, attrs }">
-                                <p v-bind="attrs" v-on="on">{{ localized(article, 'summary') }}</p>
+                    <v-card-title>
+                        {{ localized(article) }}
+                        <v-spacer></v-spacer>
+                        <v-menu bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn v-on="on" icon>
+                                    <v-icon>mdi-dots-vertical</v-icon>
+                                </v-btn>
                             </template>
-                            <span>{{ localized(article, 'summary') }}</span>
-                        </v-tooltip>
 
+                            <v-list>
+                                <v-list-item link>
+                                    <v-list-item-title @click="editArticle(article.id)">{{ langMap.kb.edit }}</v-list-item-title>
+                                    <v-list-item-action>
+                                        <v-icon :color="themeBgColor">mdi-file-edit-outline</v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+                                <v-list-item link>
+                                    <v-list-item-title @click="deleteArticle(article)">{{ langMap.kb.delete }}</v-list-item-title>
+                                    <v-list-item-action>
+                                        <v-icon :color="themeBgColor">mdi-file-remove-outline</v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                    </v-card-title>
+                    <v-card-text style="height: 10em;">
+                        <v-chip v-if="article.tags.length" v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tagColor(tag.id)" :text-color="invertColor(tagColor(tag.id))"/>
+                        <p v-else>{{ langMap.kb.no_tags}}</p>
+                        <v-spacer>&nbsp;</v-spacer>
+                        <p>{{ localized(article, 'summary') }}</p>
                     </v-card-text>
                     <v-card-actions>
                         <v-btn text :color="themeBgColor" v-text="langMap.kb.read_article" @click="readArticle(article.id)" />
@@ -92,10 +134,10 @@
                     <v-card-title>{{ langMap.kb.category_details }}</v-card-title>
                     <v-card-text>
                         <v-row>
-                            <v-col cols="4">
+                            <v-col cols="6">
                                 <label>{{ langMap.kb.parent_category }}</label>
                                 <perfect-scrollbar>
-                                    <v-treeview activatable :items="categoriesTree" item-key="id" :color="themeBgColor" @update:active="refreshCategoryForm">
+                                    <v-treeview activatable open-all :active="categoryForm._active" :items="categoriesTree" item-key="id" :color="themeBgColor" @update:active="refreshCategoryForm">
                                         <template v-slot:prepend="{ item }">
                                             <v-icon>mdi-folder</v-icon>
                                         </template>
@@ -105,7 +147,7 @@
                                     </v-treeview>
                                 </perfect-scrollbar>
                             </v-col>
-                            <v-col cols="8">
+                            <v-col cols="6">
                                 <v-combobox v-model="categoryForm.icon" :items="categoryIcons" :prepend-icon="categoryForm.icon" hide-selected :label="langMap.main.icon" :color="themeBgColor" />
 
                                 <v-expansion-panels>
@@ -129,7 +171,37 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-btn text left v-text="langMap.main.cancel" @click="updateCategoryDlg=false; clearCategoryForm();" />
-                        <v-btn text v-text="langMap.main.create" @click="createCategory" :color="themeBgColor" />
+                        <v-btn text v-text="categoryForm.id ? langMap.main.update : langMap.main.create" @click="updateCategory" :color="themeBgColor" />
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog v-model="deleteCategoryDlg" max-width="600px" persistent>
+                <v-card outlined>
+                    <v-card-title>{{ langMap.main.delete }}</v-card-title>
+                    <v-card-text>
+                        <p>
+                            {{ langMap.kb.delete_category }}<br/>
+                            <b>{{ localized(categoryForm) }}</b>
+                        </p>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn text left v-text="langMap.main.cancel" @click="deleteCategoryDlg=false; clearCategoryForm();" />
+                        <v-btn text v-text="langMap.main.delete" @click="removeCategory" :color="themeBgColor" />
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog v-model="deleteArticleDlg" max-width="600px" persistent>
+                <v-card outlined>
+                    <v-card-title>{{ langMap.main.delete }}</v-card-title>
+                    <v-card-text>
+                        <p>
+                            {{ langMap.kb.delete_article }}<br/>
+                            <b>{{ localized(selectedArticle) }}</b>
+                        </p>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn text left v-text="langMap.main.cancel" @click="deleteArticleDlg=false; clearSelectedArticle();" />
+                        <v-btn text v-text="langMap.main.delete" @click="removeArticle" :color="themeBgColor" />
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -173,6 +245,7 @@ export default {
             tagColors: [],
             activeTags: [],
             updateCategoryDlg: false,
+            deleteCategoryDlg: false,
             categoryForm: {
                 id: null,
                 parent_id: this.$route.query.category ? this.$route.query.category: null,
@@ -181,12 +254,19 @@ export default {
                 description: '',
                 description_de: '',
                 icon: '',
+                _active: []
             },
             categoryIcons: [
                 'mdi-help',
                 'mdi-help-circle',
                 'mdi-rocket',
-            ]
+            ],
+            deleteArticleDlg: false,
+            selectedArticle: {
+                id: null,
+                name: '',
+                name_de: ''
+            }
         }
     },
     mounted() {
@@ -317,12 +397,6 @@ export default {
             this.getCategoties();
             this.getArticles();
         },
-        readArticle(id) {
-            this.$router.push(`/knowledge_base/${id}`);
-        },
-        createArticle() {
-            this.$router.push('/knowledge_base/create');
-        },
         clearCategoryForm() {
             this.categoryForm = {
                 id: null,
@@ -332,18 +406,81 @@ export default {
                 description: '',
                 description_de: '',
                 icon: '',
+                _active: []
             };
         },
-        createCategory() {
-            this.updateCategoryDlg = false;
+        fillCategoryForm(category) {
+            this.categoryForm = {
+                id: category.id,
+                parent_id: category.parent_id,
+                name: category.name,
+                name_de: category.name_de,
+                description: category.description,
+                description_de: category.description_de,
+                icon: category.icon,
+                _active: [category.parent_id]
+            };
+            this.$forceUpdate();
+        },
+        refreshCategoryForm(parent) {
+            this.categoryForm.parent_id = parent.length > 0 ? parent[0] : null;
+            this.$forceUpdate();
+        },
+        editCategory(category) {
+            this.fillCategoryForm(category);
+            this.updateCategoryDlg = true;
+        },
+        updateCategory() {
+            if (this.categoryForm.id) {
+                axios.put(`/api/kb/category/${this.categoryForm.id}`, this.categoryForm).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.updateCategoryDlg = false;
+                        this.clearCategoryForm();
+                        this.getCategoties();
 
-            axios.post('/api/kb/category', this.categoryForm).then(response => {
+                        this.snackbarMessage = this.langMap.kb.category_updated;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+                    }
+                });
+
+            } else {
+                axios.post('/api/kb/category', this.categoryForm).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.updateCategoryDlg = false;
+                        this.clearCategoryForm();
+                        this.getCategoties();
+
+                        this.snackbarMessage = this.langMap.kb.category_created;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+                    }
+                });
+            }
+        },
+        deleteCategory(category) {
+            this.fillCategoryForm(category);
+            this.deleteCategoryDlg = true;
+        },
+        removeCategory() {
+            axios.delete(`/api/kb/category/${this.categoryForm.id}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
+                    this.deleteCategoryDlg = false;
                     this.clearCategoryForm();
                     this.getCategoties();
 
-                    this.snackbarMessage = this.langMap.kb.category_created;
+                    this.snackbarMessage = this.langMap.kb.category_deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -352,9 +489,7 @@ export default {
                     this.alert = true;
                 }
             });
-        },
-        refreshCategoryForm(parent) {
-            this.categoryForm.parent_id = parent.length > 0 ? parent[0] : null;
+
         },
         refreshTags(id) {
             if (this.activeTags.includes(id)) {
@@ -362,6 +497,44 @@ export default {
             } else {
                 this.activeTags.push(id);
             }
+        },
+        readArticle(id) {
+            this.$router.push(`/knowledge_base/${id}`);
+        },
+        createArticle() {
+            this.$router.push('/knowledge_base/create');
+        },
+        editArticle(id) {
+            this.$router.push(`/knowledge_base/${id}/edit`);
+        },
+        clearSelectedArticle() {
+            this.selectedArticle = {
+                id: null,
+                name: '',
+                name_de: ''
+            }
+        },
+        deleteArticle(article) {
+            this.selectedArticle = article;
+            this.deleteArticleDlg = true;
+        },
+        removeArticle() {
+            axios.delete(`/api/kb/article/${this.selectedArticle.id}`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.deleteArticleyDlg = false;
+                    this.clearSelectedArticle();
+                    this.getArticles();
+
+                    this.snackbarMessage = this.langMap.kb.article_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+                }
+            });
         }
     }
 }
