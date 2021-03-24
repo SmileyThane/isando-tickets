@@ -122,7 +122,6 @@
                             dense
                             prepend-icon="mdi-text"
                         >
-
                         </v-text-field>
                     </v-col>
                     <v-col md="6" sm="12">
@@ -514,7 +513,9 @@ export default {
                     this.filterPanel = false
                     this.getFilters()
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = 'Filter creating error'
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
             });
         },
