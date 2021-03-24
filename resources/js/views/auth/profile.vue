@@ -273,12 +273,28 @@
                                                         :error-messages="errors.password"
                                                         :label="langMap.main.password"
                                                         dense
-                                                        lazy-validation
                                                         :append-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
                                                         :type="isPasswordVisible ? 'text' : 'password'"
                                                         class="input-group--focused"
                                                         @click:append="isPasswordVisible = !isPasswordVisible"
                                                         name="password"
+                                                        prepend-icon="mdi-lock"
+                                                    />
+
+                                                </v-col>
+                                                <v-col cols="4">
+                                                    <v-text-field
+                                                        v-model="userData.password_confirmation"
+                                                        :color="themeBgColor"
+                                                        :error-messages="errors.password"
+                                                        :label="langMap.main.password_confirmation"
+                                                        dense
+                                                        lazy-validation
+                                                        :append-icon="isPasswordConfirmationVisible ? 'mdi-eye' : 'mdi-eye-off'"
+                                                        :type="isPasswordConfirmationVisible ? 'text' : 'password'"
+                                                        class="input-group--focused"
+                                                        @click:append="isPasswordConfirmationVisible = !isPasswordConfirmationVisible"
+                                                        name="password_confirmation"
                                                         prepend-icon="mdi-lock"
                                                     />
 
@@ -1268,6 +1284,7 @@ export default {
             },
             resetThemeBgColorFlag: 0,
             isPasswordVisible: false,
+            isPasswordConfirmationVisible: false,
             updatePhoneDlg: false,
             updateAddressDlg: false,
             updateEmailDlg: false,
@@ -1400,7 +1417,6 @@ export default {
                         this.errorType = 'error';
                         this.alert = true;
 
-                        return;
                     }
                 });
             }
@@ -1418,6 +1434,7 @@ export default {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
                     this.snackbar = true;
+                    this.errors = response.error;
                 }
             });
         },

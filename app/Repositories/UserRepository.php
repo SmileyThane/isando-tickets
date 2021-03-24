@@ -43,7 +43,7 @@ class UserRepository
     {
         $params = [
             'name' => 'required',
-            'password' => 'sometimes|min:8',
+            'password' => 'sometimes|min:8|confirmed',
         ];
         if ($new === true && $request['email'] !== '[no_email]') {
             $email = Email::where([
