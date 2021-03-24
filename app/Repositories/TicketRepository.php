@@ -485,14 +485,19 @@ class TicketRepository
         return false;
     }
 
-    public function addFilter(Request $request): TicketFilter
+    public function addFilter(Request $request): ?TicketFilter
     {
-        $ticketFilter = new TicketFilter();
-        $ticketFilter->user_id = Auth::id();
-        $ticketFilter->name = $request->name;
-        $ticketFilter->filter_parameters = json_encode($request->filter_parameters);
-        $ticketFilter->save();
-        return $ticketFilter;
+        try{
+            $ticketFilter = new TicketFilter();
+            $ticketFilter->user_id = Auth::id();
+            $ticketFilter->name = $request->name;
+            $ticketFilter->filter_parameters = json_encode($request->filter_parameters);
+            $ticketFilter->save();
+            return $ticketFilter;
+        } catch (Throwable $throwable) {
+            return null;
+        }
+
     }
 
     public function getFilters()
