@@ -1,23 +1,31 @@
-<div class="page-1 title">
-    <div class="page-1__title text-center">
-        {{ $reportName }}
-    </div>
-    <div class="page-1__user text-center">
-        {{ $user->full_name }}
-    </div>
-    <div class="page-1__date text-center">
-        {{ $period }}
-    </div>
-    <br>
-    <br>
-    <div class="page-1__total-time text-center">
-        <span class="total-time__title text-center">
-            Total time
-            <hr width="150">
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+</head>
+<body>
+    <header class="header" style="border-left: 1px solid #000;">
+        <span class="header__name">
+            {{ $reportName }}
         </span>
-        <span class="total-time__time text-center">{{ $totalTime }}</span>
-    </div>
-    <div class="page-1__created-at text-center">
-        Created at {{ \Carbon\Carbon::now()->format('d F Y H:i') }} o'clock
-    </div>
-</div>
+        <br>
+        <span class="header__user">
+            <b>{{ $user->full_name }}</b>
+        </span>
+        <br>
+        <span class="header__date">
+            {{ $period }}
+        </span>
+    </header>
+
+    <footer class="footer text-right">
+        <div class="footer__page-number text-right" style="float: right">
+            Footer
+        </div>
+    </footer>
+    <main>
+        @yield('content')
+    </main>
+</body>
+</html>

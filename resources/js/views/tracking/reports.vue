@@ -17,10 +17,62 @@
                 ></v-select>
             </div>
             <div class="d-inline-flex mx-16">
-                <v-btn
-                    :color="themeBgColor"
-                    :style="{ color: invertColor(themeBgColor) }"
-                >Save</v-btn>
+                <v-dialog
+                    v-model="dialogSave"
+                    persistent
+                    max-width="600px"
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            :color="themeBgColor"
+                            :style="{ color: invertColor(themeBgColor) }"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            Save
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-title class="headline">
+                            Save report
+                        </v-card-title>
+                        <v-card-text>
+                            <div class="d-flex flex-column">
+                                <div class="d-inline-block">
+                                    <v-text-field
+                                        placeholder="Report name"
+                                        required
+                                    ></v-text-field>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-list dense>
+                                        <v-subheader>REPORTS</v-subheader>
+                                        <v-list-item-group
+                                            color="primary"
+                                        >
+                                            <v-list-item
+                                            >
+                                                <v-list-item-content>
+                                                    <v-list-item-title></v-list-item-title>
+                                                </v-list-item-content>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                </div>
+                            </div>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="green darken-1"
+                                text
+                                @click="dialogSave = false"
+                            >
+                                Close
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
             </div>
         </div>
         <div class="d-flex flex-row">
@@ -447,7 +499,32 @@
                             <span class="headline">CSV Export</span>
                         </v-card-title>
                         <v-card-text>
-                            <!-- FORM -->
+                            <div class="d-flex flex-column">
+                                <div class="d-inline-block">
+                                    <v-select
+                                        :items="csvFormGroupingEntries"
+                                        v-model="report.csv.group"
+                                        item-value="text"
+                                        item-text="text"
+                                        return-object
+                                        label="Grouped times"
+                                    ></v-select>
+                                </div>
+<!--                                <div class="d-inline-block">-->
+<!--                                    <v-select-->
+<!--                                        :items="csvForm.timeFormatItems"-->
+<!--                                        v-model="report.csv.timeFormat"-->
+<!--                                        label="Time format"-->
+<!--                                    ></v-select>-->
+<!--                                </div>-->
+<!--                                <div class="d-inline-block">-->
+<!--                                    <v-select-->
+<!--                                        :items="csvForm.dateFormatItems"-->
+<!--                                        v-model="report.csv.dateFormat"-->
+<!--                                        label="Date format"-->
+<!--                                    ></v-select>-->
+<!--                                </div>-->
+                            </div>
                         </v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
@@ -681,7 +758,7 @@ export default {
                 },
                 {
                     value: 'clients&projects',
-                    text: 'Clients&projects',
+                    text: 'Projects',
                     store: 'Projects/getProjects',
                     items: [],
                     selected: [],
@@ -763,15 +840,18 @@ export default {
             dialogExportPDF: false,
             dialogExportCSV: false,
             dialogPrint: false,
+            dialogSave: false,
             report: {
                 groupItems: [
                     {
                         value: 1,
-                        text: 'Sort chronologically & do not group'
+                        text: 'Sort chronologically & do not group',
+                        items: []
                     },
                     {
                         value: 2,
-                        text: 'Group by service (Coming soon)'
+                        text: 'Group by service (Coming soon)',
+                        items: []
                     }
                 ],
                 pdf: {
@@ -779,7 +859,62 @@ export default {
                     coworkers: null,
                     periodText: '',
                     groupSel: 1
+                },
+                csv: {
+                    group: {
+                        value: 'all_no_group',
+                        text: 'All single entries, sorted based on the grouping',
+                        items: []
+                    },
+                    timeFormat: 4,
+                    dateFormat: 2
                 }
+            },
+            csvForm: {
+                groupItems: [
+                    {
+                        value: 'all_no_group',
+                        text: 'All single entries, sorted based on the grouping',
+                        items: []
+                    },
+                    {
+                        value: 'all_chron',
+                        text: 'All single entries, chronologically sorted',
+                        items: []
+                    }
+                ],
+                timeFormatItems: [
+                    {
+                        value: 1,
+                        text: 'Time in seconds'
+                    },
+                    {
+                        value: 2,
+                        text: 'Time in minutes (mm:ss)'
+                    },
+                    {
+                        value: 3,
+                        text: 'Time in minutes (decimal)'
+                    },
+                    {
+                        value: 4,
+                        text: 'Time in hours (hh:mm)'
+                    },
+                    {
+                        value: 5,
+                        text: 'Time in hours (decimal)'
+                    }
+                ],
+                dateFormatItems: [
+                    {
+                        value: 1,
+                        text: 'Machine-readable (YYYY-MM-DD)'
+                    },
+                    {
+                        value: 2,
+                        text: 'In text form (as in the report)'
+                    }
+                ],
             }
         }
     },
@@ -877,15 +1012,6 @@ export default {
                     to: this.builder.period.end
                 });
             }
-            if (this.builder.period.start) {
-                if (this.builder.period.start === this.builder.period.end) {
-                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
-                } else {
-                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
-                }
-            } else {
-                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
-            }
             this.activePeriod = null;
             this.genPreview();
         },
@@ -962,7 +1088,14 @@ export default {
             return seconds;
         },
         createFile(format) {
-            axios.post(`/api/tracking/reports?format=${format}`, { ...this.builder, ...this.report.pdf }, {
+            if (format === 'csv' && this.report.csv.group && this.report.csv.group.value === 'all_chron') {
+                this.builder.sort = {
+                    icon: 'mdi-sort-alphabetical-ascending',
+                    value: 'alph-asc',
+                    text: 'A - Z and chronologically'
+                };
+            }
+            axios.post(`/api/tracking/reports?format=${format}`, { ...this.builder, ...this.report[format] }, {
                 responseType: 'blob'
             })
                 .then(res => {
@@ -1055,6 +1188,20 @@ export default {
                 return data;
             }
             return null;
+        },
+        csvFormGroupingEntries: function () {
+            let items = [];
+            let k = this.builder.group.length;
+            this.builder.group.map((x, i) => {
+                const groups = this.builder.group.filter((v, i) => i < k);
+                items.push({
+                    text: groups.map(v => v.text).join(' / '),
+                    items: groups,
+                    value: 'custom'
+                });
+                k--;
+            });
+            return items.concat(this.csvForm.groupItems);
         }
     },
     watch: {
@@ -1063,6 +1210,33 @@ export default {
         },
         'builder.group': function() {
             this.genPreview();
+        },
+        'builder.period': function () {
+            if (this.builder.period.start) {
+                if (this.builder.period.start === this.builder.period.end) {
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
+                } else {
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                }
+            } else {
+                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+            }
+        },
+        activePeriod: function () {
+            const calendar = this.$refs.calendar;
+            if (calendar) {
+                if (moment(this.builder.period.start).format('YYYY-MM') !== moment(this.builder.period.end).format('YYYY-MM')) {
+                    calendar.$refs.calendar.showPageRange({
+                        from: moment(this.builder.period.start).toDate(),
+                        to: moment(this.builder.period.end).toDate()
+                    });
+                } else {
+                    calendar.$refs.calendar.showPageRange({
+                        from: moment(this.builder.period.start).subtract(1, 'months').toDate(),
+                        to: moment(this.builder.period.end).toDate()
+                    });
+                }
+            }
         }
     }
 }

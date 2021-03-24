@@ -1,4 +1,4 @@
-<div class="header" style="border-left: 1px solid #000;">
+<header class="header" style="border-left: 1px solid #000;">
     <span class="header__name">
         {{ $reportName }}
     </span>
@@ -10,4 +10,4 @@
     <span class="header__date">
         {{ $period }}
     </span>
-</div>
+</header>

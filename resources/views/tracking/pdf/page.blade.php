@@ -1,4 +1,7 @@
-<table width="100%" cellspacing="0" cellpadding="3" border="1">
+@extends('tracking.pdf.layout')
+
+@section('content')
+<table width="100%" cellspacing="0" cellpadding="3">
     <thead>
         <tr style="border-top: 1px solid #000; border-bottom: 1px solid #000;">
             <th align="center">Date</th>
@@ -34,3 +37,4 @@
     @endforelse
     </tbody>
 </table>
+@endsection

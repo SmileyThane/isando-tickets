@@ -20,7 +20,6 @@ use App\TicketNotice;
 use App\TicketStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Throwable;
@@ -81,10 +80,10 @@ class TicketRepository
         ) {
             $ticketResult->where(
                 static function ($query) use ($request) {
-                    if ($request->has('search_param')) {
+                    if ($request->filter_id === null) {
                         switch (strtolower($request->search_param)) {
                             case 'id':
-                                $query->where('id', 'like', '%' . trim($request->search) . '%');
+                                $query->where('number', 'like', '%' . trim($request->search) . '%');
                                 break;
                             case 'contact.user_data.full_name':
                             case 'contact':
@@ -100,9 +99,10 @@ class TicketRepository
                                 });
                                 break;
                             default:
-                                $query->where('name', 'like', '%' . trim($request->search) . '%');
+                                $query->where('name', 'like', '%' . trim($request->search) . '%')
+                                    ->orWhere('number', 'like', '%' . trim($request->search) . '%');
                         }
-                    } elseif ($request->has('filter_id')) {
+                    } elseif ($request->filter_id !== null) {
                         $filter = TicketFilter::find($request->filter_id);
                         if ($filter) {
                             $filterArray = json_decode($filter->filter_parameters, true);
@@ -121,8 +121,14 @@ class TicketRepository
         if ($request->with_spam === "true") {
             $ticketResult->where('is_spam', 1);
         }
-        if ($request->minified && $request->minified === 'true') {
-            return $ticketResult->select('id', 'name', 'from_entity_id', 'from_entity_type', 'created_at', 'updated_at')->paginate(count($ticketIds));
+        if ($request->minified && $request->minified === "true") {
+            return $ticketResult
+                ->with('creator.userData')
+                ->select(
+                    'id', 'name', 'from_entity_id', 'from_company_user_id',
+                    'from_entity_type', 'created_at', 'updated_at'
+                )
+                ->paginate(count($ticketIds));
         }
 
         $ticketResult
@@ -479,14 +485,19 @@ class TicketRepository
         return false;
     }
 
-    public function addFilter(Request $request): TicketFilter
+    public function addFilter(Request $request): ?TicketFilter
     {
-        $ticketFilter = new TicketFilter();
-        $ticketFilter->user_id = Auth::id();
-        $ticketFilter->name = $request->name;
-        $ticketFilter->filter_parameters = json_encode($request->filter_parameters);
-        $ticketFilter->save();
-        return $ticketFilter;
+        try{
+            $ticketFilter = new TicketFilter();
+            $ticketFilter->user_id = Auth::id();
+            $ticketFilter->name = $request->name;
+            $ticketFilter->filter_parameters = json_encode($request->filter_parameters);
+            $ticketFilter->save();
+            return $ticketFilter;
+        } catch (Throwable $throwable) {
+            return null;
+        }
+
     }
 
     public function getFilters()

@@ -3,13 +3,13 @@
 
 namespace App\Repositories;
 
-
+use App\Http\Controllers\API\Tracking\PDF;
 use App\Tracking;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use PDF;
 use Illuminate\Support\Facades\File;
 
 class TrackingReportRepository
@@ -37,7 +37,14 @@ class TrackingReportRepository
 
     protected function getData(Request $request) {
         $sorting        = $request->sort['value'];
-        $grouping       = collect($request->group)->map(function ($item) { return $item['value']; });
+        $grouping       = $request->group;
+        if (isset($request->group) && isset($request->group['value']) && $request->group['value'] === 'custom') {
+            $grouping = $request->group['items'];
+        }
+        if (isset($request->group) && isset($request->group['value']) && in_array($request->group['value'], ['all_no_group', 'all_chron'])) {
+            $grouping = [];
+        }
+        $grouping       = collect($grouping)->map(function ($item) { return $item['value']; });
         $filtering      = collect($request->filters)
             ->map(function($item) {
                 return [
@@ -263,98 +270,209 @@ class TrackingReportRepository
     protected function getMargins($side = null)
     {
         $default = [
-            'left' => config('tcpdf.margin_left'),
-            'right' => config('tcpdf.margin_right'),
-            'top' => config('tcpdf.margin_top'),
-            'bottom' => config('tcpdf.margin_bottom'),
-            'header' => config('tcpdf.margin_header'),
-            'footer' => config('tcpdf.margin_footer'),
+            'left' => config('dompdf.margin_left'),
+            'right' => config('dompdf.margin_right'),
+            'top' => config('dompdf.margin_top'),
+            'bottom' => config('dompdf.margin_bottom'),
+            'header' => config('dompdf.margin_header'),
+            'footer' => config('dompdf.margin_footer'),
         ];
 
         return $side ? $default[strtolower($side)] : $default;
     }
 
-    public function genPDF($request, $htmlFormat = false) {
-        // Page title
-        PDF::changeFormat(config('tcpdf.page_format'));
-        PDF::setPageOrientation(config('tcpdf.page_orientation'));
-
-        PDF::setMargins($this->getMargins('left'), $this->getMargins('top'), $this->getMargins('right'));
-        PDF::setAutoPageBreak(true, $this->getMargins('bottom'));
-
-        $reportName = $request->get('name', 'Report');
-        PDF::SetTitle($reportName);
-
-        $html = '';
-        $cssPath = storage_path('app') . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'pdf.css';
-        if (file_exists($cssPath)) {
-            $styles = '<style type="text/css">' . PHP_EOL . File::get($cssPath) . PHP_EOL . '</style>';
-            $html = $this->prepareForPdf($styles);
+    protected function prepareDataForPDF($entities) {
+        $items = [];
+        foreach ($entities as $entity) {
+//            dd($entity->entity);
+            $item = [
+                'date' => Carbon::parse($entity->date_from)->format('d M Y'),
+                'start' => Carbon::parse($entity->date_from)->format('H:i'),
+                'end' => Carbon::parse($entity->date_to)->format('H:i'),
+                'coworker' => $entity->user->full_name,
+                'customer' => isset($entity->entity) && isset($entity->entity->client) ? $entity->entity->client->name : '',
+                'project' => isset($entity->entity) ? $entity->entity->name : '',
+                'service' => isset($entity->service) ? $entity->service->name : '',
+                'description' => $entity->description,
+                'billable' => $entity->billable ? 'Yes' : 'No',
+                'amount' => $entity->amount
+            ];
+            array_push($items, $item);
         }
+        return $items;
+    }
 
-        // PREPARING DATA
-        $data = $this->getData($request)['tracks'];
+    public function genPDF($request, $htmlFormat = false) {
+
+        // Pre-define some variables
+        $reportName = $request->get('name', 'Report');
+        $headers = ['Date', 'Start', 'End', 'Co-worker', 'Customer', 'Project', 'Service', 'Description', 'Billable', 'Amount'];
+        $data = $this->prepareDataForPDF($this->getData($request)['tracks']);
         $user = Auth::user();
         $period = $request->get('periodText');
+        $coworkers = $request->get('coworkers');
+        if (empty($coworkers)) $coworkers = $user->full_name;
 
-        PDF::SetAuthor($user->full_name);
+        $pdf = new PDF();
+        $pdf->SetOptions([
+            'title' => $reportName,
+            'user' => $user->full_name,
+            'period' => $period,
+        ]);
+        $pdf->AliasNbPages();
 
+        $y = 0;
         // PAGE 1. TITLE
-        PDF::SetPrintHeader(false);
-        PDF::SetPrintFooter(false);
-        PDF::AddPage();
+        $pdf->AddPage('P', 'A4');
+        $y += 60;
+        // Report name
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetXY($pdf->GetCenterX($reportName, $pdf->GetPageWidth()) , $y);
+        $pdf->Write(3, $reportName);
 
-        $html = $html . PHP_EOL . $this->prepareForPdf(view('tracking.pdf.layout', [
-                'reportName' => $reportName,
-                'user'       => $user,
-                'period'     => $period,
-                'totalTime'  => '18:00 h'
-        ]));
-        PDF::WriteHTML($html, true, false, true, false, '');
+        // Co-workers
+        $y += 10;
+        $pdf->SetFont('Arial', 'B', 32);
+        $lines = $pdf->GetCountLines($coworkers, $pdf->GetPageWidth());
+        if ($lines > 1) {
+            $pdf->SetXY(30, $y);
+        } else {
+            $pdf->SetXY($pdf->GetCenterX($coworkers, $pdf->GetPageWidth()), $y);
+        }
+        $pdf->Write(10, $coworkers);
+        $y += 10 * $lines;
 
-        PDF::EndPage();
+        // Period
+        $y += 10;
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetXY($pdf->GetCenterX($period, $pdf->GetPageWidth()), $y);
+        $pdf->Write(3, $period);
 
-        // HEADER
-        PDF::setHeaderMargin($this->getMargins('header'));
-        $self = $this;
-        PDF::setHeaderCallback(function () use ($self, $reportName, $user, $period) {
-            $html = $self->prepareForPdf(view('tracking.pdf.header', [
-                'reportName' => $reportName,
-                'user'       => $user,
-                'period'     => $period
-            ]));
-            PDF::writeHTML($html, true, false, true, false, '');
-        });
+        // Total time
+        $y += 30;
+        $totalTimeTitle = 'Total time';
+        $totalTime = '18:00 h';
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetXY($pdf->GetCenterX($totalTimeTitle, $pdf->GetPageWidth()), $y);
+        $pdf->Write(3, $totalTimeTitle);
+        $x = $pdf->GetX();
+        $y += 5;
+        $pdf->Line($x - 20, $y, $x + 5, $y);
+        $y += 5;
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetXY($pdf->GetCenterX($totalTime, $pdf->GetPageWidth()), $y);
+        $pdf->Write(3, $totalTime);
 
-        // FOOTER
-        PDF::setFooterMargin($this->getMargins('bottom'));
-        $self = $this;
-        PDF::setFooterCallback(function () use ($self) {
-            $html = $self->prepareForPdf(view('tracking.pdf.footer'));
-            PDF::writeHTML($html, true, false, true, false, '');
-        });
+        // Created At
+        $y += 20;
+        $createdAt = 'Created at ' . Carbon::now()->format('d F Y H:i') . ' o\' clock';
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->SetXY($pdf->GetCenterX($createdAt, $pdf->GetPageWidth()), $y);
+        $pdf->Write(3, $createdAt);
+
 
         // PAGE 2 and next
-        PDF::SetPrintHeader();
-        PDF::SetPrintFooter();
-        PDF::AddPage();
-        PDF::setPageOrientation('l');
-        $html = $this->prepareForPdf(view('tracking.pdf.page', [
-            'data' => $data
-        ]));
-        PDF::WriteHTML($html, true, false, true, false, '');
-        PDF::EndPage();
+        $pdf->AddPage('L', 'A4');
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->ImprovedTable($headers, $data);
 
+        $html = '';
         // GENERATE FILE
         $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
         if ($htmlFormat) {
             return $html;
         }
-        PDF::Output($tmpFileName, 'F');
-        return File::get($tmpFileName);
+        File::put($tmpFileName, $pdf->Output());
+        return response()->download($tmpFileName)->deleteFileAfterSend();
+    }
+
+    protected function prepareDataForCSV($entities, $items = []) {
+        $entities = (array)$entities;
+        foreach ($entities as $entity) {
+            if (isset($entity['children'])) {
+                Log::debug($entity['name']);
+                $items = array_merge($items, $this->prepareDataForCSV($entity['children']));
+            } else {
+                Log::debug($entity['id']);
+                array_push($items, $entity);
+            }
+        }
+        return $items;
+    }
+
+    protected function getDataCSV($tracking) {
+        try {
+            $row = [];
+            $row[] = $tracking['user'] ? $tracking['user']['full_name'] : '';
+            $row[] = $tracking['user'] ? $tracking['user']['id'] : '';
+            if ($tracking['entity'] && isset($tracking['entity']['from'])) {
+                $row[] = $tracking['entity'] && $tracking['entity']['from_company_name'] ? $tracking['entity']['from_company_name'] : '';
+                $row[] = $tracking['entity'] && $tracking['entity']['from']['id'] ? $tracking['entity']['from']['id'] : '';
+            } else {
+                $row[] = $tracking['entity'] && $tracking['entity']['client'] ? $tracking['entity']['client']['name'] : '';
+                $row[] = $tracking['entity'] && $tracking['entity']['client'] ? $tracking['entity']['client']['id'] : '';
+            }
+            $row[] = $tracking['entity'] ? $tracking['entity']['name'] : '';
+            $row[] = $tracking['entity'] ? $tracking['entity']['id'] : '';
+            $row[] = $tracking['service'] ? $tracking['service']['name'] : '';
+            $row[] = $tracking['service'] ? $tracking['service']['id'] : '';
+            $row[] = 0;
+            $row[] = '';
+            $row[] = $tracking['description'];
+            $row[] = $tracking['billable'] ? 1 : 0;
+            $row[] = 0;
+            $row[] = round(0, 2);
+            $row[] = Carbon::parse($tracking['date_from'])->format('Y-m-d H:i:s');
+            $row[] = Carbon::parse($tracking['date_to'])->format('Y-m-d H:i:s');
+            $row[] = 0;
+            $row[] = 0;
+            $row[] = 0;
+            $row[] = 0;
+            $row[] = 0;
+            return implode(';', $row);
+        } catch (\Exception $exception) {
+            dd($exception->getMessage(), $exception->getLine(), $tracking);
+        }
+    }
+
+    protected function getHeaderCSV() {
+        return implode(';', [
+            'Co-worker',
+            'Personnel number',
+            'Customer',
+            'Customer number',
+            'Project',
+            'Project number',
+            'Service/Lump sum',
+            'Service/Lump sum number',
+            'Amount (Lump sums)',
+            'Unit (Lump sums)',
+            'Description',
+            'Billable',
+            'Billed',
+            'Hourly rate in CHF',
+            'Start',
+            'End',
+            'Amount',
+            'Correction of time in seconds',
+            'Time clocked',
+            'Clocked offline',
+            'Revenue in CHF'
+        ]) . "\n";
     }
 
     public function genCSV($request) {
-        return '';
+        if (isset($request->group) && $request->group['value'] === 'custom') {
+            $data = $this->generate($request);
+        } else {
+            $data = $this->getData($request)['tracks']->toArray();
+        }
+
+        $result = $this->prepareDataForCSV($data);
+        foreach ($result as $key => $item) {
+            $result[$key] = $this->getDataCSV($item);
+        }
+
+        return $this->getHeaderCSV() . implode("\n", $result);
     }
 }

@@ -180,7 +180,6 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Tremby\LaravelGitVersion\GitVersionServiceProvider::class,
-        Elibyy\TCPDF\ServiceProvider::class,
     ],
 
     /*
@@ -236,8 +235,6 @@ return [
         'Countries' => ErnySans\Laraworld\Facades\Countries::class,
         'TimeZones' => ErnySans\Laraworld\Facades\TimeZones::class,
         'Languages' => ErnySans\Laraworld\Facades\Languages::class,
-        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class
-
     ],
 
 ];
