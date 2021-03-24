@@ -16,13 +16,13 @@ class Ticket extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'id', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
+        'id', 'number', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id',
         'replicated_to_entity_id', 'replicated_to_entity_type', 'is_spam', 'sequence', 'merge_comment',
         'ticket_type_id', 'description', 'name', 'contact_company_user_id', 'to_company_user_id', 'to_team_id',
         'to_product_id', 'priority_id', 'status_id', 'due_date', 'connection_details', 'access_details', 'availability',
         'category_id', 'parent_id', 'unifier_id', 'merged_at'
     ];
-    protected $appends = ['number', 'from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
+    protected $appends = [ 'from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
         'replicated_to', 'ticket_type', 'created_at_time', 'merged_parent_info', 'merged_child_info', 'original_name'];
     protected $hidden = ['to'];
 
@@ -253,6 +253,16 @@ class Ticket extends Model
 
     public function getNumberAttribute(): string
     {
+        if ($this->attributes['number'] === null) {
+            $this->setNumberAttribute();
+            $this->save();
+        }
+
+        return $this->attributes['number'];
+    }
+
+    public function setNumberAttribute():void
+    {
         // Prefix + Delimiter + creation_date + Delimiter + sequence
         try {
             $owner = $this->to_enity_type === Company::class ?
@@ -279,7 +289,7 @@ class Ticket extends Model
 
         // prepare suffix for PHP
         $suffix = '%0' . strlen($suffix) . 'd';
-        return $prefix . $delim1 . date($date, strtotime($this->attributes['created_at'])) . $delim2 . sprintf($suffix, $this->sequence);
+        $this->attributes['number'] = $prefix . $delim1 . date($date, strtotime($this->attributes['created_at'])) . $delim2 . sprintf($suffix, $this->sequence);
     }
 
     public function getTicketTypeAttribute()
