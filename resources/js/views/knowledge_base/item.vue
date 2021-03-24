@@ -13,7 +13,7 @@
                     <v-spacer>&nbsp;</v-spacer>
                 </div>
 
-                <div v-if="article.tags && article.tags.length > 0">
+                <div v-if="article.tags">
                     <h4 class="mb-2">{{ langMap.kb.tags}}</h4>
                     <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>
                     <v-spacer>&nbsp;</v-spacer>
