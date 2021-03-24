@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\KbArticle;
 use App\Repositories\FileRepository;
 use App\Repositories\KbRepository;
 use Illuminate\Http\JsonResponse;
@@ -76,8 +77,16 @@ class KbController extends Controller
             $request->summary_de,
             $request->input('content'),
             $request->content_de,
-            $request->tags
+            $request->tags ? json_decode($request->tags) : []
         );
+
+        if ($request->has('files')) {
+            foreach ($request['files'] as $file) {
+                $this->fileRepo->store($file, $article->id, KbArticle::class);
+
+                $article = $article->refresh();
+            }
+        }
 
         return self::showResponse(true, $article);
     }
@@ -86,14 +95,22 @@ class KbController extends Controller
         $article = $this->kbRepo->updateArticle(
             $id,
             $request->category_id,
-            $request->name ?? '',
+      $request->name ?? '',
             $request->name_de,
-            $request->input('content'),
-            $request->content_de,
             $request->summary,
             $request->summary_de,
-            $request->tags
+            $request->input('content'),
+            $request->content_de,
+            $request->tags ? json_decode($request->tags) : []
         );
+
+        if ($request->has('files')) {
+            foreach ($request['files'] as $file) {
+                $this->fileRepo->store($file, $article->id, KbArticle::class);
+
+                $article = $article->refresh();
+            }
+        }
 
         return self::showResponse(true, $article);
     }

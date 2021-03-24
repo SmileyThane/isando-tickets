@@ -63,7 +63,7 @@ class KbRepository
     }
 
     public function getArticles($category_id, $search) {
-        $articles = KbArticle::orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
+        $articles = KbArticle::with('tags', 'attachments')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
         if ($category_id) {
             $articles = $articles->where('category_id',$category_id);
         }
@@ -81,33 +81,43 @@ class KbRepository
         return KbArticle::with('category', 'tags', 'attachments')->find($id);
     }
 
-    public function createArticle($company_id, $category_id, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $files = []) {
-        $article = KbArticle::create(compact('company_id', 'category_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'tags', 'files'));
+    public function createArticle($company_id, $category_id, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = []) {
+        $article = KbArticle::create(compact('company_id', 'category_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de'));
 
         foreach ($tags as $tag) {
-            $article->tags()->attach($tag);
-        }
+            if (is_object($tag)) {
+                $article->tags()->attach($tag->id);
+            } else {
+                $tag = Tag::create([
+                    'name' => $tag,
+                    'color' => Tag::randomHexColor()
+                ]);
 
-        foreach ($files as $file) {
-            $article->attachments()->attach($file['id']);
+                $article->tags()->attach($tag->id);
+            }
         }
 
         return $article;
     }
 
-    public function updateArticle($id, $category_id, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $files = []) {
-        $article = KbArticle::updateOrCreate(compact('id'), compact('category_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'tags', 'files'));
+    public function updateArticle($id, $category_id, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = []) {
+        $article = KbArticle::updateOrCreate(compact('id'), compact('category_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de'));
 
         foreach ($article->tags as $tag) {
             $article->tags()->detach($tag->id);
         }
 
         foreach ($tags as $tag) {
-            $article->tags()->attach($tag['id']);
-        }
+            if (is_object($tag)) {
+                $article->tags()->attach($tag->id);
+            } else {
+                $tag = Tag::create([
+                    'name' => $tag,
+                    'color' => Tag::randomHexColor()
+                ]);
 
-        foreach ($files as $file) {
-            $article->attachments()->attach($file['id']);
+                $article->tags()->attach($tag->id);
+            }
         }
 
         return $article;

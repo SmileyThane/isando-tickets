@@ -266,7 +266,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('kb/article', 'API\KbController@addArticle');
     Route::put('kb/article/{id}', 'API\KbController@editArticle');
     Route::delete('kb/article/{id}', 'API\KbController@deleteArticle');
-    Route::delete('kb/file/{id}', 'API\KbController@deleteFile');
+
+    // files
+    Route::get('file/{id}', 'API\FileController@find');
+    Route::post('file', 'API\FileController@add');
+    Route::delete('file/{id}', 'API\FileController@delete');
 
 });
 

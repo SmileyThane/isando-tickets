@@ -4,16 +4,23 @@
             {{ snackbarMessage }}
         </v-snackbar>
         <v-toolbar floating class="mb-2 mr-2">
-            <v-text-field v-model="search" hide-details append-icon="mdi-magnify" single-line :label="langMap.main.search" :color="themeBgColor" />
-            <span v-if="tags.length < 1" class="ml-2">{{ langMap.kb.no_tags }}</span>
-            <span v-else class="ml-2">{{ langMap.kb.tags }}:</span>
-            <v-chip-group column>
-            <v-chip v-for="tag in tags" :key="tag.id" label small class="ml-2" :color="tagColor(tag.id)" :text-color="invertColor(tagColor(tag.id))" @click="refreshTags(tag.id)">
-                <v-icon v-if="activeTags.includes(tag.id)" small left :color="invertColor(tagColor(tag.id))">mdi-check</v-icon>
-                {{ tag.name }}
-            </v-chip>
-            </v-chip-group>
-            <v-btn class="ml-2" text :color="themeBgColor" v-text="langMap.kb.find" @click="openCategory($route.query.category) "/>
+            <v-text-field v-model="search" hide-details append-icon="mdi-magnify" single-line :label="langMap.main.search" :color="themeBgColor" v-on:change="openCategory($route.query.category)"/>
+            <v-spacer></v-spacer>
+
+            <span class="ml-2">{{ langMap.kb.tags }}:</span>
+
+            <v-select v-model="activeTags" :items="tags" item-value="id" item-text="name" single-line hide-selected multiple small-chips class="ml-2" append-icon="mdi-tag-multiple-outline" :color="themeBgColor" v-on:change="getArticles();">
+                <template v-slot:selection="{ attrs, item, parent, selected }">
+                    <v-chip small v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)" label class="ml-2" close @click:close="activeTags.splice(activeTags.indexOf(item), 1)">
+                        {{ item.name }}
+                    </v-chip>
+                </template>
+                <template v-slot:item="{ attrs, item, parent, selected }">
+                    <v-chip v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)" label class="ml-2">
+                        {{ item.name }}
+                    </v-chip>
+                </template>
+            </v-select>
 
             <v-spacer></v-spacer>
             <v-menu bottom>
@@ -117,7 +124,9 @@
                         </v-menu>
                     </v-card-title>
                     <v-card-text style="height: 10em;">
-                        <v-chip v-if="article.tags.length" v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tagColor(tag.id)" :text-color="invertColor(tagColor(tag.id))"/>
+                        <v-chip-group v-if="article.tags">
+                            <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>
+                        </v-chip-group>
                         <p v-else>{{ langMap.kb.no_tags}}</p>
                         <v-spacer>&nbsp;</v-spacer>
                         <p>{{ localized(article, 'summary') }}</p>
@@ -242,7 +251,6 @@ export default {
             categoriesTree: [],
             articles: [],
             tags: [],
-            tagColors: [],
             activeTags: [],
             updateCategoryDlg: false,
             deleteCategoryDlg: false,
@@ -279,8 +287,8 @@ export default {
         });
 
         this.getTags();
-        this.getCategoties();
-        this.getCategotiesTree();
+        this.getCategories();
+        this.getCategoriesTree();
         this.getArticles();
     },
     methods: {
@@ -302,38 +310,10 @@ export default {
             if (String(str).length <= count) return str;
             return String(str).substring(0, count) + '...';
         },
-        tagColor(i) {
-            if (!this.tagColors[i]) {
-                this.tagColors[i] = Helper.genRandomColor();
-            }
-            return this.tagColors[i];
-        },
         invertColor(hex) {
-            if (hex.indexOf('#') === 0) {
-                hex = hex.slice(1);
-            }
-            if (hex.length === 3) {
-                hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-            }
-            if (hex.length !== 6) {
-                this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
-                this.errorType = 'error';
-                this.alert = true;
-
-                return hex;
-            }
-            let r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
-                g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
-                b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
-            return '#' + this.padZero(r) + this.padZero(g) + this.padZero(b);
-        },
-        padZero(str, len) {
-            len = len || 2;
-            let zeros = new Array(len).join('0');
-            return (zeros + str).slice(-len);
+            return Helper.invertColor(hex);
         },
         getTags() {
-            this.tags = [{id: 1, name: 'zzz', on:true},{id: 3, name: 'something', on: false}, {id:2, name: 'test', on: true}];
             axios.get('/api/tags').then(response => {
                 response = response.data;
                 if (response.success === true) {
@@ -345,7 +325,7 @@ export default {
                 }
             });
         },
-        getCategoties() {
+        getCategories() {
             axios.get('/api/kb/categories', {
                 params: {
                     search: this.search,
@@ -362,7 +342,7 @@ export default {
                 }
             });
         },
-        getCategotiesTree() {
+        getCategoriesTree() {
             axios.get('/api/kb/categories/tree').then(response => {
                 response = response.data;
                 if (response.success === true) {
@@ -394,7 +374,7 @@ export default {
         },
         openCategory(id) {
             this.$route.query.category = id;
-            this.getCategoties();
+            this.getCategories();
             this.getArticles();
         },
         clearCategoryForm() {
@@ -437,7 +417,7 @@ export default {
                     if (response.success === true) {
                         this.updateCategoryDlg = false;
                         this.clearCategoryForm();
-                        this.getCategoties();
+                        this.getCategories();
 
                         this.snackbarMessage = this.langMap.kb.category_updated;
                         this.actionColor = 'success'
@@ -448,14 +428,13 @@ export default {
                         this.alert = true;
                     }
                 });
-
             } else {
                 axios.post('/api/kb/category', this.categoryForm).then(response => {
                     response = response.data;
                     if (response.success === true) {
                         this.updateCategoryDlg = false;
                         this.clearCategoryForm();
-                        this.getCategoties();
+                        this.getCategories();
 
                         this.snackbarMessage = this.langMap.kb.category_created;
                         this.actionColor = 'success'
@@ -478,7 +457,7 @@ export default {
                 if (response.success === true) {
                     this.deleteCategoryDlg = false;
                     this.clearCategoryForm();
-                    this.getCategoties();
+                    this.getCategories();
 
                     this.snackbarMessage = this.langMap.kb.category_deleted;
                     this.actionColor = 'success'
@@ -490,13 +469,6 @@ export default {
                 }
             });
 
-        },
-        refreshTags(id) {
-            if (this.activeTags.includes(id)) {
-                this.activeTags.splice(this.activeTags.indexOf(id));
-            } else {
-                this.activeTags.push(id);
-            }
         },
         readArticle(id) {
             this.$router.push(`/knowledge_base/${id}`);

@@ -19,8 +19,8 @@ class CreateKbArticlesTable extends Migration
             $table->foreignId('category_id')->nullable()->constrained('kb_categories');
             $table->string('name');
             $table->string('name_de')->nullable();
-            $table->string('summary');
-            $table->string('summary_de')->nullable();
+            $table->text('summary')->nullable();
+            $table->text('summary_de')->nullable();
             $table->longText('content')->nullable();
             $table->longText('content_de')->nullable();
             $table->timestamps();

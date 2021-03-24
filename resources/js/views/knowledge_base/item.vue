@@ -9,13 +9,13 @@
             </v-card-title>
             <v-card-text>
                 <div v-if="article.category">
-                    <h3>{{ localized(article.category) }}</h3>
+                    <h3>{{ langMap.kb.category }} {{ localized(article.category) }}</h3>
                     <v-spacer>&nbsp;</v-spacer>
                 </div>
 
                 <div v-if="article.tags && article.tags.length > 0">
                     <h4 class="mb-2">{{ langMap.kb.tags}}</h4>
-                    <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tagColor(tag.id)" :text-color="invertColor(tagColor(tag.id))"/>
+                    <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>
                     <v-spacer>&nbsp;</v-spacer>
                 </div>
 
@@ -30,11 +30,12 @@
                     <v-spacer>&nbsp;</v-spacer>
                     <h4 class="mb-2">{{ langMap.kb.attachments}}</h4>
 
-                    <v-chip v-for="attachment in article.attachments" :key="attachment.id" outlined label :color="themeBgColor" class="mr-2" @click="download(attachment.link)">
-                        <v-icon left v-text="fileIcon(attachment.filepath)" :color="themeBgColor" />
-                        <v-subheader v-text="attachment.name" /> <br/>
-                        <small>{{ attachment.filepath }}</small>
-                    </v-chip>
+                    <v-chip-group column>
+                        <v-chip v-for="attachment in article.attachments" :key="attachment.id" label outlined :color="themeBgColor" class="mr-2" @click="download(attachment.link)">
+                            <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)" />
+                            {{ attachment.name}}
+                        </v-chip>
+                    </v-chip-group>
                 </div>
             </v-card-text>
             <v-card-actions>
@@ -65,8 +66,7 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
-            article: [],
-            tagColors: [],
+            article: []
         }
     },
     mounted() {
@@ -94,35 +94,8 @@ export default {
             let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
             return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
         },
-        tagColor(i) {
-            if (!this.tagColors[i]) {
-                this.tagColors[i] = Helper.genRandomColor();
-            }
-            return this.tagColors[i];
-        },
         invertColor(hex) {
-            if (hex.indexOf('#') === 0) {
-                hex = hex.slice(1);
-            }
-            if (hex.length === 3) {
-                hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-            }
-            if (hex.length !== 6) {
-                this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
-                this.errorType = 'error';
-                this.alert = true;
-
-                return hex;
-            }
-            let r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
-                g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
-                b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
-            return '#' + this.padZero(r) + this.padZero(g) + this.padZero(b);
-        },
-        padZero(str, len) {
-            len = len || 2;
-            let zeros = new Array(len).join('0');
-            return (zeros + str).slice(-len);
+            return Helper.invertColor(hex);
         },
         getArticle() {
             axios.get(`/api/kb/article/${this.$route.params.id}`).then(response => {
