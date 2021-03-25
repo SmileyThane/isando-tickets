@@ -39,6 +39,7 @@ class ProductRepository
             $clientIds = $employee->assignedToClients->pluck('client_id')->toArray();
             $productIds = ProductClient::where('client_id', $clientIds);
         }
+
         if (!empty($request->search)) {
             $productIds->whereHas(
                 'productData',
@@ -48,8 +49,7 @@ class ProductRepository
                 }
             );
         }
-        $products = Product::whereIn('id', $productIds->get()->pluck('id')->toArray())->with('category')->get();
-
+        $products = Product::whereIn('id', $productIds->get()->pluck('product_id')->toArray())->with('category')->get();
         $orderFunc = function ($item, $key) use ($request) {
             switch ($request->sort_by ?? 'name') {
                 case 'id':
