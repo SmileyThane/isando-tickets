@@ -31,6 +31,9 @@ import TrackingProjectItem from './views/tracking/projects/item'
 import TrackingReports from './views/tracking/reports'
 import TrackingSettings from './views/tracking/settings'
 import ResetPassword from './views/auth/reset-password'
+import KnowledgeBase from './views/knowledge_base/index'
+import KnowledgeBaseArticle from './views/knowledge_base/item'
+import KnowledgeBaseCreate from './views/knowledge_base/create'
 import RoleManagement from './views/superadmin/roles'
 
 
@@ -303,12 +306,36 @@ export default [
         component: CustomLicenses
     },
     {
-        path: '/custom_license_unassigned',
-        name: 'custom_license_unassigned',
+        path: '/knowledge_base',
+        name: 'knowledge_base',
         meta: {
             requiresAuth: true,
         },
-        component: CustomLicenseUnassignedUsers
+        component: KnowledgeBase
+    },
+    {
+        path: '/knowledge_base/create',
+        name: 'knowledge_base_create',
+        meta: {
+            requiresAuth: true,
+        },
+        component: KnowledgeBaseCreate
+    },
+    {
+        path: '/knowledge_base/:id/edit',
+        name: 'knowledge_base_update',
+        meta: {
+            requiresAuth: true,
+        },
+        component: KnowledgeBaseCreate
+    },
+    {
+        path: '/knowledge_base/:id',
+        name: 'knowledge_base_article',
+        meta: {
+            requiresAuth: true,
+        },
+        component: KnowledgeBaseArticle
     },
     {
         path: '/admin/role',

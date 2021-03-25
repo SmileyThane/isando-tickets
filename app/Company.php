@@ -88,6 +88,11 @@ class Company extends Model
         return $this->hasMany(ProductCategory::class, 'company_id', 'id');
     }
 
+    public function kbCategories(): HasMany
+    {
+        return $this->hasMany(KbCategory::class, 'company_id', 'id');
+    }
+
     public function settings(): MorphOne
     {
         return $this->morphOne(Settings::class, 'entity');

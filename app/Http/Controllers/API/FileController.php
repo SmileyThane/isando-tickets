@@ -36,5 +36,4 @@ class FileController extends Controller
         $this->fileRepo->delete($id);
         return self::showResponse(true);
     }
-
 }
