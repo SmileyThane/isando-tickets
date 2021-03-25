@@ -22,6 +22,7 @@
         "laravel/passport": "^9.2",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
+        "matthew-elisha/fpdf-easytable": "dev-master",
         "spatie/laravel-permission": "^3.13",
         "stevebauman/location": "^5.1",
         "symfony/process": "^5.2",
