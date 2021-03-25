@@ -106,7 +106,8 @@ export default {
             alert: false,
             email: "",
             password: "",
-            themeBgColor: this.$store.state.themeBgColor
+            themeBgColor: this.$store.state.themeBgColor,
+            themeFgColor: this.$store.state.themeFgColor
         }
     },
     mounted() {

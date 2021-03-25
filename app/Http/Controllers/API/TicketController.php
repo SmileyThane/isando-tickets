@@ -190,7 +190,8 @@ class TicketController extends Controller
     public function addFilter(Request $request)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::TICKET_READ_ACCESS)) {
-            return self::showResponse(true, $this->ticketRepo->addFilter($request));
+            $result = $this->ticketRepo->addFilter($request);
+            return self::showResponse($result ? true : false, $result);
         }
 
         return self::showResponse(false);

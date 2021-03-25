@@ -39,7 +39,42 @@
                             prepend-icon="mdi-magnify"
                             @input="getTickets"
 
-                        ></v-text-field>
+                        >
+                            <template slot="prepend">
+                                <v-menu
+                                    bottom
+                                    rounded
+                                    transition="slide-y-transition"
+                                >
+                                    <template v-slot:activator="{ on: menu, attrs }">
+                                        <v-btn
+                                            v-bind="attrs"
+                                            v-on="{...menu}"
+                                            text
+                                        >
+                                                <span v-if="searchLabel !== ''">
+                                                    {{ searchLabel }}
+                                                </span>
+                                            <v-icon v-else>$expand</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <v-list
+                                        dense
+                                    >
+                                        <v-list-item
+                                            v-for="item in searchCategories"
+                                            :key="item.id"
+                                            link
+                                            @click="selectSearchCategory(item)"
+                                        >
+                                            <v-list-item-title>
+                                                {{ item.name }}
+                                            </v-list-item-title>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-menu>
+                            </template>
+                        </v-text-field>
                     </v-col>
                     <v-col md="2" sm="12">
                         <v-select
@@ -87,7 +122,6 @@
                             dense
                             prepend-icon="mdi-text"
                         >
-
                         </v-text-field>
                     </v-col>
                     <v-col md="6" sm="12">
@@ -379,6 +413,21 @@ export default {
                     compareParams: []
                 }
             ],
+            searchLabel: '',
+            searchCategories: [
+                {
+                    id: 1,
+                    name: 'ID'
+                },
+                {
+                    id: 2,
+                    name: 'Subject'
+                },
+                {
+                    id: 3,
+                    name: 'Contact'
+                }
+            ],
             headers: [
                 {text: '', value: 'data-table-expand'},
                 // {
@@ -464,13 +513,18 @@ export default {
                     this.filterPanel = false
                     this.getFilters()
                 } else {
-                    console.log('error')
+                    this.snackbarMessage = 'Filter creating error'
+                    this.actionColor = 'error'
+                    this.snackbar = true;
                 }
             });
         },
         removeFilter() {
             this.filterId = ''
             this.getTickets()
+        },
+        selectSearchCategory(item) {
+            this.searchLabel = item.name
         },
         getProducts() {
             axios.get('/api/product').then(response => {
@@ -526,6 +580,7 @@ export default {
                 this.options.page = 1
             }
             let queryParams = new URLSearchParams({
+                search_param: this.searchLabel,
                 search: this.ticketsSearch,
                 sort_by: this.manageSortableField(this.options.sortBy[0]),
                 sort_val: this.options.sortDesc[0],
@@ -635,7 +690,7 @@ export default {
         options: {
             handler: _.debounce(function (v) {
                 this.getTickets()
-            }, 100),
+            }, 1000),
             deep: true,
         },
     },

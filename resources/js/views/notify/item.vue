@@ -190,7 +190,7 @@
                                 <v-col cols="12" class="pa-3">
 
                                     <v-text-field
-                                        red="subject"
+                                        ref="subject"
                                         :color="themeBgColor"
                                         v-model="template.name"
                                         :label="langMap.notification.subject"
@@ -554,8 +554,6 @@
     margin-left: 0px !important;
 }
 </style>
-
-<style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
 
 <script>
 import EventBus from "../../components/EventBus";

@@ -74,7 +74,7 @@
                     style="background-color: white;"
                     dense
                     link
-                    to="/knowledge-base">
+                    to="/knowledge_base">
                     <v-list-item-action>
                         <v-icon>mdi-book-open-page-variant</v-icon>
                     </v-list-item-action>

@@ -129,7 +129,7 @@ class CompanyRepository
         return $result;
     }
 
-    public function attachProduct(Request $request)
+    public function attachProduct(Request $request): bool
     {
         CompanyProduct::firstOrCreate(
             ['company_id' => $request->company_id,
