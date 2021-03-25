@@ -15,12 +15,33 @@ class TicketMerge extends Model
     public function parentTicketData(): HasOne
     {
         return $this->hasOne(Ticket::class, 'id', 'parent_ticket_id')
-            ->select('id', 'name', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id', 'created_at', 'updated_at')->with('creator.userData')->withTrashed();
+            ->select(
+                'id',
+                'name',
+                'from_entity_id',
+                'from_entity_type',
+                'to_entity_id',
+                'to_entity_type',
+                'from_company_user_id',
+                'created_at',
+                'updated_at'
+            )
+            ->with('creator.userData')->withTrashed();
     }
 
     public function childTicketData(): HasOne
     {
         return $this->hasOne(Ticket::class, 'id', 'child_ticket_id')
-            ->select('id', 'name', 'from_entity_id', 'from_entity_type', 'to_entity_id', 'to_entity_type', 'from_company_user_id', 'created_at', 'updated_at')->with('creator.userData')->withTrashed();
+            ->select(
+                'id',
+                'name',
+                'from_entity_id',
+                'from_entity_type',
+                'to_entity_id',
+                'to_entity_type',
+                'from_company_user_id',
+                'created_at',
+                'updated_at'
+            )->with('creator.userData')->withTrashed();
     }
 }

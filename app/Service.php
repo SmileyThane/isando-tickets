@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Service extends Model
 {
@@ -12,18 +14,18 @@ class Service extends Model
         'name'
     ];
 
-    public function Company() {
+    public function company(): HasOne
+    {
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
 
-    public function Serviceable() {
+    public function serviceable(): HasMany
+    {
         return $this->hasMany(Serviceable::class, 'service_id', 'id');
     }
 
-    public function Tracking() {
-        return $this->Serviceable()->first()->Tracking();
+    public function tracking()
+    {
+        return $this->Serviceable()->first()->tracking();
     }
-
 }
-
-

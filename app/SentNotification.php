@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class SentNotification extends Model
 {
-    protected $fillable = ['subject', 'text', 'notification_type_id', 'priority', 'recipients', 'attachments', 'user_id', 'sent_at', 'entity_type', 'entity_id'];
+    protected $fillable = [
+        'subject', 'text', 'notification_type_id', 'priority', 'recipients', 'attachments', 'user_id', 'sent_at',
+        'entity_type', 'entity_id'
+    ];
 
     public function sender(): HasOne
     {
@@ -21,20 +24,20 @@ class SentNotification extends Model
 
     public function getRecipientsAttribute(): array
     {
-        return (array)json_decode($this->attributes['recipients']);
+        return json_decode($this->attributes['recipients'], true);
     }
 
-    public function setRecipientsAttribute(array $data = [])
+    public function setRecipientsAttribute(array $data = []): void
     {
         $this->attributes['recipients'] = json_encode($data);
     }
 
     public function getAttachmentsAttribute(): array
     {
-        return (array)json_decode($this->attributes['attachments']);
+        return json_decode($this->attributes['attachments'], true);
     }
 
-    public function setAttachmentsAttribute(array $data = [])
+    public function setAttachmentsAttribute(array $data = []): void
     {
         $this->attributes['attachments'] = json_encode($data);
     }

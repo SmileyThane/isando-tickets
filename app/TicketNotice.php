@@ -9,9 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 class TicketNotice extends Model
 {
-//    use SoftDeletes;
 
-    public function getCreatedAtAttribute()
+    public function getCreatedAtAttribute(): string
     {
         $locale = Language::find(Auth::user()->language_id)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;

@@ -10,10 +10,10 @@ class Settings extends Model
 
     public function getDataAttribute(): array
     {
-        return (array)json_decode($this->attributes['data']);
+        return json_decode($this->attributes['data'], true);
     }
 
-    public function setDataAttribute(array $data = [])
+    public function setDataAttribute(array $data = []): void
     {
         $this->attributes['data'] = json_encode($data);
     }

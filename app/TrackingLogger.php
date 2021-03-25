@@ -6,16 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrackingLogger extends Model
 {
+    public const CREATE = 'create';
+    public const ATTACH_TAGS = 'attach_tags';
+    public const UPDATE_TAGS = 'update_tags';
+    public const DETACH_TAGS = 'detach_tags';
+    public const UPDATE = 'update';
+    public const DELETE = 'delete';
+    public const DUPLICATE = 'duplicate';
+
     protected $table = 'tracking_logger';
-
-    const CREATE = 'create';
-    const ATTACH_TAGS = 'attach_tags';
-    const UPDATE_TAGS = 'update_tags';
-    const DETACH_TAGS = 'detach_tags';
-    const UPDATE = 'update';
-    const DELETE = 'delete';
-    const DUPLICATE = 'duplicate';
-
     protected $casts = [
         'from' => 'array',
         'to' => 'array'

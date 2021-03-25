@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Kalnoy\Nestedset\NodeTrait;
 
-
 class ProductCategory extends Model
 {
-    use SoftDeletes, NodeTrait;
+    use SoftDeletes;
+    use NodeTrait;
 
     protected $fillable = ['name', 'company_id', 'parent_id'];
 
@@ -22,17 +22,6 @@ class ProductCategory extends Model
         return $this->belongsTo(Company::class, 'id', 'company_id');
     }
 
-    /*
-    public function parent(): HasOne
-    {
-        return $this->hasOne(ProductCategory::class, 'id', 'parent_id');
-    }
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(ProductCategory::class, 'parent_id', 'id');
-    }
-*/
     public function products(): HasMany
     {
         return $this->hasMany(Product::class, 'category_id', 'id');

@@ -8,13 +8,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Product
+ * @package App
+ *
+ */
 class Product extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = ['product_code', 'name', 'photo', 'description'];
 
     protected $appends = ['full_name'];
-
-    use SoftDeletes;
 
     public function attachments(): MorphMany
     {
@@ -40,8 +45,8 @@ class Product extends Model
     {
         if ($this->category_id) {
             return $this->category->full_name . ' > ' . $this->name;
-        } else {
-            return $this->name;
         }
+
+        return $this->name;
     }
 }

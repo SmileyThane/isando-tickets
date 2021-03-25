@@ -19,7 +19,9 @@ class Company extends Model
 
     public function getRegistrationDateAttribute()
     {
-        return $this->attributes['registration_date'] ? Carbon::parse($this->attributes['registration_date'])->format('Y-m-d') : null;
+        return $this->attributes['registration_date'] ?
+            Carbon::parse($this->attributes['registration_date'])->format('Y-m-d') :
+            null;
     }
 
     public function employees(): HasMany
@@ -41,11 +43,6 @@ class Company extends Model
     public function teams(): MorphMany
     {
         return $this->morphMany(Team::class, 'team_owner');
-    }
-
-    public function phones(): MorphMany
-    {
-        return $this->morphMany(Phone::class, 'entity');
     }
 
     public function phoneTypes(): MorphMany
@@ -73,11 +70,6 @@ class Company extends Model
         return $this->morphMany(SocialType::class, 'entity');
     }
 
-    public function emails(): MorphMany
-    {
-        return $this->morphMany(Email::class, 'entity');
-    }
-
     public function emailTypes(): MorphMany
     {
         return $this->morphMany(EmailType::class, 'entity');
@@ -103,9 +95,19 @@ class Company extends Model
         return $this->phones()->with('type')->first();
     }
 
+    public function phones(): MorphMany
+    {
+        return $this->morphMany(Phone::class, 'entity');
+    }
+
     public function getContactEmailAttribute()
     {
         return $this->emails()->with('type')->first();
+    }
+
+    public function emails(): MorphMany
+    {
+        return $this->morphMany(Email::class, 'entity');
     }
 
     public function emailSignatures(): MorphMany
@@ -125,6 +127,7 @@ class Company extends Model
 
     public function getSecondAliasAttribute()
     {
-        return $this->attributes['second_alias'] ?? Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
+        return $this->attributes['second_alias'] ??
+            Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
     }
 }

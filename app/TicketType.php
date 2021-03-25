@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TicketType extends Model
 {
-    const INTERNAL = 4;
+    public const INTERNAL = 4;
 
     protected $langId;
 

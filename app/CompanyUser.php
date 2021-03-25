@@ -11,7 +11,8 @@ use Spatie\Permission\Traits\HasRoles;
 
 class CompanyUser extends Model
 {
-    use SoftDeletes, HasRoles;
+    use SoftDeletes;
+    use HasRoles;
 
     protected $table = 'company_users';
 
@@ -36,6 +37,14 @@ class CompanyUser extends Model
         return Role::whereIn('id', $roleIds)->get();
     }
 
+    public function roleIds()
+    {
+        return ModelHasRole::where([
+            'model_id' => $this->attributes['id'],
+            'model_type' => self::class
+        ])->get()->pluck('role_id')->toArray();
+    }
+
     public function getPermissionIds()
     {
         $roleIds = $this->roleIds();
@@ -43,11 +52,6 @@ class CompanyUser extends Model
             return RoleHasPermission::whereIn('role_id', $roleIds)->get()->pluck('permission_id')->toArray();
         }
         return [];
-    }
-
-    public function roleIds()
-    {
-        return ModelHasRole::where(['model_id' => $this->attributes['id'], 'model_type' => self::class])->get()->pluck('role_id')->toArray();
     }
 
     public function hasRoleId($id)
@@ -93,5 +97,4 @@ class CompanyUser extends Model
     {
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
-
 }

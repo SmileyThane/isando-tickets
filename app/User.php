@@ -3,18 +3,20 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable, SoftDeletes;
+    use HasApiTokens;
+    use Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -53,11 +55,6 @@ class User extends Authenticatable
         return $this->hasOne(CompanyUser::class, 'user_id', 'id');
     }
 
-    public function phones(): MorphMany
-    {
-        return $this->morphMany(Phone::class, 'entity');
-    }
-
     public function phoneTypes(): MorphMany
     {
         return $this->morphMany(PhoneType::class, 'entity');
@@ -83,11 +80,6 @@ class User extends Authenticatable
         return $this->morphMany(SocialType::class, 'entity');
     }
 
-    public function emails(): MorphMany
-    {
-        return $this->morphMany(Email::class, 'entity');
-    }
-
     public function emailTypes(): MorphMany
     {
         return $this->morphMany(EmailType::class, 'entity');
@@ -98,7 +90,7 @@ class User extends Authenticatable
         return trim($this->name . ' ' . $this->surname);
     }
 
-    public function settings(): HasOne
+    public function settings(): MorphOne
     {
         return $this->morphOne(Settings::class, 'entity');
     }
@@ -113,10 +105,20 @@ class User extends Authenticatable
         return $this->phones()->with('type')->first();
     }
 
+    public function phones(): MorphMany
+    {
+        return $this->morphMany(Phone::class, 'entity');
+    }
+
     public function getEmailAttribute()
     {
         $email = $this->emails()->orderBy('email_type')->first();
         return $email ? $email->email : null;
+    }
+
+    public function emails(): MorphMany
+    {
+        return $this->morphMany(Email::class, 'entity');
     }
 
     public function getEmailIdAttribute()
@@ -127,7 +129,7 @@ class User extends Authenticatable
 
     public function getContactEmailAttribute()
     {
-        return $email = $this->emails()->with('type')->orderBy('email_type')->first();
+        return $this->emails()->with('type')->orderBy('email_type')->first();
     }
 
     public function emailSignatures(): MorphMany
@@ -152,7 +154,7 @@ class User extends Authenticatable
 
     public function notificationStatuses(): hasMany
     {
-        return $this->hasMany(UserNotificationStatus::class,'user_id', 'id');
+        return $this->hasMany(UserNotificationStatus::class, 'user_id', 'id');
     }
 
     public function getNumberAttribute()
@@ -164,13 +166,16 @@ class User extends Authenticatable
 
         $settings = $employee->companyData->settings;
 
-        if (empty($settings->data['employee_number_format']) || count(explode('｜', $settings->data['ticket_number_format'])) != 4) {
+        if (
+            empty($settings->data['employee_number_format']) ||
+            count(explode('｜', $settings->data['ticket_number_format'])) !== 4
+        ) {
             $format = '0||50000|8';
         } else {
             $format = $settings->data['employee_number_format'];
         }
 
-        list($active, $prefix, $start, $size) = explode('|', $format);
+        [$active, $prefix, $start, $size] = explode('|', $format);
 
         if (!$active) {
             return $this->attributes['number'];

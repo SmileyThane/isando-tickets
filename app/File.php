@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Storage;
 
 class File extends Model
@@ -16,7 +17,7 @@ class File extends Model
         return url('/') . Storage::url($this->attributes['filepath'] . $this->attributes['name']);
     }
 
-    public function attacheable()
+    public function attacheable(): MorphTo
     {
         return $this->morphTo();
     }

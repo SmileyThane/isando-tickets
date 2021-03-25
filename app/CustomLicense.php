@@ -29,6 +29,5 @@ class CustomLicense extends Model
             }
         }
         return null;
-
     }
 }

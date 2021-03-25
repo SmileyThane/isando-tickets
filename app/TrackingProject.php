@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class TrackingProject extends Model
 {
@@ -12,38 +13,45 @@ class TrackingProject extends Model
         'progress'
     ];
 
-    public function Product() {
-        return $this->hasOne('App\Product', 'id', 'product_id');
-    }
-
-    public function Client() {
-        return $this->hasOne('App\Client', 'id', 'client_id');
-    }
-
-    public function Trackers() {
-        return $this->morphMany('App\Tracking', 'entity');
-    }
-
-    public function getTrackedAttribute() {
-        // TODO
-        return 0;
-    }
-
-    public function getAmountAttribute() {
-        // TODO
-        return 0;
-    }
-
-    public function getProgressAttribute() {
-        // TODO
-        return 0;
-    }
-
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
 
-        static::deleting(function($trackingProject) {
+        static::deleting(static function ($trackingProject) {
             $trackingProject->Trackers()->delete();
         });
+    }
+
+    public function product(): HasOne
+    {
+        return $this->hasOne(Product::class, 'id', 'product_id');
+    }
+
+    public function client(): HasOne
+    {
+        return $this->hasOne(Client::class, 'id', 'client_id');
+    }
+
+    public function trackers(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Tracking::class, 'entity');
+    }
+
+    public function getTrackedAttribute()
+    {
+        // TODO
+        return 0;
+    }
+
+    public function getAmountAttribute()
+    {
+        // TODO
+        return 0;
+    }
+
+    public function getProgressAttribute()
+    {
+        // TODO
+        return 0;
     }
 }

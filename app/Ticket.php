@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
+use App\Tracking;
 
 class Ticket extends Model
 {
@@ -22,7 +23,7 @@ class Ticket extends Model
         'to_product_id', 'priority_id', 'status_id', 'due_date', 'connection_details', 'access_details', 'availability',
         'category_id', 'parent_id', 'unifier_id', 'merged_at'
     ];
-    protected $appends = [ 'from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
+    protected $appends = ['from', 'from_company_name', 'to', 'last_update', 'can_be_edited', 'can_be_answered',
         'replicated_to', 'ticket_type', 'created_at_time', 'merged_parent_info', 'merged_child_info', 'original_name'];
     protected $hidden = ['to'];
 
@@ -34,9 +35,9 @@ class Ticket extends Model
         $this->langId = Auth::user() ? Auth::user()->language_id : 1;
     }
 
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::created(function ($ticket) {
+        static::created(static function ($ticket) {
             $last = Ticket::where('to_entity_type', $ticket->to_entity_type)
                 ->where('to_entity_id', $ticket->to_entity_id)
                 ->whereDate('created_at', date('Y-m-d'))->count();
@@ -50,12 +51,19 @@ class Ticket extends Model
         return $this->attributes['name'];
     }
 
-    public function getNameAttribute()
+    public function getNameAttribute(): string
     {
         $translationsArray = Language::find($this->langId)->lang_map;
         $name = $this->attributes['name'];
-        $name .= $this->parent_id ? ' [' . $translationsArray->ticket->merged_abbr . ']' : "";
-        $name .= $this->is_spam === 1 ? " [SPAM]" : "";
+
+        if ($this->parent_id) {
+            $name .= ' [' . $translationsArray->ticket->merged_abbr . ']';
+        }
+
+        if ($this->is_spam) {
+            $name .= " [SPAM]";
+        }
+
         return $name;
     }
 
@@ -92,6 +100,7 @@ class Ticket extends Model
     public function getCanBeEditedAttribute(): bool
     {
         $roles = Auth::user()->employee->roles->pluck('id')->toArray();
+
         return count(array_intersect($roles, Role::HIGH_PRIVIGIES)) > 0;
     }
 
@@ -104,32 +113,23 @@ class Ticket extends Model
     {
         $locale = Language::find($this->langId)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+
         return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }
 
-    public function getCreatedAtAttribute()
+    public function getCreatedAtAttribute(): string
     {
         $locale = Language::find($this->langId)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+
         return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }
 
-//    public function getMergedAtAttribute()
-//    {
-//        dd($this->attributes);
-//        if ($this->attributes['merged_at']) {
-//            $locale = Language::find(Auth::user()->language_id)->locale;
-//            $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
-//            return Carbon::parse($this->attributes['merged_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
-//        }
-//        return null;
-//    }
-
-    public function getCreatedAtTimeAttribute()
+    public function getCreatedAtTimeAttribute(): string
     {
         $locale = Language::find($this->langId)->locale;
         $createdAt = Carbon::parse($this->attributes['created_at']);
-        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+
         return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
     }
 
@@ -208,8 +208,9 @@ class Ticket extends Model
             ->with('childTicketData');
     }
 
-    public function Trackers() {
-        return $this->morphMany('App\Tracking', 'entity');
+    public function trackers(): MorphMany
+    {
+        return $this->morphMany(Tracking::class, 'entity');
     }
 
     public function getMergedParentInfoAttribute(): string
@@ -217,13 +218,15 @@ class Ticket extends Model
         if ($this->parent_id !== null && $this->unifier_id) {
             $translationsArray = Language::find($this->langId)->lang_map;
             $mergeComment = $translationsArray->ticket->ticket_merge_parent_msg;
-            $mergeComment = str_replace(
+            $unifierFullName = User::find($this->unifier_id)->full_name;
+
+            return str_replace(
                 ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
-                [$this->number, $this->original_name, $this->merged_at, User::find($this->unifier_id)->full_name],
+                [$this->number, $this->original_name, $this->merged_at, $unifierFullName],
                 $mergeComment
             );
-            return $mergeComment;
         }
+
         return '';
     }
 
@@ -234,20 +237,21 @@ class Ticket extends Model
             if ($parentTicket) {
                 $translationsArray = Language::find($this->langId)->lang_map;
                 $mergeComment = $translationsArray->ticket->ticket_merge_child_msg;
-                $mergeComment = str_replace(
+                $unifierFullName = User::find($this->unifier_id)->full_name;
+
+                return str_replace(
                     ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
-                    [$parentTicket->number, $parentTicket->original_name, $this->merged_at, User::find($this->unifier_id)->full_name],
+                    [$parentTicket->number, $parentTicket->original_name, $this->merged_at, $unifierFullName],
                     $mergeComment
                 );
-                return $mergeComment;
             }
         }
+
         return '';
     }
 
     public function childTickets(): HasMany
     {
-//        return self::where('parent_id', $this->id);
         return $this->hasMany(self::class, 'parent_id', 'id')->orderByDesc('id');
     }
 
@@ -261,7 +265,7 @@ class Ticket extends Model
         return $this->attributes['number'];
     }
 
-    public function setNumberAttribute():void
+    public function setNumberAttribute(): void
     {
         // Prefix + Delimiter + creation_date + Delimiter + sequence
         try {
@@ -273,26 +277,28 @@ class Ticket extends Model
         }
 
         $settings = $owner->settings;
-        if (empty($settings->data['ticket_number_format']) || count(explode('｜', $settings->data['ticket_number_format'])) != 5) {
+        if (
+            empty($settings->data['ticket_number_format']) ||
+            count(explode('｜', $settings->data['ticket_number_format'])) !== 5
+        ) {
             $format = strtoupper(substr(str_replace(' ', '', $owner->name), 0, 6)) . '｜-｜YYYYMMDD｜-｜###';
         } else {
             $format = $settings->data['ticket_number_format'];
         }
 
-        list($prefix, $delim1, $date, $delim2, $suffix) = explode('｜', $format);
+        [$prefix, $delim1, $date, $delim2, $suffix] = explode('｜', $format);
 
         // prepare date format for PHP
-        $date = str_replace('YYYY', 'Y', $date);
-        $date = str_replace('YY', 'y', $date);
-        $date = str_replace('MM', 'm', $date);
-        $date = str_replace('DD', 'd', $date);
+        $date = str_replace(array('YYYY', 'YY', 'MM', 'DD'), array('Y', 'y', 'm', 'd'), $date);
 
         // prepare suffix for PHP
         $suffix = '%0' . strlen($suffix) . 'd';
-        $this->attributes['number'] = $prefix . $delim1 . date($date, strtotime($this->attributes['created_at'])) . $delim2 . sprintf($suffix, $this->sequence);
+        $this->attributes['number'] = $prefix . $delim1 .
+            date($date, strtotime($this->attributes['created_at'])) . $delim2 .
+            sprintf($suffix, $this->sequence);
     }
 
-    public function getTicketTypeAttribute()
+    public function getTicketTypeAttribute(): ?TicketType
     {
         return TicketType::find($this->ticket_type_id);
     }

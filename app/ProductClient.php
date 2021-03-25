@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductClient extends Model
 {
-    protected $fillable = ['client_id', 'product_id'];
-
     use SoftDeletes;
+
+    protected $fillable = ['client_id', 'product_id'];
 
     public function productData(): HasOne
     {

@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Kalnoy\Nestedset\NodeTrait;
 
-
 class KbCategory extends Model
 {
-    use SoftDeletes, NodeTrait;
+    use SoftDeletes;
+    use NodeTrait;
 
     protected $fillable = ['name', 'name_de', 'description', 'description_de', 'icon', 'company_id', 'parent_id'];
 
@@ -34,24 +34,24 @@ class KbCategory extends Model
 
     public function getCategoriesCountAttribute(): int
     {
-        return $this->hasMany(KbCategory::class, 'parent_id', 'id')->count();
+        return $this->hasMany(__CLASS__, 'parent_id', 'id')->count();
     }
 
     public function getFullNameAttribute(): string
     {
         if ($this->parent_id) {
             return $this->parent->full_name . ' > ' . $this->name;
-        } else {
-            return $this->name;
         }
+
+        return $this->name;
     }
 
     public function getFullNameDeAttribute(): string
     {
         if ($this->parent_id) {
             return $this->parent->full_name_de . ' > ' . $this->name_de;
-        } else {
-            return $this->name_de;
         }
+
+        return $this->name_de;
     }
 }

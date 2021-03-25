@@ -4,6 +4,9 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use App\User;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Tracking extends Model
 {
@@ -18,11 +21,13 @@ class Tracking extends Model
         'passed', 'service', 'entity'
     ];
 
-    public function User() {
-        return $this->hasOne('App\User', 'id', 'user_id');
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
-    public function getEntityAttribute() {
+    public function getEntityAttribute()
+    {
         if (isset($this->entity_type)) {
             if ($this->entity_type === TrackingProject::class) {
                 return $this->entity_type::with('Client')->with('Product')->find($this->entity_id);
@@ -34,14 +39,16 @@ class Tracking extends Model
         return null;
     }
 
-    public function Tags() {
+    public function tags(): MorphToMany
+    {
         return $this->morphToMany(
             Tag::class,
             'taggable'
         );
     }
 
-    public function Services() {
+    public function services(): MorphToMany
+    {
         return $this->morphToMany(
             Service::class,
             'serviceable',
@@ -51,19 +58,23 @@ class Tracking extends Model
         );
     }
 
-    public function getServiceAttribute() {
+    public function getServiceAttribute()
+    {
         return $this->Services()->first();
     }
 
-    public function getPassedAttribute() {
+    public function getPassedAttribute(): int
+    {
         return Carbon::parse($this->date_to)->diffInSeconds(Carbon::parse($this->date_from));
     }
 
-    public function getDateFromAttribute() {
+    public function getDateFromAttribute(): string
+    {
         return Carbon::parse($this->attributes['date_from'])->utc()->format('Y-m-d\TH:i:s.uP');
     }
 
-    public function getDateToAttribute() {
+    public function getDateToAttribute(): string
+    {
         return Carbon::parse($this->attributes['date_to'])->utc()->format('Y-m-d\TH:i:s.uP');
     }
 }

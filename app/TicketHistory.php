@@ -7,17 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
-
 class TicketHistory extends Model
 {
-//    use SoftDeletes;
 
     protected $fillable = ['description', 'id', 'company_user_id', 'ticket_id'];
 
-    public function getCreatedAtAttribute()
+    public function getCreatedAtAttribute(): string
     {
         $locale = Language::find(Auth::user()->language_id)->locale;
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+
         return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }
 
@@ -36,7 +35,8 @@ class TicketHistory extends Model
             if ($descriptionArray['item'] !== null) {
                 $translationGroup = $descriptionArray['translationGroup'];
                 $item = $descriptionArray['item'];
-                $result .= $descriptionArray['should_be_translated'] === true  && isset($translationsArray->$translationGroup->$item) ?
+                $result .= $descriptionArray['should_be_translated'] === true &&
+                isset($translationsArray->$translationGroup->$item) ?
                     $translationsArray->$translationGroup->$item :
                     $item;
             }
@@ -45,5 +45,4 @@ class TicketHistory extends Model
 
         return $this->attributes['description'];
     }
-
 }
