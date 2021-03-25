@@ -18,6 +18,9 @@ class Tag extends Model
                 ->where('tag_id', '=', $tag->id)
                 ->delete();
         });
+    }
 
+    public static function randomHexColor() {
+        return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
     }
 }

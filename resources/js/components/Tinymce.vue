@@ -15,6 +15,7 @@
            bullist numlist outdent indent emoticons| removeformat'
        }"
         api-key="2v20ajrzng0ftoh79hde6tj4xavm9ej7au8gq939q914sb0w"
+        v-bind:value="value"
         @input="handleInput"
     />
 </template>
@@ -25,6 +26,7 @@ import Editor from '@tinymce/tinymce-vue'
 
 export default {
     name: "Tinymce",
+    props: ['value'],
     components: {
         'tinymce': Editor
     },

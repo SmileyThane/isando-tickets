@@ -1398,7 +1398,7 @@
                                         style="background:#F0F0F0;"
                                     >
                             <span>
-                                <strong>{{ langMap.ticket.merged_abbr }} tickets</strong>
+                                <strong>{{ langMap.ticket.merged_abbr_full }} tickets</strong>
                             </span>
 
                                         <template v-slot:actions>
@@ -2163,6 +2163,9 @@ export default {
                     this.mergeTicketForm.child_ticket_id = []
                     this.mergeTicketForm.parent_ticket_id = null
                     this.mergeTicketForm.merge_comment = null
+                    this.snackbarMessage = this.langMap.history_actions.ticket_merged;
+                    this.actionColor = 'alert'
+                    this.snackbar = true;
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
