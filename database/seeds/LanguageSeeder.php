@@ -348,6 +348,7 @@ class LanguageSeeder extends Seeder
                     'ticket' =>
                         [
                             'merged_abbr' => 'Merged',
+                            'merged_abbr_full' => 'Merged tickets',
                             'number' => 'Number',
                             'contact_name' => 'Contact name',
                             'contact_email' => 'Contact E-mail',
@@ -974,6 +975,7 @@ class LanguageSeeder extends Seeder
                         ],
                         'ticket' => [
                             'merged_abbr' => 'ZGF',
+                            'merged_abbr_full' => 'ZGF Tickets',
                             'number' => 'Ticketnummer',
                             'contact_name' => 'Kontaktname',
                             'contact_email' => 'Kontakt E-mail',
