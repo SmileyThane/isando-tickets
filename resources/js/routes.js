@@ -298,6 +298,14 @@ export default [
         component: CustomLicense
     },
     {
+        path: '/custom_license_unassigned',
+        name: 'custom_license_unassigned',
+        meta: {
+            requiresAuth: true,
+        },
+        component: CustomLicenseUnassignedUsers
+    },
+    {
         path: '/custom_license',
         name: 'custom_licenses',
         meta: {
