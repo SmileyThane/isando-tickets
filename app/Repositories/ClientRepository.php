@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\Client;
 use App\ClientCompanyUser;
@@ -49,7 +47,9 @@ class ClientRepository
             $request['page'] = 1;
         }
         $clients = $this->getClients($request);
-        $clients = $clients->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
+        $childClientIds = $this->getRecursiveChildClientIds($clients->get());
+        $clients = $clients->orWhereIn('id', $childClientIds)
+            ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
         return $clients->paginate($request->per_page ?? $clients->count());
     }
 
@@ -76,6 +76,21 @@ class ClientRepository
         return $clients;
     }
 
+    private function getRecursiveChildClientIds($clientsArray): array
+    {
+        $clientIds = [];
+        foreach ($clientsArray as $client) {
+            if ($client->has('clients') && count($client->clients) > 0) {
+                $clientIds[] = $client->id;
+                $childClientIds = $this->getRecursiveChildClientIds($client->clients);
+                $clientIds += array_merge($clientIds, $childClientIds);
+            } else {
+                $clientIds[] = $client->id;
+            }
+        }
+        return $clientIds;
+    }
+
     public function suppliers()
     {
         $employee = Auth::user()->employee;
@@ -83,7 +98,8 @@ class ClientRepository
         $company = Company::find($companyId);
         $suppliers[] = ['name' => $company->name, 'item' => [Company::class => $companyId]];
         if (!$employee->hasRoleId(Role::COMPANY_CLIENT)) {
-            $clients = $company->clients;
+            $childClientIds = $this->getRecursiveChildClientIds($company->clients);
+            $clients = Client::whereIn('id', $childClientIds)->get();
         } else {
             $clientsArray = ClientCompanyUser::where('company_user_id', $employee->id)->first()->clients();
             $clients = $clientsArray->paginate($clientsArray->count());
@@ -98,7 +114,20 @@ class ClientRepository
     public function find($id)
     {
         return Client::where('id', $id)
-            ->with('teams', 'employees.employee.userData.phones.type', 'employees.employee.userData.addresses.type', 'employees.employee.userData.addresses.country', 'employees.employee.userData.emails.type', 'clients', 'products.productData', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails.type')
+            ->with(
+                'teams',
+                'employees.employee.userData.phones.type',
+                'employees.employee.userData.addresses.type',
+                'employees.employee.userData.addresses.country',
+                'employees.employee.userData.emails.type',
+                'clients',
+                'products.productData',
+                'phones.type',
+                'addresses.type',
+                'addresses.country',
+                'socials.type',
+                'emails.type'
+            )
             ->first();
     }
 
@@ -166,9 +195,6 @@ class ClientRepository
         $result = false;
         $client = ClientCompanyUser::find($id);
         if ($client) {
-//            if (ClientCompanyUser::where('company_user_id', $client->company_user_id)->count() === 1) {
-//                (new CompanyUserRepository(new UserRepository(new EmailRepository()),new RoleRepository()))->delete($client->company_user_id);
-//            }
             $client->delete();
             $result = true;
         }
@@ -213,7 +239,7 @@ class ClientRepository
         }
         $clients = $clients->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country'])->get();
 
-        $clientCompanyUsers = $clientCompanyUsers->with(['employee.userData' => function ($query) use ($request) {
+        $clientCompanyUsers = $clientCompanyUsers->with(['employee.userData' => function ($query) {
             $query->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country']);
         }])->get();
 
@@ -226,7 +252,7 @@ class ClientRepository
             }
         });
 
-        $orderFunc = function ($item, $key) use ($orderBy) {
+        $orderFunc = static function ($item) use ($orderBy) {
             if ($item instanceof Client) {
                 switch ($orderBy) {
                     case 'id':
@@ -306,11 +332,12 @@ class ClientRepository
             $client->save();
             $result = true;
         } catch (Throwable $th) {
+            Log::error($th);
         }
         return $result;
     }
 
-    public function getClientsAsRecipientsTree(Request $request)
+    public function getClientsAsRecipientsTree(): array
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
