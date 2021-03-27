@@ -29,14 +29,14 @@ class HomeController extends Controller
      * @return Renderable
      */
 
-    public function index()
+    public function index(): Renderable
     {
         return view('app');
     }
 
-    public function receiveMail(Request $request, $type = 'answer'): void
+    public function receiveMail(): void
     {
-        $this->emailReceiverRepo->receiveMail($type);
+        $this->emailReceiverRepo->receiveMail();
     }
 
     public function getTimeZones()
