@@ -1,24 +1,18 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
-use App\CompanyUser;
 use App\CompanyUserNotification;
 use App\ProductCategory;
 use App\Role;
 use App\Settings;
-use App\UserNotificationStatus;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
 
 class CompanyRepository
 {
@@ -54,15 +48,21 @@ class CompanyRepository
                 }
             );
         }
-        return $id ? $company->with(['employees' => function ($query) {
+        $sortVal = $request->sort_val === 'false' ? 'asc' : 'desc';
+        return $id ? $company->with(['employees' => static function ($query) {
             $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
             if (Auth::user()->employee->hasRoleId([Role::COMPANY_CLIENT, Role::USER])) {
                 $result->where('user_id', Auth::id());
             }
             return $result->get();
-        }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type', 'employees.userData.emails.type', 'clients',
-            'products.productData', 'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type'])
-            ->first() : $company->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $company->count());
+        },
+            'employees.userData',
+            'employees.userData.phones.type', 'employees.userData.addresses.type',
+            'employees.userData.emails.type', 'clients',
+            'products.productData', 'teams', 'phones.type', 'addresses.type',
+            'addresses.country', 'socials.type', 'emails', 'emails.type'])
+            ->first() : $company->orderBy($request->sort_by ?? 'id', $sortVal)
+            ->paginate($request->per_page ?? $company->count());
     }
 
     public function create(Request $request)
@@ -75,22 +75,35 @@ class CompanyRepository
         $company->description = $request->description;
         $company->registration_date = $request->registration_date ?? now();
         $company->is_validated = $request->is_validated;
+        $logoUrl = $this->uploadCompanyLogoProcess($request, $company->id);
+
+        if ($logoUrl) {
+            $company->logo_url = $logoUrl;
+        }
         $company->save();
 
-        if ($request->hasFile('logo')) {
-            if (!Storage::exists('public/logos')) {
-                Storage::makeDirectory('public/logos');
-            }
-
-            $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
-            $company->logo_url = Storage::url($file);
-            $company->save();
-
-        }
         return $company;
     }
 
-    public function update(Request $request, $id)
+    private function uploadCompanyLogoProcess(Request $request, int $companyId): ?string
+    {
+        if ($request->hasFile('logo')) {
+            $logoPath = 'public/logos';
+            if (!Storage::exists($logoPath)) {
+                Storage::makeDirectory($logoPath);
+            }
+
+            $file = $request->file('logo')->storeAs(
+                $logoPath,
+                'company-' . $companyId . '-' . time() . '.' . $request->file('logo')->extension()
+            );
+            return Storage::url($file);
+        }
+
+        return null;
+    }
+
+    public function update(Request $request, $id): Company
     {
         $company = Company::where('id', $id)->with('employees.userData', 'clients', 'teams')->first();
         $company->name = $request->name ?? $company->name;
@@ -101,21 +114,17 @@ class CompanyRepository
         //aliases
         $company->first_alias = $request->first_alias ?? $company->first_alias;
         $company->second_alias = $request->second_alias ?? $company->second_alias;
+        $logoUrl = $this->uploadCompanyLogoProcess($request, $company->id);
 
-        if ($request->hasFile('logo')) {
-            if (!Storage::exists('public/logos')) {
-                Storage::makeDirectory('public/logos');
-            }
-
-            $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
-            $company->logo_url = Storage::url($file);
+        if ($logoUrl) {
+            $company->logo_url = $logoUrl;
         }
-
         $company->save();
+
         return $company;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $result = false;
         $company = Company::find($id);
@@ -138,7 +147,7 @@ class CompanyRepository
         return true;
     }
 
-    public function detachProduct($id)
+    public function detachProduct($id): bool
     {
         $result = false;
         $client = CompanyProduct::find($id);
@@ -149,8 +158,7 @@ class CompanyRepository
         return $result;
     }
 
-
-    public function attachProductCategory($name, $companyId = null, $parentId = null)
+    public function attachProductCategory($name, $companyId = null, $parentId = null): bool
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
 
@@ -163,7 +171,7 @@ class CompanyRepository
         return true;
     }
 
-    public function detachProductCategory($id)
+    public function detachProductCategory($id): bool
     {
         $result = false;
         $category = ProductCategory::find($id);
@@ -174,7 +182,7 @@ class CompanyRepository
         return $result;
     }
 
-    public function getProductCategoriesTree($companyId = null, $showFullNames = false)
+    public function getProductCategoriesTree($companyId = null): array
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
 
@@ -186,14 +194,14 @@ class CompanyRepository
         return $result;
     }
 
-    public function getProductCategoriesFlat($companyId = null)
+    public function getProductCategoriesFlat($companyId = null): array
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
 
         $result = [];
         $company = Company::find($companyId);
         if ($company) {
-            return $result = $company->productCategories()->orderBy('parent_id', 'ASC')->orderBy('name', 'ASC')->get();
+            return $company->productCategories()->orderBy('parent_id', 'ASC')->orderBy('name', 'ASC')->get();
         }
         return $result;
     }
@@ -258,13 +266,14 @@ class CompanyRepository
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         $company = Company::findOrFail($companyId);
+        $logoUrl = $this->uploadCompanyLogoProcess($request, $companyId);
 
-        if (!Storage::exists('public/logos')) {
-            Storage::makeDirectory('public/logos');
+        if ($logoUrl) {
+            $company->logo_url = $logoUrl;
         }
-        $file = $request->file('logo')->storeAs('public/logos', 'company-' . $companyId . '-' . time() . '.' . $request->file('logo')->extension());
-        $company->logo_url = Storage::url($file);
+
         $company->save();
+
         return $company;
     }
 }

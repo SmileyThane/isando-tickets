@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\License;
 use Illuminate\Http\Request;
@@ -28,7 +26,7 @@ class LicenceRepository
         return License::find($id);
     }
 
-    public function create(Request $request)
+    public function create(Request $request): License
     {
         $license = new License();
         $license->plan_id = $request->plan_id;
@@ -38,7 +36,7 @@ class LicenceRepository
         return $license;
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): License
     {
         $license = License::find($id);
         foreach ($request->all() as $param => $value) {
@@ -48,7 +46,7 @@ class LicenceRepository
         return $license;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $result = false;
         $license = License::find($id);

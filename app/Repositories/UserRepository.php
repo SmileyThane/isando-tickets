@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\Address;
 use App\ClientCompanyUser;
@@ -10,17 +8,16 @@ use App\Company;
 use App\CompanyUser;
 use App\CompanyUserNotification;
 use App\Email;
-use App\EmailSignature;
 use App\EmailType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
 use App\Notifications\ResetPasswordEmail;
 use App\Phone;
-use App\Social;
-use App\UserNotificationStatus;
 use App\Role;
 use App\Settings;
+use App\Social;
 use App\User;
+use App\UserNotificationStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -66,10 +63,16 @@ class UserRepository
 
     public function find($id, $with = [])
     {
-        return  User::withTrashed()->where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type', 'emailSignatures', 'notificationStatuses'], $with))->first();
+        return User::withTrashed()->where('id', $id)
+            ->with([
+                'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails',
+                'emails.type', 'emailSignatures', 'notificationStatuses'
+            ])
+            ->with($with)
+            ->first();
     }
 
-    public function create(Request $request)
+    public function create(Request $request): User
     {
         $user = new User();
         $user->name = $request->name;
@@ -107,11 +110,9 @@ class UserRepository
             Phone::where('entity_type', User::class)->where('entity_id', $id)->delete();
             Social::where('entity_type', User::class)->where('entity_id', $id)->delete();
             Email::where('entity_type', User::class)->where('entity_id', $id)->delete();
-//            Settings::where('entity_type', User::class)->where('entity_id', $id)->delete();
-//            EmailSignature::where('entity_type', User::class)->where('entity_id', $id)->delete();
-//            UserNotificationStatus::where('user_id', $id)->delete();
 
-            ClientCompanyUser::whereIn('company_user_id', CompanyUser::where('user_id', $id)->pluck('id')->toArray())->delete();
+            ClientCompanyUser::whereIn('company_user_id', CompanyUser::where('user_id', $id)->pluck('id')->toArray())
+                ->delete();
             CompanyUser::where('user_id', $id)->delete();
 
             $user->delete();
@@ -130,11 +131,8 @@ class UserRepository
             Phone::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
             Social::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
             Email::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
-//            Settings::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
-//            EmailSignature::withTrashed()->where('entity_type', User::class)->where('entity_id', $id)->restore();
-//            UserNotificationStatus::withTrashed()->where('user_id', $id)->restore();
-
-            ClientCompanyUser::withTrashed()->whereIn('company_user_id', CompanyUser::where('user_id', $id)->pluck('id')->toArray())->restore();
+            $companyUserIds = CompanyUser::where('user_id', $id)->pluck('id')->toArray();
+            ClientCompanyUser::withTrashed()->whereIn('company_user_id', $companyUserIds)->restore();
             CompanyUser::withTrashed()->where('user_id', $id)->delete();
 
             $user->restore();
@@ -158,12 +156,20 @@ class UserRepository
                 $email->save();
 
                 $companyId = $user->employee->companyData->id;
-                $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
+                $secondaryType = EmailType::where('entity_type', Company::class)
+                    ->where('entity_id', $companyId)
+                    ->first();
                 if (!$secondaryType) {
                     $companyId = Auth::user()->employee->companyData->id;
-                    $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
+                    $secondaryType = EmailType::where('entity_type', Company::class)
+                        ->where('entity_id', $companyId)
+                        ->first();
                 }
-                Email::where('id', '<>', $email->id)->where('email_type', 1)->where('entity_type', $email->entity_type)->where('entity_id', $email->entity_id)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+                Email::where('id', '<>', $email->id)
+                    ->where('email_type', 1)
+                    ->where('entity_type', $email->entity_type)
+                    ->where('entity_id', $email->entity_id)
+                    ->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
 
                 $this->sendInvite($user->fresh(), Role::COMPANY_CLIENT);
             }
@@ -184,7 +190,15 @@ class UserRepository
                 $user->password = bcrypt($password);
                 $user->save();
             }
-            $user->notify(new RegularInviteEmail($from, $user->title, $user->full_name, $role, $user->email, $password, $user->language->short_code));
+            $user->notify(new RegularInviteEmail(
+                $from,
+                $user->title,
+                $user->full_name,
+                $role,
+                $user->email,
+                $password,
+                $user->language->short_code
+            ));
         } catch (Throwable $throwable) {
             Log::error($throwable);
             //hack for broken notification system
@@ -233,21 +247,25 @@ class UserRepository
     public function resetPassword($email)
     {
         $email = Email::where('entity_type', User::class)->where('email', $email)->first();
-        if (!$email) {
-            return false;
-        }
-
         $user = User::find($email->entity_id);
-        if (!$user) {
+        if (!$email || !$user) {
             return false;
         }
 
-        $from =  $user->employee->companyData->name;
+        $from = $user->employee->companyData->name;
         try {
             $password = Controller::getRandomString();
             $user->password = bcrypt($password);
             $user->save();
-            $user->notify(new ResetPasswordEmail($from, $user->title, $user->full_name, null, $user->email, $password, $user->language->short_code));
+            $user->notify(new ResetPasswordEmail(
+                $from,
+                $user->title,
+                $user->full_name,
+                null,
+                $user->email,
+                $password,
+                $user->language->short_code
+            ));
         } catch (Throwable $throwable) {
             Log::error($throwable);
             //hack for broken notification system
@@ -270,15 +288,16 @@ class UserRepository
         return true;
     }
 
-    public function updateAvatar(Request $request, $userId = null)
+    public function updateAvatar(Request $request)
     {
         $userId = $request->user_id ?? Auth::user()->id;
         $user = User::findOrFail($userId);
-
-        if (!Storage::exists('public/avatars')) {
-            Storage::makeDirectory('public/avatars');
+        $avatarLogo = 'public/avatars';
+        if (!Storage::exists($avatarLogo)) {
+            Storage::makeDirectory($avatarLogo);
         }
-        $file = $request->file('avatar')->storeAs('public/avatars', $userId . '-' . time() . '.' . $request->file('avatar')->extension());
+        $file = $request->file('avatar')
+            ->storeAs($avatarLogo, $userId . '-' . time() . '.' . $request->file('avatar')->extension());
         $user->avatar_url = Storage::url($file);
         $user->save();
         return $user;

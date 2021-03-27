@@ -55,7 +55,7 @@ class ProductRepository
                 case 'id':
                     return $item->id; //'product_code', 'name', 'photo', 'description'
                 case 'product_code':
-                    $item->product_code;
+                    return $item->product_code;
                 case 'name':
                     return mb_strtolower($item->name);
                 case 'photo':
@@ -63,7 +63,7 @@ class ProductRepository
                 case 'description':
                     return $item->mb_strtolower($item->description);
                 case 'full_name':
-                return mb_strtolower($item->full_name);
+                    return mb_strtolower($item->full_name);
             }
         };
 
@@ -81,7 +81,7 @@ class ProductRepository
         return Product::where('id', $id)->with('employees', 'clients.clientData', 'category', 'attachments')->first();
     }
 
-    public function create(Request $request)
+    public function create(Request $request): Product
     {
         $product = new Product();
         $product->name = $request->product_name;
@@ -112,7 +112,7 @@ class ProductRepository
         return $product;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $result = false;
         CompanyProduct::where('product_id', $id)->delete();
@@ -124,7 +124,7 @@ class ProductRepository
         return $result;
     }
 
-    public function attachEmployee(Request $request)
+    public function attachEmployee(Request $request): bool
     {
         ProductCompanyUser::firstOrCreate(
             ['client_id' => $request->product_id,
@@ -133,7 +133,7 @@ class ProductRepository
         return true;
     }
 
-    public function detachEmployee($id)
+    public function detachEmployee($id): bool
     {
         $result = false;
         $client = ProductCompanyUser::find($id);
@@ -144,7 +144,7 @@ class ProductRepository
         return $result;
     }
 
-    public function attachClient(Request $request)
+    public function attachClient(Request $request): bool
     {
         ProductClient::firstOrCreate(
             ['client_id' => $request->client_id,
@@ -153,7 +153,7 @@ class ProductRepository
         return true;
     }
 
-    public function detachClient($id)
+    public function detachClient($id): bool
     {
         $result = false;
         $client = ProductClient::find($id);

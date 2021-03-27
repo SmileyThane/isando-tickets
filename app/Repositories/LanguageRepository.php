@@ -1,14 +1,11 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\CompanyLanguage;
 use App\Language;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
-
 
 class LanguageRepository
 {
@@ -16,7 +13,6 @@ class LanguageRepository
     public function getAllLanguages()
     {
         return Language::select(['id', 'name', 'locale'])->orderBy('id', 'ASC')->get();
-
     }
 
     public function getLanguagesInCompanyContext($companyId = null)
@@ -41,7 +37,7 @@ class LanguageRepository
         ]);
     }
 
-    public function deleteCompanyLanguage($languageId, $companyId = null)
+    public function deleteCompanyLanguage($languageId, $companyId = null): ?bool
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         try {

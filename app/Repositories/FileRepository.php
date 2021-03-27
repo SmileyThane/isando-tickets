@@ -11,8 +11,7 @@ class FileRepository
 
     public function find($id)
     {
-        $file = File::find($id);
-        return $file;
+        return File::find($id);
     }
 
     public function store($file, $model_id, $model_type)

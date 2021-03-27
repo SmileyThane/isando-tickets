@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Repositories;
 
 use App\Client;
@@ -8,6 +7,7 @@ use App\Product;
 use App\Tag;
 use App\Ticket;
 use App\TrackingProject;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -15,11 +15,12 @@ use Illuminate\Support\Facades\Validator;
 class TrackingProjectRepository
 {
 
-    public function genHexColor() {
+    public function genHexColor(): string
+    {
         return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
     }
 
-    public function validate($request, $new = true)
+    public function validate($request)
     {
         $params = [
             'name' => 'required',
@@ -40,21 +41,19 @@ class TrackingProjectRepository
         return true;
     }
 
-    public function all(Request $request)
+    public function all(Request $request): LengthAwarePaginator
     {
-//        $productIds = Auth::user()
-//            ->employee
-//            ->companyData
-//            ->products
-//            ->pluck('product_id');
         $trackingProjects = TrackingProject::with('Product', 'Client');
-//            ->whereIn('product_id', $productIds);
         if ($request->has('search')) {
             $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
         }
         if ($request->has('column') && $request->has('direction')) {
-            if ((string)$request->direction === 'true') $request->direction = 'desc';
-            if ((string)$request->direction === 'false') $request->direction = 'asc';
+            if ((string)$request->direction === 'true') {
+                $request->direction = 'desc';
+            }
+            if ((string)$request->direction === 'false') {
+                $request->direction = 'asc';
+            }
             $trackingProjects->orderBy($request->column, $request->direction);
         }
         return $trackingProjects
@@ -67,7 +66,7 @@ class TrackingProjectRepository
         return TrackingProject::where('id', $id)->with('client', 'product')->first();
     }
 
-    public function create(Request $request)
+    public function create(Request $request): TrackingProject
     {
         $trackingProject = new TrackingProject();
         $trackingProject->name = $request->name;
@@ -121,7 +120,7 @@ class TrackingProjectRepository
         return $trackingProject;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $result = false;
         $trackingProject = TrackingProject::find($id);
@@ -132,7 +131,8 @@ class TrackingProjectRepository
         return $result;
     }
 
-    public function getClients(Request $request) {
+    public function getClients(Request $request)
+    {
         $productIds = Auth::user()
             ->employee
             ->companyData
@@ -142,7 +142,7 @@ class TrackingProjectRepository
             ->whereIn('id', $productIds)
             ->whereHas('clients')
             ->get();
-        $clientIds = $products->map(function($product) {
+        $clientIds = $products->map(function ($product) {
             return $product->clients;
         })->collapse()->pluck('client_id')->all();
         $clients = Client::whereIn('id', $clientIds);
@@ -152,7 +152,8 @@ class TrackingProjectRepository
         return $clients->get();
     }
 
-    public function getProducts(Request $request) {
+    public function getProducts(Request $request)
+    {
         $productIds = Auth::user()
             ->employee
             ->companyData
@@ -165,7 +166,8 @@ class TrackingProjectRepository
         return $products->get();
     }
 
-    public function getTickets(Request $request) {
+    public function getTickets(Request $request)
+    {
         $companyUser = Auth::user()->employee;
         $tickets = Ticket::query();
         $tickets->where(function ($ticketsQuery) use ($companyUser) {
@@ -173,7 +175,7 @@ class TrackingProjectRepository
                 ->orWhere('contact_company_user_id', $companyUser->id);
         });
         if ($request->has('search')) {
-            $tickets->where(function($query) use ($request) {
+            $tickets->where(function ($query) use ($request) {
                 $query->where('name', 'like', '%' . trim($request->search) . '%')
                     ->orWhere('description', 'like', '%' . trim($request->search) . '%');
             });

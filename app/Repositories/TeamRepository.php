@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\Company;
 use App\Team;
@@ -52,7 +50,7 @@ class TeamRepository
         return Team::where('id', $id)->with('employees.employee.userData')->first();
     }
 
-    public function create(Request $request)
+    public function create(Request $request): Team
     {
         $team = new Team();
         $team->name = $request->team_name;
@@ -72,7 +70,7 @@ class TeamRepository
         return $team;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $result = false;
         $team = Team::find($id);
@@ -83,16 +81,16 @@ class TeamRepository
         return $result;
     }
 
-    public function attach(Request $request)
+    public function attach(Request $request): bool
     {
-        $teamCompanyUser = TeamCompanyUser::firstOrCreate(
+        TeamCompanyUser::firstOrCreate(
             ['team_id' => $request->team_id,
                 'company_user_id' => $request->company_user_id]
         );
         return true;
     }
 
-    public function detach(Request $request, $id)
+    public function detach($id): bool
     {
         $result = false;
         $teamCompanyUser = TeamCompanyUser::find($id);
@@ -102,5 +100,4 @@ class TeamRepository
         }
         return $result;
     }
-
 }

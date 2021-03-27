@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\Client;
 use App\ClientCompanyUser;
@@ -34,8 +32,8 @@ class TicketRepository
     public function __construct(
         FileRepository $fileRepository,
         TicketUpdateRepository $ticketUpdateRepository,
-        TicketSelectRepository $ticketSelectRepository)
-    {
+        TicketSelectRepository $ticketSelectRepository
+    ) {
         $this->fileRepo = $fileRepository;
         $this->ticketUpdateRepo = $ticketUpdateRepository;
         $this->ticketSelectRepo = $ticketSelectRepository;
@@ -60,7 +58,6 @@ class TicketRepository
 
     public function all(Request $request)
     {
-//        DB::enableQueryLog();
         $ticketIds = [];
         $companyUser = Auth::user()->employee;
         $tickets = Ticket::query();
@@ -106,8 +103,9 @@ class TicketRepository
                         $filter = TicketFilter::find($request->filter_id);
                         if ($filter) {
                             $filterArray = json_decode($filter->filter_parameters, true);
-                            foreach ($filterArray as $key => $filterItem) {
-                                $value = $filterItem['compare_parameter'] === 'like' ? '%' . $filterItem['value'] . '%' : $filterItem['value'];
+                            foreach ($filterArray as $filterItem) {
+                                $value = $filterItem['compare_parameter'] === 'like' ?
+                                    '%' . $filterItem['value'] . '%' : $filterItem['value'];
                                 $query->where($filterItem['field'], $filterItem['compare_parameter'], $value);
                             }
                         }
@@ -125,8 +123,13 @@ class TicketRepository
             return $ticketResult
                 ->with('creator.userData')
                 ->select(
-                    'id', 'name', 'from_entity_id', 'from_company_user_id',
-                    'from_entity_type', 'created_at', 'updated_at'
+                    'id',
+                    'name',
+                    'from_entity_id',
+                    'from_company_user_id',
+                    'from_entity_type',
+                    'created_at',
+                    'updated_at'
                 )
                 ->paginate(count($ticketIds));
         }
@@ -134,8 +137,12 @@ class TicketRepository
         $ticketResult
             ->with(
                 'assignedPerson.userData',
-                'contact.userData', 'product',
-                'priority', 'status', 'category');
+                'contact.userData',
+                'product',
+                'priority',
+                'status',
+                'category'
+            );
         $orderedField = $request->sort_by ?? 'id';
         $orderedDirection = $request->sort_val === 'false' ? 'asc' : 'desc';
         if ($orderedField === 'from_entity_id') {
@@ -162,7 +169,6 @@ class TicketRepository
         } else {
             $ticketResult = $ticketResult->orderBy($orderedField, $orderedDirection);
         }
-//        dd(DB::getQueryLog());
         return $ticketResult->paginate($request->per_page ?? count($ticketIds));
     }
 
@@ -195,7 +201,6 @@ class TicketRepository
                     $tickets->orWhereIn('to_product_id', $productsIds);
                 }
             }
-
         }
         if (in_array(Role::MANAGER, $roleIds, true)) {
             $teams = TeamCompanyUser::where('company_user_id', $companyUser->id)->get();
@@ -227,10 +232,26 @@ class TicketRepository
     public function find($id)
     {
         return Ticket::where('id', $id)
-            ->with('creator.userData', 'assignedPerson.userData', 'contact.userData', 'product.category', 'team', 'category',
-                'priority', 'status', 'answers.employee.userData', 'answers.attachments', 'mergedChild',
-                'childTickets.answers.employee.userData', 'childTickets.notices.employee.userData', 'childTickets.answers.attachments',
-                'histories.employee.userData', 'notices.employee.userData', 'attachments', 'mergedParent')->first()->makeVisible(['to']);
+            ->with(
+                'creator.userData',
+                'assignedPerson.userData',
+                'contact.userData',
+                'product.category',
+                'team',
+                'category',
+                'priority',
+                'status',
+                'answers.employee.userData',
+                'answers.attachments',
+                'mergedChild',
+                'childTickets.answers.employee.userData',
+                'childTickets.notices.employee.userData',
+                'childTickets.answers.attachments',
+                'histories.employee.userData',
+                'notices.employee.userData',
+                'attachments',
+                'mergedParent'
+            )->first()->makeVisible(['to']);
     }
 
     public function create(Request $request, $employeeId = null): Ticket
@@ -284,7 +305,8 @@ class TicketRepository
                 $request->from_entity_type,
                 $ticket->from_entity_id,
                 $request->from_entity_id,
-                $ticket->id);
+                $ticket->id
+            );
             $ticket->name = $request->name;
             $ticket->from_entity_id = $request->from_entity_id;
             $ticket->from_entity_type = $request->from_entity_type;
@@ -367,8 +389,6 @@ class TicketRepository
             $ticket->save();
             $result = $ticket->is_spam;
         }
-//        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_spam');
-//        $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
         return $result;
     }
 
@@ -424,7 +444,7 @@ class TicketRepository
 
     public function addNotice(Request $request, $id): bool
     {
-        $ticketNotice = new TicketNotice;
+        $ticketNotice = new TicketNotice();
         $ticketNotice->company_user_id = Auth::user()->employee->id;
         $ticketNotice->notice = $request->notice;
         $ticketNotice->ticket_id = $id;
@@ -487,7 +507,7 @@ class TicketRepository
 
     public function addFilter(Request $request): ?TicketFilter
     {
-        try{
+        try {
             $ticketFilter = new TicketFilter();
             $ticketFilter->user_id = Auth::id();
             $ticketFilter->name = $request->name;
@@ -497,7 +517,6 @@ class TicketRepository
         } catch (Throwable $throwable) {
             return null;
         }
-
     }
 
     public function getFilters()
@@ -528,5 +547,4 @@ class TicketRepository
             return null;
         });
     }
-
 }

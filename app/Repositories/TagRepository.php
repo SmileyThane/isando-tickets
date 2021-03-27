@@ -33,12 +33,12 @@ class TagRepository
         return Tag::all();
     }
 
-    public function find(Tag $tag)
+    public function find(Tag $tag): Tag
     {
         return $tag;
     }
 
-    public function create(Request $request)
+    public function create(Request $request): Tag
     {
         $tag = Tag::where('name', '=', $request->name)->first();
         if (!$tag) {
@@ -50,7 +50,7 @@ class TagRepository
         return $tag;
     }
 
-    public function update(Request $request, Tag $tag)
+    public function update(Request $request, Tag $tag): Tag
     {
         if ($request->has('name')) {
             $tag->name = $request->name;
@@ -62,7 +62,7 @@ class TagRepository
         return $tag;
     }
 
-    public function delete(Tag $tag)
+    public function delete(Tag $tag): ?bool
     {
         try {
             $tag->delete();

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\Client;
 use App\ClientCompanyUser;
@@ -98,7 +96,20 @@ class ClientRepository
     public function find($id)
     {
         return Client::where('id', $id)
-            ->with('teams', 'employees.employee.userData.phones.type', 'employees.employee.userData.addresses.type', 'employees.employee.userData.addresses.country', 'employees.employee.userData.emails.type', 'clients', 'products.productData', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails.type')
+            ->with(
+                'teams',
+                'employees.employee.userData.phones.type',
+                'employees.employee.userData.addresses.type',
+                'employees.employee.userData.addresses.country',
+                'employees.employee.userData.emails.type',
+                'clients',
+                'products.productData',
+                'phones.type',
+                'addresses.type',
+                'addresses.country',
+                'socials.type',
+                'emails.type'
+            )
             ->first();
     }
 
@@ -166,9 +177,6 @@ class ClientRepository
         $result = false;
         $client = ClientCompanyUser::find($id);
         if ($client) {
-//            if (ClientCompanyUser::where('company_user_id', $client->company_user_id)->count() === 1) {
-//                (new CompanyUserRepository(new UserRepository(new EmailRepository()),new RoleRepository()))->delete($client->company_user_id);
-//            }
             $client->delete();
             $result = true;
         }
@@ -213,7 +221,7 @@ class ClientRepository
         }
         $clients = $clients->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country'])->get();
 
-        $clientCompanyUsers = $clientCompanyUsers->with(['employee.userData' => function ($query) use ($request) {
+        $clientCompanyUsers = $clientCompanyUsers->with(['employee.userData' => static function ($query) {
             $query->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country']);
         }])->get();
 
@@ -226,7 +234,7 @@ class ClientRepository
             }
         });
 
-        $orderFunc = function ($item, $key) use ($orderBy) {
+        $orderFunc = static function ($item, $key) use ($orderBy) {
             if ($item instanceof Client) {
                 switch ($orderBy) {
                     case 'id':
@@ -249,7 +257,9 @@ class ClientRepository
                         }
                     case 'country':
                         if ($item->addresses->isNotEmpty()) {
-                            return $item->addresses->first()->country ? $item->addresses->first()->country->iso_3166_2 : '';
+                            return $item->addresses->first()->country ?
+                                $item->addresses->first()->country->iso_3166_2 :
+                                '';
                         } else {
                             return '';
                         }
@@ -278,7 +288,9 @@ class ClientRepository
                         }
                     case 'country':
                         if ($item->employee->userData->addresses->isNotEmpty()) {
-                            return $item->employee->userData->addresses->first()->country ? $item->employee->userData->addresses->first()->country->iso_3166_2 : '';
+                            return $item->employee->userData->addresses->first()->country ?
+                                $item->employee->userData->addresses->first()->country->iso_3166_2 :
+                                '';
                         } else {
                             return '';
                         }
@@ -306,11 +318,12 @@ class ClientRepository
             $client->save();
             $result = true;
         } catch (Throwable $th) {
+            Log::error($th);
         }
         return $result;
     }
 
-    public function getClientsAsRecipientsTree(Request $request)
+    public function getClientsAsRecipientsTree(): array
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
@@ -323,7 +336,9 @@ class ClientRepository
             $company = Company::where('id', $companyId);
         }
 
-        $clients = $clients->with('employees.employee.userData.emails.type', 'clients', 'emails.type')->orderBy('name', 'asc')->get();
+        $clients = $clients->with('employees.employee.userData.emails.type', 'clients', 'emails.type')
+            ->orderBy('name', 'asc')
+            ->get();
 
         $company = $company->with(['employees' => function ($query) {
             $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
@@ -346,13 +361,13 @@ class ClientRepository
             ];
             foreach ($client->emails as $email) {
                 if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
-                    array_push($clientData['children'], [
+                    $clientData['children'][] = [
                         'id' => $clientData['id'] . '-0-' . $email->id,
                         'entity_type' => Email::class,
                         'entity_id' => $email->id,
                         'name' => $email->email,
                         'type' => $email->type
-                    ]);
+                    ];
                 }
             }
 
@@ -369,22 +384,22 @@ class ClientRepository
                 ];
                 foreach ($employee->userData->emails as $email) {
                     if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
-                        array_push($employeeData['children'], [
+                        $employeeData['children'][] = [
                             'id' => $employeeData['id'] . '-' . $email->id,
                             'entity_type' => Email::class,
                             'entity_id' => $email->id,
                             'name' => $email->email,
                             'type' => $email->type
-                        ]);
+                        ];
                     }
                 }
                 if ($employeeData['children']) {
-                    array_push($clientData['children'], $employeeData);
+                    $clientData['children'][] = $employeeData;
                 }
             }
 
             if ($clientData['children']) {
-                array_push($results, $clientData);
+                $results[] = $clientData;
             }
         }
         return $results;
@@ -393,11 +408,14 @@ class ClientRepository
     public function updateLogo(Request $request, $clientId)
     {
         $client = Client::findOrFail($clientId);
-
-        if (!Storage::exists('public/logos')) {
-            Storage::makeDirectory('public/logos');
+        $logoPath = 'public/logos';
+        if (!Storage::exists($logoPath)) {
+            Storage::makeDirectory($logoPath);
         }
-        $file = $request->file('logo')->storeAs('public/logos', 'client-' . $clientId . '-' . time() . '.' . $request->file('logo')->extension());
+        $file = $request->file('logo')->storeAs(
+            $logoPath,
+            'client-' . $clientId . '-' . time() . '.' . $request->file('logo')->extension()
+        );
         $client->logo_url = Storage::url($file);
         $client->save();
         return $client;

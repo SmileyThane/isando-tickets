@@ -1,14 +1,11 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\CompanyCountry;
 use App\Country;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
-
 
 class CountryRepository
 {
@@ -40,7 +37,7 @@ class CountryRepository
         ]);
     }
 
-    public function deleteCompanyCountry($countryId, $companyId = null)
+    public function deleteCompanyCountry($countryId, $companyId = null): ?bool
     {
         $companyId = $companyId ?? Auth::user()->employee->companyData->id;
         try {

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\Language;
 use App\TicketCategory;
@@ -146,6 +144,4 @@ class TicketSelectRepository
             ]
         ];
     }
-
-
 }

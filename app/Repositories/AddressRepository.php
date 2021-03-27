@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Repositories;
 
 use App\Address;
@@ -8,7 +7,6 @@ use App\AddressType;
 use App\Company;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
-
 
 class AddressRepository
 {

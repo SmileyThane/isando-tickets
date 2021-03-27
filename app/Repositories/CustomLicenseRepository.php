@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\CustomLicense;
 use App\IxarmaAuthorization;
@@ -11,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class CustomLicenseRepository
@@ -47,12 +46,15 @@ class CustomLicenseRepository
 
     public function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true)
     {
+        $token = '';
         try {
             $guzzle = new Client([
                 'base_uri' => env('IXARMA_BASE_URL'),
             ]);
-            $ixArmaAuthorization = IxarmaAuthorization::where('company_id', Auth::user()->employee->company_id)->first();
-            $token = $ixArmaAuthorization ? $ixArmaAuthorization->auth_token : '';
+            if ($withAuth) {
+                $ixArmaAuth = IxarmaAuthorization::where('company_id', Auth::user()->employee->company_id)->first();
+                $token = $ixArmaAuth ? $ixArmaAuth->auth_token : '';
+            }
             $response = $guzzle->request($method, $uri, [
                 RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token, 'fileType' => ''],
                 'Content-type' => 'application/json',
@@ -95,11 +97,10 @@ class CustomLicenseRepository
 
     public function manageUser($id, $remoteUserId, $isLicensed)
     {
-        $client = \App\Client::find($id);
-        $ixArmaId = $client->customLicense->remote_client_id;
         $activationAction = $isLicensed === 'true' ? 'deactivate' : 'activate';
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$remoteUserId/$activationAction", []);
         $parsedResult = json_decode($result->getContents(), true);
+        Log::info("Client $id was managed");
         if ($parsedResult['status'] === 'SUCCESS') {
             return $parsedResult['body'];
         }
@@ -209,6 +210,4 @@ class CustomLicenseRepository
     {
         return true;
     }
-
-
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Repositories;
 
 use App\Company;
@@ -31,8 +30,11 @@ class EmailRepository
         if ($emailType === 1) {
             $companyId = Auth::user()->employee->companyData->id;
             $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
-            Email::where('id', '<>', $email->id)->where('email_type', 1)->where('entity_type', $entityType)->where('entity_id', $entityId)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
-
+            Email::where('id', '<>', $email->id)
+                ->where('email_type', 1)
+                ->where('entity_type', $entityType)
+                ->where('entity_id', $entityId)
+                ->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
         }
         return $email;
     }
@@ -48,7 +50,11 @@ class EmailRepository
         if ($emailType === 1) {
             $companyId = Auth::user()->employee->companyData->id;
             $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
-            Email::where('id', '<>', $emailId)->where('email_type', 1)->where('entity_type', $entityType)->where('entity_id', $entityId)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
+            Email::where('id', '<>', $emailId)
+                ->where('email_type', 1)
+                ->where('entity_type', $entityType)
+                ->where('entity_id', $entityId)
+                ->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
         }
         return $email;
     }

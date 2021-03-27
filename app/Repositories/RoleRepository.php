@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\ModelHasRole;
 use App\Permission;
@@ -82,5 +80,4 @@ class RoleRepository
         }
         return $result;
     }
-
 }

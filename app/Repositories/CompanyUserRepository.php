@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\Client;
 use App\ClientCompanyUser;
@@ -16,7 +14,6 @@ use App\Settings;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -36,7 +33,6 @@ class CompanyUserRepository
 
     public function all(Request $request)
     {
-//                        DB::enableQueryLog();
         if ($request->sort_by && strpos($request->sort_by, '.')) {
             $request->sort_by = substr($request->sort_by, strrpos($request->sort_by, '.') + 1);
         }
@@ -52,9 +48,18 @@ class CompanyUserRepository
             ])->get()->pluck('id')->toArray();
 
         $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds)->withTrashed($request->with_trashed);
-        $freeCompanyUsers = CompanyUser::where([['company_id', $employee->company_id], ['is_clientable', true]])->withTrashed($request->with_trashed);
 
-        $companyUsers = CompanyUser::whereIn('id', array_merge($clientCompanyUsers->get()->pluck('company_user_id')->toArray(), $freeCompanyUsers->get()->pluck('id')->toArray()))
+        $freeCompanyUsers = CompanyUser::where([
+            ['company_id', $employee->company_id],
+            ['is_clientable', true]
+        ])->withTrashed($request->with_trashed);
+
+        $mergedCompanyUserIds = array_merge(
+            $clientCompanyUsers->get()->pluck('company_user_id')->toArray(),
+            $freeCompanyUsers->get()->pluck('id')->toArray()
+        );
+
+        $companyUsers = CompanyUser::whereIn('id', $mergedCompanyUserIds)
             ->has('userData')
             ->with(['userData' => function ($query) use ($request) {
                 $query->withTrashed($request->with_trashed);
@@ -72,35 +77,43 @@ class CompanyUserRepository
                 }
             );
         }
+
         $companyUsers = $companyUsers->get();
 
-
-        $orderFunc = function ($item, $key) use ($orderBy) {
+        $orderFunc = static function ($item) use ($orderBy) {
+            $switchResult = '';
             switch ($orderBy) {
-                case 'id':
-                    return $item->userData->id;
                 case 'number':
-                    $item->userData->number;
+                    $switchResult = $item->userData->number;
+                    break;
                 case 'name':
-                    return mb_strtolower($item->userData->name);
+                    $switchResult = mb_strtolower($item->userData->name);
+                    break;
                 case 'surname':
-                    return mb_strtolower($item->userData->surname);
+                    $switchResult = mb_strtolower($item->userData->surname);
+                    break;
                 case 'email':
                 case 'emails':
                     $email = $item->userData->contact_email;
-                    return $email ? mb_strtolower($email->email) : '';
+                    $switchResult = $email ? mb_strtolower($email->email) : '';
+                    break;
                 case 'is_active':
-                    return $item->userData->is_active ? 1 : 0;
+                    $switchResult = (int)$item->userData->is_active;
+                    break;
                 case 'status':
-                    return $item->userData->status ? 1 : 0;
+                    $switchResult = (int)$item->userData->status;
+                    break;
                 case 'client':
                 case 'clients':
                     if ($item->assignedToClients) {
-                        return mb_strtolower($item->assignedToClients[0]->clients->name);
-                    } else {
-                        return '';
+                        $switchResult = mb_strtolower($item->assignedToClients[0]->clients->name);
                     }
+                    break;
+                default:
+                    $switchResult = $item->userData->id;
+                    break;
             }
+            return $switchResult;
         };
 
         if ($request->sort_val === 'false') {
@@ -109,7 +122,6 @@ class CompanyUserRepository
             $companyUsers = $companyUsers->sortByDesc($orderFunc);
         }
 
-//                dd(DB::getQueryLog());
         return $companyUsers->paginate($request->per_page ?? $companyUsers->count());
     }
 
@@ -140,7 +152,7 @@ class CompanyUserRepository
         if ($email) {
             $user = User::find($email->entity_id);
         } else {
-            $isValid = $this->userRepo->validate($request, $new = true);
+            $isValid = $this->userRepo->validate($request, true);
             if ($isValid !== true) {
                 return Controller::showResponse(false, $isValid);
             }
@@ -166,11 +178,18 @@ class CompanyUserRepository
                 if ($isNew === true) {
                     try {
                         @$user->notify(
-                            new RegularInviteEmail($companyUser->companyData->title, $companyUser->companyData->name, $user->full_name, $request['role_id'], $request['email'], $request['password'], $user->language->short_code)
+                            new RegularInviteEmail(
+                                $companyUser->companyData->title,
+                                $companyUser->companyData->name,
+                                $user->full_name,
+                                $request['role_id'],
+                                $request['email'],
+                                $request['password'],
+                                $user->language->short_code
+                            )
                         );
                     } catch (Throwable $throwable) {
                         Log::error($throwable);
-                        //hack for broken notification system
                     }
                 }
             }
@@ -208,6 +227,4 @@ class CompanyUserRepository
         $companyUser->save();
         return $companyUser;
     }
-
-
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Repositories;
 
 use App\Plan;
@@ -12,5 +11,4 @@ class PlanRepository
     {
         return Plan::find($id);
     }
-
 }
