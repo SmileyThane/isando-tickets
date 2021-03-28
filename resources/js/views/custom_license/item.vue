@@ -68,7 +68,7 @@
                         <label>Connection links</label>
                         <v-text-field
                             v-for="(id, key) in client.connection_links"
-                            :key="key"
+                            :key="'connection_links'+key"
                             v-model="client.connection_links[key]"
                             :color="themeBgColor"
                             :readonly="!enableToEdit"
@@ -107,7 +107,7 @@
                         <label>Aliases</label>
                         <v-text-field
                             v-for="(id, key) in client.aliases"
-                            :key="key"
+                            :key="'aliases'+key"
                             v-model="client.aliases[key]"
                             :color="themeBgColor"
                             :readonly="!enableToEdit"
@@ -308,13 +308,13 @@
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.main.clients }}</v-toolbar-title>
                     </v-toolbar>
                     <div class="card-body">
-                        <v-expansion-panels multiple v-if="relatedClients">
+                        <v-expansion-panels v-if="relatedClients" multiple>
                             <v-expansion-panel v-for="(item,i) in relatedClients"
-                                               :key="relatedClients+i">
+                                               :key="'relatedClients'+i" @click="processRelatedLicenseUsers(item.id, 'relatedClients'+i)">
                                 <v-expansion-panel-header>{{ item.name }}</v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <div class="col-md-12">
-                                        <v-card class="elevation-12">
+                                        <v-card v-if="relatedLicenseUsers[item.id]" class="elevation-12">
                                             <v-toolbar
                                                 :color="themeBgColor"
                                                 dark
@@ -330,7 +330,7 @@
                                                 <v-data-table
                                                     :footer-props="footerProps"
                                                     :headers="licenseUserHeaders"
-                                                    :items="licenseUsers"
+                                                    :items="relatedLicenseUsers[item.id]"
                                                     :loading-text="langMap.main.loading"
                                                     :options.sync="options"
                                                     class="elevation-1"
@@ -475,10 +475,10 @@
                         <v-list-item
                             v-for="(item, index) in licenseHistory"
                             v-if="item.diff.length > 0"
-                            :key="index"
+                            :key="'licenseHistory'+index"
                         >
                             <v-list-item-title>
-                                {{ item.diff }}
+               processRelatedLicenseUsers                 {{ item.diff }}
                             </v-list-item-title>
                         </v-list-item>
                     </v-list>
@@ -517,6 +517,7 @@
             width="290px"
         >
             <v-date-picker
+                :locale="calendarLocale"
                 v-model="tempExpDate"
                 :color="themeBgColor"
                 scrollable
@@ -587,6 +588,7 @@ export default {
             historyDialog: false,
             licenseHistory: [],
             licenseUsers: [],
+            relatedLicenseUsers: [],
             singleUserForm: {
                 user: '',
                 role_ids: [],
@@ -735,9 +737,14 @@ export default {
 
             });
         },
+        processRelatedLicenseUsers(id, index) {
+                this.getLicenseUsers(id)
+        },
         getLicenseUsers(id = null) {
+            let isRelated = true;
             if (id === null) {
                 id = this.$route.params.id
+                isRelated = false
             }
             axios.get(`/api/custom_license/${id}/users`).then(response => {
                 response = response.data
@@ -760,7 +767,14 @@ export default {
                         }
                         users.push(response.data.entities[key])
                     }
-                    this.licenseUsers = users
+                    if (isRelated) {
+                        this.relatedLicenseUsers[id] = users;
+                        console.log(this.relatedLicenseUsers);
+
+                    } else {
+                        this.licenseUsers = users;
+                        console.log(this.licenseUsers);
+                    }
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
