@@ -314,7 +314,7 @@
                                 <v-expansion-panel-header>{{ item.name }}</v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <div class="col-md-12">
-                                        <v-card v-if="relatedLicenseUsers[item.id]" class="elevation-12">
+                                        <v-card class="elevation-12">
                                             <v-toolbar
                                                 :color="themeBgColor"
                                                 dark
@@ -741,6 +741,7 @@ export default {
                 this.getLicenseUsers(id)
         },
         getLicenseUsers(id = null) {
+            // console.log(id);
             let isRelated = true;
             if (id === null) {
                 id = this.$route.params.id
@@ -769,12 +770,12 @@ export default {
                     }
                     if (isRelated) {
                         this.relatedLicenseUsers[id] = users;
-                        console.log(this.relatedLicenseUsers);
-
+                        // console.log(this.relatedLicenseUsers);
                     } else {
                         this.licenseUsers = users;
-                        console.log(this.licenseUsers);
+                        // console.log(this.licenseUsers);
                     }
+                    this.$forceUpdate();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
