@@ -83,12 +83,26 @@ class ClientRepository
             if ($client->has('clients') && count($client->clients) > 0) {
                 $clientIds[] = $client->id;
                 $childClientIds = $this->getRecursiveChildClientIds($client->clients);
-                $clientIds += array_merge($clientIds, $childClientIds);
+                $clientIds = array_merge($clientIds, $childClientIds);
             } else {
                 $clientIds[] = $client->id;
             }
         }
         return $clientIds;
+    }
+
+    public function relatedClients($request, int $id)
+    {
+        $client = Client::where('id', $id)->with('clients')->first();
+        if ($client->clients) {
+            $childClientIds = $this->getRecursiveChildClientIds($client->clients);
+
+            $clients = Client::whereIn('id', $childClientIds)
+                ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
+
+            return $clients->get();
+        }
+        return [];
     }
 
     public function suppliers()
