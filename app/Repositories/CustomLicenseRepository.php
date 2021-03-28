@@ -87,10 +87,14 @@ class CustomLicenseRepository
     public function getUsers($id)
     {
         $client = \App\Client::find($id);
-        $ixArmaId = $client->customLicense->remote_client_id;
-        $result = $this->makeIxArmaRequest("/api/v1/app/user/company/$ixArmaId/page/0", []);
-        $parsedResult = json_decode($result->getContents(), true);
-        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+        if ($client && $client->customLicense) {
+            $ixArmaId = $client->customLicense->remote_client_id;
+            $result = $this->makeIxArmaRequest("/api/v1/app/user/company/$ixArmaId/page/0", []);
+            $parsedResult = json_decode($result->getContents(), true);
+            return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+
+        }
+        return [];
     }
 
     public function manageUser($id, $remoteUserId, $isLicensed)
