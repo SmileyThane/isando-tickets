@@ -45,6 +45,15 @@ class ClientController extends Controller
         return self::showResponse(false);
     }
 
+    public function relatedClients(Request $request, int $id)
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_READ_ACCESS)) {
+            return self::showResponse(true, $this->clientRepo->relatedClients($request, $id));
+        }
+
+        return self::showResponse(false);
+    }
+
 //  deprecated method
 //    public function get(Request $request)
 //    {
