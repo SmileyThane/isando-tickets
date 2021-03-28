@@ -115,6 +115,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('supplier', 'API\ClientController@suppliers');
         Route::post('client', 'API\ClientController@create');
         Route::get('client/{id}', 'API\ClientController@find');
+        Route::get('client/{id}/related', 'API\ClientController@relatedClients');
         Route::patch('client/{id}', 'API\ClientController@update');
         Route::delete('client/{id}', 'API\ClientController@delete');
         Route::post('client/employee', 'API\ClientController@attach');

@@ -293,7 +293,6 @@ class TrackingReportRepository
                 'customer' => isset($entity->entity) && isset($entity->entity->client) ? $entity->entity->client->name : '',
                 'project' => isset($entity->entity) ? $entity->entity->name : '',
                 'service' => isset($entity->service) ? $entity->service->name : '',
-                'description' => $entity->description,
                 'billable' => $entity->billable ? 'Yes' : 'No',
                 'amount' => $entity->amount
             ];
@@ -302,12 +301,43 @@ class TrackingReportRepository
         return $items;
     }
 
+    function convertSecondsToTimeFormat($value) {
+        $result = [];
+        $M = floor($value /2592000);
+        if (!empty($M)) {
+            $result[] = $M . ' months,';
+        }
+        $d = floor(($value %2592000)/86400);
+        if (!empty($d)) {
+            $result[] = $d . ' days,';
+        }
+        $h = floor(($value %86400)/3600);
+        $m = floor(($value %3600)/60);
+        $result[] = "$h:$m:" . $value % 60;
+
+        return implode(', ', $result);
+    }
+
     public function genPDF($request, $htmlFormat = false) {
 
         // Pre-define some variables
         $reportName = $request->get('name', 'Report');
-        $headers = ['Date', 'Start', 'End', 'Co-worker', 'Customer', 'Project', 'Service', 'Description', 'Billable', 'Amount'];
-        $data = $this->prepareDataForPDF($this->getData($request)['tracks']);
+        $headers = [
+            ['text' => 'Date', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Start', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'End', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Co-workers', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Billable', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Amount', 'style' => 'border:B;border-width:1;font-style:B']
+        ];
+        $tracks = $this->getData($request)['tracks'];
+        $fullTime = collect($tracks)->sum(function ($item) {
+            return Carbon::parse($item->date_from)->diffInSeconds(Carbon::parse($item->date_to));
+        });
+        $data = $this->prepareDataForPDF($tracks);
         $user = Auth::user();
         $period = $request->get('periodText');
         $coworkers = $request->get('coworkers');
@@ -351,7 +381,7 @@ class TrackingReportRepository
         // Total time
         $y += 30;
         $totalTimeTitle = 'Total time';
-        $totalTime = '18:00 h';
+        $totalTime = $this->convertSecondsToTimeFormat($fullTime);
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->SetXY($pdf->GetCenterX($totalTimeTitle, $pdf->GetPageWidth()), $y);
         $pdf->Write(3, $totalTimeTitle);
@@ -370,11 +400,10 @@ class TrackingReportRepository
         $pdf->SetXY($pdf->GetCenterX($createdAt, $pdf->GetPageWidth()), $y);
         $pdf->Write(3, $createdAt);
 
-
         // PAGE 2 and next
         $pdf->AddPage('L', 'A4');
         $pdf->SetFont('Arial', '', 10);
-        $pdf->ImprovedTable($headers, $data);
+        $pdf->EasyTable($headers, $data);
 
         $html = '';
         // GENERATE FILE
@@ -382,9 +411,10 @@ class TrackingReportRepository
         if ($htmlFormat) {
             return $html;
         }
-        File::put($tmpFileName, $pdf->Output());
+        File::put($tmpFileName, $pdf->Output('', '', true));
         return response()->download($tmpFileName)->deleteFileAfterSend();
     }
+
 
     protected function prepareDataForCSV($entities, $items = []) {
         $entities = (array)$entities;

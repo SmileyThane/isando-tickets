@@ -38,7 +38,8 @@ class CustomLicenseController extends Controller
     public function users($id)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_READ_ACCESS)) {
-            return self::showResponse(true, $this->customLicenseRepository->getUsers($id));
+            $result = $this->customLicenseRepository->getUsers($id);
+            return self::showResponse(true, $result);
         }
 
         return self::showResponse(false);

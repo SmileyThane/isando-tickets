@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b5b4555c931817a7f2cb2f50a059a917",
+    "content-hash": "1f6b5e8e04de0762a6a6b12638d5ee6a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2944,6 +2944,42 @@
                 }
             ],
             "time": "2020-12-10T11:35:44+00:00"
+        },
+        {
+            "name": "matthew-elisha/fpdf-easytable",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matthew-elisha/fpdf-easytable.git",
+                "reference": "c080df22caf3734fdd5111d4b0c7c71bd4caad82"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/matthew-elisha/fpdf-easytable/zipball/c080df22caf3734fdd5111d4b0c7c71bd4caad82",
+                "reference": "c080df22caf3734fdd5111d4b0c7c71bd4caad82",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "easyTable.php",
+                    "exfpdf.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Unlicence"
+            ],
+            "description": "FPDF EasyTable",
+            "keywords": [
+                "PHP TO PDF",
+                "fpdf",
+                "pdf"
+            ],
+            "time": "2017-08-17T14:15:13+00:00"
         },
         {
             "name": "maxmind-db/reader",
@@ -9284,7 +9320,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "matthew-elisha/fpdf-easytable": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
