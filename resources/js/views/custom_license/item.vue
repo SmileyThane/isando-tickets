@@ -152,10 +152,12 @@
 
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon class="ma-2" :color="themeFgColor" @click="historyDialog = true">
+                        <v-icon :color="themeFgColor" class="ma-2" @click="historyDialog = true">
                             mdi-history
                         </v-icon>
-                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="enableToEditLicense = true">mdi-pencil</v-icon>
+                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="enableToEditLicense = true">
+                            mdi-pencil
+                        </v-icon>
                         <v-btn v-if="enableToEditLicense" color="white" style="color: black; margin-right: 10px"
                                @click="enableToEditLicense = !enableToEditLicense; getLicense();">
                             {{ langMap.main.cancel }}
@@ -293,6 +295,95 @@
                             </v-card>
                         </v-expand-transition>
                     </v-card-text>
+                </v-card>
+            </div>
+            <div class="col-md-12">
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.main.clients }}</v-toolbar-title>
+                    </v-toolbar>
+                    <div class="card-body">
+                        <v-expansion-panels multiple v-if="relatedClients">
+                            <v-expansion-panel v-for="(item,i) in relatedClients"
+                                               :key="relatedClients+i">
+                                <v-expansion-panel-header>{{ item.name }}</v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <div class="col-md-12">
+                                        <v-card class="elevation-12">
+                                            <v-toolbar
+                                                :color="themeBgColor"
+                                                dark
+                                                dense
+                                                flat
+                                            >
+                                                <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                                        'License Users'
+                                                    }}
+                                                </v-toolbar-title>
+                                            </v-toolbar>
+                                            <div class="card-body">
+                                                <v-data-table
+                                                    :footer-props="footerProps"
+                                                    :headers="licenseUserHeaders"
+                                                    :items="licenseUsers"
+                                                    :loading-text="langMap.main.loading"
+                                                    :options.sync="options"
+                                                    class="elevation-1"
+                                                    hide-default-footer
+                                                    @click:row="showAssignDialog"
+                                                >
+                                                    <template v-slot:item.lastActivationChangeString="{ item }">
+                                                        <v-text-field
+                                                            v-model="item.lastActivationChangeString"
+                                                            :color="themeBgColor"
+                                                            prepend-icon="mdi-calendar"
+                                                            readonly
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <template v-slot:item.trialExpirationAtString="{ item }">
+                                                        <div
+                                                            @click.stop.prevent="selectedUserId = item.id; trialExpirationModal = true"
+                                                        >
+                                                            <v-text-field
+                                                                v-model="item.trialExpirationAtString"
+                                                                :color="themeBgColor"
+                                                                prepend-icon="mdi-calendar"
+                                                                readonly
+
+                                                            ></v-text-field>
+
+                                                        </div>
+                                                    </template>
+                                                    <template v-slot:item.licensed="{ item }">
+                                                        <v-btn
+                                                            outlined
+                                                            @click.stop.prevent="manageLicenseUsers(item.id, item.licensed)"
+                                                        >
+                                                            <v-icon
+                                                                :color="item.licensed ? 'green' :'red'"
+                                                            >
+                                                                {{
+                                                                    item.licensed ? 'mdi-check-circle-outline' : 'mdi-cancel'
+                                                                }}
+                                                            </v-icon>
+                                                        </v-btn>
+                                                    </template>
+                                                    <template>
+
+                                                    </template>
+                                                </v-data-table>
+                                            </div>
+                                        </v-card>
+                                    </div>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </div>
                 </v-card>
             </div>
             <div class="col-md-12">
@@ -565,6 +656,7 @@ export default {
             socialTypes: [],
             emailTypes: [],
             countries: [],
+            relatedClients: [],
             updatePhoneDlg: false,
             updateAddressDlg: false,
             updateSocialDlg: false,
@@ -580,6 +672,7 @@ export default {
         this.getRoles();
         this.getLanguages();
         this.getCountries();
+        this.getRelatedClients();
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -642,8 +735,11 @@ export default {
 
             });
         },
-        getLicenseUsers() {
-            axios.get(`/api/custom_license/${this.$route.params.id}/users`).then(response => {
+        getLicenseUsers(id = null) {
+            if (id === null) {
+                id = this.$route.params.id
+            }
+            axios.get(`/api/custom_license/${id}/users`).then(response => {
                 response = response.data
                 if (response.success === true) {
                     let users = []
@@ -812,6 +908,20 @@ export default {
                     this.totalCustomers = response.data.total
                     this.lastPage = response.data.last_page
                     this.reassignedUserForm.company_id = this.client.id
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        getRelatedClients() {
+            this.loading = this.themeBgColor
+            axios.get(`/api/client/${this.$route.params.id}/related`, {}).then(response => {
+                this.loading = false
+                response = response.data
+                if (response.success === true) {
+                    this.relatedClients = response.data
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
