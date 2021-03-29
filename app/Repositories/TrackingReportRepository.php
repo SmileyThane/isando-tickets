@@ -214,9 +214,9 @@ class TrackingReportRepository
             case 'service':
                 return $tracking->service ? $tracking->service->name : 'None';
             case 'project':
-                return $tracking->project ? $tracking->project->name : 'None';
+                return $tracking->entity ? $tracking->entity->name : 'None';
             case 'client':
-                return $tracking->project && $tracking->project->client ? $tracking->project->client->name : 'None';
+                return $tracking->entity && $tracking->entity->client ? $tracking->entity->client->name : 'None';
             case 'coworker':
                 return $tracking->user->full_name;
         }
