@@ -289,6 +289,7 @@ class TrackingReportRepository
                 'date' => Carbon::parse($entity->date_from)->format('d M Y'),
                 'start' => Carbon::parse($entity->date_from)->format('H:i'),
                 'end' => Carbon::parse($entity->date_to)->format('H:i'),
+                'total' => $this->convertSecondsToTimeFormat(Carbon::parse($entity->date_to)->diffInSeconds($entity->date_from)),
                 'coworker' => $entity->user->full_name,
                 'customer' => isset($entity->entity) && isset($entity->entity->client) ? $entity->entity->client->name : '',
                 'project' => isset($entity->entity) ? $entity->entity->name : '',
@@ -303,17 +304,17 @@ class TrackingReportRepository
 
     function convertSecondsToTimeFormat($value) {
         $result = [];
-        $M = floor($value /2592000);
-        if (!empty($M)) {
-            $result[] = $M . ' months,';
-        }
-        $d = floor(($value %2592000)/86400);
-        if (!empty($d)) {
-            $result[] = $d . ' days,';
-        }
+//        $M = floor($value /2592000);
+//        if (!empty($M)) {
+//            $result[] = $M . ' months,';
+//        }
+//        $d = floor(($value %2592000)/86400);
+//        if (!empty($d)) {
+//            $result[] = $d . ' days,';
+//        }
         $h = floor(($value %86400)/3600);
         $m = floor(($value %3600)/60);
-        $result[] = "$h:$m:" . $value % 60;
+        $result[] = sprintf("%02d", $h) . ":" . sprintf("%02d", $m); // . ":" . sprintf("%02d", $value % 60);
 
         return implode(', ', $result);
     }
@@ -326,6 +327,7 @@ class TrackingReportRepository
             ['text' => 'Date', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Start', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'End', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Total', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Co-workers', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B'],
