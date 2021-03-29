@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 use App\Http\Controllers\API\Tracking\PDF;
 use App\Tracking;
+use App\TrackingProject;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -134,12 +135,12 @@ class TrackingReportRepository
                         $tracking->whereIn('tracking.user_id', $filter['selected']);
                         break;
                     case 'clients&projects':
-                        $tracking->whereHas('Project', function ($query) use ($filter) {
-                            $query->whereIn('tracking.project_id', $filter['selected']);
-                        });
+                        $projectIds = TrackingProject::whereIn('id', $filter['selected'])->pluck('id');
+                        $tracking->whereIn('entity_id', $projectIds)
+                                 ->where('entity_type', TrackingProject::class);
                         break;
                     case 'clients':
-                        $tracking->whereHas('Project.Client', function ($query) use ($filter) {
+                        $tracking->whereHas('Entity.Client', function ($query) use ($filter) {
                             $query->whereIn('clients.id', $filter['selected']);
                         });
                         break;
