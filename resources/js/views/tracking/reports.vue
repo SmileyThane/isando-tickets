@@ -743,14 +743,14 @@ export default {
                 },
                 {
                     icon: "mdi-account-multiple",
-                    text: "Co-workers",
+                    text: "Co-worker",
                     value: "coworker"
                 },
             ],
             availableFilters: [
                 {
                     value: 'coworkers',
-                    text: 'Co-workers',
+                    text: 'Co-worker',
                     store: 'Team/getCoworkers',
                     items: [],
                     selected: [],

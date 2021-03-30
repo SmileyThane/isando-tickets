@@ -239,7 +239,6 @@ class TrackingReportRepository
             case 'project':
                 return $tracking->entity ? $tracking->entity->name : 'None';
             case 'client':
-                dd($tracking);
                 return $tracking && $tracking->entity && $tracking->entity->client ? $tracking->entity->client->name : 'None';
             case 'coworker':
                 return $tracking->user->full_name;
@@ -353,7 +352,7 @@ class TrackingReportRepository
             ['text' => 'Start', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'End', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Total', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Co-workers', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Co-worker', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B'],
