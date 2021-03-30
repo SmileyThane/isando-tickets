@@ -51,8 +51,8 @@ class CustomLicenseRepository
             $guzzle = new Client([
                 'base_uri' => env('IXARMA_BASE_URL'),
             ]);
-            $ixArmaAuthorization = IxarmaAuthorization::where('company_id', Auth::user()->employee->company_id)->first();
-            $token = $ixArmaAuthorization ? $ixArmaAuthorization->auth_token : '';
+            $ixArmaAuth = IxarmaAuthorization::where('company_id', Auth::user()->employee->company_id)->first();
+            $token = $ixArmaAuth ? $ixArmaAuth->auth_token : '';
             $response = $guzzle->request($method, $uri, [
                 RequestOptions::HEADERS => ['Authorization' => 'Bearer ' . $token, 'fileType' => ''],
                 'Content-type' => 'application/json',
