@@ -3,7 +3,9 @@
 
 namespace App\Repositories;
 
+use App\Client;
 use App\Http\Controllers\API\Tracking\PDF;
+use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
 use Carbon\Carbon;
@@ -27,7 +29,7 @@ class TrackingReportRepository
             'group'                 => 'array',
             'group.*.value'         => 'string|in:day,description,week,billability,month',
             'filters'               => 'array',
-            'filters.*.value'       => 'string|in:coworkers,clients&projects,clients,services,billable'
+            'filters.*.value'       => 'string|in:coworkers,projects,clients,services,billable'
         ];
         $validator = Validator::make($request->all(), $params);
         if ($validator->fails()) {
@@ -134,15 +136,37 @@ class TrackingReportRepository
                     case 'coworkers':
                         $tracking->whereIn('tracking.user_id', $filter['selected']);
                         break;
-                    case 'clients&projects':
-                        $projectIds = TrackingProject::whereIn('id', $filter['selected'])->pluck('id');
+                    case 'projects':
+                        $projectIds = TrackingProject::whereIn('id', $filter['selected'])->pluck('id')->all();
                         $tracking->whereIn('entity_id', $projectIds)
                                  ->where('entity_type', TrackingProject::class);
                         break;
                     case 'clients':
-                        $tracking->whereHas('Entity.Client', function ($query) use ($filter) {
-                            $query->whereIn('clients.id', $filter['selected']);
-                        });
+                        $clients = Client::whereIn('id', $filter['selected'])->pluck('id')->all();
+                        $projectIds = TrackingProject::whereIn('client_id', $clients)->pluck('id')->all();
+                        $ticketIds = Ticket::where('to_entity_type', Client::class)
+                            ->whereIn('to_entity_id', $clients)
+                            ->pluck('id')
+                            ->all();
+
+//                        dd($clients, $projectIds, $ticketIds);
+                        $tracking
+                            // project
+                            ->where(function($query) use ($projectIds) {
+                                return $query
+                                    ->where('entity_type', TrackingProject::class)
+                                    ->whereIn('entity_id', $projectIds);
+                            })
+                            // ticket
+                            ->orWhere(function($query) use ($ticketIds) {
+                                return $query
+                                    ->where('entity_type', Ticket::class)
+                                    ->whereIn('entity_id', $ticketIds);
+                            });
+
+//                        $tracking->whereHas('Entity.Client', function ($query) use ($filter) {
+//                            $query->whereIn('clients.id', $filter['selected']);
+//                        });
                         break;
                     case 'services':
                         $tracking->whereHas(
@@ -153,7 +177,6 @@ class TrackingReportRepository
                         );
                         break;
                     case 'billable':
-//                        dd($filter['selected']);
                         $tracking->where('tracking.billable', '=', (int)$filter['selected']);
                         break;
                 }
@@ -216,7 +239,8 @@ class TrackingReportRepository
             case 'project':
                 return $tracking->entity ? $tracking->entity->name : 'None';
             case 'client':
-                return $tracking->entity && $tracking->entity->client ? $tracking->entity->client->name : 'None';
+                dd($tracking);
+                return $tracking && $tracking->entity && $tracking->entity->client ? $tracking->entity->client->name : 'None';
             case 'coworker':
                 return $tracking->user->full_name;
         }

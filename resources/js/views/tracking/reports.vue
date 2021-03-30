@@ -757,7 +757,7 @@ export default {
                     multiply: true
                 },
                 {
-                    value: 'clients&projects',
+                    value: 'projects',
                     text: 'Projects',
                     store: 'Projects/getProjects',
                     items: [],
