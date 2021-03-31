@@ -265,7 +265,7 @@ class TrackingReportRepository
         }
         return array_values($tracks);
     }
-    
+
     protected function prepareDataForPDF($entities) {
         $items = [];
         foreach ($entities as $entity) {
@@ -394,10 +394,14 @@ class TrackingReportRepository
 
         $html = '';
         // GENERATE FILE
-        $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
-        File::put($tmpFileName, $pdf->Output('', '', true));
-        if (File::exists($tmpFileName)) {
-            return response()->download($tmpFileName)->deleteFileAfterSend();
+        try {
+            $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
+            File::put($tmpFileName, $pdf->Output('', '', true));
+            if (File::exists($tmpFileName)) {
+                return response()->download($tmpFileName)->deleteFileAfterSend();
+            }
+        } catch (\Exception $exception) {
+            throw new \Exception($exception->getMessage());
         }
         throw new \Exception('Error generating file');
     }

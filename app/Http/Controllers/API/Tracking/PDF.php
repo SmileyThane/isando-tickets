@@ -196,7 +196,7 @@ class PDF extends FPDF {
 
             $table->endTable();
         } catch (\Exception $exception) {
-            dd($exception->getMessage());
+            $this->Error($exception->getMessage());
         }
     }
 
