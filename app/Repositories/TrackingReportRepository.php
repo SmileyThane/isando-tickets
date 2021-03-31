@@ -279,6 +279,7 @@ class TrackingReportRepository
                 'customer' => isset($entity->entity) && isset($entity->entity->client) ? $entity->entity->client->name : '',
                 'project' => isset($entity->entity) ? $entity->entity->name : '',
                 'service' => isset($entity->service) ? $entity->service->name : '',
+                'description' => isset($entity->description) ? $entity->description : '',
                 'billable' => $entity->billable ? 'Yes' : 'No',
                 'amount' => $entity->amount
             ];
@@ -317,9 +318,12 @@ class TrackingReportRepository
             ['text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Description', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Billable', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Amount', 'style' => 'border:B;border-width:1;font-style:B']
         ];
+        $columnWidths = '%{7,4,4,4,11,17,18,10,15,5,5}';
+
         $tracks = $this->getData($request)['tracks'];
         $fullTime = collect($tracks)->sum(function ($item) {
             return Carbon::parse($item->date_from)->diffInSeconds(Carbon::parse($item->date_to));
@@ -390,7 +394,7 @@ class TrackingReportRepository
         // PAGE 2 and next
         $pdf->AddPage('L', 'A4');
         $pdf->SetFont('Arial', '', 10);
-        $pdf->EasyTable($headers, $data);
+        $pdf->EasyTable($headers, $data, $columnWidths);
 
         $html = '';
         // GENERATE FILE
