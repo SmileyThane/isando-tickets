@@ -308,24 +308,37 @@
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.main.clients }}</v-toolbar-title>
                     </v-toolbar>
                     <div class="card-body">
-                        <v-expansion-panels v-if="relatedClients" multiple>
+                        <v-expansion-panels v-model="relatedClientsPanel" v-if="relatedClients" multiple>
                             <v-expansion-panel v-for="(item,i) in relatedClients"
                                                :key="'relatedClients'+i"
                                                @click="processRelatedLicenseUsers(item.id, 'relatedClients'+i)">
-                                <v-expansion-panel-header disable-icon-rotate>
-                                    {{ item.name }}
+                                <v-expansion-panel-header>
+                                    <span v-if="item.custom_license && item.custom_license.ixarma_object"
+                                          class="text-left"
+                                    >
+                                        <strong>{{ item.name }}:</strong>
+                                        {{ 'Total users: ' + item.custom_license.ixarma_object.limits.usersAllowed }} |
+                                        {{ 'Users available: ' + item.custom_license.ixarma_object.limits.usersLeft }} |
+                                        {{ 'Active: ' + item.custom_license.ixarma_object.limits.active }}
+                                    </span>
+                                    <strong v-else>{{ item.name }}</strong>
                                     <template v-slot:actions>
                                         <v-icon
+                                            v-if="item.custom_license && item.custom_license.ixarma_object"
                                             @click.prevent.stop="showChildClientEditorDialog(item)"
                                         >
-                                            mdi-pencil
+                                            mdi-sync
+                                        </v-icon>
+                                        <v-icon v-else>
+                                            mdi-sync-off
                                         </v-icon>
                                     </template>
                                     <v-spacer>
                                     </v-spacer>
-
                                 </v-expansion-panel-header>
-                                <v-expansion-panel-content>
+                                <v-expansion-panel-content
+                                    v-if="item.custom_license && item.custom_license.ixarma_object"
+                                >
                                     <div class="col-md-12">
                                         <v-card class="elevation-12">
                                             <v-toolbar
@@ -463,7 +476,7 @@
                 </v-card>
             </div>
         </div>
-        <v-dialog v-model="historyDialog" max-width="50%">
+        <v-dialog v-model="historyDialog" max-width="30%">
             <v-card class="elevation-12">
                 <v-toolbar
                     :color="themeBgColor"
@@ -707,9 +720,9 @@
 
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon :color="themeFgColor" class="ma-2" @click="historyDialog = true">
-                            mdi-history
-                        </v-icon>
+                        <!--                        <v-icon :color="themeFgColor" class="ma-2" @click="historyDialog = true">-->
+                        <!--                            mdi-history-->
+                        <!--                        </v-icon>-->
                         <v-icon v-if="!enableToEditChildLicense" :color="themeFgColor"
                                 @click="setEnableToEditLicense(selectedChildClient)">
                             mdi-pencil
@@ -930,6 +943,8 @@ export default {
                 aliases: [""],
             },
             selectedChildClientLicense: {},
+            selectedChildClientLicenseHistory: [],
+            relatedClientsPanel: [],
             client: {
                 is_portal: 1,
                 client_name: '',
@@ -1070,6 +1085,7 @@ export default {
                             .format('YYYY-MM-DD')
                         this.childUsersAssigned =
                             this.selectedChildClientLicense.usersAllowed - this.selectedChildClientLicense.usersLeft;
+                        this.getLicenseHistory(id);
                     } else {
                         this.license = response.data.limits
                         this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
@@ -1088,11 +1104,21 @@ export default {
 
             });
         },
-        getLicenseHistory() {
-            axios.get(`/api/custom_license/${this.$route.params.id}/history`).then(response => {
+        getLicenseHistory(id = null) {
+            let isRelated = true
+            if (id === null) {
+                id = this.$route.params.id
+                isRelated = false
+            }
+            axios.get(`/api/custom_license/${id}/history`).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.licenseHistory = response.data
+                    if (isRelated) {
+                        this.selectedChildClientLicenseHistory = response.data
+                    } else {
+                        this.licenseHistory = response.data
+                    }
+
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1156,6 +1182,7 @@ export default {
                 if (response.success === true) {
                     this.getLicense();
                     this.getLicenseUsers();
+                    this.getRelatedClients()
                     // this.licenseUsers = response.data.entities
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
@@ -1343,6 +1370,8 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.relatedClients = response.data
+                    this.relatedClientsPanel = []
+
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
