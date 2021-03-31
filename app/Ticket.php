@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
+use App\Tracking;
 
 class Ticket extends Model
 {
@@ -208,8 +209,9 @@ class Ticket extends Model
             ->with('childTicketData');
     }
 
-    public function Trackers() {
-        return $this->morphMany('App\Tracking', 'entity');
+    public function trackers()
+    {
+        return $this->morphMany(Tracking::class, 'entity');
     }
 
     public function getMergedParentInfoAttribute(): string
@@ -261,7 +263,7 @@ class Ticket extends Model
         return $this->attributes['number'];
     }
 
-    public function setNumberAttribute():void
+    public function setNumberAttribute(): void
     {
         // Prefix + Delimiter + creation_date + Delimiter + sequence
         try {
