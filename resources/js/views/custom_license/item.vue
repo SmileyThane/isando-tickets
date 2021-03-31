@@ -560,301 +560,302 @@
             <v-card
                 outlined
             >
-                        <v-card class="elevation-12">
-                            <v-toolbar
-                                :color="themeBgColor"
-                                dark
-                                dense
-                                flat
-                            >
-                                <v-toolbar-title :style="`color: ${themeFgColor};`">{{
-                                        langMap.company.info
-                                    }}
-                                </v-toolbar-title>
-                                <v-spacer></v-spacer>
-                                <v-icon v-if="!enableToEditChild" :color="themeFgColor"
-                                        @click="setEnableToEdit(selectedChildClient)">mdi-pencil
-                                </v-icon>
-                                <v-btn v-if="enableToEditChild" color="white" style="color: black; margin-right: 10px"
-                                       @click="setEnableToEdit(selectedChildClient)">
-                                    {{ langMap.main.cancel }}
-                                </v-btn>
-                                <v-btn v-if="enableToEditChild"
-                                       color="white"
-                                       style="color: black;"
-                                       @click="clientUpdate(selectedChildClient)">
-                                    {{ langMap.main.update }}
-                                </v-btn>
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.company.info
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEditChild" :color="themeFgColor"
+                                @click="setEnableToEdit(selectedChildClient)">mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEditChild" color="white" style="color: black; margin-right: 10px"
+                               @click="setEnableToEdit(selectedChildClient)">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn v-if="enableToEditChild"
+                               color="white"
+                               style="color: black;"
+                               @click="clientUpdate(selectedChildClient)">
+                            {{ langMap.main.update }}
+                        </v-btn>
 
-                            </v-toolbar>
-                            <v-card-text>
-                                <v-form>
-                                    <v-text-field
-                                        v-model="selectedChildClient.client_name"
-                                        :color="themeBgColor"
-                                        :disabled="!checkRoleByIds([1,2,3])"
-                                        :label="langMap.company.name"
-                                        :readonly="!enableToEditChild"
-                                        dense
-                                        name="client_name"
-                                        prepend-icon="mdi-rename-box"
-                                        required
-                                        type="text"
-                                    ></v-text-field>
-                                    <v-text-field
-                                        v-model="selectedChildClient.client_description"
-                                        :color="themeBgColor"
-                                        :label="langMap.company.description"
-                                        :readonly="!enableToEditChild"
-                                        dense
-                                        name="client_description"
-                                        prepend-icon="mdi-comment-text"
-                                        required
-                                        type="text"
-                                    ></v-text-field>
-                                </v-form>
-                                <v-checkbox
-                                    v-model="selectedChildClient.is_active"
-                                    :label="this.$store.state.lang.lang_map.customer.active"
-                                    color="success"
-                                    hide-details
-                                ></v-checkbox>
-                                <v-divider></v-divider>
-                                <br>
-                                <label>Connection links</label>
-                                <v-text-field
-                                    v-for="(id, key) in selectedChildClient.connection_links"
-                                    :key="'child_connection_links'+key"
-                                    v-model="selectedChildClient.connection_links[key]"
-                                    :color="themeBgColor"
-                                    :readonly="!enableToEditChild"
-                                    dense
-                                    prepend-icon="mdi-link"
-                                    required
-                                    type="text"
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-form>
+                            <v-text-field
+                                v-model="selectedChildClient.client_name"
+                                :color="themeBgColor"
+                                :disabled="!checkRoleByIds([1,2,3])"
+                                :label="langMap.company.name"
+                                :readonly="!enableToEditChild"
+                                dense
+                                name="client_name"
+                                prepend-icon="mdi-rename-box"
+                                required
+                                type="text"
+                            ></v-text-field>
+                            <v-text-field
+                                v-model="selectedChildClient.client_description"
+                                :color="themeBgColor"
+                                :label="langMap.company.description"
+                                :readonly="!enableToEditChild"
+                                dense
+                                name="client_description"
+                                prepend-icon="mdi-comment-text"
+                                required
+                                type="text"
+                            ></v-text-field>
+                        </v-form>
+                        <v-checkbox
+                            v-model="selectedChildClient.is_active"
+                            :label="this.$store.state.lang.lang_map.customer.active"
+                            color="success"
+                            hide-details
+                        ></v-checkbox>
+                        <v-divider></v-divider>
+                        <br>
+                        <label>Connection links</label>
+                        <v-text-field
+                            v-for="(id, key) in selectedChildClient.connection_links"
+                            :key="'child_connection_links'+key"
+                            v-model="selectedChildClient.connection_links[key]"
+                            :color="themeBgColor"
+                            :readonly="!enableToEditChild"
+                            dense
+                            prepend-icon="mdi-link"
+                            required
+                            type="text"
+                        >
+                            <template v-slot:append>
+                                <v-icon
+                                    color="red"
+                                    @click="removeConnectionLink(key, true)"
                                 >
-                                    <template v-slot:append>
-                                        <v-icon
-                                            color="red"
-                                            @click="removeConnectionLink(key, true)"
-                                        >
-                                            mdi-cancel
-                                        </v-icon>
-                                    </template>
-                                </v-text-field>
-                                <v-spacer>
-                                    &nbsp;
-                                </v-spacer>
-                                <v-btn
-                                    v-if="enableToEditChild"
-                                    color="green"
-                                    outlined
-                                    @click="addConnectionLink(true)"
+                                    mdi-cancel
+                                </v-icon>
+                            </template>
+                        </v-text-field>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-btn
+                            v-if="enableToEditChild"
+                            color="green"
+                            outlined
+                            @click="addConnectionLink(true)"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-divider></v-divider>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <label>Aliases</label>
+                        <v-text-field
+                            v-for="(id, key) in selectedChildClient.aliases"
+                            :key="'aliases'+key"
+                            v-model="selectedChildClient.aliases[key]"
+                            :color="themeBgColor"
+                            :readonly="!enableToEditChild"
+                            dense
+                            prepend-icon="mdi-text"
+                            required
+                            type="text"
+                        >
+                            <template v-slot:append>
+                                <v-icon
+                                    color="red"
+                                    @click="removeAlias(key, true)"
                                 >
-                                    <v-icon>mdi-plus</v-icon>
-                                </v-btn>
-                                <v-spacer>
-                                    &nbsp;
-                                </v-spacer>
-                                <v-divider></v-divider>
-                                <v-spacer>
-                                    &nbsp;
-                                </v-spacer>
-                                <label>Aliases</label>
-                                <v-text-field
-                                    v-for="(id, key) in selectedChildClient.aliases"
-                                    :key="'aliases'+key"
-                                    v-model="selectedChildClient.aliases[key]"
-                                    :color="themeBgColor"
-                                    :readonly="!enableToEditChild"
-                                    dense
-                                    prepend-icon="mdi-text"
-                                    required
-                                    type="text"
-                                >
-                                    <template v-slot:append>
-                                        <v-icon
-                                            color="red"
-                                            @click="removeAlias(key, true)"
-                                        >
-                                            mdi-cancel
-                                        </v-icon>
-                                    </template>
-                                </v-text-field>
-                                <v-spacer>
-                                    &nbsp;
-                                </v-spacer>
-                                <v-btn
-                                    v-if="enableToEditChild"
-                                    color="green"
-                                    outlined
-                                    @click="addAlias(true)"
-                                >
-                                    <v-icon>mdi-plus</v-icon>
-                                </v-btn>
-                            </v-card-text>
-                        </v-card>
+                                    mdi-cancel
+                                </v-icon>
+                            </template>
+                        </v-text-field>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-btn
+                            v-if="enableToEditChild"
+                            color="green"
+                            outlined
+                            @click="addAlias(true)"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                    </v-card-text>
+                </v-card>
                 <br>
-                        <v-card class="elevation-12">
-                            <v-toolbar
-                                :color="themeBgColor"
-                                dark
-                                dense
-                                flat
-                            >
-                                <v-toolbar-title :style="`color: ${themeFgColor};`">
-                                    <span class="text-left">{{ langMap.sidebar.custom_license }} </span>
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            <span class="text-left">{{ langMap.sidebar.custom_license }} </span>
 
-                                </v-toolbar-title>
-                                <v-spacer></v-spacer>
-                                <v-icon :color="themeFgColor" class="ma-2" @click="historyDialog = true">
-                                    mdi-history
-                                </v-icon>
-                                <v-icon v-if="!enableToEditChildLicense" :color="themeFgColor" @click="setEnableToEditLicense(selectedChildClient)">
-                                    mdi-pencil
-                                </v-icon>
-                                <v-btn v-if="enableToEditChildLicense" color="white" style="color: black; margin-right: 10px"
-                                       @click="setEnableToEditLicense(selectedChildClient); getLicense(selectedChildClient.id);">
-                                    {{ langMap.main.cancel }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-icon :color="themeFgColor" class="ma-2" @click="historyDialog = true">
+                            mdi-history
+                        </v-icon>
+                        <v-icon v-if="!enableToEditChildLicense" :color="themeFgColor"
+                                @click="setEnableToEditLicense(selectedChildClient)">
+                            mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEditChildLicense" color="white" style="color: black; margin-right: 10px"
+                               @click="setEnableToEditLicense(selectedChildClient); getLicense(selectedChildClient.id);">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn v-if="enableToEditChildLicense" color="white" style="color: black;"
+                               @click="updateLicense(selectedChildClient.id)">
+                            {{ langMap.main.update }}
+                        </v-btn>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-row>
+                            <v-col md="6">
+                                <v-list
+                                    flat
+                                >
+                                    <v-list-item-group
+                                        :color="themeBgColor"
+                                    >
+                                        <v-list-item
+                                        >
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-account-group</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Total users'"></v-list-item-title>
+                                                <v-list-item-subtitle
+                                                    v-text="selectedChildClientLicense.usersAllowed"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-account-multiple-minus</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'New users'"></v-list-item-title>
+                                                <v-list-item-subtitle
+                                                    v-text="childUsersAssigned"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-account-multiple-plus</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Users available'"></v-list-item-title>
+                                                <v-list-item-subtitle
+                                                    v-text="selectedChildClientLicense.usersLeft"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-license</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Active'"></v-list-item-title>
+                                                <v-list-item-subtitle
+                                                    v-text="selectedChildClientLicense.active"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon> mdi-calendar-weekend-outline</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Trial days'"></v-list-item-title>
+                                                <v-text-field
+                                                    v-if="enableToEditChildLicense"
+                                                    v-model="selectedChildClientLicense.trialPeriodDays"
+                                                    :color="themeBgColor"
+                                                    dense
+                                                    name="trial_days"
+                                                    style="max-width: 50px"
+                                                    type="text"
+                                                ></v-text-field>
+                                                <v-list-item-subtitle v-if="!enableToEditChildLicense"
+                                                                      v-text="selectedChildClientLicense.trialPeriodDays"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </v-list-item-group>
+                                </v-list>
+                            </v-col>
+                            <v-col md="6">
+                                <v-date-picker
+                                    v-model="selectedChildClientLicense.expiresAt"
+                                    :color="themeBgColor"
+                                    :first-day-of-week="1"
+                                    :locale="calendarLocale"
+                                    :readonly="!enableToEditChildLicense"
+                                ></v-date-picker>
+                            </v-col>
+                        </v-row>
+                        <v-expand-transition>
+                            <v-card
+                                v-if="enableToEditChildLicense"
+                                class="mx-auto"
+                                outlined
+                            >
+                                <div class="overline mx-2">
+
+                                </div>
+                                <v-btn
+                                    v-if="enableToEditChildLicense"
+                                    :color="selectedChildClientLicense.active ? 'red' :'green'"
+                                    class="ma-2"
+                                    dark
+                                    @click="selectedChildClientLicense.active = !selectedChildClientLicense.active"
+                                >
+                                    {{ selectedChildClientLicense.active ? 'suspend' : 'renew' }}
                                 </v-btn>
-                                <v-btn v-if="enableToEditChildLicense" color="white" style="color: black;"
-                                       @click="updateLicense(selectedChildClient.id)">
-                                    {{ langMap.main.update }}
-                                </v-btn>
-                            </v-toolbar>
-                            <v-card-text>
+                                <div class="overline mx-2">
+                                    additional licenses
+                                </div>
                                 <v-row>
                                     <v-col md="6">
-                                        <v-list
-                                            flat
-                                        >
-                                            <v-list-item-group
-                                                :color="themeBgColor"
-                                            >
-                                                <v-list-item
-                                                >
-                                                    <v-list-item-icon>
-                                                        <v-icon>mdi-account-group</v-icon>
-                                                    </v-list-item-icon>
-                                                    <v-list-item-content>
-                                                        <v-list-item-title v-text="'Total users'"></v-list-item-title>
-                                                        <v-list-item-subtitle
-                                                            v-text="selectedChildClientLicense.usersAllowed"></v-list-item-subtitle>
-                                                    </v-list-item-content>
-                                                </v-list-item>
-                                                <v-list-item>
-                                                    <v-list-item-icon>
-                                                        <v-icon>mdi-account-multiple-minus</v-icon>
-                                                    </v-list-item-icon>
-                                                    <v-list-item-content>
-                                                        <v-list-item-title v-text="'New users'"></v-list-item-title>
-                                                        <v-list-item-subtitle
-                                                            v-text="childUsersAssigned"></v-list-item-subtitle>
-                                                    </v-list-item-content>
-                                                </v-list-item>
-                                                <v-list-item>
-                                                    <v-list-item-icon>
-                                                        <v-icon>mdi-account-multiple-plus</v-icon>
-                                                    </v-list-item-icon>
-                                                    <v-list-item-content>
-                                                        <v-list-item-title v-text="'Users available'"></v-list-item-title>
-                                                        <v-list-item-subtitle
-                                                            v-text="selectedChildClientLicense.usersLeft"></v-list-item-subtitle>
-                                                    </v-list-item-content>
-                                                </v-list-item>
-                                                <v-list-item>
-                                                    <v-list-item-icon>
-                                                        <v-icon>mdi-license</v-icon>
-                                                    </v-list-item-icon>
-                                                    <v-list-item-content>
-                                                        <v-list-item-title v-text="'Active'"></v-list-item-title>
-                                                        <v-list-item-subtitle
-                                                            v-text="selectedChildClientLicense.active"></v-list-item-subtitle>
-                                                    </v-list-item-content>
-                                                </v-list-item>
-                                                <v-list-item>
-                                                    <v-list-item-icon>
-                                                        <v-icon> mdi-calendar-weekend-outline</v-icon>
-                                                    </v-list-item-icon>
-                                                    <v-list-item-content>
-                                                        <v-list-item-title v-text="'Trial days'"></v-list-item-title>
-                                                        <v-text-field
-                                                            v-if="enableToEditChildLicense"
-                                                            v-model="selectedChildClientLicense.trialPeriodDays"
-                                                            :color="themeBgColor"
-                                                            dense
-                                                            name="trial_days"
-                                                            style="max-width: 50px"
-                                                            type="text"
-                                                        ></v-text-field>
-                                                        <v-list-item-subtitle v-if="!enableToEditChildLicense"
-                                                                              v-text="selectedChildClientLicense.trialPeriodDays"></v-list-item-subtitle>
-                                                    </v-list-item-content>
-                                                </v-list-item>
-                                            </v-list-item-group>
-                                        </v-list>
-                                    </v-col>
-                                    <v-col md="6">
-                                        <v-date-picker
-                                            v-model="selectedChildClientLicense.expiresAt"
-                                            :color="themeBgColor"
-                                            :first-day-of-week="1"
-                                            :locale="calendarLocale"
-                                            :readonly="!enableToEditChildLicense"
-                                        ></v-date-picker>
-                                    </v-col>
-                                </v-row>
-                                <v-expand-transition>
-                                    <v-card
-                                        v-if="enableToEditChildLicense"
-                                        class="mx-auto"
-                                        outlined
-                                    >
-                                        <div class="overline mx-2">
-
-                                        </div>
-                                        <v-btn
-                                            v-if="enableToEditChildLicense"
-                                            :color="selectedChildClientLicense.active ? 'red' :'green'"
-                                            class="ma-2"
-                                            dark
-                                            @click="selectedChildClientLicense.active = !selectedChildClientLicense.active"
-                                        >
-                                            {{ selectedChildClientLicense.active ? 'suspend' : 'renew' }}
-                                        </v-btn>
-                                        <div class="overline mx-2">
-                                            additional licenses
-                                        </div>
-                                        <v-row>
-                                            <v-col md="6">
                                         <span v-for="(licenseValue, index) in licenseValues" :key=" '+' + index">
                                             <v-btn
                                                 class="ma-2"
                                                 color="grey darken-1"
                                                 outlined
-                                                @click="appendLicenseItems(licenseValue)">
+                                                @click="appendLicenseItems(licenseValue, true)">
                                                 {{ '+' + licenseValue }}
                                             </v-btn>
                                             <br v-if="index === (licenseValues.length/2) - 1">
                                         </span>
-                                            </v-col>
-                                            <v-col md="6">
+                                    </v-col>
+                                    <v-col md="6">
                                         <span v-for="(licenseValue, index) in licenseValues" :key="'-' + index">
                                             <v-btn
                                                 class="ma-2"
                                                 color="grey darken-1"
                                                 outlined
-                                                @click="spendLicenseItems(licenseValue)">
+                                                @click="spendLicenseItems(licenseValue, true)">
                                                 {{ '-' + licenseValue }}
                                             </v-btn>
                                             <br v-if="index === (licenseValues.length/2) - 1">
                                         </span>
-                                            </v-col>
-                                        </v-row>
-                                    </v-card>
-                                </v-expand-transition>
-                            </v-card-text>
-                        </v-card>
+                                    </v-col>
+                                </v-row>
+                            </v-card>
+                        </v-expand-transition>
+                    </v-card-text>
+                </v-card>
             </v-card>
         </v-dialog>
     </v-container>
@@ -1164,12 +1165,23 @@ export default {
 
             });
         },
-        appendLicenseItems(count = 0) {
-            this.license.usersAllowed += count
+        appendLicenseItems(count = 0, isRelated = false) {
+            if (isRelated) {
+                this.selectedChildClientLicense.usersAllowed += count
+            } else {
+                this.license.usersAllowed += count
+            }
         },
-        spendLicenseItems(count = 0) {
-            if (this.license.usersAllowed - count > 0) {
-                this.license.usersAllowed -= count
+        spendLicenseItems(count = 0, isRelated = false) {
+            if (isRelated) {
+                this.selectedChildClientLicense.usersAllowed += count
+                if (this.selectedChildClientLicense.usersAllowed - count > 0) {
+                    this.selectedChildClientLicense.usersAllowed -= count
+                }
+            } else {
+                if (this.license.usersAllowed - count > 0) {
+                    this.license.usersAllowed -= count
+                }
             }
         },
         updateLicense(id = null) {
@@ -1298,7 +1310,7 @@ export default {
             // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
-        removeAlias(id) {
+        removeAlias(id, isRelated = false) {
             if (isRelated) {
                 this.selectedChildClient.aliases.splice(id, 1);
             } else {
@@ -1386,37 +1398,35 @@ export default {
             this.trialExpirationModal = false
         },
         setEnableToEdit(selectedClient = null) {
-            let enableToEdit;
             let isRelated = true
             if (selectedClient === null) {
                 selectedClient = this.client
                 isRelated = false
             }
             if (selectedClient.is_portal === 0) {
-                enableToEdit = !enableToEdit
+                if (isRelated) {
+                    this.enableToEditChild = !this.enableToEditChild
+                } else {
+                    this.enableToEdit = !this.enableToEdit
+                }
             }
-            if (isRelated) {
-                this.enableToEditChild = enableToEdit
-            } else {
-                this.enableToEdit = enableToEdit
-            }
+            this.$forceUpdate();
+
         },
         setEnableToEditLicense(selectedClient = null) {
-            let enableToEditLicense;
             let isRelated = true
             if (selectedClient === null) {
                 selectedClient = this.client
                 isRelated = false
             }
             if (selectedClient.is_portal === 0) {
-                enableToEditLicense = !enableToEditLicense
+                if (isRelated) {
+                    this.enableToEditChildLicense = !this.enableToEditChildLicense
+                } else {
+                    this.enableToEditLicense = !this.enableToEditLicense
+                }
             }
-            if (isRelated) {
-                this.enableToEditChildLicense = enableToEditLicense
 
-            } else {
-                this.enableToEditLicense = enableToEditLicense
-            }
         },
         showExpiredAtDialog() {
             if (this.client.is_portal === 0) {
