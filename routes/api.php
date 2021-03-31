@@ -214,6 +214,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
                 // Reports
                 Route::post('/reports', 'ReportController@generate');
+
+                // Settings
+                Route::get('/settings', 'SettingsController@get');
+                Route::patch('/settings', 'SettingsController@update');
             });
 
         // Currencies

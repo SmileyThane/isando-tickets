@@ -127,4 +127,8 @@ class Company extends Model
     {
         return $this->attributes['second_alias'] ?? Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
     }
+
+    public function currency() {
+        return $this->hasOne(Currency::class, 'id', 'currency_id');
+    }
 }

@@ -39,7 +39,6 @@ export default {
         removeCurrency({commit, dispatch, state}, id) {
             return axios.delete(`/api/currencies/${id}`)
                 .then(({ data: { success, data } }) => {
-                    console.log(success, data);
                     if (success) {
                         dispatch('getCurrencyList', { search: state.search });
                     }
@@ -57,7 +56,7 @@ export default {
     },
     getters: {
         getCurrencies(state) {
-            return state.currencies
+            return state.currencies;
         }
     }
 }

@@ -143,6 +143,8 @@ class LanguageSeeder extends Seeder
                                 'currency_deleted_successfully' => 'Currency deleted successfully',
                                 'currency_removal_error' => 'Currency removal error',
                                 'currency_created_successfully' => 'Currency created successfully',
+                                'company' => 'Company',
+                                'currency' => 'Currency'
                             ],
                             'tag_btn' => [
                                 'tags' => 'Tags',
@@ -840,6 +842,8 @@ class LanguageSeeder extends Seeder
                                 'currency_deleted_successfully' => 'Currency deleted successfully',
                                 'currency_removal_error' => 'Currency removal error',
                                 'currency_created_successfully' => 'Currency created successfully',
+                                'company' => 'Company',
+                                'currency' => 'Currency'
                             ],
                             'tag_btn' => [
                                 'tags' => 'Tags',
