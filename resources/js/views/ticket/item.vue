@@ -1398,7 +1398,7 @@
                                         style="background:#F0F0F0;"
                                     >
                             <span>
-                                <strong>{{ langMap.ticket.merged_abbr_full }} tickets</strong>
+                                <strong>{{ langMap.ticket.merged_abbr_full }}</strong>
                             </span>
 
                                         <template v-slot:actions>
