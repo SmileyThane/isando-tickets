@@ -398,7 +398,7 @@ class TrackingReportRepository
             $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
             File::put($tmpFileName, $pdf->Output('', '', true));
             if (File::exists($tmpFileName)) {
-                return response()->download($tmpFileName)->deleteFileAfterSend();
+                return response()->file($tmpFileName)->deleteFileAfterSend();
             }
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage());
