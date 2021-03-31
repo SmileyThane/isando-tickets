@@ -304,7 +304,7 @@ class TrackingReportRepository
         return implode(', ', $result);
     }
 
-    public function genPDF($request, $htmlFormat = false) {
+    public function genPDF($request) {
 
         // Pre-define some variables
         $reportName = $request->get('name', 'Report');
