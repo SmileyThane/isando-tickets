@@ -34,9 +34,11 @@ hr.lighten {
     background-color: #eee;
 }
 
-.ticket--answer img {
-    width: 100%
-}
+/** conflict with tinymce images
+.ticket--answer img {*/
+/*    width: 100%*/
+/*}
+*/
 
 .ps__rail-y {
     z-index: 999999;
