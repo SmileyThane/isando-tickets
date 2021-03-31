@@ -396,7 +396,7 @@ class TrackingReportRepository
         // GENERATE FILE
         try {
             $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
-            File::put($tmpFileName, $pdf->Output('', '', true));
+            File::put($tmpFileName, $pdf->Output('S', $tmpFileName, true));
             if (File::exists($tmpFileName)) {
                 return response()->file($tmpFileName)->deleteFileAfterSend();
             }
