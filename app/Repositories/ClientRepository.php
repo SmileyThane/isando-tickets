@@ -97,7 +97,7 @@ class ClientRepository
         if ($client->clients) {
             $childClientIds = $this->getRecursiveChildClientIds($client->clients);
 
-            $clients = Client::whereIn('id', $childClientIds)
+            $clients = Client::whereIn('id', $childClientIds)->with('customLicense')
                 ->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc');
 
             return $clients->get();
