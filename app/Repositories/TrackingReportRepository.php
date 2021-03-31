@@ -265,46 +265,7 @@ class TrackingReportRepository
         }
         return array_values($tracks);
     }
-
-    protected function prepareForPdf(string $html)
-    {
-
-        $html = preg_replace('/[\000-\031\200-\377]/', '', $html);
-
-        // Workaround for embedded images in TCPDF library
-        $html = preg_replace('/data:image\/.+?;base64,\\s*/si', '@', $html);
-
-        // Workaround for hidding node titles
-        $html = preg_replace('/<h2.+?field\-\-label\-hidden.+?<\/h2>/si', '', $html);
-
-        // Remove scripts
-        $html = preg_replace('/<script.*?>.+?<\/script>/si', '', $html);
-
-        // Remove CDATA
-        $html = preg_replace('/<\!\[CDATA\[(.+?)\]\]>/si', '$1', $html);
-
-        // Remove comments from styles
-        $html = preg_replace_callback('/<style(.+?)>(.+?)<\/style>/si', function ($matches) {
-            return '<style' . $matches[1] . '>' . preg_replace('/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/si', '', $matches[2]) . '</style>';
-        }, $html);
-
-        return $html;
-    }
-
-    protected function getMargins($side = null)
-    {
-        $default = [
-            'left' => config('dompdf.margin_left'),
-            'right' => config('dompdf.margin_right'),
-            'top' => config('dompdf.margin_top'),
-            'bottom' => config('dompdf.margin_bottom'),
-            'header' => config('dompdf.margin_header'),
-            'footer' => config('dompdf.margin_footer'),
-        ];
-
-        return $side ? $default[strtolower($side)] : $default;
-    }
-
+    
     protected function prepareDataForPDF($entities) {
         $items = [];
         foreach ($entities as $entity) {
@@ -434,11 +395,11 @@ class TrackingReportRepository
         $html = '';
         // GENERATE FILE
         $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
-        if ($htmlFormat) {
-            return $html;
-        }
         File::put($tmpFileName, $pdf->Output('', '', true));
-        return response()->download($tmpFileName)->deleteFileAfterSend();
+        if (File::exists($tmpFileName)) {
+            return response()->download($tmpFileName)->deleteFileAfterSend();
+        }
+        throw new \Exception('Error generating file');
     }
 
 

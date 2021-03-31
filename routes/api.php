@@ -216,6 +216,12 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::post('/reports', 'ReportController@generate');
             });
 
+        // Currencies
+        Route::get('/currencies', 'API\CurrencyController@get');
+        Route::post('/currencies', 'API\CurrencyController@create');
+        Route::patch('/currencies/{currency}', 'API\CurrencyController@update');
+        Route::delete('/currencies/{currency}', 'API\CurrencyController@delete');
+
         // Tags
         Route::get('/tags', 'API\TagController@get');
         Route::post('/tags', 'API\TagController@create');

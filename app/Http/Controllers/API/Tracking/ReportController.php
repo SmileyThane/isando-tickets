@@ -14,7 +14,11 @@ class ReportController extends BaseController
         if ($result === false) {
             throw new \Exception('Validation error');
         }
-        return $this->trackingReportRepo->generate($request);
+        try {
+            return $this->trackingReportRepo->generate($request);
+        } catch (\Exception $exception) {
+            return self::showResponse(false, $exception->getMessage());
+        }
     }
 
     public function callAction($method, $request)
