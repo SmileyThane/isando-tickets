@@ -378,7 +378,7 @@
                                 <div class="d-inline-flex">
                                     {{ moment(item.date_from).format('DD MMM YYYY') }} /
                                     <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>None</span> /
-                                    <span v-if="item.project">{{ item.project.name }}</span><span v-else>None</span> /
+                                    <span v-if="item.entity">{{ item.entity.name }}</span><span v-else>None</span> /
                                     <span v-if="item.service">{{ item.service.name }}</span><span v-else>None</span>
                                 </div>
                                 <div class="d-inline-flex" style="opacity: 0.6">
@@ -743,21 +743,21 @@ export default {
                 },
                 {
                     icon: "mdi-account-multiple",
-                    text: "Co-workers",
+                    text: "Co-worker",
                     value: "coworker"
                 },
             ],
             availableFilters: [
                 {
                     value: 'coworkers',
-                    text: 'Co-workers',
+                    text: 'Co-worker',
                     store: 'Team/getCoworkers',
                     items: [],
                     selected: [],
                     multiply: true
                 },
                 {
-                    value: 'clients&projects',
+                    value: 'projects',
                     text: 'Projects',
                     store: 'Projects/getProjects',
                     items: [],

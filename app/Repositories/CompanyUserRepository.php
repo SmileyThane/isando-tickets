@@ -136,6 +136,7 @@ class CompanyUserRepository
         $isClientable = $request['is_clientable'] ?? false;
         $isNew = false;
         $request['password'] = Controller::getRandomString();
+        $request['password_confirmation'] = $request['password'];
         $email = Email::where('entity_type', User::class)->where('email', $request['email'])->first();
         if ($email) {
             $user = User::find($email->entity_id);

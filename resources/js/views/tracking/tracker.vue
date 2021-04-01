@@ -387,6 +387,8 @@
                                     :items="filterTracking(panelDate)"
                                     :items-per-page="15"
                                     class="elevation-1"
+                                    style="width: 100%"
+                                    calculate-widths
                                 >
                                     <template v-slot:item.description="props">
                                         <v-edit-dialog
@@ -631,6 +633,16 @@
 .dateRangePicker input {
     text-align: center;
 }
+.v-data-table-header {
+    /*display: none;*/
+}
+.v-expansion-panel-header {
+    min-height: 40px !important;
+    padding: 14px 24px !important;
+}
+.v-data-table__wrapper tr td.text-start:nth-child(6):after {
+    /*content: "—";*/
+}
 </style>
 
 <script>
@@ -687,8 +699,7 @@ themeBgColor: this.$store.state.themeBgColor,
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.description,
                     align: 'start',
-                    value: 'description',
-                    width: '25%'
+                    value: 'description'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.company,
@@ -713,12 +724,12 @@ themeBgColor: this.$store.state.themeBgColor,
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.start,
                     value: 'date_from',
-                    width: '3%'
+                    width: '2%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.end,
                     value: 'date_to',
-                    width: '3%'
+                    width: '2%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.passed,

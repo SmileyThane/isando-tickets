@@ -3,8 +3,11 @@
 
 namespace App\Repositories;
 
+use App\Client;
 use App\Http\Controllers\API\Tracking\PDF;
+use App\Ticket;
 use App\Tracking;
+use App\TrackingProject;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +29,7 @@ class TrackingReportRepository
             'group'                 => 'array',
             'group.*.value'         => 'string|in:day,description,week,billability,month',
             'filters'               => 'array',
-            'filters.*.value'       => 'string|in:coworkers,clients&projects,clients,services,billable'
+            'filters.*.value'       => 'string|in:coworkers,projects,clients,services,billable'
         ];
         $validator = Validator::make($request->all(), $params);
         if ($validator->fails()) {
@@ -133,15 +136,37 @@ class TrackingReportRepository
                     case 'coworkers':
                         $tracking->whereIn('tracking.user_id', $filter['selected']);
                         break;
-                    case 'clients&projects':
-                        $tracking->whereHas('Project', function ($query) use ($filter) {
-                            $query->whereIn('tracking.project_id', $filter['selected']);
-                        });
+                    case 'projects':
+                        $projectIds = TrackingProject::whereIn('id', $filter['selected'])->pluck('id')->all();
+                        $tracking->whereIn('entity_id', $projectIds)
+                                 ->where('entity_type', TrackingProject::class);
                         break;
                     case 'clients':
-                        $tracking->whereHas('Project.Client', function ($query) use ($filter) {
-                            $query->whereIn('clients.id', $filter['selected']);
-                        });
+                        $clients = Client::whereIn('id', $filter['selected'])->pluck('id')->all();
+                        $projectIds = TrackingProject::whereIn('client_id', $clients)->pluck('id')->all();
+                        $ticketIds = Ticket::where('to_entity_type', Client::class)
+                            ->whereIn('to_entity_id', $clients)
+                            ->pluck('id')
+                            ->all();
+
+//                        dd($clients, $projectIds, $ticketIds);
+                        $tracking
+                            // project
+                            ->where(function($query) use ($projectIds) {
+                                return $query
+                                    ->where('entity_type', TrackingProject::class)
+                                    ->whereIn('entity_id', $projectIds);
+                            })
+                            // ticket
+                            ->orWhere(function($query) use ($ticketIds) {
+                                return $query
+                                    ->where('entity_type', Ticket::class)
+                                    ->whereIn('entity_id', $ticketIds);
+                            });
+
+//                        $tracking->whereHas('Entity.Client', function ($query) use ($filter) {
+//                            $query->whereIn('clients.id', $filter['selected']);
+//                        });
                         break;
                     case 'services':
                         $tracking->whereHas(
@@ -152,7 +177,6 @@ class TrackingReportRepository
                         );
                         break;
                     case 'billable':
-//                        dd($filter['selected']);
                         $tracking->where('tracking.billable', '=', (int)$filter['selected']);
                         break;
                 }
@@ -213,9 +237,9 @@ class TrackingReportRepository
             case 'service':
                 return $tracking->service ? $tracking->service->name : 'None';
             case 'project':
-                return $tracking->project ? $tracking->project->name : 'None';
+                return $tracking->entity ? $tracking->entity->name : 'None';
             case 'client':
-                return $tracking->project && $tracking->project->client ? $tracking->project->client->name : 'None';
+                return $tracking && $tracking->entity && $tracking->entity->client ? $tracking->entity->client->name : 'None';
             case 'coworker':
                 return $tracking->user->full_name;
         }
@@ -242,45 +266,6 @@ class TrackingReportRepository
         return array_values($tracks);
     }
 
-    protected function prepareForPdf(string $html)
-    {
-
-        $html = preg_replace('/[\000-\031\200-\377]/', '', $html);
-
-        // Workaround for embedded images in TCPDF library
-        $html = preg_replace('/data:image\/.+?;base64,\\s*/si', '@', $html);
-
-        // Workaround for hidding node titles
-        $html = preg_replace('/<h2.+?field\-\-label\-hidden.+?<\/h2>/si', '', $html);
-
-        // Remove scripts
-        $html = preg_replace('/<script.*?>.+?<\/script>/si', '', $html);
-
-        // Remove CDATA
-        $html = preg_replace('/<\!\[CDATA\[(.+?)\]\]>/si', '$1', $html);
-
-        // Remove comments from styles
-        $html = preg_replace_callback('/<style(.+?)>(.+?)<\/style>/si', function ($matches) {
-            return '<style' . $matches[1] . '>' . preg_replace('/\/\*[\s\S]*?\*\/|([^:]|^)\/\/.*$/si', '', $matches[2]) . '</style>';
-        }, $html);
-
-        return $html;
-    }
-
-    protected function getMargins($side = null)
-    {
-        $default = [
-            'left' => config('dompdf.margin_left'),
-            'right' => config('dompdf.margin_right'),
-            'top' => config('dompdf.margin_top'),
-            'bottom' => config('dompdf.margin_bottom'),
-            'header' => config('dompdf.margin_header'),
-            'footer' => config('dompdf.margin_footer'),
-        ];
-
-        return $side ? $default[strtolower($side)] : $default;
-    }
-
     protected function prepareDataForPDF($entities) {
         $items = [];
         foreach ($entities as $entity) {
@@ -289,6 +274,7 @@ class TrackingReportRepository
                 'date' => Carbon::parse($entity->date_from)->format('d M Y'),
                 'start' => Carbon::parse($entity->date_from)->format('H:i'),
                 'end' => Carbon::parse($entity->date_to)->format('H:i'),
+                'total' => $this->convertSecondsToTimeFormat(Carbon::parse($entity->date_to)->diffInSeconds($entity->date_from)),
                 'coworker' => $entity->user->full_name,
                 'customer' => isset($entity->entity) && isset($entity->entity->client) ? $entity->entity->client->name : '',
                 'project' => isset($entity->entity) ? $entity->entity->name : '',
@@ -303,22 +289,22 @@ class TrackingReportRepository
 
     function convertSecondsToTimeFormat($value) {
         $result = [];
-        $M = floor($value /2592000);
-        if (!empty($M)) {
-            $result[] = $M . ' months,';
-        }
-        $d = floor(($value %2592000)/86400);
-        if (!empty($d)) {
-            $result[] = $d . ' days,';
-        }
+//        $M = floor($value /2592000);
+//        if (!empty($M)) {
+//            $result[] = $M . ' months,';
+//        }
+//        $d = floor(($value %2592000)/86400);
+//        if (!empty($d)) {
+//            $result[] = $d . ' days,';
+//        }
         $h = floor(($value %86400)/3600);
         $m = floor(($value %3600)/60);
-        $result[] = "$h:$m:" . $value % 60;
+        $result[] = sprintf("%02d", $h) . ":" . sprintf("%02d", $m); // . ":" . sprintf("%02d", $value % 60);
 
         return implode(', ', $result);
     }
 
-    public function genPDF($request, $htmlFormat = false) {
+    public function genPDF($request) {
 
         // Pre-define some variables
         $reportName = $request->get('name', 'Report');
@@ -326,7 +312,8 @@ class TrackingReportRepository
             ['text' => 'Date', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Start', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'End', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Co-workers', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Total', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Co-worker', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B'],
@@ -407,12 +394,16 @@ class TrackingReportRepository
 
         $html = '';
         // GENERATE FILE
-        $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
-        if ($htmlFormat) {
-            return $html;
+        try {
+            $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
+            File::put($tmpFileName, $pdf->Output('S', $tmpFileName, true));
+            if (File::exists($tmpFileName)) {
+                return response()->file($tmpFileName)->deleteFileAfterSend();
+            }
+        } catch (\Exception $exception) {
+            throw new \Exception($exception->getMessage());
         }
-        File::put($tmpFileName, $pdf->Output('', '', true));
-        return response()->download($tmpFileName)->deleteFileAfterSend();
+        throw new \Exception('Error generating file');
     }
 
 

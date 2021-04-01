@@ -180,20 +180,24 @@ class PDF extends FPDF {
     }
 
     public function EasyTable(Array $headers, Array $data) {
-        $table = new \easyTable($this, count($headers), 'border:0;font-size:8');
+        try {
+            $table = new \easyTable($this, '%{7,4,4,4,11,25,25,10,5,5}', 'width:100%;border:0;font-size:8');
 
-        for($i=0;$i<count($headers);$i++)
-            $table->easyCell($headers[$i]['text'], $headers[$i]['style']);
-        $table->printRow(true);
+            for($i=0;$i<count($headers);$i++)
+                $table->easyCell($headers[$i]['text'], $headers[$i]['style']);
+            $table->printRow(true);
 
-        foreach($data as $keyRow => $row) {
-            foreach ($row as $keyColumn => $column) {
-                $table->easyCell($column, 'border:B;border-width:0.1');
+            foreach($data as $keyRow => $row) {
+                foreach ($row as $keyColumn => $column) {
+                    $table->easyCell($column, 'border:B;border-width:0.1');
+                }
+                $table->printRow(false);
             }
-            $table->printRow(false);
-        }
 
-        $table->endTable();
+            $table->endTable();
+        } catch (\Exception $exception) {
+            $this->Error($exception->getMessage());
+        }
     }
 
     public function PageBreak(){
