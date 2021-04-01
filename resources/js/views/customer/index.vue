@@ -311,6 +311,7 @@
                     if (response.success === true) {
                         this.getClients()
                         this.getSuppliers()
+                        this.clientForm = {}
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
