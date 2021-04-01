@@ -15,7 +15,7 @@ class Tracking extends Model
     ];
 
     protected $appends = [
-        'passed', 'service', 'entity', 'passed_decimal'
+        'passed', 'service', 'entity', 'passed_decimal', 'revenue'
     ];
 
     public function User() {
@@ -71,5 +71,12 @@ class Tracking extends Model
 
     public function getDateToAttribute() {
         return Carbon::parse($this->attributes['date_to'])->utc()->format('Y-m-d\TH:i:s.uP');
+    }
+
+    public function getRevenueAttribute() {
+        if (isset($this->entity) && $this->entity_type === TrackingProject::class) {
+            return number_format($this->entity->rate * $this->passed_decimal, 2);
+        }
+        return null;
     }
 }

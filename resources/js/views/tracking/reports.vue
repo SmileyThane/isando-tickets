@@ -409,10 +409,10 @@
                                         {{ helperConvertSecondsToTimeFormat(helperCalculatePassedTime(item.date_from, item.date_to), false) }}
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
-                                        <span v-if="item.entity_type === 'App\\TrackingProject' && item.entity.rate">
+                                        <span v-if="item.revenue">
                                             <span v-if="currentCurrency">
                                                 {{ currentCurrency.slug }}
-                                            </span> {{ (item.passed_decimal * item.entity.rate).toFixed(2) }}
+                                            </span> {{ parseFloat(item.revenue).toFixed(2) }}
                                         </span>
                                     </td>
                                 </tr>
@@ -1130,14 +1130,14 @@ export default {
             if (!entries) return revenue;
             entries.map(i => {
                 if (i.children) {
-                    revenue += this.calculateRevenue(i.children);
+                    revenue += parseFloat(this.calculateRevenue(i.children));
                 } else {
-                    if (i.entity_type === 'App\\TrackingProject' && i.entity.rate) {
-                        revenue += i.passed_decimal * i.entity.rate;
+                    if (i.revenue) {
+                        revenue += parseFloat(i.revenue);
                     }
                 }
             });
-            return revenue;
+            return revenue ? parseFloat(revenue).toFixed(2) : 0;
         },
         createFile(format) {
             if (format === 'csv' && this.report.csv.group && this.report.csv.group.value === 'all_chron') {
@@ -1175,7 +1175,7 @@ export default {
             return this.calculateTime(this.reportData.entities);
         },
         totalRevenue: function() {
-            return this.calculateRevenue(this.reportData.entities).toFixed(2) ?? 0;
+            return this.calculateRevenue(this.reportData.entities);
         },
         doughnutData: function() {
             if (this.reportData.entities && this.reportData.entities.length) {

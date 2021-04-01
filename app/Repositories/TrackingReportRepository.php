@@ -269,6 +269,7 @@ class TrackingReportRepository
 
     protected function prepareDataForPDF($entities) {
         $items = [];
+        $currency = $company = Auth::user()->employee->companyData->currency;
         foreach ($entities as $entity) {
 //            dd($entity->entity);
             $item = [
@@ -282,7 +283,7 @@ class TrackingReportRepository
                 'service' => isset($entity->service) ? $entity->service->name : '',
                 'description' => isset($entity->description) ? $entity->description : '',
                 'billable' => $entity->billable ? 'Yes' : 'No',
-                'amount' => $entity->amount
+                'revenue' => $entity->revenue ? ($currency ? $currency->slug . ' ' : '') . $entity->revenue : ''
             ];
             array_push($items, $item);
         }
@@ -321,9 +322,9 @@ class TrackingReportRepository
             ['text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Description', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Billable', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Amount', 'style' => 'border:B;border-width:1;font-style:B']
+            ['text' => 'Revenue', 'style' => 'border:B;border-width:1;font-style:B']
         ];
-        $columnWidths = '%{7,4,4,4,11,17,18,10,15,5,5}';
+        $columnWidths = '%{7,4,4,4,11,16,17,9,15,5,8}';
 
         $tracks = $this->getData($request)['tracks'];
         $fullTime = collect($tracks)->sum(function ($item) {
@@ -410,7 +411,6 @@ class TrackingReportRepository
         }
         throw new \Exception('Error generating file');
     }
-
 
     protected function prepareDataForCSV($entities, $items = []) {
         $entities = (array)$entities;
