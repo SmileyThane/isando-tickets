@@ -88,7 +88,8 @@
                                                     <template v-slot:selection="{ index, text }">
                                                         <v-chip
                                                             :color="themeBgColor"
-                                                        >
+                                                            class="ma-2"
+                                                            :text-color="themeFgColor"                                                        >
                                                             {{ text }}
                                                         </v-chip>
                                                     </template>
