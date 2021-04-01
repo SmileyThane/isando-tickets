@@ -100,7 +100,7 @@ class ProductRepository
         $product->name = $request->product_name;
         $product->description = $request->product_description;
         $product->photo = $request->product_photo;
-        $product->category_id = $request->category_id ?? null;
+        $product->category_id = $request->category_id ?? $product->category_id;
         $product->product_code = $request->product_code;
         $product->save();
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
