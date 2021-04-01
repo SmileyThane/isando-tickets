@@ -138,7 +138,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('product', 'API\ProductController@get');
         Route::post('product', 'API\ProductController@create');
         Route::get('product/{id}', 'API\ProductController@find');
-        Route::patch('product/{id}', 'API\ProductController@update');
+        Route::post('product/{id}', 'API\ProductController@update');
         Route::delete('product/{id}', 'API\ProductController@delete');
         Route::post('product/employee', 'API\ProductController@attachEmployee');
         Route::delete('product/employee/{id}', 'API\ProductController@detachEmployee');
