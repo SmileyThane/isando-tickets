@@ -844,7 +844,7 @@ export default {
                                 return data.labels[tooltipItem[0].index] ?? 'Title';
                             },
                             label: function(tooltipItem, data) {
-                                return self.helperConvertSecondsToTimeFormat(data.datasets[0].data[tooltipItem.index]);
+                                return self.helperConvertSecondsToTimeFormat(data.datasets[0].data[tooltipItem.index] * 60 * 60);
                             }
                         }
                     }
@@ -1105,9 +1105,9 @@ export default {
             const m = Math.floor((seconds - h * 60 * 60) / 60);
             const s = seconds - (m * 60) - (h * 60 * 60);
             if (withSeconds) {
-                return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
+                return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}:${this.helperAddZeros(s.toFixed(0),2)}`;
             }
-            return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}`;
+            return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}`;
         },
         helperCalculatePassedTime(date_from, date_to) {
             if (moment(date_from) > moment(date_to)) {
@@ -1192,9 +1192,9 @@ export default {
                         labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
-                        values.push(this.calculateTime(i.children));
+                        values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
                     } else {
-                        values.push(this.helperCalculatePassedTime(i.date_from, i.date_to));
+                        values.push((this.helperCalculatePassedTime(i.date_from, i.date_to) / 60 / 60).toFixed(2));
                     }
                 });
                 let colors = [];
@@ -1226,9 +1226,13 @@ export default {
                         labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
-                        values.push(this.calculateTime(i.children));
+                        values.push(
+                            (this.calculateTime(i.children) / 60 / 60).toFixed(2)
+                        );
                     } else {
-                        values.push(this.helperCalculatePassedTime(i.date_from, i.date_to));
+                        values.push(
+                            (this.helperCalculatePassedTime(i.date_from, i.date_to) / 60 / 60).toFixed(2)
+                        );
                     }
                 });
                 const c = Helper.genRandomColor();
