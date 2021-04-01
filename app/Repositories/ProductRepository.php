@@ -83,7 +83,20 @@ class ProductRepository
 
     public function create(Request $request)
     {
-        $product = new Product();
+        $product = $this->save(new Product(), $request);
+        $request->product_id = $product->id;
+        $request->company_id = Auth::user()->employee->company_id;
+        (new CompanyRepository())->attachProduct($request);
+        return $product;
+    }
+
+    public function update(Request $request, $id)
+    {
+        return $this->save(Product::find($id), $request);
+    }
+
+    private function save($product, $request)
+    {
         $product->name = $request->product_name;
         $product->description = $request->product_description;
         $product->photo = $request->product_photo;
@@ -94,21 +107,6 @@ class ProductRepository
         foreach ($files as $file) {
             (new FileRepository())->store($file, $product->id, Product::class);
         }
-        $request->product_id = $product->id;
-        $request->company_id = Auth::user()->employee->company_id;
-        (new CompanyRepository())->attachProduct($request);
-        return $product;
-    }
-
-    public function update(Request $request, $id)
-    {
-        $product = Product::find($id);
-        $product->name = $request->product_name;
-        $product->description = $request->product_description;
-        $product->photo = $request->product_photo;
-        $product->category_id = $request->category_id ?? null;
-        $product->product_code = $request->product_code;
-        $product->save();
         return $product;
     }
 
