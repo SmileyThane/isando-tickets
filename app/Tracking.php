@@ -25,7 +25,9 @@ class Tracking extends Model
     public function getEntityAttribute() {
         if (isset($this->entity_type)) {
             if ($this->entity_type === TrackingProject::class) {
-                return $this->entity_type::with('Client')->with('Product')->find($this->entity_id);
+                return $this->entity_type::with('Client')
+                    ->with('Product')
+                    ->find($this->entity_id);
             }
             if ($this->entity_type === Ticket::class) {
                 return $this->entity_type::with('assignedPerson')->find($this->entity_id);
