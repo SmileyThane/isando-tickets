@@ -19,10 +19,10 @@
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="setEnableToEdit">mdi-pencil
                         </v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
-                               @click="enableToEdit = false">
+                               @click="setEnableToEdit">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="clientUpdate">
@@ -155,11 +155,11 @@
                         <v-icon :color="themeFgColor" class="ma-2" @click="historyDialog = true">
                             mdi-history
                         </v-icon>
-                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="enableToEditLicense = true">
+                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="setEnableToEditLicense">
                             mdi-pencil
                         </v-icon>
                         <v-btn v-if="enableToEditLicense" color="white" style="color: black; margin-right: 10px"
-                               @click="enableToEditLicense = !enableToEditLicense; getLicense();">
+                               @click="setEnableToEditLicense(); getLicense();">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEditLicense" color="white" style="color: black;" @click="updateLicense()">
@@ -308,11 +308,37 @@
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.main.clients }}</v-toolbar-title>
                     </v-toolbar>
                     <div class="card-body">
-                        <v-expansion-panels v-if="relatedClients" multiple>
+                        <v-expansion-panels v-model="relatedClientsPanel" v-if="relatedClients" multiple>
                             <v-expansion-panel v-for="(item,i) in relatedClients"
-                                               :key="'relatedClients'+i" @click="processRelatedLicenseUsers(item.id, 'relatedClients'+i)">
-                                <v-expansion-panel-header>{{ item.name }}</v-expansion-panel-header>
-                                <v-expansion-panel-content>
+                                               :key="'relatedClients'+i"
+                                               @click="processRelatedLicenseUsers(item.id, 'relatedClients'+i)">
+                                <v-expansion-panel-header>
+                                    <span v-if="item.custom_license && item.custom_license.ixarma_object"
+                                          class="text-left"
+                                    >
+                                        <strong>{{ item.name }}:</strong>
+                                        {{ 'Total users: ' + item.custom_license.ixarma_object.limits.usersAllowed }} |
+                                        {{ 'Users available: ' + item.custom_license.ixarma_object.limits.usersLeft }} |
+                                        {{ 'Active: ' + item.custom_license.ixarma_object.limits.active }}
+                                    </span>
+                                    <strong v-else>{{ item.name }}</strong>
+                                    <template v-slot:actions>
+                                        <v-icon
+                                            v-if="item.custom_license && item.custom_license.ixarma_object"
+                                            @click.prevent.stop="showChildClientEditorDialog(item)"
+                                        >
+                                            mdi-sync
+                                        </v-icon>
+                                        <v-icon v-else>
+                                            mdi-sync-off
+                                        </v-icon>
+                                    </template>
+                                    <v-spacer>
+                                    </v-spacer>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content
+                                    v-if="item.custom_license && item.custom_license.ixarma_object"
+                                >
                                     <div class="col-md-12">
                                         <v-card class="elevation-12">
                                             <v-toolbar
@@ -417,7 +443,7 @@
                             </template>
                             <template v-slot:item.trialExpirationAtString="{ item }">
                                 <div
-                                    @click.stop.prevent="selectedUserId = item.id; trialExpirationModal = true"
+                                    @click.stop.prevent="showExpiredAtDialog"
                                 >
                                     <v-text-field
                                         v-model="item.trialExpirationAtString"
@@ -431,6 +457,7 @@
                             </template>
                             <template v-slot:item.licensed="{ item }">
                                 <v-btn
+                                    :disabled="client.is_portal === 1"
                                     outlined
                                     @click.stop.prevent="manageLicenseUsers(item.id, item.licensed)"
                                 >
@@ -449,7 +476,7 @@
                 </v-card>
             </div>
         </div>
-        <v-dialog v-model="historyDialog" max-width="50%">
+        <v-dialog v-model="historyDialog" max-width="30%">
             <v-card class="elevation-12">
                 <v-toolbar
                     :color="themeBgColor"
@@ -478,7 +505,7 @@
                             :key="'licenseHistory'+index"
                         >
                             <v-list-item-title>
-               processRelatedLicenseUsers                 {{ item.diff }}
+                                {{ item.diff }}
                             </v-list-item-title>
                         </v-list-item>
                     </v-list>
@@ -517,9 +544,9 @@
             width="290px"
         >
             <v-date-picker
-                :locale="calendarLocale"
                 v-model="tempExpDate"
                 :color="themeBgColor"
+                :locale="calendarLocale"
                 scrollable
             >
                 <v-spacer></v-spacer>
@@ -538,6 +565,311 @@
                     OK
                 </v-btn>
             </v-date-picker>
+        </v-dialog>
+        <v-dialog
+            v-model="childClientEditorDialog"
+            width="50%"
+        >
+            <v-card
+                outlined
+            >
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{
+                                langMap.company.info
+                            }}
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEditChild" :color="themeFgColor"
+                                @click="setEnableToEdit(selectedChildClient)">mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEditChild" color="white" style="color: black; margin-right: 10px"
+                               @click="setEnableToEdit(selectedChildClient)">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn v-if="enableToEditChild"
+                               color="white"
+                               style="color: black;"
+                               @click="clientUpdate(selectedChildClient)">
+                            {{ langMap.main.update }}
+                        </v-btn>
+
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-form>
+                            <v-text-field
+                                v-model="selectedChildClient.client_name"
+                                :color="themeBgColor"
+                                :disabled="!checkRoleByIds([1,2,3])"
+                                :label="langMap.company.name"
+                                :readonly="!enableToEditChild"
+                                dense
+                                name="client_name"
+                                prepend-icon="mdi-rename-box"
+                                required
+                                type="text"
+                            ></v-text-field>
+                            <v-text-field
+                                v-model="selectedChildClient.client_description"
+                                :color="themeBgColor"
+                                :label="langMap.company.description"
+                                :readonly="!enableToEditChild"
+                                dense
+                                name="client_description"
+                                prepend-icon="mdi-comment-text"
+                                required
+                                type="text"
+                            ></v-text-field>
+                        </v-form>
+                        <v-checkbox
+                            v-model="selectedChildClient.is_active"
+                            :label="this.$store.state.lang.lang_map.customer.active"
+                            color="success"
+                            hide-details
+                        ></v-checkbox>
+                        <v-divider></v-divider>
+                        <br>
+                        <label>Connection links</label>
+                        <v-text-field
+                            v-for="(id, key) in selectedChildClient.connection_links"
+                            :key="'child_connection_links'+key"
+                            v-model="selectedChildClient.connection_links[key]"
+                            :color="themeBgColor"
+                            :readonly="!enableToEditChild"
+                            dense
+                            prepend-icon="mdi-link"
+                            required
+                            type="text"
+                        >
+                            <template v-slot:append>
+                                <v-icon
+                                    color="red"
+                                    @click="removeConnectionLink(key, true)"
+                                >
+                                    mdi-cancel
+                                </v-icon>
+                            </template>
+                        </v-text-field>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-btn
+                            v-if="enableToEditChild"
+                            color="green"
+                            outlined
+                            @click="addConnectionLink(true)"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-divider></v-divider>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <label>Aliases</label>
+                        <v-text-field
+                            v-for="(id, key) in selectedChildClient.aliases"
+                            :key="'aliases'+key"
+                            v-model="selectedChildClient.aliases[key]"
+                            :color="themeBgColor"
+                            :readonly="!enableToEditChild"
+                            dense
+                            prepend-icon="mdi-text"
+                            required
+                            type="text"
+                        >
+                            <template v-slot:append>
+                                <v-icon
+                                    color="red"
+                                    @click="removeAlias(key, true)"
+                                >
+                                    mdi-cancel
+                                </v-icon>
+                            </template>
+                        </v-text-field>
+                        <v-spacer>
+                            &nbsp;
+                        </v-spacer>
+                        <v-btn
+                            v-if="enableToEditChild"
+                            color="green"
+                            outlined
+                            @click="addAlias(true)"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                    </v-card-text>
+                </v-card>
+                <br>
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">
+                            <span class="text-left">{{ langMap.sidebar.custom_license }} </span>
+
+                        </v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <!--                        <v-icon :color="themeFgColor" class="ma-2" @click="historyDialog = true">-->
+                        <!--                            mdi-history-->
+                        <!--                        </v-icon>-->
+                        <v-icon v-if="!enableToEditChildLicense" :color="themeFgColor"
+                                @click="setEnableToEditLicense(selectedChildClient)">
+                            mdi-pencil
+                        </v-icon>
+                        <v-btn v-if="enableToEditChildLicense" color="white" style="color: black; margin-right: 10px"
+                               @click="setEnableToEditLicense(selectedChildClient); getLicense(selectedChildClient.id);">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn v-if="enableToEditChildLicense" color="white" style="color: black;"
+                               @click="updateLicense(selectedChildClient.id)">
+                            {{ langMap.main.update }}
+                        </v-btn>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-row>
+                            <v-col md="6">
+                                <v-list
+                                    flat
+                                >
+                                    <v-list-item-group
+                                        :color="themeBgColor"
+                                    >
+                                        <v-list-item
+                                        >
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-account-group</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Total users'"></v-list-item-title>
+                                                <v-list-item-subtitle
+                                                    v-text="selectedChildClientLicense.usersAllowed"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-account-multiple-minus</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'New users'"></v-list-item-title>
+                                                <v-list-item-subtitle
+                                                    v-text="childUsersAssigned"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-account-multiple-plus</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Users available'"></v-list-item-title>
+                                                <v-list-item-subtitle
+                                                    v-text="selectedChildClientLicense.usersLeft"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon>mdi-license</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Active'"></v-list-item-title>
+                                                <v-list-item-subtitle
+                                                    v-text="selectedChildClientLicense.active"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-list-item>
+                                            <v-list-item-icon>
+                                                <v-icon> mdi-calendar-weekend-outline</v-icon>
+                                            </v-list-item-icon>
+                                            <v-list-item-content>
+                                                <v-list-item-title v-text="'Trial days'"></v-list-item-title>
+                                                <v-text-field
+                                                    v-if="enableToEditChildLicense"
+                                                    v-model="selectedChildClientLicense.trialPeriodDays"
+                                                    :color="themeBgColor"
+                                                    dense
+                                                    name="trial_days"
+                                                    style="max-width: 50px"
+                                                    type="text"
+                                                ></v-text-field>
+                                                <v-list-item-subtitle v-if="!enableToEditChildLicense"
+                                                                      v-text="selectedChildClientLicense.trialPeriodDays"></v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                    </v-list-item-group>
+                                </v-list>
+                            </v-col>
+                            <v-col md="6">
+                                <v-date-picker
+                                    v-model="selectedChildClientLicense.expiresAt"
+                                    :color="themeBgColor"
+                                    :first-day-of-week="1"
+                                    :locale="calendarLocale"
+                                    :readonly="!enableToEditChildLicense"
+                                ></v-date-picker>
+                            </v-col>
+                        </v-row>
+                        <v-expand-transition>
+                            <v-card
+                                v-if="enableToEditChildLicense"
+                                class="mx-auto"
+                                outlined
+                            >
+                                <div class="overline mx-2">
+
+                                </div>
+                                <v-btn
+                                    v-if="enableToEditChildLicense"
+                                    :color="selectedChildClientLicense.active ? 'red' :'green'"
+                                    class="ma-2"
+                                    dark
+                                    @click="selectedChildClientLicense.active = !selectedChildClientLicense.active"
+                                >
+                                    {{ selectedChildClientLicense.active ? 'suspend' : 'renew' }}
+                                </v-btn>
+                                <div class="overline mx-2">
+                                    additional licenses
+                                </div>
+                                <v-row>
+                                    <v-col md="6">
+                                        <span v-for="(licenseValue, index) in licenseValues" :key=" '+' + index">
+                                            <v-btn
+                                                class="ma-2"
+                                                color="grey darken-1"
+                                                outlined
+                                                @click="appendLicenseItems(licenseValue, true)">
+                                                {{ '+' + licenseValue }}
+                                            </v-btn>
+                                            <br v-if="index === (licenseValues.length/2) - 1">
+                                        </span>
+                                    </v-col>
+                                    <v-col md="6">
+                                        <span v-for="(licenseValue, index) in licenseValues" :key="'-' + index">
+                                            <v-btn
+                                                class="ma-2"
+                                                color="grey darken-1"
+                                                outlined
+                                                @click="spendLicenseItems(licenseValue, true)">
+                                                {{ '-' + licenseValue }}
+                                            </v-btn>
+                                            <br v-if="index === (licenseValues.length/2) - 1">
+                                        </span>
+                                    </v-col>
+                                </v-row>
+                            </v-card>
+                        </v-expand-transition>
+                    </v-card-text>
+                </v-card>
+            </v-card>
         </v-dialog>
     </v-container>
 </template>
@@ -584,6 +916,8 @@ export default {
             },
             enableToEdit: false,
             enableToEditLicense: false,
+            enableToEditChild: false,
+            enableToEditChildLicense: false,
             rolesDialog: false,
             historyDialog: false,
             licenseHistory: [],
@@ -599,8 +933,20 @@ export default {
             employees: [],
             licenseValues: [10, 20, 50, 100, 500, 1000],
             usersAssigned: 0,
+            childUsersAssigned: 0,
             selectedDate: new Date().toISOString().substr(0, 10),
+            selectedChildClient: {
+                is_portal: 1,
+                client_name: '',
+                client_description: '',
+                connection_links: [""],
+                aliases: [""],
+            },
+            selectedChildClientLicense: {},
+            selectedChildClientLicenseHistory: [],
+            relatedClientsPanel: [],
             client: {
+                is_portal: 1,
                 client_name: '',
                 client_description: '',
                 connection_links: [""],
@@ -665,6 +1011,7 @@ export default {
             updateEmailDlg: false,
             contactInfoForm: null,
             deleteProductDlg: false,
+            childClientEditorDialog: false,
             selectedProductId: null
         }
     },
@@ -688,15 +1035,29 @@ export default {
             let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
             return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
         },
-        getClient() {
-            axios.get(`/api/client/${this.$route.params.id}`).then(response => {
+        getClient(id = null) {
+            let isRelated = true
+            if (id === null) {
+                id = this.$route.params.id
+                isRelated = false
+            }
+            axios.get(`/api/client/${id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.client = response.data
-                    this.client.client_name = response.data.name
-                    this.client.client_description = response.data.description
-                    this.$store.state.pageName = this.client.client_name
-                    this.getLicense()
+                    let client;
+                    client = response.data
+                    client.client_name = response.data.name
+                    client.client_description = response.data.description
+                    if (isRelated) {
+                        this.selectedChildClient = client
+                        console.log(this.selectedChildClient);
+                        this.getLicense(client.id)
+                    } else {
+                        this.$store.state.pageName = this.client.client_name
+                        this.client = client
+                        this.getLicense()
+
+                    }
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -705,16 +1066,35 @@ export default {
 
             });
         },
-        getLicense() {
-            axios.get(`/api/custom_license/${this.$route.params.id}`).then(response => {
+        getLicense(id = null) {
+            let isRelated = true
+            if (id === null) {
+                id = this.$route.params.id
+                isRelated = false
+            }
+            axios.get(`/api/custom_license/${id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.license = response.data.limits
-                    this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
-                    this.client.aliases = response.data.info !== null ? response.data.info.aliases : [""]
-                    this.license.expiresAt = this.moment(response.data.limits.expiresAt).format('YYYY-MM-DD')
-                    this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
-                    this.getLicenseHistory();
+                    if (isRelated === true) {
+                        this.selectedChildClientLicense = response.data.limits
+                        this.selectedChildClient.connection_links = response.data.info !== null ?
+                            response.data.info.serverUrls : [""]
+                        this.selectedChildClient.aliases = response.data.info !== null ?
+                            response.data.info.aliases : [""]
+                        this.selectedChildClientLicense.expiresAt = this.moment(response.data.limits.expiresAt)
+                            .format('YYYY-MM-DD')
+                        this.childUsersAssigned =
+                            this.selectedChildClientLicense.usersAllowed - this.selectedChildClientLicense.usersLeft;
+                        this.getLicenseHistory(id);
+                    } else {
+                        this.license = response.data.limits
+                        this.client.connection_links = response.data.info !== null ? response.data.info.serverUrls : [""]
+                        this.client.aliases = response.data.info !== null ? response.data.info.aliases : [""]
+                        this.license.expiresAt = this.moment(response.data.limits.expiresAt).format('YYYY-MM-DD')
+                        this.usersAssigned = this.license.usersAllowed - this.license.usersLeft;
+                        this.getLicenseHistory();
+
+                    }
                     // console.log(this.client.connection_links);
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
@@ -724,11 +1104,21 @@ export default {
 
             });
         },
-        getLicenseHistory() {
-            axios.get(`/api/custom_license/${this.$route.params.id}/history`).then(response => {
+        getLicenseHistory(id = null) {
+            let isRelated = true
+            if (id === null) {
+                id = this.$route.params.id
+                isRelated = false
+            }
+            axios.get(`/api/custom_license/${id}/history`).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.licenseHistory = response.data
+                    if (isRelated) {
+                        this.selectedChildClientLicenseHistory = response.data
+                    } else {
+                        this.licenseHistory = response.data
+                    }
+
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -738,7 +1128,7 @@ export default {
             });
         },
         processRelatedLicenseUsers(id, index) {
-                this.getLicenseUsers(id)
+            this.getLicenseUsers(id)
         },
         getLicenseUsers(id = null) {
             // console.log(id);
@@ -792,6 +1182,7 @@ export default {
                 if (response.success === true) {
                     this.getLicense();
                     this.getLicenseUsers();
+                    this.getRelatedClients()
                     // this.licenseUsers = response.data.entities
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
@@ -801,21 +1192,39 @@ export default {
 
             });
         },
-        appendLicenseItems(count = 0) {
-            this.license.usersAllowed += count
-        },
-        spendLicenseItems(count = 0) {
-            if (this.license.usersAllowed - count > 0) {
-                this.license.usersAllowed -= count
+        appendLicenseItems(count = 0, isRelated = false) {
+            if (isRelated) {
+                this.selectedChildClientLicense.usersAllowed += count
+            } else {
+                this.license.usersAllowed += count
             }
         },
-        updateLicense() {
-            axios.put(`/api/custom_license/${this.$route.params.id}/limits`, this.license).then(response => {
+        spendLicenseItems(count = 0, isRelated = false) {
+            if (isRelated) {
+                this.selectedChildClientLicense.usersAllowed += count
+                if (this.selectedChildClientLicense.usersAllowed - count > 0) {
+                    this.selectedChildClientLicense.usersAllowed -= count
+                }
+            } else {
+                if (this.license.usersAllowed - count > 0) {
+                    this.license.usersAllowed -= count
+                }
+            }
+        },
+        updateLicense(id = null) {
+            let license;
+            if (id === null) {
+                id = this.$route.params.id
+                license = this.license
+            } else {
+                id = this.selectedChildClient.id
+                license = this.selectedChildClientLicense
+            }
+            axios.put(`/api/custom_license/${id}/limits`, license).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.license = response.data
                     this.license.expiresAt = this.moment(response.data.expiresAt).format('YYYY-MM-DD')
-                    this.enableToEditLicense = false;
                     this.snackbarMessage = this.license = this.langMap.main.update_successful;
                     this.actionColor = 'success';
                     this.snackbar = true;
@@ -880,8 +1289,16 @@ export default {
             });
             return roleExists
         },
-        clientUpdate() {
-            axios.put(`/api/custom_license/${this.$route.params.id}`, this.client).then(response => {
+        clientUpdate(id = null) {
+            let client;
+            if (id === null) {
+                id = this.$route.params.id
+                client = this.client
+            } else {
+                id = this.selectedChildClient.id
+                client = this.selectedChildClient
+            }
+            axios.put(`/api/custom_license/${id}`, client).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getClient();
@@ -893,23 +1310,39 @@ export default {
                 }
             });
         },
-        addConnectionLink() {
-            this.client.connection_links.push(" ");
+        addConnectionLink(isRelated = false) {
+            if (isRelated) {
+                this.selectedChildClient.connection_links.push(" ");
+            } else {
+                this.client.connection_links.push(" ");
+            }
             // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
-        removeConnectionLink(id) {
-            this.client.connection_links.splice(id, 1);
+        removeConnectionLink(id, isRelated = false) {
+            if (isRelated) {
+                this.selectedChildClient.connection_links.splice(id, 1);
+            } else {
+                this.client.connection_links.splice(id, 1);
+            }
             // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
-        addAlias() {
-            this.client.aliases.push(" ");
+        addAlias(isRelated = false) {
+            if (isRelated) {
+                this.selectedChildClient.aliases.push(" ");
+            } else {
+                this.client.aliases.push(" ");
+            }
             // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
-        removeAlias(id) {
-            this.client.aliases.splice(id, 1);
+        removeAlias(id, isRelated = false) {
+            if (isRelated) {
+                this.selectedChildClient.aliases.splice(id, 1);
+            } else {
+                this.client.aliases.splice(id, 1);
+            }
             // console.log(this.client.connection_links);
             this.$forceUpdate();
         },
@@ -937,6 +1370,8 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.relatedClients = response.data
+                    this.relatedClientsPanel = []
+
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -948,6 +1383,11 @@ export default {
             this.reassignedUserForm.user_id = item.id
             this.getClients();
             this.assignCompanyDialog = true
+        },
+        showChildClientEditorDialog(item) {
+            this.childClientEditorDialog = true
+            this.selectedChildClient = item
+            this.getClient(this.selectedChildClient.id);
         },
         assignToIxarmaCompany() {
             axios.post('/api/custom_license_unassigned/assign', this.reassignedUserForm, {})
@@ -985,6 +1425,44 @@ export default {
             // console.log(this.selectedUserId);
             // console.log(item);
             this.trialExpirationModal = false
+        },
+        setEnableToEdit(selectedClient = null) {
+            let isRelated = true
+            if (selectedClient === null) {
+                selectedClient = this.client
+                isRelated = false
+            }
+            if (selectedClient.is_portal === 0) {
+                if (isRelated) {
+                    this.enableToEditChild = !this.enableToEditChild
+                } else {
+                    this.enableToEdit = !this.enableToEdit
+                }
+            }
+            this.$forceUpdate();
+
+        },
+        setEnableToEditLicense(selectedClient = null) {
+            let isRelated = true
+            if (selectedClient === null) {
+                selectedClient = this.client
+                isRelated = false
+            }
+            if (selectedClient.is_portal === 0) {
+                if (isRelated) {
+                    this.enableToEditChildLicense = !this.enableToEditChildLicense
+                } else {
+                    this.enableToEditLicense = !this.enableToEditLicense
+                }
+            }
+
+        },
+        showExpiredAtDialog() {
+            if (this.client.is_portal === 0) {
+                this.selectedUserId = item.id;
+                this.trialExpirationModal = true;
+            }
+
         }
     }
 }

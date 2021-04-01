@@ -1398,7 +1398,7 @@
                                         style="background:#F0F0F0;"
                                     >
                             <span>
-                                <strong>{{ langMap.ticket.merged_abbr_full }} tickets</strong>
+                                <strong>{{ langMap.ticket.merged_abbr_full }}</strong>
                             </span>
 
                                         <template v-slot:actions>
@@ -1486,21 +1486,22 @@
                                                 </v-menu>
                                             </template>
                                         </v-text-field>
-                                        <div style="max-height: 390px; overflow-y: auto;">
-                                            <v-list
-                                                dense
-                                            >
-                                                <v-list-item-group :color="themeBgColor">
-                                                    <v-list-item
-                                                        v-for="(item, i) in tickets"
-                                                        :key="item.id"
-                                                        :color="themeBgColor"
-                                                        @click="showTicket(item.parent_ticket_data.id)"
-                                                    >
-                                                        <v-list-item-title>
+                                        <perfect-scrollbar style="height: 400px;">
+                                            <div style="max-height: 390px;">
+                                                <v-list
+                                                    dense
+                                                >
+                                                    <v-list-item-group :color="themeBgColor">
+                                                        <v-list-item
+                                                            v-for="(item, i) in tickets"
+                                                            :key="item.id"
+                                                            :color="themeBgColor"
+                                                            @click="showTicket(item.id)"
+                                                        >
+                                                            <v-list-item-title>
                                                 <span>
                                                     <v-checkbox
-                                                        :key="item.id"
+                                                        :key="item.number"
                                                         v-model="mergeTicketForm.child_ticket_id"
                                                         :color="themeBgColor"
                                                         :disabled="item.parent_id !== null"
@@ -1534,23 +1535,25 @@
                                                 </v-tooltip>
                                                 </span>
 
-                                                            <br/>
-                                                            <span style="font-weight: lighter;">
+                                                                <br/>
+                                                                <span style="font-weight: lighter;">
                                                     {{
-                                                                    item.creator !== null && item.creator.user_data !== null ? item.creator.user_data.full_name : ''
-                                                                }},
+                                                                        item.creator !== null && item.creator.user_data !== null ? item.creator.user_data.full_name : ''
+                                                                    }},
                                                     {{ item.from !== null ? item.from.name : '' }}
                                                 </span>
-                                                            <br/>
-                                                            <span style="font-weight: lighter;">
+                                                                <br/>
+                                                                <span style="font-weight: lighter;">
                                                     {{ item.last_update }}
                                                 </span>
-                                                        </v-list-item-title>
+                                                            </v-list-item-title>
 
-                                                    </v-list-item>
-                                                </v-list-item-group>
-                                            </v-list>
-                                        </div>
+                                                        </v-list-item>
+                                                    </v-list-item-group>
+                                                </v-list>
+                                            </div>
+
+                                        </perfect-scrollbar>
                                         <br/>
                                         <v-textarea
                                             v-model="mergeTicketForm.merge_comment"
