@@ -389,228 +389,266 @@
                                     class="elevation-1"
                                     style="width: 100%"
                                     calculate-widths
+                                    hide-default-header
                                 >
-                                    <template v-slot:item.description="props">
-                                        <v-edit-dialog
-                                            @save="save(props.item, 'description')"
-                                            @cancel="cancel"
-                                            @open="open"
-                                            @close="save(props.item, 'description')"
-                                            :ref="`dialog${props.item.id}`"
-                                        >
-                                            <span v-if="props.item.service">
-                                                    {{ props.item.service.name }}
-                                                    <v-icon x-small>mdi-checkbox-blank-circle</v-icon>
+                                    <template v-slot:body="props">
+                                        <tr v-for="row in props.items">
+                                            <td
+                                                class="pa-3"
+                                                :width="headers.find(i => i.value === 'description').width"
+                                            >
+                                                <v-edit-dialog
+                                                    @save="save(row, 'description')"
+                                                    @cancel="cancel"
+                                                    @open="open"
+                                                    @close="save(row, 'description')"
+                                                    :ref="`dialog${row.id}`"
+                                                >
+                                                    <span v-if="row.service">
+                                                        {{ row.service.name }}
+                                                        <v-icon x-small>mdi-checkbox-blank-circle</v-icon>
+                                                    </span>
+                                                    <span class="text--secondary" v-if="!row.description">
+                                                        {{ langMap.tracking.tracker.add_description }}
+                                                    </span>
+                                                    <span v-else>
+                                                        {{ row.description }}
+                                                    </span>
+                                                    <template v-slot:input>
+                                                        <v-text-field
+                                                            v-model="row.description"
+                                                            :label="langMap.tracking.tracker.description"
+                                                            :placeholder="langMap.tracking.tracker.description"
+                                                            single-line
+                                                            counter
+                                                        ></v-text-field>
+                                                        <v-select
+                                                            :items="$store.getters['Services/getServices']"
+                                                            :label="langMap.tracking.tracker.service_type"
+                                                            :placeholder="langMap.tracking.tracker.service_type"
+                                                            item-text="name"
+                                                            item-value="id"
+                                                            v-model="row.service"
+                                                            return-object
+                                                            dense
+                                                            @input="$refs[`dialog${row.id}`][0].isActive = false"
+                                                        ></v-select>
+                                                        <v-btn
+                                                            class="float-right mb-2"
+                                                            text
+                                                            color="success"
+                                                            @click="$refs[`dialog${row.id}`][0].isActive = false"
+                                                        >{{ langMap.tracking.tracker.save }}
+                                                        </v-btn>
+                                                    </template>
+                                                </v-edit-dialog>
+                                            </td>
+                                            <td
+                                                class="pa-3"
+                                                :width="headers.find(i => i.value === 'entity').width"
+                                            >
+                                                <span v-if="row.entity && row.entity.client">
+                                                    {{ row.entity.client.name }}
                                                 </span>
-                                            <span class="text--secondary" v-if="!props.item.description">
-                                                {{langMap.tracking.tracker.add_description}}
-                                            </span>
-                                            <span v-else>
-                                                {{ props.item.description }}
-                                            </span>
-                                            <template v-slot:input>
-                                                <v-text-field
-                                                    v-model="props.item.description"
-                                                    :label="langMap.tracking.tracker.description"
-                                                    :placeholder="langMap.tracking.tracker.description"
-                                                    single-line
-                                                    counter
-                                                ></v-text-field>
-                                                <v-select
-                                                    :items="$store.getters['Services/getServices']"
-                                                    :label="langMap.tracking.tracker.service_type"
-                                                    :placeholder="langMap.tracking.tracker.service_type"
-                                                    item-text="name"
-                                                    item-value="id"
-                                                    v-model="props.item.service"
-                                                    return-object
-                                                    dense
-                                                    @input="$refs[`dialog${props.item.id}`][0].isActive = false"
-                                                ></v-select>
-                                                <v-btn
-                                                    class="float-right mb-2"
-                                                    text
-                                                    color="success"
-                                                    @click="$refs[`dialog${props.item.id}`][0].isActive = false"
-                                                >{{langMap.tracking.tracker.save}}</v-btn>
-                                            </template>
-                                        </v-edit-dialog>
-                                    </template>
-                                    <template v-slot:item.entity="props">
-                                        <span v-if="props.item.entity && props.item.entity.client">
-                                            {{ props.item.entity.client.name }}
-                                        </span>
-                                        <span v-else-if="props.item.entity">{{ props.item.entity.from_company_name }}</span>
-                                    </template>
-                                    <template v-slot:item.entity.name="props">
-                                        <v-edit-dialog
-                                            @save="save(props.item, 'entity', props.item.entity)"
-                                            @cancel="cancel"
-                                            @open="open"
-                                            @close="save(props.item, 'entity', props.item.entity)"
-                                        >
-                                            <ProjectBtn
-                                                :key="props.item.id"
-                                                :color="themeBgColor"
-                                                v-model="props.item.entity"
-                                                @blur="save(props.item, 'entity', props.item.entity)"
-                                                @input="save(props.item, 'entity', props.item.entity)"
-                                            ></ProjectBtn>
-                                        </v-edit-dialog>
-                                    </template>
-                                    <template v-slot:item.tags="props">
-                                        <TagBtn
-                                            :key="props.item.id"
-                                            :color="themeBgColor"
-                                            v-model="props.item.tags"
-                                            @blur="save(props.item, 'tags', props.item.tags)"
-                                        ></TagBtn>
-                                    </template>
-                                    <template v-slot:item.billable="props">
-                                        <v-btn
-                                            fab
-                                            :icon="!props.item.billable"
-                                            x-small
-                                            :color="themeBgColor"
-                                            @click="props.item.billable = !props.item.billable; save(props.item, 'billable')"
-                                        >
-                                            <v-icon center v-bind:class="{ 'white--text': props.item.billable }">
-                                                mdi-currency-usd
-                                            </v-icon>
-                                        </v-btn>
-                                    </template>
-                                    <template v-slot:item.date_from="props">
-                                        <v-edit-dialog>
-                                            {{ moment(props.item.date_from).format(timeFormat) }}
-                                            <template v-slot:input>
-                                                <TimeField
-                                                    v-model="props.item.date_from"
-                                                    style="max-width: 100px; height: 40px"
-                                                    placeholder="hh:mm"
-                                                    format="HH:mm"
-                                                    @input="save(props.item, 'date_from', props.item.date_from)"
-                                                ></TimeField>
-                                            </template>
-                                        </v-edit-dialog>
-                                    </template>
-                                    <template v-slot:item.date_to="props">
-                                        <v-edit-dialog
-                                            :return-value.sync="props.item.date_to"
-                                            v-if="props.item.status == 'stopped'"
-                                        >
-                                            <span v-if="props.item.date_to && props.item.status == 'stopped'">
-                                                {{ moment(props.item.date_to).format(timeFormat) }}
-                                            </span>
-                                            <template v-slot:input>
-                                                <TimeField
-                                                    v-model="props.item.date_to"
-                                                    style="max-width: 100px; height: 40px"
-                                                    placeholder="hh:mm"
-                                                    format="HH:mm"
-                                                    @input="save(props.item, 'date_to', props.item.date_to)"
-                                                ></TimeField>
-                                            </template>
-                                        </v-edit-dialog>
-                                    </template>
-                                    <template v-slot:item.passed="props">
-                                        <span v-text="helperConvertSecondsToTimeFormat(props.item.passed)"></span>
-                                    </template>
-                                    <template v-slot:item.date="props">
-                                        <v-menu
-                                            v-model="props.item.date_picker"
-                                            :close-on-content-click="false"
-                                            :nudge-right="40"
-                                            transition="scale-transition"
-                                            offset-y
-                                            min-width="auto"
-                                            left
-                                        >
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-btn
-                                                    icon
-                                                    v-bind="attrs"
-                                                    v-on="on"
+                                                <span v-else-if="row.entity">{{ row.entity.from_company_name }}</span>
+                                            </td>
+                                            <td
+                                                class="pa-3"
+                                                :width="headers.find(i => i.value === 'entity.name').width"
+                                            >
+                                                <v-edit-dialog
+                                                    @save="save(row, 'entity', row.entity)"
+                                                    @cancel="cancel"
+                                                    @open="open"
+                                                    @close="save(row, 'entity', row.entity)"
+                                                >
+                                                    <ProjectBtn
+                                                        :key="row.id"
+                                                        :color="themeBgColor"
+                                                        v-model="row.entity"
+                                                        @blur="save(row, 'entity', row.entity)"
+                                                        @input="save(row, 'entity', row.entity)"
+                                                    ></ProjectBtn>
+                                                </v-edit-dialog>
+                                            </td>
+                                            <td
+                                                class="pa-3"
+                                                :width="headers.find(i => i.value === 'tags').width"
+                                            >
+                                                <TagBtn
+                                                    :key="row.id"
                                                     :color="themeBgColor"
-                                                >
-                                                    <v-icon>mdi-calendar</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <v-date-picker
-                                                dense
-                                                v-model="props.item.date"
-                                                @input="props.item.date_picker = false; handlerChangeDate(props.item)"
-                                            ></v-date-picker>
-                                        </v-menu>
-                                    </template>
-                                    <template v-slot:item.actions="props">
-                                        <div class="d-flex flex-row">
-                                            <div>
+                                                    v-model="row.tags"
+                                                    @blur="save(row, 'tags', row.tags)"
+                                                ></TagBtn>
+                                            </td>
+                                            <td
+                                                class="pa-3"
+                                                :width="headers.find(i => i.value === 'billable').width"
+                                            >
                                                 <v-btn
-                                                    depressed
-                                                    color="error"
-                                                    v-if="props.item.status == 'started'"
-                                                    @click="actionStopTracking(props.item.id)"
-                                                >
-                                                    <v-icon class="white--text">mdi-pause</v-icon>
-                                                </v-btn>
-                                                <v-btn
-                                                    depressed
+                                                    fab
+                                                    :icon="!row.billable"
+                                                    x-small
                                                     :color="themeBgColor"
-                                                    v-if="props.item.status == 'stopped'"
-                                                    @click="actionStartTrackingAsId(props.item.id)"
+                                                    @click="row.billable = !row.billable; save(row, 'billable')"
                                                 >
-                                                    <v-icon class="white--text">mdi-play-outline</v-icon>
+                                                    <v-icon center v-bind:class="{ 'white--text': row.billable }">
+                                                        mdi-currency-usd
+                                                    </v-icon>
                                                 </v-btn>
-                                            </div>
-                                            <div>
+                                            </td>
+                                            <td
+                                                class="pa-3"
+                                                :width="headers.find(i => i.value === 'date_from').width"
+                                            >
+                                                <div class="d-flex flex-row">
+                                                    <div class="d-flex-inline">
+                                                        <v-edit-dialog>
+                                                            {{ moment(row.date_from).format(timeFormat) }}
+                                                            <template v-slot:input>
+                                                                <TimeField
+                                                                    v-model="row.date_from"
+                                                                    style="max-width: 100px; height: 40px"
+                                                                    placeholder="hh:mm"
+                                                                    format="HH:mm"
+                                                                    @input="save(row, 'date_from', row.date_from)"
+                                                                ></TimeField>
+                                                            </template>
+                                                        </v-edit-dialog>
+                                                    </div>
+                                                    <div class="d-flex-inline">&nbsp;&mdash;&nbsp;</div>
+                                                    <div class="d-flex-inline">
+                                                        <v-edit-dialog
+                                                            :return-value.sync="row.date_to"
+                                                            v-if="row.status == 'stopped'"
+                                                        >
+                                                    <span v-if="row.date_to && row.status == 'stopped'">
+                                                        {{ moment(row.date_to).format(timeFormat) }}
+                                                    </span>
+                                                            <template v-slot:input>
+                                                                <TimeField
+                                                                    v-model="row.date_to"
+                                                                    style="max-width: 100px; height: 40px"
+                                                                    placeholder="hh:mm"
+                                                                    format="HH:mm"
+                                                                    @input="save(row, 'date_to', row.date_to)"
+                                                                ></TimeField>
+                                                            </template>
+                                                        </v-edit-dialog>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td
+                                                class="pa-3"
+                                                :width="headers.find(i => i.value === 'passed').width"
+                                            >
+                                                <span v-text="helperConvertSecondsToTimeFormat(row.passed)"></span>
+                                            </td>
+                                            <td
+                                                class="pa-3"
+                                                :width="headers.find(i => i.value === 'date').width"
+                                            >
                                                 <v-menu
-                                                    bottom
+                                                    v-model="row.date_picker"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                    min-width="auto"
                                                     left
                                                 >
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-btn
-                                                            :color="themeBgColor"
                                                             icon
                                                             v-bind="attrs"
                                                             v-on="on"
+                                                            :color="themeBgColor"
                                                         >
-                                                            <v-icon>mdi-dots-vertical</v-icon>
+                                                            <v-icon>mdi-calendar</v-icon>
                                                         </v-btn>
                                                     </template>
-                                                    <v-card
-                                                        class="mx-auto"
-                                                        max-width="300"
-                                                        tile
-                                                    >
-                                                        <v-list dense>
-                                                            <v-list-item-group
-                                                                color="primary"
-                                                            >
-                                                                <v-list-item>
-                                                                    <v-list-item-content>
-                                                                        <v-list-item-title
-                                                                            @click="actionDuplicateTracking(props.item.id)"
-                                                                        >
-                                                                            {{ langMap.tracking.tracker.duplicate }}
-                                                                        </v-list-item-title>
-                                                                    </v-list-item-content>
-                                                                </v-list-item>
-                                                                <v-list-item>
-                                                                    <v-list-item-content>
-                                                                        <v-list-item-title
-                                                                            @click="actionDeleteTracking(props.item.id)"
-                                                                            style="color: red"
-                                                                        >
-                                                                            {{langMap.tracking.tracker.delete}}
-                                                                        </v-list-item-title>
-                                                                    </v-list-item-content>
-                                                                </v-list-item>
-                                                            </v-list-item-group>
-                                                        </v-list>
-                                                    </v-card>
+                                                    <v-date-picker
+                                                        dense
+                                                        v-model="row.date"
+                                                        @input="row.date_picker = false; handlerChangeDate(row)"
+                                                    ></v-date-picker>
                                                 </v-menu>
-                                            </div>
-                                        </div>
+                                            </td>
+                                            <td
+                                                class="pa-3"
+                                                :width="headers.find(i => i.value === 'actions').width"
+                                            >
+                                                <div class="d-flex flex-row">
+                                                    <div>
+                                                        <v-btn
+                                                            depressed
+                                                            color="error"
+                                                            v-if="row.status == 'started'"
+                                                            @click="actionStopTracking(row.id)"
+                                                        >
+                                                            <v-icon class="white--text">mdi-pause</v-icon>
+                                                        </v-btn>
+                                                        <v-btn
+                                                            depressed
+                                                            :color="themeBgColor"
+                                                            v-if="row.status == 'stopped'"
+                                                            @click="actionStartTrackingAsId(row.id)"
+                                                        >
+                                                            <v-icon class="white--text">mdi-play-outline</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                    <div>
+                                                        <v-menu
+                                                            bottom
+                                                            left
+                                                        >
+                                                            <template v-slot:activator="{ on, attrs }">
+                                                                <v-btn
+                                                                    :color="themeBgColor"
+                                                                    icon
+                                                                    v-bind="attrs"
+                                                                    v-on="on"
+                                                                >
+                                                                    <v-icon>mdi-dots-vertical</v-icon>
+                                                                </v-btn>
+                                                            </template>
+                                                            <v-card
+                                                                class="mx-auto"
+                                                                max-width="300"
+                                                                tile
+                                                            >
+                                                                <v-list dense>
+                                                                    <v-list-item-group
+                                                                        color="primary"
+                                                                    >
+                                                                        <v-list-item>
+                                                                            <v-list-item-content>
+                                                                                <v-list-item-title
+                                                                                    @click="actionDuplicateTracking(row.id)"
+                                                                                >
+                                                                                    {{ langMap.tracking.tracker.duplicate }}
+                                                                                </v-list-item-title>
+                                                                            </v-list-item-content>
+                                                                        </v-list-item>
+                                                                        <v-list-item>
+                                                                            <v-list-item-content>
+                                                                                <v-list-item-title
+                                                                                    @click="actionDeleteTracking(row.id)"
+                                                                                    style="color: red"
+                                                                                >
+                                                                                    {{langMap.tracking.tracker.delete}}
+                                                                                </v-list-item-title>
+                                                                            </v-list-item-content>
+                                                                        </v-list-item>
+                                                                    </v-list-item-group>
+                                                                </v-list>
+                                                            </v-card>
+                                                        </v-menu>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     </template>
                                 </v-data-table>
 
@@ -724,7 +762,7 @@ themeBgColor: this.$store.state.themeBgColor,
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.start,
                     value: 'date_from',
-                    width: '2%'
+                    width: '4%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.end,

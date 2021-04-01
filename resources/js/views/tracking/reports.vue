@@ -332,7 +332,9 @@
                         <div class="d-flex flex-column">
                             <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
                             <span class="d-inline-block text-center">Revenue</span>
-                            <span class="d-inline-block text-center">0 €</span>
+                            <span class="d-inline-block text-center">
+                                <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{totalRevenue}}
+                            </span>
                         </div>
                     </v-card>
                 </div>
@@ -369,33 +371,53 @@
                 open-on-click
             >
                 <template v-slot:label="{ item, selected, active, open }">
-                    <div v-if="item.children">
+                    <div v-if="item.children" style="font-size: small">
                         {{ item.name }}
                     </div>
                     <div v-else class="d-flex flex-row">
-                        <div class="d-inline-flex flex-grow-1">
-                            <div class="d-flex flex-column">
-                                <div class="d-inline-flex">
-                                    {{ moment(item.date_from).format('DD MMM YYYY') }} /
-                                    <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>None</span> /
-                                    <span v-if="item.entity">{{ item.entity.name }}</span><span v-else>None</span> /
-                                    <span v-if="item.service">{{ item.service.name }}</span><span v-else>None</span>
-                                </div>
-                                <div class="d-inline-flex" style="opacity: 0.6">
-                                    <span v-if="item.description">{{ item.description }}</span><span v-else>None</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-inline-flex flex-grow-0">
-                            <div class="d-flex flex-column">
-                                <div class="d-inline-block text-right">
-                                    {{ helperConvertSecondsToTimeFormat(helperCalculatePassedTime(item.date_from, item.date_to)) }}
-                                </div>
-                                <div class="d-inline-block text-right">
-                                    {{ moment(item.date_from).format('HH:mm') }} - {{ moment(item.date_to).format('HH:mm') }}
-                                </div>
-                            </div>
-                        </div>
+                        <table border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
+                            <tbody>
+                                <tr>
+                                    <td class="pa-2" align="right" width="10%">
+                                        {{ moment(item.date_from).format('DD MMM YYYY') }}
+                                    </td>
+                                    <td class="pa-2" align="left" width="15%">
+                                        <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>None</span>
+                                    </td>
+                                    <td class="pa-2" align="left">
+                                        <span v-if="item.entity">{{ item.entity.name }}</span>
+                                        <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
+                                        <span v-if="item.service">{{ item.service.name }}</span>
+                                        <v-icon v-if="(item.service && item.description) || (item.entity && item.description)" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
+                                        <span v-if="item.description">{{ item.description }}</span>
+                                    </td>
+                                    <td class="pa-2" align="right" width="10%">
+                                        <v-chip
+                                            v-for="tag in item.tags"
+                                            :key="tag.id"
+                                            :color="tag.color"
+                                            :text-color="invertColor(tag.color)"
+                                            v-text="tag.name"
+                                            small
+                                        ></v-chip>
+                                    </td>
+                                    <td class="pa-2" align="center" width="5%">
+                                        <span v-if="item.billable">Yes</span>
+                                        <span v-else>No</span>
+                                    </td>
+                                    <td class="pa-2" align="right" width="5%">
+                                        {{ helperConvertSecondsToTimeFormat(helperCalculatePassedTime(item.date_from, item.date_to), false) }}
+                                    </td>
+                                    <td class="pa-2" align="right" width="5%">
+                                        <span v-if="item.revenue">
+                                            <span v-if="currentCurrency">
+                                                {{ currentCurrency.slug }}
+                                            </span> {{ parseFloat(item.revenue).toFixed(2) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </template>
             </v-treeview>
@@ -551,6 +573,14 @@
 </template>
 
 <style>
+.border-right {
+    border-right: thin solid rgba(0,0,0,.12);
+}
+.width-10 {
+    width: 10%;
+    max-width: 10%;
+    min-width: 10%;
+}
 .v-expansion-panel {
     border-color: rgba(0, 0, 0, 0.42);
     border-width: 1px;
@@ -604,6 +634,7 @@ import moment from "moment-timezone";
 import draggable from "vuedraggable";
 import BarChart from "./components/bar-chart";
 import DoughnutChart from "./components/doughnut-chart";
+import _ from "lodash";
 
 export default {
     components: {
@@ -813,7 +844,7 @@ export default {
                                 return data.labels[tooltipItem[0].index] ?? 'Title';
                             },
                             label: function(tooltipItem, data) {
-                                return self.helperConvertSecondsToTimeFormat(data.datasets[0].data[tooltipItem.index]);
+                                return self.helperConvertSecondsToTimeFormat(data.datasets[0].data[tooltipItem.index] * 60 * 60);
                             }
                         }
                     }
@@ -928,6 +959,7 @@ export default {
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Projects/getProjectList', { search: null });
         this.$store.dispatch('Team/getCoworkers', { search: null });
+        this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
     },
     mounted() {
         let that = this;
@@ -938,8 +970,12 @@ export default {
             that.themeBgColor = color;
         });
         this.setPeriod();
+        this.debounceGetSettings();
     },
     methods: {
+        __getSettings() {
+            this.$store.dispatch('Tracking/getSettings');
+        },
         invertColor(hex, bw = true) {
             return Helper.invertColor(hex.substr(0, 7), bw);
         },
@@ -1061,14 +1097,17 @@ export default {
             while((""+num).length < len) num = "0" + num;
             return num.toString();
         },
-        helperConvertSecondsToTimeFormat(seconds) {
+        helperConvertSecondsToTimeFormat(seconds, withSeconds = true) {
             if (!seconds) {
                 return `00:00:00`;
             }
             const h = Math.floor(seconds / 60 / 60);
             const m = Math.floor((seconds - h * 60 * 60) / 60);
             const s = seconds - (m * 60) - (h * 60 * 60);
-            return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
+            if (withSeconds) {
+                return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}:${this.helperAddZeros(s.toFixed(0),2)}`;
+            }
+            return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}`;
         },
         helperCalculatePassedTime(date_from, date_to) {
             if (moment(date_from) > moment(date_to)) {
@@ -1086,6 +1125,19 @@ export default {
                 }
             });
             return seconds;
+        },
+        calculateRevenue(entries, revenue = 0) {
+            if (!entries) return revenue;
+            entries.map(i => {
+                if (i.children) {
+                    revenue += parseFloat(this.calculateRevenue(i.children));
+                } else {
+                    if (i.revenue) {
+                        revenue += parseFloat(i.revenue);
+                    }
+                }
+            });
+            return revenue ? parseFloat(revenue).toFixed(2) : 0;
         },
         createFile(format) {
             if (format === 'csv' && this.report.csv.group && this.report.csv.group.value === 'all_chron') {
@@ -1122,6 +1174,9 @@ export default {
         totalTime: function() {
             return this.calculateTime(this.reportData.entities);
         },
+        totalRevenue: function() {
+            return this.calculateRevenue(this.reportData.entities);
+        },
         doughnutData: function() {
             if (this.reportData.entities && this.reportData.entities.length) {
                 let data = {
@@ -1137,9 +1192,9 @@ export default {
                         labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
-                        values.push(this.calculateTime(i.children));
+                        values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
                     } else {
-                        values.push(this.helperCalculatePassedTime(i.date_from, i.date_to));
+                        values.push((this.helperCalculatePassedTime(i.date_from, i.date_to) / 60 / 60).toFixed(2));
                     }
                 });
                 let colors = [];
@@ -1171,9 +1226,13 @@ export default {
                         labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
-                        values.push(this.calculateTime(i.children));
+                        values.push(
+                            (this.calculateTime(i.children) / 60 / 60).toFixed(2)
+                        );
                     } else {
-                        values.push(this.helperCalculatePassedTime(i.date_from, i.date_to));
+                        values.push(
+                            (this.helperCalculatePassedTime(i.date_from, i.date_to) / 60 / 60).toFixed(2)
+                        );
                     }
                 });
                 const c = Helper.genRandomColor();
@@ -1202,6 +1261,15 @@ export default {
                 k--;
             });
             return items.concat(this.csvForm.groupItems);
+        },
+        currentCurrency: {
+            get: function () {
+                const settings = this.$store.getters['Tracking/getSettings'];
+                return settings.currency ?? null;
+            },
+            set: function (currency) {
+                this.$store.dispatch('Tracking/updateSettings', {currency});
+            }
         }
     },
     watch: {

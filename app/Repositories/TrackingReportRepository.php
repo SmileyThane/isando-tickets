@@ -64,7 +64,8 @@ class TrackingReportRepository
                 return false;
             });
 
-        $tracking = Tracking::with('User.employee.assignedToTeams');
+        $tracking = Tracking::with('User.employee.assignedToTeams')
+            ->with('tags');
 
         if ($request->has('period') && isset($request->period['start'])) {
             $tracking->where('tracking.date_from', '>=', $request->period['start']);
@@ -268,6 +269,7 @@ class TrackingReportRepository
 
     protected function prepareDataForPDF($entities) {
         $items = [];
+        $currency = $company = Auth::user()->employee->companyData->currency;
         foreach ($entities as $entity) {
 //            dd($entity->entity);
             $item = [
@@ -279,8 +281,9 @@ class TrackingReportRepository
                 'customer' => isset($entity->entity) && isset($entity->entity->client) ? $entity->entity->client->name : '',
                 'project' => isset($entity->entity) ? $entity->entity->name : '',
                 'service' => isset($entity->service) ? $entity->service->name : '',
+                'description' => isset($entity->description) ? $entity->description : '',
                 'billable' => $entity->billable ? 'Yes' : 'No',
-                'amount' => $entity->amount
+                'revenue' => $entity->revenue ? ($currency ? $currency->slug . ' ' : '') . $entity->revenue : ''
             ];
             array_push($items, $item);
         }
@@ -317,9 +320,12 @@ class TrackingReportRepository
             ['text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B'],
+            ['text' => 'Description', 'style' => 'border:B;border-width:1;font-style:B'],
             ['text' => 'Billable', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Amount', 'style' => 'border:B;border-width:1;font-style:B']
+            ['text' => 'Revenue', 'style' => 'border:B;border-width:1;font-style:B']
         ];
+        $columnWidths = '%{7,4,4,4,11,16,17,9,15,5,8}';
+
         $tracks = $this->getData($request)['tracks'];
         $fullTime = collect($tracks)->sum(function ($item) {
             return Carbon::parse($item->date_from)->diffInSeconds(Carbon::parse($item->date_to));
@@ -390,7 +396,7 @@ class TrackingReportRepository
         // PAGE 2 and next
         $pdf->AddPage('L', 'A4');
         $pdf->SetFont('Arial', '', 10);
-        $pdf->EasyTable($headers, $data);
+        $pdf->EasyTable($headers, $data, $columnWidths);
 
         $html = '';
         // GENERATE FILE
@@ -405,7 +411,6 @@ class TrackingReportRepository
         }
         throw new \Exception('Error generating file');
     }
-
 
     protected function prepareDataForCSV($entities, $items = []) {
         $entities = (array)$entities;
