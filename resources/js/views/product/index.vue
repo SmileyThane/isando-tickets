@@ -41,6 +41,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-text-field
+                                                    :disabled="productForm.category_id === null"
                                                     :color="themeBgColor"
                                                     :label="langMap.main.name"
                                                     name="product_name"
@@ -52,6 +53,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-textarea
+                                                    :disabled="productForm.category_id === null"
                                                     :color="themeBgColor"
                                                     :label="langMap.main.description"
                                                     name="product_description"
@@ -63,6 +65,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-text-field
+                                                    :disabled="productForm.category_id === null"
                                                     :color="themeBgColor"
                                                     :label="langMap.product.code"
                                                     name="product_code"
@@ -72,6 +75,7 @@
                                             </div>
                                             <div class="col-md-4">
                                                 <v-file-input
+                                                    :disabled="productForm.category_id === null"
                                                     :color="themeBgColor"
                                                     :item-color="themeBgColor"
                                                     :label="langMap.ticket.add_attachments"
@@ -92,6 +96,7 @@
                                             </div>
                                             <br>
                                             <v-btn
+                                                :disabled="productForm.category_id === null"
                                                 dark
                                                 fab
                                                 right
@@ -254,7 +259,7 @@ themeBgColor: this.$store.state.themeBgColor,
                 selectedProductId: null,
                 productForm: {
                     product_code: '',
-                    category_id: '',
+                    category_id: null,
                     product_name: '',
                     product_description: '',
                     files: []
@@ -344,6 +349,7 @@ themeBgColor: this.$store.state.themeBgColor,
                         this.snackbarMessage = this.langMap.product.product_created;
                         this.actionColor = 'success'
                         this.snackbar = true;
+                        this.productForm = {category_id: null, files: []}
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error';
