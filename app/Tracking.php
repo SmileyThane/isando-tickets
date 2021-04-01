@@ -15,7 +15,7 @@ class Tracking extends Model
     ];
 
     protected $appends = [
-        'passed', 'service', 'entity'
+        'passed', 'service', 'entity', 'passed_decimal'
     ];
 
     public function User() {
@@ -59,6 +59,10 @@ class Tracking extends Model
 
     public function getPassedAttribute() {
         return Carbon::parse($this->date_to)->diffInSeconds(Carbon::parse($this->date_from));
+    }
+
+    public function getPassedDecimalAttribute() {
+        return floor($this->passed / 60 / 60 * 100) / 100;
     }
 
     public function getDateFromAttribute() {

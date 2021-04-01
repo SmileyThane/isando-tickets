@@ -332,7 +332,9 @@
                         <div class="d-flex flex-column">
                             <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
                             <span class="d-inline-block text-center">Revenue</span>
-                            <span class="d-inline-block text-center">0 €</span>
+                            <span class="d-inline-block text-center">
+                                <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{totalRevenue}}
+                            </span>
                         </div>
                     </v-card>
                 </div>
@@ -407,7 +409,11 @@
                                         {{ helperConvertSecondsToTimeFormat(helperCalculatePassedTime(item.date_from, item.date_to), false) }}
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
-                                        revenue
+                                        <span v-if="item.entity_type === 'App\\TrackingProject' && item.entity.rate">
+                                            <span v-if="currentCurrency">
+                                                {{ currentCurrency.slug }}
+                                            </span> {{ (item.passed_decimal * item.entity.rate).toFixed(2) }}
+                                        </span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -628,6 +634,7 @@ import moment from "moment-timezone";
 import draggable from "vuedraggable";
 import BarChart from "./components/bar-chart";
 import DoughnutChart from "./components/doughnut-chart";
+import _ from "lodash";
 
 export default {
     components: {
@@ -952,6 +959,7 @@ export default {
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Projects/getProjectList', { search: null });
         this.$store.dispatch('Team/getCoworkers', { search: null });
+        this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
     },
     mounted() {
         let that = this;
@@ -962,8 +970,12 @@ export default {
             that.themeBgColor = color;
         });
         this.setPeriod();
+        this.debounceGetSettings();
     },
     methods: {
+        __getSettings() {
+            this.$store.dispatch('Tracking/getSettings');
+        },
         invertColor(hex, bw = true) {
             return Helper.invertColor(hex.substr(0, 7), bw);
         },
@@ -1114,6 +1126,19 @@ export default {
             });
             return seconds;
         },
+        calculateRevenue(entries, revenue = 0) {
+            if (!entries) return revenue;
+            entries.map(i => {
+                if (i.children) {
+                    revenue += this.calculateRevenue(i.children);
+                } else {
+                    if (i.entity_type === 'App\\TrackingProject' && i.entity.rate) {
+                        revenue += i.passed_decimal * i.entity.rate;
+                    }
+                }
+            });
+            return revenue;
+        },
         createFile(format) {
             if (format === 'csv' && this.report.csv.group && this.report.csv.group.value === 'all_chron') {
                 this.builder.sort = {
@@ -1148,6 +1173,9 @@ export default {
     computed: {
         totalTime: function() {
             return this.calculateTime(this.reportData.entities);
+        },
+        totalRevenue: function() {
+            return this.calculateRevenue(this.reportData.entities).toFixed(2) ?? 0;
         },
         doughnutData: function() {
             if (this.reportData.entities && this.reportData.entities.length) {
@@ -1229,6 +1257,15 @@ export default {
                 k--;
             });
             return items.concat(this.csvForm.groupItems);
+        },
+        currentCurrency: {
+            get: function () {
+                const settings = this.$store.getters['Tracking/getSettings'];
+                return settings.currency ?? null;
+            },
+            set: function (currency) {
+                this.$store.dispatch('Tracking/updateSettings', {currency});
+            }
         }
     },
     watch: {
