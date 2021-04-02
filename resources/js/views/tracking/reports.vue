@@ -402,18 +402,95 @@
                                         ></v-chip>
                                     </td>
                                     <td class="pa-2" align="center" width="5%">
-                                        <span v-if="item.billable">Yes</span>
-                                        <span v-else>No</span>
+                                        <span v-if="item.billable">Billable</span>
+                                        <span v-else>Non-billable</span>
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
                                         {{ helperConvertSecondsToTimeFormat(helperCalculatePassedTime(item.date_from, item.date_to), false) }}
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
-                                        <span v-if="item.revenue">
-                                            <span v-if="currentCurrency">
-                                                {{ currentCurrency.slug }}
-                                            </span> {{ parseFloat(item.revenue).toFixed(2) }}
-                                        </span>
+                                        <span v-if="currentCurrency">
+                                            {{ currentCurrency.slug }}
+                                        </span> {{ parseFloat(item.revenue).toFixed(2) }}
+                                    </td>
+                                    <td class="pa-2" align="center" width="5%">
+                                        <v-dialog
+                                            v-model="dialogEdit"
+                                            width="500"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    x-small
+                                                    @click="openEditDialog(item)"
+                                                >
+                                                    <v-icon>mdi-pencil</v-icon>
+                                                </v-btn>
+                                            </template>
+
+                                            <v-card>
+                                                <v-card-title>
+                                                    Edit
+                                                </v-card-title>
+                                                <v-card-text>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="d-flex-inline">
+                                                            <TimeField
+                                                                v-model="editForm.date_from"
+                                                                style="max-width: 100px; height: 40px"
+                                                                label="Date start"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                            ></TimeField>
+                                                        </div>
+                                                        <div class="d-flex-inline">
+                                                            <TimeField
+                                                                v-model="editForm.date_to"
+                                                                style="max-width: 100px; height: 40px"
+                                                                label="Date to"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                            ></TimeField>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="d-flex-inline">
+                                                            <v-checkbox
+                                                                v-model="editForm.billable"
+                                                                label="Billable"
+                                                            ></v-checkbox>
+                                                        </div>
+                                                    </div>
+                                                </v-card-text>
+                                                <v-divider></v-divider>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="error"
+                                                        text
+                                                        @click="closeEditDialog"
+                                                    >
+                                                        Cancel
+                                                    </v-btn>
+                                                    <v-btn
+                                                        color="success"
+                                                        text
+                                                        @click="saveChanges(item); closeEditDialog()"
+                                                    >
+                                                        Change
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
+                                        <v-btn
+                                            icon
+                                            x-small
+                                            @click="removeTrack(item.id)"
+                                        >
+                                            <v-icon>mdi-delete</v-icon>
+                                        </v-btn>
                                     </td>
                                 </tr>
                             </tbody>
@@ -635,12 +712,14 @@ import draggable from "vuedraggable";
 import BarChart from "./components/bar-chart";
 import DoughnutChart from "./components/doughnut-chart";
 import _ from "lodash";
+import TimeField from "./components/time-field";
 
 export default {
     components: {
         draggable,
         DoughnutChart,
-        BarChart
+        BarChart,
+        TimeField
     },
     data() {
         const self = this;
@@ -872,6 +951,13 @@ export default {
             dialogExportCSV: false,
             dialogPrint: false,
             dialogSave: false,
+            dialogEdit: false,
+            editForm: {
+                id: null,
+                date_from: null,
+                date_to: null,
+                billable: null
+            },
             report: {
                 groupItems: [
                     {
@@ -1132,7 +1218,7 @@ export default {
                 if (i.children) {
                     revenue += parseFloat(this.calculateRevenue(i.children));
                 } else {
-                    if (i.revenue) {
+                    if (i.billable) {
                         revenue += parseFloat(i.revenue);
                     }
                 }
@@ -1168,6 +1254,36 @@ export default {
                     this.actionColor = 'error'
                     this.snackbar = true;
                 })
+        },
+        saveChanges() {
+            this.$store.dispatch('Tracking/updateTrack', {
+                id: this.editForm.id,
+                date_from: this.editForm.date_from,
+                date_to: this.editForm.date_to,
+                billable: this.editForm.billable
+            })
+                .then(successResult => {
+                    if (successResult) {
+                        this.genPreview();
+                    }
+                });
+        },
+        removeTrack(trackId) {
+            // TODO
+        },
+        closeEditDialog() {
+            this.editForm.id = null;
+            this.editForm.date_from = null;
+            this.editForm.date_to = null;
+            this.editForm.billable = null;
+            this.dialogEdit = false;
+        },
+        openEditDialog(item) {
+            this.editForm.id = item.id;
+            this.editForm.date_from = item.date_from;
+            this.editForm.date_to = item.date_to;
+            this.editForm.billable = item.billable;
+            this.dialogEdit = true;
         }
     },
     computed: {

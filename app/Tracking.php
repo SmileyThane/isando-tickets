@@ -74,9 +74,13 @@ class Tracking extends Model
     }
 
     public function getRevenueAttribute() {
+        if (!$this->billable) return 0;
         if (isset($this->entity) && $this->entity_type === TrackingProject::class) {
             return number_format($this->entity->rate * $this->passed_decimal, 2);
         }
-        return null;
+        if (isset($this->entity) && $this->entity_type === Ticket::class) {
+            return number_format(0 * $this->passed_decimal, 2);
+        }
+        return 0;
     }
 }

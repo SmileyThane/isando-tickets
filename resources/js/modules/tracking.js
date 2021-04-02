@@ -19,6 +19,12 @@ export default {
                         dispatch('getSettings');
                     }
                 });
+        },
+        updateTrack({commit}, { id, date_from, date_to, billable }) {
+            return axios.patch(`/api/tracking/tracker/${id}`, {date_from, date_to, billable})
+                .then(({ data: { data, success } }) => {
+                    return success;
+                });
         }
     },
     mutations: {
