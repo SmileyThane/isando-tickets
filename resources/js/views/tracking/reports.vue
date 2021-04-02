@@ -375,7 +375,7 @@
                         {{ item.name }}
                     </div>
                     <div v-else class="d-flex flex-row">
-                        <table border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
+                        <table class="v-data-table" border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
                             <tbody>
                                 <tr>
                                     <td class="pa-2" align="right" width="10%">
@@ -453,6 +453,23 @@
                                                                 placeholder="hh:mm"
                                                                 format="HH:mm"
                                                             ></TimeField>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="d-flex-inline">
+                                                            <TagBtn
+                                                                :key="item.id"
+                                                                :color="themeBgColor"
+                                                                v-model="editForm.tags"
+                                                            ></TagBtn>
+                                                            <v-chip
+                                                                v-if="editForm.tags"
+                                                                v-for="tag in editForm.tags"
+                                                                small
+                                                                :key="tag.id"
+                                                                :color="tag.color"
+                                                                :text-color="invertColor(tag.color)"
+                                                            >{{tag.name}}</v-chip>
                                                         </div>
                                                     </div>
                                                     <div class="d-flex flex-row">
@@ -966,7 +983,8 @@ export default {
                 id: null,
                 date_from: null,
                 date_to: null,
-                billable: null
+                billable: null,
+                tags: [],
             },
             report: {
                 groupItems: [
@@ -1074,6 +1092,7 @@ export default {
             this.$store.dispatch('Tracking/getSettings');
         },
         invertColor(hex, bw = true) {
+            console.log(hex);
             return Helper.invertColor(hex.substr(0, 7), bw);
         },
         async setPeriod(periodKey = 'today') {
@@ -1276,7 +1295,8 @@ export default {
                 id: this.editForm.id,
                 date_from: this.editForm.date_from,
                 date_to: this.editForm.date_to,
-                billable: this.editForm.billable
+                billable: this.editForm.billable,
+                tags: this.editForm.tags
             })
                 .then(successResult => {
                     if (successResult) {
@@ -1292,6 +1312,7 @@ export default {
             this.editForm.date_from = null;
             this.editForm.date_to = null;
             this.editForm.billable = null;
+            this.editForm.tags = [];
             this.dialogEdit[item.id] = false;
         },
         openEditDialog(item) {
@@ -1299,6 +1320,7 @@ export default {
             this.editForm.date_from = item.date_from;
             this.editForm.date_to = item.date_to;
             this.editForm.billable = item.billable;
+            this.editForm.tags = item.tags;
             this.dialogEdit[item.id] = true;
         }
     },
