@@ -415,7 +415,7 @@
                                     </td>
                                     <td class="pa-2" align="center" width="5%">
                                         <v-dialog
-                                            v-model="dialogEdit"
+                                            v-model="dialogEdit[item.id]"
                                             width="500"
                                         >
                                             <template v-slot:activator="{ on, attrs }">
@@ -470,14 +470,14 @@
                                                     <v-btn
                                                         color="error"
                                                         text
-                                                        @click="closeEditDialog"
+                                                        @click="closeEditDialog(item)"
                                                     >
                                                         Cancel
                                                     </v-btn>
                                                     <v-btn
                                                         color="success"
                                                         text
-                                                        @click="saveChanges(item); closeEditDialog()"
+                                                        @click="saveChanges(item); closeEditDialog(item)"
                                                     >
                                                         Change
                                                     </v-btn>
@@ -713,13 +713,15 @@ import BarChart from "./components/bar-chart";
 import DoughnutChart from "./components/doughnut-chart";
 import _ from "lodash";
 import TimeField from "./components/time-field";
+import TagBtn from "./components/tag-btn";
 
 export default {
     components: {
         draggable,
         DoughnutChart,
         BarChart,
-        TimeField
+        TimeField,
+        TagBtn
     },
     data() {
         const self = this;
@@ -959,7 +961,7 @@ export default {
             dialogExportCSV: false,
             dialogPrint: false,
             dialogSave: false,
-            dialogEdit: false,
+            dialogEdit: {},
             editForm: {
                 id: null,
                 date_from: null,
@@ -1179,6 +1181,11 @@ export default {
             axios.post('/api/tracking/reports', this.builder)
                 .then(({ data: { data } }) => {
                     this.reportData.entities = data;
+                    this.dialogEdit = {};
+                    const self = this;
+                    data.map(i => function () {
+                       self.dialogEdit[i.id] = false;
+                    });
 
                 })
                 .catch(err => {
@@ -1280,19 +1287,19 @@ export default {
         removeTrack(trackId) {
             // TODO
         },
-        closeEditDialog() {
+        closeEditDialog(item) {
             this.editForm.id = null;
             this.editForm.date_from = null;
             this.editForm.date_to = null;
             this.editForm.billable = null;
-            this.dialogEdit = false;
+            this.dialogEdit[item.id] = false;
         },
         openEditDialog(item) {
             this.editForm.id = item.id;
             this.editForm.date_from = item.date_from;
             this.editForm.date_to = item.date_to;
             this.editForm.billable = item.billable;
-            this.dialogEdit = true;
+            this.dialogEdit[item.id] = true;
         }
     },
     computed: {
