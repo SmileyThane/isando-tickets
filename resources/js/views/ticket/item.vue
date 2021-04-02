@@ -690,7 +690,7 @@
                                                         :color="themeBgColor"
                                                         :href="attachment.link"
                                                         class="ma-2"
-                                                        text-color="white"
+                                                        :text-color="themeFgColor"
                                                     >
                                                         {{ attachment.name }}
                                                     </v-chip>
@@ -848,7 +848,7 @@
                                                     :color="themeBgColor"
                                                     :href="attachment.link"
                                                     class="ma-2"
-                                                    text-color="white"
+                                                    :text-color="themeFgColor"
                                                 >
                                                     {{ attachment.name }}
                                                 </v-chip>
@@ -906,7 +906,7 @@
                                                 :color="themeBgColor"
                                                 :href="attachment.link"
                                                 class="ma-2"
-                                                text-color="white"
+                                                :text-color="themeFgColor"
                                             >
                                                 {{ attachment.name }}
                                             </v-chip>
