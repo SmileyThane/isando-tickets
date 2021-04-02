@@ -1546,6 +1546,10 @@
                                                         dense
                                                         hide-details
                                                         style="display: inline-block; margin-top: 0!important"
+                                                        @click="
+                                                            !mergeTicketForm.child_ticket_id.includes(item.id) ?
+                                                            mergeTicketForm.child_ticket_id.push(item.id) :
+                                                            mergeTicketForm.child_ticket_id.splice(mergeTicketForm.child_ticket_id.indexOf(item.id), 1)"
                                                     />
                                                     <v-tooltip bottom>
                                                     <template v-slot:activator="{ on, attrs }">
