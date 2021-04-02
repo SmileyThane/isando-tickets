@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 use App\Client;
 use App\Http\Controllers\API\Tracking\PDF;
+use App\Tag;
 use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
@@ -180,10 +181,16 @@ class TrackingReportRepository
                     case 'billable':
                         $tracking->where('tracking.billable', '=', (int)$filter['selected']);
                         break;
+                    case 'tag':
+                        $tracking->whereHas('Tags', function($query) use ($filter) {
+                            $query->whereIn('tags.id', $filter['selected']);
+                        });
+                        break;
                 }
             }
         }
 
+//        dd($tracking->toSql());
         $tracks = $tracking->get();
 //            ->map(function ($item) {
 //                $obj = new \stdClass();

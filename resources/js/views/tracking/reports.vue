@@ -906,6 +906,14 @@ export default {
                     ],
                     selected: null,
                     multiply: false
+                },
+                {
+                    value: 'tag',
+                    text: 'Tags',
+                    store: 'Tags/getTags',
+                    items: [],
+                    selected: [],
+                    multiply: true
                 }
             ],
             chart: {
@@ -1045,6 +1053,7 @@ export default {
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Projects/getProjectList', { search: null });
         this.$store.dispatch('Team/getCoworkers', { search: null });
+        this.$store.dispatch('Tags/getTagList', { search: null });
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
     },
     mounted() {
