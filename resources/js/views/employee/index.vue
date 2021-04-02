@@ -22,77 +22,83 @@
                             <v-expansion-panel-content>
                                 <v-form>
                                     <div class="row">
-                                        <v-text-field
-                                            v-model="employeeForm.name"
-                                            :color="themeBgColor"
-                                            :error-messages="employeeErrors.name"
-                                            :label="langMap.main.name"
-                                            class="col-md-4"
-                                            dense
-                                            name="name"
-                                            required
-                                            type="text"
-                                        ></v-text-field>
-                                        <v-text-field
-                                            v-model="employeeForm.middle_name"
-                                            :color="themeBgColor"
-                                            :error-messages="employeeErrors.middle_name"
-                                            :label="this.$store.state.lang.lang_map.main.middle_name"
-                                            class="col-md-4"
-                                            dense
-                                            lazy-validation
-                                            name="middle_name"
-                                            type="text"
-                                        ></v-text-field>
-                                        <v-text-field
-                                            v-model="employeeForm.surname"
-                                            :color="themeBgColor"
-                                            :error-messages="employeeErrors.surname"
-                                            :label="this.$store.state.lang.lang_map.main.last_name"
-                                            class="col-md-4"
-                                            dense
-                                            lazy-validation
-                                            name="surname"
-                                            type="text"
-                                        ></v-text-field>
-                                        <v-text-field
-                                            v-model="employeeForm.email"
-                                            :color="themeBgColor"
-                                            :error-messages="employeeErrors.email"
-                                            :label="langMap.main.email"
-                                            class="col-md-4"
-                                            dense
-                                            name="email"
-                                            required
-                                            type="email"
-                                        ></v-text-field>
-                                        <v-autocomplete
-                                            v-model="employeeForm.client_id"
-                                            :color="themeBgColor"
-                                            :error-messages="employeeErrors.client_id"
-                                            :items="customers"
-                                            :label="langMap.customer.customer"
-                                            :placeholder="this.$store.state.lang.lang_map.main.search"
-                                            class="col-md-4"
-                                            dense
-                                            hide-no-data
-                                            hide-selected
-                                            item-text="name"
-                                            item-value="id"
-                                        ></v-autocomplete>
-                                        <v-autocomplete
-                                            v-model="employeeForm.language_id"
-                                            :color="themeBgColor"
-                                            :item-color="themeBgColor"
-                                            :items="languages"
-                                            :label="this.$store.state.lang.lang_map.main.language"
-                                            class="col-md-4"
-                                            dense
-                                            item-text="name"
-                                            item-value="id"
-                                            lazy-validation
-                                            name="language"
-                                        />
+                                        <div class="col-md-4">
+                                            <v-text-field
+                                                v-model="employeeForm.name"
+                                                :color="themeBgColor"
+                                                :error-messages="employeeErrors.name"
+                                                :label="langMap.main.name"
+                                                dense
+                                                name="name"
+                                                required
+                                                type="text"
+                                            ></v-text-field>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <v-text-field
+                                                v-model="employeeForm.middle_name"
+                                                :color="themeBgColor"
+                                                :error-messages="employeeErrors.middle_name"
+                                                :label="this.$store.state.lang.lang_map.main.middle_name"
+                                                dense
+                                                lazy-validation
+                                                name="middle_name"
+                                                type="text"
+                                            ></v-text-field>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <v-text-field
+                                                v-model="employeeForm.surname"
+                                                :color="themeBgColor"
+                                                :error-messages="employeeErrors.surname"
+                                                :label="this.$store.state.lang.lang_map.main.last_name"
+                                                dense
+                                                lazy-validation
+                                                name="surname"
+                                                type="text"
+                                            ></v-text-field>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <v-text-field
+                                                v-model="employeeForm.email"
+                                                :color="themeBgColor"
+                                                :error-messages="employeeErrors.email"
+                                                :label="langMap.main.email"
+                                                dense
+                                                name="email"
+                                                required
+                                                type="email"
+                                            ></v-text-field>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <v-autocomplete
+                                                v-model="employeeForm.client_id"
+                                                :color="themeBgColor"
+                                                :error-messages="employeeErrors.client_id"
+                                                :items="customers"
+                                                :label="langMap.customer.customer"
+                                                :placeholder="this.$store.state.lang.lang_map.main.search"
+                                                dense
+                                                hide-no-data
+                                                hide-selected
+                                                item-text="name"
+                                                item-value="id"
+                                            ></v-autocomplete>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <v-autocomplete
+                                                v-model="employeeForm.language_id"
+                                                :color="themeBgColor"
+                                                :item-color="themeBgColor"
+                                                :items="languages"
+                                                :label="this.$store.state.lang.lang_map.main.language"
+                                                dense
+                                                item-text="name"
+                                                item-value="id"
+                                                lazy-validation
+                                                name="language"
+                                            />
+                                        </div>
                                         <v-btn
                                             :color="themeBgColor"
                                             bottom
@@ -299,7 +305,6 @@ themeBgColor: this.$store.state.themeBgColor,
                 name: '',
                 email: '',
                 client_id: '',
-                is_active: false
             },
             suppliers: []
         }
@@ -383,6 +388,7 @@ themeBgColor: this.$store.state.themeBgColor,
             });
         },
         addEmployee() {
+            this.employeeForm.is_active = false
             axios.post(`/api/client/employee`, this.employeeForm).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -390,6 +396,7 @@ themeBgColor: this.$store.state.themeBgColor,
                     this.snackbarMessage = this.langMap.company.employee_created
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.employeeForm = {}
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.errorType = 'error';

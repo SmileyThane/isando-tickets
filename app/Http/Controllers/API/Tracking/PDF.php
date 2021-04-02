@@ -179,9 +179,9 @@ class PDF extends FPDF {
         $this->Cell(array_sum($w),0,'','T');
     }
 
-    public function EasyTable(Array $headers, Array $data) {
+    public function EasyTable(Array $headers, Array $data, String $columnWidths) {
         try {
-            $table = new \easyTable($this, '%{7,4,4,4,11,25,25,10,5,5}', 'width:100%;border:0;font-size:8');
+            $table = new \easyTable($this, $columnWidths, 'width:100%;border:0;font-size:8');
 
             for($i=0;$i<count($headers);$i++)
                 $table->easyCell($headers[$i]['text'], $headers[$i]['style']);

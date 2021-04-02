@@ -15,7 +15,7 @@ class Tracking extends Model
     ];
 
     protected $appends = [
-        'passed', 'service', 'entity'
+        'passed', 'service', 'entity', 'passed_decimal', 'revenue'
     ];
 
     public function User() {
@@ -25,7 +25,9 @@ class Tracking extends Model
     public function getEntityAttribute() {
         if (isset($this->entity_type)) {
             if ($this->entity_type === TrackingProject::class) {
-                return $this->entity_type::with('Client')->with('Product')->find($this->entity_id);
+                return $this->entity_type::with('Client')
+                    ->with('Product')
+                    ->find($this->entity_id);
             }
             if ($this->entity_type === Ticket::class) {
                 return $this->entity_type::with('assignedPerson')->find($this->entity_id);
@@ -59,11 +61,22 @@ class Tracking extends Model
         return Carbon::parse($this->date_to)->diffInSeconds(Carbon::parse($this->date_from));
     }
 
+    public function getPassedDecimalAttribute() {
+        return floor($this->passed / 60 / 60 * 100) / 100;
+    }
+
     public function getDateFromAttribute() {
         return Carbon::parse($this->attributes['date_from'])->utc()->format('Y-m-d\TH:i:s.uP');
     }
 
     public function getDateToAttribute() {
         return Carbon::parse($this->attributes['date_to'])->utc()->format('Y-m-d\TH:i:s.uP');
+    }
+
+    public function getRevenueAttribute() {
+        if (isset($this->entity) && $this->entity_type === TrackingProject::class) {
+            return number_format($this->entity->rate * $this->passed_decimal, 2);
+        }
+        return null;
     }
 }
