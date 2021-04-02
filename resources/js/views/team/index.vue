@@ -236,6 +236,7 @@ themeBgColor: this.$store.state.themeBgColor,
                     response = response.data
                     if (response.success === true) {
                         this.getTeams()
+                        this.teamForm = {}
                     } else {
                         console.log('error')
                     }

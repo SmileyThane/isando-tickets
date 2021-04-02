@@ -188,7 +188,8 @@
                                         <template v-slot:selection="{ index, text }">
                                             <v-chip
                                                 :color="themeBgColor"
-                                            >
+                                                class="ma-2"
+                                                :text-color="themeFgColor"                                            >
                                                 {{ text }}
                                             </v-chip>
                                         </template>
@@ -744,6 +745,22 @@
                                             }} - {{ ticket.name }}:
                                         </span>
                                         <div v-html="child_ticket.description"></div>
+                                        <v-col v-if="child_ticket.attachments.length > 0 " cols="12">
+                                            <h4>{{ langMap.main.attachments }}</h4>
+                                            <div
+                                                v-for="attachment in child_ticket.attachments"
+                                                v-if="ticket.attachments.length > 0"
+                                            >
+                                                <v-chip
+                                                    :color="themeBgColor"
+                                                    :href="attachment.link"
+                                                    class="ma-2"
+                                                    :text-color="themeFgColor"
+                                                >
+                                                    {{ attachment.name }}
+                                                </v-chip>
+                                            </div>
+                                        </v-col>
                                         <span v-if="ticket.merge_comment"
                                               class="caption text-center"
                                         >
@@ -845,7 +862,7 @@
                             </v-spacer>
                         </div>
                         <v-card
-                            v-if="ticket.description"
+                            v-if="ticket.description || ticket.attachments"
                             class="mx-auto"
                             color="#f2f2f2"
                             dense
@@ -879,6 +896,22 @@
                                         }} - {{ ticket.name }}:
                                     </span>
                                     <div v-html="ticket.description"></div>
+                                    <v-col v-if="ticket.attachments.length > 0 " cols="12">
+                                        <h4>{{ langMap.main.attachments }}</h4>
+                                        <div
+                                            v-for="attachment in ticket.attachments"
+                                            v-if="ticket.attachments.length > 0"
+                                        >
+                                            <v-chip
+                                                :color="themeBgColor"
+                                                :href="attachment.link"
+                                                class="ma-2"
+                                                text-color="white"
+                                            >
+                                                {{ attachment.name }}
+                                            </v-chip>
+                                        </div>
+                                    </v-col>
                                 </v-list-item-content>
                             </v-list-item>
                         </v-card>
