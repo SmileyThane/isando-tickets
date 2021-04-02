@@ -745,11 +745,11 @@
                                             }} - {{ ticket.name }}:
                                         </span>
                                         <div v-html="child_ticket.description"></div>
-                                        <v-col v-if="child_ticket.attachments.length > 0 " cols="12">
+                                        <v-col v-if="child_ticket.attachments && child_ticket.attachments.length > 0 " cols="12">
                                             <h4>{{ langMap.main.attachments }}</h4>
                                             <div
                                                 v-for="attachment in child_ticket.attachments"
-                                                v-if="ticket.attachments.length > 0"
+                                                v-if="child_ticket.attachments.length > 0"
                                             >
                                                 <v-chip
                                                     :color="themeBgColor"
@@ -896,7 +896,7 @@
                                         }} - {{ ticket.name }}:
                                     </span>
                                     <div v-html="ticket.description"></div>
-                                    <v-col v-if="ticket.attachments.length > 0 " cols="12">
+                                    <v-col v-if="ticket.attachments && ticket.attachments.length > 0 " cols="12">
                                         <h4>{{ langMap.main.attachments }}</h4>
                                         <div
                                             v-for="attachment in ticket.attachments"
@@ -1527,9 +1527,12 @@
                                                     <v-list-item-group :color="themeBgColor">
                                                         <v-list-item
                                                             v-for="(item, i) in tickets"
-                                                            :key="item.id"
+                                                            :key="i"
                                                             :color="themeBgColor"
-                                                            @click="showTicket(item.id)"
+                                                            @click="
+                                                            !mergeTicketForm.child_ticket_id.includes(item.id) ?
+                                                            mergeTicketForm.child_ticket_id.push(item.id) :
+                                                            mergeTicketForm.child_ticket_id.splice(mergeTicketForm.child_ticket_id.indexOf(item.id), 1)"
                                                         >
                                                             <v-list-item-title>
                                                 <span>
