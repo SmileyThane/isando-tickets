@@ -698,11 +698,11 @@
                                                         v-bind="attrs"
                                                         v-on="on"
                                                         :disabled="!clientEmployee.employee.user_data.is_active" icon
-                                                        @click.native.stop="sendInvite(clientEmployee.employee)">
+                                                        @click.native.stop="resetPassword(clientEmployee.employee)">
                                                         <v-icon small>mdi-email-alert</v-icon>
                                                     </v-btn>
                                                 </template>
-                                                <span>{{ langMap.company.resend_invite }}</span>
+                                                <span>{{ langMap.company.resend_password }}</span>
                                             </v-tooltip>
                                             <v-tooltip top>
                                                 <template v-slot:activator="{ on, attrs }">
@@ -1942,15 +1942,13 @@ themeBgColor: this.$store.state.themeBgColor,
                 }
             });
         },
-        sendInvite(item) {
-            let request = {}
-            request.user_id = item.user_data.id
-            request.role_id = item.roles[0].id
-            axios.post(`/api/user/invite`, request).then(response => {
+        resetPassword(item) {
+            axios.post('/api/reset_password', {
+                email: item.email
+            }).then(response => {
                 response = response.data
                 if (response.success === true) {
-                    this.getClient()
-                    this.snackbarMessage = this.langMap.company.invitation_sent;
+                    this.snackbarMessage = this.langMap.company.reset_password_email_sent;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
