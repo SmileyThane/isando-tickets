@@ -10,6 +10,7 @@ export default {
                     if (success) {
                         commit('SET_SETTINGS', data);
                     }
+                    return success;
                 });
         },
         updateSettings({ commit, dispatch }, { currency }) {

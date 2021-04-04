@@ -664,6 +664,19 @@
                                         label="Display time with decimal points"
                                     ></v-checkbox>
                                 </div>
+                                <div class="d-inline-block">
+                                    <v-checkbox
+                                        class="my-0"
+                                        hide-details
+                                        v-model="report.pdf.sendByEmail"
+                                        label="Send report by email"
+                                    ></v-checkbox>
+                                    <v-text-field
+                                        v-if="report.pdf.sendByEmail"
+                                        v-model="report.pdf.email"
+                                        label="Recipient email"
+                                    ></v-text-field>
+                                </div>
                             </div>
                         </v-card-text>
                         <v-card-actions>
@@ -1104,7 +1117,9 @@ export default {
                     showCover: true,
                     showRevenue: true,
                     timeInDecimal: false,
-                    hideColumns: []
+                    hideColumns: [],
+                    sendByEmail: false,
+                    email: ''
                 },
                 csv: {
                     group: {
@@ -1236,7 +1251,16 @@ export default {
     },
     methods: {
         __getSettings() {
-            this.$store.dispatch('Tracking/getSettings');
+            this.$store.dispatch('Tracking/getSettings')
+                .then(successResult => {
+                   if (successResult) {
+                       const settings = this.$store.getters['Tracking/getSettings'];
+                       console.log(settings);
+                       if (settings && settings.email) {
+                           this.report.pdf.email = settings.email.email;
+                       }
+                   }
+                });
         },
         invertColor(hex, bw = true) {
             return Helper.invertColor(hex.substr(0, 7), bw);

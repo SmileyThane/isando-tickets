@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 use App\Client;
 use App\Http\Controllers\API\Tracking\PDF;
+use App\Notifications\SendTrackingReportByEmail;
 use App\Tag;
 use App\Ticket;
 use App\Tracking;
@@ -13,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 
@@ -476,8 +478,7 @@ class TrackingReportRepository
         // PAGE 2 and next
         $pdf->AddPage('L', 'A4');
         $pdf->SetFont('Arial', '', 10);
-        $columnWidths = '%{' . implode(',', collect($headers)->map(function($item) {return $item['width'];})->toArray()) . '}';
-        $pdf->EasyTable($headers, $data, $columnWidths);
+        $pdf->EasyTable($headers, $data);
 
         $html = '';
         // GENERATE FILE
@@ -485,6 +486,14 @@ class TrackingReportRepository
             $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
             File::put($tmpFileName, $pdf->Output('S', $tmpFileName, true));
             if (File::exists($tmpFileName)) {
+                $email = $request->get('email', Auth::user()->contact_email->email);
+                if (
+                        $request->has('sendByEmail') && $request->get('sendByEmail') === true
+                    &&  $request->has('email') && $email
+                ) {
+                    Notification::route('mail', $email)
+                        ->notify(new SendTrackingReportByEmail($tmpFileName));
+                }
                 return response()->file($tmpFileName)->deleteFileAfterSend();
             }
         } catch (\Exception $exception) {
