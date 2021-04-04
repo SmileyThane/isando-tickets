@@ -61,7 +61,6 @@ class TrackingProjectRepository
             ->paginate($request->per_page ?? $trackingProjects->count());
     }
 
-
     public function find($id)
     {
         return TrackingProject::where('id', $id)->with('client', 'product')->first();
@@ -111,11 +110,21 @@ class TrackingProjectRepository
         if ($request->has('rate')) {
             $trackingProject->rate = $request->rate;
         }
-        if ($request->has('rate_from')) {
+        if ($request->has('rate_from') && $trackingProject->rate_from !== $request->rate_from) {
             $trackingProject->rate_from = $request->rate_from;
         }
         if ($request->has('rate_from_date')) {
             $trackingProject->rate_from_date = $request->rate_from_date;
+        }
+        if ($request->has('rate_type_from') && $request->get('rate_type_from') === 2) {
+            $trackers = $trackingProject->Trackers()->get();
+            foreach ($trackers as $tracker) {
+                $tracker->rate = $trackingProject->rate_from;
+                $tracker->save();
+            }
+            $trackingProject->rate = $trackingProject->rate_from;
+            $trackingProject->rate_from = null;
+            $trackingProject->rate_from_date = null;
         }
         $trackingProject->save();
         return $trackingProject;
