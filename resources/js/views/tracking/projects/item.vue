@@ -39,20 +39,20 @@
                 v-model="tab"
                 :color="themeBgColor"
             >
-                <v-tab>{{ langMap.tracking.create_project.status }}</v-tab>
+<!--                <v-tab>{{ langMap.tracking.create_project.status }}</v-tab>-->
                 <v-tab>{{ langMap.tracking.create_project.settings }}</v-tab>
 
                 <v-tabs-items
                     v-model="tab"
                 >
-                    <v-tab-item>
-                        <v-alert
-                            outlined
-                            type="info"
-                        >
-                            Coming soon
-                        </v-alert>
-                    </v-tab-item>
+<!--                    <v-tab-item>-->
+<!--                        <v-alert-->
+<!--                            outlined-->
+<!--                            type="info"-->
+<!--                        >-->
+<!--                            Coming soon-->
+<!--                        </v-alert>-->
+<!--                    </v-tab-item>-->
                     <v-tab-item>
                         <v-container fluid>
                             <v-row>

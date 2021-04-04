@@ -31,10 +31,14 @@ class TrackingProject extends Model
     }
 
     public function getRevenueAttribute() {
-        if (isset($this->rate) && is_numeric($this->rate)) {
-            return number_format($this->tracked / 60 / 60 * $this->rate, 2);
-        }
-        return 0;
+        $revenue = $this
+            ->Trackers()
+            ->get()
+            ->map(function($item) {
+                return $item->revenue;
+            })
+            ->sum();
+        return number_format($revenue, 2);
     }
 
     public static function boot() {

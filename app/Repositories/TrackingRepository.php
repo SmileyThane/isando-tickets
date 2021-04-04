@@ -113,6 +113,11 @@ class TrackingRepository
             $this->logTracking($tracking->id, TrackingLogger::ATTACH_TAGS, null, $request->tags);
         }
 
+        if ($tracking->entity_type === TrackingProject::class) {
+            $tracking->rate = $tracking->entity->rate;
+            $tracking->save();
+        }
+
         return $tracking;
     }
 
@@ -141,6 +146,10 @@ class TrackingRepository
         if ($request->has('entity') && $request->entity && $request->entity_type) {
             $tracking->entity_id = $request->entity['id'];
             $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
+            if ($tracking->entity_type === TrackingProject::class) {
+                $project = TrackingProject::find($request->entity['id']);
+                $tracking->rate = $project->rate;
+            }
         }
         if ($request->has('service')) {
             if (!is_null($request->service)) {

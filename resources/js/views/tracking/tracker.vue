@@ -398,10 +398,10 @@
                                                 :width="headers.find(i => i.value === 'description').width"
                                             >
                                                 <v-edit-dialog
-                                                    @save="save(row, 'description')"
+                                                    @save="debounceSave(row, 'description')"
                                                     @cancel="cancel"
                                                     @open="open"
-                                                    @close="save(row, 'description')"
+                                                    @close="debounceSave(row, 'description')"
                                                     :ref="`dialog${row.id}`"
                                                 >
                                                     <span v-if="row.service">
@@ -457,17 +457,17 @@
                                                 :width="headers.find(i => i.value === 'entity.name').width"
                                             >
                                                 <v-edit-dialog
-                                                    @save="save(row, 'entity', row.entity)"
+                                                    @save="debounceSave(row, 'entity', row.entity)"
                                                     @cancel="cancel"
                                                     @open="open"
-                                                    @close="save(row, 'entity', row.entity)"
+                                                    @close="debounceSave(row, 'entity', row.entity)"
                                                 >
                                                     <ProjectBtn
                                                         :key="row.id"
                                                         :color="themeBgColor"
                                                         v-model="row.entity"
-                                                        @blur="save(row, 'entity', row.entity)"
-                                                        @input="save(row, 'entity', row.entity)"
+                                                        @blur="debounceSave(row, 'entity', row.entity)"
+                                                        @input="debounceSave(row, 'entity', row.entity)"
                                                     ></ProjectBtn>
                                                 </v-edit-dialog>
                                             </td>
@@ -479,7 +479,7 @@
                                                     :key="row.id"
                                                     :color="themeBgColor"
                                                     v-model="row.tags"
-                                                    @blur="save(row, 'tags', row.tags)"
+                                                    @blur="debounceSave(row, 'tags', row.tags)"
                                                 ></TagBtn>
                                             </td>
                                             <td
@@ -491,7 +491,7 @@
                                                     :icon="!row.billable"
                                                     x-small
                                                     :color="themeBgColor"
-                                                    @click="row.billable = !row.billable; save(row, 'billable')"
+                                                    @click="row.billable = !row.billable; debounceSave(row, 'billable')"
                                                 >
                                                     <v-icon center v-bind:class="{ 'white--text': row.billable }">
                                                         mdi-currency-usd
@@ -504,7 +504,12 @@
                                             >
                                                 <div class="d-flex flex-row">
                                                     <div class="d-flex-inline">
-                                                        <v-edit-dialog>
+                                                        <v-edit-dialog
+                                                            @save="debounceSave(row, 'date_from', row.date_from)"
+                                                            @cancel="cancel"
+                                                            @open="open"
+                                                            @close="debounceSave(row, 'date_from', row.date_from)"
+                                                        >
                                                             {{ moment(row.date_from).format(timeFormat) }}
                                                             <template v-slot:input>
                                                                 <TimeField
@@ -512,7 +517,7 @@
                                                                     style="max-width: 100px; height: 40px"
                                                                     placeholder="hh:mm"
                                                                     format="HH:mm"
-                                                                    @input="save(row, 'date_from', row.date_from)"
+                                                                    @input="debounceSave(row, 'date_from', row.date_from)"
                                                                 ></TimeField>
                                                             </template>
                                                         </v-edit-dialog>
@@ -520,19 +525,22 @@
                                                     <div class="d-flex-inline">&nbsp;&mdash;&nbsp;</div>
                                                     <div class="d-flex-inline">
                                                         <v-edit-dialog
-                                                            :return-value.sync="row.date_to"
+                                                            @save="debounceSave(row, 'date_to', row.date_to)"
+                                                            @cancel="cancel"
+                                                            @open="open"
+                                                            @close="debounceSave(row, 'date_to', row.date_to)"
                                                             v-if="row.status == 'stopped'"
                                                         >
-                                                    <span v-if="row.date_to && row.status == 'stopped'">
-                                                        {{ moment(row.date_to).format(timeFormat) }}
-                                                    </span>
+                                                            <span v-if="row.date_to && row.status == 'stopped'">
+                                                                {{ moment(row.date_to).format(timeFormat) }}
+                                                            </span>
                                                             <template v-slot:input>
                                                                 <TimeField
                                                                     v-model="row.date_to"
                                                                     style="max-width: 100px; height: 40px"
                                                                     placeholder="hh:mm"
                                                                     format="HH:mm"
-                                                                    @input="save(row, 'date_to', row.date_to)"
+                                                                    @input="debounceSave(row, 'date_to', row.date_to)"
                                                                 ></TimeField>
                                                             </template>
                                                         </v-edit-dialog>
@@ -710,7 +718,7 @@ export default {
             timeFormat: 'HH:mm',
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             /* Snackbar */
             snackbarMessage: '',
             snackbar: false,
@@ -826,6 +834,7 @@ themeBgColor: this.$store.state.themeBgColor,
     },
     created: function () {
         this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
+        this.debounceSave = _.debounce(this.save, 500);
         if (Helper.getKey('dateRange')) {
             this.dateRange = Helper.getKey('dateRange');
             if (moment(this.dateRange.end).format(this.dateFormat) === moment().subtract(1, 'days').format(this.dateFormat)) {
@@ -856,7 +865,7 @@ themeBgColor: this.$store.state.themeBgColor,
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
@@ -1166,7 +1175,7 @@ themeBgColor: this.$store.state.themeBgColor,
             const seconds = this.helperCalculatePassedTime(item.date_from, item.date_to);
             item.date_from = moment(item.date_from).set(date).format();
             item.date_to = moment(item.date_from).add(seconds, "seconds").format();
-            this.save(item, 'date_from');
+            this.debounceSave(item, 'date_from');
         }
     },
     computed: {
