@@ -163,7 +163,6 @@
                     item-text="text"
                     item-value="value"
                     v-model="builder.round"
-                    disabled
                 >
                 </v-select>
             </div>
@@ -1260,7 +1259,6 @@ export default {
                 .then(successResult => {
                    if (successResult) {
                        const settings = this.$store.getters['Tracking/getSettings'];
-                       console.log(settings);
                        if (settings && settings.email) {
                            this.report.pdf.email = settings.email.email;
                        }
@@ -1364,14 +1362,16 @@ export default {
             }
         },
         genPreview() {
-            // const coworkers = this.builder.filters.find(i => i.value === 'coworkers');
-            // if (coworkers) {
-            //     const list = this.$store.getters['Team/getCoworkers'];
-            //     this.report.pdf.coworkers = list.filter(x => coworkers.selected.indexOf(x.id) >= 0)
-            //                                     .map(i => i.full_name)
-            //                                     .join(', ');
-            //
-            // }
+            const dateFormat = 'dddd DD/MM/YYYY';
+            if (this.builder.period.start) {
+                if (this.builder.period.start === this.builder.period.end) {
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format(dateFormat)}`;
+                } else {
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format(dateFormat)} - ${moment(this.builder.period.end).format(dateFormat)}`;
+                }
+            } else {
+                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format(dateFormat)}`;
+            }
             axios.post('/api/tracking/reports', this.builder)
                 .then(({ data: { data } }) => {
                     this.reportData.entities = data;
@@ -1621,13 +1621,16 @@ export default {
         }
     },
     watch: {
+        'builder.round': function() {
+            this.genPreview();
+        },
         'builder.filters': function() {
             this.genPreview();
         },
         'builder.group': function() {
             this.genPreview();
         },
-        'builder.period': function () {
+        'builder': function () {
             const dateFormat = 'dddd DD/MM/YYYY';
             if (this.builder.period.start) {
                 if (this.builder.period.start === this.builder.period.end) {

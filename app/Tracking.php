@@ -65,6 +65,11 @@ class Tracking extends Model
         return floor($this->passed / 60 / 60 * 100) / 100;
     }
 
+    public function setPassedAttribute($value)
+    {
+        $this->attributes['passed'] = $value;
+    }
+
     public function getDateFromAttribute() {
         return Carbon::parse($this->attributes['date_from'])->utc()->format('Y-m-d\TH:i:s.uP');
     }

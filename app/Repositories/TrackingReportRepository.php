@@ -21,6 +21,10 @@ use Illuminate\Support\Facades\File;
 class TrackingReportRepository
 {
     protected $timeInDecimal = false;
+    protected $round = 0;
+    protected $settings = [];
+    protected $company;
+    protected $currency = 'EUR';
 
     public function validate($request, $new = true)
     {
@@ -44,6 +48,8 @@ class TrackingReportRepository
     }
 
     protected function getData(Request $request) {
+        $this->company = Auth::user()->employee->companyData;
+        $this->currency = $this->company && $this->company->currency ? $this->company->currency->slug : $this->currency;
         $sorting        = $request->sort['value'];
         $grouping       = $request->group;
         if (isset($request->group) && isset($request->group['value']) && $request->group['value'] === 'custom') {
@@ -90,51 +96,7 @@ class TrackingReportRepository
                     ->orderBy('tracking.date_to', 'desc')
                     ->orderBy('tracking.date_from', 'desc');
                 break;
-            case 'duration-desc':
-                // TODO
-                break;
-            case 'duration-asc':
-                // TODO
-                break;
-            case 'revenue-asc':
-                // TODO
-                break;
-            case 'revenue-desc':
-                // TODO
-                //break;
         }
-
-//        if ($grouping->isNotEmpty()) {
-//            $fields = collect(['id', 'description', 'user_id', 'project_id', 'date_from', 'date_to', 'status', 'billable', 'billed', 'created_at', 'updated_at']);
-//            foreach ($grouping as $group) {
-//                switch ($group) {
-//                    case 'day':
-//                        // TODO
-//                        break;
-//                    case 'week':
-//                        // TODO
-//                        break;
-//                    case 'month':
-//                        // TODO
-//                        break;
-//                    case 'description':
-//                        $tracking->groupBy('tracking.description');
-//                        $fields = $fields->filter(function ($item) use ($group) {
-//                            return $item !== $group;
-//                        });
-//                        break;
-//                    case 'billability':
-//                        $tracking->groupBy('tracking.billable');
-//                        $fields = $fields->filter(function ($item) use ($group) {
-//                            return $item !== 'billable';
-//                        });
-//                        break;
-//                }
-//            }
-//            foreach ($fields as $field) {
-//                $tracking->groupBy("tracking.{$field}");
-//            }
-//        }
 
         if ($filtering->isNotEmpty()) {
             foreach ($filtering as $filter) {
@@ -194,22 +156,30 @@ class TrackingReportRepository
             }
         }
 
-//        dd($tracking->toSql());
-        $tracks = $tracking->get();
-//            ->map(function ($item) {
-//                $obj = new \stdClass();
-//                $obj->id = $item->id;
-//                $obj->description = $item->description;
-//                $obj->date_from = $item->date_from;
-//                $obj->date_to = $item->date_to;
-//                $obj->billable = $item->billable;
-//                return $obj;
-//            });
+        $tracks = $tracking->get()->toArray();
+
+        $this->round = $request->get('round', 0);
+        $round = $this->round;
+
+        $tracks = collect($tracks)->map(function ($track) use ($round) {
+            $time = $this->convertSecondsToTimeFormat($track['passed']);
+            $roundedTime = $this->getRoundTime($time, $round);
+            $track['passed'] = $this->convertTimeToSeconds($roundedTime);
+            $track['revenue'] = number_format((float)$track['rate'] * (float)$this->convertSecondsToDecimal((int)$track['passed']), 2);
+            return $track;
+        });
 
         return [
             'tracks' => $tracks,
             'grouping' => $grouping
         ];
+    }
+
+    function getRoundTime($time, $minutes = '5', $format = "H:i") {
+        if ($minutes === 0) return $time;
+        $seconds = strtotime($time);
+        $rounded = round($seconds / ($minutes * 60)) * ($minutes * 60);
+        return date($format, $rounded);
     }
 
     public function generate(Request $request) {
@@ -229,7 +199,7 @@ class TrackingReportRepository
     protected function getFieldData($tracking, $field = 'description') {
         switch ($field) {
             case 'month':
-                return Carbon::parse($tracking->date_from)->format('F Y');
+                return Carbon::parse($tracking['date_from'])->format('F Y');
             case 'week':
                 $startWeek = Carbon::parse($tracking->date_from)->startOfWeek(Carbon::MONDAY);
                 $endWeek = Carbon::parse($tracking->date_from)->endOfWeek(Carbon::SUNDAY);
@@ -241,19 +211,19 @@ class TrackingReportRepository
                         . $endWeek->format('D j M Y')
                     . ')';
             case 'day':
-                return Carbon::parse($tracking->date_from)->format('l, j M');
+                return Carbon::parse($tracking['date_from'])->format('l, j M');
             case 'description':
-                return $tracking->description ?? 'None';
+                return $tracking['description'] ?? 'None';
             case 'billability':
-                return $tracking->billable ? 'Billable' : 'Non-billable';
+                return $tracking['billable'] ? 'Billable' : 'Non-billable';
             case 'service':
-                return $tracking->service ? $tracking->service->name : 'None';
+                return $tracking['service'] ? $tracking['service']['name'] : 'None';
             case 'project':
-                return $tracking->entity ? $tracking->entity->name : 'None';
+                return $tracking['entity'] ? $tracking['entity']['name'] : 'None';
             case 'client':
-                return $tracking && $tracking->entity && $tracking->entity->client ? $tracking->entity->client->name : 'None';
+                return $tracking && $tracking['entity'] && $tracking['entity']['client'] ? $tracking['entity']['client']['name'] : 'None';
             case 'coworker':
-                return $tracking->user->full_name;
+                return $tracking['user']['full_name'];
         }
         return null;
     }
@@ -281,22 +251,29 @@ class TrackingReportRepository
     protected function prepareDataForPDF($entities) {
         $items = [];
         $currency = $company = Auth::user()->employee->companyData->currency;
-        foreach ($entities as $entity) {
-            $start = Carbon::parse($entity->date_from)->format('H:i');
-            $end = Carbon::parse($entity->date_to)->format('H:i');
-            $total = $this->convertSecondsToTimeFormat(Carbon::parse($entity->date_to)->diffInSeconds($entity->date_from));
+        foreach ($entities as $key => $entity) {
+            $start = Carbon::parse($entity['date_from'])->format('H:i');
+            $end = Carbon::parse($entity['date_to'])->format('H:i');
+            $total = $this->convertSecondsToTimeFormat($entity['passed'], false);
             $item = [
-                'date' => Carbon::parse($entity->date_from)->format('d M Y'),
+                'date' => Carbon::parse($entity['date_from'])->format('d M Y'),
                 'start' => $this->timeInDecimal ? $this->convertTimeToDecimal($start) : $start,
                 'end' => $this->timeInDecimal ? $this->convertTimeToDecimal($end) : $end,
-                'total' => $this->timeInDecimal ? $entity->passes_decimal : $total,
-                'coworker' => $entity->user->full_name,
-                'customer' => isset($entity->entity) && isset($entity->entity->client) ? $entity->entity->client->name : '',
-                'project' => isset($entity->entity) ? $entity->entity->name : '',
-                'service' => isset($entity->service) ? $entity->service->name : '',
-                'description' => isset($entity->description) ? $entity->description : '',
-                'billable' => $entity->billable ? 'Yes' : 'No',
-                'revenue' => $entity->revenue ? ($currency ? $currency->slug . ' ' : '') . $entity->revenue : ''
+                'total' => $this->timeInDecimal ? $entity['passed_decimal'] : $total,
+                'coworker' => $entity['user']['full_name'],
+                'customer' => isset($entity['entity']) && isset($entity['entity']['client']) ? $entity['entity']['client']['name'] : '',
+                'project' => isset($entity['entity']) ? $entity['entity']['name'] : '',
+                'service' => isset($entity['service']) ? $entity['service']['name'] : '',
+                'description' => isset($entity['description']) ? $entity['description'] : '',
+                'billable' => $entity['billable'] ? 'Yes' : 'No',
+                'revenue' => $entity['revenue']
+                    ?
+                        (
+                            $currency
+                            ? $currency->slug . ' '
+                            : ''
+                        ) . $entity['revenue']
+                    : ''
             ];
             array_push($items, $item);
         }
@@ -309,11 +286,10 @@ class TrackingReportRepository
     }
 
     function convertSecondsToDecimal(int $seconds) {
-        return floor($seconds / 60 / 60);
+        return number_format($seconds / 60 / 60, 2);
     }
 
-    function convertSecondsToTimeFormat($value) {
-        $result = [];
+    function convertSecondsToTimeFormat($value, $withSeconds = true) {
 //        $M = floor($value /2592000);
 //        if (!empty($M)) {
 //            $result[] = $M . ' months,';
@@ -324,9 +300,19 @@ class TrackingReportRepository
 //        }
         $h = floor(($value %86400)/3600);
         $m = floor(($value %3600)/60);
-        $result[] = sprintf("%02d", $h) . ":" . sprintf("%02d", $m); // . ":" . sprintf("%02d", $value % 60);
+        if ($withSeconds) {
+            return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
+        }
+        return sprintf("%02d", $h) . ":" . sprintf("%02d", $m);
+    }
 
-        return implode(', ', $result);
+    function convertTimeToSeconds($time) {
+        $time = explode(':', $time);
+        $seconds = 0;
+        if (isset($time[0])) $seconds += $time[0] * 60 * 60;
+        if (isset($time[1])) $seconds += $time[1] * 60;
+        if (isset($time[2])) $seconds += $time[2];
+        return $seconds;
     }
 
     private function recalculateHeaderWidths($headers, $exclude = []) {
@@ -382,7 +368,7 @@ class TrackingReportRepository
 
         $tracks = $this->getData($request)['tracks'];
         $fullTime = collect($tracks)->sum(function ($item) {
-            return Carbon::parse($item->date_from)->diffInSeconds(Carbon::parse($item->date_to));
+            return $item['passed'];
         });
         $data = $this->prepareDataForPDF($tracks);
         $user = Auth::user();
@@ -429,7 +415,7 @@ class TrackingReportRepository
             // Total time
             $y += 30;
             $totalTimeTitle = 'Total time';
-            $totalTime = $this->convertSecondsToTimeFormat($fullTime);
+            $totalTime = $this->convertSecondsToTimeFormat($fullTime, false);
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->SetXY($pdf->GetCenterX($totalTimeTitle, $pdf->GetPageWidth()), $y);
             $pdf->Write(3, $totalTimeTitle);
@@ -532,19 +518,14 @@ class TrackingReportRepository
             $row[] = $tracking['entity'] ? $tracking['entity']['id'] : '';
             $row[] = $tracking['service'] ? $tracking['service']['name'] : '';
             $row[] = $tracking['service'] ? $tracking['service']['id'] : '';
-            $row[] = 0;
-            $row[] = '';
             $row[] = $tracking['description'];
             $row[] = $tracking['billable'] ? 1 : 0;
-            $row[] = 0;
-            $row[] = round(0, 2);
-            $row[] = Carbon::parse($tracking['date_from'])->format('Y-m-d H:i:s');
-            $row[] = Carbon::parse($tracking['date_to'])->format('Y-m-d H:i:s');
-            $row[] = 0;
-            $row[] = 0;
-            $row[] = 0;
-            $row[] = 0;
-            $row[] = 0;
+            $row[] = round($tracking['rate'], 2);
+            $row[] = Carbon::parse($tracking['date_from'])->format('d/m/Y');
+            $row[] = $this->timeInDecimal ? $this->convertTimeToDecimal($tracking['date_from']) : Carbon::parse($tracking['date_from'])->format('H:i');
+            $row[] = $this->timeInDecimal ? $this->convertTimeToDecimal($tracking['date_to']) : Carbon::parse($tracking['date_to'])->format('H:i');
+            $row[] = $this->timeInDecimal ? $this->convertSecondsToDecimal($tracking['passed']) : $this->convertSecondsToTimeFormat($tracking['passed'], false);
+            $row[] = $tracking['revenue'];
             return implode(';', $row);
         } catch (\Exception $exception) {
             dd($exception->getMessage(), $exception->getLine(), $tracking);
@@ -559,21 +540,16 @@ class TrackingReportRepository
             'Customer number',
             'Project',
             'Project number',
-            'Service/Lump sum',
-            'Service/Lump sum number',
-            'Amount (Lump sums)',
-            'Unit (Lump sums)',
+            'Service',
+            'Service number',
             'Description',
             'Billable',
-            'Billed',
-            'Hourly rate in CHF',
+            'Hourly rate in ' . $this->currency,
+            'Date',
             'Start',
             'End',
-            'Amount',
-            'Correction of time in seconds',
-            'Time clocked',
-            'Clocked offline',
-            'Revenue in CHF'
+            'Total time',
+            'Revenue in ' . $this->currency
         ]) . "\n";
     }
 
