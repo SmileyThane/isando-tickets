@@ -68,6 +68,14 @@
                 >
                 </v-pagination>
             </template>
+            <template v-slot:item.tracked="props">
+                {{ helperConvertSecondsToTimeFormat(props.item.tracked, false) }}
+            </template>
+            <template v-slot:item.revenue="props">
+                <span v-if="currentCurrency">
+                    {{ currentCurrency.slug }}
+                </span> {{ props.item.revenue }}
+            </template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
                     {{ langMap.tracking.create_project.more_info }} {{ item.name }}
@@ -180,8 +188,7 @@ themeBgColor: this.$store.state.themeBgColor,
                 {text: `${this.$store.state.lang.lang_map.tracking.name}`, value: 'name'},
                 {text: `${this.$store.state.lang.lang_map.tracking.client}`, value: 'client.name'},
                 {text: `${this.$store.state.lang.lang_map.tracking.tracked}`, value: 'tracked'},
-                {text: `${this.$store.state.lang.lang_map.tracking.amount}`, value: 'amount'},
-                {text: `${this.$store.state.lang.lang_map.tracking.progress}`, value: 'progress'}
+                {text: `${this.$store.state.lang.lang_map.tracking.revenue}`, value: 'revenue'}
             ],
             project: {
                 name: '',
@@ -198,12 +205,14 @@ themeBgColor: this.$store.state.themeBgColor,
         this.debounceGetProjects = _.debounce(this.__getProjects, 1000);
         this.debounceGetProducts = _.debounce(this.__getProducts, 1000);
         this.debounceGetClients = _.debounce(this.__getClients, 1000);
+        this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
         this.options.itemsPerPage = Helper.getKey('itemsPerPage') ?? 10;
         this.footerProps.itemsPerPage = Helper.getKey('itemsPerPage') ?? 10;
     },
     mounted() {
         this.debounceGetProducts();
         this.debounceGetClients();
+        this.debounceGetSettings();
         let self = this;
         EventBus.$on('update-theme-color', function (color) {
             self.themeBgColor = color;
@@ -241,6 +250,9 @@ themeBgColor: this.$store.state.themeBgColor,
         __getProducts() {
             this.$store.dispatch('Products/getProductList', {});
         },
+        __getSettings() {
+            this.$store.dispatch('Tracking/getSettings');
+        },
         updateItemsCount(value) {
             this.footerProps.itemsPerPage = value
             Helper.storeKey('itemsPerPage', value);
@@ -260,6 +272,25 @@ themeBgColor: this.$store.state.themeBgColor,
         createProject() {
             this.$store.dispatch('Projects/createProject', this.project);
             this.resetProject();
+        },
+        helperAddZeros(num, len) {
+            while((""+num).length < len) num = "0" + num;
+            return num.toString();
+        },
+        helperConvertSecondsToTimeFormat(seconds, withSeconds = true) {
+            if (!seconds) {
+                return `00:00:00`;
+            }
+            const h = Math.floor(seconds / 60 / 60);
+            const m = Math.floor((seconds - h * 60 * 60) / 60);
+            const s = seconds - (m * 60) - (h * 60 * 60);
+            if (withSeconds) {
+                return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}:${this.helperAddZeros(s.toFixed(0),2)}`;
+            }
+            return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}`;
+        },
+        helperConvertSecondsToDecimalHours(seconds) {
+            return (seconds / 60 / 60).toFixed(2);
         }
     },
     watch: {
@@ -295,6 +326,10 @@ themeBgColor: this.$store.state.themeBgColor,
                 borderRadius: menu ? '50%' : '4px',
                 transition: 'border-radius 200ms ease-in-out'
             }
+        },
+        currentCurrency() {
+            const settings = this.$store.getters['Tracking/getSettings'];
+            return settings.currency ?? null;
         }
     }
 }

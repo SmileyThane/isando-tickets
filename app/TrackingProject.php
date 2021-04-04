@@ -8,8 +8,7 @@ class TrackingProject extends Model
 {
     protected $appends = [
         'tracked',
-        'amount',
-        'progress'
+        'revenue'
     ];
 
     public function Product() {
@@ -24,18 +23,17 @@ class TrackingProject extends Model
         return $this->morphMany('App\Tracking', 'entity');
     }
 
+    // passed time in seconds by project
     public function getTrackedAttribute() {
-        // TODO
-        return 0;
+        return $this->Trackers()->get()->map(function($item) {
+            return $item->passed;
+        })->sum();
     }
 
-    public function getAmountAttribute() {
-        // TODO
-        return 0;
-    }
-
-    public function getProgressAttribute() {
-        // TODO
+    public function getRevenueAttribute() {
+        if (isset($this->rate) && is_numeric($this->rate)) {
+            return number_format($this->tracked / 60 / 60 * $this->rate, 2);
+        }
         return 0;
     }
 
