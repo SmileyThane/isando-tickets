@@ -164,11 +164,11 @@ class TrackingRepository
 
     public function delete(Tracking $tracking)
     {
-        if ($tracking->user_id === Auth::user()->id) {
+//        if ($tracking->user_id === Auth::user()->id) {
             $this->logTracking($tracking->id, TrackingLogger::DELETE, $tracking, null);
             $tracking->delete();
             return true;
-        }
+//        }
         return false;
     }
 

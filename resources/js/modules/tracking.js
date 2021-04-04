@@ -25,6 +25,12 @@ export default {
                 .then(({ data: { data, success } }) => {
                     return success;
                 });
+        },
+        deleteTrack({commit}, {id}) {
+            return axios.delete(`/api/tracking/tracker/${id}`)
+                .then(({ data: { data, success } }) => {
+                    return success;
+                })
         }
     },
     mutations: {

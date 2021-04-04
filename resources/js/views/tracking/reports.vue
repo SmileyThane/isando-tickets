@@ -1334,8 +1334,13 @@ export default {
                     }
                 });
         },
-        removeTrack(trackId) {
-            // TODO
+        removeTrack(id) {
+            this.$store.dispatch('Tracking/deleteTrack', {id})
+                .then(successResult => {
+                    if (successResult) {
+                        this.genPreview();
+                    }
+                })
         },
         closeEditDialog(item) {
             this.editForm.id = null;
