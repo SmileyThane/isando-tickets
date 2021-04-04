@@ -464,7 +464,7 @@
                                                 >
                                                     <ProjectBtn
                                                         :key="row.id"
-                                                        :color="themeBgColor"
+                                                        :color="row.entity && row.entity.color ? row.entity.color : themeBgColor"
                                                         v-model="row.entity"
                                                         @blur="debounceSave(row, 'entity', row.entity)"
                                                         @input="debounceSave(row, 'entity', row.entity)"

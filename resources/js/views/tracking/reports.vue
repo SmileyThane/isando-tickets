@@ -385,7 +385,12 @@
                                         <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>None</span>
                                     </td>
                                     <td class="pa-2" align="left">
-                                        <span v-if="item.entity">{{ item.entity.name }}</span>
+                                        <span
+                                            v-if="item.entity"
+                                            :style="{ color: item.entity && item.entity.color ? item.entity.color : themeBgColor }"
+                                        >
+                                            {{ item.entity.name }}
+                                        </span>
                                         <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
                                         <span v-if="item.service">{{ item.service.name }}</span>
                                         <v-icon v-if="(item.service && item.description) || (item.entity && item.description)" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
