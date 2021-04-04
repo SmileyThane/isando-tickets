@@ -436,6 +436,29 @@
                                                 </v-card-title>
                                                 <v-card-text>
                                                     <div class="d-flex flex-row">
+                                                        <div class="d-flex-inline flex-grow-1">
+                                                            <v-select
+                                                                :items="$store.getters['Services/getServices']"
+                                                                :label="langMap.tracking.tracker.service_type"
+                                                                :placeholder="langMap.tracking.tracker.service_type"
+                                                                item-text="name"
+                                                                item-value="id"
+                                                                v-model="editForm.service"
+                                                                return-object
+                                                                dense
+                                                            ></v-select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="d-flex-inline flex-grow-1">
+                                                            <ProjectBtn
+                                                                :color="themeBgColor"
+                                                                v-model="editForm.entity"
+                                                                label="Project or Ticket"
+                                                            ></ProjectBtn>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row">
                                                         <div class="d-flex-inline">
                                                             <TimeField
                                                                 v-model="editForm.date_from"
@@ -456,7 +479,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="d-flex flex-row">
-                                                        <div class="d-flex-inline">
+                                                        <div class="d-flex-inline flex-grow-1">
                                                             <TagBtn
                                                                 :key="item.id"
                                                                 :color="themeBgColor"
@@ -473,7 +496,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="d-flex flex-row">
-                                                        <div class="d-flex-inline">
+                                                        <div class="d-flex-inline flex-grow-1">
                                                             <v-checkbox
                                                                 v-model="editForm.billable"
                                                                 label="Billable"
@@ -731,6 +754,7 @@ import DoughnutChart from "./components/doughnut-chart";
 import _ from "lodash";
 import TimeField from "./components/time-field";
 import TagBtn from "./components/tag-btn";
+import ProjectBtn from "./components/project-btn";
 
 export default {
     components: {
@@ -738,7 +762,8 @@ export default {
         DoughnutChart,
         BarChart,
         TimeField,
-        TagBtn
+        TagBtn,
+        ProjectBtn
     },
     data() {
         const self = this;
@@ -981,6 +1006,8 @@ export default {
             dialogEdit: {},
             editForm: {
                 id: null,
+                entity: null,
+                service: null,
                 date_from: null,
                 date_to: null,
                 billable: null,
@@ -1092,7 +1119,6 @@ export default {
             this.$store.dispatch('Tracking/getSettings');
         },
         invertColor(hex, bw = true) {
-            console.log(hex);
             return Helper.invertColor(hex.substr(0, 7), bw);
         },
         async setPeriod(periodKey = 'today') {
@@ -1296,7 +1322,11 @@ export default {
                 date_from: this.editForm.date_from,
                 date_to: this.editForm.date_to,
                 billable: this.editForm.billable,
-                tags: this.editForm.tags
+                tags: this.editForm.tags,
+                service: this.editForm.service,
+                entity: this.editForm.entity,
+                entity_id: this.editForm.entity ? this.editForm.entity.id : null,
+                entity_type: this.editForm.entity && this.editForm.entity.from ? "App\\Ticket" : "App\\TrackingProject",
             })
                 .then(successResult => {
                     if (successResult) {
@@ -1313,6 +1343,8 @@ export default {
             this.editForm.date_to = null;
             this.editForm.billable = null;
             this.editForm.tags = [];
+            this.editForm.entity = null;
+            this.editForm.service = null;
             this.dialogEdit[item.id] = false;
         },
         openEditDialog(item) {
@@ -1321,6 +1353,8 @@ export default {
             this.editForm.date_to = item.date_to;
             this.editForm.billable = item.billable;
             this.editForm.tags = item.tags;
+            this.editForm.entity = item.entity;
+            this.editForm.service = item.service;
             this.dialogEdit[item.id] = true;
         }
     },

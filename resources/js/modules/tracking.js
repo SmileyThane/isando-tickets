@@ -20,8 +20,8 @@ export default {
                     }
                 });
         },
-        updateTrack({commit}, { id, date_from, date_to, billable, tags }) {
-            return axios.patch(`/api/tracking/tracker/${id}`, {date_from, date_to, billable, tags})
+        updateTrack({commit}, { id, date_from, date_to, billable, tags, entity, entity_id, entity_type, service }) {
+            return axios.patch(`/api/tracking/tracker/${id}`, {date_from, date_to, billable, tags, entity, service, entity_id, entity_type})
                 .then(({ data: { data, success } }) => {
                     return success;
                 });
