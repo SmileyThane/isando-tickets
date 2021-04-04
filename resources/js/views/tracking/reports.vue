@@ -626,6 +626,44 @@
                                     >
                                     </v-select>
                                 </div>
+                                <div class="d-inline-block">
+                                    <v-combobox
+                                        v-model="report.pdf.hideColumns"
+                                        :items="report.availableColumns"
+                                        return-object
+                                        item-value="value"
+                                        item-text="text"
+                                        label="Hide columns"
+                                        multiple
+                                        outlined
+                                        dense
+                                        clearable
+                                    ></v-combobox>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-checkbox
+                                        class="my-0"
+                                        hide-details
+                                        v-model="report.pdf.showCover"
+                                        label="Cover page"
+                                    ></v-checkbox>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-checkbox
+                                        class="my-0"
+                                        hide-details
+                                        v-model="report.pdf.showRevenue"
+                                        label="Display revenue"
+                                    ></v-checkbox>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-checkbox
+                                        class="my-0"
+                                        hide-details
+                                        v-model="report.pdf.timeInDecimal"
+                                        label="Display time with decimal points"
+                                    ></v-checkbox>
+                                </div>
                             </div>
                         </v-card-text>
                         <v-card-actions>
@@ -1062,7 +1100,11 @@ export default {
                     name: 'Report',
                     coworkers: null,
                     periodText: '',
-                    groupSel: 1
+                    groupSel: 1,
+                    showCover: true,
+                    showRevenue: true,
+                    timeInDecimal: false,
+                    hideColumns: []
                 },
                 csv: {
                     group: {
@@ -1072,7 +1114,53 @@ export default {
                     },
                     timeFormat: 4,
                     dateFormat: 2
-                }
+                },
+                availableColumns: [
+                    {
+                        value: 'date',
+                        text: 'Date'
+                    },
+                    {
+                        value: 'start',
+                        text: 'Start'
+                    },
+                    {
+                        value: 'end',
+                        text: 'End'
+                    },
+                    {
+                        value: 'total',
+                        text: 'Total'
+                    },
+                    {
+                        value: 'client',
+                        text: 'Client'
+                    },
+                    {
+                        value: 'coworker',
+                        text: 'Co-worker'
+                    },
+                    // {
+                    //     value: 'project',
+                    //     text: 'Project'
+                    // },
+                    {
+                        value: 'service',
+                        text: 'Service'
+                    },
+                    {
+                        value: 'description',
+                        text: 'Description'
+                    },
+                    {
+                        value: 'billable',
+                        text: 'Billable'
+                    },
+                    // {
+                    //     value: 'revenue',
+                    //     text: 'Revenue'
+                    // },
+                ]
             },
             csvForm: {
                 groupItems: [
@@ -1247,14 +1335,14 @@ export default {
             }
         },
         genPreview() {
-            const coworkers = this.builder.filters.find(i => i.value === 'coworkers');
-            if (coworkers) {
-                const list = this.$store.getters['Team/getCoworkers'];
-                this.report.pdf.coworkers = list.filter(x => coworkers.selected.indexOf(x.id) >= 0)
-                                                .map(i => i.full_name)
-                                                .join(', ');
-
-            }
+            // const coworkers = this.builder.filters.find(i => i.value === 'coworkers');
+            // if (coworkers) {
+            //     const list = this.$store.getters['Team/getCoworkers'];
+            //     this.report.pdf.coworkers = list.filter(x => coworkers.selected.indexOf(x.id) >= 0)
+            //                                     .map(i => i.full_name)
+            //                                     .join(', ');
+            //
+            // }
             axios.post('/api/tracking/reports', this.builder)
                 .then(({ data: { data } }) => {
                     this.reportData.entities = data;
@@ -1264,7 +1352,7 @@ export default {
                        self.dialogEdit[i.id] = false;
                        self.dialogDelete[i.id] = false;
                     });
-
+                    this.report.pdf.coworkers = [...new Set(this.calculateCoworkers(data))].sort().join(', ');
                 })
                 .catch(err => {
                     console.log(err);
@@ -1318,6 +1406,17 @@ export default {
                 }
             });
             return revenue ? parseFloat(revenue).toFixed(2) : 0;
+        },
+        calculateCoworkers(entries, coworkers = []) {
+            if (!entries) return coworkers;
+            entries.map(i => {
+                if (i.children) {
+                    coworkers = coworkers.concat(this.calculateCoworkers(i.children));
+                } else {
+                    coworkers.push(i.user.full_name);
+                }
+            });
+            return coworkers;
         },
         createFile(format) {
             if (format === 'csv' && this.report.csv.group && this.report.csv.group.value === 'all_chron') {
@@ -1506,14 +1605,15 @@ export default {
             this.genPreview();
         },
         'builder.period': function () {
+            const dateFormat = 'dddd DD/MM/YYYY';
             if (this.builder.period.start) {
                 if (this.builder.period.start === this.builder.period.end) {
-                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format(dateFormat)}`;
                 } else {
-                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format(dateFormat)} - ${moment(this.builder.period.end).format(dateFormat)}`;
                 }
             } else {
-                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format(dateFormat)}`;
             }
         },
         activePeriod: function () {

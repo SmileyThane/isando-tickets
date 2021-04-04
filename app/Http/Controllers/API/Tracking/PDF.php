@@ -183,7 +183,8 @@ class PDF extends FPDF {
         try {
             $table = new \easyTable($this, $columnWidths, 'width:100%;border:0;font-size:8');
 
-            for($i=0;$i<count($headers);$i++)
+//            for($i=0;$i<count($headers);$i++)
+            foreach ($headers as $i => $header)
                 $table->easyCell($headers[$i]['text'], $headers[$i]['style']);
             $table->printRow(true);
 

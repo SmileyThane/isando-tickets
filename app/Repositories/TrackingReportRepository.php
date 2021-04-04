@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\File;
 
 class TrackingReportRepository
 {
+    protected $timeInDecimal = false;
+
     public function validate($request, $new = true)
     {
         $params = [
@@ -278,12 +280,14 @@ class TrackingReportRepository
         $items = [];
         $currency = $company = Auth::user()->employee->companyData->currency;
         foreach ($entities as $entity) {
-//            dd($entity->entity);
+            $start = Carbon::parse($entity->date_from)->format('H:i');
+            $end = Carbon::parse($entity->date_to)->format('H:i');
+            $total = $this->convertSecondsToTimeFormat(Carbon::parse($entity->date_to)->diffInSeconds($entity->date_from));
             $item = [
                 'date' => Carbon::parse($entity->date_from)->format('d M Y'),
-                'start' => Carbon::parse($entity->date_from)->format('H:i'),
-                'end' => Carbon::parse($entity->date_to)->format('H:i'),
-                'total' => $this->convertSecondsToTimeFormat(Carbon::parse($entity->date_to)->diffInSeconds($entity->date_from)),
+                'start' => $this->timeInDecimal ? $this->convertTimeToDecimal($start) : $start,
+                'end' => $this->timeInDecimal ? $this->convertTimeToDecimal($end) : $end,
+                'total' => $this->timeInDecimal ? $this->convertTimeToDecimal($total) : $total,
                 'coworker' => $entity->user->full_name,
                 'customer' => isset($entity->entity) && isset($entity->entity->client) ? $entity->entity->client->name : '',
                 'project' => isset($entity->entity) ? $entity->entity->name : '',
@@ -295,6 +299,15 @@ class TrackingReportRepository
             array_push($items, $item);
         }
         return $items;
+    }
+
+    function convertTimeToDecimal($time) {
+        $hms = explode(":", $time);
+        return number_format(($hms[0] + ($hms[1]/60)), 2);
+    }
+
+    function convertSecondsToDecimal(int $seconds) {
+        return floor($seconds / 60 / 60);
     }
 
     function convertSecondsToTimeFormat($value) {
@@ -314,24 +327,56 @@ class TrackingReportRepository
         return implode(', ', $result);
     }
 
+    private function recalculateHeaderWidths($headers, $exclude = []) {
+        $headers = collect($headers);
+        $exclude = $headers->filter(function ($item) use ($exclude) {
+            return in_array($item['slug'], $exclude);
+        });
+        $headers = $headers->filter(function ($item) use ($exclude) {
+            return !in_array($item['slug'], $exclude->map(function($i) { return $i['slug']; })->toArray());
+        });
+        $sumWidth = $exclude->sum(function($item) { return $item['width']; });
+        $countResizableColumns = $headers
+            ->filter(function($item) { return $item['resizable']; })
+            ->sum(function () { return 1; });
+        $maxStep = (int)ceil($sumWidth / $countResizableColumns);
+        $headers = $headers->toArray();
+        foreach ($headers as $key => $header) {
+            if ($sumWidth <= 0) break;
+            if ($header['resizable']) {
+                if ($sumWidth < $maxStep && $sumWidth > 0) {
+                    $headers[$key]['width'] += $sumWidth;
+                    $sumWidth -= $sumWidth;
+                } else {
+                    $headers[$key]['width'] += $maxStep;
+                    $sumWidth -= $maxStep;
+                }
+            }
+        }
+        return $headers;
+    }
+
     public function genPDF($request) {
 
         // Pre-define some variables
         $reportName = $request->get('name', 'Report');
         $headers = [
-            ['text' => 'Date', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Start', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'End', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Total', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Co-worker', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Description', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Billable', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Revenue', 'style' => 'border:B;border-width:1;font-style:B']
+            ['slug' => 'date', 'text' => 'Date', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 7, 'resizable' => false],
+            ['slug' => 'start', 'text' => 'Start', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
+            ['slug' => 'end', 'text' => 'End', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
+            ['slug' => 'total', 'text' => 'Total', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
+            ['slug' => 'coworker', 'text' => 'Co-worker', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 11, 'resizable' => true],
+            ['slug' => 'client', 'text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 16, 'resizable' => true],
+            ['slug' => 'project', 'text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 17, 'resizable' => true],
+            ['slug' => 'service', 'text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 9, 'resizable' => true],
+            ['slug' => 'description', 'text' => 'Description', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 15, 'resizable' => true],
+            ['slug' => 'billable', 'text' => 'Billable', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => false],
+            ['slug' => 'revenue', 'text' => 'Revenue', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 8, 'resizable' => false]
         ];
-        $columnWidths = '%{7,4,4,4,11,16,17,9,15,5,8}';
+
+        if ($request->has('timeInDecimal') && $request->get('timeInDecimal') === true) {
+            $this->timeInDecimal = $request->get('timeInDecimal');
+        }
 
         $tracks = $this->getData($request)['tracks'];
         $fullTime = collect($tracks)->sum(function ($item) {
@@ -351,58 +396,87 @@ class TrackingReportRepository
         ]);
         $pdf->AliasNbPages();
 
-        $y = 0;
-        // PAGE 1. TITLE
-        $pdf->AddPage('P', 'A4');
-        $y += 60;
-        // Report name
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->SetXY($pdf->GetCenterX($reportName, $pdf->GetPageWidth()) , $y);
-        $pdf->Write(3, $reportName);
+        if ($request->has('showCover') && $request->get('showCover') === true) {
+            $y = 0;
+            // PAGE 1. TITLE
+            $pdf->AddPage('P', 'A4');
+            $y += 60;
+            // Report name
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY($pdf->GetCenterX($reportName, $pdf->GetPageWidth()) , $y);
+            $pdf->Write(3, $reportName);
 
-        // Co-workers
-        $y += 10;
-        $pdf->SetFont('Arial', 'B', 32);
-        $lines = $pdf->GetCountLines($coworkers, $pdf->GetPageWidth());
-        if ($lines > 1) {
-            $pdf->SetXY(30, $y);
-        } else {
-            $pdf->SetXY($pdf->GetCenterX($coworkers, $pdf->GetPageWidth()), $y);
+            // Co-workers
+            $y += 10;
+            $pdf->SetFont('Arial', 'B', 32);
+            $lines = $pdf->GetCountLines($coworkers, $pdf->GetPageWidth());
+            if ($lines > 1) {
+                $pdf->SetXY(30, $y);
+            } else {
+                $pdf->SetXY($pdf->GetCenterX($coworkers, $pdf->GetPageWidth()), $y);
+            }
+            $pdf->Write(10, $coworkers);
+            $y += 10 * $lines;
+
+            // Period
+            $y += 10;
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY($pdf->GetCenterX($period, $pdf->GetPageWidth()), $y);
+            $pdf->Write(3, $period);
+
+            // Total time
+            $y += 30;
+            $totalTimeTitle = 'Total time';
+            $totalTime = $this->convertSecondsToTimeFormat($fullTime);
+            $pdf->SetFont('Arial', 'B', 10);
+            $pdf->SetXY($pdf->GetCenterX($totalTimeTitle, $pdf->GetPageWidth()), $y);
+            $pdf->Write(3, $totalTimeTitle);
+            $x = $pdf->GetX();
+            $y += 5;
+            $pdf->Line($x - 20, $y, $x + 5, $y);
+            $y += 5;
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY($pdf->GetCenterX($totalTime, $pdf->GetPageWidth()), $y);
+            $pdf->Write(3, $totalTime);
+
+            // Created At
+            $y += 20;
+            $createdAt = 'Created at ' . Carbon::now()->format('d F Y H:i') . ' o\' clock';
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY($pdf->GetCenterX($createdAt, $pdf->GetPageWidth()), $y);
+            $pdf->Write(3, $createdAt);
         }
-        $pdf->Write(10, $coworkers);
-        $y += 10 * $lines;
 
-        // Period
-        $y += 10;
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->SetXY($pdf->GetCenterX($period, $pdf->GetPageWidth()), $y);
-        $pdf->Write(3, $period);
+        if ($request->has('showRevenue') && $request->get('showRevenue') === false) {
+            $headers = $this->recalculateHeaderWidths($headers, ['revenue']);
+            $data = collect($data)->map(function($item) {
+                unset($item['revenue']);
+                return $item;
+            })->toArray();
+        }
 
-        // Total time
-        $y += 30;
-        $totalTimeTitle = 'Total time';
-        $totalTime = $this->convertSecondsToTimeFormat($fullTime);
-        $pdf->SetFont('Arial', 'B', 10);
-        $pdf->SetXY($pdf->GetCenterX($totalTimeTitle, $pdf->GetPageWidth()), $y);
-        $pdf->Write(3, $totalTimeTitle);
-        $x = $pdf->GetX();
-        $y += 5;
-        $pdf->Line($x - 20, $y, $x + 5, $y);
-        $y += 5;
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->SetXY($pdf->GetCenterX($totalTime, $pdf->GetPageWidth()), $y);
-        $pdf->Write(3, $totalTime);
-
-        // Created At
-        $y += 20;
-        $createdAt = 'Created at ' . Carbon::now()->format('d F Y H:i') . ' o\' clock';
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->SetXY($pdf->GetCenterX($createdAt, $pdf->GetPageWidth()), $y);
-        $pdf->Write(3, $createdAt);
+        if ($request->has('hideColumns') && !empty($request->get('hideColumns')) && is_array($request->get('hideColumns'))) {
+            $hideColumns = collect($request->get('hideColumns'))
+                ->map(function($item) {
+                    return $item['value'];
+                })
+                ->toArray();
+            $headers = $this->recalculateHeaderWidths($headers, $hideColumns);
+            $data = collect($data)->map(function($item) use ($hideColumns) {
+                foreach ($hideColumns as $key) {
+                    if (isset($item[strtolower($key)])) {
+                        unset($item[$key]);
+                    }
+                }
+                return $item;
+            })->toArray();
+//            dd($headers, $data);
+        }
 
         // PAGE 2 and next
         $pdf->AddPage('L', 'A4');
         $pdf->SetFont('Arial', '', 10);
+        $columnWidths = '%{' . implode(',', collect($headers)->map(function($item) {return $item['width'];})->toArray()) . '}';
         $pdf->EasyTable($headers, $data, $columnWidths);
 
         $html = '';
