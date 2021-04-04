@@ -406,7 +406,7 @@
                                         <span v-else>Non-billable</span>
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
-                                        {{ helperConvertSecondsToTimeFormat(helperCalculatePassedTime(item.date_from, item.date_to), false) }}
+                                        {{ helperConvertSecondsToTimeFormat(item.passed, false) }}
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
                                         <span v-if="currentCurrency">
@@ -1401,19 +1401,13 @@ export default {
             }
             return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}`;
         },
-        helperCalculatePassedTime(date_from, date_to) {
-            if (moment(date_from) > moment(date_to)) {
-                date_to = moment(date_to).add(1, 'day');
-            }
-            return moment(date_to).diff(moment(date_from), 'seconds');
-        },
         calculateTime(entries, seconds = 0) {
             if (!entries) return seconds;
             entries.map(i => {
                 if (i.children) {
                     seconds += this.calculateTime(i.children);
                 } else {
-                    seconds += this.helperCalculatePassedTime(i.date_from, i.date_to);
+                    seconds += i.passed;
                 }
             });
             return seconds;
@@ -1543,7 +1537,7 @@ export default {
                     if (i.children) {
                         values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
                     } else {
-                        values.push((this.helperCalculatePassedTime(i.date_from, i.date_to) / 60 / 60).toFixed(2));
+                        values.push((i.passed / 60 / 60).toFixed(2));
                     }
                 });
                 let colors = [];
@@ -1580,7 +1574,7 @@ export default {
                         );
                     } else {
                         values.push(
-                            (this.helperCalculatePassedTime(i.date_from, i.date_to) / 60 / 60).toFixed(2)
+                            (i.passed / 60 / 60).toFixed(2)
                         );
                     }
                 });

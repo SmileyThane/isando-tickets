@@ -289,7 +289,7 @@ class TrackingReportRepository
                 'date' => Carbon::parse($entity->date_from)->format('d M Y'),
                 'start' => $this->timeInDecimal ? $this->convertTimeToDecimal($start) : $start,
                 'end' => $this->timeInDecimal ? $this->convertTimeToDecimal($end) : $end,
-                'total' => $this->timeInDecimal ? $this->convertTimeToDecimal($total) : $total,
+                'total' => $this->timeInDecimal ? $entity->passes_decimal : $total,
                 'coworker' => $entity->user->full_name,
                 'customer' => isset($entity->entity) && isset($entity->entity->client) ? $entity->entity->client->name : '',
                 'project' => isset($entity->entity) ? $entity->entity->name : '',
