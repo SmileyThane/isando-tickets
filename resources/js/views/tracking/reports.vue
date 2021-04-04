@@ -450,7 +450,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="d-flex flex-row">
-                                                        <div class="d-flex-inline flex-grow-1">
+                                                        <div class="d-flex-inline flex-grow-1 mb-5">
                                                             <ProjectBtn
                                                                 :color="themeBgColor"
                                                                 v-model="editForm.entity"
@@ -459,7 +459,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="d-flex flex-row">
-                                                        <div class="d-flex-inline">
+                                                        <div class="d-flex-inline flex-grow-1">
                                                             <TimeField
                                                                 v-model="editForm.date_from"
                                                                 style="max-width: 100px; height: 40px"
@@ -468,7 +468,7 @@
                                                                 format="HH:mm"
                                                             ></TimeField>
                                                         </div>
-                                                        <div class="d-flex-inline">
+                                                        <div class="d-flex-inline flex-grow-1">
                                                             <TimeField
                                                                 v-model="editForm.date_to"
                                                                 style="max-width: 100px; height: 40px"
@@ -524,13 +524,44 @@
                                                 </v-card-actions>
                                             </v-card>
                                         </v-dialog>
-                                        <v-btn
-                                            icon
-                                            x-small
-                                            @click="removeTrack(item.id)"
+                                        <v-dialog
+                                            v-model="dialogDelete[item.id]"
+                                            persistent
+                                            max-width="290"
                                         >
-                                            <v-icon>mdi-delete</v-icon>
-                                        </v-btn>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    x-small
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                >
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <v-card>
+                                                <v-card-title class="headline">
+                                                    Are you sure?
+                                                </v-card-title>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="red darken-1"
+                                                        text
+                                                        @click="dialogDelete[item.id] = false"
+                                                    >
+                                                        Cancel
+                                                    </v-btn>
+                                                    <v-btn
+                                                        color="green darken-1"
+                                                        text
+                                                        @click="removeTrack(item.id); dialogDelete[item.id] = false"
+                                                    >
+                                                        Confirm
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
                                     </td>
                                 </tr>
                             </tbody>
@@ -1004,6 +1035,7 @@ export default {
             dialogPrint: false,
             dialogSave: false,
             dialogEdit: {},
+            dialogDelete: {},
             editForm: {
                 id: null,
                 entity: null,
@@ -1230,6 +1262,7 @@ export default {
                     const self = this;
                     data.map(i => function () {
                        self.dialogEdit[i.id] = false;
+                       self.dialogDelete[i.id] = false;
                     });
 
                 })
