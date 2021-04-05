@@ -139,36 +139,6 @@
                             </v-col>
                         </v-row>
 
-                        <v-row>
-                            <v-col cols="6">
-                                <hr class="lighten" />
-
-                                <p class="mb-0" v-if="langs && langs.length > 0 && userData">
-                                    <v-icon left small dense :color="themeBgColor" :title="langMap.main.language">mdi-web</v-icon>
-                                    {{ langs[userData.language_id].name }}
-                                </p>
-                            </v-col>
-                            <v-col cols="6">
-                                <hr class="lighten" />
-
-                                <p class="mb-0" v-if="userData.deleted_at">
-                                    <v-icon v-if="userData.deleted_at" small dense left color="red">mdi-cancel</v-icon>
-                                    {{ langMap.individuals.deleted }}
-                                </p>
-
-                                <p class="mb-0" v-if="!userData.deleted_at">
-                                    <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>
-                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
-                                    {{ langMap.individuals.active }}
-                                </p>
-
-                                <p class="mb-0">
-                                    <v-icon v-if="userData.is_active" small dense left color="success">mdi-check-circle</v-icon>
-                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
-                                    {{ langMap.main.give_access }}
-                                </p>
-                            </v-col>
-                        </v-row>
 
                     </v-card-text>
                     <v-expand-transition>
@@ -273,39 +243,41 @@
                                                         type="text"
                                                     />
                                                 </v-col>
-                                                <v-col cols="4">
-                                                    <v-text-field
-                                                        v-model="userData.password"
-                                                        :color="themeBgColor"
-                                                        :error-messages="errors.password"
-                                                        :label="langMap.main.password"
-                                                        dense
-                                                        :append-icon="isPasswordVisible ? 'mdi-eye' : 'mdi-eye-off'"
-                                                        :type="isPasswordVisible ? 'text' : 'password'"
-                                                        class="input-group--focused"
-                                                        @click:append="isPasswordVisible = !isPasswordVisible"
-                                                        name="password"
-                                                        prepend-icon="mdi-lock"
-                                                    />
-                                                </v-col>
-                                                <v-col cols="4">
-                                                    <v-text-field
-                                                        v-model="userData.password_confirmation"
-                                                        :color="themeBgColor"
-                                                        :error-messages="errors.password"
-                                                        :label="langMap.main.password_confirmation"
-                                                        dense
-                                                        lazy-validation
-                                                        :append-icon="isPasswordConfirmationVisible ? 'mdi-eye' : 'mdi-eye-off'"
-                                                        :type="isPasswordConfirmationVisible ? 'text' : 'password'"
-                                                        class="input-group--focused"
-                                                        @click:append="isPasswordConfirmationVisible = !isPasswordConfirmationVisible"
-                                                        name="password_confirmation"
-                                                        prepend-icon="mdi-lock"
-                                                    />
-
-                                                </v-col>
                                             </v-row>
+                                        </v-col>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <hr class="lighten" />
+
+                                            <p class="mb-0" v-if="langs && langs.length > 0 && userData">
+                                                <v-icon left small dense :color="themeBgColor" :title="langMap.main.language">mdi-web</v-icon>
+                                                {{ langs[userData.language_id].name }}
+                                            </p>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <hr class="lighten" />
+
+                                            <p class="mb-0" v-if="userData.deleted_at">
+                                                <v-icon v-if="userData.deleted_at" small dense left color="red">mdi-cancel</v-icon>
+                                                {{ langMap.individuals.deleted }}
+                                            </p>
+
+                                            <p class="mb-0" v-if="!userData.deleted_at">
+                                                <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>
+                                                <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                                {{ langMap.individuals.active }}
+                                            </p>
+
+                                            <p class="mb-0">
+                                                <v-icon v-if="userData.is_active" small dense left color="success">mdi-check-circle</v-icon>
+                                                <v-icon v-else small dense left>mdi-cancel</v-icon>
+                                                {{ langMap.main.give_access }}
+                                            </p>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-btn text @click="resetPassword" :color="themeBgColor" v-text="langMap.company.reset_password" />
                                         </v-col>
                                     </v-row>
 
@@ -1284,7 +1256,6 @@ themeBgColor: this.$store.state.themeBgColor,
                 lang: '',
                 name: "",
                 email: "",
-                password: "",
                 phones: [],
                 addresses: [],
                 emails: [],
@@ -2051,6 +2022,22 @@ themeBgColor: this.$store.state.themeBgColor,
         },
         updateItemsPerPage(options) {
             localStorage.itemsPerPage = options.itemsPerPage;
+        },
+        resetPassword() {
+            axios.post('/api/reset_password', {
+                email: this.userData.email
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.company.reset_password_email_sent;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
         }
     }
 }

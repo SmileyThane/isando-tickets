@@ -116,6 +116,11 @@ class AuthController extends Controller
 
     public function getAppVersion(Request $request)
     {
-        return self::showResponse(true, \Tremby\LaravelGitVersion\GitVersionHelper::getVersion());
+        $versionStr = \Tremby\LaravelGitVersion\GitVersionHelper::getVersion();
+        if (config('app.env') == 'production') {
+            $versionStr = str_ireplace('-dirty', '', $versionStr);
+            $versionStr = substr($versionStr, 0, strrpos($versionStr, '-'));
+        }
+        return self::showResponse(true, $versionStr);
     }
 }

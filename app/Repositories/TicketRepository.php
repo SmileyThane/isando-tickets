@@ -248,6 +248,7 @@ class TicketRepository
                 'answers.attachments',
                 'mergedChild',
                 'childTickets.answers.employee.userData',
+                'childTickets.attachments',
                 'childTickets.notices.employee.userData',
                 'childTickets.answers.attachments',
                 'histories.employee.userData',
