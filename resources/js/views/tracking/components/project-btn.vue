@@ -32,7 +32,7 @@
             </v-btn>
         </template>
         <v-card
-            max-width="400"
+            max-width="450"
             class="d-flex pa-2"
             style="overflow: hidden"
         >
