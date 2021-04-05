@@ -13,7 +13,11 @@
                 <v-select
                     placeholder="Choose report"
                     outlined
-                    v-model="builder.report"
+                    :items="$store.getters['Tracking/getReports']"
+                    item-text="name"
+                    item-value="id"
+                    v-model="report.selected"
+                    @input="selectReport"
                 ></v-select>
             </div>
             <div class="d-inline-flex mx-16">
@@ -39,21 +43,62 @@
                         <v-card-text>
                             <div class="d-flex flex-column">
                                 <div class="d-inline-block">
-                                    <v-text-field
-                                        placeholder="Report name"
-                                        required
-                                    ></v-text-field>
+                                    <div class="d-flex flex-row">
+                                        <div class="d-inline-flex flex-grow-1">
+                                            <v-text-field
+                                                placeholder="Report name"
+                                                required
+                                                v-model="builder.reportName"
+                                            ></v-text-field>
+                                        </div>
+                                        <div class="d-inline-flex flex-grow-0 pt-3">
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                :style="{ color: invertColor(themeBgColor) }"
+                                                @click="saveReport()"
+                                            >
+                                                Save
+                                            </v-btn>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="d-inline-block">
+                                <div class="d-inline-block" v-if="$store.getters['Tracking/getReports'].length">
                                     <v-list dense>
                                         <v-subheader>REPORTS</v-subheader>
                                         <v-list-item-group
                                             color="primary"
                                         >
                                             <v-list-item
+                                                v-for="report in $store.getters['Tracking/getReports']"
+                                                :key="report.id"
                                             >
                                                 <v-list-item-content>
-                                                    <v-list-item-title></v-list-item-title>
+                                                    <v-list-item-title class="d-flex flex-row">
+                                                        <div
+                                                            class="d-inline-flex flex-grow-1"
+                                                            @click="selectReport(report.id)"
+                                                        >
+                                                            {{report.name}}
+                                                            <small
+                                                                style="color: gray"
+                                                            >
+                                                                &nbsp;(From {{moment(report.created_at).format('DD/MM/YYYY H:m:ss')}})
+                                                            </small>
+                                                        </div>
+                                                        <div class="d-inline-flex flex-grow-0">
+                                                            <v-btn
+                                                                class="mx-2"
+                                                                icon
+                                                                x-small
+                                                                color="error"
+                                                                @click="deleteReport(report.id)"
+                                                            >
+                                                                <v-icon dark>
+                                                                    mdi-delete
+                                                                </v-icon>
+                                                            </v-btn>
+                                                        </div>
+                                                    </v-list-item-title>
                                                 </v-list-item-content>
                                             </v-list-item>
                                         </v-list-item-group>
@@ -864,7 +909,6 @@ export default {
             draggable: false,
             builder: {
                 reportName: 'Report',
-                report: null,
                 period: {
                     start: moment().subtract(1, 'months').format('YYYY-MM-DD'),
                     end: moment().format('YYYY-MM-DD')
@@ -1179,7 +1223,9 @@ export default {
                     //     value: 'revenue',
                     //     text: 'Revenue'
                     // },
-                ]
+                ],
+                name: '',
+                selected: null
             },
             csvForm: {
                 groupItems: [
@@ -1241,6 +1287,7 @@ export default {
         this.$store.dispatch('Team/getCoworkers', { search: null });
         this.$store.dispatch('Tags/getTagList', { search: null });
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
+        this.debounceGetReports = _.debounce(this.__getReports, 1000);
     },
     mounted() {
         let that = this;
@@ -1252,6 +1299,7 @@ export default {
         });
         this.setPeriod();
         this.debounceGetSettings();
+        this.debounceGetReports();
     },
     methods: {
         __getSettings() {
@@ -1264,6 +1312,9 @@ export default {
                        }
                    }
                 });
+        },
+        __getReports() {
+            this.$store.dispatch('Tracking/getReports');
         },
         invertColor(hex, bw = true) {
             return Helper.invertColor(hex.substr(0, 7), bw);
@@ -1372,7 +1423,7 @@ export default {
             } else {
                 this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format(dateFormat)}`;
             }
-            axios.post('/api/tracking/reports', this.builder)
+            axios.post('/api/tracking/reports/generate', this.builder)
                 .then(({ data: { data } }) => {
                     this.reportData.entities = data;
                     this.dialogEdit = {};
@@ -1516,6 +1567,25 @@ export default {
             this.editForm.entity = item.entity;
             this.editForm.service = item.service;
             this.dialogEdit[item.id] = true;
+        },
+        saveReport() {
+            if (this.builder.reportName) {
+                this.$store.dispatch('Tracking/createReport', {
+                    name: this.builder.reportName,
+                    configuration: this.builder
+                });
+            }
+        },
+        deleteReport(id) {
+            this.$store.dispatch('Tracking/deleteReport', { id });
+        },
+        selectReport(id) {
+            const report = this.$store.getters['Tracking/getReports'].find(i => i.id === id);
+            if (report) {
+                this.dialogSave = false;
+                this.builder = report.configuration;
+                this.report.selected = report;
+            }
         }
     },
     computed: {

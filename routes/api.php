@@ -213,7 +213,11 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::delete('/tracker/{tracking}', 'TrackingController@delete');
 
                 // Reports
-                Route::post('/reports', 'ReportController@generate');
+                Route::post('/reports', 'ReportController@create');
+                Route::delete('/reports/{id}', 'ReportController@delete');
+                Route::get('/reports/{id}', 'ReportController@find');
+                Route::get('/reports', 'ReportController@get');
+                Route::post('/reports/generate', 'ReportController@generate');
 
                 // Settings
                 Route::get('/settings', 'SettingsController@get');

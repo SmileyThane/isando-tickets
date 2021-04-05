@@ -183,4 +183,8 @@ class User extends Authenticatable
     {
         return $this->attributes['avatar_url'];
     }
+
+    public function trackingReports() {
+        return $this->hasMany(TrackingReport::class,'user_id', 'id');
+    }
 }

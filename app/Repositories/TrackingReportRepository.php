@@ -10,6 +10,7 @@ use App\Tag;
 use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
+use App\TrackingReport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,33 @@ class TrackingReportRepository
     protected $settings = [];
     protected $company;
     protected $currency = 'EUR';
+
+    public function all(Request $request) {
+        return TrackingReport::orderBy('id', 'desc')->get();
+    }
+
+    public function find($reportId) {
+        return TrackingReport::find($reportId);
+    }
+
+    public function create(Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'configuration' => 'required'
+        ]);
+
+        $report = new TrackingReport();
+        $report->name = $request->get('name');
+        $report->configuration = $request->get('configuration');
+        $user = Auth::user();
+        $user->trackingReports()->save($report);
+        return $report;
+    }
+
+    public function delete($id) {
+        $report = TrackingReport::findOrFail($id);
+        $report->delete();
+    }
 
     public function validate($request, $new = true)
     {
@@ -221,7 +249,7 @@ class TrackingReportRepository
             case 'project':
                 return $tracking['entity'] ? $tracking['entity']['name'] : 'None';
             case 'client':
-                return $tracking && $tracking['entity'] && $tracking['entity']['client'] ? $tracking['entity']['client']['name'] : 'None';
+                return isset($tracking) && isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['name'] : 'None';
             case 'coworker':
                 return $tracking['user']['full_name'];
         }
@@ -511,8 +539,8 @@ class TrackingReportRepository
                 $row[] = $tracking['entity'] && $tracking['entity']['from_company_name'] ? $tracking['entity']['from_company_name'] : '';
                 $row[] = $tracking['entity'] && $tracking['entity']['from']['id'] ? $tracking['entity']['from']['id'] : '';
             } else {
-                $row[] = $tracking['entity'] && $tracking['entity']['client'] ? $tracking['entity']['client']['name'] : '';
-                $row[] = $tracking['entity'] && $tracking['entity']['client'] ? $tracking['entity']['client']['id'] : '';
+                $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['name'] : '';
+                $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['id'] : '';
             }
             $row[] = $tracking['entity'] ? $tracking['entity']['name'] : '';
             $row[] = $tracking['entity'] ? $tracking['entity']['id'] : '';
