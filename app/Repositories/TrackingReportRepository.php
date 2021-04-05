@@ -130,7 +130,7 @@ class TrackingReportRepository
             foreach ($filtering as $filter) {
                 switch ($filter['value']) {
                     case 'coworkers':
-                        $tracking->whereIn('tracking.user_id', $filter['selected']);
+                        $tracking->whereIn('user_id', $filter['selected']);
                         break;
                     case 'projects':
                         $projectIds = TrackingProject::whereIn('id', $filter['selected'])->pluck('id')->all();
@@ -144,25 +144,33 @@ class TrackingReportRepository
                             ->whereIn('to_entity_id', $clients)
                             ->pluck('id')
                             ->all();
-
-//                        dd($clients, $projectIds, $ticketIds);
-                        $tracking
+                        
+                        $tracking->where(function($query) use ($projectIds, $ticketIds) {
                             // project
-                            ->where(function($query) use ($projectIds) {
-                                return $query
-                                    ->where('entity_type', TrackingProject::class)
-                                    ->whereIn('entity_id', $projectIds);
-                            })
+                            if (count($projectIds)) {
+                                $query->where(function($q) use ($projectIds) {
+                                    return $q
+                                        ->where('entity_type', '=', TrackingProject::class)
+                                        ->whereIn('entity_id', $projectIds);
+                                });
+                            }
                             // ticket
-                            ->orWhere(function($query) use ($ticketIds) {
-                                return $query
-                                    ->where('entity_type', Ticket::class)
-                                    ->whereIn('entity_id', $ticketIds);
-                            });
-
-//                        $tracking->whereHas('Entity.Client', function ($query) use ($filter) {
-//                            $query->whereIn('clients.id', $filter['selected']);
-//                        });
+                            if (count($ticketIds)) {
+                                if (count($projectIds)) {
+                                    $query->where(function($q) use ($ticketIds) {
+                                        return $q
+                                            ->where('entity_type', '=', Ticket::class)
+                                            ->whereIn('entity_id', $ticketIds);
+                                    });
+                                } else {
+                                    $query->orWhere(function($q) use ($ticketIds) {
+                                        return $q
+                                            ->where('entity_type', '=', Ticket::class)
+                                            ->whereIn('entity_id', $ticketIds);
+                                    });
+                                }
+                            }
+                        });
                         break;
                     case 'services':
                         $tracking->whereHas(
