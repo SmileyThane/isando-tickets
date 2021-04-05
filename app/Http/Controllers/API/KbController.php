@@ -38,7 +38,8 @@ class KbController extends Controller
             $request->name_de,
             $request->description,
             $request->description_de,
-            $request->icon ?? 'mdi-help'
+            $request->icon ?? 'mdi-help',
+            $request->icon_color
         ));
     }
 
@@ -50,7 +51,8 @@ class KbController extends Controller
             $request->name_de,
             $request->description,
             $request->description_de,
-            $request->icon ?? 'mdi-help'
+            $request->icon ?? 'mdi-help',
+            $request->icon_color
         ));
     }
 
@@ -59,7 +61,7 @@ class KbController extends Controller
     }
 
     public function listArticles(Request $request) {
-        return self::showResponse(true, $this->kbRepo->getArticles($request->category_id, $request->search));
+        return self::showResponse(true, $this->kbRepo->getArticles($request->category_id, $request->search, $request->search_in_text, $request->tags));
     }
 
     public function getArticle(Request $request, $id) {
@@ -77,7 +79,9 @@ class KbController extends Controller
             $request->summary_de,
             $request->input('content'),
             $request->content_de,
-            $request->tags ? json_decode($request->tags) : []
+            $request->tags ? json_decode($request->tags) : [],
+            $request->is_internal,
+            $request->prev_id,
         );
 
         if ($request->has('files')) {

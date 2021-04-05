@@ -12,6 +12,8 @@ use App\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Builder;
+
 
 class KbRepository
 {
@@ -38,8 +40,8 @@ class KbRepository
 
             if (!empty($search)) {
                 $result = $result->where(function ($query) use ($search){
-                    $query->where('name', 'like', $search.'%') ->orWhere('name_de', 'like', $search.'%')
-                        ->orWhere('description', 'like', $search.'%') ->orWhere('description_de', 'like', $search.'%');
+                    $query->where('name', 'like', '%'.$search.'%') ->orWhere('name_de', 'like', '%'.$search.'%')
+                        ->orWhere('description', 'like', '%'.$search.'%') ->orWhere('description_de', 'like', '%'.$search.'%');
                 });
             }
             $result = $result->get();
@@ -50,27 +52,42 @@ class KbRepository
          }
         return $result;
     }
-    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon) {
-        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon'));
+    public function createCategory($company_id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color) {
+        return KbCategory::create(compact('company_id', 'parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color'));
     }
 
-    public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon) {
-        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon'));
+    public function updateCategory($id, $parent_id, $name, $name_de, $description, $description_de, $icon, $icon_color) {
+        return KbCategory::updateOrCreate(compact('id'), compact('parent_id', 'name', 'name_de', 'description', 'description_de', 'icon', 'icon_color'));
     }
 
     public function deleteCategory($id) {
-        return KbCategory::find($id)->delete();
+        $category =  KbCategory::find($id);
+        return $category ? $category->delete() : false;
     }
 
-    public function getArticles($category_id, $search) {
-        $articles = KbArticle::with('tags', 'attachments')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
+    public function getArticles($category_id, $search, $search_in_text = false, $tags = []) {
+        $articles = KbArticle::whereNull('prev_id')->with('tags', 'attachments')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
         if ($category_id) {
-            $articles = $articles->where('category_id',$category_id);
+            $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
+                $query->where('category_id', $category_id);
+            });
         }
         if (!empty($search)) {
-            $articles = $articles->where(function ($query) use ($search) {
-                $query->where('name', 'like', $search . '%')->orWhere('name_de', 'like', $search . '%')
-                    ->orWhere('summary', 'like', $search . '%')->orWhere('summary_de', 'like', $search . '%');
+            $articles = $articles->where(function ($query) use ($search, $search_in_text) {
+                $query->where('name', 'like', '%'.$search . '%')->orWhere('name_de', 'like', '%'.$search . '%')
+                    ->orWhere('summary', 'like', '%'.$search . '%')->orWhere('summary_de', 'like', '%'.$search . '%');
+            });
+
+            if ($search_in_text) {
+                $articles = $articles->where(function ($query) use ($search) {
+                    $query->orWhere('content', 'like', '%' . $search . '%')->orWhere('content_de', 'like', '%' . $search . '%');
+                });
+            }
+        }
+
+        if (!empty($tags)) {
+            $articles->whereHas('tags', function (Builder $query) use ($tags) {
+               $query->whereIn('tags.id', $tags);
             });
         }
 
@@ -124,6 +141,7 @@ class KbRepository
     }
 
     public function deleteArticle($id) {
-        return KbArticle::find($id)->delete();
+        $article =  KbArticle::find($id);
+        return $article ? $article->delete() : false;
     }
 }

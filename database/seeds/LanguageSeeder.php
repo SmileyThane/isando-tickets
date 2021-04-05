@@ -709,7 +709,11 @@ class LanguageSeeder extends Seeder
                         'feature_color' => 'Feature color',
                         'preview' => 'Preview',
                         'no_attachments' => 'No attached documents',
-                        'save_and_close' => 'Save and close'
+                        'save_and_close' => 'Save and close',
+                        'icon_color' => 'Icon color',
+                        'search_in_category_names' => 'Category names',
+                        'search_in_article_names' => 'Knowledge names',
+                        'search_in_article_names_and_contents' => 'Knowledge names and contents',
                     ],
                     'exceptions' =>
                         [],

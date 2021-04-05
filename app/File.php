@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 class File extends Model
 {
     protected $table = 'files';
-    protected $fillable = ['id', 'model_id', 'name', 'filepath', 'model_type'];
+    protected $fillable = ['id', 'model_id', 'name', 'filepath', 'model_type', 'service_info'];
     protected $appends = ['link'];
 
     public function getLinkAttribute(): string
@@ -19,5 +19,11 @@ class File extends Model
     public function attacheable()
     {
         return $this->morphTo();
+    }
+
+    public function delete()
+    {
+        Storage::delete('/public/' . $this->attributes['filepath'] . $this->attributes['name']);
+        return parent::delete();
     }
 }

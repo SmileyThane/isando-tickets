@@ -66,8 +66,8 @@ class CompanyUserRepository
             $companyUsers = $companyUsers->whereHas(
                 'userData',
                 function ($query) use ($request) {
-                    $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('surname', 'like', $request->search . '%')
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('surname', 'like', '%' . $request->search . '%')
                         ->withTrashed($request->with_trashed);
                 }
             );
