@@ -3,12 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class TrackingProject extends Model
 {
     protected $appends = [
         'tracked',
-        'revenue'
+        'revenue',
+        'is_favorite'
+    ];
+
+    protected $casts = [
+        'is_favorite' => 'boolean'
     ];
 
     public function Product() {
@@ -39,6 +45,14 @@ class TrackingProject extends Model
             })
             ->sum();
         return number_format($revenue, 2);
+    }
+
+    public function getIsFavoriteAttribute() {
+        return (bool)UserFavorites::where([
+            ['user_id', '=', Auth::user()->id],
+            ['entity_type', '=', TrackingProject::class],
+            ['entity_id', '=', $this->id]
+        ])->first();
     }
 
     public static function boot() {

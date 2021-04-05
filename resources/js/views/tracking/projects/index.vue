@@ -68,6 +68,10 @@
                 >
                 </v-pagination>
             </template>
+            <template v-slot:item.is_favorite="props">
+                <v-icon v-if="props.item.is_favorite" @click.stop="toggleFavorite(props.item)">mdi-star</v-icon>
+                <v-icon v-else @click.stop="toggleFavorite(props.item)">mdi-star-outline</v-icon>
+            </template>
             <template v-slot:item.tracked="props">
                 {{ helperConvertSecondsToTimeFormat(props.item.tracked, false) }}
             </template>
@@ -187,6 +191,7 @@ themeBgColor: this.$store.state.themeBgColor,
             headers: [
                 {text: `${this.$store.state.lang.lang_map.tracking.name}`, value: 'name'},
                 {text: `${this.$store.state.lang.lang_map.tracking.client}`, value: 'client.name'},
+                {text: ``, value: 'is_favorite'},
                 {text: `${this.$store.state.lang.lang_map.tracking.tracked}`, value: 'tracked'},
                 {text: `${this.$store.state.lang.lang_map.tracking.revenue}`, value: 'revenue'}
             ],
@@ -291,6 +296,9 @@ themeBgColor: this.$store.state.themeBgColor,
         },
         helperConvertSecondsToDecimalHours(seconds) {
             return (seconds / 60 / 60).toFixed(2);
+        },
+        toggleFavorite(project) {
+            this.$store.dispatch('Projects/toggleFavorite', project);
         }
     },
     watch: {

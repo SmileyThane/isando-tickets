@@ -187,4 +187,16 @@ class User extends Authenticatable
     public function trackingReports() {
         return $this->hasMany(TrackingReport::class,'user_id', 'id');
     }
+
+    public function favoriteTrackingProjects() {
+        return $this->morphedByMany(
+            TrackingProject::class,
+            'entity',
+            'user_favorites',
+            'user_id',
+            'entity_id',
+            'id',
+            'id'
+        );
+    }
 }

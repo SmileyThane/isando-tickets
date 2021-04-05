@@ -28,11 +28,11 @@ class TrackingReportRepository
     protected $currency = 'EUR';
 
     public function all(Request $request) {
-        return TrackingReport::orderBy('id', 'desc')->get();
+        return Auth::user()->trackingReports()->orderBy('id', 'desc')->get();
     }
 
     public function find($reportId) {
-        return TrackingReport::find($reportId);
+        return Auth::user()->trackingReports()->find($reportId);
     }
 
     public function create(Request $request) {
@@ -50,7 +50,7 @@ class TrackingReportRepository
     }
 
     public function delete($id) {
-        $report = TrackingReport::findOrFail($id);
+        $report = Auth::user()->trackingReports()->findOrFail($id);
         $report->delete();
     }
 
@@ -144,7 +144,7 @@ class TrackingReportRepository
                             ->whereIn('to_entity_id', $clients)
                             ->pluck('id')
                             ->all();
-                        
+
                         $tracking->where(function($query) use ($projectIds, $ticketIds) {
                             // project
                             if (count($projectIds)) {

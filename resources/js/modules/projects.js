@@ -1,11 +1,13 @@
 export default {
     namespaced: true,
     state: {
+        filter: null,
         projects: [],
         treeProjects: []
     },
     actions: {
         getProjectList({commit}, params) {
+            commit('SET_FILTER', params);
             if (params && !params.search) params.search = '';
             const queryParams = new URLSearchParams(params);
             return axios.get(`/api/tracking/projects?${queryParams.toString()}`)
@@ -25,11 +27,19 @@ export default {
                         return project;
                     }
                 })
+        },
+        toggleFavorite({commit, dispatch, state}, project) {
+            return axios.patch(`/api/tracking/projects/${project.id}/favorite`)
+                .then(({ data: { data, success } }) => {
+                    if (success) {
+                        dispatch('getProjectList', state.filter);
+                    }
+                });
         }
     },
     mutations: {
         GET_PROJECTS(state, projects) {
-            state.projects = projects
+            state.projects = projects.sort((a,b) => b.is_favorite - a.is_favorite);
         },
         GET_TREE_PROJECTS(state, projects) {
             let clients = [];
@@ -39,10 +49,13 @@ export default {
                 }
             })
             clients = clients.map(client => {
-                client.projects = projects.filter(i => i.client.id === client.id);
+                client.projects = projects.filter(i => i.client.id === client.id).sort((a,b) => b.is_favorite - a.is_favorite);
                 return client;
             })
             state.treeProjects = clients
+        },
+        SET_FILTER(state, param) {
+            state.filter = param;
         }
     },
     getters: {
