@@ -433,6 +433,8 @@
                                             v-if="item.entity"
                                             :style="{ color: item.entity && item.entity.color ? item.entity.color : themeBgColor }"
                                         >
+                                            <span v-if="item.entity_type === 'App\\TrackingProject'">Project: </span>
+                                            <span v-if="item.entity_type === 'App\\Ticket'">Ticket: </span>
                                             {{ item.entity.name }}
                                         </span>
                                         <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
