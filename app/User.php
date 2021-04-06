@@ -183,4 +183,9 @@ class User extends Authenticatable
     {
         return $this->attributes['avatar_url'];
     }
+
+    public function billing(): MorphMany
+    {
+        return $this->morphMany(InternalBilling::class, 'entity');
+    }
 }
