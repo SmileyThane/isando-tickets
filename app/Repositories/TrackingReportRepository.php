@@ -237,8 +237,8 @@ class TrackingReportRepository
             case 'month':
                 return Carbon::parse($tracking['date_from'])->format('F Y');
             case 'week':
-                $startWeek = Carbon::parse($tracking->date_from)->startOfWeek(Carbon::MONDAY);
-                $endWeek = Carbon::parse($tracking->date_from)->endOfWeek(Carbon::SUNDAY);
+                $startWeek = Carbon::parse($tracking['date_from'])->startOfWeek(Carbon::MONDAY);
+                $endWeek = Carbon::parse($tracking['date_from'])->endOfWeek(Carbon::SUNDAY);
                 return 'Week of '
                     . $startWeek->format('j M')
                     . ' ('

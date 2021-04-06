@@ -190,7 +190,7 @@
                                         :step="1"
                                         :columns="2"
                                         mode="range"
-                                        @input="activePeriod = null; genPreview()"
+                                        @input="activePeriod = null; genPreview(); resetSelectedReport()"
                                     ></vc-date-picker>
                                 </div>
                             </div>
@@ -208,6 +208,7 @@
                     item-text="text"
                     item-value="value"
                     v-model="builder.round"
+                    @input="resetSelectedReport()"
                 >
                 </v-select>
             </div>
@@ -222,7 +223,7 @@
                     item-value="value"
                     v-model="builder.sort"
                     return-object
-                    @input="genPreview"
+                    @input="genPreview(); resetSelectedReport()"
                 >
                     <template v-slot:item="{ parent, item, on, attrs }">
                         <span>
@@ -249,6 +250,7 @@
                 :style="{ 'min-width': '45%' }"
                 class="d-inline-flex order-2 dragNDrop"
                 :class="{ 'active': draggable }"
+                @input="resetSelectedReport()"
             >
                 <v-btn
                     v-for="groupItem in builder.group"
@@ -272,6 +274,7 @@
                 :style="{ 'min-width': '40%' }"
                 class="d-inline-block order-last dragNDrop common"
                 :class="{ 'active': draggable }"
+                @input="resetSelectedReport()"
             >
                 <v-btn
                     v-for="groupItem in groupItems"
@@ -333,7 +336,7 @@
                                     clearable
                                     style="max-width: 900px; width: 100%"
                                     v-model="filter.selected"
-                                    @input="genPreview"
+                                    @input="genPreview(); resetSelectedReport()"
                                 ></v-select>
                                 <v-btn
                                     color="danger"
@@ -1392,6 +1395,7 @@ export default {
             }
             this.activePeriod = null;
             this.genPreview();
+            this.resetSelectedReport();
         },
         onClickOutsideHandler() {
             this.activePeriod = null
@@ -1585,9 +1589,16 @@ export default {
             const report = this.$store.getters['Tracking/getReports'].find(i => i.id === id);
             if (report) {
                 this.dialogSave = false;
+                this.groupItems = this.groupItems.concat(this.builder.group);
                 this.builder = report.configuration;
+                const groups = this.builder.group.map(g => g.value);
+                this.groupItems = this.groupItems.filter(i => groups.indexOf(i.value) === -1);
                 this.report.selected = report;
             }
+        },
+        resetSelectedReport() {
+            this.report.selected = null;
+            this.debounceGetReports();
         }
     },
     computed: {
