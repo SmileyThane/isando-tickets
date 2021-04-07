@@ -15,6 +15,7 @@ class CreateInternalBillingsTable extends Migration
     {
         Schema::create('internal_billings', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->unsignedBigInteger('entity_id');
             $table->string('entity_type');
             $table->unsignedInteger('cost')->nullable();
