@@ -36,6 +36,11 @@ class CompanyUser extends Model
         return Role::whereIn('id', $roleIds)->get();
     }
 
+    public function roleIds()
+    {
+        return ModelHasRole::where(['model_id' => $this->attributes['id'], 'model_type' => self::class])->get()->pluck('role_id')->toArray();
+    }
+
     public function getPermissionIds()
     {
         $roleIds = $this->roleIds();
@@ -45,17 +50,19 @@ class CompanyUser extends Model
         return [];
     }
 
-    public function roleIds()
-    {
-        return ModelHasRole::where(['model_id' => $this->attributes['id'], 'model_type' => self::class])->get()->pluck('role_id')->toArray();
-    }
-
     public function hasRoleId($id)
     {
         $roleIds = $this->roleIds();
         if ($roleIds) {
-            return in_array($id, $roleIds, true);
+            if (is_int($id)) {
+                return in_array($id, $roleIds, true);
+            } else {
+                foreach ($id as $item) {
+                    return in_array($item, $roleIds, true);
+                }
+            }
         }
+
         return false;
     }
 
