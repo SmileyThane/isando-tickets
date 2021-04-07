@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\InternalBillingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -279,5 +280,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('file', 'API\FileController@add');
     Route::delete('file/{id}', 'API\FileController@delete');
 
+    Route::get('billing/internal', [InternalBillingController::class, 'index']);
+    Route::post('billing/internal', [InternalBillingController::class, 'create']);
+    Route::get('billing/internal/{id}', [InternalBillingController::class, 'find']);
+    Route::put('billing/internal/{id}', [InternalBillingController::class, 'update']);
+    Route::delete('billing/internal/{id}', [InternalBillingController::class, 'delete']);
 });
 
