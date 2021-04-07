@@ -15,6 +15,11 @@ class InternalBillingController extends Controller
         $this->internalBillingRepo = $internalBillingRepo;
     }
 
+    public function index()
+    {
+        return self::showResponse(true, $this->internalBillingRepo->index());
+    }
+
     public function find(int $id)
     {
         return self::showResponse(true, $this->internalBillingRepo->find($id));
@@ -23,10 +28,12 @@ class InternalBillingController extends Controller
     public function create(Request $request)
     {
         $result = $this->internalBillingRepo->create(
+            $request->name,
+            $request->cost,
+            $request->currency_id,
             $request->entity_id,
             $request->entity_type,
-            $request->cost,
-            $request->currency_id
+
         );
 
         return self::showResponse(true, $result);
@@ -36,6 +43,7 @@ class InternalBillingController extends Controller
     {
         $result = $this->internalBillingRepo->update(
             $id,
+            $request->name,
             $request->cost,
             $request->currency_id
         );
