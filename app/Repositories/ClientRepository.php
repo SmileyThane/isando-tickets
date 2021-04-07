@@ -76,7 +76,7 @@ class ClientRepository
         return $clients;
     }
 
-    private function getRecursiveChildClientIds($clientsArray): array
+    public function getRecursiveChildClientIds($clientsArray): array
     {
         $clientIds = [];
         foreach ($clientsArray as $client) {
