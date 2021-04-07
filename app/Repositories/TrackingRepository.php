@@ -124,7 +124,6 @@ class TrackingRepository
     public function update(Request $request, Tracking $tracking)
     {
         $oldTracking = $tracking;
-        $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
         if ($request->has('date_from')) {
             if (!$request->has('date_to') && Carbon::parse($request->date_from)->gt(Carbon::parse($tracking->date_to))) {

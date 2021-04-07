@@ -380,7 +380,7 @@
                             <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
                             <span class="d-inline-block text-center">Revenue</span>
                             <span class="d-inline-block text-center">
-                                <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{totalRevenue}}
+                                <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{number_format(totalRevenue, 2)}}
                             </span>
                         </div>
                     </v-card>
@@ -422,7 +422,7 @@
                         {{ item.name }}
                     </div>
                     <div v-else class="d-flex flex-row">
-                        <table class="v-data-table" border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
+                        <table class="v-data-table" :class="item.status === 'started' ? 'success lighten-5' : ''" border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
                             <tbody>
                                 <tr>
                                     <td class="pa-2" align="right" width="10%">
@@ -465,9 +465,16 @@
                                     <td class="pa-2" align="right" width="5%">
                                         <span v-if="currentCurrency">
                                             {{ currentCurrency.slug }}
-                                        </span> {{ parseFloat(item.revenue).toFixed(2) }}
+                                        </span> {{ number_format(item.revenue) }}
                                     </td>
                                     <td class="pa-2" align="center" width="5%">
+                                        <span
+                                            v-if="item.status === 'started'"
+                                            @click="stopTrack(item.id)"
+                                        >
+                                            <v-icon>mdi-stop</v-icon>
+                                        </span>
+                                        <span class="pl-7" v-if="item.status !== 'started'"></span>
                                         <v-dialog
                                             v-model="dialogEdit[item.id]"
                                             width="500"
@@ -1453,11 +1460,12 @@ export default {
         },
         helperConvertSecondsToTimeFormat(seconds, withSeconds = true) {
             if (!seconds) {
-                return `00:00:00`;
+                return `00:00` + (withSeconds ? ':00' : '');
             }
             const h = Math.floor(seconds / 60 / 60);
             const m = Math.floor((seconds - h * 60 * 60) / 60);
             const s = seconds - (m * 60) - (h * 60 * 60);
+            console.log(seconds, h, m, s);
             if (withSeconds) {
                 return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}:${this.helperAddZeros(s.toFixed(0),2)}`;
             }
@@ -1554,6 +1562,18 @@ export default {
                     }
                 })
         },
+        stopTrack(id) {
+            this.$store.dispatch('Tracking/updateTrack', {
+                id: id,
+                date_to: moment().format(),
+                status: 'stopped'
+            })
+                .then(successResult => {
+                    if (successResult) {
+                        this.genPreview();
+                    }
+                });
+        },
         closeEditDialog(item) {
             this.editForm.id = null;
             this.editForm.date_from = null;
@@ -1567,7 +1587,17 @@ export default {
         openEditDialog(item) {
             this.editForm.id = item.id;
             this.editForm.date_from = item.date_from;
-            this.editForm.date_to = item.date_to;
+            console.log({
+                hours: moment(item.date_to).hours(),
+                minutes: moment(item.date_to).minutes(),
+                seconds: moment(item.date_to).seconds(),
+            });
+            this.editForm.date_to = item.date_to
+                ? moment(item.date_from)
+                    .hours(moment(item.date_to).hours())
+                    .minutes(moment(item.date_to).minutes())
+                    .seconds(moment(item.date_to).seconds())
+                : item.date_to;
             this.editForm.billable = item.billable;
             this.editForm.tags = item.tags;
             this.editForm.entity = item.entity;
@@ -1599,6 +1629,33 @@ export default {
         resetSelectedReport() {
             this.report.selected = null;
             this.debounceGetReports();
+        },
+        number_format( number, decimals = 2, dec_point = ".", thousands_sep = "," ) {  // Format a number with grouped thousands
+            let i, j, kw, kd, km;
+
+            if( isNaN(decimals = Math.abs(decimals)) ){
+                decimals = 2;
+            }
+            if( dec_point == undefined ){
+                dec_point = ".";
+            }
+            if( thousands_sep == undefined ){
+                thousands_sep = ",";
+            }
+
+            i = parseInt(number = (+number || 0).toFixed(decimals)) + "";
+
+            if( (j = i.length) > 3 ){
+                j = j % 3;
+            } else{
+                j = 0;
+            }
+
+            km = (j ? i.substr(0, j) + thousands_sep : "");
+            kw = i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands_sep);
+            kd = (decimals ? dec_point + Math.abs(number - i).toFixed(decimals).replace(/-/, 0).slice(2) : "");
+
+            return km + kw + kd;
         }
     },
     computed: {

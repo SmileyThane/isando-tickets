@@ -110,7 +110,11 @@ class TrackingReportRepository
             $tracking->where('tracking.date_from', '>=', $request->period['start']);
         }
         if ($request->has('period') && isset($request->period['end'])) {
-            $tracking->where('tracking.date_to', '<=', $request->period['end']);
+            $tracking->where(function($query) use ($request) {
+                $query
+                    ->where('tracking.date_to', '<=', $request->period['end'])
+                    ->orWhereNull('tracking.date_to');
+            });
         }
 
         switch ($sorting) {
@@ -197,13 +201,18 @@ class TrackingReportRepository
         $this->round = $request->get('round', 0);
         $round = $this->round;
 
-        $tracks = collect($tracks)->map(function ($track) use ($round) {
-            $time = $this->convertSecondsToTimeFormat($track['passed']);
-            $roundedTime = $this->getRoundTime($time, $round);
-            $track['passed'] = $this->convertTimeToSeconds($roundedTime);
-            $track['revenue'] = number_format((float)$track['rate'] * (float)$this->convertSecondsToDecimal((int)$track['passed']), 2);
-            return $track;
-        });
+        if ($round > 0) {
+            $tracks = collect($tracks)->map(function ($track) use ($round) {
+                $time = $this->convertSecondsToTimeFormat($track['passed']);
+                $roundedTime = $this->getRoundTime($time, $round);
+                $passed = $this->convertTimeToSeconds($roundedTime);
+                $track['passed'] = $passed;
+                if ($track['billable']) {
+                    $track['revenue'] = number_format((float)$track['rate'] * (float)$this->convertSecondsToDecimal((float)$passed), 2, '.', '');
+                }
+                return $track;
+            });
+        }
 
         return [
             'tracks' => $tracks,
@@ -211,11 +220,14 @@ class TrackingReportRepository
         ];
     }
 
-    function getRoundTime($time, $minutes = '5', $format = "H:i") {
+    function getRoundTime($time, $minutes = '5') {
         if ($minutes === 0) return $time;
-        $seconds = strtotime($time);
-        $rounded = round($seconds / ($minutes * 60)) * ($minutes * 60);
-        return date($format, $rounded);
+        $time = explode(':', $time);
+        $seconds = (int)$time[0]*60*60 + (int)$time[1]*60;
+        if (isset($time[2])) $seconds += (int)$time[2];
+        $rounded = round((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60);
+//        dd($time, $minutes, $rounded, $this->convertSecondsToTimeFormat($rounded));
+        return $this->convertSecondsToTimeFormat($rounded);
     }
 
     public function generate(Request $request) {
@@ -334,8 +346,8 @@ class TrackingReportRepository
 //        if (!empty($d)) {
 //            $result[] = $d . ' days,';
 //        }
-        $h = floor(($value %86400)/3600);
-        $m = floor(($value %3600)/60);
+        $h = floor($value / 60 / 60);
+        $m = floor(($value - ($h * 60 * 60)) / 60);
         if ($withSeconds) {
             return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
         }
