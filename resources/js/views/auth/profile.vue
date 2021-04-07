@@ -784,6 +784,100 @@
                         </v-card>
                     </v-expand-transition>
                 </v-card>
+                <br>
+                <v-card>
+                    <v-toolbar
+                        dark
+                        dense
+                        flat
+                        :color="themeBgColor"
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.profile.internal_billing }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-list-item v-for="(item, i) in internalBillings" :key="item.id">
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="item.name"></v-list-item-title>
+                                        <v-list-item-subtitle v-text="item.cost"></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-icon small @click="editInternalBilling(item)">
+                                            mdi-pencil
+                                        </v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-action>
+                                        <v-icon small @click="deleteInternalBilling(item.id)">
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-expansion-panels multiple v-model="internalBillingEditor" accordion>
+                                    <v-expansion-panel>
+                                        <v-expansion-panel-header>
+                                            {{langMap.main.add}}
+                                            <template v-slot:actions>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            </template>
+                                        </v-expansion-panel-header>
+                                        <v-expansion-panel-content>
+                                            <v-form>
+                                                <v-row>
+                                                    <v-col cols="12">
+                                                        <v-text-field
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            v-model="internalBillingForm.name"
+                                                            :label="langMap.main.name"
+                                                            dense
+                                                        />
+                                                    </v-col>
+                                                    <v-col cols="12">
+                                                        <v-text-field
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            v-model="internalBillingForm.cost"
+                                                            :label="langMap.main.cost"
+                                                            dense
+                                                        />
+                                                    </v-col>
+                                                    <v-btn
+                                                        v-if="!internalBillingForm.id"
+                                                        dark
+                                                        fab
+                                                        right
+                                                        bottom
+                                                        small
+                                                        :color="themeBgColor"
+                                                        @click="createInternalBilling"
+                                                    >
+                                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    </v-btn>
+                                                    <v-btn
+                                                        v-if="internalBillingForm.id"
+                                                        dark
+                                                        fab
+                                                        right
+                                                        bottom
+                                                        small
+                                                        :color="themeBgColor"
+                                                        @click="updateInternalBilling(internalBillingForm.id)"
+                                                    >
+                                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-update</v-icon>
+                                                    </v-btn>
+                                                </v-row>
+                                            </v-form>
+                                        </v-expansion-panel-content>
+                                    </v-expansion-panel>
+                                </v-expansion-panels>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
             </v-col>
             <v-col cols="6">
                 <v-card>
@@ -1277,6 +1371,9 @@ export default {
             themeFgColorNew: this.$store.state.themeFgColor,
             themeBgColorNew: this.$store.state.themeBgColor,
             themeBgColorDlg: localStorage.themeBgColorDlg == 1 ? 0 : 1,
+            internalBillings: [],
+            internalBillingEditor: null,
+            internalBillingForm: {},
             autoFgColor: false,
             companySettings: {
                 theme_color: '',
@@ -1305,6 +1402,7 @@ export default {
         this.getTimeZones();
         this.getCountries();
         this.getCompanySettings();
+        this.getInternalBilling();
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1374,6 +1472,81 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.timezones = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getInternalBilling() {
+            axios.get('/api/billing/internal').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.internalBillings = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        editInternalBilling(item) {
+
+            console.log(this.internalBillingForm);
+            if (this.internalBillingEditor === null) {
+
+                this.internalBillingEditor = [0]
+                this.internalBillingForm.id = item.id
+                this.internalBillingForm.name = item.name
+                this.internalBillingForm.cost = item.cost
+            } else {
+                this.internalBillingEditor = null
+                this.internalBillingForm = {}
+            }
+        },
+        deleteInternalBilling(id) {
+            axios.delete(`/api/billing/internal/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.getInternalBilling()
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateInternalBilling(id) {
+            axios.put(`/api/billing/internal/${id}`, this.internalBillingForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.internalBillingEditor = null
+                    this.internalBillingForm = {}
+                    this.getInternalBilling()
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        createInternalBilling() {
+            axios.post(`/api/billing/internal`, this.internalBillingForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.internalBillingEditor = null
+                    this.internalBillingForm = {}
+                    this.getInternalBilling()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
