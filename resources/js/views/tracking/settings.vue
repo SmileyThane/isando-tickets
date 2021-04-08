@@ -13,8 +13,7 @@
             <v-tabs v-model="tab">
                 <v-tab :key="0">{{ langMap.tracking.settings.tags }}</v-tab>
                 <v-tab :key="1">{{ langMap.tracking.settings.services }}</v-tab>
-                <v-tab :key="2">{{ langMap.tracking.settings.company }}</v-tab>
-                <v-tab :key="3">{{ langMap.tracking.settings.currencies }}</v-tab>
+                <v-tab :key="2">{{ langMap.tracking.settings.currencies }}</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
@@ -369,36 +368,6 @@
                     </v-card>
                 </v-tab-item>
                 <v-tab-item :key="2">
-                    <v-card>
-                        <v-card-text>
-                            <div class="d-flex flex-row">
-                                <div class="d-flex-inline">
-<!--                                    column 1-->
-                                    <v-select
-                                        :items="$store.getters['Currencies/getCurrencies']"
-                                        item-value="id"
-                                        item-text="name"
-                                        :label="langMap.tracking.settings.currency"
-                                        :placeholder="langMap.tracking.settings.currency"
-                                        v-model="currentCurrency"
-                                        dense
-                                    >
-                                        <template v-slot:item="props">
-                                            <div class="d-flex flex-row" style="width: 100%">
-                                                <div class="d-flex-inline flex-grow-1" style="width: 100%">{{props.item.name}} ({{props.item.slug}})</div>
-                                                <div class="d-flex-inline text-right">{{props.item.symbol}}</div>
-                                            </div>
-                                        </template>
-                                    </v-select>
-                                </div>
-                                <div class="d-flex-inline">
-<!--                                    column 2-->
-                                </div>
-                            </div>
-                        </v-card-text>
-                    </v-card>
-                </v-tab-item>
-                <v-tab-item :key="3">
                     <v-card flat>
                         <v-toolbar flat>
                             <v-dialog

@@ -51,6 +51,7 @@ class CompanyRepository
                 }
             );
         }
+        $company->with('currency');
         return $id ? $company->with(['employees' => function ($query) {
             $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
             if (Auth::user()->employee->hasRoleId([Role::COMPANY_CLIENT, Role::USER])) {
@@ -97,6 +98,10 @@ class CompanyRepository
         $company->company_number = $request->company_number ?? $company->company_number;
         $company->description = $request->description ?? $company->description;
         $company->registration_date = $request->registration_date ?? now();
+
+        if ($request->has('currency_id')) {
+            $company->currency_id = $request->get('currency_id');
+        }
 
         //aliases
         $company->first_alias = $request->first_alias ?? $company->first_alias;

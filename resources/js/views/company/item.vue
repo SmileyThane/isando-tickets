@@ -99,6 +99,31 @@
                                     :color="themeBgColor"
                                 ></v-date-picker>
                             </v-menu>
+                            <v-select
+                                :items="$store.getters['Currencies/getCurrencies']"
+                                item-value="id"
+                                item-text="name"
+                                :readonly="!enableToEdit"
+                                :label="langMap.tracking.settings.currency"
+                                :placeholder="langMap.tracking.settings.currency"
+                                v-model="company.currency_id"
+                                required
+                                dense
+                                :color="themeBgColor"
+                            >
+                                <template v-slot:item="props">
+                                    <div class="d-flex flex-row" style="width: 100%">
+                                        <div class="d-flex-inline flex-grow-1" style="width: 100%">{{props.item.name}} ({{props.item.slug}}) {{props.item.symbol}}</div>
+                                        <div class="d-flex-inline text-right"></div>
+                                    </div>
+                                </template>
+                                <template v-slot:selection="props">
+                                    <div class="d-flex flex-row" style="width: 100%">
+                                        <div class="d-flex-inline flex-grow-1" style="width: 100%">{{props.item.name}} ({{props.item.slug}}) {{props.item.symbol}}</div>
+                                        <div class="d-flex-inline text-right"></div>
+                                    </div>
+                                </template>
+                            </v-select>
                         </v-form>
                     </v-card-text>
                 </v-card>
@@ -1911,6 +1936,7 @@
 
 <script>
 import EventBus from "../../components/EventBus";
+import _ from 'lodash';
 
 export default {
 
@@ -1919,7 +1945,7 @@ export default {
             snackbar: false,
             actionColor: '',
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             tooltip: false,
             enableToEdit: false,
@@ -2094,7 +2120,11 @@ themeBgColor: this.$store.state.themeBgColor,
             internalBillingForm: {}
         }
     },
+    created() {
+        this.debounceGetCurrencies = _.debounce(this.__getCurrencies, 1000);
+    },
     mounted() {
+        this.debounceGetCurrencies();
         this.getCompany();
         this.getCompanyLogo();
         this.getLanguages();
@@ -2112,11 +2142,14 @@ themeBgColor: this.$store.state.themeBgColor,
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
     methods: {
+        __getCurrencies() {
+            this.$store.dispatch('Currencies/getCurrencyList', { search: null });
+        },
         localized(item, field = 'name') {
             let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
             return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
@@ -2329,6 +2362,7 @@ themeBgColor: this.$store.state.themeBgColor,
             this.company.employees = null;
             this.company.clients = null;
             this.company.teams = null;
+            this.company.currency = null;
 
             axios.post(`/api/company/${this.$route.params.id}`, this.company).then(response => {
                 response = response.data
@@ -2883,7 +2917,7 @@ themeBgColor: this.$store.state.themeBgColor,
     computed: {
         companyUpdates: function () {
             return this.company
-        },
+        }
     }
 }
 </script>
