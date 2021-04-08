@@ -15,9 +15,10 @@ class InternalBillingController extends Controller
         $this->internalBillingRepo = $internalBillingRepo;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return self::showResponse(true, $this->internalBillingRepo->index());
+        $additionalUserIds = $request->additional_user_ids;
+        return self::showResponse(true, $this->internalBillingRepo->index($additionalUserIds));
     }
 
     public function find(int $id)
