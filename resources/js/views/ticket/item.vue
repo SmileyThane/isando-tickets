@@ -1894,7 +1894,6 @@ export default {
         this.getTeams()
         this.getTickets()
         this.getSignatures()
-        this.getInternalBilling()
         // if (localStorage.getticket('auth_token')) {
         //     this.$router.push('tickets')
         // }
@@ -1940,7 +1939,7 @@ export default {
                     if (this.ticket.notices.length > 0) {
                         this.notesPanel.push(0);
                     }
-
+                    this.getInternalBilling()
                 }
             });
         },
@@ -2305,7 +2304,17 @@ export default {
             });
         },
         getInternalBilling() {
-            axios.get('/api/billing/internal').then(response => {
+            let queryString = '';
+            if (this.ticket.from_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.creator.user_id}&`;
+            }
+            if (this.ticket.contact_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.assigned_person.user_id}&`;
+            }
+            if (this.ticket.to_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.contact.user_id}&`;
+            }
+            axios.get(`/api/billing/internal?${queryString}`).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.internalBillings = response.data
