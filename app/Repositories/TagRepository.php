@@ -26,11 +26,15 @@ class TagRepository
 
     public function all(Request $request)
     {
+        $tags = Tag::with('translates')
+            ->where('lang', '=', 'default')
+            ->whereNull('tag_id');
         if ($request->has('search')) {
-            return Tag::where('name', 'LIKE', '%' . $request->get('search') . '%')
+            return $tags
+                ->where('name', 'LIKE', '%' . $request->get('search') . '%')
                 ->get();
         }
-        return Tag::all();
+        return $tags->get();
     }
 
     public function find(Tag $tag)
@@ -46,6 +50,14 @@ class TagRepository
             $tag->name = $request->name;
             $tag->color = $request->color;
             $tag->save();
+
+            $tagTranslation = new Tag([
+                'name' => $request->name,
+                'color' => $request->color,
+                'lang' => \Auth::user()->language->locale,
+                'tag_id' => $tag->id
+            ]);
+            $tagTranslation->save();
         }
         return $tag;
     }
@@ -70,5 +82,24 @@ class TagRepository
         } catch (\Exception $exception) {
             return false;
         }
+    }
+
+    public function createOrUpdateTranslation($request, $tag) {
+        $request->validate([
+            'lang' => 'required|string',
+            'name' => 'required|string'
+        ]);
+        $tagTranslation = Tag::where('tag_id', '=', $tag->id)
+            ->where('lang', '=', $request->lang)
+            ->first();
+        if (!$tagTranslation) {
+            $tagTranslation = new Tag();
+        }
+        $tagTranslation->tag_id = $tag->id;
+        $tagTranslation->lang = $request->lang;
+        $tagTranslation->color = $tag->color;
+        $tagTranslation->name = $request->name;
+        $tagTranslation->save();
+        return $tagTranslation;
     }
 }

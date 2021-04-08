@@ -39,4 +39,13 @@ class TagController extends Controller
         $result = $this->tagRepo->delete($tag);
         return self::showResponse($result, $result);
     }
+
+    public function createOrUpdateTranslation(Request $request, Tag $tag) {
+        try {
+            $result = $this->tagRepo->createOrUpdateTranslation($request, $tag);
+        } catch (\Exception $exception) {
+            return self::showResponse(false, $exception->getMessage());
+        }
+        return self::showResponse(true, $result);
+    }
 }

@@ -120,6 +120,8 @@
                                 :items="$store.getters['Tags/getTags']"
                                 :items-per-page="15"
                                 class="elevation-1"
+                                single-expand
+                                show-expand
                             >
                                 <template v-slot:item.name="props">
                                     <v-edit-dialog
@@ -181,6 +183,93 @@
                                     >
                                         <v-icon>mdi-delete</v-icon>
                                     </v-btn>
+                                </template>
+                                <template v-slot:expanded-item="{ headers, item }">
+                                    <td :colspan="headers.length">
+                                        <v-list
+                                            dense
+                                        >
+                                            <v-list-item
+                                                v-for="translate in item.translates"
+                                                :key="translate.id"
+                                                class="d-flex flex-row"
+                                            >
+                                                <div
+                                                    class="d-inline-flex flex-grow-0 mx-3"
+                                                    style="min-width: 100px"
+                                                >
+                                                    {{ getLangName(translate.lang) }}
+                                                </div>
+                                                <div class="d-inline-flex flex-grow-1">
+                                                    <v-text-field
+                                                        class="mt-n1"
+                                                        hide-details
+                                                        dense
+                                                        v-model="translate.name"
+                                                        @blur="addOrUpdateTranslate(item, translate.lang, translate.name)"
+                                                    ></v-text-field>
+                                                </div>
+                                            </v-list-item>
+                                            <v-list-item-action v-if="filterLang(item).length > 0">
+                                                <v-dialog
+                                                    v-model="addTranslationDialog[item.id]"
+                                                    width="500"
+                                                >
+                                                    <template v-slot:activator="{ on, attrs }">
+                                                        <v-btn
+                                                            :color="themeBgColor"
+                                                            text
+                                                            v-bind="attrs"
+                                                            v-on="on"
+                                                            @click="resetDialog()"
+                                                        >
+                                                            Add translation
+                                                        </v-btn>
+                                                    </template>
+
+                                                    <v-card>
+                                                        <v-card-title class="headline grey lighten-2">
+                                                            Add translation
+                                                        </v-card-title>
+
+                                                        <v-card-text>
+                                                            <v-select
+                                                                :items="filterLang(item)"
+                                                                label="Language"
+                                                                item-text="name"
+                                                                item-value="locale"
+                                                                v-model="tagTranslateForm.lang"
+                                                            ></v-select>
+                                                            <v-text-field
+                                                                label="Tag name"
+                                                                v-model="tagTranslateForm.name"
+                                                            ></v-text-field>
+                                                        </v-card-text>
+
+                                                        <v-divider></v-divider>
+
+                                                        <v-card-actions>
+                                                            <v-spacer></v-spacer>
+                                                            <v-btn
+                                                                color="error"
+                                                                text
+                                                                @click="closeDialog(item.id)"
+                                                            >
+                                                                Cancel
+                                                            </v-btn>
+                                                            <v-btn
+                                                                color="success"
+                                                                text
+                                                                @click="addOrUpdateTranslate(item); closeDialog(item.id)"
+                                                            >
+                                                                Add
+                                                            </v-btn>
+                                                        </v-card-actions>
+                                                    </v-card>
+                                                </v-dialog>
+                                            </v-list-item-action>
+                                        </v-list>
+                                    </td>
                                 </template>
                             </v-data-table>
                         </v-card-text>
@@ -553,7 +642,12 @@ export default {
             colorMenuCreate: false,
             colorMenu: {},
             searchService: null,
-            searchCurrency: null
+            searchCurrency: null,
+            tagTranslateForm: {
+                lang: null,
+                name: ''
+            },
+            addTranslationDialog: {}
         }
     },
     created() {
@@ -561,6 +655,7 @@ export default {
         this.debounceGetServices = _.debounce(this.__getServices, 1000);
         this.debounceGetCurrencies = _.debounce(this.__getCurrencies, 1000);
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
+        this.debounceGetLanguages = _.debounce(this.__getLanguages, 1000);
     },
     mounted() {
         let that = this;
@@ -570,14 +665,21 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
+        this.debounceGetLanguages();
         this.debounceGetTags();
         this.debounceGetServices();
         this.debounceGetCurrencies();
         this.debounceGetSettings();
     },
     methods: {
+        __getLanguages() {
+            this.$store.dispatch('Languages/getLanguageList');
+        },
         __getTags() {
             this.$store.dispatch('Tags/getTagList', { search: this.searchTag });
+            this.$store.getters['Tags/getTags'].map(i => {
+                this.addTranslationDialog[i.id] = false;
+            });
         },
         __getServices() {
             this.$store.dispatch('Services/getServicesList', { search: this.searchService });
@@ -689,6 +791,33 @@ export default {
         },
         invertColor(hex, bw = true) {
             return Helper.invertColor(hex, bw);
+        },
+        getLangName(code) {
+            const languages = this.$store.getters['Languages/getLanguages'];
+            const foundLang = languages.find(i => i.locale === code);
+            return foundLang ? foundLang.name : code;
+        },
+        filterLang(item) {
+            const languages = this.$store.getters['Languages/getLanguages'];
+            const langs = item.translates.map(t => t.lang);
+            return languages.filter(i => langs && langs.indexOf(i.locale) == -1);
+        },
+        closeDialog(id) {
+            console.log(id);
+            this.addTranslationDialog[id] = false;
+        },
+        resetDialog() {
+            this.tagTranslateForm = {
+                lang: null,
+                name: ''
+            };
+        },
+        addOrUpdateTranslate(item, lang = null, name = null) {
+            this.$store.dispatch('Tags/addOrUpdateTranslate', {
+                id: item.id,
+                lang: lang ?? this.tagTranslateForm.lang,
+                name: name ?? this.tagTranslateForm.name
+            });
         }
     },
     computed: {

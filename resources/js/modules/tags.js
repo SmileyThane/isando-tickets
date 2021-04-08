@@ -41,6 +41,15 @@ export default {
                    }
                    return false;
                 });
+        },
+        addOrUpdateTranslate({commit, dispatch}, { id, lang, name}) {
+            if (!lang && !name) return ;
+            return axios.patch(`/api/tags/${id}/translate`, {lang, name})
+                .then(({data: { data, success }}) => {
+                    if (success) {
+                        dispatch('getTagList');
+                    }
+                });
         }
     },
     mutations: {
