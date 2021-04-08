@@ -4,8 +4,9 @@ export default {
         languages: []
     },
     actions: {
-        getLanguageList({commit}) {
-            return axios.get(`/api/lang`)
+        getLanguageList({commit, state}) {
+            if (state.languages.length) return state.languages;
+            return axios.get(`/api/lang`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         commit('GET_LANGUAGES', data)

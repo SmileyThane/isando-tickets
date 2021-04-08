@@ -10,7 +10,7 @@ export default {
             const queryParams = new URLSearchParams({
                 search: search ?? ''
             });
-            axios.get(`/api/services?${queryParams.toString()}`)
+            axios.get(`/api/services?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data: services } }) => {
                     if (success) {
                         commit('GET_SERVICES', services)
@@ -18,7 +18,7 @@ export default {
                 })
         },
         createService({commit, dispatch, state}, {name}) {
-            return axios.post('/api/services', {name})
+            return axios.post('/api/services', {name}, { retry: 5, retryDelay: 1000 })
                 .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getServicesList', { search: state.search })
@@ -27,7 +27,7 @@ export default {
                 })
         },
         updateService({commit, dispatch, state}, {id, name}) {
-            return axios.patch(`/api/services/${id}`, {name})
+            return axios.patch(`/api/services/${id}`, {name}, { retry: 5, retryDelay: 1000 })
                 .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getServicesList', { search: state.search })
@@ -36,7 +36,7 @@ export default {
                 })
         },
         deleteService({commit, dispatch, state}, serviceId) {
-            return axios.delete(`/api/services/${serviceId}`)
+            return axios.delete(`/api/services/${serviceId}`, { retry: 5, retryDelay: 1000 })
                 .then(({data: {success, data}}) => {
                     if (success) {
                         dispatch('getServicesList', { search: state.search })

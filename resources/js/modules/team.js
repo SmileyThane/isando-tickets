@@ -8,7 +8,7 @@ export default {
             const queryParams = new URLSearchParams({
                 search: search ?? ''
             });
-            axios.get(`/api/tracking/coworkers?${queryParams.toString()}`)
+            axios.get(`/api/tracking/coworkers?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data: coworkers } }) => {
                     if (success) {
                         commit('GET_COWORKERS', coworkers)

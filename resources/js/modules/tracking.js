@@ -6,7 +6,7 @@ export default {
     },
     actions: {
         getSettings({ commit }) {
-            return axios.get('/api/tracking/settings')
+            return axios.get('/api/tracking/settings', { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
                         commit('SET_SETTINGS', data);
@@ -15,7 +15,7 @@ export default {
                 });
         },
         updateSettings({ commit, dispatch }, { currency }) {
-            return axios.patch('/api/tracking/settings', {currency})
+            return axios.patch('/api/tracking/settings', {currency}, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
                         dispatch('getSettings');
@@ -23,25 +23,29 @@ export default {
                 });
         },
         updateTrack({commit}, { id, date_from, date_to, billable, tags, entity, entity_id, entity_type, service, status }) {
-            return axios.patch(`/api/tracking/tracker/${id}`, {date_from, date_to, billable, tags, entity, service, entity_id, entity_type, status})
+            return axios.patch(
+                `/api/tracking/tracker/${id}`
+                , {date_from, date_to, billable, tags, entity, service, entity_id, entity_type, status}
+                , { retry: 5, retryDelay: 1000 }
+                )
                 .then(({ data: { data, success } }) => {
                     return success;
                 });
         },
         deleteTrack({commit}, {id}) {
-            return axios.delete(`/api/tracking/tracker/${id}`)
+            return axios.delete(`/api/tracking/tracker/${id}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success } }) => {
                     return success;
                 })
         },
         createReport({commit, dispatch}, {name, configuration}) {
-            return axios.post('/api/tracking/reports', {name, configuration})
+            return axios.post('/api/tracking/reports', {name, configuration}, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success } }) => {
                     dispatch('getReports');
                 });
         },
         deleteReport({commit, dispatch}, {id}) {
-            return axios.delete(`/api/tracking/reports/${id}`)
+            return axios.delete(`/api/tracking/reports/${id}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success } }) => {
                     if (success) {
                         dispatch('getReports');
@@ -50,7 +54,7 @@ export default {
                 });
         },
         getReports({commit}) {
-            return axios.get(`/api/tracking/reports`)
+            return axios.get(`/api/tracking/reports`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success } }) => {
                     if (success) {
                         commit('SET_REPORTS', data);
@@ -59,7 +63,7 @@ export default {
                 });
         },
         getReport({commit, dispatch}, {id}) {
-            return axios.get(`/api/tracking/reports/${id}`)
+            return axios.get(`/api/tracking/reports/${id}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success } }) => {
                     if (success) {
                         return data;

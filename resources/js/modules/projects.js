@@ -10,7 +10,7 @@ export default {
             commit('SET_FILTER', params);
             if (params && !params.search) params.search = '';
             const queryParams = new URLSearchParams(params);
-            return axios.get(`/api/tracking/projects?${queryParams.toString()}`)
+            return axios.get(`/api/tracking/projects?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         commit('GET_PROJECTS', data.data)
@@ -20,7 +20,7 @@ export default {
                 })
         },
         createProject({commit, dispatch}, project) {
-            return axios.post('/api/tracking/projects', project)
+            return axios.post('/api/tracking/projects', project, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data: project } }) => {
                     if (success) {
                         dispatch('getProjectList');
@@ -29,7 +29,7 @@ export default {
                 })
         },
         toggleFavorite({commit, dispatch, state}, project) {
-            return axios.patch(`/api/tracking/projects/${project.id}/favorite`)
+            return axios.patch(`/api/tracking/projects/${project.id}/favorite`, null, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success } }) => {
                     if (success) {
                         dispatch('getProjectList', state.filter);
