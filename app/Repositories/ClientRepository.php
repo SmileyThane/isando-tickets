@@ -138,6 +138,7 @@ class ClientRepository
                 'products.productData',
                 'phones.type',
                 'addresses.type',
+                'billing',
                 'addresses.country',
                 'socials.type',
                 'emails.type'
