@@ -330,6 +330,28 @@ class LanguageSeeder extends Seeder
                             'unlink_product' => 'Unlink product',
                             'product_created' => 'New product created',
                         ],
+                    'custom_license' =>
+                        [
+                            'ixarma' => 'iXarma',
+                            'ixarma_app' => 'iXarma app',
+                            'ticketing' => 'Ticketing',
+                            'time_tracking' => 'Time traking',
+                            'username' => 'Username',
+                            'organisation' => 'Organisation',
+                            'licensed' => 'Licensed',
+                            'platform' => 'Platform',
+                            'active' => 'Active',
+                            'expired_at' => 'Expired at',
+                            'aliases' => 'Aliases',
+                            'additional_licenses' => 'Additional licenses',
+                            'license_users' => 'License Users',
+                            'total_users' => 'Total users',
+                            'new_users' => 'New users',
+                            'users_available' => 'Users available',
+                            'trial_days' => 'Trial days',
+                            'last_activation' => 'Last activation',
+                            'connection_links' => 'Connection links'
+                        ],
                     'team' =>
                         [
                             'add_new' => 'Add new team',
@@ -1017,6 +1039,28 @@ class LanguageSeeder extends Seeder
                             'unlink_product' => 'Produktverknüpfung löschen',
                             'product_created' => 'Neues Produkt erstellt',
                         ],
+                        'custom_license' =>
+                            [
+                                'ixarma' => 'iXarma',
+                                'ixarma_app' => 'iXarma app',
+                                'ticketing' => 'Ticketing',
+                                'time_tracking' => 'Zeiterfassung',
+                                'username' => 'Benutzername',
+                                'organisation' => 'Organisation',
+                                'licensed' => 'Lizenziert',
+                                'platform' => 'Plattform',
+                                'active' => 'Aktiv',
+                                'expired_at' => 'Abgelaufen bei',
+                                'aliases' => 'Aliase',
+                                'additional_licenses' => 'Zusätzliche Lizenzen',
+                                'license_users' => 'Lizenzbenutzer',
+                                'total_users' => 'Benutzer insgesamt',
+                                'new_users' => 'Neue Benutzer',
+                                'users_available' => 'Benutzer verfügbar',
+                                'trial_days' => 'Probetage',
+                                'last_activation' => 'Letzte Aktivierung',
+                                'connection_links' => 'Verbindungslinks'
+                            ],
                         'team' => [
                             'add_new' => 'Neues Team hinzufügen',
                             'team_deleted' => 'Team gelöscht',
