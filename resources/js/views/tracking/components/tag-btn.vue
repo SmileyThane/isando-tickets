@@ -118,7 +118,7 @@
                             small
                             :text-color="invertColor(item.color)"
                         >
-                            {{ translateTag(item) }}
+                            {{ item.name }}
                         </v-chip>
                     </template>
                 </v-combobox>
@@ -220,10 +220,6 @@ export default {
                     this.debounceGetTags();
                     this.selectedTags.push(tag);
                 });
-        },
-        translateTag(item) {
-            const foundTranslation = item.translates.find(i => i.lang === this.currentLang);
-            return foundTranslation ? foundTranslation.name : item.name;
         }
     },
     computed: {

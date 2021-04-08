@@ -58,8 +58,12 @@ export default {
         }
     },
     getters: {
-        getTags(state) {
-            return state.tags
+        getTags(state, rootGetters, rootState) {
+            return state.tags.map(item => {
+                const foundTranslation = item.translates.find(i => i.lang === rootState.lang.locale);
+                item.name = foundTranslation ? foundTranslation.name : item.name;
+                return item;
+            });
         }
     }
 }
