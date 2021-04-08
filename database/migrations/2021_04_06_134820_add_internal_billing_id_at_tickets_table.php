@@ -14,7 +14,7 @@ class AddInternalBillingIdAtTicketsTable extends Migration
     public function up(): void
     {
         Schema::table('tickets', static function (Blueprint $table) {
-            $table->string('internal_billing_id')->nullable();
+            $table->bigInteger('internal_billing_id')->nullable();
         });
     }
 
