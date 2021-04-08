@@ -12,6 +12,7 @@ import '../css/custom.css'
 import PerfectScrollbar from 'vue2-perfect-scrollbar'
 import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
 import Tinymce from "./components/Tinymce";
+import helpers from './helpers';
 
 Vue.component('Tinymce', Tinymce)
 Vue.use(PerfectScrollbar)
@@ -21,6 +22,12 @@ Vue.use(VCalendar, {
     componentPrefix: 'vc'
 })
 Vue.prototype.moment = moment
+Vue.use({
+    install: () => {
+        Vue.helpers = helpers;
+        Vue.prototype.$helpers = helpers;
+    }
+});
 
 const router = new VueRouter({
     mode: 'history',

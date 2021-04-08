@@ -29,7 +29,7 @@
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
                             :color="themeBgColor"
-                            :style="{ color: invertColor(themeBgColor) }"
+                            :style="{ color: $helpers.color.invertColor(themeBgColor) }"
                             v-bind="attrs"
                             v-on="on"
                         >
@@ -54,7 +54,7 @@
                                         <div class="d-inline-flex flex-grow-0 pt-3">
                                             <v-btn
                                                 :color="themeBgColor"
-                                                :style="{ color: invertColor(themeBgColor) }"
+                                                :style="{ color: $helpers.color.invertColor(themeBgColor) }"
                                                 @click="saveReport()"
                                             >
                                                 Save
@@ -367,7 +367,7 @@
                             <v-icon x-large class="d-inline-flex">mdi-clock-outline</v-icon>
                             <span class="d-inline-block text-center">Total time</span>
                             <span class="d-inline-block text-center">
-                                {{ helperConvertSecondsToTimeFormat(totalTime) }}
+                                {{ $helpers.time.convertSecToTime(totalTime, false) }}
                             </span>
                         </div>
                     </v-card>
@@ -380,7 +380,7 @@
                             <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
                             <span class="d-inline-block text-center">Revenue</span>
                             <span class="d-inline-block text-center">
-                                <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{number_format(totalRevenue, 2)}}
+                                <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{$helpers.numbers.numberFormat(totalRevenue, 2)}}
                             </span>
                         </div>
                     </v-card>
@@ -450,7 +450,7 @@
                                             v-for="tag in item.tags"
                                             :key="tag.id"
                                             :color="tag.color"
-                                            :text-color="invertColor(tag.color)"
+                                            :text-color="$helpers.color.invertColor(tag.color)"
                                             v-text="tag.name"
                                             small
                                         ></v-chip>
@@ -460,12 +460,12 @@
                                         <span v-else>Non-billable</span>
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
-                                        {{ helperConvertSecondsToTimeFormat(item.passed, false) }}
+                                        {{ $helpers.time.convertSecToTime(item.passed, false) }}
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
                                         <span v-if="currentCurrency">
                                             {{ currentCurrency.slug }}
-                                        </span> {{ number_format(item.revenue) }}
+                                        </span> {{ $helpers.numbers.numberFormat(item.revenue) }}
                                     </td>
                                     <td class="pa-2" align="center" width="5%">
                                         <span
@@ -552,7 +552,7 @@
                                                                 small
                                                                 :key="tag.id"
                                                                 :color="tag.color"
-                                                                :text-color="invertColor(tag.color)"
+                                                                :text-color="$helpers.color.invertColor(tag.color)"
                                                             >{{tag.name}}</v-chip>
                                                         </div>
                                                     </div>
@@ -643,7 +643,7 @@
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
                             :color="themeBgColor"
-                            :style="{ color: invertColor(themeBgColor) }"
+                            :style="{ color: $helpers.color.invertColor(themeBgColor) }"
                             v-bind="attrs"
                             v-on="on"
                             class="mx-3"
@@ -767,7 +767,7 @@
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
                             :color="themeBgColor"
-                            :style="{ color: invertColor(themeBgColor) }"
+                            :style="{ color: $helpers.color.invertColor(themeBgColor) }"
                             v-bind="attrs"
                             v-on="on"
                             class="mx-3"
@@ -889,7 +889,6 @@
 
 <script>
 import EventBus from "../../components/EventBus";
-import * as Helper from "./helper";
 import moment from "moment-timezone";
 import draggable from "vuedraggable";
 import BarChart from "./components/bar-chart";
@@ -1117,7 +1116,7 @@ export default {
                                 return data.labels[tooltipItem[0].index] ?? 'Title';
                             },
                             label: function(tooltipItem, data) {
-                                return self.helperConvertSecondsToTimeFormat(data.datasets[0].data[tooltipItem.index] * 60 * 60);
+                                return self.$helpers.time.convertSecToTime(data.datasets[0].data[tooltipItem.index] * 60 * 60, false);
                             }
                         }
                     }
@@ -1328,9 +1327,6 @@ export default {
         __getReports() {
             this.$store.dispatch('Tracking/getReports');
         },
-        invertColor(hex, bw = true) {
-            return Helper.invertColor(hex.substr(0, 7), bw);
-        },
         async setPeriod(periodKey = 'today') {
             let start = null;
             let end = null;
@@ -1453,23 +1449,6 @@ export default {
                     this.actionColor = 'error'
                     this.snackbar = true;
                 });
-        },
-        helperAddZeros(num, len) {
-            while((""+num).length < len) num = "0" + num;
-            return num.toString();
-        },
-        helperConvertSecondsToTimeFormat(seconds, withSeconds = true) {
-            if (!seconds) {
-                return `00:00` + (withSeconds ? ':00' : '');
-            }
-            const h = Math.floor(seconds / 60 / 60);
-            const m = Math.floor((seconds - h * 60 * 60) / 60);
-            const s = seconds - (m * 60) - (h * 60 * 60);
-            console.log(seconds, h, m, s);
-            if (withSeconds) {
-                return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}:${this.helperAddZeros(s.toFixed(0),2)}`;
-            }
-            return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}`;
         },
         calculateTime(entries, seconds = 0) {
             if (!entries) return seconds;
@@ -1629,33 +1608,6 @@ export default {
         resetSelectedReport() {
             this.report.selected = null;
             this.debounceGetReports();
-        },
-        number_format( number, decimals = 2, dec_point = ".", thousands_sep = "," ) {  // Format a number with grouped thousands
-            let i, j, kw, kd, km;
-
-            if( isNaN(decimals = Math.abs(decimals)) ){
-                decimals = 2;
-            }
-            if( dec_point == undefined ){
-                dec_point = ".";
-            }
-            if( thousands_sep == undefined ){
-                thousands_sep = ",";
-            }
-
-            i = parseInt(number = (+number || 0).toFixed(decimals)) + "";
-
-            if( (j = i.length) > 3 ){
-                j = j % 3;
-            } else{
-                j = 0;
-            }
-
-            km = (j ? i.substr(0, j) + thousands_sep : "");
-            kw = i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousands_sep);
-            kd = (decimals ? dec_point + Math.abs(number - i).toFixed(decimals).replace(/-/, 0).slice(2) : "");
-
-            return km + kw + kd;
         }
     },
     computed: {
@@ -1687,7 +1639,7 @@ export default {
                 });
                 let colors = [];
                 for (let i = 0; i <= values.length - 1; i++) {
-                    colors.push(Helper.genRandomColor());
+                    colors.push(this.$helpers.color.genRandomColor());
                 }
                 data.datasets.push({
                     label: labels,
@@ -1723,7 +1675,7 @@ export default {
                         );
                     }
                 });
-                const c = Helper.genRandomColor();
+                const c = this.$helpers.color.genRandomColor();
                 for (let i = 0; i <= values.length - 1; i++) {
                     colors.push(c);
                 }

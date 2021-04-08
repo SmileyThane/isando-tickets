@@ -5,7 +5,7 @@ export default {
     },
     actions: {
         getTagList({commit}) {
-            axios.get('/api/tags')
+            axios.get('/api/tags', { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data: tags }}) => {
                     if (success) {
                         commit('GET_TAGS', tags)
@@ -13,7 +13,7 @@ export default {
                 })
         },
         createTag({commit, dispatch}, tag) {
-            return axios.post('/api/tags', tag)
+            return axios.post('/api/tags', tag, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         dispatch('getTagList');
@@ -23,7 +23,7 @@ export default {
                 })
         },
         updateTag({commit, dispatch}, tag) {
-            return axios.patch(`/api/tags/${tag.id}`, tag)
+            return axios.patch(`/api/tags/${tag.id}`, tag, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         dispatch('getTagList');
@@ -33,7 +33,7 @@ export default {
                 })
         },
         deleteTag({commit, dispatch}, tagId) {
-            return axios.delete(`/api/tags/${tagId}`)
+            return axios.delete(`/api/tags/${tagId}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success } }) => {
                    if (success) {
                        dispatch('getTagList');
@@ -44,7 +44,7 @@ export default {
         },
         addOrUpdateTranslate({commit, dispatch}, { id, lang, name}) {
             if (!lang && !name) return ;
-            return axios.patch(`/api/tags/${id}/translate`, {lang, name})
+            return axios.patch(`/api/tags/${id}/translate`, {lang, name}, { retry: 5, retryDelay: 1000 })
                 .then(({data: { data, success }}) => {
                     if (success) {
                         dispatch('getTagList');

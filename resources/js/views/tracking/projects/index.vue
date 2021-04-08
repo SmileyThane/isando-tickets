@@ -73,7 +73,7 @@
                 <v-icon v-else @click.stop="toggleFavorite(props.item)">mdi-star-outline</v-icon>
             </template>
             <template v-slot:item.tracked="props">
-                {{ helperConvertSecondsToTimeFormat(props.item.tracked, false) }}
+                {{ $helpers.time.convertSecToTime(props.item.tracked, false) }}
             </template>
             <template v-slot:item.revenue="props">
                 <span v-if="currentCurrency">
@@ -162,7 +162,6 @@
 <script>
 import EventBus from "../../../components/EventBus";
 import _ from "lodash";
-import * as Helper from "../helper";
 
 export default {
     data() {
@@ -182,7 +181,7 @@ themeBgColor: this.$store.state.themeBgColor,
                 page: 1,
                 sortDesc: [true],
                 sortBy: ['id'],
-                itemsPerPage: Helper.getKey('itemsPerPage') ?? 10
+                itemsPerPage: this.$helpers.localStorage.getKey('itemsPerPage', 'tracking') ?? 10
             },
             footerProps: {
                 showFirstLastPage: true,
@@ -201,7 +200,7 @@ themeBgColor: this.$store.state.themeBgColor,
                 client: null,
                 productId: null,
                 product: null,
-                color: Helper.genRandomColor()
+                color: this.$helpers.color.genRandomColor()
             },
             colorMenu: false
         }
@@ -211,8 +210,8 @@ themeBgColor: this.$store.state.themeBgColor,
         this.debounceGetProducts = _.debounce(this.__getProducts, 1000);
         this.debounceGetClients = _.debounce(this.__getClients, 1000);
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
-        this.options.itemsPerPage = Helper.getKey('itemsPerPage') ?? 10;
-        this.footerProps.itemsPerPage = Helper.getKey('itemsPerPage') ?? 10;
+        this.options.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking') ?? 10;
+        this.footerProps.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking') ?? 10;
     },
     mounted() {
         this.debounceGetProducts();
@@ -222,8 +221,8 @@ themeBgColor: this.$store.state.themeBgColor,
         EventBus.$on('update-theme-color', function (color) {
             self.themeBgColor = color;
         });
-        this.options.itemsPerPage = Helper.getKey('itemsPerPage');
-        this.footerProps.itemsPerPage = Helper.getKey('itemsPerPage');
+        this.options.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking');
+        this.footerProps.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking');
     },
     methods: {
         __getProjects() {
@@ -260,7 +259,7 @@ themeBgColor: this.$store.state.themeBgColor,
         },
         updateItemsCount(value) {
             this.footerProps.itemsPerPage = value
-            Helper.storeKey('itemsPerPage', value);
+            this.$helpers.localStorage.storeKey('itemsPerPage', value, 'tracking');
             this.options.page = 1
         },
         showItem(item) {
@@ -277,25 +276,6 @@ themeBgColor: this.$store.state.themeBgColor,
         createProject() {
             this.$store.dispatch('Projects/createProject', this.project);
             this.resetProject();
-        },
-        helperAddZeros(num, len) {
-            while((""+num).length < len) num = "0" + num;
-            return num.toString();
-        },
-        helperConvertSecondsToTimeFormat(seconds, withSeconds = true) {
-            if (!seconds) {
-                return `00:00:00`;
-            }
-            const h = Math.floor(seconds / 60 / 60);
-            const m = Math.floor((seconds - h * 60 * 60) / 60);
-            const s = seconds - (m * 60) - (h * 60 * 60);
-            if (withSeconds) {
-                return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}:${this.helperAddZeros(s.toFixed(0),2)}`;
-            }
-            return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}`;
-        },
-        helperConvertSecondsToDecimalHours(seconds) {
-            return (seconds / 60 / 60).toFixed(2);
         },
         toggleFavorite(project) {
             this.$store.dispatch('Projects/toggleFavorite', project);

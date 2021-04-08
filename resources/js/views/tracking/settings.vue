@@ -549,8 +549,6 @@
 import EventBus from "../../components/EventBus";
 import _ from 'lodash';
 import TagBtn from './components/tag-btn';
-import * as Helper from './helper';
-import currencies from "../../modules/currencies";
 
 export default {
     components: {TagBtn},
@@ -628,7 +626,7 @@ export default {
             forms: {
                 tags: {
                     name: '',
-                    color: Helper.genRandomColor()
+                    color: this.$helpers.color.genRandomColor()
                 },
                 services: {
                     name: ''
@@ -726,7 +724,7 @@ export default {
         resetForm() {
             this.forms.tags = {
                 name: '',
-                color: Helper.genRandomColor()
+                color: this.$helpers.color.genRandomColor()
             };
             this.forms.services = {
                 name: ''
@@ -788,9 +786,6 @@ export default {
         },
         saveCurrency (item) {
             this.$store.dispatch('Currencies/updateCurrency', item);
-        },
-        invertColor(hex, bw = true) {
-            return Helper.invertColor(hex, bw);
         },
         getLangName(code) {
             const languages = this.$store.getters['Languages/getLanguages'];

@@ -264,7 +264,6 @@
 
 import _ from 'lodash';
 import { PerfectScrollbar } from 'vue2-perfect-scrollbar';
-import * as Helper from "../helper";
 
 export default {
     components: {
@@ -302,7 +301,7 @@ export default {
                 name: '',
                 product: null,
                 client: null,
-                color: Helper.genRandomColor()
+                color: this.$helpers.color.genRandomColor()
             }
         };
     },
@@ -334,7 +333,7 @@ export default {
                 name: '',
                 product: null,
                 client: null,
-                color: Helper.genRandomColor()
+                color: this.$helpers.color.genRandomColor()
             };
             this.panels = 0;
         },

@@ -54,7 +54,7 @@
                                     label
                                     small
                                     :color="form.color"
-                                    :text-color="invertColor(form.color)"
+                                    :text-color="$helpers.color.invertColor(form.color)"
                                     @click.stop.prevent="onClickNewTag"
                                 >
                                     {{ form.name }}
@@ -116,7 +116,7 @@
                             :color="item.color"
                             label
                             small
-                            :text-color="invertColor(item.color)"
+                            :text-color="$helpers.color.invertColor(item.color)"
                         >
                             {{ item.name }}
                         </v-chip>
@@ -130,7 +130,6 @@
 <script>
 
 import _ from 'lodash';
-import * as Helper from '../helper';
 
 export default {
     props: {
@@ -151,7 +150,7 @@ export default {
             isLoadingTags: false,
             form: {
                 name: '',
-                color: Helper.genRandomColor(),
+                color: this.$helpers.color.genRandomColor(),
                 langs: []
             },
             colorMenu: false
@@ -193,9 +192,6 @@ export default {
                 }
             });
         },
-        genRandomColor() {
-            return Helper.genRandomColor();
-        },
         switchColor() {
             const { form: { color }, colorMenu } = this
             return {
@@ -207,15 +203,12 @@ export default {
                 transition: 'border-radius 200ms ease-in-out'
             }
         },
-        invertColor(hex, bw = true) {
-            return Helper.invertColor(hex, bw)
-        },
         onClickNewTag() {
             this.__createTag(this.form.name)
                 .then(tag => {
                     this.form = {
                         name: '',
-                        color: Helper.genRandomColor()
+                        color: this.$helpers.color.genRandomColor()
                     };
                     this.debounceGetTags();
                     this.selectedTags.push(tag);

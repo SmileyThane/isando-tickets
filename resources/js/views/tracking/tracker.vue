@@ -551,7 +551,7 @@
                                                 class="pa-3"
                                                 :width="headers.find(i => i.value === 'passed').width"
                                             >
-                                                <span v-text="helperConvertSecondsToTimeFormat(row.passed)"></span>
+                                                <span v-text="$helpers.time.convertSecToTime(row.passed)"></span>
                                             </td>
                                             <td
                                                 class="pa-3"
@@ -698,7 +698,6 @@ import _ from "lodash";
 import ProjectBtn from "./components/project-btn";
 import TagBtn from "./components/tag-btn";
 import TimeField from "./components/time-field";
-import * as Helper from "./helper";
 
 export default {
     components: {
@@ -835,18 +834,18 @@ export default {
     created: function () {
         this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
         this.debounceSave = _.debounce(this.save, 500);
-        if (Helper.getKey('dateRange')) {
-            this.dateRange = Helper.getKey('dateRange');
+        if (this.$helpers.localStorage.getKey('dateRange', 'tracking')) {
+            this.dateRange = this.$helpers.localStorage.getKey('dateRange', 'tracking');
             if (moment(this.dateRange.end).format(this.dateFormat) === moment().subtract(1, 'days').format(this.dateFormat)) {
                 this.dateRange.end = moment();
-                Helper.storeKey('dateRange', this.dateRange);
+                this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
             }
         } else {
             this.dateRange = {
                 start: moment().subtract(1, 'days').format(this.dateFormat),
                 end: moment().format(this.dateFormat)
             };
-            Helper.storeKey('dateRange', this.dateRange);
+            this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
         }
         this.timeFrom = moment().format();
         this.timeTo = moment().add(15, 'minutes').format();
@@ -1032,25 +1031,6 @@ export default {
                     }
                 });
         },
-        helperAddZeros(num, len) {
-            while((""+num).length < len) num = "0" + num;
-            return num.toString();
-        },
-        helperConvertSecondsToTimeFormat(seconds) {
-            if (!seconds) {
-                return `00:00:00`;
-            }
-            const h = Math.floor(seconds / 60 / 60);
-            const m = Math.floor((seconds - h * 60 * 60) / 60);
-            const s = seconds - (m * 60) - (h * 60 * 60);
-            return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
-        },
-        helperCalculatePassedTime(date_from, date_to) {
-            if (moment(date_from) > moment(date_to)) {
-                date_to = moment(date_to).add(1, 'day');
-            }
-            return moment(date_to).diff(moment(date_from), 'seconds');
-        },
         resetManualPanel() {
             this.manualPanel = {
                 ...this.manualPanel,
@@ -1084,42 +1064,10 @@ export default {
             };
         },
         handlerDateRange() {
-            Helper.storeKey('dateRange', this.dateRange);
+            this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
             this.dateRangePicker = false;
             this.debounceGetTracking();
         },
-        // handlerSetTimeFrom() {
-        //     if (!this.timeFrom) {
-        //         this.timeFrom = moment().format(this.timeFormat);
-        //     }
-        //     if (/([0-9]{1,}:[0-9]{2})/.test(this.timeFrom)) {
-        //         return this.timeFrom;
-        //     }
-        //     if (/(\d{1,4})/.test(this.timeFrom)) {
-        //         let str = this.timeFrom.toString().slice(0,4);
-        //         str = this.helperAddZeros(str, 4);
-        //         this.timeFrom = str.slice(0,2) + ':' + str.slice(-2);
-        //         return this.timeFrom;
-        //     }
-        //     this.timeFrom = moment().format(this.timeFormat);
-        //     return this.timeFrom;
-        // },
-        // handlerSetTimeTo() {
-        //     if (!this.timeTo) {
-        //         this.timeTo = moment().format(this.timeFormat);
-        //     }
-        //     if (/([0-9]{1,}:[0-9]{2})/.test(this.timeTo)) {
-        //         return this.timeTo;
-        //     }
-        //     if (/(\d{1,4})/.test(this.timeTo)) {
-        //         let str = this.timeTo.toString().slice(0,4);
-        //         str = this.helperAddZeros(str, 4);
-        //         this.timeTo = str.slice(0,2) + ':' + str.slice(-2);
-        //         return this.timeTo;
-        //     }
-        //     this.timeTo = moment().format(this.timeFormat);
-        //     return this.timeTo;
-        // },
         handlerSetDate() {
             if (!this.date || ! /([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/.test(this.date)) {
                 this.date = moment().format(this.dateFormat);
@@ -1146,7 +1094,7 @@ export default {
         },
         save (item, fieldName, newValue = null) {
             if (['date_from', 'date_to'].indexOf(fieldName)) {
-                item.passed = this.helperCalculatePassedTime(item.date_from, item.date_to);
+                item.passed = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to);
             }
             if (newValue) {
                 item[fieldName] = newValue;
@@ -1172,7 +1120,7 @@ export default {
                 month: moment(item.date).month(),
                 year: moment(item.date).year()
             };
-            const seconds = this.helperCalculatePassedTime(item.date_from, item.date_to);
+            const seconds = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to);
             item.date_from = moment(item.date_from).set(date).format();
             item.date_to = moment(item.date_from).add(seconds, "seconds").format();
             this.debounceSave(item, 'date_from');
@@ -1183,8 +1131,8 @@ export default {
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
                 this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format();
             }
-            const seconds = this.helperCalculatePassedTime(this.manualPanel.date_from, this.manualPanel.date_to);
-            return this.helperConvertSecondsToTimeFormat(seconds);
+            const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to);
+            return this.$helpers.time.convertSecToTime(seconds);
         },
         dateRangeText () {
             const dateFormat = 'DD MMM YYYY';
@@ -1249,13 +1197,13 @@ export default {
                 return i.status === 'started';
             }).forEach(i => {
                 const index = this.tracking.indexOf(i);
-                this.tracking[index].passed = this.helperCalculatePassedTime(i.date_from, moment());
+                this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment());
                 this.tracking[index].date_picker = this.tracking[index].date_picker ?? false;
             });
             // Update timerPanel
             if (this.timerPanel.start) {
                 const seconds = moment().diff(moment(this.timerPanel.start), 'seconds');
-                this.timerPanel.passedSeconds = this.helperConvertSecondsToTimeFormat(seconds);
+                this.timerPanel.passedSeconds = this.$helpers.time.convertSecToTime(seconds);
             }
         },
         'timerPanel.entity': function () {
