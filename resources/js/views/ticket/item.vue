@@ -113,13 +113,13 @@
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-select
-                                    :items="internalBillings"
-                                    item-text="name"
-                                    item-value="id"
                                     v-model="ticket.internal_billing_id"
                                     :color="themeBgColor"
                                     :item-color="themeBgColor"
+                                    :items="internalBillings"
                                     :label="langMap.profile.internal_billing"
+                                    item-text="name"
+                                    item-value="id"
                                     prepend-icon="mdi-cash"
                                 ></v-select>
                             </v-col>
@@ -200,8 +200,8 @@
                                         <template v-slot:selection="{ index, text }">
                                             <v-chip
                                                 :color="themeBgColor"
-                                                class="ma-2"
-                                                :text-color="themeFgColor"                                            >
+                                                :text-color="themeFgColor"
+                                                class="ma-2">
                                                 {{ text }}
                                             </v-chip>
                                         </template>
@@ -701,8 +701,8 @@
                                                     <v-chip
                                                         :color="themeBgColor"
                                                         :href="attachment.link"
-                                                        class="ma-2"
                                                         :text-color="themeFgColor"
+                                                        class="ma-2"
                                                     >
                                                         {{ attachment.name }}
                                                     </v-chip>
@@ -757,7 +757,8 @@
                                             }} - {{ ticket.name }}:
                                         </span>
                                         <div v-html="child_ticket.description"></div>
-                                        <v-col v-if="child_ticket.attachments && child_ticket.attachments.length > 0 " cols="12">
+                                        <v-col v-if="child_ticket.attachments && child_ticket.attachments.length > 0 "
+                                               cols="12">
                                             <h4>{{ langMap.main.attachments }}</h4>
                                             <div
                                                 v-for="attachment in child_ticket.attachments"
@@ -766,8 +767,8 @@
                                                 <v-chip
                                                     :color="themeBgColor"
                                                     :href="attachment.link"
-                                                    class="ma-2"
                                                     :text-color="themeFgColor"
+                                                    class="ma-2"
                                                 >
                                                     {{ attachment.name }}
                                                 </v-chip>
@@ -859,8 +860,8 @@
                                                 <v-chip
                                                     :color="themeBgColor"
                                                     :href="attachment.link"
-                                                    class="ma-2"
                                                     :text-color="themeFgColor"
+                                                    class="ma-2"
                                                 >
                                                     {{ attachment.name }}
                                                 </v-chip>
@@ -917,8 +918,8 @@
                                             <v-chip
                                                 :color="themeBgColor"
                                                 :href="attachment.link"
-                                                class="ma-2"
                                                 :text-color="themeFgColor"
+                                                class="ma-2"
                                             >
                                                 {{ attachment.name }}
                                             </v-chip>
@@ -1770,8 +1771,8 @@ export default {
                 merge_comment: null
             },
             ticket: {
-                status_id: '',
-                to_company_user_id: '',
+                status_id: null,
+                to_company_user_id: null,
                 attachments: [{
                     name: '',
                     link: ''
@@ -1800,11 +1801,11 @@ export default {
                     name: ''
                 },
                 to_entity_type: '',
-                to_entity_id: '',
-                to_team_id: '',
-                contact_company_user_id: '',
-                to_product_id: '',
-                priority_id: '',
+                to_entity_id: null,
+                to_team_id: null,
+                contact_company_user_id: null,
+                to_product_id: null,
+                priority_id: null,
                 name: '',
                 description: '',
                 availability: '',
@@ -2304,17 +2305,7 @@ export default {
             });
         },
         getInternalBilling() {
-            let queryString = '';
-            if (this.ticket.from_company_user_id !== null) {
-                queryString += `additional_user_ids[]=${this.ticket.creator.user_id}&`;
-            }
-            if (this.ticket.contact_company_user_id !== null) {
-                queryString += `additional_user_ids[]=${this.ticket.assigned_person.user_id}&`;
-            }
-            if (this.ticket.to_company_user_id !== null) {
-                queryString += `additional_user_ids[]=${this.ticket.contact.user_id}&`;
-            }
-            axios.get(`/api/billing/internal?${queryString}`).then(response => {
+            axios.get(`/api/billing/internal?${this.createAdditionalBillingIds()}`).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.internalBillings = response.data
@@ -2324,6 +2315,21 @@ export default {
                     this.snackbar = true;
                 }
             });
+        },
+        createAdditionalBillingIds() {
+            let queryString = '';
+
+            if (this.ticket.from_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.creator.user_id}&`;
+            }
+            if (this.ticket.contact_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.assigned_person.user_id}&`;
+            }
+            if (this.ticket.to_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.contact.user_id}&`;
+            }
+
+            return queryString.slice(0, -1)
         },
     },
     computed: {
