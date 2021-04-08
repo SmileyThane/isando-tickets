@@ -2329,6 +2329,10 @@ export default {
                 queryString += `additional_user_ids[]=${this.ticket.contact.user_id}&`;
             }
 
+            if (this.ticket.internal_billing_id !== null) {
+                queryString += `internal_billing_id=${this.ticket.internal_billing_id}&`;
+            }
+
             return queryString.slice(0, -1)
         },
     },
