@@ -131,8 +131,7 @@ class TicketRepository
                     'from_entity_type',
                     'created_at',
                     'updated_at',
-                    'parent_id',
-                    'billedBy'
+                    'parent_id'
                 )
                 ->paginate(count($ticketIds));
         }
