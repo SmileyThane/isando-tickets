@@ -1348,6 +1348,7 @@ class LanguageSeeder extends Seeder
                             'client_response_assigned_to_me' => 'Kundenantworten in mir zugewiesenen Tickets',
                             'personal_id' => 'Persönliche ID-Nummer',
                             'avatar' => 'Avatar Bild',
+                            'internal_billing' => 'Internal billing',
                         ],
                         'notification' => [
                             'template' => 'Vorlage',
