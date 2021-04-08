@@ -298,4 +298,9 @@ class Ticket extends Model
     {
         return TicketType::find($this->ticket_type_id);
     }
+
+    public function billedBy(): HasOne
+    {
+        return $this->hasOne(InternalBilling::class, 'id', 'internal_billing_id');
+    }
 }

@@ -131,4 +131,9 @@ class Company extends Model
     public function currency() {
         return $this->hasOne(Currency::class, 'id', 'currency_id');
     }
+
+    public function billing(): MorphMany
+    {
+        return $this->morphMany(InternalBilling::class, 'entity');
+    }
 }
