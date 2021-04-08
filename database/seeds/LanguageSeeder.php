@@ -1264,6 +1264,7 @@ class LanguageSeeder extends Seeder
                             'and_it_was_closed' => ' and it was closed.',
                             'primary' => 'Primär',
                             'version' => 'Version',
+                            'cost' => 'Cost'
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
@@ -1349,6 +1350,7 @@ class LanguageSeeder extends Seeder
                             'personal_id' => 'Persönliche ID-Nummer',
                             'avatar' => 'Avatar Bild',
                             'internal_billing' => 'Internal billing',
+                            'cost' => 'Kosten'
                         ],
                         'notification' => [
                             'template' => 'Vorlage',
