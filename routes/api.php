@@ -232,6 +232,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/tags', 'API\TagController@get');
         Route::post('/tags', 'API\TagController@create');
         Route::patch('/tags/{tag}', 'API\TagController@update');
+        Route::patch('/tags/{tag}/translate', 'API\TagController@createOrUpdateTranslation');
         Route::delete('/tags/{tag}', 'API\TagController@delete');
 
         // Services
