@@ -5,18 +5,55 @@ namespace App\Repositories;
 
 use App\Client;
 use App\Http\Controllers\API\Tracking\PDF;
+use App\Notifications\SendTrackingReportByEmail;
+use App\Tag;
 use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
+use App\TrackingReport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 
 class TrackingReportRepository
 {
+    protected $timeInDecimal = false;
+    protected $round = 0;
+    protected $settings = [];
+    protected $company;
+    protected $currency = 'EUR';
+
+    public function all(Request $request) {
+        return Auth::user()->trackingReports()->orderBy('id', 'desc')->get();
+    }
+
+    public function find($reportId) {
+        return Auth::user()->trackingReports()->find($reportId);
+    }
+
+    public function create(Request $request) {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'configuration' => 'required'
+        ]);
+
+        $report = new TrackingReport();
+        $report->name = $request->get('name');
+        $report->configuration = $request->get('configuration');
+        $user = Auth::user();
+        $user->trackingReports()->save($report);
+        return $report;
+    }
+
+    public function delete($id) {
+        $report = Auth::user()->trackingReports()->findOrFail($id);
+        $report->delete();
+    }
+
     public function validate($request, $new = true)
     {
         $params = [
@@ -39,6 +76,8 @@ class TrackingReportRepository
     }
 
     protected function getData(Request $request) {
+        $this->company = Auth::user()->employee->companyData;
+        $this->currency = $this->company && $this->company->currency ? $this->company->currency->slug : $this->currency;
         $sorting        = $request->sort['value'];
         $grouping       = $request->group;
         if (isset($request->group) && isset($request->group['value']) && $request->group['value'] === 'custom') {
@@ -71,7 +110,11 @@ class TrackingReportRepository
             $tracking->where('tracking.date_from', '>=', $request->period['start']);
         }
         if ($request->has('period') && isset($request->period['end'])) {
-            $tracking->where('tracking.date_to', '<=', $request->period['end']);
+            $tracking->where(function($query) use ($request) {
+                $query
+                    ->where('tracking.date_to', '<=', $request->period['end'])
+                    ->orWhereNull('tracking.date_to');
+            });
         }
 
         switch ($sorting) {
@@ -85,57 +128,13 @@ class TrackingReportRepository
                     ->orderBy('tracking.date_to', 'desc')
                     ->orderBy('tracking.date_from', 'desc');
                 break;
-            case 'duration-desc':
-                // TODO
-                break;
-            case 'duration-asc':
-                // TODO
-                break;
-            case 'revenue-asc':
-                // TODO
-                break;
-            case 'revenue-desc':
-                // TODO
-                //break;
         }
-
-//        if ($grouping->isNotEmpty()) {
-//            $fields = collect(['id', 'description', 'user_id', 'project_id', 'date_from', 'date_to', 'status', 'billable', 'billed', 'created_at', 'updated_at']);
-//            foreach ($grouping as $group) {
-//                switch ($group) {
-//                    case 'day':
-//                        // TODO
-//                        break;
-//                    case 'week':
-//                        // TODO
-//                        break;
-//                    case 'month':
-//                        // TODO
-//                        break;
-//                    case 'description':
-//                        $tracking->groupBy('tracking.description');
-//                        $fields = $fields->filter(function ($item) use ($group) {
-//                            return $item !== $group;
-//                        });
-//                        break;
-//                    case 'billability':
-//                        $tracking->groupBy('tracking.billable');
-//                        $fields = $fields->filter(function ($item) use ($group) {
-//                            return $item !== 'billable';
-//                        });
-//                        break;
-//                }
-//            }
-//            foreach ($fields as $field) {
-//                $tracking->groupBy("tracking.{$field}");
-//            }
-//        }
 
         if ($filtering->isNotEmpty()) {
             foreach ($filtering as $filter) {
                 switch ($filter['value']) {
                     case 'coworkers':
-                        $tracking->whereIn('tracking.user_id', $filter['selected']);
+                        $tracking->whereIn('user_id', $filter['selected']);
                         break;
                     case 'projects':
                         $projectIds = TrackingProject::whereIn('id', $filter['selected'])->pluck('id')->all();
@@ -150,24 +149,32 @@ class TrackingReportRepository
                             ->pluck('id')
                             ->all();
 
-//                        dd($clients, $projectIds, $ticketIds);
-                        $tracking
+                        $tracking->where(function($query) use ($projectIds, $ticketIds) {
                             // project
-                            ->where(function($query) use ($projectIds) {
-                                return $query
-                                    ->where('entity_type', TrackingProject::class)
-                                    ->whereIn('entity_id', $projectIds);
-                            })
+                            if (count($projectIds)) {
+                                $query->where(function($q) use ($projectIds) {
+                                    return $q
+                                        ->where('entity_type', '=', TrackingProject::class)
+                                        ->whereIn('entity_id', $projectIds);
+                                });
+                            }
                             // ticket
-                            ->orWhere(function($query) use ($ticketIds) {
-                                return $query
-                                    ->where('entity_type', Ticket::class)
-                                    ->whereIn('entity_id', $ticketIds);
-                            });
-
-//                        $tracking->whereHas('Entity.Client', function ($query) use ($filter) {
-//                            $query->whereIn('clients.id', $filter['selected']);
-//                        });
+                            if (count($ticketIds)) {
+                                if (count($projectIds)) {
+                                    $query->where(function($q) use ($ticketIds) {
+                                        return $q
+                                            ->where('entity_type', '=', Ticket::class)
+                                            ->whereIn('entity_id', $ticketIds);
+                                    });
+                                } else {
+                                    $query->orWhere(function($q) use ($ticketIds) {
+                                        return $q
+                                            ->where('entity_type', '=', Ticket::class)
+                                            ->whereIn('entity_id', $ticketIds);
+                                    });
+                                }
+                            }
+                        });
                         break;
                     case 'services':
                         $tracking->whereHas(
@@ -180,25 +187,47 @@ class TrackingReportRepository
                     case 'billable':
                         $tracking->where('tracking.billable', '=', (int)$filter['selected']);
                         break;
+                    case 'tag':
+                        $tracking->whereHas('Tags', function($query) use ($filter) {
+                            $query->whereIn('tags.id', $filter['selected']);
+                        });
+                        break;
                 }
             }
         }
 
-        $tracks = $tracking->get();
-//            ->map(function ($item) {
-//                $obj = new \stdClass();
-//                $obj->id = $item->id;
-//                $obj->description = $item->description;
-//                $obj->date_from = $item->date_from;
-//                $obj->date_to = $item->date_to;
-//                $obj->billable = $item->billable;
-//                return $obj;
-//            });
+        $tracks = $tracking->get()->toArray();
+
+        $this->round = $request->get('round', 0);
+        $round = $this->round;
+
+        if ($round > 0) {
+            $tracks = collect($tracks)->map(function ($track) use ($round) {
+                $time = $this->convertSecondsToTimeFormat($track['passed']);
+                $roundedTime = $this->getRoundTime($time, $round);
+                $passed = $this->convertTimeToSeconds($roundedTime);
+                $track['passed'] = $passed;
+                if ($track['billable']) {
+                    $track['revenue'] = number_format((float)$track['rate'] * (float)$this->convertSecondsToDecimal((float)$passed), 2, '.', '');
+                }
+                return $track;
+            });
+        }
 
         return [
             'tracks' => $tracks,
             'grouping' => $grouping
         ];
+    }
+
+    function getRoundTime($time, $minutes = '5') {
+        if ($minutes === 0) return $time;
+        $time = explode(':', $time);
+        $seconds = (int)$time[0]*60*60 + (int)$time[1]*60;
+        if (isset($time[2])) $seconds += (int)$time[2];
+        $rounded = round((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60);
+//        dd($time, $minutes, $rounded, $this->convertSecondsToTimeFormat($rounded));
+        return $this->convertSecondsToTimeFormat($rounded);
     }
 
     public function generate(Request $request) {
@@ -218,10 +247,10 @@ class TrackingReportRepository
     protected function getFieldData($tracking, $field = 'description') {
         switch ($field) {
             case 'month':
-                return Carbon::parse($tracking->date_from)->format('F Y');
+                return Carbon::parse($tracking['date_from'])->format('F Y');
             case 'week':
-                $startWeek = Carbon::parse($tracking->date_from)->startOfWeek(Carbon::MONDAY);
-                $endWeek = Carbon::parse($tracking->date_from)->endOfWeek(Carbon::SUNDAY);
+                $startWeek = Carbon::parse($tracking['date_from'])->startOfWeek(Carbon::MONDAY);
+                $endWeek = Carbon::parse($tracking['date_from'])->endOfWeek(Carbon::SUNDAY);
                 return 'Week of '
                     . $startWeek->format('j M')
                     . ' ('
@@ -230,19 +259,19 @@ class TrackingReportRepository
                         . $endWeek->format('D j M Y')
                     . ')';
             case 'day':
-                return Carbon::parse($tracking->date_from)->format('l, j M');
+                return Carbon::parse($tracking['date_from'])->format('l, j M');
             case 'description':
-                return $tracking->description ?? 'None';
+                return $tracking['description'] ?? 'None';
             case 'billability':
-                return $tracking->billable ? 'Billable' : 'Non-billable';
+                return $tracking['billable'] ? 'Billable' : 'Non-billable';
             case 'service':
-                return $tracking->service ? $tracking->service->name : 'None';
+                return $tracking['service'] ? $tracking['service']['name'] : 'None';
             case 'project':
-                return $tracking->entity ? $tracking->entity->name : 'None';
+                return $tracking['entity'] ? $tracking['entity']['name'] : 'None';
             case 'client':
-                return $tracking && $tracking->entity && $tracking->entity->client ? $tracking->entity->client->name : 'None';
+                return isset($tracking) && isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['name'] : 'None';
             case 'coworker':
-                return $tracking->user->full_name;
+                return $tracking['user']['full_name'];
         }
         return null;
     }
@@ -270,28 +299,45 @@ class TrackingReportRepository
     protected function prepareDataForPDF($entities) {
         $items = [];
         $currency = $company = Auth::user()->employee->companyData->currency;
-        foreach ($entities as $entity) {
-//            dd($entity->entity);
+        foreach ($entities as $key => $entity) {
+            $start = Carbon::parse($entity['date_from'])->format('H:i');
+            $end = Carbon::parse($entity['date_to'])->format('H:i');
+            $total = $this->convertSecondsToTimeFormat($entity['passed'], false);
             $item = [
-                'date' => Carbon::parse($entity->date_from)->format('d M Y'),
-                'start' => Carbon::parse($entity->date_from)->format('H:i'),
-                'end' => Carbon::parse($entity->date_to)->format('H:i'),
-                'total' => $this->convertSecondsToTimeFormat(Carbon::parse($entity->date_to)->diffInSeconds($entity->date_from)),
-                'coworker' => $entity->user->full_name,
-                'customer' => isset($entity->entity) && isset($entity->entity->client) ? $entity->entity->client->name : '',
-                'project' => isset($entity->entity) ? $entity->entity->name : '',
-                'service' => isset($entity->service) ? $entity->service->name : '',
-                'description' => isset($entity->description) ? $entity->description : '',
-                'billable' => $entity->billable ? 'Yes' : 'No',
-                'revenue' => $entity->revenue ? ($currency ? $currency->slug . ' ' : '') . $entity->revenue : ''
+                'date' => Carbon::parse($entity['date_from'])->format('d M Y'),
+                'start' => $this->timeInDecimal ? $this->convertTimeToDecimal($start) : $start,
+                'end' => $this->timeInDecimal ? $this->convertTimeToDecimal($end) : $end,
+                'total' => $this->timeInDecimal ? $entity['passed_decimal'] : $total,
+                'coworker' => $entity['user']['full_name'],
+                'customer' => isset($entity['entity']) && isset($entity['entity']['client']) ? $entity['entity']['client']['name'] : '',
+                'project' => isset($entity['entity']) ? $entity['entity']['name'] : '',
+                'service' => isset($entity['service']) ? $entity['service']['name'] : '',
+                'description' => isset($entity['description']) ? $entity['description'] : '',
+                'billable' => $entity['billable'] ? 'Yes' : 'No',
+                'revenue' => $entity['revenue']
+                    ?
+                        (
+                            $currency
+                            ? $currency->slug . ' '
+                            : ''
+                        ) . $entity['revenue']
+                    : ''
             ];
             array_push($items, $item);
         }
         return $items;
     }
 
-    function convertSecondsToTimeFormat($value) {
-        $result = [];
+    function convertTimeToDecimal($time) {
+        $hms = explode(":", $time);
+        return number_format(($hms[0] + ($hms[1]/60)), 2);
+    }
+
+    function convertSecondsToDecimal(int $seconds) {
+        return number_format($seconds / 60 / 60, 2);
+    }
+
+    function convertSecondsToTimeFormat($value, $withSeconds = true) {
 //        $M = floor($value /2592000);
 //        if (!empty($M)) {
 //            $result[] = $M . ' months,';
@@ -300,11 +346,50 @@ class TrackingReportRepository
 //        if (!empty($d)) {
 //            $result[] = $d . ' days,';
 //        }
-        $h = floor(($value %86400)/3600);
-        $m = floor(($value %3600)/60);
-        $result[] = sprintf("%02d", $h) . ":" . sprintf("%02d", $m); // . ":" . sprintf("%02d", $value % 60);
+        $h = floor($value / 60 / 60);
+        $m = floor(($value - ($h * 60 * 60)) / 60);
+        if ($withSeconds) {
+            return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
+        }
+        return sprintf("%02d", $h) . ":" . sprintf("%02d", $m);
+    }
 
-        return implode(', ', $result);
+    function convertTimeToSeconds($time) {
+        $time = explode(':', $time);
+        $seconds = 0;
+        if (isset($time[0])) $seconds += $time[0] * 60 * 60;
+        if (isset($time[1])) $seconds += $time[1] * 60;
+        if (isset($time[2])) $seconds += $time[2];
+        return $seconds;
+    }
+
+    private function recalculateHeaderWidths($headers, $exclude = []) {
+        $headers = collect($headers);
+        $exclude = $headers->filter(function ($item) use ($exclude) {
+            return in_array($item['slug'], $exclude);
+        });
+        $headers = $headers->filter(function ($item) use ($exclude) {
+            return !in_array($item['slug'], $exclude->map(function($i) { return $i['slug']; })->toArray());
+        });
+        $sumWidth = $exclude->sum(function($item) { return $item['width']; });
+        $countResizableColumns = $headers
+            ->filter(function($item) { return $item['resizable']; })
+            ->sum(function () { return 1; });
+        $maxStep = (int)ceil($sumWidth / $countResizableColumns);
+        $headers = $headers->toArray();
+        foreach ($headers as $key => $header) {
+            if ($sumWidth <= 0) break;
+            if ($header['resizable']) {
+                if ($sumWidth < $maxStep && $sumWidth > 0) {
+                    $headers[$key]['width'] += $sumWidth;
+                    $sumWidth -= $sumWidth;
+                } else {
+                    $headers[$key]['width'] += $maxStep;
+                    $sumWidth -= $maxStep;
+                }
+            }
+        }
+        return $headers;
     }
 
     public function genPDF($request) {
@@ -312,23 +397,26 @@ class TrackingReportRepository
         // Pre-define some variables
         $reportName = $request->get('name', 'Report');
         $headers = [
-            ['text' => 'Date', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Start', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'End', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Total', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Co-worker', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Description', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Billable', 'style' => 'border:B;border-width:1;font-style:B'],
-            ['text' => 'Revenue', 'style' => 'border:B;border-width:1;font-style:B']
+            ['slug' => 'date', 'text' => 'Date', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 7, 'resizable' => false],
+            ['slug' => 'start', 'text' => 'Start', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
+            ['slug' => 'end', 'text' => 'End', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
+            ['slug' => 'total', 'text' => 'Total', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
+            ['slug' => 'coworker', 'text' => 'Co-worker', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 11, 'resizable' => true],
+            ['slug' => 'client', 'text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 16, 'resizable' => true],
+            ['slug' => 'project', 'text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 17, 'resizable' => true],
+            ['slug' => 'service', 'text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 9, 'resizable' => true],
+            ['slug' => 'description', 'text' => 'Description', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 15, 'resizable' => true],
+            ['slug' => 'billable', 'text' => 'Billable', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => false],
+            ['slug' => 'revenue', 'text' => 'Revenue', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 8, 'resizable' => false]
         ];
-        $columnWidths = '%{7,4,4,4,11,16,17,9,15,5,8}';
+
+        if ($request->has('timeInDecimal') && $request->get('timeInDecimal') === true) {
+            $this->timeInDecimal = $request->get('timeInDecimal');
+        }
 
         $tracks = $this->getData($request)['tracks'];
         $fullTime = collect($tracks)->sum(function ($item) {
-            return Carbon::parse($item->date_from)->diffInSeconds(Carbon::parse($item->date_to));
+            return $item['passed'];
         });
         $data = $this->prepareDataForPDF($tracks);
         $user = Auth::user();
@@ -344,59 +432,87 @@ class TrackingReportRepository
         ]);
         $pdf->AliasNbPages();
 
-        $y = 0;
-        // PAGE 1. TITLE
-        $pdf->AddPage('P', 'A4');
-        $y += 60;
-        // Report name
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->SetXY($pdf->GetCenterX($reportName, $pdf->GetPageWidth()) , $y);
-        $pdf->Write(3, $reportName);
+        if ($request->has('showCover') && $request->get('showCover') === true) {
+            $y = 0;
+            // PAGE 1. TITLE
+            $pdf->AddPage('P', 'A4');
+            $y += 60;
+            // Report name
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY($pdf->GetCenterX($reportName, $pdf->GetPageWidth()) , $y);
+            $pdf->Write(3, $reportName);
 
-        // Co-workers
-        $y += 10;
-        $pdf->SetFont('Arial', 'B', 32);
-        $lines = $pdf->GetCountLines($coworkers, $pdf->GetPageWidth());
-        if ($lines > 1) {
-            $pdf->SetXY(30, $y);
-        } else {
-            $pdf->SetXY($pdf->GetCenterX($coworkers, $pdf->GetPageWidth()), $y);
+            // Co-workers
+            $y += 10;
+            $pdf->SetFont('Arial', 'B', 32);
+            $lines = $pdf->GetCountLines($coworkers, $pdf->GetPageWidth());
+            if ($lines > 1) {
+                $pdf->SetXY(30, $y);
+            } else {
+                $pdf->SetXY($pdf->GetCenterX($coworkers, $pdf->GetPageWidth()), $y);
+            }
+            $pdf->Write(10, $coworkers);
+            $y += 10 * $lines;
+
+            // Period
+            $y += 10;
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY($pdf->GetCenterX($period, $pdf->GetPageWidth()), $y);
+            $pdf->Write(3, $period);
+
+            // Total time
+            $y += 30;
+            $totalTimeTitle = 'Total time';
+            $totalTime = $this->convertSecondsToTimeFormat($fullTime, false);
+            $pdf->SetFont('Arial', 'B', 10);
+            $pdf->SetXY($pdf->GetCenterX($totalTimeTitle, $pdf->GetPageWidth()), $y);
+            $pdf->Write(3, $totalTimeTitle);
+            $x = $pdf->GetX();
+            $y += 5;
+            $pdf->Line($x - 20, $y, $x + 5, $y);
+            $y += 5;
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY($pdf->GetCenterX($totalTime, $pdf->GetPageWidth()), $y);
+            $pdf->Write(3, $totalTime);
+
+            // Created At
+            $y += 20;
+            $createdAt = 'Created at ' . Carbon::now()->format('d F Y H:i') . ' o\' clock';
+            $pdf->SetFont('Arial', '', 10);
+            $pdf->SetXY($pdf->GetCenterX($createdAt, $pdf->GetPageWidth()), $y);
+            $pdf->Write(3, $createdAt);
         }
-        $pdf->Write(10, $coworkers);
-        $y += 10 * $lines;
 
-        // Period
-        $y += 10;
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->SetXY($pdf->GetCenterX($period, $pdf->GetPageWidth()), $y);
-        $pdf->Write(3, $period);
+        if ($request->has('showRevenue') && $request->get('showRevenue') === false) {
+            $headers = $this->recalculateHeaderWidths($headers, ['revenue']);
+            $data = collect($data)->map(function($item) {
+                unset($item['revenue']);
+                return $item;
+            })->toArray();
+        }
 
-        // Total time
-        $y += 30;
-        $totalTimeTitle = 'Total time';
-        $totalTime = $this->convertSecondsToTimeFormat($fullTime);
-        $pdf->SetFont('Arial', 'B', 10);
-        $pdf->SetXY($pdf->GetCenterX($totalTimeTitle, $pdf->GetPageWidth()), $y);
-        $pdf->Write(3, $totalTimeTitle);
-        $x = $pdf->GetX();
-        $y += 5;
-        $pdf->Line($x - 20, $y, $x + 5, $y);
-        $y += 5;
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->SetXY($pdf->GetCenterX($totalTime, $pdf->GetPageWidth()), $y);
-        $pdf->Write(3, $totalTime);
-
-        // Created At
-        $y += 20;
-        $createdAt = 'Created at ' . Carbon::now()->format('d F Y H:i') . ' o\' clock';
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->SetXY($pdf->GetCenterX($createdAt, $pdf->GetPageWidth()), $y);
-        $pdf->Write(3, $createdAt);
+        if ($request->has('hideColumns') && !empty($request->get('hideColumns')) && is_array($request->get('hideColumns'))) {
+            $hideColumns = collect($request->get('hideColumns'))
+                ->map(function($item) {
+                    return $item['value'];
+                })
+                ->toArray();
+            $headers = $this->recalculateHeaderWidths($headers, $hideColumns);
+            $data = collect($data)->map(function($item) use ($hideColumns) {
+                foreach ($hideColumns as $key) {
+                    if (isset($item[strtolower($key)])) {
+                        unset($item[$key]);
+                    }
+                }
+                return $item;
+            })->toArray();
+//            dd($headers, $data);
+        }
 
         // PAGE 2 and next
         $pdf->AddPage('L', 'A4');
         $pdf->SetFont('Arial', '', 10);
-        $pdf->EasyTable($headers, $data, $columnWidths);
+        $pdf->EasyTable($headers, $data);
 
         $html = '';
         // GENERATE FILE
@@ -404,6 +520,14 @@ class TrackingReportRepository
             $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
             File::put($tmpFileName, $pdf->Output('S', $tmpFileName, true));
             if (File::exists($tmpFileName)) {
+                $email = $request->get('email', Auth::user()->contact_email->email);
+                if (
+                        $request->has('sendByEmail') && $request->get('sendByEmail') === true
+                    &&  $request->has('email') && $email
+                ) {
+                    Notification::route('mail', $email)
+                        ->notify(new SendTrackingReportByEmail($tmpFileName));
+                }
                 return response()->file($tmpFileName)->deleteFileAfterSend();
             }
         } catch (\Exception $exception) {
@@ -435,26 +559,21 @@ class TrackingReportRepository
                 $row[] = $tracking['entity'] && $tracking['entity']['from_company_name'] ? $tracking['entity']['from_company_name'] : '';
                 $row[] = $tracking['entity'] && $tracking['entity']['from']['id'] ? $tracking['entity']['from']['id'] : '';
             } else {
-                $row[] = $tracking['entity'] && $tracking['entity']['client'] ? $tracking['entity']['client']['name'] : '';
-                $row[] = $tracking['entity'] && $tracking['entity']['client'] ? $tracking['entity']['client']['id'] : '';
+                $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['name'] : '';
+                $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['id'] : '';
             }
             $row[] = $tracking['entity'] ? $tracking['entity']['name'] : '';
             $row[] = $tracking['entity'] ? $tracking['entity']['id'] : '';
             $row[] = $tracking['service'] ? $tracking['service']['name'] : '';
             $row[] = $tracking['service'] ? $tracking['service']['id'] : '';
-            $row[] = 0;
-            $row[] = '';
             $row[] = $tracking['description'];
             $row[] = $tracking['billable'] ? 1 : 0;
-            $row[] = 0;
-            $row[] = round(0, 2);
-            $row[] = Carbon::parse($tracking['date_from'])->format('Y-m-d H:i:s');
-            $row[] = Carbon::parse($tracking['date_to'])->format('Y-m-d H:i:s');
-            $row[] = 0;
-            $row[] = 0;
-            $row[] = 0;
-            $row[] = 0;
-            $row[] = 0;
+            $row[] = round($tracking['rate'], 2);
+            $row[] = Carbon::parse($tracking['date_from'])->format('d/m/Y');
+            $row[] = $this->timeInDecimal ? $this->convertTimeToDecimal($tracking['date_from']) : Carbon::parse($tracking['date_from'])->format('H:i');
+            $row[] = $this->timeInDecimal ? $this->convertTimeToDecimal($tracking['date_to']) : Carbon::parse($tracking['date_to'])->format('H:i');
+            $row[] = $this->timeInDecimal ? $this->convertSecondsToDecimal($tracking['passed']) : $this->convertSecondsToTimeFormat($tracking['passed'], false);
+            $row[] = $tracking['revenue'];
             return implode(';', $row);
         } catch (\Exception $exception) {
             dd($exception->getMessage(), $exception->getLine(), $tracking);
@@ -469,21 +588,16 @@ class TrackingReportRepository
             'Customer number',
             'Project',
             'Project number',
-            'Service/Lump sum',
-            'Service/Lump sum number',
-            'Amount (Lump sums)',
-            'Unit (Lump sums)',
+            'Service',
+            'Service number',
             'Description',
             'Billable',
-            'Billed',
-            'Hourly rate in CHF',
+            'Hourly rate in ' . $this->currency,
+            'Date',
             'Start',
             'End',
-            'Amount',
-            'Correction of time in seconds',
-            'Time clocked',
-            'Clocked offline',
-            'Revenue in CHF'
+            'Total time',
+            'Revenue in ' . $this->currency
         ]) . "\n";
     }
 

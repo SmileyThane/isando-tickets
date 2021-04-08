@@ -3,13 +3,18 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class TrackingProject extends Model
 {
     protected $appends = [
         'tracked',
-        'amount',
-        'progress'
+        'revenue',
+        'is_favorite'
+    ];
+
+    protected $casts = [
+        'is_favorite' => 'boolean'
     ];
 
     public function Product() {
@@ -24,19 +29,30 @@ class TrackingProject extends Model
         return $this->morphMany('App\Tracking', 'entity');
     }
 
+    // passed time in seconds by project
     public function getTrackedAttribute() {
-        // TODO
-        return 0;
+        return $this->Trackers()->get()->map(function($item) {
+            return $item->passed;
+        })->sum();
     }
 
-    public function getAmountAttribute() {
-        // TODO
-        return 0;
+    public function getRevenueAttribute() {
+        $revenue = $this
+            ->Trackers()
+            ->get()
+            ->map(function($item) {
+                return $item->revenue;
+            })
+            ->sum();
+        return number_format($revenue, 2);
     }
 
-    public function getProgressAttribute() {
-        // TODO
-        return 0;
+    public function getIsFavoriteAttribute() {
+        return (bool)UserFavorites::where([
+            ['user_id', '=', Auth::user()->id],
+            ['entity_type', '=', TrackingProject::class],
+            ['entity_id', '=', $this->id]
+        ])->first();
     }
 
     public static function boot() {

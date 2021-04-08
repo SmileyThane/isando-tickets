@@ -10,6 +10,7 @@ use App\Ticket;
 use App\TrackingProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TrackingProjectRepository
@@ -42,13 +43,12 @@ class TrackingProjectRepository
 
     public function all(Request $request)
     {
-//        $productIds = Auth::user()
-//            ->employee
-//            ->companyData
-//            ->products
-//            ->pluck('product_id');
         $trackingProjects = TrackingProject::with('Product', 'Client');
-//            ->whereIn('product_id', $productIds);
+//        $user = Auth::user();
+//        $trackingProjects->select(
+//            DB::raw("*, IF(EXISTS(SELECT * FROM user_favorites WHERE user_id = {$user->id} AND entity_type = '" . TrackingProject::class . "' AND entity_id = tracking_projects.id), 1, 0) as is_favorite")
+//        );
+//        $trackingProjects->orderBy('is_favorite', 'desc');
         if ($request->has('search')) {
             $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
         }
@@ -57,10 +57,11 @@ class TrackingProjectRepository
             if ((string)$request->direction === 'false') $request->direction = 'asc';
             $trackingProjects->orderBy($request->column, $request->direction);
         }
+
+//        dd($trackingProjects->toSql());
         return $trackingProjects
             ->paginate($request->per_page ?? $trackingProjects->count());
     }
-
 
     public function find($id)
     {
@@ -111,11 +112,21 @@ class TrackingProjectRepository
         if ($request->has('rate')) {
             $trackingProject->rate = $request->rate;
         }
-        if ($request->has('rate_from')) {
+        if ($request->has('rate_from') && $trackingProject->rate_from !== $request->rate_from) {
             $trackingProject->rate_from = $request->rate_from;
         }
         if ($request->has('rate_from_date')) {
             $trackingProject->rate_from_date = $request->rate_from_date;
+        }
+        if ($request->has('rate_type_from') && $request->get('rate_type_from') === 2) {
+            $trackers = $trackingProject->Trackers()->get();
+            foreach ($trackers as $tracker) {
+                $tracker->rate = $trackingProject->rate_from;
+                $tracker->save();
+            }
+            $trackingProject->rate = $trackingProject->rate_from;
+            $trackingProject->rate_from = null;
+            $trackingProject->rate_from_date = null;
         }
         $trackingProject->save();
         return $trackingProject;
@@ -130,6 +141,16 @@ class TrackingProjectRepository
             $result = true;
         }
         return $result;
+    }
+
+    public function toggleFavorite($id) {
+        $project = TrackingProject::find($id);
+        if ($project->is_favorite) {
+            Auth::user()->favoriteTrackingProjects()->detach($project->id);
+        } else {
+            Auth::user()->favoriteTrackingProjects()->attach($project);
+        }
+        return true;
     }
 
     public function getClients(Request $request) {

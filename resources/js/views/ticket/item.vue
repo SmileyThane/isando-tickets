@@ -98,7 +98,7 @@
                                     item-value="id"
                                 />
                             </v-col>
-                            <v-col cols="12">
+                            <v-col cols="12" md="6">
                                 <v-textarea
                                     v-model="ticket.availability"
                                     :color="themeBgColor"
@@ -110,6 +110,18 @@
                                     row-height="25"
                                     rows="1"
                                 ></v-textarea>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    :items="internalBillings"
+                                    item-text="name"
+                                    item-value="id"
+                                    v-model="ticket.internal_billing_id"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :label="langMap.profile.internal_billing"
+                                    prepend-icon="mdi-cash"
+                                ></v-select>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-textarea
@@ -690,7 +702,7 @@
                                                         :color="themeBgColor"
                                                         :href="attachment.link"
                                                         class="ma-2"
-                                                        text-color="white"
+                                                        :text-color="themeFgColor"
                                                     >
                                                         {{ attachment.name }}
                                                     </v-chip>
@@ -745,11 +757,11 @@
                                             }} - {{ ticket.name }}:
                                         </span>
                                         <div v-html="child_ticket.description"></div>
-                                        <v-col v-if="child_ticket.attachments.length > 0 " cols="12">
+                                        <v-col v-if="child_ticket.attachments && child_ticket.attachments.length > 0 " cols="12">
                                             <h4>{{ langMap.main.attachments }}</h4>
                                             <div
                                                 v-for="attachment in child_ticket.attachments"
-                                                v-if="ticket.attachments.length > 0"
+                                                v-if="child_ticket.attachments.length > 0"
                                             >
                                                 <v-chip
                                                     :color="themeBgColor"
@@ -848,7 +860,7 @@
                                                     :color="themeBgColor"
                                                     :href="attachment.link"
                                                     class="ma-2"
-                                                    text-color="white"
+                                                    :text-color="themeFgColor"
                                                 >
                                                     {{ attachment.name }}
                                                 </v-chip>
@@ -896,7 +908,7 @@
                                         }} - {{ ticket.name }}:
                                     </span>
                                     <div v-html="ticket.description"></div>
-                                    <v-col v-if="ticket.attachments.length > 0 " cols="12">
+                                    <v-col v-if="ticket.attachments && ticket.attachments.length > 0 " cols="12">
                                         <h4>{{ langMap.main.attachments }}</h4>
                                         <div
                                             v-for="attachment in ticket.attachments"
@@ -906,7 +918,7 @@
                                                 :color="themeBgColor"
                                                 :href="attachment.link"
                                                 class="ma-2"
-                                                text-color="white"
+                                                :text-color="themeFgColor"
                                             >
                                                 {{ attachment.name }}
                                             </v-chip>
@@ -1527,9 +1539,12 @@
                                                     <v-list-item-group :color="themeBgColor">
                                                         <v-list-item
                                                             v-for="(item, i) in tickets"
-                                                            :key="item.id"
+                                                            :key="i"
                                                             :color="themeBgColor"
-                                                            @click="showTicket(item.id)"
+                                                            @click="
+                                                            !mergeTicketForm.child_ticket_id.includes(item.id) ?
+                                                            mergeTicketForm.child_ticket_id.push(item.id) :
+                                                            mergeTicketForm.child_ticket_id.splice(mergeTicketForm.child_ticket_id.indexOf(item.id), 1)"
                                                         >
                                                             <v-list-item-title>
                                                 <span>
@@ -1543,6 +1558,10 @@
                                                         dense
                                                         hide-details
                                                         style="display: inline-block; margin-top: 0!important"
+                                                        @click="
+                                                            !mergeTicketForm.child_ticket_id.includes(item.id) ?
+                                                            mergeTicketForm.child_ticket_id.push(item.id) :
+                                                            mergeTicketForm.child_ticket_id.splice(mergeTicketForm.child_ticket_id.indexOf(item.id), 1)"
                                                     />
                                                     <v-tooltip bottom>
                                                     <template v-slot:activator="{ on, attrs }">
@@ -1725,6 +1744,7 @@ export default {
             linkParentTickets: [],
             ticketsSearch: '',
             searchLabel: '',
+            internalBillings: [],
             searchCategories: [
                 {
                     id: 1,
@@ -1874,6 +1894,7 @@ export default {
         this.getTeams()
         this.getTickets()
         this.getSignatures()
+        this.getInternalBilling()
         // if (localStorage.getticket('auth_token')) {
         //     this.$router.push('tickets')
         // }
@@ -2279,6 +2300,18 @@ export default {
                 } else {
                     this.snackbarMessage = 'Ticket delete error'
                     this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        getInternalBilling() {
+            axios.get('/api/billing/internal').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.internalBillings = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
                     this.snackbar = true;
                 }
             });

@@ -179,11 +179,13 @@ class PDF extends FPDF {
         $this->Cell(array_sum($w),0,'','T');
     }
 
-    public function EasyTable(Array $headers, Array $data, String $columnWidths) {
+    public function EasyTable(Array $headers, Array $data) {
+        $columnWidths = '%{' . implode(',', collect($headers)->map(function($item) {return $item['width'];})->toArray()) . '}';
         try {
             $table = new \easyTable($this, $columnWidths, 'width:100%;border:0;font-size:8');
 
-            for($i=0;$i<count($headers);$i++)
+//            for($i=0;$i<count($headers);$i++)
+            foreach ($headers as $i => $header)
                 $table->easyCell($headers[$i]['text'], $headers[$i]['style']);
             $table->printRow(true);
 

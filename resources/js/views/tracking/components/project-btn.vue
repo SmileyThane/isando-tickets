@@ -32,7 +32,7 @@
             </v-btn>
         </template>
         <v-card
-            max-width="400"
+            max-width="450"
             class="d-flex pa-2"
             style="overflow: hidden"
         >
@@ -82,6 +82,8 @@
                                         {{ item.name }}
                                     </span>
                                     <span v-else>
+                                        <v-icon v-if="item.is_favorite" @click.stop="toggleFavorite(item)">mdi-star</v-icon>
+                                        <v-icon v-else @click.stop="toggleFavorite(item)">mdi-star-outline</v-icon>
                                         {{ item.name }}
                                         <small>({{ item.product.name }})</small>
                                     </span>
@@ -351,6 +353,9 @@ export default {
         selectTicket(ticket) {
             this.selectedTicket = ticket.shift();
             this.shown = false;
+        },
+        toggleFavorite(project) {
+            this.$store.dispatch('Projects/toggleFavorite', project);
         }
     },
     computed: {
