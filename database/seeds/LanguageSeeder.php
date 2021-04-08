@@ -649,7 +649,7 @@ class LanguageSeeder extends Seeder
                             'client_response_assigned_to_me' => 'Client responses in tickets assigned to me',
                             'personal_id' => 'Personal ID number',
                             'avatar' => 'Avatar picture',
-
+                            'internal_billing' => 'Internal billing',
                         ],
                     'notification' =>
                         [
