@@ -98,7 +98,7 @@
                                     item-value="id"
                                 />
                             </v-col>
-                            <v-col cols="12">
+                            <v-col cols="12" md="6">
                                 <v-textarea
                                     v-model="ticket.availability"
                                     :color="themeBgColor"
@@ -110,6 +110,18 @@
                                     row-height="25"
                                     rows="1"
                                 ></v-textarea>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    :items="internalBillings"
+                                    item-text="name"
+                                    item-value="id"
+                                    v-model="ticket.internal_billing_id"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :label="langMap.profile.internal_billing"
+                                    prepend-icon="mdi-cash"
+                                ></v-select>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-textarea
@@ -1732,6 +1744,7 @@ export default {
             linkParentTickets: [],
             ticketsSearch: '',
             searchLabel: '',
+            internalBillings: [],
             searchCategories: [
                 {
                     id: 1,
@@ -1881,6 +1894,7 @@ export default {
         this.getTeams()
         this.getTickets()
         this.getSignatures()
+        this.getInternalBilling()
         // if (localStorage.getticket('auth_token')) {
         //     this.$router.push('tickets')
         // }
@@ -2286,6 +2300,18 @@ export default {
                 } else {
                     this.snackbarMessage = 'Ticket delete error'
                     this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        getInternalBilling() {
+            axios.get('/api/billing/internal').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.internalBillings = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
                     this.snackbar = true;
                 }
             });
