@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class InternalBillingRepository
 {
-    public function index()
+    public function index($additionalUserIds = null)
     {
         $employee = Auth::user()->employee;
         $entities = [];
@@ -36,6 +36,12 @@ class InternalBillingRepository
             }
         }
         $entities[] = ['entity_type' => User::class , 'entity_id' => Auth::id()];
+
+        if ($additionalUserIds) {
+            foreach (array_unique($additionalUserIds) as $additionalUserId) {
+                $entities[] = ['entity_type' => User::class , 'entity_id' => $additionalUserId];
+            }
+        }
 
         $internalBilling = InternalBilling::query();
         if ($entities) {
