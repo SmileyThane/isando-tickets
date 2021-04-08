@@ -2322,10 +2322,10 @@ export default {
             if (this.ticket.from_company_user_id !== null) {
                 queryString += `additional_user_ids[]=${this.ticket.creator.user_id}&`;
             }
-            if (this.ticket.contact_company_user_id !== null) {
+            if (this.ticket.to_company_user_id !== null) {
                 queryString += `additional_user_ids[]=${this.ticket.assigned_person.user_id}&`;
             }
-            if (this.ticket.to_company_user_id !== null) {
+            if (this.ticket.contact_company_user_id !== null) {
                 queryString += `additional_user_ids[]=${this.ticket.contact.user_id}&`;
             }
 
