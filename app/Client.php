@@ -93,4 +93,9 @@ class Client extends Model
     {
         return $this->hasOne(CustomLicense::class, 'client_id', 'id');
     }
+
+    public function billing(): MorphMany
+    {
+        return $this->morphMany(InternalBilling::class, 'entity');
+    }
 }

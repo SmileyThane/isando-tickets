@@ -98,7 +98,7 @@
                                     item-value="id"
                                 />
                             </v-col>
-                            <v-col cols="12">
+                            <v-col cols="12" md="6">
                                 <v-textarea
                                     v-model="ticket.availability"
                                     :color="themeBgColor"
@@ -110,6 +110,18 @@
                                     row-height="25"
                                     rows="1"
                                 ></v-textarea>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    :items="internalBillings"
+                                    item-text="name"
+                                    item-value="id"
+                                    v-model="ticket.internal_billing_id"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :label="langMap.profile.internal_billing"
+                                    prepend-icon="mdi-cash"
+                                ></v-select>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-textarea
@@ -1732,6 +1744,7 @@ export default {
             linkParentTickets: [],
             ticketsSearch: '',
             searchLabel: '',
+            internalBillings: [],
             searchCategories: [
                 {
                     id: 1,
@@ -1926,7 +1939,7 @@ export default {
                     if (this.ticket.notices.length > 0) {
                         this.notesPanel.push(0);
                     }
-
+                    this.getInternalBilling()
                 }
             });
         },
@@ -2286,6 +2299,28 @@ export default {
                 } else {
                     this.snackbarMessage = 'Ticket delete error'
                     this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        getInternalBilling() {
+            let queryString = '';
+            if (this.ticket.from_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.creator.user_id}&`;
+            }
+            if (this.ticket.contact_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.assigned_person.user_id}&`;
+            }
+            if (this.ticket.to_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.contact.user_id}&`;
+            }
+            axios.get(`/api/billing/internal?${queryString}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.internalBillings = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
                     this.snackbar = true;
                 }
             });

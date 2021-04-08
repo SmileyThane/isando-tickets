@@ -199,4 +199,9 @@ class User extends Authenticatable
             'id'
         );
     }
+
+    public function billing(): MorphMany
+    {
+        return $this->morphMany(InternalBilling::class, 'entity');
+    }
 }
