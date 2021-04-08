@@ -798,7 +798,7 @@
                     <v-card-text>
                         <v-row>
                             <v-col cols="12">
-                                <v-list-item v-for="(item, i) in internalBillings" :key="item.id">
+                                <v-list-item v-for="(item, i) in userData.billing" :key="item.id">
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.name"></v-list-item-title>
                                         <v-list-item-subtitle v-text="item.cost"></v-list-item-subtitle>
@@ -1402,7 +1402,7 @@ export default {
         this.getTimeZones();
         this.getCountries();
         this.getCompanySettings();
-        this.getInternalBilling();
+        // this.getInternalBilling();
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1512,7 +1512,7 @@ export default {
                     this.snackbarMessage = this.langMap.main.update_successful;
                     this.actionColor = 'success'
                     this.snackbar = true
-                    this.getInternalBilling()
+                    this.getUser()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1529,7 +1529,7 @@ export default {
                     this.snackbar = true
                     this.internalBillingEditor = null
                     this.internalBillingForm = {}
-                    this.getInternalBilling()
+                    this.getUser()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1546,7 +1546,7 @@ export default {
                     this.snackbar = true
                     this.internalBillingEditor = null
                     this.internalBillingForm = {}
-                    this.getInternalBilling()
+                    this.getUser()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
