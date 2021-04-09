@@ -149,7 +149,16 @@
 
                         >
                         </v-checkbox>
+                        <v-checkbox
+                            v-model="options.onlyForUser"
+                            :color="themeBgColor"
+                            class="ma-2"
+                            hide-details
+                            label="Assigned for me Only"
+                        >
+                        </v-checkbox>
                     </v-col>
+
                 </v-row>
                 <v-expand-transition>
                     <v-row v-show="filterPanel">
@@ -585,6 +594,7 @@ export default {
                 sort_by: this.manageSortableField(this.options.sortBy[0]),
                 sort_val: this.options.sortDesc[0],
                 with_spam: this.options.withSpam,
+                only_for_user: this.options.onlyForUser,
                 per_page: this.options.itemsPerPage,
                 minified: this.minifiedTickets,
                 page: this.options.page,
