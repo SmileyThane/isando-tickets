@@ -37,20 +37,19 @@ class KbArticle extends Model
         return $this->morphToMany(Tag::class, 'taggable');
     }
 
-    public function previous() {
-        return KbArticle::where('id', $this->prev_id)->with('tags', 'categories')->first();
+    public function previous(): belongsToMany
+    {
+        return $this->belongsToMany(KbArticle::class, 'kb_article_relations', 'next_id', 'article_id');
     }
 
-    public function next() {
-        return KbArticle::where('prev_id', $this->id)->with('tags', 'categories')->first();
+    public function next(): belongsToMany
+    {
+        return $this->belongsToMany(KbArticle::class, 'kb_article_relations', 'article_id', 'next_id');
     }
 
     public function delete()
     {
-        $next = $this->next();
-        if ($next) {
-            $next->delete();
-        }
+        $this->next()->delete();
 
         foreach ($this->attachments as $attachment) {
             $attachment->delete();

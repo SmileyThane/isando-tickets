@@ -41,7 +41,7 @@
                                 <v-select multiple v-model="searchWhere" hide-details :items="searchOptions" item-value="id" item-text="name" label="Search in" :color="themeBgColor" v-on:change="openCategory($route.query.category)" />
                             </v-col>
                             <v-col cols="12">
-                                <v-select v-model="activeTags"  :items="tags" item-value="id" item-text="name" :label="langMap.kb.tags" hide-selected multiple small-chips append-icon="mdi-tag-multiple-outline" :color="themeBgColor" v-on:change="getArticles();">
+                                <v-select v-model="activeTags"  :items="$store.getters['Tags/getTags']" item-value="id" item-text="name" :label="langMap.kb.tags" hide-selected multiple small-chips append-icon="mdi-tag-multiple-outline" :color="themeBgColor" v-on:change="getArticles();">
                                     <template v-slot:selection="{ attrs, item, parent, selected }">
                                         <v-chip small v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)" label class="ml-2" close @click:close="activeTags.splice(activeTags.indexOf(item), 1); getArticles();">
                                             {{ item.name }}
@@ -256,6 +256,7 @@
 <script>
 import EventBus from '../../components/EventBus';
 import * as Helper from '../tracking/helper';
+import * as _ from 'lodash';
 
 export default {
     data() {
@@ -277,7 +278,6 @@ export default {
             categories: [],
             categoriesTree: [],
             articles: [],
-            tags: [],
             activeTags: [],
             updateCategoryDlg: false,
             deleteCategoryDlg: false,
@@ -314,10 +314,13 @@ export default {
             that.themeBgColor = color;
         });
 
-        this.getTags();
+        this.debounceGetTags();
         this.getCategories();
         this.getCategoriesTree();
         this.getArticles();
+    },
+    created() {
+        this.debounceGetTags = _.debounce(this.getTags(), 1000)
     },
     methods: {
         checkRoleByIds(ids) {
@@ -342,16 +345,7 @@ export default {
             return Helper.invertColor(hex);
         },
         getTags() {
-            axios.get('/api/tags').then(response => {
-                response = response.data;
-                if (response.success === true) {
-                    this.tags = response.data;
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.errorType = 'error';
-                    this.alert = true;
-                }
-            });
+            this.$store.dispatch('Tags/getTagList')
         },
         getCategories() {
             axios.get('/api/kb/categories', {
