@@ -106,6 +106,7 @@
                                 :readonly="!enableToEdit"
                                 :label="langMap.tracking.settings.currency"
                                 :placeholder="langMap.tracking.settings.currency"
+                                prepend-icon="mdi-currency-usd"
                                 v-model="company.currency_id"
                                 required
                                 dense
