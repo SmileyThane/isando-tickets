@@ -119,6 +119,9 @@ class TicketRepository
         if ($request->with_spam === "true") {
             $ticketResult->where('is_spam', 1);
         }
+        if ($request->only_for_user === "true") {
+            $ticketResult->where('to_company_user_id', Auth::user()->employee->id);
+        }
         if ($request->minified && $request->minified === "true") {
             return $ticketResult
                 ->with('creator.userData')
