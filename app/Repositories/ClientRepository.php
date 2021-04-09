@@ -76,7 +76,7 @@ class ClientRepository
         return $clients;
     }
 
-    private function getRecursiveChildClientIds($clientsArray): array
+    public function getRecursiveChildClientIds($clientsArray): array
     {
         $clientIds = [];
         foreach ($clientsArray as $client) {
@@ -138,6 +138,7 @@ class ClientRepository
                 'products.productData',
                 'phones.type',
                 'addresses.type',
+                'billing',
                 'addresses.country',
                 'socials.type',
                 'emails.type'

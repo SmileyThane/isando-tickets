@@ -398,10 +398,10 @@
                                                 :width="headers.find(i => i.value === 'description').width"
                                             >
                                                 <v-edit-dialog
-                                                    @save="save(row, 'description')"
+                                                    @save="debounceSave(row, 'description')"
                                                     @cancel="cancel"
                                                     @open="open"
-                                                    @close="save(row, 'description')"
+                                                    @close="debounceSave(row, 'description')"
                                                     :ref="`dialog${row.id}`"
                                                 >
                                                     <span v-if="row.service">
@@ -457,17 +457,17 @@
                                                 :width="headers.find(i => i.value === 'entity.name').width"
                                             >
                                                 <v-edit-dialog
-                                                    @save="save(row, 'entity', row.entity)"
+                                                    @save="debounceSave(row, 'entity', row.entity)"
                                                     @cancel="cancel"
                                                     @open="open"
-                                                    @close="save(row, 'entity', row.entity)"
+                                                    @close="debounceSave(row, 'entity', row.entity)"
                                                 >
                                                     <ProjectBtn
                                                         :key="row.id"
-                                                        :color="themeBgColor"
+                                                        :color="row.entity && row.entity.color ? row.entity.color : themeBgColor"
                                                         v-model="row.entity"
-                                                        @blur="save(row, 'entity', row.entity)"
-                                                        @input="save(row, 'entity', row.entity)"
+                                                        @blur="debounceSave(row, 'entity', row.entity)"
+                                                        @input="debounceSave(row, 'entity', row.entity)"
                                                     ></ProjectBtn>
                                                 </v-edit-dialog>
                                             </td>
@@ -479,7 +479,7 @@
                                                     :key="row.id"
                                                     :color="themeBgColor"
                                                     v-model="row.tags"
-                                                    @blur="save(row, 'tags', row.tags)"
+                                                    @blur="debounceSave(row, 'tags', row.tags)"
                                                 ></TagBtn>
                                             </td>
                                             <td
@@ -491,7 +491,7 @@
                                                     :icon="!row.billable"
                                                     x-small
                                                     :color="themeBgColor"
-                                                    @click="row.billable = !row.billable; save(row, 'billable')"
+                                                    @click="row.billable = !row.billable; debounceSave(row, 'billable')"
                                                 >
                                                     <v-icon center v-bind:class="{ 'white--text': row.billable }">
                                                         mdi-currency-usd
@@ -504,7 +504,12 @@
                                             >
                                                 <div class="d-flex flex-row">
                                                     <div class="d-flex-inline">
-                                                        <v-edit-dialog>
+                                                        <v-edit-dialog
+                                                            @save="debounceSave(row, 'date_from', row.date_from)"
+                                                            @cancel="cancel"
+                                                            @open="open"
+                                                            @close="debounceSave(row, 'date_from', row.date_from)"
+                                                        >
                                                             {{ moment(row.date_from).format(timeFormat) }}
                                                             <template v-slot:input>
                                                                 <TimeField
@@ -512,7 +517,7 @@
                                                                     style="max-width: 100px; height: 40px"
                                                                     placeholder="hh:mm"
                                                                     format="HH:mm"
-                                                                    @input="save(row, 'date_from', row.date_from)"
+                                                                    @input="debounceSave(row, 'date_from', row.date_from)"
                                                                 ></TimeField>
                                                             </template>
                                                         </v-edit-dialog>
@@ -520,19 +525,22 @@
                                                     <div class="d-flex-inline">&nbsp;&mdash;&nbsp;</div>
                                                     <div class="d-flex-inline">
                                                         <v-edit-dialog
-                                                            :return-value.sync="row.date_to"
+                                                            @save="debounceSave(row, 'date_to', row.date_to)"
+                                                            @cancel="cancel"
+                                                            @open="open"
+                                                            @close="debounceSave(row, 'date_to', row.date_to)"
                                                             v-if="row.status == 'stopped'"
                                                         >
-                                                    <span v-if="row.date_to && row.status == 'stopped'">
-                                                        {{ moment(row.date_to).format(timeFormat) }}
-                                                    </span>
+                                                            <span v-if="row.date_to && row.status == 'stopped'">
+                                                                {{ moment(row.date_to).format(timeFormat) }}
+                                                            </span>
                                                             <template v-slot:input>
                                                                 <TimeField
                                                                     v-model="row.date_to"
                                                                     style="max-width: 100px; height: 40px"
                                                                     placeholder="hh:mm"
                                                                     format="HH:mm"
-                                                                    @input="save(row, 'date_to', row.date_to)"
+                                                                    @input="debounceSave(row, 'date_to', row.date_to)"
                                                                 ></TimeField>
                                                             </template>
                                                         </v-edit-dialog>
@@ -543,7 +551,7 @@
                                                 class="pa-3"
                                                 :width="headers.find(i => i.value === 'passed').width"
                                             >
-                                                <span v-text="helperConvertSecondsToTimeFormat(row.passed)"></span>
+                                                <span v-text="$helpers.time.convertSecToTime(row.passed)"></span>
                                             </td>
                                             <td
                                                 class="pa-3"
@@ -690,7 +698,6 @@ import _ from "lodash";
 import ProjectBtn from "./components/project-btn";
 import TagBtn from "./components/tag-btn";
 import TimeField from "./components/time-field";
-import * as Helper from "./helper";
 
 export default {
     components: {
@@ -710,7 +717,7 @@ export default {
             timeFormat: 'HH:mm',
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             /* Snackbar */
             snackbarMessage: '',
             snackbar: false,
@@ -826,18 +833,19 @@ themeBgColor: this.$store.state.themeBgColor,
     },
     created: function () {
         this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
-        if (Helper.getKey('dateRange')) {
-            this.dateRange = Helper.getKey('dateRange');
+        this.debounceSave = _.debounce(this.save, 500);
+        if (this.$helpers.localStorage.getKey('dateRange', 'tracking')) {
+            this.dateRange = this.$helpers.localStorage.getKey('dateRange', 'tracking');
             if (moment(this.dateRange.end).format(this.dateFormat) === moment().subtract(1, 'days').format(this.dateFormat)) {
                 this.dateRange.end = moment();
-                Helper.storeKey('dateRange', this.dateRange);
+                this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
             }
         } else {
             this.dateRange = {
                 start: moment().subtract(1, 'days').format(this.dateFormat),
                 end: moment().format(this.dateFormat)
             };
-            Helper.storeKey('dateRange', this.dateRange);
+            this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
         }
         this.timeFrom = moment().format();
         this.timeTo = moment().add(15, 'minutes').format();
@@ -856,7 +864,7 @@ themeBgColor: this.$store.state.themeBgColor,
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
@@ -1023,25 +1031,6 @@ themeBgColor: this.$store.state.themeBgColor,
                     }
                 });
         },
-        helperAddZeros(num, len) {
-            while((""+num).length < len) num = "0" + num;
-            return num.toString();
-        },
-        helperConvertSecondsToTimeFormat(seconds) {
-            if (!seconds) {
-                return `00:00:00`;
-            }
-            const h = Math.floor(seconds / 60 / 60);
-            const m = Math.floor((seconds - h * 60 * 60) / 60);
-            const s = seconds - (m * 60) - (h * 60 * 60);
-            return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
-        },
-        helperCalculatePassedTime(date_from, date_to) {
-            if (moment(date_from) > moment(date_to)) {
-                date_to = moment(date_to).add(1, 'day');
-            }
-            return moment(date_to).diff(moment(date_from), 'seconds');
-        },
         resetManualPanel() {
             this.manualPanel = {
                 ...this.manualPanel,
@@ -1075,42 +1064,10 @@ themeBgColor: this.$store.state.themeBgColor,
             };
         },
         handlerDateRange() {
-            Helper.storeKey('dateRange', this.dateRange);
+            this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
             this.dateRangePicker = false;
             this.debounceGetTracking();
         },
-        // handlerSetTimeFrom() {
-        //     if (!this.timeFrom) {
-        //         this.timeFrom = moment().format(this.timeFormat);
-        //     }
-        //     if (/([0-9]{1,}:[0-9]{2})/.test(this.timeFrom)) {
-        //         return this.timeFrom;
-        //     }
-        //     if (/(\d{1,4})/.test(this.timeFrom)) {
-        //         let str = this.timeFrom.toString().slice(0,4);
-        //         str = this.helperAddZeros(str, 4);
-        //         this.timeFrom = str.slice(0,2) + ':' + str.slice(-2);
-        //         return this.timeFrom;
-        //     }
-        //     this.timeFrom = moment().format(this.timeFormat);
-        //     return this.timeFrom;
-        // },
-        // handlerSetTimeTo() {
-        //     if (!this.timeTo) {
-        //         this.timeTo = moment().format(this.timeFormat);
-        //     }
-        //     if (/([0-9]{1,}:[0-9]{2})/.test(this.timeTo)) {
-        //         return this.timeTo;
-        //     }
-        //     if (/(\d{1,4})/.test(this.timeTo)) {
-        //         let str = this.timeTo.toString().slice(0,4);
-        //         str = this.helperAddZeros(str, 4);
-        //         this.timeTo = str.slice(0,2) + ':' + str.slice(-2);
-        //         return this.timeTo;
-        //     }
-        //     this.timeTo = moment().format(this.timeFormat);
-        //     return this.timeTo;
-        // },
         handlerSetDate() {
             if (!this.date || ! /([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/.test(this.date)) {
                 this.date = moment().format(this.dateFormat);
@@ -1137,7 +1094,7 @@ themeBgColor: this.$store.state.themeBgColor,
         },
         save (item, fieldName, newValue = null) {
             if (['date_from', 'date_to'].indexOf(fieldName)) {
-                item.passed = this.helperCalculatePassedTime(item.date_from, item.date_to);
+                item.passed = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to);
             }
             if (newValue) {
                 item[fieldName] = newValue;
@@ -1163,10 +1120,10 @@ themeBgColor: this.$store.state.themeBgColor,
                 month: moment(item.date).month(),
                 year: moment(item.date).year()
             };
-            const seconds = this.helperCalculatePassedTime(item.date_from, item.date_to);
+            const seconds = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to);
             item.date_from = moment(item.date_from).set(date).format();
             item.date_to = moment(item.date_from).add(seconds, "seconds").format();
-            this.save(item, 'date_from');
+            this.debounceSave(item, 'date_from');
         }
     },
     computed: {
@@ -1174,8 +1131,8 @@ themeBgColor: this.$store.state.themeBgColor,
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
                 this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format();
             }
-            const seconds = this.helperCalculatePassedTime(this.manualPanel.date_from, this.manualPanel.date_to);
-            return this.helperConvertSecondsToTimeFormat(seconds);
+            const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to);
+            return this.$helpers.time.convertSecToTime(seconds);
         },
         dateRangeText () {
             const dateFormat = 'DD MMM YYYY';
@@ -1240,13 +1197,13 @@ themeBgColor: this.$store.state.themeBgColor,
                 return i.status === 'started';
             }).forEach(i => {
                 const index = this.tracking.indexOf(i);
-                this.tracking[index].passed = this.helperCalculatePassedTime(i.date_from, moment());
+                this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment());
                 this.tracking[index].date_picker = this.tracking[index].date_picker ?? false;
             });
             // Update timerPanel
             if (this.timerPanel.start) {
                 const seconds = moment().diff(moment(this.timerPanel.start), 'seconds');
-                this.timerPanel.passedSeconds = this.helperConvertSecondsToTimeFormat(seconds);
+                this.timerPanel.passedSeconds = this.$helpers.time.convertSecToTime(seconds);
             }
         },
         'timerPanel.entity': function () {

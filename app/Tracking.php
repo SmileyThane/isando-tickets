@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Tracking extends Model
 {
@@ -58,11 +59,20 @@ class Tracking extends Model
     }
 
     public function getPassedAttribute() {
-        return Carbon::parse($this->date_to)->diffInSeconds(Carbon::parse($this->date_from));
+        return Carbon::parse($this->date_from)->diffInSeconds($this->status !== 'stopped' ? now() : Carbon::parse($this->date_to));
     }
 
     public function getPassedDecimalAttribute() {
-        return floor($this->passed / 60 / 60 * 100) / 100;
+        try {
+            return round($this->passed / 60 / 60 * 100) / 100;
+        } catch (\Exception $exception) {
+            return 0;
+        }
+    }
+
+    public function setPassedAttribute($value)
+    {
+        $this->attributes['passed'] = $value;
     }
 
     public function getDateFromAttribute() {
@@ -75,11 +85,8 @@ class Tracking extends Model
 
     public function getRevenueAttribute() {
         if (!$this->billable) return 0;
-        if (isset($this->entity) && $this->entity_type === TrackingProject::class) {
-            return number_format($this->entity->rate * $this->passed_decimal, 2);
-        }
-        if (isset($this->entity) && $this->entity_type === Ticket::class) {
-            return number_format(0 * $this->passed_decimal, 2);
+        if (isset($this->rate) && !empty($this->rate)) {
+            return round(($this->rate * $this->passed_decimal) * 100) / 100;
         }
         return 0;
     }

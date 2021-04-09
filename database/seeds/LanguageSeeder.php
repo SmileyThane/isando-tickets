@@ -65,7 +65,7 @@ class LanguageSeeder extends Seeder
                             'name' => 'Name',
                             'client' => 'Client',
                             'tracked' => 'Tracked',
-                            'amount' => 'Amount',
+                            'revenue' => 'Revenue',
                             'progress' => 'Progress',
                             'access' => 'Access',
                             'create' => 'Create',
@@ -330,6 +330,28 @@ class LanguageSeeder extends Seeder
                             'unlink_product' => 'Unlink product',
                             'product_created' => 'New product created',
                         ],
+                    'custom_license' =>
+                        [
+                            'ixarma' => 'iXarma',
+                            'ixarma_app' => 'iXarma app',
+                            'ticketing' => 'Ticketing',
+                            'time_tracking' => 'Time traking',
+                            'username' => 'Username',
+                            'organisation' => 'Organisation',
+                            'licensed' => 'Licensed',
+                            'platform' => 'Platform',
+                            'active' => 'Active',
+                            'expired_at' => 'Expired at',
+                            'aliases' => 'Aliases',
+                            'additional_licenses' => 'Additional licenses',
+                            'license_users' => 'License Users',
+                            'total_users' => 'Total users',
+                            'new_users' => 'New users',
+                            'users_available' => 'Users available',
+                            'trial_days' => 'Trial days',
+                            'last_activation' => 'Last activation',
+                            'connection_links' => 'Connection links'
+                        ],
                     'team' =>
                         [
                             'add_new' => 'Add new team',
@@ -540,6 +562,7 @@ class LanguageSeeder extends Seeder
                             'and_it_was_closed' => ' and it was closed.',
                             'primary' => 'Primary',
                             'version' => 'Version',
+                            'cost' => 'Cost',
                         ],
                     'system_settings' =>
                         [
@@ -627,7 +650,7 @@ class LanguageSeeder extends Seeder
                             'client_response_assigned_to_me' => 'Client responses in tickets assigned to me',
                             'personal_id' => 'Personal ID number',
                             'avatar' => 'Avatar picture',
-
+                            'internal_billing' => 'Internal billing',
                         ],
                     'notification' =>
                         [
@@ -771,7 +794,7 @@ class LanguageSeeder extends Seeder
                             'name' => 'Name',
                             'client' => 'Client',
                             'tracked' => 'Tracked',
-                            'amount' => 'Amount',
+                            'revenue' => 'Umsatz',
                             'progress' => 'Progress',
                             'access' => 'Access',
                             'create' => 'Create',
@@ -1021,6 +1044,28 @@ class LanguageSeeder extends Seeder
                             'unlink_product' => 'Produktverknüpfung löschen',
                             'product_created' => 'Neues Produkt erstellt',
                         ],
+                        'custom_license' =>
+                            [
+                                'ixarma' => 'iXarma',
+                                'ixarma_app' => 'iXarma app',
+                                'ticketing' => 'Ticketing',
+                                'time_tracking' => 'Zeiterfassung',
+                                'username' => 'Benutzername',
+                                'organisation' => 'Organisation',
+                                'licensed' => 'Lizenziert',
+                                'platform' => 'Plattform',
+                                'active' => 'Aktiv',
+                                'expired_at' => 'Abgelaufen bei',
+                                'aliases' => 'Aliase',
+                                'additional_licenses' => 'Zusätzliche Lizenzen',
+                                'license_users' => 'Lizenzbenutzer',
+                                'total_users' => 'Benutzer insgesamt',
+                                'new_users' => 'Neue Benutzer',
+                                'users_available' => 'Benutzer verfügbar',
+                                'trial_days' => 'Probetage',
+                                'last_activation' => 'Letzte Aktivierung',
+                                'connection_links' => 'Verbindungslinks'
+                            ],
                         'team' => [
                             'add_new' => 'Neues Team hinzufügen',
                             'team_deleted' => 'Team gelöscht',
@@ -1224,6 +1269,7 @@ class LanguageSeeder extends Seeder
                             'and_it_was_closed' => ' and it was closed.',
                             'primary' => 'Primär',
                             'version' => 'Version',
+                            'cost' => 'Kosten',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
@@ -1308,6 +1354,7 @@ class LanguageSeeder extends Seeder
                             'client_response_assigned_to_me' => 'Kundenantworten in mir zugewiesenen Tickets',
                             'personal_id' => 'Persönliche ID-Nummer',
                             'avatar' => 'Avatar Bild',
+                            'internal_billing' => 'Internal billing',
                         ],
                         'notification' => [
                             'template' => 'Vorlage',

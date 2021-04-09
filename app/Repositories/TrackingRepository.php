@@ -113,13 +113,17 @@ class TrackingRepository
             $this->logTracking($tracking->id, TrackingLogger::ATTACH_TAGS, null, $request->tags);
         }
 
+        if ($tracking->entity_type === TrackingProject::class) {
+            $tracking->rate = $tracking->entity->rate;
+            $tracking->save();
+        }
+
         return $tracking;
     }
 
     public function update(Request $request, Tracking $tracking)
     {
         $oldTracking = $tracking;
-        $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
         if ($request->has('date_from')) {
             if (!$request->has('date_to') && Carbon::parse($request->date_from)->gt(Carbon::parse($tracking->date_to))) {
@@ -141,6 +145,10 @@ class TrackingRepository
         if ($request->has('entity') && $request->entity && $request->entity_type) {
             $tracking->entity_id = $request->entity['id'];
             $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
+            if ($tracking->entity_type === TrackingProject::class) {
+                $project = TrackingProject::find($request->entity['id']);
+                $tracking->rate = $project->rate;
+            }
         }
         if ($request->has('service')) {
             if (!is_null($request->service)) {
@@ -164,11 +172,11 @@ class TrackingRepository
 
     public function delete(Tracking $tracking)
     {
-        if ($tracking->user_id === Auth::user()->id) {
+//        if ($tracking->user_id === Auth::user()->id) {
             $this->logTracking($tracking->id, TrackingLogger::DELETE, $tracking, null);
             $tracking->delete();
             return true;
-        }
+//        }
         return false;
     }
 

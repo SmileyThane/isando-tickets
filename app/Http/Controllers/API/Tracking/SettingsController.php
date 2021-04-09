@@ -16,6 +16,7 @@ class SettingsController extends BaseController
         return self::showResponse(true, [
             'company' => $company,
             'currency' => $company->currency,
+            'email' => Auth::user()->contact_email
         ]);
     }
 

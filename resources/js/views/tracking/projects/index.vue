@@ -68,6 +68,18 @@
                 >
                 </v-pagination>
             </template>
+            <template v-slot:item.is_favorite="props">
+                <v-icon v-if="props.item.is_favorite" @click.stop="toggleFavorite(props.item)">mdi-star</v-icon>
+                <v-icon v-else @click.stop="toggleFavorite(props.item)">mdi-star-outline</v-icon>
+            </template>
+            <template v-slot:item.tracked="props">
+                {{ $helpers.time.convertSecToTime(props.item.tracked, false) }}
+            </template>
+            <template v-slot:item.revenue="props">
+                <span v-if="currentCurrency">
+                    {{ currentCurrency.slug }}
+                </span> {{ props.item.revenue }}
+            </template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
                     {{ langMap.tracking.create_project.more_info }} {{ item.name }}
@@ -150,7 +162,6 @@
 <script>
 import EventBus from "../../../components/EventBus";
 import _ from "lodash";
-import * as Helper from "../helper";
 
 export default {
     data() {
@@ -170,7 +181,7 @@ themeBgColor: this.$store.state.themeBgColor,
                 page: 1,
                 sortDesc: [true],
                 sortBy: ['id'],
-                itemsPerPage: Helper.getKey('itemsPerPage') ?? 10
+                itemsPerPage: this.$helpers.localStorage.getKey('itemsPerPage', 'tracking') ?? 10
             },
             footerProps: {
                 showFirstLastPage: true,
@@ -179,9 +190,9 @@ themeBgColor: this.$store.state.themeBgColor,
             headers: [
                 {text: `${this.$store.state.lang.lang_map.tracking.name}`, value: 'name'},
                 {text: `${this.$store.state.lang.lang_map.tracking.client}`, value: 'client.name'},
+                {text: ``, value: 'is_favorite'},
                 {text: `${this.$store.state.lang.lang_map.tracking.tracked}`, value: 'tracked'},
-                {text: `${this.$store.state.lang.lang_map.tracking.amount}`, value: 'amount'},
-                {text: `${this.$store.state.lang.lang_map.tracking.progress}`, value: 'progress'}
+                {text: `${this.$store.state.lang.lang_map.tracking.revenue}`, value: 'revenue'}
             ],
             project: {
                 name: '',
@@ -189,7 +200,7 @@ themeBgColor: this.$store.state.themeBgColor,
                 client: null,
                 productId: null,
                 product: null,
-                color: Helper.genRandomColor()
+                color: this.$helpers.color.genRandomColor()
             },
             colorMenu: false
         }
@@ -198,18 +209,20 @@ themeBgColor: this.$store.state.themeBgColor,
         this.debounceGetProjects = _.debounce(this.__getProjects, 1000);
         this.debounceGetProducts = _.debounce(this.__getProducts, 1000);
         this.debounceGetClients = _.debounce(this.__getClients, 1000);
-        this.options.itemsPerPage = Helper.getKey('itemsPerPage') ?? 10;
-        this.footerProps.itemsPerPage = Helper.getKey('itemsPerPage') ?? 10;
+        this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
+        this.options.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking') ?? 10;
+        this.footerProps.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking') ?? 10;
     },
     mounted() {
         this.debounceGetProducts();
         this.debounceGetClients();
+        this.debounceGetSettings();
         let self = this;
         EventBus.$on('update-theme-color', function (color) {
             self.themeBgColor = color;
         });
-        this.options.itemsPerPage = Helper.getKey('itemsPerPage');
-        this.footerProps.itemsPerPage = Helper.getKey('itemsPerPage');
+        this.options.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking');
+        this.footerProps.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking');
     },
     methods: {
         __getProjects() {
@@ -241,9 +254,12 @@ themeBgColor: this.$store.state.themeBgColor,
         __getProducts() {
             this.$store.dispatch('Products/getProductList', {});
         },
+        __getSettings() {
+            this.$store.dispatch('Tracking/getSettings');
+        },
         updateItemsCount(value) {
             this.footerProps.itemsPerPage = value
-            Helper.storeKey('itemsPerPage', value);
+            this.$helpers.localStorage.storeKey('itemsPerPage', value, 'tracking');
             this.options.page = 1
         },
         showItem(item) {
@@ -260,6 +276,9 @@ themeBgColor: this.$store.state.themeBgColor,
         createProject() {
             this.$store.dispatch('Projects/createProject', this.project);
             this.resetProject();
+        },
+        toggleFavorite(project) {
+            this.$store.dispatch('Projects/toggleFavorite', project);
         }
     },
     watch: {
@@ -295,6 +314,10 @@ themeBgColor: this.$store.state.themeBgColor,
                 borderRadius: menu ? '50%' : '4px',
                 transition: 'border-radius 200ms ease-in-out'
             }
+        },
+        currentCurrency() {
+            const settings = this.$store.getters['Tracking/getSettings'];
+            return settings.currency ?? null;
         }
     }
 }

@@ -66,7 +66,7 @@ class UserRepository
 
     public function find($id, $with = [])
     {
-        return  User::withTrashed()->where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type', 'emailSignatures', 'notificationStatuses'], $with))->first();
+        return  User::withTrashed()->where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type', 'emailSignatures', 'notificationStatuses', 'billing'], $with))->first();
     }
 
     public function create(Request $request)

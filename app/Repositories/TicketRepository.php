@@ -119,6 +119,9 @@ class TicketRepository
         if ($request->with_spam === "true") {
             $ticketResult->where('is_spam', 1);
         }
+        if ($request->only_for_user === "true") {
+            $ticketResult->where('to_company_user_id', Auth::user()->employee->id);
+        }
         if ($request->minified && $request->minified === "true") {
             return $ticketResult
                 ->with('creator.userData')
@@ -143,7 +146,8 @@ class TicketRepository
                 'product',
                 'priority',
                 'status',
-                'category'
+                'category',
+                'billedBy'
             );
         $orderedField = $request->sort_by ?? 'id';
         $orderedDirection = $request->sort_val === 'false' ? 'asc' : 'desc';
@@ -254,7 +258,8 @@ class TicketRepository
                 'histories.employee.userData',
                 'notices.employee.userData',
                 'attachments',
-                'mergedParent'
+                'mergedParent',
+                'billedBy'
             )->first()->makeVisible(['to']);
     }
 
@@ -314,6 +319,7 @@ class TicketRepository
             $ticket->name = $request->name;
             $ticket->from_entity_id = $request->from_entity_id;
             $ticket->from_entity_type = $request->from_entity_type;
+            $ticket->internal_billing_id = $request->internal_billing_id;
             $ticket->to_team_id = $this->ticketUpdateRepo->setTeamId($ticket->to_team_id, $request->to_team_id, $ticket->id);
             $ticket->due_date = $this->ticketUpdateRepo->setDueDate($ticket->due_date, $request->due_date, $ticket->id);
             $ticket->priority_id = $this->ticketUpdateRepo->setPriorityId($ticket->priority_id, $request->priority_id, $ticket->id);

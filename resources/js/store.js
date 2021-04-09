@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import EventBus from "./components/EventBus";
-import {Clients, Products, Projects, Tags, Services, Tracking, Team, Tickets, Currencies} from './modules';
+import {Clients, Products, Projects, Tags, Services, Tracking, Team, Tickets, Currencies, Languages} from './modules';
 
 Vue.use(Vuex);
 
@@ -15,7 +15,8 @@ export default new Vuex.Store({
         Tracking,
         Team,
         Tickets,
-        Currencies
+        Currencies,
+        Languages
     },
     state: {
         roles: {},
@@ -27,7 +28,8 @@ export default new Vuex.Store({
         appVersion: ''
     },
     getters: {
-        roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion]
+        roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion],
+        getLang: state => state.lang
     },
     mutations: {
         setRoles(state, roles) {

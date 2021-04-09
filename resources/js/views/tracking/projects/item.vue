@@ -39,20 +39,20 @@
                 v-model="tab"
                 :color="themeBgColor"
             >
-                <v-tab>{{ langMap.tracking.create_project.status }}</v-tab>
+<!--                <v-tab>{{ langMap.tracking.create_project.status }}</v-tab>-->
                 <v-tab>{{ langMap.tracking.create_project.settings }}</v-tab>
 
                 <v-tabs-items
                     v-model="tab"
                 >
-                    <v-tab-item>
-                        <v-alert
-                            outlined
-                            type="info"
-                        >
-                            Coming soon
-                        </v-alert>
-                    </v-tab-item>
+<!--                    <v-tab-item>-->
+<!--                        <v-alert-->
+<!--                            outlined-->
+<!--                            type="info"-->
+<!--                        >-->
+<!--                            Coming soon-->
+<!--                        </v-alert>-->
+<!--                    </v-tab-item>-->
                     <v-tab-item>
                         <v-container fluid>
                             <v-row>
@@ -136,7 +136,7 @@
                                 </v-col>
                             </v-row>
                             <v-row>
-                                <v-col cols="2" lg="1">
+                                <v-col cols="2" lg="1" class="text-right">
                                     <v-subheader class="float-right">Billable by default</v-subheader>
                                 </v-col>
                                 <v-col cols="10" lg="4" md="6">
@@ -146,19 +146,73 @@
                                     ></v-switch>
                                 </v-col>
                             </v-row>
-                            <v-row>
-                                <v-col cols="2" lg="1">
+                            <v-row class="d-flex flex-row">
+                                <v-col cols="2" lg="1" class="text-right">
                                     <v-subheader class="float-right">Project billable rate</v-subheader>
                                 </v-col>
-                                <v-col cols="2">
-                                    <v-text-field
-                                        full-width
-                                        type="number"
-                                        v-model="project.rate"
-                                        @blur="actionSave()"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="2">
+                                <div class="d-inline-flex">
+                                    <div class="d-flex flex-row">
+<!--                                        rank block-->
+                                        <div class="d-inline-flex">
+                                            <div class="d-flex flex-column mt-6">
+                                                <div class="d-inline-flex mx-2">
+                                                    <span
+                                                        class=""
+                                                        v-if="currentCurrency"
+                                                    >
+                                                        {{currentCurrency.slug}}
+                                                    </span>
+                                                    <span class="mx-2">{{ project.rate }}</span>
+                                                </div>
+                                                <v-divider></v-divider>
+                                                <div class="d-inline-flex mt-2 mx-2" v-if="project.rate_from && project.rate_from_date">
+                                                    <span
+                                                        class=""
+                                                        v-if="currentCurrency"
+                                                    >
+                                                        {{currentCurrency.slug}}
+                                                    </span>
+                                                    <span class="mx-2">{{ project.rate_from }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+<!--                                        from/to block-->
+                                        <div class="d-inline-flex flex-grow-1">
+                                            <div class="d-flex flex-column">
+                                                <div class="d-inline-flex mx-3">
+                                                    <div class="d-flex flex-column"><div class="d-inline-flex" style="min-width: 100px">From</div></div>
+                                                    <div class="d-flex flex-column"><div class="d-inline-flex" style="min-width: 100px">To</div></div>
+                                                </div>
+                                                <div class="d-inline-flex mx-3">
+                                                    <div class="d-flex flex-column">
+                                                        <div class="d-inline-flex" style="min-width: 100px">The start</div>
+                                                    </div>
+                                                    <div class="d-flex flex-column">
+                                                        <div class="d-inline-flex" style="min-width: 100px">
+                                                            <span v-if="project.rate_from && project.rate_from_date">{{ moment(project.rate_from_date).subtract(1, 'days').format('DD/MM/YYYY') }}</span>
+                                                            <span v-else>Current date</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <v-divider></v-divider>
+                                                <div class="d-inline-flex mx-3 mt-2" v-if="project.rate_from_date">
+                                                    <div class="d-flex flex-column">
+                                                        <div class="d-inline-flex" style="min-width: 100px">
+                                                            <span v-if="project.rate_from && project.rate_from_date">{{ moment(project.rate_from_date).format('DD/MM/YYYY') }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-column">
+                                                        <div class="d-inline-flex" style="min-width: 100px">
+                                                            <span v-if="project.rate_from && moment(project.rate_from_date).isBefore(moment.now())">Current date</span>
+                                                            <span v-else-if="project.rate_from">Future dates</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-inline-flex">
                                     <v-dialog
                                         v-model="rateDialog"
                                         width="500"
@@ -193,17 +247,17 @@
                                                 <v-row>
                                                     <v-col cols="6">
                                                         <v-radio-group
-                                                            v-model="rateFrom"
+                                                            v-model="project.rate_type_from"
                                                         >
                                                             <v-radio
                                                                 name="rate_from"
                                                                 label="Time entries from"
-                                                                value="1"
+                                                                :value="1"
                                                             ></v-radio>
                                                             <v-radio
                                                                 name="rate_from"
                                                                 label="All past and future time entries"
-                                                                value="2"
+                                                                :value="2"
                                                             ></v-radio>
                                                         </v-radio-group>
                                                     </v-col>
@@ -218,7 +272,7 @@
                                                         >
                                                             <template v-slot:activator="{ on, attrs }">
                                                                 <v-text-field
-                                                                    v-model="project.rate_from_date"
+                                                                    v-model="formattedDateFrom"
                                                                     label="Picker without buttons"
                                                                     prepend-icon="mdi-calendar"
                                                                     readonly
@@ -231,6 +285,7 @@
                                                                 </v-text-field>
                                                             </template>
                                                             <v-date-picker
+                                                                :min="moment().add(1, 'days').format('YYYY-MM-DD')"
                                                                 v-model="project.rate_from_date"
                                                                 @input="rateFromMenu = false"
                                                             ></v-date-picker>
@@ -245,23 +300,23 @@
                                             <v-card-actions>
                                                 <v-spacer></v-spacer>
                                                 <v-btn
-                                                    :color="themeBgColor"
+                                                    color="red"
                                                     text
-                                                    @click="rateDialog = false"
+                                                    @click="resetProject(); rateDialog = false"
                                                 >
                                                     Cancel
                                                 </v-btn>
                                                 <v-btn
-                                                    color="primary"
+                                                    color="success"
                                                     text
-                                                    @click="rateDialog = false"
+                                                    @click="actionSave(); rateDialog = false"
                                                 >
                                                     Save
                                                 </v-btn>
                                             </v-card-actions>
                                         </v-card>
                                     </v-dialog>
-                                </v-col>
+                                </div>
                             </v-row>
                         </v-container>
                     </v-tab-item>
@@ -275,13 +330,14 @@
 <script>
 import EventBus from "../../../components/EventBus";
 import moment from "moment";
+import _ from 'lodash';
 
 export default {
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
@@ -301,7 +357,8 @@ themeBgColor: this.$store.state.themeBgColor,
                 billable_by_default: false,
                 rate: null,
                 rate_from: null,
-                rate_from_date: moment()
+                rate_from_date: moment().add(1, 'days').format('YYYY-MM-DD'),
+                rate_type_from: 1
             },
             colorMenu: false,
             rateDialog: false,
@@ -316,6 +373,9 @@ themeBgColor: this.$store.state.themeBgColor,
             nameLimit: 255
         }
     },
+    created () {
+        this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
+    },
     mounted() {
         this.__getProducts();
         this.__getClients();
@@ -324,16 +384,18 @@ themeBgColor: this.$store.state.themeBgColor,
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
+        this.debounceGetSettings();
     },
     methods: {
         __getProject(projectId) {
             axios.get(`/api/tracking/projects/${projectId}`)
             .then(({data}) => {
                 if (data.success) {
-                    this.project = data.data;
+                    if (!data.data.rate_from_date) data.data.rate_from_date = moment().add(1, 'days').format('YYYY-MM-DD');
+                    this.project = {...data.data, rate_type_from: 1};
                 }
             });
         },
@@ -369,8 +431,14 @@ themeBgColor: this.$store.state.themeBgColor,
                     }
                 });
         },
+        __getSettings() {
+            this.$store.dispatch('Tracking/getSettings');
+        },
         actionSave() {
             this.__updateProjectById(this.project.id, this.project);
+        },
+        resetProject() {
+            this.__getProject(this.project.id);
         }
     },
     watch: {
@@ -410,7 +478,17 @@ themeBgColor: this.$store.state.themeBgColor,
 
                 return Object.assign({}, entry, { name })
             })
+        },
+        currentCurrency () {
+            const settings = this.$store.getters['Tracking/getSettings'];
+            return settings.currency ?? null;
+        },
+        formattedDateFrom() {
+            if (this.project.rate_from_date)
+                return moment(this.project.rate_from_date).format('YYYY-MM-DD');
+            return moment().add(1, 'days').format('YYYY-MM-DD');
         }
+
     }
 }
 </script>

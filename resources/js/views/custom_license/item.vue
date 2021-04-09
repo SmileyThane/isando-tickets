@@ -65,7 +65,7 @@
                         ></v-checkbox>
                         <v-divider></v-divider>
                         <br>
-                        <label>Connection links</label>
+                        <label>{{langMap.custom_license.connection_links}}</label>
                         <v-text-field
                             v-for="(id, key) in client.connection_links"
                             :key="'connection_links'+key"
@@ -104,7 +104,7 @@
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
-                        <label>Aliases</label>
+                        <label>{{langMap.custom_license.aliases}}</label>
                         <v-text-field
                             v-for="(id, key) in client.aliases"
                             :key="'aliases'+key"
@@ -181,7 +181,7 @@
                                                 <v-icon>mdi-account-group</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'Total users'"></v-list-item-title>
+                                                <v-list-item-title v-text="langMap.custom_license.total_users"></v-list-item-title>
                                                 <v-list-item-subtitle
                                                     v-text="license.usersAllowed"></v-list-item-subtitle>
                                             </v-list-item-content>
@@ -191,7 +191,7 @@
                                                 <v-icon>mdi-account-multiple-minus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'New users'"></v-list-item-title>
+                                                <v-list-item-title v-text="langMap.custom_license.new_users"></v-list-item-title>
                                                 <v-list-item-subtitle v-text="usersAssigned"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
@@ -200,7 +200,7 @@
                                                 <v-icon>mdi-account-multiple-plus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'Users available'"></v-list-item-title>
+                                                <v-list-item-title v-text="langMap.custom_license.users_available"></v-list-item-title>
                                                 <v-list-item-subtitle v-text="license.usersLeft"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
@@ -209,7 +209,7 @@
                                                 <v-icon>mdi-license</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'Active'"></v-list-item-title>
+                                                <v-list-item-title v-text="langMap.custom_license.active"></v-list-item-title>
                                                 <v-list-item-subtitle v-text="license.active"></v-list-item-subtitle>
                                             </v-list-item-content>
                                         </v-list-item>
@@ -218,7 +218,7 @@
                                                 <v-icon> mdi-calendar-weekend-outline</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'Trial days'"></v-list-item-title>
+                                                <v-list-item-title v-text="langMap.custom_license.trial_days"></v-list-item-title>
                                                 <v-text-field
                                                     v-if="enableToEditLicense"
                                                     v-model="license.trialPeriodDays"
@@ -264,7 +264,7 @@
                                     {{ license.active ? 'suspend' : 'renew' }}
                                 </v-btn>
                                 <div class="overline mx-2">
-                                    additional licenses
+                                    {{langMap.custom_license.additional_licenses}}
                                 </div>
                                 <v-row>
                                     <v-col md="6">
@@ -317,9 +317,9 @@
                                           class="text-left"
                                     >
                                         <strong>{{ item.name }}:</strong>
-                                        {{ 'Total users: ' + item.custom_license.ixarma_object.limits.usersAllowed }} |
-                                        {{ 'Users available: ' + item.custom_license.ixarma_object.limits.usersLeft }} |
-                                        {{ 'Active: ' + item.custom_license.ixarma_object.limits.active }}
+                                        {{ langMap.custom_license.total_users + ': ' + item.custom_license.ixarma_object.limits.usersAllowed }} |
+                                        {{ langMap.custom_license.users_available + ' + item.custom_license.ixarma_object.limits.usersLeft }} |
+                                        {{ langMap.custom_license.active + ' + item.custom_license.ixarma_object.limits.active }}
                                     </span>
                                     <strong v-else>{{ item.name }}</strong>
                                     <template v-slot:actions>
@@ -347,9 +347,8 @@
                                                 dense
                                                 flat
                                             >
-                                                <v-toolbar-title :style="`color: ${themeFgColor};`">{{
-                                                        'License Users'
-                                                    }}
+                                                <v-toolbar-title :style="`color: ${themeFgColor};`">
+                                                    {{ langMap.custom_license.license_users }}
                                                 </v-toolbar-title>
                                             </v-toolbar>
                                             <div class="card-body">
@@ -380,7 +379,6 @@
                                                                 :color="themeBgColor"
                                                                 prepend-icon="mdi-calendar"
                                                                 readonly
-
                                                             ></v-text-field>
 
                                                         </div>
@@ -398,9 +396,6 @@
                                                                 }}
                                                             </v-icon>
                                                         </v-btn>
-                                                    </template>
-                                                    <template>
-
                                                     </template>
                                                 </v-data-table>
                                             </div>
@@ -420,7 +415,7 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ 'License Users' }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.custom_license.license_users }}</v-toolbar-title>
                     </v-toolbar>
                     <div class="card-body">
                         <v-data-table
@@ -634,7 +629,7 @@
                         ></v-checkbox>
                         <v-divider></v-divider>
                         <br>
-                        <label>Connection links</label>
+                        <label>{{langMap.custom_license.connection_links}}</label>
                         <v-text-field
                             v-for="(id, key) in selectedChildClient.connection_links"
                             :key="'child_connection_links'+key"
@@ -673,7 +668,7 @@
                         <v-spacer>
                             &nbsp;
                         </v-spacer>
-                        <label>Aliases</label>
+                        <label>{{langMap.custom_license.aliases}}</label>
                         <v-text-field
                             v-for="(id, key) in selectedChildClient.aliases"
                             :key="'aliases'+key"
@@ -761,7 +756,7 @@
                                                 <v-icon>mdi-account-multiple-minus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'New users'"></v-list-item-title>
+                                                <v-list-item-title v-text="langMap.custom_license.new_users"></v-list-item-title>
                                                 <v-list-item-subtitle
                                                     v-text="childUsersAssigned"></v-list-item-subtitle>
                                             </v-list-item-content>
@@ -771,7 +766,7 @@
                                                 <v-icon>mdi-account-multiple-plus</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'Users available'"></v-list-item-title>
+                                                <v-list-item-title v-text="langMap.custom_license.users_available"></v-list-item-title>
                                                 <v-list-item-subtitle
                                                     v-text="selectedChildClientLicense.usersLeft"></v-list-item-subtitle>
                                             </v-list-item-content>
@@ -781,7 +776,7 @@
                                                 <v-icon>mdi-license</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'Active'"></v-list-item-title>
+                                                <v-list-item-title v-text="langMap.custom_license.active"></v-list-item-title>
                                                 <v-list-item-subtitle
                                                     v-text="selectedChildClientLicense.active"></v-list-item-subtitle>
                                             </v-list-item-content>
@@ -791,7 +786,7 @@
                                                 <v-icon> mdi-calendar-weekend-outline</v-icon>
                                             </v-list-item-icon>
                                             <v-list-item-content>
-                                                <v-list-item-title v-text="'Trial days'"></v-list-item-title>
+                                                <v-list-item-title v-text="langMap.custom_license.trial_days"></v-list-item-title>
                                                 <v-text-field
                                                     v-if="enableToEditChildLicense"
                                                     v-model="selectedChildClientLicense.trialPeriodDays"
@@ -837,7 +832,7 @@
                                     {{ selectedChildClientLicense.active ? 'suspend' : 'renew' }}
                                 </v-btn>
                                 <div class="overline mx-2">
-                                    additional licenses
+                                    {{langMap.custom_license.additional_licenses}}
                                 </div>
                                 <v-row>
                                     <v-col md="6">
@@ -889,15 +884,15 @@ export default {
             calendarLocale: this.$store.state.lang.locale.replace("_", "-").toLowerCase(),
             licenseUserHeaders: [
                 // {text: 'id', value: 'id'},
-                {text: `username`, value: 'username'},
-                {text: `phone`, value: 'phoneNumber', sortable: false},
-                {text: `platform`, value: 'platform', sortable: false},
-                {text: `IP`, value: 'serverIp', sortable: false},
-                {text: `Organisation`, value: 'orgPath', sortable: false},
-                {text: `licensed`, value: 'licensed', sortable: false},
-                {text: `active`, value: 'active', sortable: false},
-                {text: `expired_at`, value: 'trialExpirationAtString', sortable: false},
-                {text: `last_activation`, value: 'lastActivationChangeString', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.custom_license.username}`, value: 'username'},
+                {text: `${this.$store.state.lang.lang_map.main.phone}`, value: 'phoneNumber', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.custom_license.platform}`, value: 'platform', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.ticket.ip_address}`, value: 'serverIp'},
+                {text: `${this.$store.state.lang.lang_map.custom_license.organisation}`, value: 'orgPath'},
+                {text: `${this.$store.state.lang.lang_map.custom_license.licensed}`, value: 'licensed', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.custom_license.active}`, value: 'active', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.custom_license.expired_at}`, value: 'trialExpirationAtString', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.custom_license.last_activation}`, value: 'lastActivationChangeString', sortable: false},
             ],
             menu2: false,
             tempExpDate: null,

@@ -8,7 +8,7 @@ export default {
             const queryParams = new URLSearchParams({
                 search: search ?? ''
             });
-            axios.get(`/api/tracking/products?${queryParams.toString()}`)
+            axios.get(`/api/tracking/products?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data: products } }) => {
                     if (success) {
                         commit('GET_PRODUCTS', products)

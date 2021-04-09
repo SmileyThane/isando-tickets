@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\ClientCompanyUser;
 use App\Company;
@@ -18,7 +16,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
 
 class CompanyRepository
 {
@@ -60,9 +57,13 @@ class CompanyRepository
                 $result->where('user_id', Auth::id());
             }
             return $result->get();
-        }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type', 'employees.userData.emails.type', 'clients',
-            'products.productData', 'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type'])
-            ->first() : $company->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $company->count());
+        }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type',
+            'employees.userData.emails.type', 'clients',
+            'products.productData', 'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type',
+            'emails', 'billing', 'emails.type'])
+            ->first() :
+            $company->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
+                ->paginate($request->per_page ?? $company->count());
     }
 
     public function create(Request $request)
@@ -85,7 +86,6 @@ class CompanyRepository
             $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
             $company->logo_url = Storage::url($file);
             $company->save();
-
         }
         return $company;
     }
