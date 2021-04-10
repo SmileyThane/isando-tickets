@@ -90,7 +90,7 @@
                             label
                             small
                             :color="item.color"
-                            :text-color="item.color ? invertColor(item.color) : '#ffffff'"
+                            :text-color="item.color ? $helpers.color.invertColor(item.color) : '#ffffff'"
                         >
                         <span
                             v-if="item.id"
