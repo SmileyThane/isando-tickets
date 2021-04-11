@@ -113,7 +113,7 @@ export default {
             });
         },
         openCategory() {
-            if (localStorage.getItem('kb_category')) {
+            if (parseInt(localStorage.getItem('kb_category'))) {
                 this.$router.push('/knowledge_base?category='+localStorage.getItem('kb_category'));
             } else {
                 this.$router.push('/knowledge_base');

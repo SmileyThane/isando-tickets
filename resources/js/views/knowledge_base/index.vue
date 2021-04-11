@@ -392,7 +392,7 @@ export default {
             localStorage.setItem('kb_category', id ? id : null);
 
             let query = Object.assign({}, this.$route.query);
-            if (id) {
+            if (parseInt(id)) {
                 query.category = id;
             } else {
                 delete query.category;
