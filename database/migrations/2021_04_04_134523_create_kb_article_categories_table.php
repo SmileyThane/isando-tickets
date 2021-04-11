@@ -16,7 +16,7 @@ class CreateKbArticleCategoriesTable extends Migration
         Schema::create('kb_article_categories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->constrained('kb_categories');
-            $table->foreignId('article_id')->constrained('kb_categories');
+            $table->foreignId('article_id')->constrained('kb_articles');
             $table->timestamps();
         });
     }
