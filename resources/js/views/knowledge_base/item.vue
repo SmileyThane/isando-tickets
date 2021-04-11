@@ -95,7 +95,7 @@ export default {
                 if (response.success === true) {
                     this.article = response.data;
 
-                    if (this.article.featured_color && this.article.featured_color !== 'transparent') {
+                    if (this.article.featured_color && this.article.featured_color !== 'transparent' && this.article.featured_color !== '#00000000') {
                         if (this.$refs.card) {
                             this.$refs.card.$el.style.borderColor = this.article.featured_color;
                             this.$refs.card.$el.style.borderSize = '2px';
