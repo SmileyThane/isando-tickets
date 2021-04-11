@@ -40,7 +40,7 @@
                                 <div v-if="client.emails && client.emails.length > 0" class="mb-3">
                                     <hr class="lighten"/>
                                     <p v-for="(item, i) in client.emails" :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="localized(item.type)" class="mr-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2"
                                                 dense small v-text="item.type.icon"/>
                                         {{ item.email }}
                                     </p>
@@ -49,7 +49,7 @@
                                 <div v-if="client.phones && client.phones.length > 0">
                                     <hr class="lighten"/>
                                     <p v-for="(item, i) in client.phones" :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="localized(item.type)" class="mr-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2"
                                                 dense small v-text="item.type.icon"/>
                                         {{ item.phone }}
                                     </p>
@@ -58,21 +58,21 @@
                             <v-col cols="6">
                                 <div v-if="client.addresses && client.addresses.length > 0" class="mb-3">
                                     <p v-for="(item, i) in client.addresses" :key="item.id" class="mb-1">
-                                        <v-icon v-if="item.type" :title="localized(item.type)" class="mr-2 mb-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2 mb-2"
                                                 dense small v-text="item.type.icon"/>
 
                                         <span v-if="item.street">{{ item.street }}</span>
                                         <span v-if="item.street2">, {{ item.street2 }}</span>
                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                         <br/>{{ item.postal_code }} {{ item.city }}
-                                        <br/><span v-if="item.country">{{ localized(item.country) }}</span>
+                                        <br/><span v-if="item.country">{{ $helpers.i18n.localized(item.country) }}</span>
                                     </p>
                                 </div>
 
                                 <div v-if="client.socials && client.socials.length > 0">
                                     <hr class="lighten"/>
                                     <p v-for="(item, i) in client.socials" :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="localized(item.type)" class="mr-2"
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" class="mr-2"
                                                 dense small v-text="item.type.icon"/>
                                         {{ item.social_link }}
                                     </p>
@@ -164,7 +164,7 @@
                                                 <v-list-item-content class="mr-2">
                                                     <v-list-item-title v-text="item.email"></v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
-                                                                          v-text="localized(item.type)"/>
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editEmail(item)">mdi-pencil</v-icon>
@@ -185,7 +185,7 @@
                                                 <v-list-item-content class="mr-2">
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
-                                                                          v-text="localized(item.type)"/>
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editPhone(item)">mdi-pencil</v-icon>
@@ -231,12 +231,12 @@
                                                                         <template slot="selection" slot-scope="data">
                                                                             <v-icon left small
                                                                                     v-text="data.item.icon"></v-icon>
-                                                                            {{ localized(data.item) }}
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
                                                                             <v-icon left small
                                                                                     v-text="data.item.icon"></v-icon>
-                                                                            {{ localized(data.item) }}
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
 
                                                                     </v-select>
@@ -294,12 +294,12 @@
                                                                         <template slot="selection" slot-scope="data">
                                                                             <v-icon left small
                                                                                     v-text="data.item.icon"></v-icon>
-                                                                            {{ localized(data.item) }}
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
                                                                             <v-icon left small
                                                                                     v-text="data.item.icon"></v-icon>
-                                                                            {{ localized(data.item) }}
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -336,11 +336,11 @@
                                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                                         <br/>{{ item.postal_code }}&nbsp;&nbsp;{{ item.city }}
                                                         <br/><span v-if="item.country">{{
-                                                            localized(item.country)
+                                                            $helpers.i18n.localized(item.country)
                                                         }}</span>
                                                     </v-list-item-title>
                                                     <v-list-item-subtitle v-if="item.type"
-                                                                          v-text="localized(item.type)"/>
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
@@ -358,7 +358,7 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.social_link"/>
                                                     <v-list-item-subtitle v-if="item.type"
-                                                                          v-text="localized(item.type)"/>
+                                                                          v-text="$helpers.i18n.localized(item.type)"/>
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
@@ -432,11 +432,11 @@
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
                                                                             ({{ data.item.iso_3166_2 }})
-                                                                            {{ localized(data.item) }}
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
                                                                             ({{ data.item.iso_3166_2 }})
-                                                                            {{ localized(data.item) }}
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                     <v-select
@@ -451,12 +451,12 @@
                                                                         <template slot="selection" slot-scope="data">
                                                                             <v-icon left small
                                                                                     v-text="data.item.icon"></v-icon>
-                                                                            {{ localized(data.item) }}
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
                                                                             <v-icon left small
                                                                                     v-text="data.item.icon"></v-icon>
-                                                                            {{ localized(data.item) }}
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -513,12 +513,12 @@
                                                                         <template slot="selection" slot-scope="data">
                                                                             <v-icon left small
                                                                                     v-text="data.item.icon"></v-icon>
-                                                                            {{ localized(data.item) }}
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
                                                                             <v-icon left small
                                                                                     v-text="data.item.icon"></v-icon>
-                                                                            {{ localized(data.item) }}
+                                                                            {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -1251,11 +1251,11 @@
                                               dense item-value="id">
                                         <template slot="selection" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
-                                            {{ localized(data.item) }}
+                                            {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
-                                            {{ localized(data.item) }}
+                                            {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1294,11 +1294,11 @@
                                               dense item-value="id">
                                         <template slot="selection" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
-                                            {{ localized(data.item) }}
+                                            {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
-                                            {{ localized(data.item) }}
+                                            {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1384,10 +1384,10 @@
                                         item-value="id"
                                     >
                                         <template slot="selection" slot-scope="data">
-                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                            ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                            ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1404,11 +1404,11 @@
                                     >
                                         <template slot="selection" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
-                                            {{ localized(data.item) }}
+                                            {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
-                                            {{ localized(data.item) }}
+                                            {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1447,11 +1447,11 @@
                                               dense item-value="id">
                                         <template slot="selection" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
-                                            {{ localized(data.item) }}
+                                            {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
                                             <v-icon left small v-text="data.item.icon"></v-icon>
-                                            {{ localized(data.item) }}
+                                            {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1674,10 +1674,6 @@ export default {
         });
     },
     methods: {
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-        },
         getClient() {
             axios.get(`/api/client/${this.$route.params.id}`).then(response => {
                 response = response.data

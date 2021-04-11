@@ -43,7 +43,7 @@
                             <v-col cols="12">
                                 <v-select v-model="activeTags"  :items="$store.getters['Tags/getTags']" item-value="id" item-text="name" :label="langMap.kb.tags" hide-selected multiple small-chips append-icon="mdi-tag-multiple-outline" :color="themeBgColor" v-on:change="getArticles();">
                                     <template v-slot:selection="{ attrs, item, parent, selected }">
-                                        <v-chip small v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)" label class="ml-2" close @click:close="activeTags.splice(activeTags.indexOf(item), 1); getArticles();">
+                                        <v-chip small v-bind="attrs" :color="item.color" :text-color="invertColor(item.color)" label class="ml-2" close @click:close="syncTags(item)">
                                             {{ item.name }}
                                         </v-chip>
                                     </template>
@@ -67,7 +67,7 @@
                         <v-card outlined :class="category.id == $route.query.category ? 'parent' : ''">
                         <v-card-title>
                             <v-icon large left :color="category.icon_color" v-text="category.icon ? category.icon : 'mdi-help'" />
-                            {{ localized(category) }}
+                            {{ $helpers.i18n.localized(category) }}
                             <v-spacer></v-spacer>
                             <v-menu bottom>
                                 <template v-slot:activator="{ on }">
@@ -93,7 +93,7 @@
                             </v-menu>
                         </v-card-title>
                         <v-card-text style="height: 6em;">
-                            <p v-if="localized(category, 'description')" :tooltip="localized(category, 'description')" class="lim">{{ localized(category, 'description') }}</p>
+                            <p v-if="$helpers.i18n.localized(category, 'description')" :tooltip="$helpers.i18n.localized(category, 'description')" class="lim">{{ $helpers.i18n.localized(category, 'description') }}</p>
                             <p>
                                 {{ langMap.kb.articles }}: {{ category.articles_count }} <br/>
                                 {{ langMap.kb.categories }}: {{ category.categories_count }}
@@ -112,9 +112,9 @@
                 <v-row>
                     <v-col v-for="article in articles" :key="'a'+article.id" cols="6">
                         <v-card outlined :style="`background-color: ${article.featured_color};`">
-                            <v-img v-if="article.featured_image" height="200px" :src="article.featured_image"/>
+                            <v-img v-if="article.featured_image" height="200px" :src="article.featured_image.link"/>
                             <v-card-title>
-                                {{ localized(article) }}
+                                {{ $helpers.i18n.localized(article) }}
                                 <v-spacer></v-spacer>
                                 <v-menu bottom>
                                     <template v-slot:activator="{ on }">
@@ -145,7 +145,7 @@
                                 </v-chip-group>
                                 <p v-else>{{ langMap.kb.no_tags}}</p>
                                 <v-spacer>&nbsp;</v-spacer>
-                                <p>{{ localized(article, 'summary') }}</p>
+                                <p>{{ $helpers.i18n.localized(article, 'summary') }}</p>
                             </v-card-text>
                             <v-card-actions>
                                 <v-btn text :color="themeBgColor" v-text="langMap.kb.read_article" @click="readArticle(article.id)" />
@@ -169,7 +169,7 @@
                                             <v-icon>mdi-folder</v-icon>
                                         </template>
                                         <template v-slot:label="{ item }">
-                                            {{ localized(item) }}
+                                            {{ $helpers.i18n.localized(item) }}
                                         </template>
                                     </v-treeview>
                                 </perfect-scrollbar>
@@ -211,7 +211,7 @@
                     <v-card-text>
                         <p>
                             {{ langMap.kb.delete_category }}<br/>
-                            <b>{{ localized(categoryForm) }}</b>
+                            <b>{{ $helpers.i18n.localized(categoryForm) }}</b>
                         </p>
                     </v-card-text>
                     <v-card-actions>
@@ -226,7 +226,7 @@
                     <v-card-text>
                         <p>
                             {{ langMap.kb.delete_article }}<br/>
-                            <b>{{ localized(selectedArticle) }}</b>
+                            <b>{{ $helpers.i18n.localized(selectedArticle) }}</b>
                         </p>
                     </v-card-text>
                     <v-card-actions>
@@ -255,7 +255,6 @@
 
 <script>
 import EventBus from '../../components/EventBus';
-import * as Helper from '../tracking/helper';
 import * as _ from 'lodash';
 
 export default {
@@ -289,7 +288,7 @@ export default {
                 description: '',
                 description_de: '',
                 icon: '',
-                icon_color: '#9E9E9E',
+                icon_color: this.$store.state.themeBgColor,
                 _active: []
             },
             categoryIcons: [
@@ -314,13 +313,15 @@ export default {
             that.themeBgColor = color;
         });
 
-        this.debounceGetTags();
-        this.getCategories();
+        this.dGetCategories();
+        this.dGetArticles();
+        this.dGetTags();
         this.getCategoriesTree();
-        this.getArticles();
     },
     created() {
-        this.debounceGetTags = _.debounce(this.getTags(), 1000)
+        this.dGetTags = _.debounce(this.getTags, 1000);
+        this.dGetCategories = _.debounce(this.getCategories, 1000);
+        this.dGetArticles = _.debounce(this.getArticles, 1000);
     },
     methods: {
         checkRoleByIds(ids) {
@@ -332,17 +333,13 @@ export default {
             });
             return roleExists
         },
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-        },
         limitTo (str, count = 50) {
             if (!str) return '';
             if (String(str).length <= count) return str;
             return String(str).substring(0, count) + '...';
         },
         invertColor(hex) {
-            return Helper.invertColor(hex);
+            return this.$helpers.color.invertColor(hex);
         },
         getTags() {
             this.$store.dispatch('Tags/getTagList')
@@ -396,9 +393,10 @@ export default {
             });
         },
         openCategory(id) {
+            localStorage.setItem('kb_category', id);
             this.$route.query.category = id;
-            this.getCategories();
-            this.getArticles();
+            this.dGetCategories();
+            this.dGetArticles();
         },
         clearCategoryForm() {
             this.categoryForm = {
@@ -409,7 +407,7 @@ export default {
                 description: '',
                 description_de: '',
                 icon: '',
-                icon_color: '#9E9E9E',
+                icon_color: this.themeBgColor,
                 _active: []
             };
         },
@@ -536,6 +534,13 @@ export default {
         },
         updateCategoryColor(color) {
             this.categoryForm.icon_color = color.hex;
+        },
+        syncTags(item) {
+            let index = this.activeTags.indexOf(item.id);
+            if (index !== -1) {
+                this.activeTags.splice(index, 1);
+                this.dGetArticles();
+            }
         }
     }
 }

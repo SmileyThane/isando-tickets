@@ -190,7 +190,7 @@
                             <template v-slot:item.user_data.emails="{item}">
                                 <span v-for="email in item.user_data.emails" v-if="item.user_data.emails.length > 0">
                                     <v-icon v-if="email.type"
-                                            :title="localized(email.type)" dense
+                                            :title="$helpers.i18n.localized(email.type)" dense
                                             x-small
                                             v-text="email.type.icon"></v-icon>
                                     {{ email.email }}
@@ -322,10 +322,6 @@ themeBgColor: this.$store.state.themeBgColor,
         });
     },
     methods: {
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-        },
         getEmployees() {
             this.loading = this.themeBgColor
             // console.log(this.options);

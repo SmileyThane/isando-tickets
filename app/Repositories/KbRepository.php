@@ -66,7 +66,7 @@ class KbRepository
     }
 
     public function getArticles($category_id, $search, $search_in_text = false, $tags = []) {
-        $articles = KbArticle::whereNull('prev_id')->with('tags', 'attachments')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
+        $articles = KbArticle::with('tags', 'attachments')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC');
         if ($category_id) {
             $articles = $articles->whereHas('categories', function (Builder $query) use ($category_id) {
                 $query->where('category_id', $category_id);
@@ -80,7 +80,8 @@ class KbRepository
 
             if ($search_in_text) {
                 $articles = $articles->where(function ($query) use ($search) {
-                    $query->orWhere('content', 'like', '%' . $search . '%')->orWhere('content_de', 'like', '%' . $search . '%');
+                    $query->orWhere('keywords', 'like', '%' . $search . '%')->orWhere('keywords_de', 'like', '%' . $search . '%')
+                        ->orWhere('content', 'like', '%' . $search . '%')->orWhere('content_de', 'like', '%' . $search . '%');
                 });
             }
         }
@@ -95,11 +96,15 @@ class KbRepository
     }
 
     public function getArticle($id) {
-        return KbArticle::with('category', 'tags', 'attachments')->find($id);
+        return KbArticle::with('categories', 'tags', 'attachments')->find($id);
     }
 
-    public function createArticle($company_id, $category_id, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = []) {
-        $article = KbArticle::create(compact('company_id', 'category_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de'));
+    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent'  ) {
+        $article = KbArticle::create(compact('company_id',  'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color'));
+
+        foreach ($categories as $category) {
+            $article->categories()->attach($category);
+        }
 
         foreach ($tags as $tag) {
             if (is_object($tag)) {
@@ -117,8 +122,15 @@ class KbRepository
         return $article;
     }
 
-    public function updateArticle($id, $category_id, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = []) {
-        $article = KbArticle::updateOrCreate(compact('id'), compact('category_id', 'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de'));
+    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent' ) {
+        $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color'));
+
+        foreach ($article->categories as $category) {
+            $article->categories()->detach($category->id);
+        }
+        foreach ($categories as $category) {
+            $article->categories()->attach($category);
+        }
 
         foreach ($article->tags as $tag) {
             $article->tags()->detach($tag->id);

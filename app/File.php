@@ -11,6 +11,10 @@ class File extends Model
     protected $fillable = ['id', 'model_id', 'name', 'filepath', 'model_type', 'service_info'];
     protected $appends = ['link'];
 
+    protected $casts = [
+        'service_info' => 'array',
+    ];
+
     public function getLinkAttribute(): string
     {
         return url('/') . Storage::url($this->attributes['filepath'] . $this->attributes['name']);

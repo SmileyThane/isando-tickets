@@ -14,7 +14,7 @@ class AddServiceInfoFieldToFilesTable extends Migration
     public function up()
     {
         Schema::table('files', static function (Blueprint $table) {
-            $table->string('service_info')->nullable();
+            $table->json('service_info')->nullable();
         });
     }
 

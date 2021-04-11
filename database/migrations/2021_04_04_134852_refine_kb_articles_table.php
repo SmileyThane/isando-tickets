@@ -18,6 +18,8 @@ class RefineKbArticlesTable extends Migration
             $table->dropColumn('category_id');
             $table->boolean('is_internal')->default(0);
             $table->string('featured_color')->default('transparent');
+            $table->text('keywords')->nullable();
+            $table->text('keywords_de')->nullable();
         });
     }
 
@@ -31,8 +33,9 @@ class RefineKbArticlesTable extends Migration
         Schema::table('kb_articles', static function (Blueprint $table) {
             $table->foreignId('category_id')->nullable()->constrained('kb_categories');
             $table->dropColumn('is_internal');
-            $table->dropForeign(['prev_id']);
             $table->dropColumn('featured_color');
+            $table->dropColumn('keywords');
+            $table->dropColumn('keywords_de');
         });
     }
 }

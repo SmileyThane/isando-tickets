@@ -251,7 +251,7 @@
                                                                 v-on:change="updateCompanyLanguages(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                             </v-list-item>
                                         </v-list-item-group>
@@ -286,7 +286,7 @@
                                                 </v-list-item-action>
                                                 <v-list-item-content>
                                                     <v-list-item-title
-                                                        v-text="'('+item.iso_3166_2+') '+localized(item)"></v-list-item-title>
+                                                        v-text="'('+item.iso_3166_2+') '+$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                             </v-list-item>
                                         </v-list-item-group>
@@ -391,7 +391,7 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                                 <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
                                                     <v-icon small
@@ -480,7 +480,7 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                                 <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
                                                     <v-icon small
@@ -569,7 +569,7 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                                 <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
                                                     <v-icon small
@@ -659,7 +659,7 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                                 <v-list-item-action v-if="item.id !== 1 && checkRoleByIds([1, 2, 3])">
                                                     <v-icon small
@@ -753,7 +753,7 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                                 <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
                                                     <v-icon small
@@ -1185,10 +1185,6 @@ export default {
                     return true;
                 });
             }
-        },
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
         },
         getCountries() {
             axios.get('/api/countries/all').then(response => {

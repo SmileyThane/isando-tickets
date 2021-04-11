@@ -14,7 +14,7 @@ class KbArticle extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'company_id', 'prev_id', 'is_internal', 'featured_color'];
+    protected $fillable = ['name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'company_id', 'is_internal', 'featured_color', 'keywords', 'keywords_de'];
 
     protected $appends = ['featured_image'];
 
@@ -28,9 +28,13 @@ class KbArticle extends Model
         return $this->belongsToMany(KbCategory::class, 'kb_article_categories', 'article_id', 'category_id');
     }
 
-    public function attachments(): MorphMany
+    public function attachments($lang = null): MorphMany
     {
-        return $this->morphMany(File::class, 'model');
+        if ($lang) {
+            return $this->morphMany(File::class, 'model')->where('service_info->lang', $lang);
+        } else {
+            return $this->morphMany(File::class, 'model');
+        }
     }
 
     public function tags(): MorphToMany {
@@ -60,6 +64,11 @@ class KbArticle extends Model
 
     public function getFeaturedImageAttribute()
     {
-        return $this->attachments()->where('service_info', 'featured')->first();
+        return $this->attachments()->where('service_info->type', 'kb_featured')->first();
+    }
+
+    public function getFeaturedImagesAttribute()
+    {
+        return $this->attachments()->where('service_info->type', 'kb_featured')->orderBy('service_info->order')->get();
     }
 }

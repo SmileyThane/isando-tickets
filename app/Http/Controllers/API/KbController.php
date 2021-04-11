@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\KbArticle;
 use App\Repositories\FileRepository;
 use App\Repositories\KbRepository;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -72,7 +71,7 @@ class KbController extends Controller
 
         $article = $this->kbRepo->createArticle(
             Auth::user()->employee->companyData->id,
-            $request->category_id,
+            $request->categories ? json_decode($request->categories) : [],
             $request->name ?? '',
             $request->name_de,
             $request->summary,
@@ -80,13 +79,15 @@ class KbController extends Controller
             $request->input('content'),
             $request->content_de,
             $request->tags ? json_decode($request->tags) : [],
-            $request->is_internal,
-            $request->prev_id,
+            $request->is_internal ? 1 : 0,
+            $request->keywords,
+            $request->keywords_de,
+            $request->featured_color
         );
 
         if ($request->has('files')) {
-            foreach ($request['files'] as $file) {
-                $this->fileRepo->store($file, $article->id, KbArticle::class);
+            foreach ($request['files'] as $i => $file) {
+                $this->fileRepo->store($file, $article->id, KbArticle::class, $request['file_infos'][$i]);
 
                 $article = $article->refresh();
             }
@@ -98,19 +99,23 @@ class KbController extends Controller
     public function editArticle(Request $request, $id) {
         $article = $this->kbRepo->updateArticle(
             $id,
-            $request->category_id,
+            $request->categories ? json_decode($request->categories) : [],
       $request->name ?? '',
             $request->name_de,
             $request->summary,
             $request->summary_de,
             $request->input('content'),
             $request->content_de,
-            $request->tags ? json_decode($request->tags) : []
+            $request->tags ? json_decode($request->tags) : [],
+            $request->is_internal ? 1 : 0,
+            $request->keywords,
+            $request->keywords_de,
+            $request->featured_color
         );
 
         if ($request->has('files')) {
-            foreach ($request['files'] as $file) {
-                $this->fileRepo->store($file, $article->id, KbArticle::class);
+            foreach ($request['files'] as $i => $file) {
+                $this->fileRepo->store($file, $article->id, KbArticle::class, $request['file_infos'][$i]);
 
                 $article = $article->refresh();
             }
