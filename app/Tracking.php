@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class Tracking extends Model
@@ -89,5 +90,25 @@ class Tracking extends Model
             return round(($this->rate * $this->passed_decimal) * 100) / 100;
         }
         return 0;
+    }
+
+    public function scopeSimpleUser($query) {
+        return $query->where('user_id', '=', Auth::user()->id);
+    }
+
+    public function scopeTeamManager($query) {
+        $teams = $teams = Team::whereHas('employees', function ($query) {
+            return $query
+                ->where('company_user_id', '=', Auth::user()->employee->id)
+                ->where('is_manager', '=', true);
+        })->get();
+        return $query->SimpleUser()
+            ->orWhereIn('team_id', '=', $teams->map(function ($team) { return $team->id; }));
+    }
+
+    public function scopeCompanyAdmin($query) {
+        $company = Auth::user()->employee->companyData()->with('employees.userData')->first();
+        return $query->SimpleUser()
+            ->orWhere('company_id', '=', $company->id);
     }
 }

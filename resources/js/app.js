@@ -68,5 +68,6 @@ const app = new Vue({
         store.dispatch('getPermissions');
         store.dispatch('getThemeBgColor');
         store.dispatch('getAppVersion');
+        store.dispatch('getMainCompany');
     }
 });

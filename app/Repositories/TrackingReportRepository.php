@@ -6,7 +6,9 @@ namespace App\Repositories;
 use App\Client;
 use App\Http\Controllers\API\Tracking\PDF;
 use App\Notifications\SendTrackingReportByEmail;
+use App\Role;
 use App\Tag;
+use App\Team;
 use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
@@ -76,6 +78,26 @@ class TrackingReportRepository
     }
 
     protected function getData(Request $request) {
+
+        $hasLicensed = Auth::user()->employee->companyData->license;
+        if (!$hasLicensed) {
+            throw new \Exception('Access denied');
+        }
+
+        $tracking = Tracking::with('User.employee.assignedToTeams')
+            ->with('tags');
+
+        if (Auth::user()->employee->hasRoleId(Role::ADMIN)) {
+            // Admin
+            $tracking = $tracking->CompanyAdmin();
+        } elseif (Auth::user()->employee->hasRoleId(Role::MANAGER)) {
+            // Manager
+            $tracking = $tracking->TeamManager();
+        } else {
+            // User
+            $tracking = $tracking->SimpleUser();
+        }
+
         $this->company = Auth::user()->employee->companyData;
         $this->currency = $this->company && $this->company->currency ? $this->company->currency->slug : $this->currency;
         $sorting        = $request->sort['value'];
@@ -102,9 +124,6 @@ class TrackingReportRepository
                 }
                 return false;
             });
-
-        $tracking = Tracking::with('User.employee.assignedToTeams')
-            ->with('tags');
 
         if ($request->has('period') && isset($request->period['start'])) {
             $tracking->where('tracking.date_from', '>=', $request->period['start']);
@@ -605,7 +624,11 @@ class TrackingReportRepository
         if (isset($request->group) && $request->group['value'] === 'custom') {
             $data = $this->generate($request);
         } else {
-            $data = $this->getData($request)['tracks']->toArray();
+            if (is_array($this->getData($request)['tracks'])) {
+                $data = $this->getData($request)['tracks'];
+            } else {
+                $data = $this->getData($request)['tracks']->toArray();
+            }
         }
 
         $result = $this->prepareDataForCSV($data);

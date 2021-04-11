@@ -3,8 +3,10 @@
 
 namespace App\Repositories;
 
+use App\Role;
 use App\Service;
 use App\Serviceable;
+use App\Team;
 use App\Tracking;
 use App\TrackingProject;
 use App\TrackingLogger;
@@ -56,10 +58,67 @@ class TrackingRepository
         return true;
     }
 
+    private function acl() {
+        $isLicensed = false;
+        $roleId = null;
+        $teams = [];
+
+//        Auth::user()->employee->userData->company_id
+//        dd(Auth::user()->employee->role_names); // all roles in company
+
+        // USER ROLE
+//→ we need to have one role that has access to time tracking (just my own time tracking entries)
+//based on license purchase by the license company - when license company purchases license for time tracking,
+// everyone from the license company has access to the time tracking (their own entries)
+        $hasLicensed = Auth::user()->employee->companyData->license;
+        $company = Auth::user()->employee->companyData;
+//        dd($company->id);
+        // TEAM MANAGER
+//→ we need to be able to select who is manager in each team on the team page, possibly as a tick box in the list of members.
+// The tickbox header should have hover text "Team manager role allows view, edit and approve time tracking of the team members"
+//license company purchased the license for time tracking , AND
+//they are managers role and linked to a specific team
+        $isManager = Auth::user()->employee->hasRoleId(Role::MANAGER);
+//        $teams = Auth::user()->employee->assignedToTeams()->with('teamData')->get();
+        $teams = Team::whereHas('employees', function ($query) {
+            return $query->where('company_user_id', '=', Auth::user()->employee->id);
+        })->with('employees.employee.userData')->first();
+        $teamEmployees = $teams;
+        dd($teams);
+
+        // COMPANY ADMIN
+//→ additionally, there should be a role that can view & edit time tracking of all license company users TIME TRACKING ADMIN
+//license company purchased the license for time tracking , AND
+//has got role Time tracking Admin
+        $isAdmin = Auth::user()->employee->hasRoleId(Role::ADMIN);
+        $company = Auth::user()->employee->companyData()->with('employees.userData')->first();
+        $employees = $company;
+
+//        $employee = Auth::user()->employee->assignedToClients;//->clients->customLicense;
+        dd($company->employees->first());
+    }
+
     public function all(Request $request)
     {
-        return Auth::user()
-            ->tracking()
+
+        $hasLicensed = Auth::user()->employee->companyData->license;
+        if (!$hasLicensed) {
+            throw new \Exception('Access denied');
+        }
+
+        if (Auth::user()->employee->hasRoleId(Role::ADMIN)) {
+            // Admin
+            $tracking = Tracking::CompanyAdmin();
+        } elseif (Auth::user()->employee->hasRoleId(Role::MANAGER)) {
+            // Manager
+            $tracking = Tracking::TeamManager();
+        } else {
+            // User
+            $tracking = Tracking::SimpleUser();
+        }
+
+
+        return $tracking
             ->whereBetween('date_from', [
                 Carbon::parse($request->date_from)->startOfDay(),
                 Carbon::parse($request->date_to)->endOfDay()
@@ -96,6 +155,11 @@ class TrackingRepository
             $tracking->entity_id = $request->entity['id'];
             $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
         }
+        $tracking->company_id = Auth::user()->employee->companyData->id;
+        $team = Team::whereHas('employees', function ($query) {
+            return $query->where('company_user_id', '=', Auth::user()->employee->id);
+        })->first();
+        $tracking->team_id = $team ? $team->id : null;
         $tracking->save();
         if ($request->has('service') && !is_null($request->service)) {
             if (!is_null($request->service)) {

@@ -563,6 +563,9 @@ class LanguageSeeder extends Seeder
                             'primary' => 'Primary',
                             'version' => 'Version',
                             'cost' => 'Cost',
+                            'mark_as_manager' => 'Mark as manager',
+                            'unmark_as_manager' => 'Unmark as manager',
+                            'team_manager' => 'Team manager'
                         ],
                     'system_settings' =>
                         [
@@ -1266,6 +1269,9 @@ class LanguageSeeder extends Seeder
                             'primary' => 'Primär',
                             'version' => 'Version',
                             'cost' => 'Kosten',
+                            'mark_as_manager' => 'Als Manager markieren',
+                            'unmark_as_manager' => 'Markierung als Manager aufheben',
+                            'team_manager' => 'Team-Manager'
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',

@@ -136,4 +136,8 @@ class Company extends Model
     {
         return $this->morphMany(InternalBilling::class, 'entity');
     }
+
+    public function license() {
+        return $this->hasOne(License::class, 'company_id', 'id');
+    }
 }

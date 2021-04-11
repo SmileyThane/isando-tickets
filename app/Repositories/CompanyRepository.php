@@ -154,6 +154,9 @@ class CompanyRepository
         return $result;
     }
 
+    public function getCompanyLicense($companyId) {
+        return Company::with('license')->where('id', '=', $companyId)->first();
+    }
 
     public function attachProductCategory($name, $companyId = null, $parentId = null)
     {

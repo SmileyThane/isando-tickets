@@ -65,6 +65,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('main_company/settings', 'API\CompanyController@getSettings');
         Route::get('main_company/product_categories/tree', 'API\CompanyController@getProductCategoriesTree');
         Route::get('main_company/product_categories/flat', 'API\CompanyController@getProductCategoriesFlat');
+        Route::get('main_company/license', 'API\CompanyController@mainCompanyLicense');
 
         //employee management
         Route::get('employee', 'API\CompanyController@getIndividuals');
@@ -129,6 +130,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('team/{id}', 'API\TeamController@update');
         Route::delete('team/{id}', 'API\TeamController@delete');
         Route::post('team/employee', 'API\TeamController@attach');
+        Route::post('team/employee/manager', 'API\TeamController@toggleAsManager');
         Route::delete('team/employee/{id}', 'API\TeamController@detach');
 
         //product management

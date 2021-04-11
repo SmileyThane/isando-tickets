@@ -41,6 +41,11 @@ class CompanyController extends Controller
         return self::showResponse(true, Auth::user()->employee->companyData->logo_url);
     }
 
+    public function mainCompanyLicense(): JsonResponse
+    {
+        return self::showResponse(true, $this->companyRepo->getCompanyLicense(Auth::user()->employee->companyData->id));
+    }
+
     public function find(Request $request, $id = null): JsonResponse
     {
         $hasAccess = Auth::user()->employee->hasPermissionId([

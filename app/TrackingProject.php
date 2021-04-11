@@ -62,4 +62,18 @@ class TrackingProject extends Model
             $trackingProject->Trackers()->delete();
         });
     }
+
+    public function scopeMyTeams($query) {
+        $teams = $teams = Team::whereHas('employees', function ($query) {
+            return $query
+                ->where('company_user_id', '=', Auth::user()->employee->id)
+                ->where('is_manager', '=', true);
+        })->get();
+        return $query->whereIn('team_id', '=', $teams->map(function ($team) { return $team->id; }));
+    }
+
+    public function scopeMyCompany($query) {
+        $company = Auth::user()->employee->companyData()->with('employees.userData')->first();
+        return $query->where('company_id', '=', $company->id);
+    }
 }

@@ -36,6 +36,7 @@ import KnowledgeBaseArticle from './views/knowledge_base/item'
 import KnowledgeBaseCreate from './views/knowledge_base/create'
 import RoleManagement from './views/superadmin/roles'
 
+import store from './store';
 
 export default [
     {
@@ -239,7 +240,15 @@ export default [
         meta: {
             requiresAuth: true
         },
-        component: TrackingDashboard
+        component: TrackingDashboard,
+        beforeEnter: (to, from, next) => {
+            const company = store.state.mainCompany;
+            if (company && company.license && company.license) {
+                next();
+            } else {
+                next(from);
+            }
+        }
     },
     {
         path: '/tracking/tracker',
@@ -247,7 +256,15 @@ export default [
         meta: {
             requiresAuth: true
         },
-        component: TrackingTracker
+        component: TrackingTracker,
+        beforeEnter: (to, from, next) => {
+            const company = store.state.mainCompany;
+            if (company && company.license && company.license) {
+                next();
+            } else {
+                next(from);
+            }
+        }
     },
     {
         path: '/tracking/calendar',
@@ -255,7 +272,15 @@ export default [
         meta: {
             requiresAuth: true
         },
-        component: TrackingCalendar
+        component: TrackingCalendar,
+        beforeEnter: (to, from, next) => {
+            const company = store.state.mainCompany;
+            if (company && company.license && company.license) {
+                next();
+            } else {
+                next(from);
+            }
+        }
     },
     {
         path: '/tracking/projects',
@@ -263,7 +288,15 @@ export default [
         meta: {
             requiresAuth: true
         },
-        component: TrackingProjects
+        component: TrackingProjects,
+        beforeEnter: (to, from, next) => {
+            const company = store.state.mainCompany;
+            if (company && company.license && company.license) {
+                next();
+            } else {
+                next(from);
+            }
+        }
     },
     {
         path: '/tracking/projects/:id',
@@ -272,6 +305,14 @@ export default [
             requiresAuth: true
         },
         component: TrackingProjectItem,
+        beforeEnter: (to, from, next) => {
+            const company = store.state.mainCompany;
+            if (company && company.license && company.license) {
+                next();
+            } else {
+                next(from);
+            }
+        }
     },
     {
         path: '/tracking/reports',
@@ -279,7 +320,15 @@ export default [
         meta: {
             requiresAuth: true
         },
-        component: TrackingReports
+        component: TrackingReports,
+        beforeEnter: (to, from, next) => {
+            const company = store.state.mainCompany;
+            if (company && company.license && company.license) {
+                next();
+            } else {
+                next(from);
+            }
+        }
     },
     {
         path: '/tracking/settings',
@@ -287,7 +336,15 @@ export default [
         meta: {
             requiresAuth: true
         },
-        component: TrackingSettings
+        component: TrackingSettings,
+        beforeEnter: (to, from, next) => {
+            const company = store.state.mainCompany;
+            if (company && company.license && company.license) {
+                next();
+            } else {
+                next(from);
+            }
+        }
     },
     {
         path: '/custom_license/:id',

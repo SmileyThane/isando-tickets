@@ -236,9 +236,9 @@
                 </v-list-group>
             </v-list>
             <v-divider></v-divider>
-            <v-list dense v-if="checkRoleByIds([1,2,4,7])">
+            <v-list dense v-if="hasLicense">
                 <v-list-group
-                    v-if="checkRoleByIds([1,2,4,7])"
+                    v-if="hasLicense"
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
@@ -253,7 +253,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense"
                         link
                         style="background-color:white;"
                         to="/tracking/dashboard"
@@ -267,7 +267,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense"
                         link
                         style="background-color:white;"
                         to="/tracking/tracker"
@@ -281,7 +281,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense"
                         link
                         style="background-color:white;"
                         to="/tracking/calendar"
@@ -295,7 +295,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense"
                         link
                         style="background-color:white;"
                         to="/tracking/projects"
@@ -309,7 +309,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense"
                         link
                         style="background-color:white;"
                         to="/tracking/reports"
@@ -323,7 +323,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense"
                         link
                         style="background-color:white;"
                         to="/tracking/settings"
@@ -562,6 +562,12 @@ export default {
         changeAppTitle() {
             this.$store.state.pageName = this.langMap.sidebar[this.$route.name]
             document.title = this.firstAlias + ' | ' + this.langMap.sidebar[this.$route.name]
+        }
+    },
+    computed: {
+        hasLicense() {
+            const company = this.$store.getters['getMainCompany'];
+            return company ? company.license : null;
         }
     }
 }

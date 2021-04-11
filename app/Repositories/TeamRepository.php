@@ -103,4 +103,17 @@ class TeamRepository
         return $result;
     }
 
+    public function toggleAsManager(Request $request)
+    {
+        $teamCompanyUser = TeamCompanyUser::where(
+            [
+                'team_id' => $request->team_id,
+                'company_user_id' => $request->company_user_id
+            ]
+        )->first();
+        $teamCompanyUser->is_manager = !$teamCompanyUser->is_manager;
+        $teamCompanyUser->save();
+        return true;
+    }
+
 }
