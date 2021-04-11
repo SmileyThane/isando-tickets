@@ -28,6 +28,7 @@ class AddLangIdTagIdAtTags extends Migration
     {
         Schema::table('tags', static function (Blueprint $table) {
             $table->dropColumn('tag_id');
+            $table->dropColumn('lang');
         });
     }
 }

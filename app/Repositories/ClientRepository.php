@@ -68,7 +68,7 @@ class ClientRepository
             $clients->where(
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('short_name', 'like', $request->search . '%')
+                        ->orWhere('short_name', 'like', '%' . $request->search . '%')
                         ->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
@@ -239,16 +239,16 @@ class ClientRepository
         if ($request->search) {
             $clients->where(
                 function ($query) use ($request) {
-                    $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('description', 'like', $request->search . '%');
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
 
             $clientCompanyUsers->whereHas(
                 'employee.userData',
                 function ($query) use ($request) {
-                    $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('surname', 'like', $request->search . '%');
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('surname', 'like', '%' . $request->search . '%');
                 }
             );
         }
