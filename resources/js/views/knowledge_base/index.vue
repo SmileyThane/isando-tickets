@@ -313,15 +313,11 @@ export default {
             that.themeBgColor = color;
         });
 
-        this.dGetCategories();
-        this.dGetArticles();
-        this.dGetTags();
+        this.openCategory(this.$route.query.category);
         this.getCategoriesTree();
     },
     created() {
         this.dGetTags = _.debounce(this.getTags, 1000);
-        this.dGetCategories = _.debounce(this.getCategories, 1000);
-        this.dGetArticles = _.debounce(this.getArticles, 1000);
     },
     methods: {
         checkRoleByIds(ids) {
@@ -393,10 +389,18 @@ export default {
             });
         },
         openCategory(id) {
-            localStorage.setItem('kb_category', id);
-            this.$route.query.category = id;
-            this.dGetCategories();
-            this.dGetArticles();
+            localStorage.setItem('kb_category', id ? id : null);
+
+            let query = Object.assign({}, this.$route.query);
+            if (id) {
+                query.category = id;
+            } else {
+                delete query.category;
+            }
+            this.$router.replace({ query });
+
+            this.getCategories();
+            this.getArticles();
         },
         clearCategoryForm() {
             this.categoryForm = {
@@ -539,7 +543,7 @@ export default {
             let index = this.activeTags.indexOf(item.id);
             if (index !== -1) {
                 this.activeTags.splice(index, 1);
-                this.dGetArticles();
+                this.getArticles();
             }
         }
     }
