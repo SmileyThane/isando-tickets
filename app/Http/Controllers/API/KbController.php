@@ -113,9 +113,10 @@ class KbController extends Controller
             $request->featured_color
         );
 
+
         if ($request->has('files')) {
             foreach ($request['files'] as $i => $file) {
-                $this->fileRepo->store($file, $article->id, KbArticle::class, $request['file_infos'][$i]);
+                $this->fileRepo->store($file, $article->id, KbArticle::class, json_decode($request['file_infos'][$i]));
 
                 $article = $article->refresh();
             }
