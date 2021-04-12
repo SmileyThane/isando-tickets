@@ -87,7 +87,9 @@ class KbController extends Controller
             $request->is_internal ? 1 : 0,
             $request->keywords,
             $request->keywords_de,
-            $request->featured_color
+            $request->featured_color,
+            $request->next ? json_decode($request->next) : [],
+            $request->step_type
         );
 
         if ($request->has('files')) {
@@ -115,7 +117,9 @@ class KbController extends Controller
             $request->is_internal ? 1 : 0,
             $request->keywords,
             $request->keywords_de,
-            $request->featured_color
+            $request->featured_color,
+            $request->next ? json_decode($request->next) : [],
+            $request->step_type
         );
 
 
