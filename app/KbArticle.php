@@ -43,12 +43,12 @@ class KbArticle extends Model
 
     public function previous(): belongsToMany
     {
-        return $this->belongsToMany(KbArticle::class, 'kb_article_relations', 'next_id', 'article_id');
+        return $this->belongsToMany(KbArticle::class, 'kb_article_relations', 'next_article_id', 'article_id');
     }
 
     public function next(): belongsToMany
     {
-        return $this->belongsToMany(KbArticle::class, 'kb_article_relations', 'article_id', 'next_id');
+        return $this->belongsToMany(KbArticle::class, 'kb_article_relations', 'article_id', 'next_article_id');
     }
 
     public function delete()

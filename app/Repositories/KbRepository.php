@@ -97,8 +97,13 @@ class KbRepository
         return $articles->get();
     }
 
+    public function getAllArticles()
+    {
+        return KbArticle::select('id', 'name', 'name_de')->with('categories')->orderBy('name', 'ASC')->orderBy('name_de', 'ASC')->get();
+    }
+
     public function getArticle($id) {
-        return KbArticle::with('categories', 'tags', 'attachments')->find($id);
+        return KbArticle::with('categories', 'tags', 'attachments', 'next')->find($id);
     }
 
     public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent'  ) {

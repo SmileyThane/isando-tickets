@@ -63,6 +63,11 @@ class KbController extends Controller
         return self::showResponse(true, $this->kbRepo->getArticles($request->category_id, $request->search, $request->search_in_text, $request->tags));
     }
 
+    public function allArticles(Request $request) {
+        return self::showResponse(true, $this->kbRepo->getAllArticles());
+    }
+
+
     public function getArticle(Request $request, $id) {
         return self::showResponse(true, $this->kbRepo->getArticle($id));
     }
