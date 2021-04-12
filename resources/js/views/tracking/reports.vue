@@ -1208,7 +1208,7 @@ export default {
                     },
                     {
                         value: 'client',
-                        text: this.$store.state.lang.lang_map.tracking.report.client
+                        text: this.$store.state.lang.lang_map.tracking.report.clients
                     },
                     {
                         value: 'coworker',
@@ -1220,7 +1220,7 @@ export default {
                     // },
                     {
                         value: 'service',
-                        text: this.$store.state.lang.lang_map.tracking.report.service
+                        text: this.$store.state.lang.lang_map.tracking.report.services
                     },
                     {
                         value: 'description',
