@@ -222,19 +222,19 @@
                                                             v-on="on"
                                                             @click="resetDialog()"
                                                         >
-                                                            Add translation
+                                                            {{ langMap.tracking.settings.add_translation }}
                                                         </v-btn>
                                                     </template>
 
                                                     <v-card>
                                                         <v-card-title class="headline grey lighten-2">
-                                                            Add translation
+                                                            {{ langMap.tracking.settings.add_translation }}
                                                         </v-card-title>
 
                                                         <v-card-text>
                                                             <v-select
                                                                 :items="filterLang(item)"
-                                                                label="Language"
+                                                                :label="langMap.tracking.settings.language"
                                                                 item-text="name"
                                                                 item-value="locale"
                                                                 v-model="tagTranslateForm.lang"
@@ -254,14 +254,14 @@
                                                                 text
                                                                 @click="closeDialog(item.id)"
                                                             >
-                                                                Cancel
+                                                                {{ langMap.tracking.settings.cancel }}
                                                             </v-btn>
                                                             <v-btn
                                                                 color="success"
                                                                 text
                                                                 @click="addOrUpdateTranslate(item); closeDialog(item.id)"
                                                             >
-                                                                Add
+                                                                {{ langMap.tracking.settings.add }}
                                                             </v-btn>
                                                         </v-card-actions>
                                                     </v-card>
