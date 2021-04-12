@@ -9,10 +9,12 @@ use App\KbCategory;
 use App\File;
 use App\Tag;
 use App\Company;
+use App\Language;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Builder;
+
 
 
 class KbRepository
@@ -106,7 +108,7 @@ class KbRepository
         return KbArticle::with('categories', 'tags', 'attachments', 'next')->find($id);
     }
 
-    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent'  ) {
+    public function createArticle($company_id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1) {
         $article = KbArticle::create(compact('company_id',  'name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color'));
 
         foreach ($categories as $category) {
@@ -126,10 +128,27 @@ class KbRepository
             }
         }
 
+        foreach ($next_steps as $i => $step) {
+            $stepId = is_object($step) ? $step->id : $step;
+
+            if ($stepId == 0 ) {
+                $date = date('Y-m-d H:i:s');
+
+                $step = KbArticle::create([
+                    'company_id' => $company_id,
+                    'name' => (Language::find(1))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i+1),
+                    'name_de' => (Language::find(2))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i+1),
+                ]);
+
+                $stepId = $step->id;
+            }
+            $article->next()->attach($stepId, ['relation_type' => $step_type, 'position' => $i+1]);
+        }
+
         return $article;
     }
 
-    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent' ) {
+    public function updateArticle($id, $categories, $name, $name_de, $summary, $summary_de, $content, $content_de, $tags = [], $is_internal = 0, $keywords = null, $keywords_de = null, $featured_color = 'transparent', $next_steps = [], $step_type = 1) {
         $article = KbArticle::updateOrCreate(compact('id'), compact('name', 'name_de', 'summary', 'summary_de', 'content', 'content_de', 'is_internal', 'keywords', 'keywords_de', 'featured_color'));
 
         foreach ($article->categories as $category) {
@@ -154,6 +173,27 @@ class KbRepository
 
                 $article->tags()->attach($tag->id);
             }
+        }
+
+        foreach ($article->next as $step) {
+            $article->next()->detach($step->id);
+        }
+
+        foreach ($next_steps as $i => $step) {
+            $stepId = is_object($step) ? $step->id : $step;
+
+            if ($stepId == 0 ) {
+                $date = date('Y-m-d H:i:s');
+
+                $step = KbArticle::create([
+                    'company_id' => $article->company_id,
+                    'name' => (Language::find(1))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i+1),
+                    'name_de' => (Language::find(2))->langMap->kb->new_knowledge_name . ' ' . $date . ' ' . ($i+1),
+                ]);
+
+                $stepId = $step->id;
+            }
+            $article->next()->attach($stepId, ['relation_type' => $step_type, 'position' => $i+1]);
         }
 
         return $article;

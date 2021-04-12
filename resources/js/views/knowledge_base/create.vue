@@ -181,9 +181,9 @@
                         </v-col>
                         <v-col cols="6">
                         <v-list dense outlined>
-                            <v-list-item v-for="step in article.next" v-bind:key="step.id" dense>
+                            <v-list-item v-for="(step, index) in article.next" v-bind:key="step.id" dense>
                                 <v-list-item-content>
-                                    <v-select :items="articles" item-value="id" :color="themeBgColor" :label="langMap.kb.next_step" dense>
+                                    <v-select :items="articles" v-model="article.next[index]" item-value="id" :color="themeBgColor" :label="langMap.kb.next_step" dense :item-color="themeBgColor">
                                         <template v-slot:item="{ item }">{{ $helpers.i18n.localized(item) }}</template>
                                         <template v-slot:selection="{ item }">{{ $helpers.i18n.localized(item) }}</template>
                                     </v-select>
@@ -202,6 +202,11 @@
                         </v-col>
                     </v-row>
                 </v-card-text>
+                <v-card-actions>
+                    <v-btn text v-text="langMap.main.cancel" @click="openCategory" />
+                    <v-btn text :color="themeBgColor" v-text="langMap.main.save" @click="saveArticle(false)" />
+                    <v-btn text :color="themeBgColor" v-text="langMap.kb.save_and_close" @click="saveArticle(true)" />
+                </v-card-actions>
             </v-card>
         </v-form>
     </v-container>
@@ -374,7 +379,8 @@ export default {
             }
             formData.append('tags', JSON.stringify(this.article.tags));
             formData.append('categories', JSON.stringify(this.categories));
-            formData.append('steps', JSON.stringify(this.article.steps));
+            formData.append('next', JSON.stringify(this.article.next));
+            formData.append('step_type', JSON.stringify(this.stepType));
 
             if (this.newFeatured) {
                 formData.append('files[]', this.newFeatured);
@@ -401,6 +407,7 @@ export default {
                     response = response.data;
                     if (response.success === true) {
                         this.getArticle();
+                        this.getArticles();
 
                         this.snackbarMessage = this.langMap.kb.article_updated;
                         this.actionColor = 'success'
@@ -416,6 +423,7 @@ export default {
                     response = response.data;
                     if (response.success === true) {
                         this.getArticle();
+                        this.getArticles();
 
                         this.snackbarMessage = this.langMap.kb.article_created;
                         this.actionColor = 'success'
@@ -480,7 +488,7 @@ export default {
             this.$forceUpdate();
         },
         addStep() {
-            this.article.next.push({id: (0-Date.now()), name: this.langMap.kb.create_new_step, type: this.stepType});
+            this.article.next.push({id: 0, name: ''});
             this.$forceUpdate();
         },
         getArticles() {
