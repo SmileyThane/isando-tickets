@@ -43,16 +43,18 @@ class TrackingProjectRepository
 
     public function all(Request $request)
     {
-        $trackingProjects = TrackingProject::with('Product', 'Client');
-//        $user = Auth::user();
-//        $trackingProjects->select(
-//            DB::raw("*, IF(EXISTS(SELECT * FROM user_favorites WHERE user_id = {$user->id} AND entity_type = '" . TrackingProject::class . "' AND entity_id = tracking_projects.id), 1, 0) as is_favorite")
-//        );
-//        $trackingProjects->orderBy('is_favorite', 'desc');
+        $trackingProjects = TrackingProject::with('Product')->with(['Client' => function ($query) use ($request) {
+            if ($request->has('column') && $request->column === 'client.name' && $request->has('direction')) {
+                if ((string)$request->direction === 'true') $request->direction = 'desc';
+                if ((string)$request->direction === 'false') $request->direction = 'asc';
+                return $query->orderBy('name', $request->direction);
+            }
+        }]);
+        $trackingProjects->MyCompany();
         if ($request->has('search')) {
             $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
         }
-        if ($request->has('column') && $request->has('direction')) {
+        if ($request->has('column') && $request->get('name') === 'name' && $request->has('direction')) {
             if ((string)$request->direction === 'true') $request->direction = 'desc';
             if ((string)$request->direction === 'false') $request->direction = 'asc';
             $trackingProjects->orderBy($request->column, $request->direction);

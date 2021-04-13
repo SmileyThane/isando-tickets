@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\KbArticle;
 use App\Repositories\FileRepository;
 use App\Repositories\KbRepository;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,7 +37,8 @@ class KbController extends Controller
             $request->name_de,
             $request->description,
             $request->description_de,
-            $request->icon ?? 'mdi-help'
+            $request->icon ?? 'mdi-help',
+            $request->icon_color
         ));
     }
 
@@ -50,7 +50,8 @@ class KbController extends Controller
             $request->name_de,
             $request->description,
             $request->description_de,
-            $request->icon ?? 'mdi-help'
+            $request->icon ?? 'mdi-help',
+            $request->icon_color
         ));
     }
 
@@ -59,8 +60,13 @@ class KbController extends Controller
     }
 
     public function listArticles(Request $request) {
-        return self::showResponse(true, $this->kbRepo->getArticles($request->category_id, $request->search));
+        return self::showResponse(true, $this->kbRepo->getArticles($request->category_id, $request->search, $request->search_in_text, $request->tags));
     }
+
+    public function allArticles(Request $request) {
+        return self::showResponse(true, $this->kbRepo->getAllArticles());
+    }
+
 
     public function getArticle(Request $request, $id) {
         return self::showResponse(true, $this->kbRepo->getArticle($id));
@@ -70,19 +76,25 @@ class KbController extends Controller
 
         $article = $this->kbRepo->createArticle(
             Auth::user()->employee->companyData->id,
-            $request->category_id,
+            $request->categories ? json_decode($request->categories) : [],
             $request->name ?? '',
             $request->name_de,
             $request->summary,
             $request->summary_de,
             $request->input('content'),
             $request->content_de,
-            $request->tags ? json_decode($request->tags) : []
+            $request->tags ? json_decode($request->tags) : [],
+            $request->is_internal ? 1 : 0,
+            $request->keywords,
+            $request->keywords_de,
+            $request->featured_color,
+            $request->next ? json_decode($request->next) : [],
+            $request->step_type
         );
 
         if ($request->has('files')) {
-            foreach ($request['files'] as $file) {
-                $this->fileRepo->store($file, $article->id, KbArticle::class);
+            foreach ($request['files'] as $i => $file) {
+                $this->fileRepo->store($file, $article->id, KbArticle::class, $request['file_infos'][$i]);
 
                 $article = $article->refresh();
             }
@@ -94,19 +106,26 @@ class KbController extends Controller
     public function editArticle(Request $request, $id) {
         $article = $this->kbRepo->updateArticle(
             $id,
-            $request->category_id,
+            $request->categories ? json_decode($request->categories) : [],
       $request->name ?? '',
             $request->name_de,
             $request->summary,
             $request->summary_de,
             $request->input('content'),
             $request->content_de,
-            $request->tags ? json_decode($request->tags) : []
+            $request->tags ? json_decode($request->tags) : [],
+            $request->is_internal ? 1 : 0,
+            $request->keywords,
+            $request->keywords_de,
+            $request->featured_color,
+            $request->next ? json_decode($request->next) : [],
+            $request->step_type
         );
 
+
         if ($request->has('files')) {
-            foreach ($request['files'] as $file) {
-                $this->fileRepo->store($file, $article->id, KbArticle::class);
+            foreach ($request['files'] as $i => $file) {
+                $this->fileRepo->store($file, $article->id, KbArticle::class, json_decode($request['file_infos'][$i]));
 
                 $article = $article->refresh();
             }

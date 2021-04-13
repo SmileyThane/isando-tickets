@@ -39,7 +39,7 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                placeholder="What are you working on?"
+                                :placeholder="langMap.tracking.tracker.timer_panel_description"
                                 v-model="timerPanel.description"
                                 style="max-width: 1000px"
                             ></v-text-field>
@@ -832,6 +832,11 @@ export default {
         }
     },
     created: function () {
+        moment.updateLocale(this.$store.state.lang.short_code, {
+            week: {
+                dow: 1,
+            },
+        });
         this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
         this.debounceSave = _.debounce(this.save, 500);
         if (this.$helpers.localStorage.getKey('dateRange', 'tracking')) {

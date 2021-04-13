@@ -110,14 +110,14 @@
                             </template>
                             <template v-slot:item.email="{item}">
                                 <span v-if="item.contact_email && item.contact_email.email">
-                                    <v-icon v-if="item.contact_email.type" x-small dense v-text="item.contact_email.type.icon" :title="localized(item.contact_email.type)"></v-icon>
+                                    <v-icon v-if="item.contact_email.type" x-small dense v-text="item.contact_email.type.icon" :title="$helpers.i18n.localized(item.contact_email.type)"></v-icon>
                                     {{item.contact_email.email}}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.phone="{item}">
                                 <span v-if="item.contact_phone && item.contact_phone.phone">
-                                    <v-icon v-if="item.contact_phone.type" x-small dense v-text="item.contact_phone.type.icon" :title="localized(item.contact_phone.type)"></v-icon>
+                                    <v-icon v-if="item.contact_phone.type" x-small dense v-text="item.contact_phone.type.icon" :title="$helpers.i18n.localized(item.contact_phone.type)"></v-icon>
                                     {{item.contact_phone.phone}}
                                 </span>
                                 <span v-else>&nbsp;</span>
@@ -266,10 +266,6 @@
             });
         },
         methods: {
-            localized(item, field = 'name') {
-                let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-                return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-            },
             getClients() {
                 this.loading = this.themeBgColor
                 // console.log(this.options);

@@ -3,11 +3,13 @@ import * as dates from './dates';
 import * as time from './time';
 import * as localStorage from './localStorage';
 import * as numbers from './numbers';
+import * as i18n from './i18n';
 
 export default {
     color,
     dates,
     time,
     localStorage,
-    numbers
+    numbers,
+    i18n
 }

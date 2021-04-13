@@ -3,35 +3,32 @@
         <v-snackbar v-model="snackbar" :bottom="true" :color="actionColor" :right="true">
             {{ snackbarMessage }}
         </v-snackbar>
-        <v-card outlined>
+        <v-card outlined ref="card">
+            <v-img v-if="article.featured_image" width="100%" :src="article.featured_image.link"/>
             <v-card-title>
-                {{ localized(article) }}
+                {{ $helpers.i18n.localized(article) }}
             </v-card-title>
             <v-card-text>
-                <div v-if="article.category">
-                    <h3>{{ langMap.kb.category }} {{ localized(article.category) }}</h3>
-                    <v-spacer>&nbsp;</v-spacer>
-                </div>
-
                 <div v-if="article.tags">
                     <h4 class="mb-2">{{ langMap.kb.tags}}</h4>
                     <v-chip v-for="tag in article.tags" :key="tag.id" label small class="mr-2" v-text="tag.name" :color="tag.color" :text-color="invertColor(tag.color)"/>
                     <v-spacer>&nbsp;</v-spacer>
                 </div>
 
-                <div v-if="localized(article, 'summary')">
-                    <p class="summary pa-3 ">{{ localized(article, 'summary') }}</p>
+                <div v-if="$helpers.i18n.localized(article, 'summary')">
+                    <p ref="summary" class="summary pa-3">{{ $helpers.i18n.localized(article, 'summary') }}</p>
                     <v-spacer>&nbsp;</v-spacer>
                 </div>
 
-                <div class="content" v-html="localized(article, 'content') "/>
+                <div class="content" v-html="$helpers.i18n.localized(article, 'content') "/>
 
                 <div v-if="article.attachments && article.attachments.length > 0">
                     <v-spacer>&nbsp;</v-spacer>
+                    <hr/>
                     <h4 class="mb-2">{{ langMap.kb.attachments}}</h4>
 
                     <v-chip-group column>
-                        <v-chip v-for="attachment in article.attachments" :key="attachment.id" label outlined :color="themeBgColor" class="mr-2" @click="download(attachment.link)">
+                        <v-chip v-for="attachment in article.attachments" v-if="attachment.service_info && attachment.service_info.lang == $helpers.i18n.getCurrentLocale()" :key="attachment.id" label outlined :color="themeBgColor" class="mr-2" @click="download(attachment.link)">
                             <v-icon :color="themeBgColor" left v-text="fileIcon(attachment.name)" />
                             {{ attachment.name}}
                         </v-chip>
@@ -54,7 +51,6 @@
 
 <script>
 import EventBus from '../../components/EventBus';
-import * as Helper from '../tracking/helper';
 
 export default {
     data() {
@@ -90,18 +86,25 @@ export default {
             });
             return roleExists
         },
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-        },
         invertColor(hex) {
-            return Helper.invertColor(hex);
+            return this.$helpers.color.invertColor(hex);
         },
         getArticle() {
             axios.get(`/api/kb/article/${this.$route.params.id}`).then(response => {
                 response = response.data;
                 if (response.success === true) {
                     this.article = response.data;
+
+                    if (this.article.featured_color && this.article.featured_color !== 'transparent' && this.article.featured_color !== '#00000000') {
+                        if (this.$refs.card) {
+                            this.$refs.card.$el.style.borderColor = this.article.featured_color;
+                            this.$refs.card.$el.style.borderSize = '2px';
+                        }
+                        if (this.$refs.summary) {
+                            this.$refs.summary.style.backgroundColor = this.article.featured_color;
+                            this.$refs.summary.style.borderColor = this.article.featured_color;
+                        }
+                    }
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.errorType = 'error';
@@ -110,8 +113,8 @@ export default {
             });
         },
         openCategory() {
-            if (this.article.category_id) {
-                this.$router.push(`/knowledge_base?category=${this.article.category_id}`);
+            if (parseInt(localStorage.getItem('kb_category'))) {
+                this.$router.push('/knowledge_base?category='+localStorage.getItem('kb_category'));
             } else {
                 this.$router.push('/knowledge_base');
             }

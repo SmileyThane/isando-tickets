@@ -43,7 +43,7 @@
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
-                        <v-label :color="themeBgColor">{{langMap.notification.notification_type}}:</v-label> <span><v-icon :color="themeBgColor" small left v-text="template.type.icon"></v-icon> {{ localized(template.type) }}</span>
+                        <v-label :color="themeBgColor">{{langMap.notification.notification_type}}:</v-label> <span><v-icon :color="themeBgColor" small left v-text="template.type.icon"></v-icon> {{ $helpers.i18n.localized(template.type) }}</span>
                         <v-spacer>&nbsp;</v-spacer>
                         <v-label :color="themeBgColor">{{langMap.notification.priority}}:</v-label> <span>{{priorities[template.priority]}}</span>
                     </v-card-text>
@@ -162,10 +162,6 @@ themeBgColor: this.$store.state.themeBgColor,
         });
     },
     methods: {
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-        },
         getTemplate() {
             if (this.$route.params.id === 'create') {
                 return;

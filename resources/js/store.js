@@ -25,13 +25,18 @@ export default new Vuex.Store({
         pageName: '',
         themeFgColor: '#FFFFFF',
         themeBgColor: '#6AA75D',
-        appVersion: ''
+        appVersion: '',
+        mainCompany: null
     },
     getters: {
         roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion],
-        getLang: state => state.lang
+        getLang: state => state.lang,
+        getMainCompany: state => state.mainCompany
     },
     mutations: {
+        setMainCompany(state, mainCompany) {
+            state.mainCompany = mainCompany;
+        },
         setRoles(state, roles) {
             state.roles = roles;
         },
@@ -57,6 +62,16 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        getMainCompany({commit}) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/main_company/license').then(result => {
+                    commit('setMainCompany', result.data.data);
+                    resolve();
+                }).catch(error => {
+                    reject(error.response && error.response.data.message || 'Error.');
+                });
+            });
+        },
         getRoles({commit}) {
             return new Promise((resolve, reject) => {
                 axios.get('/api/user/roles/id').then(result => {

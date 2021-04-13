@@ -25,7 +25,7 @@ export default {
         return {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',

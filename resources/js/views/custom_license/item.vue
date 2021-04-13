@@ -1026,10 +1026,6 @@ export default {
         });
     },
     methods: {
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-        },
         getClient(id = null) {
             let isRelated = true
             if (id === null) {
