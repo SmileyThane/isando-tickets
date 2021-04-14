@@ -165,6 +165,49 @@
                     <v-btn text :color="themeBgColor" v-text="langMap.kb.save_and_close" @click="saveArticle(true)" />
                 </v-card-actions>
             </v-card>
+
+            <v-spacer>&nbsp;</v-spacer>
+
+            <v-card outlined>
+                <v-card-title>
+                    {{ langMap.kb.article_steps }}
+                </v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <v-col cols="6">
+                            <v-radio-group v-model="stepType" dense>
+                                <v-radio v-for="type in stepTypes" v-bind:key="type.id" :value="type.id" :label="type.name" :color="themeBgColor" />
+                            </v-radio-group>
+                        </v-col>
+                        <v-col cols="6">
+                        <v-list dense outlined>
+                            <v-list-item v-for="(step, index) in article.next" v-bind:key="step.id" dense>
+                                <v-list-item-content>
+                                    <v-select :items="articles" v-model="article.next[index]" item-value="id" :color="themeBgColor" :label="langMap.kb.next_step" dense :item-color="themeBgColor">
+                                        <template v-slot:item="{ item }">{{ $helpers.i18n.localized(item) }}</template>
+                                        <template v-slot:selection="{ item }">{{ $helpers.i18n.localized(item) }}</template>
+                                    </v-select>
+                                </v-list-item-content>
+                                <v-list-item-action>
+                                    <v-btn icon @click="unlinkStep(step)" class="mr-2" :color="themeBgColor"><v-icon>mdi-link-off</v-icon></v-btn>
+                                </v-list-item-action>
+                            </v-list-item>
+                            <v-list-item>
+                                <v-list-item-content v-text="langMap.kb.add_step" />
+                                <v-list-item-action>
+                                    <v-btn icon @click="addStep" :color="themeBgColor"><v-icon>mdi-plus</v-icon></v-btn>
+                                </v-list-item-action>
+                            </v-list-item>
+                        </v-list>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn text v-text="langMap.main.cancel" @click="openCategory" />
+                    <v-btn text :color="themeBgColor" v-text="langMap.main.save" @click="saveArticle(false)" />
+                    <v-btn text :color="themeBgColor" v-text="langMap.kb.save_and_close" @click="saveArticle(true)" />
+                </v-card-actions>
+            </v-card>
         </v-form>
     </v-container>
 </template>
@@ -206,7 +249,8 @@ export default {
                 featured_color: 'transparent',
                 keywords: '',
                 keywords_de: '',
-                is_internal: 0
+                is_internal: 0,
+                next: []
             },
             categories: [],
             featured: '',
@@ -215,7 +259,15 @@ export default {
             deleteAttachDlg: false,
             selectedAttachment: null,
             files: [],
-            files_de: []
+            files_de: [],
+            stepTypes: [
+                {id: 1, name: this.$store.state.lang.lang_map.kb.buttons},
+                {id: 2, name: this.$store.state.lang.lang_map.kb.links},
+                {id: 3, name: this.$store.state.lang.lang_map.kb.select},
+                {id: 4, name: this.$store.state.lang.lang_map.kb.radios},
+            ],
+            stepType: 1,
+            articles: []
         }
     },
     mounted() {
@@ -230,6 +282,7 @@ export default {
         this.dGetTags();
         this.getCategoriesTree();
         this.getArticle();
+        this.getArticles();
 
     },
     watch: {
@@ -318,7 +371,7 @@ export default {
         saveArticle(redirect = false) {
             let formData = new FormData();
             for (let key in this.article) {
-                if (key !== 'files' && key !== 'tags' && key !== 'categories' && key !== 'attachments') {
+                if (key !== 'files' && key !== 'tags' && key !== 'categories' && key !== 'attachments' && key !== 'next') {
                     if (this.article[key] != null) {
                         formData.append(key, this.article[key]);
                     }
@@ -326,6 +379,8 @@ export default {
             }
             formData.append('tags', JSON.stringify(this.article.tags));
             formData.append('categories', JSON.stringify(this.categories));
+            formData.append('next', JSON.stringify(this.article.next));
+            formData.append('step_type', JSON.stringify(this.stepType));
 
             if (this.newFeatured) {
                 formData.append('files[]', this.newFeatured);
@@ -352,6 +407,7 @@ export default {
                     response = response.data;
                     if (response.success === true) {
                         this.getArticle();
+                        this.getArticles();
 
                         this.snackbarMessage = this.langMap.kb.article_updated;
                         this.actionColor = 'success'
@@ -367,6 +423,7 @@ export default {
                     response = response.data;
                     if (response.success === true) {
                         this.getArticle();
+                        this.getArticles();
 
                         this.snackbarMessage = this.langMap.kb.article_created;
                         this.actionColor = 'success'
@@ -425,8 +482,32 @@ export default {
         },
         onFileChangeDe(files) {
             this.files_de = files;
-        }
-
+        },
+        unlinkStep(item) {
+            this.article.next.splice(this.article.next.indexOf(item), 1);
+            this.$forceUpdate();
+        },
+        addStep() {
+            this.article.next.push({id: 0, name: ''});
+            this.$forceUpdate();
+        },
+        getArticles() {
+            if (this.$route.params.id) {
+                axios.get(`/api/kb/articles/all`).then(response => {
+                    response = response.data;
+                    if (response.success === true) {
+                        this.articles = Array.from(response.data);
+                        this.articles.unshift({id: '--', name: this.langMap.kb.link_existing_articles, header: this.langMap.kb.link_existing_articles});
+                        this.articles.unshift({id: 0, name: this.langMap.kb.create_new_step});
+                        this.$forceUpdate();
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.errorType = 'error';
+                        this.alert = true;
+                    }
+                });
+            }
+        },
     }
 }
 </script>

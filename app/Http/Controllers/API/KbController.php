@@ -63,6 +63,11 @@ class KbController extends Controller
         return self::showResponse(true, $this->kbRepo->getArticles($request->category_id, $request->search, $request->search_in_text, $request->tags));
     }
 
+    public function allArticles(Request $request) {
+        return self::showResponse(true, $this->kbRepo->getAllArticles());
+    }
+
+
     public function getArticle(Request $request, $id) {
         return self::showResponse(true, $this->kbRepo->getArticle($id));
     }
@@ -82,7 +87,9 @@ class KbController extends Controller
             $request->is_internal ? 1 : 0,
             $request->keywords,
             $request->keywords_de,
-            $request->featured_color
+            $request->featured_color,
+            $request->next ? json_decode($request->next) : [],
+            $request->step_type
         );
 
         if ($request->has('files')) {
@@ -110,7 +117,9 @@ class KbController extends Controller
             $request->is_internal ? 1 : 0,
             $request->keywords,
             $request->keywords_de,
-            $request->featured_color
+            $request->featured_color,
+            $request->next ? json_decode($request->next) : [],
+            $request->step_type
         );
 
 

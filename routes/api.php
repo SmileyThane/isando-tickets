@@ -278,6 +278,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('kb/category/{id}', 'API\KbController@editCategory');
     Route::delete('kb/category/{id}', 'API\KbController@deleteCategory');
     Route::get('kb/articles', 'API\KbController@listArticles');
+    Route::get('kb/articles/all', 'API\KbController@allArticles');
     Route::get('kb/article/{id}', 'API\KbController@getArticle');
     Route::post('kb/article', 'API\KbController@addArticle');
     Route::put('kb/article/{id}', 'API\KbController@editArticle');
