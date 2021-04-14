@@ -475,12 +475,12 @@
                                                 class="pa-3"
                                                 :width="headers.find(i => i.value === 'tags').width"
                                             >
-                                                <TagBtn
+                                                <TagField
                                                     :key="row.id"
                                                     :color="themeBgColor"
                                                     v-model="row.tags"
                                                     @blur="debounceSave(row, 'tags', row.tags)"
-                                                ></TagBtn>
+                                                ></TagField>
                                             </td>
                                             <td
                                                 class="pa-3"
@@ -697,12 +697,14 @@ import moment from "moment-timezone";
 import _ from "lodash";
 import ProjectBtn from "./components/project-btn";
 import TagBtn from "./components/tag-btn";
+import TagField from "./components/tag-field";
 import TimeField from "./components/time-field";
 
 export default {
     components: {
         ProjectBtn,
         TagBtn,
+        TagField,
         TimeField
     },
     data() {
