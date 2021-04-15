@@ -11,11 +11,31 @@
 
         <template>
             <v-tabs v-model="tab">
-                <v-tab :key="1">{{ langMap.tracking.settings.services }}</v-tab>
+                <v-tab :key="1">{{ langMap.tracking.settings.general }}</v-tab>
+                <v-tab :key="2">{{ langMap.tracking.settings.services }}</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
                 <v-tab-item :key="1">
+                    <v-card flat>
+                        <v-card-text>
+                            <div class="d-flex flex-column">
+                                <div class="d-inline-flex">
+                                    <!--Column 1-->
+                                    <v-checkbox
+                                        v-model="enableTimesheet"
+                                        :label="langMap.tracking.settings.enable_timesheet"
+                                    ></v-checkbox>
+                                </div>
+                                <div class="d-inline-flex">
+                                    <!--Column 2-->
+                                </div>
+                            </div>
+                        </v-card-text>
+                    </v-card>
+                </v-tab-item>
+
+                <v-tab-item :key="2">
                     <v-card flat>
                         <v-toolbar flat>
                             <v-dialog
@@ -208,6 +228,23 @@ export default {
         },
         saveService (item) {
             this.$store.dispatch('Services/updateService', item);
+        }
+    },
+    computed: {
+        enableTimesheet: {
+            get() {
+                const { settings } = this.$store.getters['Tracking/getSettings'];
+                return settings && settings.enableTimesheet ? settings.enableTimesheet : false;
+            },
+            set(val) {
+                let { settings } = this.$store.getters['Tracking/getSettings'];
+                if (!settings) {
+                    settings = {};
+                }
+                console.log(settings);
+                settings = { ...settings, enableTimesheet: val };
+                this.$store.dispatch('Tracking/updateSettings', { settings });
+            }
         }
     }
 }

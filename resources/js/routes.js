@@ -25,6 +25,7 @@ import NotificationsHistory from './views/notify/history'
 import SingleNotificationHistory from './views/notify/sent'
 import TrackingDashboard from './views/tracking/dashboard'
 import TrackingTracker from './views/tracking/tracker'
+import TrackingTimesheet from './views/tracking/timesheet'
 import TrackingCalendar from './views/tracking/calendar'
 import TrackingProjects from './views/tracking/projects'
 import TrackingProjectItem from './views/tracking/projects/item'
@@ -257,6 +258,22 @@ export default [
             requiresAuth: true
         },
         component: TrackingTracker,
+        beforeEnter: (to, from, next) => {
+            const company = store.state.mainCompany;
+            if (company && company.license && company.license) {
+                next();
+            } else {
+                next(from);
+            }
+        }
+    },
+    {
+        path: '/tracking/timesheet',
+        name: 'tracking_timesheet',
+        meta: {
+            requiresAuth: true
+        },
+        component: TrackingTimesheet,
         beforeEnter: (to, from, next) => {
             const company = store.state.mainCompany;
             if (company && company.license && company.license) {

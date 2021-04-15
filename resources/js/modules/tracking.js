@@ -14,8 +14,8 @@ export default {
                     return success;
                 });
         },
-        updateSettings({ commit, dispatch }, { currency }) {
-            return axios.patch('/api/tracking/settings', {currency}, { retry: 5, retryDelay: 1000 })
+        updateSettings({ commit, dispatch }, { currency, settings }) {
+            return axios.patch('/api/tracking/settings', {currency, settings}, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
                         dispatch('getSettings');

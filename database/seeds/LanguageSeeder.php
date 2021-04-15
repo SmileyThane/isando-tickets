@@ -59,6 +59,7 @@ class LanguageSeeder extends Seeder
                             'tracking_settings' => 'Settings',
                             'custom_licenses' => 'Licenses',
                             'custom_license' => 'License',
+                            'tracking_timesheet' => 'Timesheet'
                         ],
                     'tracking' =>
                         [
@@ -147,7 +148,9 @@ class LanguageSeeder extends Seeder
                                 'currency' => 'Currency',
                                 'add_translation' => 'Add translation',
                                 'language' => 'Language',
-                                'add' => 'Add'
+                                'add' => 'Add',
+                                'general' => 'General',
+                                'enable_timesheet' => 'Enable timesheet'
                             ],
                             'tag_btn' => [
                                 'tags' => 'Tags',
@@ -900,6 +903,7 @@ class LanguageSeeder extends Seeder
                             'tracking_settings' => 'Settings',
                             'custom_licenses' => 'Licenses',
                             'custom_license' => 'License',
+                            'tracking_timesheet' => 'Arbeitszeittabelle'
                         ],
                         'tracking' => [
                             'name' => 'Name',
@@ -987,7 +991,9 @@ class LanguageSeeder extends Seeder
                                 'currency' => 'Währung',
                                 'add_translation' => 'Übersetzung hinzufügen',
                                 'language' => 'Sprache',
-                                'add' => 'Hinzufügen'
+                                'add' => 'Hinzufügen',
+                                'general' => 'Allgemeines',
+                                'enable_timesheet' => 'Arbeitszeittabelle aktivieren'
                             ],
                             'tag_btn' => [
                                 'tags' => 'Tags',
