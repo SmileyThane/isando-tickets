@@ -24,7 +24,7 @@ class ServiceRepository {
     }
 
     public function all(Request $request) {
-        return Service::all();
+        return Service::MyCompany()->get();
     }
 
     public function find($service_id) {

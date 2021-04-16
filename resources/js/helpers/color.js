@@ -7,13 +7,16 @@ import * as Numbers from './numbers';
  * @returns {string}
  */
 export const invertColor = (hex, bw = true) => {
-    hex = hex.substr(0, 7);
     if (hex.indexOf('#') === 0) {
         hex = hex.slice(1);
     }
+    hex = hex.substr(0, 6);
     // convert 3-digit hex to 6-digits.
     if (hex.length === 3) {
         hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    if (hex.length < 6) {
+        hex = Numbers.addZeroBefore(hex, 6);
     }
     if (hex.length !== 6) {
         throw new Error('Invalid HEX color.');

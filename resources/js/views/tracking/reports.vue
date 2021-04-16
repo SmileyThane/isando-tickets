@@ -446,14 +446,13 @@
                                         <span v-if="item.description">{{ item.description }}</span>
                                     </td>
                                     <td class="pa-2" align="right" width="10%">
-                                        <v-chip
-                                            v-for="tag in item.tags"
-                                            :key="tag.id"
-                                            :color="tag.color"
-                                            :text-color="$helpers.color.invertColor(tag.color)"
-                                            v-text="tag.name"
-                                            small
-                                        ></v-chip>
+                                        <TagField
+                                            disabled
+                                            readonly
+                                            :key="item.id"
+                                            :color="themeBgColor"
+                                            v-model="item.tags"
+                                        ></TagField>
                                     </td>
                                     <td class="pa-2" align="center" width="5%">
                                         <span v-if="item.billable">{{ langMap.tracking.report.billable }}</span>
@@ -541,19 +540,12 @@
                                                     </div>
                                                     <div class="d-flex flex-row">
                                                         <div class="d-flex-inline flex-grow-1">
-                                                            <TagBtn
+                                                            <TagField
                                                                 :key="item.id"
                                                                 :color="themeBgColor"
                                                                 v-model="editForm.tags"
-                                                            ></TagBtn>
-                                                            <v-chip
-                                                                v-if="editForm.tags"
-                                                                v-for="tag in editForm.tags"
-                                                                small
-                                                                :key="tag.id"
-                                                                :color="tag.color"
-                                                                :text-color="$helpers.color.invertColor(tag.color)"
-                                                            >{{tag.name}}</v-chip>
+                                                                width="450"
+                                                            ></TagField>
                                                         </div>
                                                     </div>
                                                     <div class="d-flex flex-row">
@@ -896,6 +888,7 @@ import DoughnutChart from "./components/doughnut-chart";
 import _ from "lodash";
 import TimeField from "./components/time-field";
 import TagBtn from "./components/tag-btn";
+import TagField from "./components/tag-field";
 import ProjectBtn from "./components/project-btn";
 
 export default {
@@ -905,6 +898,7 @@ export default {
         BarChart,
         TimeField,
         TagBtn,
+        TagField,
         ProjectBtn
     },
     data() {

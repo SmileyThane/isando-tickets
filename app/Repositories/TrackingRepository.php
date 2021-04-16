@@ -123,7 +123,7 @@ class TrackingRepository
                 Carbon::parse($request->date_from)->startOfDay(),
                 Carbon::parse($request->date_to)->endOfDay()
             ])
-            ->with('Tags')
+            ->with('Tags.Translates')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
             ->orderBy('id', 'desc')
             ->get();

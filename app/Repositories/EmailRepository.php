@@ -28,7 +28,7 @@ class EmailRepository
             ]
         );
 
-        if ($emailType === 1) {
+        if ($emailType === 1 && Auth::user()) {
             $companyId = Auth::user()->employee->companyData->id;
             $secondaryType = EmailType::where('entity_type', Company::class)->where('entity_id', $companyId)->first();
             Email::where('id', '<>', $email->id)->where('email_type', 1)->where('entity_type', $entityType)->where('entity_id', $entityId)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);

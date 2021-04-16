@@ -369,6 +369,135 @@
                     </v-card-text>
                 </v-card>
 
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.currencies }}</v-toolbar-title>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-data-table
+                            dense
+                            :headers="headers.currencies"
+                            :items="$store.getters['Currencies/getCurrencies']"
+                            :items-per-page="15"
+                            class="elevation-1"
+                        >
+                            <template v-slot:item.name="props">
+                                <v-edit-dialog
+                                    @save="saveCurrency(props.item)"
+                                    @cancel="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @close="saveCurrency(props.item)"
+                                >
+                                    {{ props.item.name }}
+                                    <template v-slot:input>
+                                        <v-text-field
+                                            v-model="props.item.name"
+                                            :label="langMap.tracking.settings.name"
+                                            :hint="langMap.tracking.settings.name"
+                                            single-line
+                                            counter
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+                            <template v-slot:item.slug="props">
+                                <v-edit-dialog
+                                    @save="saveCurrency(props.item)"
+                                    @cancel="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @close="saveCurrency(props.item)"
+                                >
+                                    {{ props.item.slug }}
+                                    <template v-slot:input>
+                                        <v-text-field
+                                            v-model="props.item.slug"
+                                            :label="langMap.tracking.settings.slug"
+                                            :hint="langMap.tracking.settings.slug"
+                                            single-line
+                                            counter
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+                            <template v-slot:item.symbol="props">
+                                <v-edit-dialog
+                                    @save="saveCurrency(props.item)"
+                                    @cancel="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @close="saveCurrency(props.item)"
+                                >
+                                    {{ props.item.symbol }}
+                                    <template v-slot:input>
+                                        <v-text-field
+                                            v-model="props.item.symbol"
+                                            :label="langMap.tracking.settings.symbol"
+                                            :hint="langMap.tracking.settings.symbol"
+                                            single-line
+                                            counter
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+                            <template v-slot:item.actions="props">
+                                <v-btn
+                                    icon
+                                    :color="themeBgColor"
+                                    @click="removeCurrency(props.item.id)"
+                                >
+                                    <v-icon>mdi-delete</v-icon>
+                                </v-btn>
+                            </template>
+                        </v-data-table>
+                        <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.tracking.settings.create_currency_title }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col class="pa-1" cols="md-4">
+                                                <v-text-field
+                                                    :label="langMap.tracking.settings.name"
+                                                    v-model="forms.currency.name"
+                                                    required
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col class="pa-1" cols="md-4">
+                                                <v-text-field
+                                                    :label="langMap.tracking.settings.slug"
+                                                    v-model="forms.currency.slug"
+                                                    required
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col class="pa-1" cols="md-4">
+                                                <v-text-field
+                                                    :label="langMap.tracking.settings.symbol"
+                                                    v-model="forms.currency.symbol"
+                                                    required
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom dark fab right small
+                                                @click="createCurrency(); dialogCurrencies = false"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -822,6 +951,250 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.tags }}</v-toolbar-title>
+
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-data-table
+                            dense
+                            :headers="headers.tags"
+                            :items="$store.getters['Tags/getTags']"
+                            :items-per-page="15"
+                            class="elevation-1"
+                            single-expand
+                            show-expand
+                        >
+                            <template v-slot:item.name="props">
+                                <v-edit-dialog
+                                    @save="saveTag(props.item)"
+                                    @cancel="saveTag(props.item)"
+                                    @open="saveTag(props.item)"
+                                    @close="saveTag(props.item)"
+                                >
+                                    {{ props.item.name }}
+                                    <template v-slot:input>
+                                        <v-text-field
+                                            v-model="props.item.name"
+                                            :label="langMap.tracking.settings.name"
+                                            :hint="langMap.tracking.settings.name"
+                                            single-line
+                                            counter
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+                            <template v-slot:item.color="props">
+                                <v-menu
+                                    v-model="colorMenu[props.item.id]"
+                                    top
+                                    nudge-bottom="105"
+                                    nudge-left="16"
+                                    :close-on-content-click="false"
+                                >
+                                    <template v-slot:activator="{ on }">
+                                        <div
+                                            v-on="on"
+                                            :style="{
+                                                    backgroundColor: props.item.color,
+                                                    cursor: 'pointer',
+                                                    height: '30px',
+                                                    width: '30px',
+                                                    borderRadius: colorMenu[props.item.id] ? '50%' : '4px',
+                                                    transition: 'border-radius 200ms ease-in-out'
+                                                }"
+                                        />
+                                    </template>
+                                    <v-card>
+                                        <v-card-text class="pa-0">
+                                            <v-color-picker
+                                                v-model="props.item.color"
+                                                flat
+                                                @input="saveTag(props.item)"
+                                            />
+                                        </v-card-text>
+                                    </v-card>
+                                </v-menu>
+
+                            </template>
+                            <template v-slot:item.actions="props">
+                                <v-btn
+                                    icon
+                                    :color="themeBgColor"
+                                    @click="removeTag(props.item.id)"
+                                >
+                                    <v-icon>mdi-delete</v-icon>
+                                </v-btn>
+                            </template>
+                            <template v-slot:expanded-item="{ headers, item }">
+                                <td :colspan="headers.length">
+                                    <v-list
+                                        dense
+                                    >
+                                        <v-list-item
+                                            v-for="translate in item.translates"
+                                            :key="translate.id"
+                                            class="d-flex flex-row"
+                                        >
+                                            <div
+                                                class="d-inline-flex flex-grow-0 mx-3"
+                                                style="min-width: 100px"
+                                            >
+                                                {{ getLangName(translate.lang) }}
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1">
+                                                <v-text-field
+                                                    class="mt-n1"
+                                                    hide-details
+                                                    dense
+                                                    v-model="translate.name"
+                                                    @blur="addOrUpdateTranslate(item, translate.lang, translate.name)"
+                                                ></v-text-field>
+                                            </div>
+                                        </v-list-item>
+                                        <v-list-item-action v-if="filterLang(item).length > 0">
+                                            <v-dialog
+                                                v-model="addTranslationDialog[item.id]"
+                                                width="500"
+                                            >
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn
+                                                        :color="themeBgColor"
+                                                        text
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                        @click="resetDialog()"
+                                                    >
+                                                        {{ langMap.tracking.settings.add_translation }}
+                                                    </v-btn>
+                                                </template>
+
+                                                <v-card>
+                                                    <v-card-title class="headline grey lighten-2">
+                                                        {{ langMap.tracking.settings.add_translation }}
+                                                    </v-card-title>
+
+                                                    <v-card-text>
+                                                        <v-select
+                                                            :items="filterLang(item)"
+                                                            :label="langMap.tracking.settings.language"
+                                                            item-text="name"
+                                                            item-value="locale"
+                                                            v-model="tagTranslateForm.lang"
+                                                        ></v-select>
+                                                        <v-text-field
+                                                            label="Tag name"
+                                                            v-model="tagTranslateForm.name"
+                                                        ></v-text-field>
+                                                    </v-card-text>
+
+                                                    <v-divider></v-divider>
+
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn
+                                                            color="error"
+                                                            text
+                                                            @click="closeDialog(item.id)"
+                                                        >
+                                                            {{ langMap.tracking.settings.cancel }}
+                                                        </v-btn>
+                                                        <v-btn
+                                                            color="success"
+                                                            text
+                                                            @click="addOrUpdateTranslate(item); closeDialog(item.id)"
+                                                        >
+                                                            {{ langMap.tracking.settings.add }}
+                                                        </v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                        </v-list-item-action>
+                                    </v-list>
+                                </td>
+                            </template>
+                        </v-data-table>
+                        <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.tracking.settings.create_tag_title }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col class="pa-1" cols="md-6">
+                                                <v-text-field
+                                                    :label="langMap.tracking.settings.name"
+                                                    v-model="forms.tags.name"
+                                                    required
+                                                ></v-text-field>
+
+                                            </v-col>
+                                            <v-col class="pa-1" cols="md-6">
+                                                <v-text-field
+                                                    v-model="forms.tags.color"
+                                                    hide-details
+                                                    class="ma-0 pa-0"
+                                                    solo
+                                                    :label="langMap.tracking.settings.color"
+                                                    required
+                                                >
+                                                    <template v-slot:append>
+                                                        <v-menu
+                                                            v-model="colorMenuCreate"
+                                                            top
+                                                            nudge-bottom="105"
+                                                            nudge-left="16"
+                                                            :close-on-content-click="false"
+                                                        >
+                                                            <template v-slot:activator="{ on }">
+                                                                <div
+                                                                    :style="{
+                                                                backgroundColor: forms.tags.color,
+                                                                cursor: 'pointer',
+                                                                height: '30px',
+                                                                width: '30px',
+                                                                borderRadius: colorMenuCreate ? '50%' : '4px',
+                                                                transition: 'border-radius 200ms ease-in-out'
+                                                            }"
+                                                                    v-on="on"
+                                                                />
+                                                            </template>
+                                                            <v-card>
+                                                                <v-card-text
+                                                                    class="pa-0"
+                                                                >
+                                                                    <v-color-picker
+                                                                        v-model="forms.tags.color"
+                                                                        flat
+                                                                    />
+                                                                </v-card-text>
+                                                            </v-card>
+                                                        </v-menu>
+                                                    </template>
+                                                </v-text-field>
+                                            </v-col>
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom dark fab right small
+                                                @click="createTag"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
             </div>
         </div>
 
@@ -876,6 +1249,7 @@
 
 <script>
 import EventBus from '../../components/EventBus';
+import _ from 'lodash';
 
 export default {
     data() {
@@ -1061,9 +1435,104 @@ export default {
                 start: 50000
             },
             employeeNumber: '',
+            headers: {
+                tags: [
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.tag_name,
+                        align: 'start',
+                        sortable: true,
+                        value: 'name',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.color,
+                        sortable: false,
+                        value: 'color',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
+                        sortable: false,
+                        value: 'actions',
+                    }
+                ],
+                services: [
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.service_name,
+                        align: 'start',
+                        sortable: true,
+                        value: 'name',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
+                        sortable: false,
+                        value: 'actions',
+                    }
+                ],
+                currencies: [
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.currency_name,
+                        align: 'start',
+                        sortable: true,
+                        value: 'name',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.currency_slug,
+                        align: 'start',
+                        sortable: true,
+                        value: 'slug',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.currency_symbol,
+                        align: 'start',
+                        sortable: true,
+                        value: 'symbol',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
+                        sortable: false,
+                        value: 'actions',
+                    }
+                ]
+            },
+            forms: {
+                tags: {
+                    name: '',
+                    color: this.$helpers.color.genRandomColor()
+                },
+                services: {
+                    name: ''
+                },
+                currency: {
+                    name: '',
+                    slug: '',
+                    symbol: ''
+                }
+            },
+            colorMenuCreate: false,
+            colorMenu: {},
+            searchService: null,
+            searchCurrency: null,
+            tagTranslateForm: {
+                lang: null,
+                name: ''
+            },
+            addTranslationDialog: {},
+            searchTag: null,
+            dialogTags: false,
+            dialogServices: false,
+            dialogCurrencies: false,
         }
     },
+    created () {
+        this.debounceGetTags = _.debounce(this.__getTags, 1000);
+        this.debounceGetServices = _.debounce(this.__getServices, 1000);
+        this.debounceGetCurrencies = _.debounce(this.__getCurrencies, 1000);
+        this.debounceGetLanguages = _.debounce(this.__getLanguages, 1000);
+    },
     mounted() {
+        this.debounceGetLanguages();
+        this.debounceGetTags();
+        this.debounceGetServices();
+        this.debounceGetCurrencies();
         this.getCompany();
         this.getCompanyLogo();
         this.getPhoneTypes();
@@ -1081,7 +1550,7 @@ export default {
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
@@ -1094,6 +1563,21 @@ export default {
         }
     },
     methods: {
+        __getLanguages() {
+            this.$store.dispatch('Languages/getLanguageList');
+        },
+        __getTags() {
+            this.$store.dispatch('Tags/getTagList', { search: this.searchTag });
+            this.$store.getters['Tags/getTags'].map(i => {
+                this.addTranslationDialog[i.id] = false;
+            });
+        },
+        __getServices() {
+            this.$store.dispatch('Services/getServicesList', { search: this.searchService });
+        },
+        __getCurrencies() {
+            this.$store.dispatch('Currencies/getCurrencyList', { search: this.searchCurrency });
+        },
         getCompany() {
             axios.get(`/api/main_company/name`).then(response => {
                 response = response.data
@@ -1703,7 +2187,133 @@ export default {
             len = len || 2;
             let zeros = new Array(len).join('0');
             return (zeros + str).slice(-len);
-        }
+        },
+        createTag() {
+            this.$store.dispatch('Tags/createTag', this.forms.tags)
+                .then(tag => {
+                    if (tag) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_created_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.resetForm();
+                    }
+                });
+        },
+        createService() {
+            this.$store.dispatch('Services/createService', this.forms.services)
+                .then(service => {
+                    if (service) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.service_created_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.resetForm();
+                    }
+                });
+        },
+        createCurrency() {
+            this.$store.dispatch('Currencies/createCurrency', this.forms.currency)
+                .then(currency => {
+                    if (currency) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_created_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.resetForm();
+                    }
+                });
+        },
+        getLangName(code) {
+            const languages = this.$store.getters['Languages/getLanguages'];
+            const foundLang = languages.find(i => i.locale === code);
+            return foundLang ? foundLang.name : code;
+        },
+        saveTag (item) {
+            this.$store.dispatch('Tags/updateTag', item);
+        },
+        saveService (item) {
+            this.$store.dispatch('Services/updateService', item);
+        },
+        saveCurrency (item) {
+            this.$store.dispatch('Currencies/updateCurrency', item);
+        },
+        removeTag(tagId) {
+            this.$store.dispatch('Tags/deleteTag', tagId)
+                .then(result => {
+                    if (result) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_deleted_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_removal_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        removeService(serviceId) {
+            this.$store.dispatch('Services/deleteService', serviceId)
+                .then(result => {
+                    if (result) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.service_deleted_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.service_removal_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        removeCurrency(currencyId) {
+            this.$store.dispatch('Currencies/removeCurrency', currencyId)
+                .then(result => {
+                    console.log(result);
+                    if (result) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_deleted_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_removal_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        filterLang(item) {
+            const languages = this.$store.getters['Languages/getLanguages'];
+            const langs = item.translates.map(t => t.lang);
+            return languages.filter(i => langs && langs.indexOf(i.locale) == -1);
+        },
+        resetForm() {
+            this.forms.tags = {
+                name: '',
+                color: this.$helpers.color.genRandomColor()
+            };
+            this.forms.services = {
+                name: ''
+            };
+            this.forms.currency = {
+                name: '',
+                slug: '',
+                symbol: ''
+            }
+        },
+        closeDialog(id) {
+            console.log(id);
+            this.addTranslationDialog[id] = false;
+        },
+        resetDialog() {
+            this.tagTranslateForm = {
+                lang: null,
+                name: ''
+            };
+        },
+        addOrUpdateTranslate(item, lang = null, name = null) {
+            this.$store.dispatch('Tags/addOrUpdateTranslate', {
+                id: item.id,
+                lang: lang ?? this.tagTranslateForm.lang,
+                name: name ?? this.tagTranslateForm.name
+            });
+        },
     }
 }
 </script>

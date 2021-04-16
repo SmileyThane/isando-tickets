@@ -7,8 +7,6 @@ use App\Client;
 use App\Http\Controllers\API\Tracking\PDF;
 use App\Notifications\SendTrackingReportByEmail;
 use App\Role;
-use App\Tag;
-use App\Team;
 use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
@@ -85,7 +83,7 @@ class TrackingReportRepository
         }
 
         $tracking = Tracking::with('User.employee.assignedToTeams')
-            ->with('tags');
+            ->with('Tags.Translates');
 
         if (Auth::user()->employee->hasRoleId(Role::ADMIN)) {
             // Admin
