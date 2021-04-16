@@ -1,6 +1,6 @@
 <template>
 
-    <v-content>
+    <v-content style="background-image: url(/login_bg.jpg); background-size: cover; height: 100vh;">
         <v-container
             class="fill-height"
             fluid
