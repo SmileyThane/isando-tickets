@@ -177,7 +177,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.plan = response.data
-                    this.registrationFrom.plan_price_id = this.$route.query.plan_price_id ?? this.plan[0].id
+                    this.registrationFrom.plan_price_id = parseInt(this.$route.query.plan_price_id) ?? this.plan[0].id
                 } else {
                     console.log('error')
                 }
