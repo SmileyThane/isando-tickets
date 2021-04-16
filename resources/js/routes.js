@@ -35,14 +35,15 @@ import KnowledgeBase from './views/knowledge_base/index'
 import KnowledgeBaseArticle from './views/knowledge_base/item'
 import KnowledgeBaseCreate from './views/knowledge_base/create'
 import RoleManagement from './views/superadmin/roles'
+import Landing from './layouts/App'
 
 import store from './store';
 
 export default [
     {
         path: '/',
-        name: 'main',
-        component: Login
+            name: 'main',
+            component: Landing
     },
     {
         path: '/login',
@@ -232,7 +233,7 @@ export default [
         meta: {
             requiresAuth: true
         },
-        redirect: { name: 'tracking_dashboard' }
+        redirect: {name: 'tracking_dashboard'}
     },
     {
         path: '/tracking/dashboard',
@@ -410,4 +411,4 @@ export default [
         },
         component: RoleManagement
     },
-];
+    ];
