@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\CompanyUser;
+use App\Currency;
 use App\Email;
 use App\Http\Controllers\Controller;
-use App\Plan;
 use App\PlanPrice;
 use App\Repositories\CompanyRepository;
 use App\Repositories\CompanyUserRepository;
@@ -105,11 +105,13 @@ class AuthController extends Controller
         return $isCompanyValid === true && $isUserValid === true && $isLicenseValid === true ? null : $errors;
     }
 
-    public function plans()
+    public function plans($groupedBy = null)
     {
+        if ($groupedBy === 'currency') {
+            return self::showResponse(true, Currency::with('planPrice.plan')->get());
+        }
         return self::showResponse(true, PlanPrice::with('plan', 'currency')->get());
     }
-
 
     public function resetPassword(Request $request)
     {
