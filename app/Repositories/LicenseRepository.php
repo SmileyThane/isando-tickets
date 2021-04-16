@@ -5,21 +5,24 @@ namespace App\Repositories;
 
 
 use App\License;
+use App\Plan;
+use App\PlanPrice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class LicenceRepository
+class LicenseRepository
 {
     public function validate($request)
     {
         $validator = Validator::make($request->all(), [
-            'plan_id' => 'required',
+            'plan_price_id' => 'required',
             'payment_description' => 'required'
         ]);
 
         if ($validator->fails()) {
             return $validator->errors();
         }
+
         return true;
     }
 
@@ -30,12 +33,17 @@ class LicenceRepository
 
     public function create(Request $request)
     {
-        $license = new License();
-        $license->plan_id = $request->plan_id;
-        $license->company_id = $request->company_id;
-        $license->payment_description = $request->payment_description;
-        $license->save();
-        return $license;
+        $plan = $this->processPayment($request->plan_price_id, $request->card_hash);
+        if ($plan) {
+            $license = new License();
+            $license->plan_id = $plan->id;
+            $license->company_id = $request->company_id;
+            $license->payment_description = $request->payment_description;
+            $license->save();
+
+            return $license;
+        }
+        return null;
     }
 
     public function update(Request $request, $id)
@@ -45,6 +53,7 @@ class LicenceRepository
             $license->$param = $value;
         }
         $license->save();
+
         return $license;
     }
 
@@ -56,6 +65,18 @@ class LicenceRepository
             $license->delete();
             $result = true;
         }
+
         return $result;
+    }
+
+    private function processPayment($planPriceId, $cardHash)
+    {
+        $planPrice = PlanPrice::find($planPriceId);
+        $plan = Plan::find($planPrice->plan_id);
+        if ($plan->is_default === 1) {
+            return $plan;
+        }
+
+        return null;
     }
 }
