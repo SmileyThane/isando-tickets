@@ -26,13 +26,17 @@
                             centered
                             color="green"
                         >
-                            <v-tab v-for="(item) in currency" v-if="item.plan_price.length > 0">{{ item.name }}</v-tab>
-                            <v-tab-item v-for="(item) in currency">
+                            <v-tab
+                                v-for="(item) in currency"
+                                :key="'tab_'+item.id"
+                                v-if="item.plan_price.length > 0"
+                            >{{ item.name }}</v-tab>
+                            <v-tab-item v-for="(item) in currency" :key="'tab_item_'+item.id">
                                 <v-container fluid>
                                     <v-row>
                                         <v-col
                                             v-for="plan_price in item.plan_price"
-                                            :key="plan_price.id"
+                                            :key="'plan_price'+plan_price.id"
                                             cols="12"
                                             md="4"
                                         >
@@ -49,9 +53,8 @@
                                                     >
                                                         mdi-credit-card-check
                                                     </v-icon>
-                                                    <span class="title font-weight-light">{{
-                                                            plan_price.plan.name
-                                                        }} ({{ item.symbol }}{{ plan_price.price }})</span>
+                                                    <span class="title font-weight-light">
+                                                        {{plan_price.plan.name }} ({{ item.symbol }}{{ plan_price.price }})</span>
                                                     <v-spacer></v-spacer>
                                                     <v-btn icon :href="'/register?plan_price_id='+plan_price.id">
                                                         <v-icon>
@@ -59,7 +62,6 @@
                                                         </v-icon>
                                                     </v-btn>
                                                 </v-card-title>
-
                                                 <v-card-text class="headline font-weight-bold">
                                                     {{ plan_price.plan.description }}
                                                 </v-card-text>
