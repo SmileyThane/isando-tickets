@@ -116,6 +116,9 @@ export default {
         };
     },
     mounted: function () {
+        if (localStorage.getItem('auth_token')) {
+            this.$router.push('tickets')
+        }
         this.getPlans()
     },
     methods: {
