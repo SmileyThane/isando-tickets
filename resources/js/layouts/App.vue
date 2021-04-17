@@ -26,7 +26,7 @@
                             centered
                             color="green"
                         >
-                            <v-tab v-for="(item) in currency">{{ item.name }}</v-tab>
+                            <v-tab v-for="(item) in currency" v-if="item.plan_price.length > 0">{{ item.name }}</v-tab>
                             <v-tab-item v-for="(item) in currency">
                                 <v-container fluid>
                                     <v-row>
