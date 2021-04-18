@@ -5,16 +5,16 @@ export default {
         params: {}
     },
     actions: {
-        getTimesheet({ commit }, { start, end, project = 0, type = 0 }) {
+        getTimesheet({ commit }, { start, end }) {
             const queryParams = new URLSearchParams({
-                start, end, project, type
+                start, end
             });
             commit('SET_TIMESHEET', []);
             return axios.get(`/api/tracking/timesheet?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
                         commit('SET_TIMESHEET', data);
-                        commit('SET_PARAMS', { start, end, project, type });
+                        commit('SET_PARAMS', { start, end });
                     }
                     return success;
                 });

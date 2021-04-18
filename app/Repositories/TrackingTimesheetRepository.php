@@ -17,21 +17,21 @@ class TrackingTimesheetRepository
     }
 
     public function all(Request $request) {
-        $query = TrackingTimesheet::with('Project')
+        $query = TrackingTimesheet::with('Project.Client')
             ->with(['Times' => function ($q) {
                 $q->orderBy('date', 'asc');
             }]);
-        if ($request->has('project') && !in_array($request->get('project', "0"), ["0", "null"])) {
-            $query->where('project_id', '=', $request->get('project', null));
-        }
-        if ($request->has('type')) {
-            switch ($request->get('type', '0')) {
-                case '0': $query->where('status', '=', TrackingTimesheet::STATUS_TRACKED); break;
-                case '1': $query->where('status', '=', TrackingTimesheet::STATUS_PENDING); break;
-                case '2': $query->where('status', '=', TrackingTimesheet::STATUS_UNSUBMITTED); break;
-                case '3': $query->where('status', '=', TrackingTimesheet::STATUS_ARCHIVED); break;
-            }
-        }
+//        if ($request->has('project') && !in_array($request->get('project', "0"), ["0", "null"])) {
+//            $query->where('project_id', '=', $request->get('project', null));
+//        }
+//        if ($request->has('type')) {
+//            switch ($request->get('type', '0')) {
+//                case '0': $query->where('status', '=', TrackingTimesheet::STATUS_TRACKED); break;
+//                case '1': $query->where('status', '=', TrackingTimesheet::STATUS_PENDING); break;
+//                case '2': $query->where('status', '=', TrackingTimesheet::STATUS_UNSUBMITTED); break;
+//                case '3': $query->where('status', '=', TrackingTimesheet::STATUS_ARCHIVED); break;
+//            }
+//        }
 //        dd($query->toSql(), $query->getBindings());
         return $query
             ->where('user_id', '=', Auth::user()->id)

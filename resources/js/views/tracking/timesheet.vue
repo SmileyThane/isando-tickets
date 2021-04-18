@@ -13,6 +13,7 @@
             <v-btn-toggle
                 dense
                 v-model="typeOfItems"
+                :background-color="themeBgColor"
             >
                 <v-btn>
                     {{ langMap.tracking.timesheet.time_tracked }}
@@ -51,7 +52,6 @@
                     dense
                     style="max-width: 200px"
                     clearable
-                    @input="debounceGetTimesheet()"
                 ></v-select>
             </div>
             <div class="d-inline-flex flex-grow-1 mx-4">
@@ -59,7 +59,7 @@
                     <div class="d-inline-flex">
                         <v-btn
                             icon
-                            @click="date = moment(date).subtract(1, 'days').format(dateFormat); debounceGetTimesheet()"
+                            @click="date = moment(date).subtract(1, 'days').format(dateFormat)"
                         >
                             <v-icon>mdi-chevron-left</v-icon>
                         </v-btn>
@@ -89,7 +89,7 @@
                                 v-model="date"
                                 no-title
                                 first-day-of-week="1"
-                                @input="menuDate = false; debounceGetTimesheet()"
+                                @input="menuDate = false"
                             >
                             </v-date-picker>
                         </v-menu>
@@ -97,7 +97,7 @@
                     <div class="d-inline-flex">
                         <v-btn
                             icon
-                            @click="date = moment(date).add(1, 'days').format(dateFormat); debounceGetTimesheet()"
+                            @click="date = moment(date).add(1, 'days').format(dateFormat)"
                         >
                             <v-icon>mdi-chevron-right</v-icon>
                         </v-btn>
@@ -131,6 +131,9 @@
             :headers="dailyHeaders"
             show-select
             single-select
+            :loading="loading"
+            loading-text="Loading... Please wait"
+            v-model="selected"
         >
             <template v-slot:footer>
                 213
@@ -141,35 +144,38 @@
             :headers="weeklyHeaders"
             show-select
             single-select
-            :items="$store.getters['Timesheet/getTimesheet']"
+            :items="getTimesheet"
+            :loading="loading"
+            loading-text="Loading... Please wait"
+            v-model="selected"
         >
             <template v-slot:header.mon="{ header }">
                 {{header.text}}<br>
-                {{header.time}}
+                {{$helpers.time.convertSecToTime(header.time)}}
             </template>
             <template v-slot:header.tue="{ header }">
                 {{header.text}}<br>
-                {{header.time}}
+                {{$helpers.time.convertSecToTime(header.time)}}
             </template>
             <template v-slot:header.wed="{ header }">
                 {{header.text}}<br>
-                {{header.time}}
+                {{$helpers.time.convertSecToTime(header.time)}}
             </template>
             <template v-slot:header.thu="{ header }">
                 {{header.text}}<br>
-                {{header.time}}
+                {{$helpers.time.convertSecToTime(header.time)}}
             </template>
             <template v-slot:header.fri="{ header }">
                 {{header.text}}<br>
-                {{header.time}}
+                {{$helpers.time.convertSecToTime(header.time)}}
             </template>
             <template v-slot:header.sat="{ header }">
                 {{header.text}}<br>
-                {{header.time}}
+                {{$helpers.time.convertSecToTime(header.time)}}
             </template>
             <template v-slot:header.sun="{ header }">
                 {{header.text}}<br>
-                {{header.time}}
+                {{$helpers.time.convertSecToTime(header.time)}}
             </template>
             <template v-slot:footer="{ props, on, headers, widths }">
                 <v-spacer>&nbsp;</v-spacer>
@@ -273,8 +279,14 @@
                     </div>
                 </div>
             </template>
+            <template v-slot:item.project.name="{ isMobile, item, header, value }">
+                <span v-if="item.project">
+                    <span>{{ item.project.name }}</span> / <span>{{ item.project.client.name }}</span>
+                </span>
+            </template>
             <template v-slot:item.mon="{ isMobile, item, header, value }">
-                <span v-if="item.times && item.times[0]">
+                <template v-if="typeOfItems === 0">
+                    <span v-if="item.times && item.times[0]">
                     <TimeField
                         v-model="moment(item.times[0].dateTime).format()"
                         style="max-width: 100px"
@@ -282,9 +294,14 @@
                         format="HH:mm"
                     ></TimeField>
                 </span>
+                </template>
+                <template v-else>
+                    {{ moment(item.times[0].dateTime).format('HH:mm') }}
+                </template>
             </template>
             <template v-slot:item.tue="{ isMobile, item, header, value }">
-                <span v-if="item.times && item.times[1]">
+                <template v-if="typeOfItems === 0">
+                    <span v-if="item.times && item.times[1]">
                     <TimeField
                         v-model="moment(item.times[1].dateTime).format()"
                         style="max-width: 100px"
@@ -292,9 +309,14 @@
                         format="HH:mm"
                     ></TimeField>
                 </span>
+                </template>
+                <template v-else>
+                    {{ moment(item.times[1].dateTime).format('HH:mm') }}
+                </template>
             </template>
             <template v-slot:item.wed="{ isMobile, item, header, value }">
-                <span v-if="item.times && item.times[2]">
+                <template v-if="typeOfItems === 0">
+                    <span v-if="item.times && item.times[2]">
                     <TimeField
                         v-model="moment(item.times[2].dateTime).format()"
                         style="max-width: 100px"
@@ -302,29 +324,44 @@
                         format="HH:mm"
                     ></TimeField>
                 </span>
+                </template>
+                <template v-else>
+                    {{ moment(item.times[2].dateTime).format('HH:mm') }}
+                </template>
             </template>
             <template v-slot:item.thu="{ isMobile, item, header, value }">
-                <span v-if="item.times && item.times[3]">
-                    <TimeField
-                        v-model="moment(item.times[3].dateTime).format()"
-                        style="max-width: 100px"
-                        placeholder="hh:mm"
-                        format="HH:mm"
-                    ></TimeField>
-                </span>
+                <template v-if="typeOfItems === 0">
+                    <span v-if="item.times && item.times[3]">
+                        <TimeField
+                            v-model="moment(item.times[3].dateTime).format()"
+                            style="max-width: 100px"
+                            placeholder="hh:mm"
+                            format="HH:mm"
+                        ></TimeField>
+                    </span>
+                </template>
+                <template v-else>
+                    {{ moment(item.times[3].dateTime).format('HH:mm') }}
+                </template>
             </template>
             <template v-slot:item.fri="{ isMobile, item, header, value }">
-                <span v-if="item.times && item.times[4]">
-                    <TimeField
-                        v-model="moment(item.times[4].dateTime).format()"
-                        style="max-width: 100px"
-                        placeholder="hh:mm"
-                        format="HH:mm"
-                    ></TimeField>
-                </span>
+                <template v-if="typeOfItems === 0">
+                    <span v-if="item.times && item.times[4]">
+                        <TimeField
+                            v-model="moment(item.times[4].dateTime).format()"
+                            style="max-width: 100px"
+                            placeholder="hh:mm"
+                            format="HH:mm"
+                        ></TimeField>
+                    </span>
+                </template>
+                <template v-else>
+                    {{ moment(item.times[4].dateTime).format('HH:mm') }}
+                </template>
             </template>
             <template v-slot:item.sat="{ isMobile, item, header, value }">
-                <span v-if="item.times && item.times[5]">
+                <template v-if="typeOfItems === 0">
+                    <span v-if="item.times && item.times[5]">
                     <TimeField
                         v-model="moment(item.times[5].dateTime).format()"
                         style="max-width: 100px"
@@ -332,28 +369,54 @@
                         format="HH:mm"
                     ></TimeField>
                 </span>
+                </template>
+                <template v-else>
+                    {{ moment(item.times[5].dateTime).format('HH:mm') }}
+                </template>
             </template>
             <template v-slot:item.sun="{ isMobile, item, header, value }">
-                <span v-if="item.times && item.times[6]">
-                    <TimeField
-                        v-model="moment(item.times[6].dateTime).format()"
-                        style="max-width: 100px"
-                        placeholder="hh:mm"
-                        format="HH:mm"
-                    ></TimeField>
-                </span>
+                <template v-if="typeOfItems === 0">
+                    <span v-if="item.times && item.times[6]">
+                        <TimeField
+                            v-model="moment(item.times[6].dateTime).format()"
+                            style="max-width: 100px"
+                            placeholder="hh:mm"
+                            format="HH:mm"
+                        ></TimeField>
+                    </span>
+                </template>
+                <template v-else>
+                    {{ moment(item.times[6].dateTime).format('HH:mm') }}
+                </template>
             </template>
             <template v-slot:item.total="{ isMobile, item, header, value }">
-                <span v-if="item.times && item.times[6]">
-                    <TimeField
-                        v-model="moment(item.times[6].dateTime).format()"
-                        style="max-width: 100px"
-                        placeholder="hh:mm"
-                        format="HH:mm"
-                    ></TimeField>
+                <span v-if="item.totalTime">
+                    {{ $helpers.time.convertSecToTime(item.totalTime, false) }}
                 </span>
+                <span v-else>00:00</span>
             </template>
         </v-data-table>
+
+        <v-toolbar dense flat style="background-color: #f0f0f0;
+    border-color: #f0f0f0;">
+            <v-btn
+                v-if="selected.length"
+                color="error"
+            >
+                Remove selected
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+                :color="themeBgColor"
+                :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+            >
+                {{ langMap.tracking.timesheet.submit_for_approval }}
+            </v-btn>
+
+            <span class="mx-4">
+                Total time: {{ $helpers.time.convertSecToTime(totalTime, false) }} hrs
+            </span>
+        </v-toolbar>
     </v-container>
 </template>
 
@@ -397,7 +460,9 @@ export default {
                 fri: moment().startOf('days').format(),
                 sat: moment().startOf('days').format(),
                 sun: moment().startOf('days').format()
-            }
+            },
+            loading: false,
+            selected: []
         }
     },
     created () {
@@ -423,12 +488,12 @@ export default {
         this.resetTimesheet();
     },
     methods: {
-        _getTimesheet() {
-            this.$store.dispatch('Timesheet/getTimesheet', {
-                ...this.dateRange,
-                project: this.filterProject,
-                type: this.typeOfItems
+        async _getTimesheet() {
+            this.loading = true;
+            await this.$store.dispatch('Timesheet/getTimesheet', {
+                ...this.dateRange
             });
+            this.loading = false;
             this.resetTimesheet();
         },
         _getProjects() {
@@ -452,6 +517,7 @@ export default {
             }
         },
         resetTimesheet() {
+            this.selected = [];
             this.form = {
                 project: null,
                 mon: moment(this.periodStart).startOf('days').format(),
@@ -479,7 +545,7 @@ export default {
                     ? moment(this.date).endOf('weeks').format(this.dateFormat)
                     : moment(this.date).endOf('days').format(this.dateFormat);
         },
-        typeOfItems () {
+        'dateRange.start' () {
             this.debounceGetTimesheet();
         }
     },
@@ -508,7 +574,7 @@ export default {
         },
         weeklyHeaders () {
             let days = [0,0,0,0,0,0,0];
-            this.$store.getters['Timesheet/getTimesheet'].map(timesheet => {
+            this.getTimesheet.map(timesheet => {
                 for (let i = 0; i < 7; i++) {
                     days[i] += this.timeBetween(timesheet.times[i].dateTime);
                 }
@@ -526,7 +592,7 @@ export default {
                     value: 'mon',
                     width: '10%',
                     sortable: false,
-                    time: this.$helpers.time.convertSecToTime(days[0], false)
+                    time: days[0]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.tue,
@@ -534,7 +600,7 @@ export default {
                     value: 'tue',
                     width: '10%',
                     sortable: false,
-                    time: this.$helpers.time.convertSecToTime(days[1], false)
+                    time: days[1]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.wed,
@@ -542,7 +608,7 @@ export default {
                     value: 'wed',
                     width: '10%',
                     sortable: false,
-                    time: this.$helpers.time.convertSecToTime(days[2], false)
+                    time: days[2]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.thu,
@@ -550,7 +616,7 @@ export default {
                     value: 'thu',
                     width: '10%',
                     sortable: false,
-                    time: this.$helpers.time.convertSecToTime(days[3], false)
+                    time: days[3]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.fri,
@@ -558,7 +624,7 @@ export default {
                     value: 'fri',
                     width: '10%',
                     sortable: false,
-                    time: this.$helpers.time.convertSecToTime(days[4], false)
+                    time: days[4]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.sat,
@@ -566,7 +632,7 @@ export default {
                     value: 'sat',
                     width: '10%',
                     sortable: false,
-                    time: this.$helpers.time.convertSecToTime(days[5], false)
+                    time: days[5]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.sun,
@@ -574,14 +640,37 @@ export default {
                     value: 'sun',
                     width: '10%',
                     sortable: false,
-                    time: this.$helpers.time.convertSecToTime(days[6], false)
+                    time: days[6]
                 },
                 {
                     text: 'Total',
                     align: 'center',
-                    value: 'actions'
+                    value: 'total'
                 },
             ];
+        },
+        getTimesheet() {
+            if (this.filterProject) {
+                return this.$store.getters['Timesheet/getTimesheet']
+                    .filter(i => i.project && i.project.id === this.filterProject);
+            }
+            let status = 'tracked';
+            switch (this.typeOfItems) {
+                case 1: status = 'pending'; break;
+                case 2: status = 'unsubmitted'; break;
+                case 3: status = 'archived'; break;
+            }
+            return this.$store.getters['Timesheet/getTimesheet']
+                .filter(i => i.status === status );
+        },
+        totalTime() {
+            let totalTime = 0;
+            this.getTimesheet.map(timesheet => {
+                for (let i = 0; i < 7; i++) {
+                    totalTime += this.timeBetween(timesheet.times[i].dateTime);
+                }
+            });
+            return totalTime;
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class TrackingTimesheet extends Model
@@ -11,12 +12,28 @@ class TrackingTimesheet extends Model
     const STATUS_UNSUBMITTED = 'unsubmitted';
     const STATUS_ARCHIVED = 'archived';
 
+    protected $appends = [
+        'totalTime'
+    ];
+
     public function Project() {
         return $this->belongsTo(TrackingProject::class);
     }
 
     public function Times() {
         return $this->hasMany(TrackingTimesheetTime::class, 'timesheet_id', 'id');
+    }
+
+    public function getTotalTimeAttribute() {
+        $items = $this->Times()->get();
+        $total = 0;
+        foreach ($items as $item) {
+            $dateTime = $item->date . ' ' . $item->time;
+            $start = Carbon::parse($dateTime)->startOfDay();
+            $end = Carbon::parse($dateTime);
+            $total += Carbon::parse($start)->diffInSeconds($end);
+        }
+        return $total; // in seconds
     }
 
 }
