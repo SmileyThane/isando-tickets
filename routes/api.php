@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', 'API\AuthController@register');
 Route::post('login', 'API\AuthController@login');
 Route::post('reset_password', 'API\AuthController@resetPassword');
-Route::get('plans', 'API\AuthController@plans');
+Route::get('plans/{groupedBy?}', 'API\AuthController@plans');
+Route::get('/currencies', 'API\CurrencyController@get');
 Route::get('time_zones', 'HomeController@getTimeZones');
 Route::get('/mail/receive/{type?}', 'HomeController@receiveMail')->name('receiveEmail');
 Route::get('version', 'API\AuthController@getAppVersion');
@@ -225,7 +226,6 @@ Route::group(['middleware' => 'auth:api'], function () {
             });
 
         // Currencies
-        Route::get('/currencies', 'API\CurrencyController@get');
         Route::post('/currencies', 'API\CurrencyController@create');
         Route::patch('/currencies/{currency}', 'API\CurrencyController@update');
         Route::delete('/currencies/{currency}', 'API\CurrencyController@delete');

@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\CompanyUser;
+use App\Currency;
 use App\Email;
 use App\Http\Controllers\Controller;
-use App\Plan;
+use App\PlanPrice;
 use App\Repositories\CompanyRepository;
 use App\Repositories\CompanyUserRepository;
-use App\Repositories\LicenceRepository;
+use App\Repositories\LicenseRepository;
 use App\Repositories\PlanRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
@@ -31,7 +32,7 @@ class AuthController extends Controller
         CompanyRepository $companyRepository,
         UserRepository $userRepository,
         CompanyUserRepository $companyUserRepository,
-        LicenceRepository $licenceRepository,
+        LicenseRepository $licenceRepository,
         RoleRepository $roleRepository,
         PlanRepository $planRepository
 
@@ -81,12 +82,14 @@ class AuthController extends Controller
             $company = $this->companyRepo->create($request);
             $request->company_id = $company->id;
             $license = $this->licenseRepo->create($request);
-            $request->password = Controller::getRandomString();
-            $user = $this->userRepo->create($request);
-            $companyUser = $this->companyUserRepo->create($company->id, $user->id, false);
-            $this->roleRepo->attach($companyUser->id, CompanyUser::class, Role::LICENSE_OWNER);
-            $this->userRepo->sendInvite($user, Role::LICENSE_OWNER, $request->password);
-            return self::showResponse(true);
+            if ($license) {
+                $request->password = Controller::getRandomString();
+                $user = $this->userRepo->create($request);
+                $companyUser = $this->companyUserRepo->create($company->id, $user->id, false);
+                $this->roleRepo->attach($companyUser->id, CompanyUser::class, Role::LICENSE_OWNER);
+                $this->userRepo->sendInvite($user, Role::LICENSE_OWNER, $request->password);
+                return self::showResponse(true);
+            }
         }
         return self::showResponse(false, $errors);
     }
@@ -102,11 +105,13 @@ class AuthController extends Controller
         return $isCompanyValid === true && $isUserValid === true && $isLicenseValid === true ? null : $errors;
     }
 
-    public function plans()
+    public function plans($groupedBy = null)
     {
-        return self::showResponse(true, Plan::all());
+        if ($groupedBy === 'currency') {
+            return self::showResponse(true, Currency::with('planPrice.plan')->get());
+        }
+        return self::showResponse(true, PlanPrice::with('plan', 'currency')->get());
     }
-
 
     public function resetPassword(Request $request)
     {
