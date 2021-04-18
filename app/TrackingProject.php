@@ -29,6 +29,10 @@ class TrackingProject extends Model
         return $this->morphMany('App\Tracking', 'entity');
     }
 
+    public function Timesheet() {
+        return $this->hasMany(TrackingTimesheet::class, 'project_id', 'id');
+    }
+
     // passed time in seconds by project
     public function getTrackedAttribute() {
         return $this->Trackers()->get()->map(function($item) {

@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import EventBus from "./components/EventBus";
-import {Clients, Products, Projects, Tags, Services, Tracking, Team, Tickets, Currencies, Languages} from './modules';
+import {
+    Clients, Products, Projects, Tags, Services, Tracking, Team, Tickets, Currencies, Languages,
+    Timesheet
+} from './modules';
 
 Vue.use(Vuex);
 
@@ -16,7 +19,8 @@ export default new Vuex.Store({
         Team,
         Tickets,
         Currencies,
-        Languages
+        Languages,
+        Timesheet
     },
     state: {
         roles: {},

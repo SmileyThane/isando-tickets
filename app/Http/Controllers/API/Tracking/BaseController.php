@@ -15,6 +15,7 @@ use App\Repositories\TrackingReportRepository;
 use App\Repositories\TrackingRepository;
 use App\Repositories\TrackingProjectRepository;
 use App\Repositories\CurrencyRepository;
+use App\Repositories\TrackingTimesheetRepository;
 
 class BaseController extends Controller
 {
@@ -26,6 +27,7 @@ class BaseController extends Controller
     protected $trackingReportRepo;
     protected $ticketRepo;
     protected $currencyRepo;
+    protected $timesheetRepo;
 
     public function __construct(
         TrackingRepository $trackingRepository,
@@ -33,7 +35,8 @@ class BaseController extends Controller
         TeamRepository $teamRepository,
         TrackingReportRepository $trackingReportRepository,
         TicketRepository $ticketRepository,
-        CurrencyRepository $currencyRepository
+        CurrencyRepository $currencyRepository,
+        TrackingTimesheetRepository $trackingTimesheetRepository
     )
     {
         $this->trackingRepo = $trackingRepository;
@@ -42,5 +45,6 @@ class BaseController extends Controller
         $this->trackingReportRepo = $trackingReportRepository;
         $this->ticketRepo = $ticketRepository;
         $this->currencyRepo = $currencyRepository;
+        $this->timesheetRepo = $trackingTimesheetRepository;
     }
 }

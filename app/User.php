@@ -204,4 +204,9 @@ class User extends Authenticatable
     {
         return $this->morphMany(InternalBilling::class, 'entity');
     }
+
+    public function Timesheet() {
+        return $this->hasMany(TrackingTimesheet::class, 'user_id', 'id')
+            ->with('Timesheet.Times');
+    }
 }

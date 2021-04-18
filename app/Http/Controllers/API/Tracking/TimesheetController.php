@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Http\Controllers\API\Tracking;
+
+use Illuminate\Http\Request;
+
+class TimesheetController extends BaseController
+{
+
+    public function get(Request $request) {
+        $trackingProjects = $this->timesheetRepo->all($request);
+        return self::showResponse(true, $trackingProjects);
+    }
+
+    public function find($id)
+    {
+        $trackingProjects = $this->timesheetRepo->find($id);
+        return self::showResponse(true, $trackingProjects);
+    }
+
+    public function create(Request $request)
+    {
+        $success = false;
+        $result = $this->timesheetRepo->validate($request);
+        if ($result === true) {
+            $result = $this->timesheetRepo->create($request);
+            $success = true;
+        }
+        return self::showResponse($success, $result);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $success = false;
+        $result = $this->timesheetRepo->validate($request);
+        if ($result === true) {
+            $result = $this->timesheetRepo->update($request, $id);
+            $success = true;
+        }
+        return self::showResponse($success, $result);
+    }
+
+    public function delete($id)
+    {
+        $result = $this->timesheetRepo->delete($id);
+        return self::showResponse($result);
+    }
+
+}

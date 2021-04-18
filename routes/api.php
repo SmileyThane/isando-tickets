@@ -223,6 +223,13 @@ Route::group(['middleware' => 'auth:api'], function () {
                 // Settings
                 Route::get('/settings', 'SettingsController@get');
                 Route::patch('/settings', 'SettingsController@update');
+
+                // Timesheet
+                Route::get('/timesheet', 'TimesheetController@get');
+                Route::post('/timesheet', 'TimesheetController@create');
+                Route::get('/timesheet/{id}', 'TimesheetController@find');
+                Route::patch('/timesheet/{id}', 'TimesheetController@update');
+                Route::delete('/timesheet/{id}', 'TimesheetController@delete');
             });
 
         // Currencies

@@ -5,7 +5,6 @@ namespace App\Repositories;
 
 use App\Role;
 use App\Service;
-use App\Serviceable;
 use App\Team;
 use App\Tracking;
 use App\TrackingProject;

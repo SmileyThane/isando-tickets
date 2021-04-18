@@ -71,8 +71,7 @@ class LanguageSeeder extends Seeder
                             'access' => 'Access',
                             'create' => 'Create',
                             'cancel' => 'Cancel',
-                            'create_project' =>
-                                [
+                            'create_project' => [
                                     'btn_title' => 'Create new project',
                                     'modal_title' => 'Create new project',
                                     'name' => 'Project name',
@@ -261,6 +260,24 @@ class LanguageSeeder extends Seeder
                                 'total' => 'Total',
                                 'display_revenue' => 'Display revenue',
                                 'all_entries_chronologically_sorted' => 'All single entries, chronologically sorted',
+                            ],
+                            'timesheet' => [
+                                'time_tracked' => 'Time tracked',
+                                'approval_pending' => 'Approval pending',
+                                'unsubmitted' => 'Unsubmitted',
+                                'archived' => 'Archived',
+                                'period_from' => 'Period from',
+                                'period_to' => 'Period to',
+                                'filter' => 'Filter',
+                                'daily' => 'Daily',
+                                'weekly' => 'Weekly',
+                                'mon' => 'Mon',
+                                'tue' => 'Tue',
+                                'wed' => 'Wed',
+                                'thu' => 'Thu',
+                                'fri' => 'Fri',
+                                'sat' => 'Sat',
+                                'sun' => 'Sun',
                             ]
                         ],
                     'ticket_statuses' =>
@@ -1104,6 +1121,24 @@ class LanguageSeeder extends Seeder
                                 'total' => 'Total',
                                 'display_revenue' => 'Einnahmen anzeigen',
                                 'all_entries_chronologically_sorted' => 'Alle Einzeleinträge, chronologisch sortiert',
+                            ],
+                            'timesheet' => [
+                                'time_tracked' => 'Time tracked',
+                                'approval_pending' => 'Approval pending',
+                                'unsubmitted' => 'Unsubmitted',
+                                'archived' => 'Archived',
+                                'period_from' => 'Period from',
+                                'period_to' => 'Period to',
+                                'filter' => 'Filter',
+                                'daily' => 'Daily',
+                                'weekly' => 'Weekly',
+                                'mon' => 'Mon',
+                                'tue' => 'Tue',
+                                'wed' => 'Wed',
+                                'thu' => 'Thu',
+                                'fri' => 'Fri',
+                                'sat' => 'Sat',
+                                'sun' => 'Sun',
                             ]
                         ],
                         'ticket_statuses' => [
