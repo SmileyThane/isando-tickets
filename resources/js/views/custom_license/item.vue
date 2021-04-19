@@ -318,8 +318,8 @@
                                     >
                                         <strong>{{ item.name }}:</strong>
                                         {{ langMap.custom_license.total_users + ': ' + item.custom_license.ixarma_object.limits.usersAllowed }} |
-                                        {{ langMap.custom_license.users_available + ' + item.custom_license.ixarma_object.limits.usersLeft }} |
-                                        {{ langMap.custom_license.active + ' + item.custom_license.ixarma_object.limits.active }}
+                                        {{ langMap.custom_license.users_available + ' ' + item.custom_license.ixarma_object.limits.usersLeft }} |
+                                        {{ langMap.custom_license.active + ' ' + item.custom_license.ixarma_object.limits.active }}
                                     </span>
                                     <strong v-else>{{ item.name }}</strong>
                                     <template v-slot:actions>
@@ -327,10 +327,10 @@
                                             v-if="item.custom_license && item.custom_license.ixarma_object"
                                             @click.prevent.stop="showChildClientEditorDialog(item)"
                                         >
-                                            mdi-sync
+                                            mdi-pencil
                                         </v-icon>
                                         <v-icon v-else>
-                                            mdi-sync-off
+                                            mdi-pencil-off
                                         </v-icon>
                                     </template>
                                     <v-spacer>
