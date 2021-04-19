@@ -9,7 +9,7 @@ export default {
                 search: search ?? ''
             });
             axios.get(`/api/tracking/clients?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data: clients } }) => {
+                .then(({ data: { success, data: { data: clients } } }) => {
                     if (success) {
                         commit('GET_CLIENTS', clients)
                     }
