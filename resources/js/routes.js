@@ -25,6 +25,7 @@ import NotificationsHistory from './views/notify/history'
 import SingleNotificationHistory from './views/notify/sent'
 import TrackingDashboard from './views/tracking/dashboard'
 import TrackingTracker from './views/tracking/tracker'
+import TrackingTimesheet from './views/tracking/timesheet'
 import TrackingCalendar from './views/tracking/calendar'
 import TrackingProjects from './views/tracking/projects'
 import TrackingProjectItem from './views/tracking/projects/item'
@@ -35,14 +36,15 @@ import KnowledgeBase from './views/knowledge_base/index'
 import KnowledgeBaseArticle from './views/knowledge_base/item'
 import KnowledgeBaseCreate from './views/knowledge_base/create'
 import RoleManagement from './views/superadmin/roles'
+import Landing from './layouts/App'
 
 import store from './store';
 
 export default [
     {
         path: '/',
-        name: 'main',
-        component: Login
+            name: 'main',
+            component: Landing
     },
     {
         path: '/login',
@@ -232,7 +234,7 @@ export default [
         meta: {
             requiresAuth: true
         },
-        redirect: { name: 'tracking_dashboard' }
+        redirect: {name: 'tracking_dashboard'}
     },
     {
         path: '/tracking/dashboard',
@@ -257,6 +259,22 @@ export default [
             requiresAuth: true
         },
         component: TrackingTracker,
+        beforeEnter: (to, from, next) => {
+            const company = store.state.mainCompany;
+            if (company && company.license && company.license) {
+                next();
+            } else {
+                next(from);
+            }
+        }
+    },
+    {
+        path: '/tracking/timesheet',
+        name: 'tracking_timesheet',
+        meta: {
+            requiresAuth: true
+        },
+        component: TrackingTimesheet,
         beforeEnter: (to, from, next) => {
             const company = store.state.mainCompany;
             if (company && company.license && company.license) {
@@ -410,4 +428,4 @@ export default [
         },
         component: RoleManagement
     },
-];
+    ];

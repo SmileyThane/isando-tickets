@@ -9,11 +9,11 @@ class PlanPrice extends Model
 {
     public function plan(): BelongsTo
     {
-        return $this->belongsTo(Plan::class, 'plan_id', 'id')->select('id', 'name');
+        return $this->belongsTo(Plan::class, 'plan_id', 'id');
     }
 
     public function currency(): BelongsTo
     {
-        return $this->belongsTo(Currency::class, 'currency_id', 'id')->select('id', 'slug');
+        return $this->belongsTo(Currency::class, 'currency_id', 'id');
     }
 }

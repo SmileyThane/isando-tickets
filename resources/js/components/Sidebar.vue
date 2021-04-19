@@ -281,6 +281,20 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
+                        v-if="hasLicense && enableTimesheet"
+                        link
+                        style="background-color:white;"
+                        to="/tracking/timesheet"
+                    >
+                        <v-list-item-action>
+                            <v-icon>mdi-file-clock-outline</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ langMap.sidebar.tracking_timesheet }}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item
                         v-if="hasLicense"
                         link
                         style="background-color:white;"
@@ -494,6 +508,7 @@ export default {
         this.getCompanyName();
         this.getCompanyLogo();
         this.getCompanySettings();
+        this.getTrackingSettings();
 
         this.ticket = this.langMap.sidebar.ticket;
         this.customers = this.langMap.sidebar.customers
@@ -562,12 +577,18 @@ export default {
         changeAppTitle() {
             this.$store.state.pageName = this.langMap.sidebar[this.$route.name]
             document.title = this.firstAlias + ' | ' + this.langMap.sidebar[this.$route.name]
+        },
+        getTrackingSettings() {
+            return this.$store.dispatch('Tracking/getSettings');
         }
     },
     computed: {
         hasLicense() {
             const company = this.$store.getters['getMainCompany'];
             return company ? company.license : null;
+        },
+        enableTimesheet() {
+            return this.$store.getters['Tracking/getSettings'].settings && this.$store.getters['Tracking/getSettings'].settings.enableTimesheet;
         }
     }
 }
