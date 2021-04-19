@@ -419,7 +419,7 @@ export default {
             });
             axios.get(`/api/tracking/clients?${queryParams.toString()}`)
                 .then(({data}) => {
-                    this.clients = data.data;
+                    this.clients = data.data.data;
                 })
                 .finally(() => (this.isLoadingSearchClient = false));
         },
