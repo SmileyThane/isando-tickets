@@ -153,6 +153,7 @@ class TrackingProjectRepository
         return true;
     }
 
+    // not used
     public function getClients(Request $request) {
         $productIds = Auth::user()
             ->employee
