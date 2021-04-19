@@ -83,7 +83,7 @@ class TrackingTimesheetRepository
     }
 
     public function delete($id) {
-        return null;
+        return TrackingTimesheet::where('id', '=', $id)->delete();
     }
 
 }

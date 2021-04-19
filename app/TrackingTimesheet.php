@@ -16,6 +16,11 @@ class TrackingTimesheet extends Model
         'totalTime'
     ];
 
+    protected $casts = [
+        'is_manually' => 'boolean',
+        'billable' => 'boolean'
+    ];
+
     public function Project() {
         return $this->belongsTo(TrackingProject::class);
     }
@@ -34,6 +39,15 @@ class TrackingTimesheet extends Model
             $total += Carbon::parse($start)->diffInSeconds($end);
         }
         return $total; // in seconds
+    }
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($trackingTimesheet) {
+            $trackingTimesheet->Times()->delete();
+        });
+
     }
 
 }

@@ -284,6 +284,32 @@
                     <span>{{ item.project.name }}</span> / <span>{{ item.project.client.name }}</span>
                 </span>
             </template>
+            <template v-slot:item.is_manually="{ isMobile, item, header, value }">
+                <span v-if="item.is_manually">
+                    added manually
+                </span>
+                <span v-else>tracked</span>
+            </template>
+            <template v-slot:item.billable="{ isMobile, item, header, value }">
+                <v-btn
+                    fab
+                    :icon="!item.billable"
+                    x-small
+                    :color="themeBgColor"
+                    @click="item.billable = !item.billable"
+                    class="elevation-0"
+                >
+                    <v-icon center v-bind:class="{ 'white--text': item.billable }">
+                        mdi-currency-usd
+                    </v-icon>
+                </v-btn>
+            </template>
+            <template v-slot:item.total="{ isMobile, item, header, value }">
+                <span v-if="item.totalTime">
+                    {{ $helpers.time.convertSecToTime(item.totalTime, false) }}
+                </span>
+                <span v-else>00:00</span>
+            </template>
             <template v-slot:item.mon="{ isMobile, item, header, value }">
                 <template v-if="typeOfItems === 0">
                     <span v-if="item.times && item.times[0]">
@@ -389,12 +415,6 @@
                     {{ moment(item.times[6].dateTime).format('HH:mm') }}
                 </template>
             </template>
-            <template v-slot:item.total="{ isMobile, item, header, value }">
-                <span v-if="item.totalTime">
-                    {{ $helpers.time.convertSecToTime(item.totalTime, false) }}
-                </span>
-                <span v-else>00:00</span>
-            </template>
         </v-data-table>
 
         <v-toolbar dense flat style="background-color: #f0f0f0;
@@ -402,6 +422,7 @@
             <v-btn
                 v-if="selected.length"
                 color="error"
+                @click="removeTimesheet"
             >
                 Remove selected
             </v-btn>
@@ -532,6 +553,13 @@ export default {
         timeBetween(end) {
             const start = moment(end).startOf('days')
             return this.$helpers.time.getSecBetweenDates(start, end);
+        },
+        removeTimesheet() {
+            if (this.selected.length) {
+                this.selected.map(({ id }) => {
+                    this.$store.dispatch('Timesheet/removeTimesheet', id);
+                });
+            }
         }
     },
     watch: {
@@ -585,6 +613,24 @@ export default {
                     align: 'start',
                     value: 'project.name',
                     width: '20%'
+                },
+                {
+                    text: '',
+                    align: 'start',
+                    value: 'is_manually',
+                    width: '3%'
+                },
+                {
+                    text: 'Total',
+                    align: 'center',
+                    value: 'total',
+                    width: '3%'
+                },
+                {
+                    text: '',
+                    align: 'start',
+                    value: 'billable',
+                    width: '3%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.mon,
@@ -641,11 +687,6 @@ export default {
                     width: '10%',
                     sortable: false,
                     time: days[6]
-                },
-                {
-                    text: 'Total',
-                    align: 'center',
-                    value: 'total'
                 },
             ];
         },

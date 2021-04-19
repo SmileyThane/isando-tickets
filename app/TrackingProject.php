@@ -64,6 +64,7 @@ class TrackingProject extends Model
 
         static::deleting(function($trackingProject) {
             $trackingProject->Trackers()->delete();
+            $trackingProject->Timesheet()->delete();
         });
     }
 

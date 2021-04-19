@@ -20,6 +20,7 @@ class CreateTrackingTimesheetsTable extends Migration
             $table->foreignId('team_id')->nullable()->constrained('teams');
             $table->foreignId('company_id')->nullable()->constrained('companies');
             $table->boolean('is_manually')->default(false);
+            $table->boolean('billable')->default(false);
             $table->date('from')->nullable(false);
             $table->date('to')->nullable(false);
             $table->enum('status', ['tracked', 'pending', 'unsubmitted', 'archived'])->default('tracked');

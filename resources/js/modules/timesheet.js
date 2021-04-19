@@ -24,10 +24,18 @@ export default {
                 .then(({ data: { data, success }}) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);
-                        return success;
                     }
                     return success;
                 });
+        },
+        removeTimesheet ({ dispatch, state }, id) {
+            return axios.delete(`/api/tracking/timesheet/${id}`, { retry: 5, retryDelay: 1000 })
+                .then(({ data: { data, success } }) => {
+                    if (success) {
+                        dispatch('getTimesheet', state.params);
+                    }
+                    return success;
+                })
         }
     },
     mutations: {

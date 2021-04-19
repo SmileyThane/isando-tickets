@@ -15,7 +15,7 @@ class CreateTrackingTimesheetTimeTable extends Migration
     {
         Schema::create('tracking_timesheet_time', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('timesheet_id')->constrained('tracking_timesheets');
+            $table->foreignId('timesheet_id')->constrained('tracking_timesheets')->cascadeOnDelete();
             $table->enum('type', ['work', 'lunch', 'absence'])->nullable(false);
             $table->date('date')->nullable(false);
             $table->time('time')->nullable(false)->default('00:00:00');
