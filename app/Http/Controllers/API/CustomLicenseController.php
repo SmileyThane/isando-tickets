@@ -95,7 +95,7 @@ class CustomLicenseController extends Controller
     public function assignToIxarmaCompany(Request $request)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {
-            return self::showResponse(true, $this->customLicenseRepository->assignToIxarmaCompany($request));
+            return self::showResponse($this->customLicenseRepository->assignToIxarmaCompany($request));
         }
 
         return self::showResponse(false);

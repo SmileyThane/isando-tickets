@@ -188,7 +188,7 @@ class CustomLicenseRepository
         }
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$request->user_id/assign/$request->company_id", []);
         $parsedResult = json_decode($result->getContents(), true);
-        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+        return $parsedResult['status'] === 'SUCCESS';
     }
 
     public function unassignFromIxarmaCompany(Request $request)
