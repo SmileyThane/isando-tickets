@@ -18,11 +18,13 @@ class AddTeamIdAndCompanyIdAtTrackingProjects extends Migration
             $table->unsignedBigInteger('company_id')->nullable()->after('client_id');
         });
 
-        foreach(\App\TrackingProject::all() as $trackingProject) {
+        foreach (\App\TrackingProject::all() as $trackingProject) {
             $tracking = $trackingProject->Trackers()->first();
-            $trackingProject->company_id = $tracking->company_id;
-            $trackingProject->team_id = $tracking->team_id;
-            $trackingProject->save();
+            if ($tracking) {
+                $trackingProject->company_id = $tracking->company_id;
+                $trackingProject->team_id = $tracking->team_id;
+                $trackingProject->save();
+            }
         }
     }
 
