@@ -397,6 +397,18 @@
                                                             </v-icon>
                                                         </v-btn>
                                                     </template>
+                                                    <template v-slot:item.actions="{ item }">
+                                                        <v-tooltip top>
+                                                            <template v-slot:activator="{ on, attrs }">
+                                                                <v-btn @click.stop.prevent="showUnassignDialog(item)" icon v-bind="attrs" v-on="on">
+                                                                    <v-icon>
+                                                                        mdi-delete
+                                                                    </v-icon>
+                                                                </v-btn>
+                                                            </template>
+                                                            <span>{{langMap.company.delete_contact}}</span>
+                                                        </v-tooltip>
+                                                    </template>
                                                 </v-data-table>
                                             </div>
                                         </v-card>
@@ -463,8 +475,17 @@
                                     </v-icon>
                                 </v-btn>
                             </template>
-                            <template>
-
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click="showUnassignDialog(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon>
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{langMap.company.delete_contact}}</span>
+                                </v-tooltip>
                             </template>
                         </v-data-table>
                     </div>
@@ -866,6 +887,25 @@
                 </v-card>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="unassignDialog" max-width="480" persistent>
+            <v-card>
+                <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                    {{ langMap.main.unassign }}
+                </v-card-title>
+                <v-card-text>
+                    {{ unassignedUserForm.name_and_phone }}
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="grey darken-1" text @click="unassignDialog = false">
+                        {{ langMap.main.cancel }}
+                    </v-btn>
+                    <v-btn color="red darken-1" text @click="unassignFromIxarmaCompany">
+                        {{ langMap.main.unassign }}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -893,6 +933,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.custom_license.active}`, value: 'active', sortable: false},
                 {text: `${this.$store.state.lang.lang_map.custom_license.expired_at}`, value: 'trialExpirationAtString', sortable: false},
                 {text: `${this.$store.state.lang.lang_map.custom_license.last_activation}`, value: 'lastActivationChangeString', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions'},
             ],
             menu2: false,
             tempExpDate: null,
@@ -940,6 +981,11 @@ export default {
             selectedChildClientLicense: {},
             selectedChildClientLicenseHistory: [],
             relatedClientsPanel: [],
+            unassignedUserForm: {
+                user_id: '',
+                company_id: '',
+                name_and_phone: ''
+            },
             client: {
                 is_portal: 1,
                 client_name: '',
@@ -982,6 +1028,7 @@ export default {
                 company_id: ''
             },
             assignCompanyDialog: false,
+            unassignDialog: false,
             customers: [],
             contactInfoModal: false,
             contactInfoEditBtn: false,
@@ -1094,6 +1141,28 @@ export default {
                 }
 
             });
+        },
+        showUnassignDialog(item) {
+            this.unassignedUserForm.user_id = item.id
+            this.unassignedUserForm.name_and_phone = item.username + '-' + item.phoneNumber
+            this.unassignDialog = true
+        },
+        unassignFromIxarmaCompany() {
+            axios.post('/api/custom_license_user/unassign', this.unassignedUserForm, {
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+            // console.log(this.unassignedUserForm);
+            this.unassignDialog = false
         },
         getLicenseHistory(id = null) {
             let isRelated = true

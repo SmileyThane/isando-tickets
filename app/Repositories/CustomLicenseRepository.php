@@ -191,6 +191,13 @@ class CustomLicenseRepository
         return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
     }
 
+    public function unassignFromIxarmaCompany(Request $request)
+    {
+        $result = $this->makeIxArmaRequest("/api/v1/app/user/$request->user_id/unassign", []);
+        $parsedResult = json_decode($result->getContents(), true);
+        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+    }
+
     public function create($id)
     {
         $client = \App\Client::find($id);
