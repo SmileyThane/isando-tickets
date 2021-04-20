@@ -3,7 +3,6 @@
 
 namespace App\Repositories;
 
-
 use App\CustomLicense;
 use App\IxarmaAuthorization;
 use Carbon\Carbon;
@@ -92,7 +91,6 @@ class CustomLicenseRepository
             $result = $this->makeIxArmaRequest("/api/v1/app/user/company/$ixArmaId/page/0", []);
             $parsedResult = json_decode($result->getContents(), true);
             return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
-
         }
         return [];
     }
@@ -191,6 +189,27 @@ class CustomLicenseRepository
         return $parsedResult['status'] === 'SUCCESS';
     }
 
+    public function create($id)
+    {
+        $client = \App\Client::find($id);
+        if ($client->contact_email) {
+            $data = [
+                'name' => $client->name,
+                'email' => $client->contact_email->email,
+            ];
+            $result = $this->makeIxArmaRequest("/api/v1/company", $data, 'POST');
+            $parsedResult = json_decode($result->getContents(), true);
+            if ($parsedResult['status'] === 'SUCCESS') {
+                $ixarmaCompany = $parsedResult['body'];
+                CustomLicense::query()->insert(['remote_client_id' => $ixarmaCompany['id'], 'client_id' => $id]);
+                return $ixarmaCompany;
+            }
+            return $parsedResult['message'];
+        }
+
+        return __('validation.email');
+    }
+
     public function unassignFromIxarmaCompany(Request $request)
     {
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$request->user_id/unassign", []);
@@ -198,28 +217,8 @@ class CustomLicenseRepository
         return $parsedResult['status'] === 'SUCCESS';
     }
 
-    public function create($id)
-    {
-        $client = \App\Client::find($id);
-        $data = [
-            'name' => $client->name,
-            'email' => $client->contact_email->email,
-        ];
-        $result = $this->makeIxArmaRequest("/api/v1/company", $data, 'POST');
-        $parsedResult = json_decode($result->getContents(), true);
-        if ($parsedResult['status'] === 'SUCCESS') {
-            $ixarmaCompany = $parsedResult['body'];
-            CustomLicense::query()->insert(['remote_client_id' => $ixarmaCompany['id'], 'client_id' => $id]);
-            return $ixarmaCompany;
-        }
-
-        return $parsedResult['message'];
-    }
-
     public function delete(): bool
     {
         return true;
     }
-
-
 }
