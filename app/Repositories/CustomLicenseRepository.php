@@ -195,7 +195,7 @@ class CustomLicenseRepository
     {
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$request->user_id/unassign", []);
         $parsedResult = json_decode($result->getContents(), true);
-        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+        return $parsedResult['status'] === 'SUCCESS';
     }
 
     public function create($id)

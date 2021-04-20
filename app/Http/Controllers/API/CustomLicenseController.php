@@ -104,7 +104,7 @@ class CustomLicenseController extends Controller
     public function unassignFromIxarmaCompany(Request $request)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::IXARMA_WRITE_ACCESS)) {
-            return self::showResponse(true, $this->customLicenseRepository->unassignFromIxarmaCompany($request));
+            return self::showResponse($this->customLicenseRepository->unassignFromIxarmaCompany($request));
         }
 
         return self::showResponse(false);
