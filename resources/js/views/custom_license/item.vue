@@ -478,7 +478,7 @@
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn @click="showUnassignDialog(item)" icon v-bind="attrs" v-on="on">
+                                        <v-btn @click.stop.prevent="showUnassignDialog(item)" icon v-bind="attrs" v-on="on">
                                             <v-icon>
                                                 mdi-delete
                                             </v-icon>
@@ -893,7 +893,8 @@
                     {{ langMap.main.unassign }}
                 </v-card-title>
                 <v-card-text>
-                    {{ unassignedUserForm.name_and_phone }}
+                    {{ unassignedUserForm.name }}
+                    {{ unassignedUserForm.phone }}
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
@@ -984,7 +985,8 @@ export default {
             unassignedUserForm: {
                 user_id: '',
                 company_id: '',
-                name_and_phone: ''
+                name: '',
+                phone: ''
             },
             client: {
                 is_portal: 1,
@@ -1144,7 +1146,8 @@ export default {
         },
         showUnassignDialog(item) {
             this.unassignedUserForm.user_id = item.id
-            this.unassignedUserForm.name_and_phone = item.username + '-' + item.phoneNumber
+            this.unassignedUserForm.name = item.username
+            this.unassignedUserForm.phone = item.phoneNumber
             this.unassignDialog = true
         },
         unassignFromIxarmaCompany() {
@@ -1155,6 +1158,7 @@ export default {
                     this.snackbarMessage = this.langMap.main.update_successful;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.getLicenseUsers();
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
