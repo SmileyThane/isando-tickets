@@ -75,15 +75,45 @@ class TrackingTimesheetRepository
             }
         }
 
-        return $timesheet;
+        return TrackingTimesheet::where('id', '=', $timesheet->id)->with('Project.Client')
+            ->with(['Times' => function ($q) {
+                $q->orderBy('date', 'asc');
+            }])->first();
     }
 
     public function update(Request $request, $id) {
-        return null;
+        $timesheet = TrackingTimesheet::findOrFail($id);
+        $timesheet->project_id = $request->get('project_id', null);
+        $timesheet->billable = $request->get('billable', false);
+        $timesheet->save();
+        $items = $request->get('times');
+        foreach ($items as $item) {
+            TrackingTimesheetTime::updateOrCreate(
+                ['id' => $item['id'], 'timesheet_id' => $item['timesheet_id']],
+                ['date' => $item['date'], 'time' => $item['time']]
+            );
+        }
+        return TrackingTimesheet::where('id', '=', $id)->with('Project.Client')
+            ->with(['Times' => function ($q) {
+                $q->orderBy('date', 'asc');
+            }])->first();
     }
 
     public function delete($id) {
         return TrackingTimesheet::where('id', '=', $id)->delete();
+    }
+
+    public function submit(Request $request) {
+        $ids = $request->get('ids');
+        $updatedTimesheet = [];
+        foreach ($ids as $id) {
+            TrackingTimesheet::where('id', '=', $id)->update(['status' => $request->get('status')]);
+            $updatedTimesheet[] = TrackingTimesheet::where('id', '=', $id)->with('Project.Client')
+                ->with(['Times' => function ($q) {
+                    $q->orderBy('date', 'asc');
+                }])->first();
+        }
+        return $updatedTimesheet;
     }
 
 }

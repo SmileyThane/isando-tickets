@@ -278,7 +278,10 @@ class LanguageSeeder extends Seeder
                                 'fri' => 'Fri',
                                 'sat' => 'Sat',
                                 'sun' => 'Sun',
-                                'submit_for_approval' => 'Submit for approval'
+                                'submit_for_approval' => 'Submit selected for approval',
+                                'resubmit_for_approval' => 'Re-submit selected for approval',
+                                'approve_selected' => 'Approve selected',
+                                'reject_selected' => 'Reject selected'
                             ]
                         ],
                     'ticket_statuses' =>
@@ -1140,7 +1143,10 @@ class LanguageSeeder extends Seeder
                                 'fri' => 'Fri',
                                 'sat' => 'Sat',
                                 'sun' => 'Sun',
-                                'submit_for_approval' => 'Submit for approval'
+                                'submit_for_approval' => 'Submit for approval',
+                                'resubmit_for_approval' => 'Re-submit for approval',
+                                'approve_selected' => 'Approve selected',
+                                'reject_selected' => 'Reject selected'
                             ]
                         ],
                         'ticket_statuses' => [

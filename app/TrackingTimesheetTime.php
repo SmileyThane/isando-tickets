@@ -13,6 +13,10 @@ class TrackingTimesheetTime extends Model
     const TYPE_LUNCH = 'lunch';
     const TYPE_ABSENCE = 'absence';
 
+    protected $fillable = [
+        'type', 'date', 'time', 'description'
+    ];
+
     protected $appends = [
         'dayOfWeek',
         'dateTime'

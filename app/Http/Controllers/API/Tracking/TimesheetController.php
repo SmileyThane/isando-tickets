@@ -40,6 +40,17 @@ class TimesheetController extends BaseController
         return self::showResponse($success, $result);
     }
 
+    public function submit(Request $request)
+    {
+        $success = false;
+        $result = $this->timesheetRepo->validate($request);
+        if ($result === true) {
+            $result = $this->timesheetRepo->submit($request);
+            $success = true;
+        }
+        return self::showResponse($success, $result);
+    }
+
     public function delete($id)
     {
         $result = $this->timesheetRepo->delete($id);

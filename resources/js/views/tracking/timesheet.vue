@@ -14,20 +14,29 @@
                 dense
                 v-model="typeOfItems"
                 :background-color="themeBgColor"
+                mandatory
             >
-                <v-btn>
+                <v-btn
+                    @click="selected = []"
+                >
                     {{ langMap.tracking.timesheet.time_tracked }}
                 </v-btn>
 
-                <v-btn>
+                <v-btn
+                    @click="selected = []"
+                >
                     {{ langMap.tracking.timesheet.approval_pending }}
                 </v-btn>
 
-                <v-btn>
+                <v-btn
+                    @click="selected = []"
+                >
                     {{ langMap.tracking.timesheet.unsubmitted }}
                 </v-btn>
 
-                <v-btn>
+                <v-btn
+                    @click="selected = []"
+                >
                     {{ langMap.tracking.timesheet.archived }}
                 </v-btn>
             </v-btn-toggle>
@@ -59,7 +68,7 @@
                     <div class="d-inline-flex">
                         <v-btn
                             icon
-                            @click="date = moment(date).subtract(1, 'days').format(dateFormat)"
+                            @click="date = moment(date).subtract(viewType === 'daily' ? 1 : 7, 'days').format(dateFormat)"
                         >
                             <v-icon>mdi-chevron-left</v-icon>
                         </v-btn>
@@ -97,7 +106,7 @@
                     <div class="d-inline-flex">
                         <v-btn
                             icon
-                            @click="date = moment(date).add(1, 'days').format(dateFormat)"
+                            @click="date = moment(date).add(viewType === 'daily' ? 1 : 7, 'days').format(dateFormat)"
                         >
                             <v-icon>mdi-chevron-right</v-icon>
                         </v-btn>
@@ -115,6 +124,7 @@
                     <v-radio
                         class="d-inline-flex"
                         value="daily"
+                        disabled
                         :label="langMap.tracking.timesheet.daily"
                     ></v-radio>
                     <v-radio
@@ -142,44 +152,45 @@
         <v-data-table
             v-if="viewType === 'weekly'"
             :headers="weeklyHeaders"
-            show-select
-            single-select
+            :show-select="[0,1,2].indexOf(typeOfItems) !== -1"
+            :single-select="singleSelect"
             :items="getTimesheet"
             :loading="loading"
             loading-text="Loading... Please wait"
             v-model="selected"
         >
+            <template v-slot:header.data-table-select="{ header }"></template>
             <template v-slot:header.mon="{ header }">
                 {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time)}}
+                {{$helpers.time.convertSecToTime(header.time, false)}}
             </template>
             <template v-slot:header.tue="{ header }">
                 {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time)}}
+                {{$helpers.time.convertSecToTime(header.time, false)}}
             </template>
             <template v-slot:header.wed="{ header }">
                 {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time)}}
+                {{$helpers.time.convertSecToTime(header.time, false)}}
             </template>
             <template v-slot:header.thu="{ header }">
                 {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time)}}
+                {{$helpers.time.convertSecToTime(header.time, false)}}
             </template>
             <template v-slot:header.fri="{ header }">
                 {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time)}}
+                {{$helpers.time.convertSecToTime(header.time, false)}}
             </template>
             <template v-slot:header.sat="{ header }">
                 {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time)}}
+                {{$helpers.time.convertSecToTime(header.time, false)}}
             </template>
             <template v-slot:header.sun="{ header }">
                 {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time)}}
+                {{$helpers.time.convertSecToTime(header.time, false)}}
             </template>
             <template v-slot:footer="{ props, on, headers, widths }">
                 <v-spacer>&nbsp;</v-spacer>
-                <div class="d-flex flex-row" v-if="typeOfItems === 0">
+                <div class="d-flex flex-row" v-if="[0].indexOf(typeOfItems) !== -1">
                     <div
                         class="d-inline-flex"
                         v-for="(header, index) in headers"
@@ -279,6 +290,13 @@
                     </div>
                 </div>
             </template>
+            <template v-slot:item.data-table-select="{ item }">
+                <v-simple-checkbox
+                    v-if="[0,2].indexOf(typeOfItems) !== -1 || ([1].indexOf(typeOfItems) !== -1 && canApproval(item))"
+                    :value="!!selected.find(i => i.id === item.id)"
+                    @click="toggleTableItem(item)"
+                ></v-simple-checkbox>
+            </template>
             <template v-slot:item.project.name="{ isMobile, item, header, value }">
                 <span v-if="item.project">
                     <span>{{ item.project.name }}</span> / <span>{{ item.project.client.name }}</span>
@@ -292,32 +310,41 @@
             </template>
             <template v-slot:item.billable="{ isMobile, item, header, value }">
                 <v-btn
+                    v-if="[0,2].indexOf(typeOfItems) !== -1"
                     fab
                     :icon="!item.billable"
                     x-small
                     :color="themeBgColor"
-                    @click="item.billable = !item.billable"
+                    @click="item.billable = !item.billable; saveTimesheet(item)"
                     class="elevation-0"
                 >
                     <v-icon center v-bind:class="{ 'white--text': item.billable }">
                         mdi-currency-usd
                     </v-icon>
                 </v-btn>
+                <v-icon
+                    v-else-if="item.billable"
+                    center
+                    small
+                >
+                    mdi-currency-usd
+                </v-icon>
             </template>
             <template v-slot:item.total="{ isMobile, item, header, value }">
-                <span v-if="item.totalTime">
-                    {{ $helpers.time.convertSecToTime(item.totalTime, false) }}
+                <span v-if="item.total_time">
+                    {{ $helpers.time.convertSecToTime(item.total_time, false) }}
                 </span>
                 <span v-else>00:00</span>
             </template>
             <template v-slot:item.mon="{ isMobile, item, header, value }">
-                <template v-if="typeOfItems === 0">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
                     <span v-if="item.times && item.times[0]">
                     <TimeField
                         v-model="moment(item.times[0].dateTime).format()"
                         style="max-width: 100px"
                         placeholder="hh:mm"
                         format="HH:mm"
+                        @input="saveChanges(item, 0, $event)"
                     ></TimeField>
                 </span>
                 </template>
@@ -326,13 +353,14 @@
                 </template>
             </template>
             <template v-slot:item.tue="{ isMobile, item, header, value }">
-                <template v-if="typeOfItems === 0">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
                     <span v-if="item.times && item.times[1]">
                     <TimeField
                         v-model="moment(item.times[1].dateTime).format()"
                         style="max-width: 100px"
                         placeholder="hh:mm"
                         format="HH:mm"
+                        @input="saveChanges(item, 1, $event)"
                     ></TimeField>
                 </span>
                 </template>
@@ -341,13 +369,14 @@
                 </template>
             </template>
             <template v-slot:item.wed="{ isMobile, item, header, value }">
-                <template v-if="typeOfItems === 0">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
                     <span v-if="item.times && item.times[2]">
                     <TimeField
                         v-model="moment(item.times[2].dateTime).format()"
                         style="max-width: 100px"
                         placeholder="hh:mm"
                         format="HH:mm"
+                        @input="saveChanges(item, 2, $event)"
                     ></TimeField>
                 </span>
                 </template>
@@ -356,13 +385,14 @@
                 </template>
             </template>
             <template v-slot:item.thu="{ isMobile, item, header, value }">
-                <template v-if="typeOfItems === 0">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
                     <span v-if="item.times && item.times[3]">
                         <TimeField
                             v-model="moment(item.times[3].dateTime).format()"
                             style="max-width: 100px"
                             placeholder="hh:mm"
                             format="HH:mm"
+                            @input="saveChanges(item, 3, $event)"
                         ></TimeField>
                     </span>
                 </template>
@@ -371,13 +401,14 @@
                 </template>
             </template>
             <template v-slot:item.fri="{ isMobile, item, header, value }">
-                <template v-if="typeOfItems === 0">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
                     <span v-if="item.times && item.times[4]">
                         <TimeField
                             v-model="moment(item.times[4].dateTime).format()"
                             style="max-width: 100px"
                             placeholder="hh:mm"
                             format="HH:mm"
+                            @input="saveChanges(item, 4, $event)"
                         ></TimeField>
                     </span>
                 </template>
@@ -386,13 +417,14 @@
                 </template>
             </template>
             <template v-slot:item.sat="{ isMobile, item, header, value }">
-                <template v-if="typeOfItems === 0">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
                     <span v-if="item.times && item.times[5]">
                     <TimeField
                         v-model="moment(item.times[5].dateTime).format()"
                         style="max-width: 100px"
                         placeholder="hh:mm"
                         format="HH:mm"
+                        @input="saveChanges(item, 5, $event)"
                     ></TimeField>
                 </span>
                 </template>
@@ -401,13 +433,14 @@
                 </template>
             </template>
             <template v-slot:item.sun="{ isMobile, item, header, value }">
-                <template v-if="typeOfItems === 0">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
                     <span v-if="item.times && item.times[6]">
                         <TimeField
                             v-model="moment(item.times[6].dateTime).format()"
                             style="max-width: 100px"
                             placeholder="hh:mm"
                             format="HH:mm"
+                            @input="saveChanges(item, 6, $event)"
                         ></TimeField>
                     </span>
                 </template>
@@ -420,20 +453,162 @@
         <v-toolbar dense flat style="background-color: #f0f0f0;
     border-color: #f0f0f0;">
             <v-btn
-                v-if="selected.length"
+                v-if="selected.length && [0,2].indexOf(typeOfItems) !== -1"
+                class="mx-2"
                 color="error"
                 @click="removeTimesheet"
             >
                 Remove selected
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn
-                :color="themeBgColor"
-                :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+            <v-dialog
+                v-model="sendingApprovalDialog"
+                width="500"
+                v-if="selected.length && [0, 2].indexOf(typeOfItems) !== -1"
             >
-                {{ langMap.tracking.timesheet.submit_for_approval }}
-            </v-btn>
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        :color="themeBgColor"
+                        :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                        v-if="selected.length && [0, 2].indexOf(typeOfItems) !== -1"
+                        v-bind="attrs"
+                        v-on="on"
+                        class="mx-2"
+                    >
+                        <span v-if="typeOfItems === 0">{{langMap.tracking.timesheet.submit_for_approval}}</span>
+                        <span v-else>{{langMap.tracking.timesheet.resubmit_for_approval}}</span>
+                    </v-btn>
+                </template>
 
+                <v-card>
+                    <v-card-title class="grey lighten-2">
+                        Submit selected for approval
+                    </v-card-title>
+
+                    <v-card-text>
+                        <br>
+                        Submit timesheet for approval?
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="error"
+                            text
+                            @click="sendingApprovalDialog = false"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            color="success"
+                            text
+                            @click="sendingApprovalDialog = false; submitItems('pending')"
+                        >
+                            Submit
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog
+                v-model="approvalDialog"
+                width="500"
+                v-if="canApprove"
+            >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        :color="themeBgColor"
+                        :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                        v-if="canApprove"
+                        v-bind="attrs"
+                        v-on="on"
+                        class="mx-2"
+                    >
+                        {{langMap.tracking.timesheet.approve_selected}}
+                    </v-btn>
+                </template>
+
+                <v-card>
+                    <v-card-title class="grey lighten-2">
+                        Approve selected
+                    </v-card-title>
+
+                    <v-card-text>
+                        <br>
+                        Approve timesheet?
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="error"
+                            text
+                            @click="approvalDialog = false"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            color="success"
+                            text
+                            @click="approvalDialog = false; submitItems('archived')"
+                        >
+                            Approve
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog
+                v-model="rejectDialog"
+                width="500"
+                v-if="canApprove"
+            >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        color="error"
+                        :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                        v-if="canApprove"
+                        v-bind="attrs"
+                        v-on="on"
+                        class="mx-2"
+                    >
+                        {{langMap.tracking.timesheet.reject_selected}}
+                    </v-btn>
+                </template>
+
+                <v-card>
+                    <v-card-title class="grey lighten-2">
+                        Reject selected
+                    </v-card-title>
+
+                    <v-card-text>
+                        <br>
+                        Reject timesheet?
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="error"
+                            text
+                            @click="rejectDialog = false"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            color="success"
+                            text
+                            @click="rejectDialog = false; submitItems('unsubmitted')"
+                        >
+                            Reject
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
             <span class="mx-4">
                 Total time: {{ $helpers.time.convertSecToTime(totalTime, false) }} hrs
             </span>
@@ -483,7 +658,11 @@ export default {
                 sun: moment().startOf('days').format()
             },
             loading: false,
-            selected: []
+            selected: [],
+            singleSelect: false,
+            sendingApprovalDialog: false,
+            approvalDialog: false,
+            rejectDialog: false
         }
     },
     created () {
@@ -494,6 +673,7 @@ export default {
         });
         this.debounceGetTimesheet = _.debounce(this._getTimesheet, 1000);
         this.debounceGetProjects = _.debounce(this._getProjects, 1000);
+        this.debounceGetManagedTeams = _.debounce(this._getManagedTeams, 1000);
         this.date = moment().format(this.dateFormat);
     },
     mounted() {
@@ -506,6 +686,7 @@ export default {
         });
         this.debounceGetTimesheet();
         this.debounceGetProjects();
+        this.debounceGetManagedTeams();
         this.resetTimesheet();
     },
     methods: {
@@ -514,6 +695,12 @@ export default {
             await this.$store.dispatch('Timesheet/getTimesheet', {
                 ...this.dateRange
             });
+            this.loading = false;
+            this.resetTimesheet();
+        },
+        async _getManagedTeams() {
+            this.loading = true;
+            await this.$store.dispatch('Team/getManagedTeams');
             this.loading = false;
             this.resetTimesheet();
         },
@@ -536,6 +723,7 @@ export default {
                         }
                     });
             }
+            this.selected = [];
         },
         resetTimesheet() {
             this.selected = [];
@@ -560,6 +748,39 @@ export default {
                     this.$store.dispatch('Timesheet/removeTimesheet', id);
                 });
             }
+            this.selected = [];
+        },
+        saveTimesheet(item) {
+            return this.$store.dispatch('Timesheet/updateTimesheet', { id: item.id, timesheet: item })
+                .then(res => {
+                    if (!res) {
+                        this.snackbarMessage = 'Error';
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        saveChanges(item, index, newValue) {
+            item.times[index].dateTime = newValue;
+            item.times[index].time = moment(newValue).format('hh:mm:ss');
+            return this.saveTimesheet(item);
+        },
+        submitItems(status) {
+            if (this.selected.length) {
+                this.$store.dispatch('Timesheet/submitTimesheetByIds', {
+                    ids: this.selected.map(i => i.id),
+                    status
+                });
+            }
+            this.selected = [];
+        },
+        canApproval(item) {
+            return item.team_id && this.$store.getters['Team/getManagedTeams'].find(i => i.id === item.team_id);
+        },
+        toggleTableItem(item) {
+            this.selected.find(i => i.id === item.id)
+                ? this.selected.splice(this.selected.findIndex(i => i.id === item.id), 1)
+                : this.selected.push(item);
         }
     },
     watch: {
@@ -697,6 +918,7 @@ export default {
             }
             let status = 'tracked';
             switch (this.typeOfItems) {
+                case 0: status = 'tracked'; break;
                 case 1: status = 'pending'; break;
                 case 2: status = 'unsubmitted'; break;
                 case 3: status = 'archived'; break;
@@ -712,6 +934,12 @@ export default {
                 }
             });
             return totalTime;
+        },
+        canApprove() {
+            if (this.selected.length && this.$store.getters['Team/getManagedTeams'].find(t => this.selected.find(i => i.team_id === t.id))) {
+                return this.selected.length && [1].indexOf(this.typeOfItems) !== -1;
+            }
+            return false;
         }
     }
 }

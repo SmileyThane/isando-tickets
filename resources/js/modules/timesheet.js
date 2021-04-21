@@ -36,9 +36,33 @@ export default {
                     }
                     return success;
                 })
+        },
+        updateTimesheet({ state, commit, dispatch }, { id, timesheet: { project_id, billable, status, times } }) {
+            return axios.patch(`/api/tracking/timesheet/${id}`, { id, project_id, billable, status, times }, { retry: 5, retryDelay: 1000 })
+                .then(({ data: { data, success }}) => {
+                    if (success) {
+                        commit('UPDATE_ITEM', data);
+                    }
+                    return success;
+                })
+        },
+        submitTimesheetByIds({ commit }, { ids, status }) {
+            return axios.patch('/api/tracking/timesheet/submit', { ids, status }, { retry: 5, retryDelay: 1000 })
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        data.map(i => {
+                            commit('UPDATE_ITEM', i);
+                        });
+                    }
+                    return success;
+                })
         }
     },
     mutations: {
+        UPDATE_ITEM(state, item) {
+            const foundIndexOfTimesheet = state.timesheet.findIndex(t => t.id === item.id);
+            state.timesheet.splice(foundIndexOfTimesheet, 1, item);
+        },
         SET_TIMESHEET(state, timesheet) {
             state.timesheet = timesheet
         },

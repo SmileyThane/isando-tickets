@@ -13,7 +13,7 @@ class TrackingTimesheet extends Model
     const STATUS_ARCHIVED = 'archived';
 
     protected $appends = [
-        'totalTime'
+        'total_time'
     ];
 
     protected $casts = [
