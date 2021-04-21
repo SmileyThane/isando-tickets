@@ -177,7 +177,15 @@ class ClientRepository
             ClientCompanyUser::where('client_id', $id)->delete();
             $client->delete();
             $result = true;
+            if ($client->has('customLicense')) {
+                $users = (new CustomLicenseRepository())->getUsers($client->customLicense->remote_client_id);
+                foreach ($users->entities as $user) {
+                    (new CustomLicenseRepository())
+                        ->unassignFromIxarmaCompany($user->id);
+                }
+            }
         }
+
         return $result;
     }
 

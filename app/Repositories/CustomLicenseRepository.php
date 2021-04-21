@@ -3,7 +3,6 @@
 
 namespace App\Repositories;
 
-
 use App\CustomLicense;
 use App\IxarmaAuthorization;
 use Carbon\Carbon;
@@ -28,21 +27,16 @@ class CustomLicenseRepository
         return $clients->paginate($request->per_page ?? $clients->count());
     }
 
-    public function find($id): array
+    public function getUsers($id)
     {
-        $result = [];
         $client = \App\Client::find($id);
-        $ixArmaId = $client->customLicense->remote_client_id;
-
-        $response = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", []);
-        $parsedResult = json_decode($response->getContents(), true);
-        $result['limits'] = $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
-
-        $response = $this->makeIxArmaRequest("/api/v1/company/$ixArmaId", []);
-        $parsedResult = json_decode($response->getContents(), true);
-        $result['info'] = $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
-
-        return $result;
+        if ($client && $client->customLicense) {
+            $ixArmaId = $client->customLicense->remote_client_id;
+            $result = $this->makeIxArmaRequest("/api/v1/app/user/company/$ixArmaId/page/0", []);
+            $parsedResult = json_decode($result->getContents(), true);
+            return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+        }
+        return [];
     }
 
     public function makeIxArmaRequest($uri, $parameters, $method = 'GET', $withAuth = true)
@@ -84,32 +78,6 @@ class CustomLicenseRepository
         return $parsedResult['message'];
     }
 
-    public function getUsers($id)
-    {
-        $client = \App\Client::find($id);
-        if ($client && $client->customLicense) {
-            $ixArmaId = $client->customLicense->remote_client_id;
-            $result = $this->makeIxArmaRequest("/api/v1/app/user/company/$ixArmaId/page/0", []);
-            $parsedResult = json_decode($result->getContents(), true);
-            return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
-
-        }
-        return [];
-    }
-
-    public function manageUser($id, $remoteUserId, $isLicensed)
-    {
-        $client = \App\Client::find($id);
-        $ixArmaId = $client->customLicense->remote_client_id;
-        $activationAction = $isLicensed === 'true' ? 'deactivate' : 'activate';
-        $result = $this->makeIxArmaRequest("/api/v1/app/user/$remoteUserId/$activationAction", []);
-        $parsedResult = json_decode($result->getContents(), true);
-        if ($parsedResult['status'] === 'SUCCESS') {
-            return $parsedResult['body'];
-        }
-        return null;
-    }
-
     public function setUserTrial(Request $request, $id)
     {
         $data = [
@@ -130,26 +98,6 @@ class CustomLicenseRepository
             return array_reverse($parsedResult['body']);
         }
         return null;
-    }
-
-    public function updateLimits(Request $request, $id)
-    {
-        $client = \App\Client::find($id);
-        $ixArmaId = $client->customLicense->remote_client_id;
-        $data = [
-            'newTrialDays' => $request->trialPeriodDays,
-            'newAllowedUsers' => $request->usersAllowed,
-            'newExpires' => Carbon::parse($request->expiresAt)->format('m/d/Y')
-        ];
-        $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", $data, 'PUT');
-        $parsedResult = json_decode($result->getContents(), true);
-        if ($request->active === true) {
-            $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/renew", $data, 'GET');
-        } else {
-            $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/suspend", $data, 'GET');
-        }
-
-        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
     }
 
     public function update(Request $request, $id)
@@ -176,7 +124,8 @@ class CustomLicenseRepository
 
     public function assignToIxarmaCompany(Request $request)
     {
-        $clientLicense = \App\Client::find($request->company_id)->customLicense;
+        $client = \App\Client::find($request->company_id);
+        $clientLicense = $client->customLicense;
         if ($clientLicense === null) {
             $newLicense = $this->create($request->company_id);
             if (is_string($newLicense)) {
@@ -187,32 +136,111 @@ class CustomLicenseRepository
             $request->company_id = $clientLicense->remote_client_id;
         }
         $result = $this->makeIxArmaRequest("/api/v1/app/user/$request->user_id/assign/$request->company_id", []);
+        $ixarmaClient = $this->find($client->id);
+        if ($ixarmaClient && $ixarmaClient['limits']) {
+            $request->active = true;
+            $request->trialPeriodDays = $ixarmaClient['limits']['trialPeriodDays'];
+            $usersAllowed = $ixarmaClient['limits']['usersAllowed'];
+            $request->usersAllowed = $usersAllowed === 0 ? 1 : $usersAllowed;
+
+            if (Carbon::parse($ixarmaClient['limits']['expiresAt'])->lt(now())) {
+                $request->expiresAt = now()->addDays($request->trialPeriodDays);
+            }
+        }
+        $this->updateLimits($request, $client->id);
+        $this->manageUser($client->id, $request->user_id, 'false');
         $parsedResult = json_decode($result->getContents(), true);
         return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+    }
+
+    public function find($id): array
+    {
+        $result = [];
+        $client = \App\Client::find($id);
+        $ixArmaId = $client->customLicense->remote_client_id;
+
+        $response = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", []);
+        $parsedResult = json_decode($response->getContents(), true);
+        if ($parsedResult['status'] === 'SUCCESS') {
+            if ($parsedResult['body']['expiresAt'] === "01/01/1970") {
+                $parsedResult['body']['expiresAt'] = now()->format('m/d/Y');
+            }
+            $result['limits'] = $parsedResult['body'];
+        } else {
+            $result['limits'] = null;
+        }
+        $result['limits'] = $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+
+        $response = $this->makeIxArmaRequest("/api/v1/company/$ixArmaId", []);
+        $parsedResult = json_decode($response->getContents(), true);
+        $result['info'] = $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : null;
+
+        return $result;
+    }
+
+    public function updateLimits(Request $request, $id)
+    {
+        $client = \App\Client::find($id);
+        $ixArmaId = $client->customLicense->remote_client_id;
+        $data = [
+            'newTrialDays' => $request->trialPeriodDays,
+            'newAllowedUsers' => $request->usersAllowed,
+            'newExpires' => Carbon::parse($request->expiresAt)->format('m/d/Y')
+        ];
+        $result = $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/limits", $data, 'PUT');
+        $parsedResult = json_decode($result->getContents(), true);
+        if ($request->active === true) {
+            $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/renew", $data, 'GET');
+        } else {
+            $this->makeIxArmaRequest("/api/v1/app/company/$ixArmaId/suspend", $data, 'GET');
+        }
+
+        return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
+    }
+
+    public function manageUser($id, $remoteUserId, $isLicensed)
+    {
+        $client = \App\Client::find($id);
+        $ixArmaId = $client->customLicense->remote_client_id;
+        $activationAction = $isLicensed === 'true' ? 'deactivate' : 'activate';
+        $result = $this->makeIxArmaRequest("/api/v1/app/user/$remoteUserId/$activationAction", []);
+        $parsedResult = json_decode($result->getContents(), true);
+        if ($parsedResult['status'] === 'SUCCESS') {
+            return $parsedResult['body'];
+        }
+        return null;
     }
 
     public function create($id)
     {
         $client = \App\Client::find($id);
-        $data = [
-            'name' => $client->name,
-            'email' => $client->contact_email->email,
-        ];
-        $result = $this->makeIxArmaRequest("/api/v1/company", $data, 'POST');
-        $parsedResult = json_decode($result->getContents(), true);
-        if ($parsedResult['status'] === 'SUCCESS') {
-            $ixarmaCompany = $parsedResult['body'];
-            CustomLicense::query()->insert(['remote_client_id' => $ixarmaCompany['id'], 'client_id' => $id]);
-            return $ixarmaCompany;
+        if ($client->contact_email) {
+            $data = [
+                'name' => $client->name,
+                'email' => $client->contact_email->email,
+            ];
+            $result = $this->makeIxArmaRequest("/api/v1/company", $data, 'POST');
+            $parsedResult = json_decode($result->getContents(), true);
+            if ($parsedResult['status'] === 'SUCCESS') {
+                $ixarmaCompany = $parsedResult['body'];
+                CustomLicense::query()->insert(['remote_client_id' => $ixarmaCompany['id'], 'client_id' => $id]);
+                return $ixarmaCompany;
+            }
+            return $parsedResult['message'];
         }
 
-        return $parsedResult['message'];
+        return __('validation.email');
+    }
+
+    public function unassignFromIxarmaCompany($userID)
+    {
+        $result = $this->makeIxArmaRequest("/api/v1/app/user/$userID/unassign", []);
+        $parsedResult = json_decode($result->getContents(), true);
+        return $parsedResult['status'] === 'SUCCESS';
     }
 
     public function delete(): bool
     {
         return true;
     }
-
-
 }
