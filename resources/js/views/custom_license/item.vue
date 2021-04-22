@@ -19,10 +19,10 @@
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="setEnableToEdit">mdi-pencil
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="setEnableToEdit(null)">mdi-pencil
                         </v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
-                               @click="setEnableToEdit">
+                               @click="setEnableToEdit(null)">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="clientUpdate">
@@ -155,11 +155,11 @@
                         <v-icon :color="themeFgColor" class="ma-2" @click="historyDialog = true">
                             mdi-history
                         </v-icon>
-                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="setEnableToEditLicense">
+                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="setEnableToEditLicense(null)">
                             mdi-pencil
                         </v-icon>
                         <v-btn v-if="enableToEditLicense" color="white" style="color: black; margin-right: 10px"
-                               @click="setEnableToEditLicense(); getLicense();">
+                               @click="setEnableToEditLicense(null); getLicense();">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEditLicense" color="white" style="color: black;" @click="updateLicense()">
@@ -1498,13 +1498,13 @@ export default {
                 selectedClient = this.client
                 isRelated = false
             }
-            if (selectedClient.is_portal === 0) {
+            // if (selectedClient.is_portal === 0) {
                 if (isRelated) {
                     this.enableToEditChild = !this.enableToEditChild
                 } else {
                     this.enableToEdit = !this.enableToEdit
                 }
-            }
+            // }
             this.$forceUpdate();
 
         },
