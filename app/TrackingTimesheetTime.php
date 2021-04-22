@@ -14,7 +14,7 @@ class TrackingTimesheetTime extends Model
     const TYPE_ABSENCE = 'absence';
 
     protected $fillable = [
-        'type', 'date', 'time', 'description'
+        'type', 'date', 'time', 'description', 'timesheet_id'
     ];
 
     protected $appends = [

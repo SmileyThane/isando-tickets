@@ -12,6 +12,7 @@ class TrackingTimesheet extends Model
     const STATUS_REJECTED = 'rejected';
     const STATUS_UNSUBMITTED = 'unsubmitted';
     const STATUS_ARCHIVED = 'archived';
+    const STATUS_APPROVED = 'approved';
 
     protected $appends = [
         'total_time'

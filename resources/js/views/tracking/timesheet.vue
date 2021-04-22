@@ -310,7 +310,7 @@
             </template>
             <template v-slot:item.billable="{ isMobile, item, header, value }">
                 <v-btn
-                    v-if="[0,2].indexOf(typeOfItems) !== -1"
+                    v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually"
                     fab
                     :icon="!item.billable"
                     x-small
@@ -337,7 +337,7 @@
                 <span v-else>00:00</span>
             </template>
             <template v-slot:item.mon="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[0]">
                     <TimeField
                         v-model="moment(item.times[0].dateTime).format()"
@@ -353,7 +353,7 @@
                 </template>
             </template>
             <template v-slot:item.tue="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[1]">
                     <TimeField
                         v-model="moment(item.times[1].dateTime).format()"
@@ -369,7 +369,7 @@
                 </template>
             </template>
             <template v-slot:item.wed="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[2]">
                     <TimeField
                         v-model="moment(item.times[2].dateTime).format()"
@@ -385,7 +385,7 @@
                 </template>
             </template>
             <template v-slot:item.thu="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[3]">
                         <TimeField
                             v-model="moment(item.times[3].dateTime).format()"
@@ -401,7 +401,7 @@
                 </template>
             </template>
             <template v-slot:item.fri="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[4]">
                         <TimeField
                             v-model="moment(item.times[4].dateTime).format()"
@@ -417,7 +417,7 @@
                 </template>
             </template>
             <template v-slot:item.sat="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[5]">
                     <TimeField
                         v-model="moment(item.times[5].dateTime).format()"
@@ -433,7 +433,7 @@
                 </template>
             </template>
             <template v-slot:item.sun="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1">
+                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[6]">
                         <TimeField
                             v-model="moment(item.times[6].dateTime).format()"
@@ -847,12 +847,12 @@ export default {
                     value: 'total',
                     width: '3%'
                 },
-                {
-                    text: '',
-                    align: 'start',
-                    value: 'billable',
-                    width: '3%'
-                },
+                // {
+                //     text: '',
+                //     align: 'start',
+                //     value: 'billable',
+                //     width: '3%'
+                // },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.mon,
                     align: 'start',

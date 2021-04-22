@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Role;
 use App\Service;
 use App\Team;
+use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
 use App\TrackingLogger;
@@ -181,6 +182,12 @@ class TrackingRepository
             $tracking->save();
         }
 
+        if ($tracking->entity_type === Ticket::class) {
+            $tracking->rate = $tracking->entity->billedBy ? $tracking->entity->billedBy->cost : 0;
+            $tracking->save();
+        }
+
+        TrackingTimesheetRepository::recalculate($tracking);
         return $tracking;
     }
 
@@ -212,6 +219,9 @@ class TrackingRepository
                 $project = TrackingProject::find($request->entity['id']);
                 $tracking->rate = $project->rate;
             }
+            if ($tracking->entity_type === Ticket::class) {
+                $tracking->rate = $tracking->entity->billedBy ? $tracking->entity->billedBy->cost : 0;
+            }
         }
         if ($request->has('service')) {
             if (!is_null($request->service)) {
@@ -230,17 +240,18 @@ class TrackingRepository
                 $tracking->Tags()->attach($tag['id']);
             }
         }
+        TrackingTimesheetRepository::recalculate($oldTracking);
+        TrackingTimesheetRepository::recalculate($tracking);
         return $tracking;
     }
 
     public function delete(Tracking $tracking)
     {
-//        if ($tracking->user_id === Auth::user()->id) {
-            $this->logTracking($tracking->id, TrackingLogger::DELETE, $tracking, null);
-            $tracking->delete();
-            return true;
-//        }
-        return false;
+        $oldTracking = $tracking;
+        $this->logTracking($tracking->id, TrackingLogger::DELETE, $tracking, null);
+        $tracking->delete();
+        TrackingTimesheetRepository::recalculate($oldTracking);
+        return true;
     }
 
     public function duplicate(Tracking $tracking)
@@ -248,6 +259,7 @@ class TrackingRepository
         if ($tracking->user_id === Auth::user()->id) {
             $newTracking = $tracking->replicate();
             $newTracking->save();
+            TrackingTimesheetRepository::recalculate($tracking);
             $this->logTracking($tracking->id, TrackingLogger::DUPLICATE, $tracking, $newTracking);
             return $newTracking;
         }

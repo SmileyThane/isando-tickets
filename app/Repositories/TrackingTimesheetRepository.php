@@ -4,6 +4,8 @@
 namespace App\Repositories;
 
 use App\Team;
+use App\Tracking;
+use App\TrackingProject;
 use App\TrackingTimesheet;
 use App\TrackingTimesheetTime;
 use Carbon\Carbon;
@@ -114,6 +116,85 @@ class TrackingTimesheetRepository
                 }])->first();
         }
         return $updatedTimesheet;
+    }
+
+    public static function recalculate($tracking) {
+        if ($tracking->entity_type !== TrackingProject::class || is_null($tracking->entity_id))
+            return false;
+
+        $trackers = Tracking::where([
+            ['user_id', '=', $tracking->user_id],
+            ['team_id', '=', $tracking->team_id],
+            ['company_id', '=', $tracking->company_id],
+            ['entity_id', '=', $tracking->entity_id],
+            ['entity_type', '=', $tracking->entity_type],
+            ['date_from', '>=', Carbon::parse($tracking->date_from)->startOf('weeks')->format('Y-m-d')],
+            ['date_to', '<=', Carbon::parse($tracking->date_to)->endOf('weeks')->format('Y-m-d')],
+        ])->get();
+
+        $items = [];
+        foreach ($trackers as $tracker) {
+            $timesheet = TrackingTimesheet::where([
+                ['user_id', '=', $tracker->user_id],
+                ['company_id', '=', $tracker->company_id],
+                ['team_id', '=', $tracker->team_id],
+                ['project_id', '=', $tracker->entity_id],
+                ['is_manually', '=', false],
+                ['from', '>=', Carbon::parse($tracker->date_from)->startOf('weeks')],
+                ['to', '<=', Carbon::parse($tracker->date_to)->endOf('weeks')]
+            ])->first();
+            if (!$timesheet) {
+                $timesheet = new TrackingTimesheet();
+                $timesheet->user_id = $tracker->user_id;
+                $timesheet->company_id = $tracker->company_id;
+                $timesheet->team_id = $tracker->team_id;
+                $timesheet->project_id = $tracker->entity_id;
+                $timesheet->is_manually = false;
+                $timesheet->from = Carbon::parse($tracker->date_from)->startOf('weeks')->format('Y-m-d');
+                $timesheet->to = Carbon::parse($tracker->date_to)->endOf('weeks')->format('Y-m-d');
+                $timesheet->save();
+                for ($i = 0; $i <= 6; $i++) {
+                    $trackingTimesheetTime = new TrackingTimesheetTime();
+                    $trackingTimesheetTime->timesheet_id = $timesheet->id;
+                    $trackingTimesheetTime->type = TrackingTimesheetTime::TYPE_WORK;
+                    $trackingTimesheetTime->date = Carbon::parse($timesheet->from)->add($i, 'days')->format('Y-m-d');
+                    $trackingTimesheetTime->time = self::convertSecondsToTimeFormat(0, true);
+                    $trackingTimesheetTime->save();
+                }
+            }
+            TrackingTimesheetTime::where('timesheet_id', '=', $timesheet->id)->update(['time' => '00:00:00']);
+            $date = Carbon::parse($tracker->date_from)->format('Y-m-d');
+            $items[$timesheet->id][$date][] = $tracker;
+        }
+
+        foreach ($items as $timesheet_id => $timesheetItems) {
+            foreach ($timesheetItems as $date => $trackers) {
+                $seconds = 0;
+                foreach ($trackers as $tracker) {
+                    $seconds += $tracker->passed;
+                }
+                TrackingTimesheetTime::updateOrCreate([
+                    'timesheet_id' => $timesheet_id,
+                    'type' => TrackingTimesheetTime::TYPE_WORK,
+                    'date' => $date
+                ], [
+                    'time' => self::convertSecondsToTimeFormat($seconds, true),
+                    'timesheet_id' => $timesheet_id,
+                    'type' => TrackingTimesheetTime::TYPE_WORK,
+                    'date' => $date
+                ]);
+            }
+        }
+        return true;
+    }
+
+    static function convertSecondsToTimeFormat($value, $withSeconds = true) {
+        $h = floor($value / 60 / 60);
+        $m = floor(($value - ($h * 60 * 60)) / 60);
+        if ($withSeconds) {
+            return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
+        }
+        return sprintf("%02d", $h) . ":" . sprintf("%02d", $m);
     }
 
 }
