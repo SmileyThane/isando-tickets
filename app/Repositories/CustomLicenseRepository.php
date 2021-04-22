@@ -145,10 +145,13 @@ class CustomLicenseRepository
 
             if (Carbon::parse($ixarmaClient['limits']['expiresAt'])->lt(now())) {
                 $request->expiresAt = now()->addDays($request->trialPeriodDays);
+                $request->trialExpirationDate = $request->expiresAt;
+
             }
         }
         $this->updateLimits($request, $client->id);
         $this->manageUser($client->id, $request->user_id, 'false');
+        $this->setUserTrial($request, $request->user_id);
         $parsedResult = json_decode($result->getContents(), true);
         return $parsedResult['status'] === 'SUCCESS' ? $parsedResult['body'] : $parsedResult['message'];
     }
