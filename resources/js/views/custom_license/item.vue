@@ -19,13 +19,13 @@
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="setEnableToEdit">mdi-pencil
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="setEnableToEdit(null)">mdi-pencil
                         </v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
-                               @click="setEnableToEdit">
+                               @click="setEnableToEdit(null)">
                             {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="clientUpdate">
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="clientUpdate(null)">
                             {{ langMap.main.update }}
                         </v-btn>
 
@@ -93,7 +93,7 @@
                             v-if="enableToEdit"
                             color="green"
                             outlined
-                            @click="addConnectionLink"
+                            @click="addConnectionLink(false)"
                         >
                             <v-icon>mdi-plus</v-icon>
                         </v-btn>
@@ -132,7 +132,7 @@
                             v-if="enableToEdit"
                             color="green"
                             outlined
-                            @click="addAlias"
+                            @click="addAlias(false)"
                         >
                             <v-icon>mdi-plus</v-icon>
                         </v-btn>
@@ -155,14 +155,14 @@
                         <v-icon :color="themeFgColor" class="ma-2" @click="historyDialog = true">
                             mdi-history
                         </v-icon>
-                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="setEnableToEditLicense">
+                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="setEnableToEditLicense(null)">
                             mdi-pencil
                         </v-icon>
                         <v-btn v-if="enableToEditLicense" color="white" style="color: black; margin-right: 10px"
-                               @click="setEnableToEditLicense(); getLicense();">
+                               @click="setEnableToEditLicense(null); getLicense();">
                             {{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn v-if="enableToEditLicense" color="white" style="color: black;" @click="updateLicense()">
+                        <v-btn v-if="enableToEditLicense" color="white" style="color: black;" @click="updateLicense(null)">
                             {{ langMap.main.update }}
                         </v-btn>
                     </v-toolbar>
@@ -1276,13 +1276,15 @@ export default {
             }
         },
         updateLicense(id = null) {
-            let license;
+            let license, isRelated;
             if (id === null) {
                 id = this.$route.params.id
                 license = this.license
+                isRelated = 0
             } else {
                 id = this.selectedChildClient.id
                 license = this.selectedChildClientLicense
+                isRelated = 1
             }
             axios.put(`/api/custom_license/${id}/limits`, license).then(response => {
                 response = response.data
@@ -1292,7 +1294,7 @@ export default {
                     this.snackbarMessage = this.license = this.langMap.main.update_successful;
                     this.actionColor = 'success';
                     this.snackbar = true;
-                    this.enableToEditLicense = false;
+                    this.setEnableToEditLicense(isRelated === 1 ? license : null)
                     this.getLicense()
                     this.getLicenseUsers()
                 } else {
@@ -1354,19 +1356,25 @@ export default {
             return roleExists
         },
         clientUpdate(id = null) {
-            let client;
+            let client, isRelated;
             if (id === null) {
                 id = this.$route.params.id
                 client = this.client
+                isRelated = 0
             } else {
                 id = this.selectedChildClient.id
                 client = this.selectedChildClient
+                isRelated = 1
             }
             axios.put(`/api/custom_license/${id}`, client).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getClient();
-                    this.enableToEdit = false;
+                    this.setEnableToEdit(isRelated === 1 ? client : null)
+                    this.snackbarMessage = this.license = this.langMap.main.update_successful;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1498,13 +1506,13 @@ export default {
                 selectedClient = this.client
                 isRelated = false
             }
-            if (selectedClient.is_portal === 0) {
+            // if (selectedClient.is_portal === 0) {
                 if (isRelated) {
                     this.enableToEditChild = !this.enableToEditChild
                 } else {
                     this.enableToEdit = !this.enableToEdit
                 }
-            }
+            // }
             this.$forceUpdate();
 
         },
@@ -1514,14 +1522,13 @@ export default {
                 selectedClient = this.client
                 isRelated = false
             }
-            if (selectedClient.is_portal === 0) {
+            // if (selectedClient.is_portal === 0) {
                 if (isRelated) {
                     this.enableToEditChildLicense = !this.enableToEditChildLicense
                 } else {
                     this.enableToEditLicense = !this.enableToEditLicense
                 }
-            }
-
+            // }
         },
         showExpiredAtDialog() {
             if (this.client.is_portal === 0) {
