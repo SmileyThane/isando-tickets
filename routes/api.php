@@ -204,6 +204,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::get('/clients', 'BaseController@getClientList');
                 Route::get('/products', 'BaseController@getProductList');
                 Route::get('/coworkers', 'BaseController@getCoworkers');
+                Route::get('/managed_teams', 'BaseController@getManagedTeams');
                 Route::get('/tickets', 'BaseController@getTickets');
 
                 //Tracker
@@ -223,6 +224,14 @@ Route::group(['middleware' => 'auth:api'], function () {
                 // Settings
                 Route::get('/settings', 'SettingsController@get');
                 Route::patch('/settings', 'SettingsController@update');
+
+                // Timesheet
+                Route::get('/timesheet', 'TimesheetController@get');
+                Route::post('/timesheet', 'TimesheetController@create');
+                Route::get('/timesheet/{id}', 'TimesheetController@find');
+                Route::patch('/timesheet/submit', 'TimesheetController@submit');
+                Route::patch('/timesheet/{id}', 'TimesheetController@update');
+                Route::delete('/timesheet/{id}', 'TimesheetController@delete');
             });
 
         // Currencies

@@ -187,7 +187,7 @@
                         </v-card-actions>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel>
+                <v-expansion-panel v-if="$store.getters['Tickets/getTreeTickets'].length">
                     <v-expansion-panel-header>
                         {{langMap.tracking.project_btn.choose_ticket}}
                     </v-expansion-panel-header>

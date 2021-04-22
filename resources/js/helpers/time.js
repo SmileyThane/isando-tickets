@@ -8,7 +8,7 @@ import * as numbers from './numbers';
  * @returns {string}
  */
 export const convertSecToTime = (seconds, withSeconds = true) => {
-    if (!seconds) {
+    if (!seconds || seconds === 0) {
         return `00:00` + (withSeconds ? ':00' : '');
     }
     const h = Math.floor(seconds / 60 / 60);
