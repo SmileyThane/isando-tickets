@@ -23,7 +23,7 @@ class CreateTrackingTimesheetsTable extends Migration
             $table->boolean('billable')->default(false);
             $table->date('from')->nullable(false);
             $table->date('to')->nullable(false);
-            $table->enum('status', ['tracked', 'pending', 'unsubmitted', 'archived'])->default('tracked');
+            $table->string('status')->default('tracked');
             $table->timestamps();
         });
     }

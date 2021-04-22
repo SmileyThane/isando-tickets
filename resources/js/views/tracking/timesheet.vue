@@ -31,7 +31,7 @@
                 <v-btn
                     @click="selected = []"
                 >
-                    {{ langMap.tracking.timesheet.unsubmitted }}
+                    {{ langMap.tracking.timesheet.rejected }}
                 </v-btn>
 
                 <v-btn
@@ -602,7 +602,7 @@
                         <v-btn
                             color="success"
                             text
-                            @click="rejectDialog = false; submitItems('unsubmitted')"
+                            @click="rejectDialog = false; submitItems('rejected')"
                         >
                             Reject
                         </v-btn>
@@ -920,7 +920,7 @@ export default {
             switch (this.typeOfItems) {
                 case 0: status = 'tracked'; break;
                 case 1: status = 'pending'; break;
-                case 2: status = 'unsubmitted'; break;
+                case 2: status = 'rejected'; break;
                 case 3: status = 'archived'; break;
             }
             return this.$store.getters['Timesheet/getTimesheet']

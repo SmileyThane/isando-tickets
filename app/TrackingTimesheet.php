@@ -9,6 +9,7 @@ class TrackingTimesheet extends Model
 {
     const STATUS_TRACKED = 'tracked';
     const STATUS_PENDING = 'pending';
+    const STATUS_REJECTED = 'rejected';
     const STATUS_UNSUBMITTED = 'unsubmitted';
     const STATUS_ARCHIVED = 'archived';
 
