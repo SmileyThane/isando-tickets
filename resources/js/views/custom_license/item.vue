@@ -19,10 +19,10 @@
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="setEnableToEdit">mdi-pencil
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="setEnableToEdit(null)">mdi-pencil
                         </v-icon>
                         <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px"
-                               @click="setEnableToEdit">
+                               @click="setEnableToEdit(null)">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="clientUpdate">
@@ -155,11 +155,11 @@
                         <v-icon :color="themeFgColor" class="ma-2" @click="historyDialog = true">
                             mdi-history
                         </v-icon>
-                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="setEnableToEditLicense">
+                        <v-icon v-if="!enableToEditLicense" :color="themeFgColor" @click="setEnableToEditLicense(null)">
                             mdi-pencil
                         </v-icon>
                         <v-btn v-if="enableToEditLicense" color="white" style="color: black; margin-right: 10px"
-                               @click="setEnableToEditLicense(); getLicense();">
+                               @click="setEnableToEditLicense(null); getLicense();">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn v-if="enableToEditLicense" color="white" style="color: black;" @click="updateLicense()">
@@ -397,6 +397,18 @@
                                                             </v-icon>
                                                         </v-btn>
                                                     </template>
+                                                    <template v-slot:item.actions="{ item }">
+                                                        <v-tooltip top>
+                                                            <template v-slot:activator="{ on, attrs }">
+                                                                <v-btn @click.stop.prevent="showUnassignDialog(item)" icon v-bind="attrs" v-on="on">
+                                                                    <v-icon>
+                                                                        mdi-delete
+                                                                    </v-icon>
+                                                                </v-btn>
+                                                            </template>
+                                                            <span>{{langMap.company.delete_contact}}</span>
+                                                        </v-tooltip>
+                                                    </template>
                                                 </v-data-table>
                                             </div>
                                         </v-card>
@@ -463,8 +475,17 @@
                                     </v-icon>
                                 </v-btn>
                             </template>
-                            <template>
-
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click.stop.prevent="showUnassignDialog(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon>
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{langMap.company.delete_contact}}</span>
+                                </v-tooltip>
                             </template>
                         </v-data-table>
                     </div>
@@ -866,6 +887,26 @@
                 </v-card>
             </v-card>
         </v-dialog>
+        <v-dialog v-model="unassignDialog" max-width="480" persistent>
+            <v-card>
+                <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                    {{ langMap.main.unassign }}
+                </v-card-title>
+                <v-card-text>
+                    {{ unassignedUserForm.name }}
+                    {{ unassignedUserForm.phone }}
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="grey darken-1" text @click="unassignDialog = false">
+                        {{ langMap.main.cancel }}
+                    </v-btn>
+                    <v-btn color="red darken-1" text @click="unassignFromIxarmaCompany">
+                        {{ langMap.main.unassign }}
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -893,6 +934,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.custom_license.active}`, value: 'active', sortable: false},
                 {text: `${this.$store.state.lang.lang_map.custom_license.expired_at}`, value: 'trialExpirationAtString', sortable: false},
                 {text: `${this.$store.state.lang.lang_map.custom_license.last_activation}`, value: 'lastActivationChangeString', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions'},
             ],
             menu2: false,
             tempExpDate: null,
@@ -940,6 +982,12 @@ export default {
             selectedChildClientLicense: {},
             selectedChildClientLicenseHistory: [],
             relatedClientsPanel: [],
+            unassignedUserForm: {
+                user_id: '',
+                company_id: '',
+                name: '',
+                phone: ''
+            },
             client: {
                 is_portal: 1,
                 client_name: '',
@@ -982,6 +1030,7 @@ export default {
                 company_id: ''
             },
             assignCompanyDialog: false,
+            unassignDialog: false,
             customers: [],
             contactInfoModal: false,
             contactInfoEditBtn: false,
@@ -1094,6 +1143,30 @@ export default {
                 }
 
             });
+        },
+        showUnassignDialog(item) {
+            this.unassignedUserForm.user_id = item.id
+            this.unassignedUserForm.name = item.username
+            this.unassignedUserForm.phone = item.phoneNumber
+            this.unassignDialog = true
+        },
+        unassignFromIxarmaCompany() {
+            axios.post('/api/custom_license_user/unassign', this.unassignedUserForm, {
+            }).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                    this.getLicenseUsers();
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+            // console.log(this.unassignedUserForm);
+            this.unassignDialog = false
         },
         getLicenseHistory(id = null) {
             let isRelated = true
@@ -1389,6 +1462,8 @@ export default {
                         this.actionColor = 'success'
                         this.snackbar = true;
                         this.getLicenseUsers();
+                        this.getRelatedClients();
+                        this.$forceUpdate();
                     } else {
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
@@ -1423,13 +1498,13 @@ export default {
                 selectedClient = this.client
                 isRelated = false
             }
-            if (selectedClient.is_portal === 0) {
+            // if (selectedClient.is_portal === 0) {
                 if (isRelated) {
                     this.enableToEditChild = !this.enableToEditChild
                 } else {
                     this.enableToEdit = !this.enableToEdit
                 }
-            }
+            // }
             this.$forceUpdate();
 
         },

@@ -278,6 +278,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('custom_license_unassigned', 'API\CustomLicenseController@unassignedIxarmaUsersList');
     Route::post('custom_license_unassigned/assign', 'API\CustomLicenseController@assignToIxarmaCompany');
     Route::get('custom_license/{id}/user/{remoteUserId}/{idLicensed}', 'API\CustomLicenseController@manageUser');
+    Route::post('custom_license_user/unassign', 'API\CustomLicenseController@unassignFromIxarmaCompany');
     Route::put('custom_license_user/{remoteUserId}/trial', 'API\CustomLicenseController@setUserTrial');
 
     // knowledge base

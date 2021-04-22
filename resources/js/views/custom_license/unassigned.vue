@@ -233,8 +233,9 @@ export default {
                     this.snackbarMessage = this.langMap.main.update_successful;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.getUnassignedUsers()
                 } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.snackbarMessage = response.error ?? this.langMap.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
                 }
