@@ -7,6 +7,7 @@ namespace App\Http\Controllers\API\Tracking;
 use App\Company;
 use App\Currency;
 use App\TrackingSettings;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,8 +19,8 @@ class SettingsController extends BaseController
             'company' => $company,
             'currency' => $company->currency,
             'email' => Auth::user()->contact_email,
-            'settings' => TrackingSettings::where('entity_id', '=', $company->id)
-                ->where('entity_type', '=', Company::class)
+            'settings' => TrackingSettings::where('entity_id', '=', Auth::user()->id)
+                ->where('entity_type', '=', User::class)
                 ->pluck('data')
                 ->first()
         ]);
@@ -38,8 +39,8 @@ class SettingsController extends BaseController
         }
         if ($request->has('settings')) {
             TrackingSettings::updateOrCreate([
-                    'entity_id' => Auth::user()->employee->companyData->id,
-                    'entity_type' => Company::class
+                    'entity_id' => Auth::user()->id,
+                    'entity_type' => User::class
                 ], [
                     'data' => $request->get('settings')
                 ]

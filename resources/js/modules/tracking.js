@@ -19,7 +19,6 @@ export default {
             return axios.get('/api/tracking/settings', { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
-                        console.log(data);
                         if (
                           !data.settings?.timesheetWeek
                           || (data.settings?.timesheetWeek && !data.settings?.timesheetWeek.length)
@@ -59,7 +58,6 @@ export default {
                 });
         },
         saveSettings({ commit, dispatch, state }) {
-            console.log(state.settings);
             return axios.patch('/api/tracking/settings', state.settings, { retry: 5, retryDelay: 1000 })
               .then(({ data: { data, success }}) => {
                   if (success) {
