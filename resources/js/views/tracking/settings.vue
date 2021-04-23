@@ -17,22 +17,105 @@
 
             <v-tabs-items v-model="tab">
                 <v-tab-item :key="1">
-                    <v-card flat>
-                        <v-card-text>
-                            <div class="d-flex flex-column">
-                                <div class="d-inline-flex">
-                                    <!--Column 1-->
+                    <div class="d-flex flex-row">
+                        <div class="d-inline-flex flex-grow-1 ma-4" style="width: 100%">
+                            <!--Column 1-->
+                            <v-card class="elevation-12 without-bottom" style="width: 100%">
+                                <v-toolbar :color="themeBgColor" dark dense flat>
+                                    <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.general }}</v-toolbar-title>
+                                </v-toolbar>
+                                <v-card-text>
                                     <v-checkbox
                                         v-model="enableTimesheet"
                                         :label="langMap.tracking.settings.enable_timesheet"
                                     ></v-checkbox>
-                                </div>
-                                <div class="d-inline-flex">
-                                    <!--Column 2-->
-                                </div>
-                            </div>
-                        </v-card-text>
-                    </v-card>
+                                </v-card-text>
+                            </v-card>
+
+                        </div>
+                        <div class="d-inline-flex flex-grow-1 ma-4" style="width: 100%">
+                            <!--Column 2-->
+                            <v-card class="elevation-12 without-bottom" style="width: 100%" v-if="enableTimesheet">
+                                <v-toolbar :color="themeBgColor" dark dense flat>
+                                    <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.timesheet }}</v-toolbar-title>
+                                </v-toolbar>
+                                <v-card-text>
+                                    <v-expansion-panels>
+                                        <v-expansion-panel
+                                            v-for="item in this.$store.getters['Tracking/getSettings'].settings.timesheetWeek"
+                                            :key="item.dayOfWeek"
+                                        >
+                                            <v-expansion-panel-header v-slot="{ open }">
+                                                <div class="d-flex flex-row">
+                                                    <div class="d-inline-flex" style="width: 40%">
+                                                        {{ daysOfWeekTitle[item.dayOfWeek] }}
+                                                    </div>
+                                                    <div class="d-inline-flex" style="width: 80%">
+                                                        <v-fade-transition leave-absolute>
+                                                            <span v-if="open">When do you want to work?</span>
+                                                            <div class="d-flex flex-row"
+                                                                v-else
+                                                                style="width: 100%"
+                                                            >
+                                                                <div class="d-inline-flex mx-4">
+                                                                    {{ moment(item.workTime.start).format('HH:mm') || 'Not set' }} - {{ moment(item.lunchTime.start).format('HH:mm') || 'Not set' }}
+                                                                </div>
+                                                                <div class="d-inline-flex mx-4">
+                                                                    {{ moment(item.lunchTime.end).format('HH:mm') || 'Not set' }} - {{ moment(item.workTime.end).format('HH:mm') || 'Not set' }}
+                                                                </div>
+                                                            </div>
+                                                        </v-fade-transition>
+                                                    </div>
+                                                </div>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <div class="d-flex flex-column">
+                                                    <div class="d-inline-flex d-flex flex-row">
+                                                        <div class="d-inline-flex flex-grow-0" style="width: 30%; font-weight: bold">Work time</div>
+                                                        <div class="d-inline-flex flex-grow-1 mx-4">
+                                                            <TimeField
+                                                                style="max-width: 100px"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                                v-model="item.workTime.start"
+                                                                @input="debounceSaveSettings"
+                                                            ></TimeField>
+                                                            <TimeField
+                                                                style="max-width: 100px"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                                v-model="item.workTime.end"
+                                                                @input="debounceSaveSettings"
+                                                            ></TimeField>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-inline-flex d-flex flex-row">
+                                                        <div class="d-inline-flex flex-grow-0" style="width: 30%; font-weight: bold">Lunch time</div>
+                                                        <div class="d-inline-flex flex-grow-1 mx-4">
+                                                            <TimeField
+                                                                style="max-width: 100px"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                                v-model="item.lunchTime.start"
+                                                                @input="debounceSaveSettings"
+                                                            ></TimeField>
+                                                            <TimeField
+                                                                style="max-width: 100px"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                                v-model="item.lunchTime.end"
+                                                                @input="debounceSaveSettings"
+                                                            ></TimeField>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-card-text>
+                            </v-card>
+                        </div>
+                    </div>
                 </v-tab-item>
 
                 <v-tab-item :key="2">
@@ -137,10 +220,12 @@
 <script>
 import EventBus from "../../components/EventBus";
 import _ from 'lodash';
+import moment from 'moment-timezone';
 import TagBtn from './components/tag-btn';
+import TimeField from './components/time-field';
 
 export default {
-    components: {TagBtn},
+    components: {TagBtn, TimeField},
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
@@ -149,7 +234,7 @@ export default {
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
-            tab: 1,
+            tab: 0,
             headers: {
                 services: [
                     {
@@ -171,12 +256,27 @@ export default {
                     name: ''
                 }
             },
-            searchService: null
+            searchService: null,
+            daysOfWeekTitle: [
+                this.$store.state.lang.lang_map.tracking.timesheet.monday,
+                this.$store.state.lang.lang_map.tracking.timesheet.tuesday,
+                this.$store.state.lang.lang_map.tracking.timesheet.wednesday,
+                this.$store.state.lang.lang_map.tracking.timesheet.thursday,
+                this.$store.state.lang.lang_map.tracking.timesheet.friday,
+                this.$store.state.lang.lang_map.tracking.timesheet.saturday,
+                this.$store.state.lang.lang_map.tracking.timesheet.sunday
+            ]
         }
     },
     created() {
         this.debounceGetServices = _.debounce(this.__getServices, 1000);
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
+        this.debounceSaveSettings = _.debounce(this.__saveSettings, 1000);
+        moment.updateLocale(this.$store.state.lang.short_code, {
+            week: {
+                dow: 1,
+            },
+        });
     },
     mounted() {
         let that = this;
@@ -228,6 +328,9 @@ export default {
         },
         saveService (item) {
             this.$store.dispatch('Services/updateService', item);
+        },
+        __saveSettings() {
+            this.$store.dispatch('Tracking/saveSettings');
         }
     },
     computed: {
@@ -236,14 +339,9 @@ export default {
                 const { settings } = this.$store.getters['Tracking/getSettings'];
                 return settings && settings.enableTimesheet ? settings.enableTimesheet : false;
             },
-            set(val) {
-                let { settings } = this.$store.getters['Tracking/getSettings'];
-                if (!settings) {
-                    settings = {};
-                }
-                console.log(settings);
-                settings = { ...settings, enableTimesheet: val };
-                this.$store.dispatch('Tracking/updateSettings', { settings });
+            async set(val) {
+                await this.$store.commit('Tracking/SET_TOGGLE_TIMESHEET', val);
+                await this.debounceSaveSettings();
             }
         }
     }
