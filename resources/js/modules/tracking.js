@@ -1,7 +1,17 @@
+import moment from 'moment-timezone';
+
 export default {
     namespaced: true,
     state: {
-        settings: {},
+        settings: {
+            company: null,
+            currency: null,
+            email: null,
+            settings: {
+                enableTimesheet: false,
+                timesheetWeek: []
+            }
+        },
         reports: [],
     },
     actions: {
@@ -9,6 +19,31 @@ export default {
             return axios.get('/api/tracking/settings', { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
+                        if (
+                          !data.settings?.timesheetWeek
+                          || (data.settings?.timesheetWeek && !data.settings?.timesheetWeek.length)
+                        ) {
+                            if (!data.settings) {
+                                data.settings = {
+                                    enableTimesheet: false,
+                                    timesheetWeek: []
+                                };
+                            }
+                            data.settings.timesheetWeek = [];
+                            for (let i = 0; i < 7; i++) {
+                                data.settings.timesheetWeek.push({
+                                    dayOfWeek: i,
+                                    workTime: {
+                                        start: moment().startOf('days').set({ hours: 8 }).format(),
+                                        end: moment().startOf('days').set({ hours: 18 }).format(),
+                                    },
+                                    lunchTime: {
+                                        start: moment().startOf('days').set({ hours: 12 }).format(),
+                                        end: moment().startOf('days').set({ hours: 13 }).format(),
+                                    }
+                                });
+                            }
+                        }
                         commit('SET_SETTINGS', data);
                     }
                     return success;
@@ -21,6 +56,14 @@ export default {
                         dispatch('getSettings');
                     }
                 });
+        },
+        saveSettings({ commit, dispatch, state }) {
+            return axios.patch('/api/tracking/settings', state.settings, { retry: 5, retryDelay: 1000 })
+              .then(({ data: { data, success }}) => {
+                  if (success) {
+                      dispatch('getSettings');
+                  }
+              });
         },
         updateTrack({commit}, { id, date_from, date_to, billable, tags, entity, entity_id, entity_type, service, status }) {
             return axios.patch(
@@ -72,12 +115,18 @@ export default {
         }
     },
     mutations: {
+        SET_TOGGLE_TIMESHEET (state, timesheet) {
+            state.settings.settings.enableTimesheet = timesheet;
+        },
+        SET_TIMESHEET_WEEK (state, timesheet) {
+            state.settings.settings.timesheetWeek = timesheet;
+        },
         SET_SETTINGS(state, settings) {
             state.settings = settings
         },
         SET_REPORTS(state, reports) {
             state.reports = reports;
-        },
+        }
     },
     getters: {
         getSettings(state) {
