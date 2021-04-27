@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Notifications\NewTicket;
 use App\Permission;
 use App\Repositories\TicketRepository;
-use App\Role;
 use App\Team;
 use App\Ticket;
 use App\TicketCategory;
@@ -49,7 +48,7 @@ class TicketController extends Controller
     {
         $types = TicketType::where('name', '!=', null);
 
-        if ($companyUser = Auth::user()->employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($companyUser = Auth::user()->employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $types->where('id', '!=', TicketType::INTERNAL);
         }
 
@@ -73,8 +72,7 @@ class TicketController extends Controller
 
         if ($result && $hasAccess) {
             $result = $this->ticketRepo->create($request);
-            $employees = $this->ticketRepo->filterEmployeesByRoles($result->to->employees, [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER, Role::USER, Role::COMPANY_CLIENT]);
-            $this->ticketRepo->emailEmployees($employees, $result, NewTicket::class);
+            $this->ticketRepo->emailEmployees($result->to->employees, $result, NewTicket::class);
             $success = true;
         }
 

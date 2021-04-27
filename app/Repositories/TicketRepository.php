@@ -7,8 +7,8 @@ use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyUser;
 use App\Notifications\ChangedTicketStatus;
+use App\Permission;
 use App\ProductCompanyUser;
-use App\Role;
 use App\TeamCompanyUser;
 use App\Ticket;
 use App\TicketAnswer;
@@ -33,7 +33,8 @@ class TicketRepository
         FileRepository $fileRepository,
         TicketUpdateRepository $ticketUpdateRepository,
         TicketSelectRepository $ticketSelectRepository
-    ) {
+    )
+    {
         $this->fileRepo = $fileRepository;
         $this->ticketUpdateRepo = $ticketUpdateRepository;
         $this->ticketSelectRepo = $ticketSelectRepository;
@@ -62,7 +63,7 @@ class TicketRepository
         $ticketIds = [];
         $companyUser = Auth::user()->employee;
         $tickets = Ticket::query();
-        $tickets = $this->ticketRoleFilter($companyUser, $tickets);
+        $tickets = $this->ticketAccessFilter($companyUser, $tickets);
         $tickets->orWhere('from_company_user_id', $companyUser->id);
         $tickets->orWhere(static function ($ticketsQuery) use ($companyUser) {
             $ticketsQuery->where('to_company_user_id', $companyUser->id)
@@ -179,10 +180,10 @@ class TicketRepository
         return $ticketResult->paginate($request->per_page ?? count($ticketIds));
     }
 
-    private function ticketRoleFilter($companyUser, $tickets)
+    private function ticketAccessFilter($companyUser, $tickets)
     {
-        $roleIds = $companyUser->roleIds();
-        if (!in_array(Role::COMPANY_CLIENT, $roleIds, true)) {
+        $permissionIds = $companyUser->getPermissionIds();
+        if (!in_array(Permission::EMPLOYEE_CLIENT_ACCESS, $permissionIds, true)) {
             $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
             $tickets->orWhere([['from_entity_type', Company::class], ['from_entity_id', $companyUser->company_id]]);
         } else {
@@ -200,7 +201,7 @@ class TicketRepository
                     ->whereIn('to_entity_id', $clientIds);
             });
         }
-        if (in_array([Role::LICENSE_OWNER, Role::ADMIN], $roleIds, true)) {
+        if (in_array(Permission::EMPLOYEE_TICKET_ADMIN_ACCESS, $permissionIds, true)) {
             $products = ProductCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($products) {
                 $productsIds = $products->pluck('id')->toArray();
@@ -209,7 +210,7 @@ class TicketRepository
                 }
             }
         }
-        if (in_array(Role::MANAGER, $roleIds, true)) {
+        if (in_array(Permission::EMPLOYEE_TICKET_MANAGER_ACCESS, $permissionIds, true)) {
             $teams = TeamCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($teams) {
                 $teamsIds = $teams->pluck('id')->toArray();
@@ -218,7 +219,7 @@ class TicketRepository
                 }
             }
         }
-        if (in_array(Role::COMPANY_CLIENT, $roleIds, true)) {
+        if (in_array(Permission::EMPLOYEE_CLIENT_ACCESS, $permissionIds, true)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', Auth::user()->employee->id)->first();
             if ($clientCompanyUser) {
                 $tickets->orWhere(static function ($query) use ($clientCompanyUser) {
@@ -443,7 +444,7 @@ class TicketRepository
             $this->fileRepo->store($file, $ticketAnswer->id, TicketAnswer::class);
         }
         $employee = $employeeId !== null ? CompanyUser::find($employeeId) : Auth::user()->employee;
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $request->status_id = 3;
         } else {
             $request->status_id = 4;
@@ -550,13 +551,16 @@ class TicketRepository
         return true;
     }
 
-    public function filterEmployeesByRoles($employees, $roles)
-    {
-        return $employees->filter(static function ($item) use ($roles) {
-            if ($item && $item->hasRoleId($roles)) {
-                return $item;
-            }
-            return null;
-        });
-    }
+//    deprecated method
+//    public function filterEmployeesByRoles($employees, $roles)
+//    {
+//        return $employees->filter(static function ($item) use ($roles) {
+//            if ($item && $item->hasRoleId($roles)) {
+//                return $item;
+//            }
+//            return null;
+//        });
+//    }
+
+
 }
