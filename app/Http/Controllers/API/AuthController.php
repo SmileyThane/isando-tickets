@@ -35,9 +35,7 @@ class AuthController extends Controller
         LicenseRepository $licenceRepository,
         RoleRepository $roleRepository,
         PlanRepository $planRepository
-
-    )
-    {
+    ) {
         $this->companyRepo = $companyRepository;
         $this->userRepo = $userRepository;
         $this->companyUserRepo = $companyUserRepository;
@@ -60,7 +58,6 @@ class AuthController extends Controller
                 $tokenData['expires_at'] = Carbon::parse($tokenResult->token['expires_at'])->format('U');
                 $result = true;
             }
-
         }
         return self::showResponse($result, $tokenData);
     }
@@ -80,6 +77,7 @@ class AuthController extends Controller
             $request->is_validated = true;
             $request->is_active = true;
             $company = $this->companyRepo->create($request);
+            $this->createDefaultRoles($company->id);
             $request->company_id = $company->id;
             $license = $this->licenseRepo->create($request);
             if ($license) {
@@ -103,6 +101,14 @@ class AuthController extends Controller
         $isLicenseValid = $this->licenseRepo->validate($request);
         $errors['license'] = $isLicenseValid !== true ? $isLicenseValid : null;
         return $isCompanyValid === true && $isUserValid === true && $isLicenseValid === true ? null : $errors;
+    }
+
+    private function createDefaultRoles($companyId)
+    {
+        foreach (Role::where('company_id', null)->get() as $role) {
+            $this->roleRepo->replicate($role->id, $companyId);
+        }
+        return true;
     }
 
     public function plans($groupedBy = null)
