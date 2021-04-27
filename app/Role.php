@@ -21,6 +21,8 @@ class Role extends Model
     // this is a virtual role
     protected $table = 'roles';
 
+    protected $fillable = ['id', 'company_id', 'name'];
+
     public function permissions(): HasMany
     {
         return $this->hasMany(RoleHasPermission::class, 'role_id', 'id');
