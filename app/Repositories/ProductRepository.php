@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 
 use App\CompanyProduct;
+use App\Permission;
 use App\Product;
 use App\ProductClient;
 use App\ProductCompanyUser;
@@ -33,7 +34,7 @@ class ProductRepository
         $employee = Auth::user()->employee()->with('assignedToClients')->first();
         $companyId = $employee->company_id;
         $productIds = null;
-        if (!$employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $productIds = CompanyProduct::where('company_id', $companyId);
         } else {
             $clientIds = $employee->assignedToClients->pluck('client_id')->toArray();
