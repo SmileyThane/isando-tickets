@@ -14,7 +14,6 @@ class RegularInviteEmail extends Notification
 
     protected $title;
     protected $name;
-    protected $role;
     protected $email;
     protected $password;
     protected $from;
@@ -26,17 +25,15 @@ class RegularInviteEmail extends Notification
      * @param $from
      * @param $title
      * @param $name
-     * @param $role
      * @param $email
      * @param $password
      * @param $language
      */
-    public function __construct($from, $title, $name, $role, $email, $password, $language = 'en')
+    public function __construct($from, $title, $name, $email, $password, $language = 'en')
     {
         $this->from = $from;
         $this->title = $title;
         $this->name = $name;
-        $this->role = $role;
         $this->email = $email;
         $this->password = $password;
         $this->language = $language;
