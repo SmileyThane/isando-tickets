@@ -5,13 +5,10 @@ namespace App\Repositories;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
-use App\CompanyUser;
 use App\CompanyUserNotification;
+use App\Permission;
 use App\ProductCategory;
-use App\Role;
 use App\Settings;
-use App\UserNotificationStatus;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -36,7 +33,7 @@ class CompanyRepository
     public function find($request, $id)
     {
         $employee = Auth::user()->employee;
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $company = $clientCompanyUser->clients()->with('employees.employee.userData');
         } else {
@@ -54,7 +51,7 @@ class CompanyRepository
         $company->with('currency');
         return $id ? $company->with(['employees' => function ($query) {
             $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
-            if (Auth::user()->employee->hasRoleId([Role::COMPANY_CLIENT, Role::USER])) {
+            if (Auth::user()->employee->hasPermissionId([Permission::EMPLOYEE_CLIENT_ACCESS, Permission::EMPLOYEE_USER_ACCESS])) {
                 $result->where('user_id', Auth::id());
             }
             return $result->get();
@@ -154,7 +151,8 @@ class CompanyRepository
         return $result;
     }
 
-    public function getCompanyLicense($companyId) {
+    public function getCompanyLicense($companyId)
+    {
         return Company::with('license')->where('id', '=', $companyId)->first();
     }
 
