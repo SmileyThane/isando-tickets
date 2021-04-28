@@ -88,6 +88,7 @@
             <v-divider></v-divider>
             <v-list dense>
                 <v-list-item
+                    v-if="checkPermissionByIds([25])"
                     style="background-color: white;"
                     dense
                     link
@@ -102,6 +103,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
+                    v-if="checkPermissionByIds([25])"
                     style="background-color: white;"
                     dense
                     link
@@ -119,7 +121,7 @@
             <v-divider></v-divider>
             <v-list dense>
                 <v-list-group
-                    v-if="checkRoleByIds([1,2,3,4,5])"
+                    v-if="checkPermissionByIds([7])"
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
@@ -134,6 +136,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
+                        v-if="checkPermissionByIds([7, 10])"
                         color="#757575"
                         link
                         style="background-color:white;"
@@ -147,7 +150,8 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,3,4,5])" color="#757575"
+                        v-if="checkPermissionByIds([7])"
+                        color="#757575"
                         link
                         style="background-color:white;"
                         to="/customer"
@@ -160,7 +164,8 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,3,4,5])" color="#757575"
+                        v-if="checkPermissionByIds([10])"
+                        color="#757575"
                         link
                         style="background-color:white;"
                         to="/employee"
@@ -173,7 +178,8 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,3,4,5])" color="#757575"
+                        v-if="checkPermissionByIds([19])"
+                        color="#757575"
                         link
                         style="background-color:white;"
                         to="/product"
@@ -188,11 +194,12 @@
                 </v-list-group>
             </v-list>
             <v-divider
-                v-if="checkRoleByIds([1,2,3,4,5])"
+                v-if="checkPermissionByIds([1])"
             >&nbsp;
             </v-divider>
             <v-list dense>
                 <v-list-group
+                    v-if="checkPermissionByIds([1])"
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
@@ -207,6 +214,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
+                        v-if="checkPermissionByIds([1])"
                         color="#757575" link
                         style="background-color:white;"
                         to="/tickets"
@@ -221,6 +229,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
+                        v-if="checkPermissionByIds([2])"
                         color="#757575" link
                         style="background-color:white;"
                         to="/ticket_create"
@@ -369,7 +378,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="!checkRoleByIds([6, 101])"
+                        v-if="!checkPermissionByIds([36])"
                         link
                         style="background-color:white;"
                         to="/notify"
@@ -417,6 +426,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
+                        v-if="checkPermissionByIds([7, 13])"
                         link
                         style="background-color:white;"
                         to="/company">
@@ -428,7 +438,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,3,4,5])"
+                        v-if="checkPermissionByIds([31])"
                         link
                         style="background-color:white;"
                         to="/team"
@@ -441,7 +451,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,3])"
+                        v-if="checkPermissionByIds([13])"
                         link
                         style="background-color:white;"
                         to="/settings/system"
@@ -531,15 +541,6 @@ export default {
         });
     },
     methods: {
-        checkRoleByIds(ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
-                }
-            });
-            return roleExists
-        },
         checkPermissionByIds(ids) {
             let permissionExists = false;
             ids.forEach(id => {
