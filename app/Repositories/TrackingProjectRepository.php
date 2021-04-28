@@ -76,7 +76,7 @@ class TrackingProjectRepository
         $trackingProject->product_id = $request->product['id'] ?? $request->productId;
         $trackingProject->client_id = $request->client['id'] ?? $request->clientId;
         $trackingProject->color = $request->color ?? $this->genHexColor();
-        $trackingProject->company_id = Auth::user()->employee->id;
+        $trackingProject->company_id = Auth::user()->employee->companyData->id;
         $team = Team::whereHas('employees', function ($query) {
             return $query->where('company_user_id', '=', Auth::user()->employee->id);
         })->first();
