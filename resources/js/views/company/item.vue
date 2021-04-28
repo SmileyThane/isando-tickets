@@ -40,7 +40,7 @@
                             <v-text-field
                                 v-model="company.name"
                                 :color="themeBgColor"
-                                :disabled="!checkRoleByIds([1,2,3])"
+                                :disabled="checkPermissionByIds([36, 37])"
                                 :label="langMap.company.name"
                                 :readonly="!enableToEdit"
                                 dense
@@ -691,7 +691,7 @@
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
                                         <v-btn v-bind="attrs"
-                                               v-on="on" :disabled="checkEmployeeRoleByIds(item, [2])" icon
+                                               v-on="on" icon
                                                @click.native.stop="showRemoveEmployeeDlg(item)">
                                             <v-icon
                                                 small
@@ -800,7 +800,7 @@
                                             />
                                             <v-checkbox
                                                 v-model="employeeForm.is_active"
-                                                :disabled="!checkRoleByIds([1,2,3])"
+                                                :disabled="checkPermissionByIds([36, 37])"
                                                 :label="langMap.main.give_access + '?'"
                                                 class="col-md-6"
                                                 color="success"
@@ -1182,7 +1182,7 @@
                             <v-select
                                 v-model="singleUserForm.role_ids"
                                 :color="themeBgColor"
-                                :disabled="!checkRoleByIds([1,2,3])"
+                                :disabled="checkPermissionByIds([36, 37])"
                                 :item-color="themeBgColor"
                                 :items="roles"
                                 :label="langMap.main.role"
@@ -1197,7 +1197,7 @@
                                 </template>
                             </v-select>
                             <v-expansion-panels
-                                :disabled="!checkRoleByIds([1,2,3])"
+                                :disabled="checkPermissionByIds([36, 37])"
                             >
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>
@@ -1636,7 +1636,7 @@
                             <v-checkbox
                                 v-model="singleUserForm.user.is_active"
                                 :color="themeBgColor"
-                                :disabled="!checkRoleByIds([1,2,3])"
+                                :disabled="checkPermissionByIds([36, 37])"
                                 :label="langMap.main.give_access"
                                 hide-details
                                 @change="changeIsActive(singleUserForm.user)"
@@ -2765,27 +2765,14 @@ export default {
                 }
             });
         },
-        checkRoleByIds(ids) {
-            let roleExists = false;
+        checkPermissionByIds(ids) {
+            let permissionExists = false;
             ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
+                if (permissionExists === false) {
+                    permissionExists = this.$store.state.permissions.includes(id)
                 }
             });
-            return roleExists
-        },
-        checkEmployeeRoleByIds(employee, ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    employee.roles.forEach(role => {
-                        if (roleExists === false) {
-                            roleExists = role.id === id
-                        }
-                    })
-                }
-            });
-            return roleExists
+            return permissionExists
         },
         editPhone(item) {
             this.updatePhoneDlg = true;

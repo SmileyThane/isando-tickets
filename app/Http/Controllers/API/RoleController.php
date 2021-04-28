@@ -20,7 +20,7 @@ class RoleController extends Controller
 
     public function roles()
     {
-        return self::showResponse(true, Role::all());
+        return self::showResponse(true, Role::where(['company_id' => Auth::user()->employee->company_id])->get());
     }
 
     public function permissions()
@@ -30,7 +30,7 @@ class RoleController extends Controller
 
     public function getRolesWithPermissions()
     {
-        if (Auth::user()->employee->hasRoleId(Role::SUPERADMIN)) {
+        if (Auth::user()->employee->hasPermissionId(Permission::PERMISSION_READ_ACCESS)) {
             return self::showResponse(true, $this->roleRepo->getRolesWithPermissions());
         }
         return self::showResponse(false);
@@ -39,7 +39,7 @@ class RoleController extends Controller
 
     public function mergeRolesWithPermissions(Request $request)
     {
-        if (Auth::user()->employee->hasRoleId(Role::LICENSE_OWNER)) {
+        if (Auth::user()->employee->hasPermissionId(Permission::PERMISSION_WRITE_ACCESS)) {
             return self::showResponse(true, $this->roleRepo->mergeRolesWithPermissions($request->data));
         }
         return self::showResponse(false);

@@ -10,8 +10,8 @@ use App\CompanyProduct;
 use App\Email;
 use App\Http\Controllers\Controller;
 use App\MailCache;
+use App\Permission;
 use App\ProductClient;
-use App\Role;
 use App\Ticket;
 use App\User;
 use Carbon\Carbon;
@@ -167,7 +167,7 @@ class EmailReceiverRepository
         if ($email) {
             $userFrom = User::where(['is_active' => true, 'id' => $email->entity_id])->first();
         }
-        if ($userFrom && $userFrom->employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($userFrom && $userFrom->employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $userFrom->employee->id)->first();
             if ($clientCompanyUser) {
                 $fromEntityId = $clientCompanyUser->client_id;

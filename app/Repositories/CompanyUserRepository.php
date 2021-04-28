@@ -11,12 +11,11 @@ use App\CompanyUser;
 use App\Email;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
-use App\Role;
+use App\Permission;
 use App\Settings;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -26,7 +25,6 @@ class CompanyUserRepository
 {
 
     protected $userRepo;
-    protected $roleRepo;
 
     public function __construct(UserRepository $userRepository, RoleRepository $roleRepository)
     {
@@ -45,7 +43,7 @@ class CompanyUserRepository
         $request->sort_by = null;
 
         $employee = Auth::user()->employee;
-        $clientIds = $employee->hasRoleId(Role::COMPANY_CLIENT) ? null :
+        $clientIds = $employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS) ? [] :
             Client::where([
                 'supplier_type' => Company::class,
                 'supplier_id' => $employee->company_id
@@ -122,7 +120,7 @@ class CompanyUserRepository
     {
         $result = false;
         $companyUser = CompanyUser::find($id);
-        if ($companyUser && !$companyUser->hasRoleId(Role::LICENSE_OWNER)) {
+        if ($companyUser && $companyUser->hasPermissionId(Permission::EMPLOYEE_DELETE_ACCESS)) {
             User::where('id', $companyUser->user_id)->delete();
             ClientCompanyUser::where('company_user_id', $companyUser->id)->delete();
             $companyUser->delete();
@@ -167,7 +165,14 @@ class CompanyUserRepository
                 if ($isNew === true) {
                     try {
                         @$user->notify(
-                            new RegularInviteEmail($companyUser->companyData->title, $companyUser->companyData->name, $user->full_name, $request['role_id'], $request['email'], $request['password'], $user->language->short_code)
+                            new RegularInviteEmail(
+                                $companyUser->companyData->title,
+                                $companyUser->companyData->name,
+                                $user->full_name,
+                                $request['email'],
+                                $request['password'],
+                                $user->language->short_code
+                            )
                         );
                     } catch (Throwable $throwable) {
                         Log::error($throwable);

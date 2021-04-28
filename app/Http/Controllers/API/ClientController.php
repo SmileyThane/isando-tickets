@@ -11,6 +11,7 @@ use App\Repositories\ClientRepository;
 use App\Repositories\CompanyUserRepository;
 use App\Repositories\UserRepository;
 use App\Role;
+use App\RoleHasPermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -115,8 +116,16 @@ class ClientController extends Controller
     public function attach(Request $request)
     {
         $result = false;
+        $clientRole = null;
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS)) {
-            $request['role_id'] = Role::COMPANY_CLIENT;
+            $roles = Role::query()->where('company_id', Auth::user()->employee->company_id)->get();
+            if ($roles) {
+                $clientRole = RoleHasPermission::query()
+                    ->whereIn('role_id', $roles->pluck('id')->toArray())
+                    ->where('permission_id', Permission::EMPLOYEE_CLIENT_ACCESS)
+                    ->first();
+            }
+            $request['role_id'] = $clientRole ? $clientRole->role_id : Role::COMPANY_CLIENT;
             $request['company_id'] = Auth::user()->employee->company_id;
             $request['is_clientable'] = true;
 

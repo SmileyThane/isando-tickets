@@ -6,7 +6,7 @@ use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
 use App\Email;
-use App\Role;
+use App\Permission;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -57,7 +57,7 @@ class ClientRepository
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
         } else {
@@ -111,7 +111,7 @@ class ClientRepository
         $companyId = $employee->company_id;
         $company = Company::find($companyId);
         $suppliers[] = ['name' => $company->name, 'item' => [Company::class => $companyId]];
-        if (!$employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $childClientIds = $this->getRecursiveChildClientIds($company->clients);
             $clients = Client::whereIn('id', $childClientIds)->get();
         } else {
@@ -232,7 +232,7 @@ class ClientRepository
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
         $clientIds = [];
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
         } else {
@@ -264,7 +264,7 @@ class ClientRepository
 
         $clientCompanyUsers = $clientCompanyUsers->with(['employee.userData' => function ($query) {
             $query->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country']);
-        }])->get();
+        }])->whereHas('employee.userData')->get();
 
         $result = $clients->merge($clientCompanyUsers);
         $result = $result->unique(function ($item) {
@@ -364,7 +364,7 @@ class ClientRepository
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
             $company = $clientCompanyUser->clients()->with('employees.employee.userData');
@@ -377,7 +377,12 @@ class ClientRepository
 
         $company = $company->with(['employees' => function ($query) {
             $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
-            if (Auth::user()->employee->hasRoleId([Role::COMPANY_CLIENT, Role::USER])) {
+            if (Auth::user()->employee->hasPermissionId(
+                [
+                    Permission::EMPLOYEE_CLIENT_ACCESS,
+                    Permission::EMPLOYEE_USER_ACCESS
+                ]
+            )) {
                 $result->where('user_id', Auth::id());
             }
             return $result->get();
