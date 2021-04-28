@@ -35,7 +35,7 @@
                             <v-text-field
                                 v-model="client.client_name"
                                 :color="themeBgColor"
-                                :disabled="!checkRoleByIds([1,2,3])"
+                                :disabled="checkPermissionByIds([36, 37])"
                                 :label="langMap.company.name"
                                 :readonly="!enableToEdit"
                                 dense
@@ -621,7 +621,7 @@
                             <v-text-field
                                 v-model="selectedChildClient.client_name"
                                 :color="themeBgColor"
-                                :disabled="!checkRoleByIds([1,2,3])"
+                                :disabled="checkPermissionByIds([36, 37])"
                                 :label="langMap.company.name"
                                 :readonly="!enableToEditChild"
                                 dense
@@ -1346,14 +1346,14 @@ export default {
                 }
             });
         },
-        checkRoleByIds(ids) {
-            let roleExists = false;
+        checkPermissionByIds(ids) {
+            let permissionExists = false;
             ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
+                if (permissionExists === false) {
+                    permissionExists = this.$store.state.permissions.includes(id)
                 }
             });
-            return roleExists
+            return permissionExists
         },
         clientUpdate(id = null) {
             let client, isRelated;
