@@ -52,5 +52,14 @@ class Permission extends Model
     public const TEAM_WRITE_ACCESS = 32;
     public const TEAM_DELETE_ACCESS = 33;
 
+    public const PERMISSION_READ_ACCESS = 34;
+    public const PERMISSION_WRITE_ACCESS = 35;
+
+    public const EMPLOYEE_CLIENT_ACCESS = 36;
+    public const EMPLOYEE_USER_ACCESS = 37;
+
+    public const EMPLOYEE_TICKET_MANAGER_ACCESS = 38;
+    public const EMPLOYEE_TICKET_ADMIN_ACCESS = 39;
+
     //custom permissions
 }

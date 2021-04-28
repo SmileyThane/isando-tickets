@@ -6,7 +6,7 @@ use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
 use App\InternalBilling;
-use App\Role;
+use App\Permission;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +16,7 @@ class InternalBillingRepository
     {
         $employee = Auth::user()->employee;
         $entities = [];
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clients = ClientCompanyUser::query()->where('company_user_id', $employee->id)->get();
             if ($clients) {
                 foreach ($clients->pluck('client_id')->toArray() as $clientId) {
@@ -24,7 +24,7 @@ class InternalBillingRepository
                 }
             }
         }
-        if ($employee->hasRoleId(Role::HIGH_PRIVIGIES)) {
+        if (!$employee->hasPermissionId([Permission::EMPLOYEE_CLIENT_ACCESS, Permission::EMPLOYEE_USER_ACCESS])) {
             $company = Company::find($employee->company_id);
             $entities[] = ['entity_type' => Company::class, 'entity_id' => $employee->company_id];
             $clientsIds = (new ClientRepository())->getRecursiveChildClientIds($company->clients);

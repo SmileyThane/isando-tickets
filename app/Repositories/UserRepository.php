@@ -3,24 +3,21 @@
 
 namespace App\Repositories;
 
-
 use App\Address;
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyUser;
 use App\CompanyUserNotification;
 use App\Email;
-use App\EmailSignature;
 use App\EmailType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
 use App\Notifications\ResetPasswordEmail;
 use App\Phone;
-use App\Social;
-use App\UserNotificationStatus;
-use App\Role;
 use App\Settings;
+use App\Social;
 use App\User;
+use App\UserNotificationStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -66,7 +63,7 @@ class UserRepository
 
     public function find($id, $with = [])
     {
-        return  User::withTrashed()->where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type', 'emailSignatures', 'notificationStatuses', 'billing'], $with))->first();
+        return User::withTrashed()->where('id', $id)->with(array_merge(['phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type', 'emailSignatures', 'notificationStatuses', 'billing'], $with))->first();
     }
 
     public function create(Request $request)
@@ -165,7 +162,7 @@ class UserRepository
                 }
                 Email::where('id', '<>', $email->id)->where('email_type', 1)->where('entity_type', $email->entity_type)->where('entity_id', $email->entity_id)->update(['email_type' => $secondaryType ? $secondaryType->id : null]);
 
-                $this->sendInvite($user->fresh(), Role::COMPANY_CLIENT);
+                $this->sendInvite($user->fresh());
             }
 
             $result = true;
@@ -175,16 +172,23 @@ class UserRepository
         return $result;
     }
 
-    public function sendInvite($user, $role, $password = null): bool
+    public function sendInvite($user, $originalSender = false, $password = null): bool
     {
-        $from = $role === Role::LICENSE_OWNER ? Config::get('mail.from.name') : $user->employee->companyData->name;
+        $from = $originalSender ? Config::get('mail.from.name') : $user->employee->companyData->name;
         try {
             if ($password === null) {
                 $password = Controller::getRandomString();
                 $user->password = bcrypt($password);
                 $user->save();
             }
-            $user->notify(new RegularInviteEmail($from, $user->title, $user->full_name, $role, $user->email, $password, $user->language->short_code));
+            $user->notify(new RegularInviteEmail(
+                $from,
+                $user->title,
+                $user->full_name,
+                $user->email,
+                $password,
+                $user->language->short_code
+            ));
         } catch (Throwable $throwable) {
             Log::error($throwable);
             //hack for broken notification system
@@ -242,7 +246,7 @@ class UserRepository
             return false;
         }
 
-        $from =  $user->employee->companyData->name;
+        $from = $user->employee->companyData->name;
         try {
             $password = Controller::getRandomString();
             $user->password = bcrypt($password);

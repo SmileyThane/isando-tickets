@@ -85,7 +85,7 @@ class UserController extends Controller
         $success = false;
         $user = User::find($request->user_id);
         if ($user->is_active) {
-            $success = $this->userRepo->sendInvite($user, $request->role_id);
+            $success = $this->userRepo->sendInvite($user);
         }
         return self::showResponse($success);
     }

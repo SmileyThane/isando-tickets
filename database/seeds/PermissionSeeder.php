@@ -245,6 +245,54 @@ class PermissionSeeder extends Seeder
             ]
         );
 
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 34],
+            [
+                'name' => 'permission_read_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 35],
+            [
+                'name' => 'permission_write_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 36],
+            [
+                'name' => 'employee_client_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 37],
+            [
+                'name' => 'employee_user_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 38],
+            [
+                'name' => 'employee_ticket_manager_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 39],
+            [
+                'name' => 'employee_ticket_admin_access',
+                'guard_name' => 'web'
+            ]
+        );
+
         //custom permissions
     }
 }

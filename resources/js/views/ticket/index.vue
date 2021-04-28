@@ -670,15 +670,6 @@ export default {
                 }
             });
         },
-        checkRoleByIds(ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
-                }
-            });
-            return roleExists
-        },
         updateItemsCount(value) {
             this.options.itemsPerPage = value
             localStorage.itemsPerPage = value;
