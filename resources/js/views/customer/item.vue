@@ -1047,7 +1047,7 @@
                                                 />
                                                 <v-checkbox
                                                     v-model="employeeForm.is_active"
-                                                    :disabled="!checkRoleByIds([1,2,3])"
+                                                    :disabled="checkPermissionByIds(['36,37'])"
                                                     :label="langMap.main.give_access"
                                                     color="success"
                                                     hide-details
@@ -2206,14 +2206,14 @@ export default {
                 }
             });
         },
-        checkRoleByIds(ids) {
-            let roleExists = false;
+        checkPermissionByIds(ids) {
+            let permissionExists = false;
             ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
+                if (permissionExists === false) {
+                    permissionExists = this.$store.state.permissions.includes(id)
                 }
             });
-            return roleExists
+            return permissionExists
         },
         editPhone(item) {
             this.updatePhoneDlg = true;
