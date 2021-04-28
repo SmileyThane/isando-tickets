@@ -80,7 +80,7 @@ class TrackingProjectRepository
         $team = Team::whereHas('employees', function ($query) {
             return $query->where('company_user_id', '=', Auth::user()->employee->id);
         })->first();
-        $trackingProject->company_id = $team ? $team->id : null;
+        $trackingProject->team_id = $team ? $team->id : null;
         if ($request->has('billableByDefault')) {
             $trackingProject->billable_by_default = $request->billable_by_default;
         }
