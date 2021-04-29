@@ -4,6 +4,7 @@ import * as time from './time';
 import * as localStorage from './localStorage';
 import * as numbers from './numbers';
 import * as i18n from './i18n';
+import * as auth from './auth';
 
 export default {
     color,
@@ -11,5 +12,6 @@ export default {
     time,
     localStorage,
     numbers,
-    i18n
+    i18n,
+    auth
 }

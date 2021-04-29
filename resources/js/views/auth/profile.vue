@@ -141,7 +141,7 @@
                             <v-col cols="6">
                                 <hr/>
 
-                                <p class="mb-0" v-if="langs && langs.length > 0">
+                                <p class="mb-0" v-if="langs && langs[userData.language_id]">
                                     <v-icon left small dense :color="themeBgColor">mdi-web</v-icon>
                                     {{ langs[userData.language_id].name }}
                                 </p>
@@ -1241,7 +1241,7 @@
                 </v-card>
             </v-dialog>
 
-            <v-dialog v-model="updateEmailSignatureDlg" persistent max-width="600px">
+            <v-dialog v-model="updateEmailSignatureDlg" persistent max-width="600px" :retain-focus="false" :eager="true">
                 <v-card>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                         {{langMap.profile.update_email_signature}}

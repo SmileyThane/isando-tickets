@@ -35,6 +35,7 @@ export default new Vuex.Store({
     getters: {
         roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion],
         getLang: state => state.lang,
+        getPermissions: state => state.permissions,
         getMainCompany: state => state.mainCompany
     },
     mutations: {

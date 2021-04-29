@@ -40,7 +40,7 @@
                             <v-text-field
                                 v-model="company.name"
                                 :color="themeBgColor"
-                                :disabled="checkPermissionByIds([36, 37])"
+                                :disabled="$helpers.auth.checkPermissionByIds([36, 37])"
                                 :label="langMap.company.name"
                                 :readonly="!enableToEdit"
                                 dense
@@ -800,7 +800,7 @@
                                             />
                                             <v-checkbox
                                                 v-model="employeeForm.is_active"
-                                                :disabled="checkPermissionByIds([36, 37])"
+                                                :disabled="$helpers.auth.checkPermissionByIds([36, 37])"
                                                 :label="langMap.main.give_access + '?'"
                                                 class="col-md-6"
                                                 color="success"
@@ -1182,7 +1182,7 @@
                             <v-select
                                 v-model="singleUserForm.role_ids"
                                 :color="themeBgColor"
-                                :disabled="checkPermissionByIds([36, 37])"
+                                :disabled="$helpers.auth.checkPermissionByIds([36, 37])"
                                 :item-color="themeBgColor"
                                 :items="roles"
                                 :label="langMap.main.role"
@@ -1197,7 +1197,7 @@
                                 </template>
                             </v-select>
                             <v-expansion-panels
-                                :disabled="checkPermissionByIds([36, 37])"
+                                :disabled="$helpers.auth.checkPermissionByIds([36, 37])"
                             >
                                 <v-expansion-panel>
                                     <v-expansion-panel-header>
@@ -1636,7 +1636,7 @@
                             <v-checkbox
                                 v-model="singleUserForm.user.is_active"
                                 :color="themeBgColor"
-                                :disabled="checkPermissionByIds([36, 37])"
+                                :disabled="$helpers.auth.checkPermissionByIds([36, 37])"
                                 :label="langMap.main.give_access"
                                 hide-details
                                 @change="changeIsActive(singleUserForm.user)"
@@ -2764,15 +2764,6 @@ export default {
                 } else {
                 }
             });
-        },
-        checkPermissionByIds(ids) {
-            let permissionExists = false;
-            ids.forEach(id => {
-                if (permissionExists === false) {
-                    permissionExists = this.$store.state.permissions.includes(id)
-                }
-            });
-            return permissionExists
         },
         editPhone(item) {
             this.updatePhoneDlg = true;

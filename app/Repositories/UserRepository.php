@@ -47,6 +47,7 @@ class UserRepository
                 'entity_type' => User::class,
                 'email' => $request['email'],
             ])->first();
+            $params['password'] = 'required|min:8|confirmed';
             $params['email'] = [
                 'required',
                 Rule::unique('emails')->ignore($email ? $email->entity_id : null)->where(function ($query) {
