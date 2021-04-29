@@ -164,7 +164,7 @@
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12 mt-2">
-                                    <Tinymce
+                                    <Tinymce @onActivate="zzz"
                                         v-model="ticketAnswer.answer"
                                         :placeholder="langMap.ticket.answer_description"
                                     ></Tinymce>
@@ -229,7 +229,7 @@
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12 mt-2">
-                                    <Tinymce
+                                    <Tinymce @onActivate="zzz1"
                                         v-model="ticketNotice.notice"
                                         :placeholder="langMap.ticket.add_internal_note"
                                     />
@@ -2325,6 +2325,12 @@ export default {
             }
 
             return queryString.slice(0, -1)
+        },
+        zzz() {
+          console.log('zzz');
+        },
+        zzz1() {
+          console.log('zzz1');
         },
     },
     computed: {

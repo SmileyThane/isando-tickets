@@ -27,7 +27,7 @@
             </template>
 
             <v-list>
-                <v-list-item link to="/user">
+                <v-list-item link @click="showUser">
                     <v-list-item-title>{{ this.$store.state.lang.lang_map.sidebar.profile }}</v-list-item-title>
                     <v-list-item-action>
                         <v-icon>mdi-account-settings</v-icon>
@@ -104,6 +104,9 @@ export default {
         });
     },
     methods: {
+        showUser() {
+            location.href = '/user';
+        },
         getUsername() {
             axios.get('/api/user').then(response => {
                 response = response.data;

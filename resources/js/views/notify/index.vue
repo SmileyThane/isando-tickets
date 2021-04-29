@@ -201,7 +201,7 @@ themeBgColor: this.$store.state.themeBgColor,
             this.getNotifications();
         },
         showNotification(item) {
-            this.$router.push(`/notify/${item.id}`);
+            location.href = `/notify/${item.id}`;
         },
         updateItemsCount(value) {
             this.options.itemsPerPage = value
