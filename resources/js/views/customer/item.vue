@@ -1047,7 +1047,7 @@
                                                 />
                                                 <v-checkbox
                                                     v-model="employeeForm.is_active"
-                                                    :disabled="checkPermissionByIds(['36,37'])"
+                                                    :disabled="$helpers.auth.checkPermissionByIds(['36,37'])"
                                                     :label="langMap.main.give_access"
                                                     color="success"
                                                     hide-details
@@ -2205,15 +2205,6 @@ export default {
                     this.snackbar = true;
                 }
             });
-        },
-        checkPermissionByIds(ids) {
-            let permissionExists = false;
-            ids.forEach(id => {
-                if (permissionExists === false) {
-                    permissionExists = this.$store.state.permissions.includes(id)
-                }
-            });
-            return permissionExists
         },
         editPhone(item) {
             this.updatePhoneDlg = true;

@@ -155,7 +155,7 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="answerDialog" max-width="50%">
+            <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.ticket.create_answer }}
@@ -164,7 +164,7 @@
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12 mt-2">
-                                    <Tinymce
+                                    <Tinymce @onActivate="zzz"
                                         v-model="ticketAnswer.answer"
                                         :placeholder="langMap.ticket.answer_description"
                                     ></Tinymce>
@@ -220,7 +220,7 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="noteDialog" max-width="50%">
+            <v-dialog v-model="noteDialog" max-width="50%" :retain-focus="false" :eager="true">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
                         {{ langMap.ticket.add_internal_note }}
@@ -229,7 +229,7 @@
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12 mt-2">
-                                    <Tinymce
+                                    <Tinymce @onActivate="zzz1"
                                         v-model="ticketNotice.notice"
                                         :placeholder="langMap.ticket.add_internal_note"
                                     />
@@ -341,7 +341,7 @@
                            @click="answerDialog = true"
                     >{{ langMap.ticket.create_answer }}
                     </v-btn>
-                    <v-btn v-if="!checkPermissionByIds([36])"
+                    <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
                            :color="!linkBlock ? '#f2f2f2' : themeBgColor"
                            :outlined="linkBlock"
                            class="ma-2 d-sm-none d-md-flex"
@@ -351,7 +351,7 @@
                         {{ langMap.main.link }}
                     </v-btn>
                     <v-btn
-                        v-if="!checkPermissionByIds([36]) && (ticket.parent_id !== null || ticket.child_tickets !== null)"
+                        v-if="!$helpers.auth.checkPermissionByIds([36]) && (ticket.parent_id !== null || ticket.child_tickets !== null)"
                         :color="!mergeBlock ? '#f2f2f2' : themeBgColor"
                         :outlined="mergeBlock"
                         class="ma-2 d-sm-none d-md-flex"
@@ -367,14 +367,14 @@
                     >
                         {{ langMap.ticket.ticket_history }}
                     </v-btn>
-                    <v-btn v-if="!checkPermissionByIds([36])"
+                    <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
                            :color="this.ticket.is_spam ? 'red' : '#f2f2f2'" class="ma-2 d-sm-none d-md-flex"
                            small
                            @click="markAsSpam"
                     >
                         Spam
                     </v-btn>
-                    <v-btn v-if="!checkPermissionByIds([36])"
+                    <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
                            class="ma-2 d-sm-none d-md-flex" color="#f2f2f2" small
                            @click="ticketDeleteProcess"
                     >
@@ -1096,7 +1096,7 @@
                             </span>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
-                                <v-btn v-if="!checkPermissionByIds([36])"
+                                <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
                                        class="float-md-right"
                                        color="white" small
                                        style="color: black;"
@@ -1161,7 +1161,7 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <br/>
-                <v-expansion-panels v-if="!checkPermissionByIds([36])" v-model="notesPanel" multiple>
+                <v-expansion-panels v-if="!$helpers.auth.checkPermissionByIds([36])" v-model="notesPanel" multiple>
                     <v-expansion-panel>
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
@@ -1904,15 +1904,6 @@ export default {
         })
     },
     methods: {
-        checkPermissionByIds(ids) {
-            let permissionExists = false;
-            ids.forEach(id => {
-                if (permissionExists === false) {
-                    permissionExists = this.$store.state.permissions.includes(id)
-                }
-            });
-            return permissionExists
-        },
         selectSearchCategory(item) {
             this.searchLabel = item.name
         },
@@ -2334,6 +2325,12 @@ export default {
             }
 
             return queryString.slice(0, -1)
+        },
+        zzz() {
+          console.log('zzz');
+        },
+        zzz1() {
+          console.log('zzz1');
         },
     },
     computed: {

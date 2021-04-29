@@ -344,7 +344,7 @@ export default {
             axios.get('/api/kb/categories', {
                 params: {
                     search: this.searchWhere.includes(1) ? this.search : '',
-                    category_id: this.$route.query.category ? this.$route.query.category: null
+                    category_id: this.$route.query && this.$route.query.category ? this.$route.query.category: null
                 }
             }).then(response => {
                 response = response.data;
@@ -389,15 +389,23 @@ export default {
             });
         },
         openCategory(id) {
-            localStorage.setItem('kb_category', id ? id : null);
+            // console.log(id);
+            // localStorage.setItem('kb_category', id ? id : null);
 
-            let query = Object.assign({}, this.$route.query);
-            if (parseInt(id)) {
-                query.category = id;
-            } else {
-                delete query.category;
-            }
-            this.$router.replace({ query });
+            // let query = Object.assign({}, this.$route.query);
+                if (parseInt(id)) {
+                    this.$router.push(`/knowledge_base?category=${id}`, () => {})
+                    // query.category = id;
+                } else if(this.$router.app.$route.fullPath !== this.$router.app.$route.path) {
+                    this.$router.push(`/knowledge_base`, () => {})
+                    // delete query.category;
+                }
+            // if (this.$route.query !== {})
+            // {
+            //     console.log(query);
+            //     this.$router.replace({ query });
+            //
+            // }
 
             this.getCategories();
             this.getArticles();
@@ -501,7 +509,7 @@ export default {
             this.$router.push(`/knowledge_base/${id}`);
         },
         createArticle() {
-            this.$router.push('/knowledge_base/create');
+            location.href = '/knowledge_base/create';
         },
         editArticle(id) {
             this.$router.push(`/knowledge_base/${id}/edit`);

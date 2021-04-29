@@ -37,7 +37,7 @@ class SettingsController extends BaseController
                 return self::showResponse(false, $exception->getMessage());
             }
         }
-        if ($request->has('settings')) {
+        if ($request->has('settings') && Auth::user()->employee->getPermissionIds([80,81])) {
             TrackingSettings::updateOrCreate([
                     'entity_id' => Auth::user()->id,
                     'entity_type' => User::class

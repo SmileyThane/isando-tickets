@@ -35,7 +35,7 @@
                             <v-text-field
                                 v-model="client.client_name"
                                 :color="themeBgColor"
-                                :disabled="checkPermissionByIds([36, 37])"
+                                :disabled="$helpers.auth.checkPermissionByIds([36, 37])"
                                 :label="langMap.company.name"
                                 :readonly="!enableToEdit"
                                 dense
@@ -621,7 +621,7 @@
                             <v-text-field
                                 v-model="selectedChildClient.client_name"
                                 :color="themeBgColor"
-                                :disabled="checkPermissionByIds([36, 37])"
+                                :disabled="$helpers.auth.checkPermissionByIds([36, 37])"
                                 :label="langMap.company.name"
                                 :readonly="!enableToEditChild"
                                 dense
@@ -1345,15 +1345,6 @@ export default {
                     this.snackbar = true;
                 }
             });
-        },
-        checkPermissionByIds(ids) {
-            let permissionExists = false;
-            ids.forEach(id => {
-                if (permissionExists === false) {
-                    permissionExists = this.$store.state.permissions.includes(id)
-                }
-            });
-            return permissionExists
         },
         clientUpdate(id = null) {
             let client, isRelated;

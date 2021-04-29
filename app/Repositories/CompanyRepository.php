@@ -38,6 +38,7 @@ class CompanyRepository
             $company = $clientCompanyUser->clients()->with('employees.employee.userData');
         } else {
             $company = Company::where('id', $id ?? $employee->company_id);
+            $company->with('currency');
         }
         if ($request->search !== '') {
             $company->where(
@@ -48,7 +49,7 @@ class CompanyRepository
                 }
             );
         }
-        $company->with('currency');
+
         return $id ? $company->with(['employees' => function ($query) {
             $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
             if (Auth::user()->employee->hasPermissionId([Permission::EMPLOYEE_CLIENT_ACCESS, Permission::EMPLOYEE_USER_ACCESS])) {

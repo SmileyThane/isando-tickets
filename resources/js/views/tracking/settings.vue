@@ -11,12 +11,18 @@
 
         <template>
             <v-tabs v-model="tab">
-                <v-tab :key="1">{{ langMap.tracking.settings.general }}</v-tab>
-                <v-tab :key="2">{{ langMap.tracking.settings.services }}</v-tab>
+                <v-tab
+                    v-if="$helpers.auth.checkPermissionByIds([79])"
+                    :key="1"
+                >{{ langMap.tracking.settings.general }}</v-tab>
+                <v-tab
+                    v-if="$helpers.auth.checkPermissionByIds([75])"
+                    :key="2"
+                >{{ langMap.tracking.settings.services }}</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
-                <v-tab-item :key="1">
+                <v-tab-item :key="1" v-if="$helpers.auth.checkPermissionByIds([79])">
                     <div class="d-flex flex-row">
                         <div class="d-inline-flex flex-grow-1 ma-4" style="width: 100%">
                             <!--Column 1-->
@@ -26,6 +32,7 @@
                                 </v-toolbar>
                                 <v-card-text>
                                     <v-checkbox
+                                        :disabled="!$helpers.auth.checkPermissionByIds([80])"
                                         v-model="enableTimesheet"
                                         :label="langMap.tracking.settings.enable_timesheet"
                                     ></v-checkbox>
@@ -74,38 +81,54 @@
                                                         <div class="d-inline-flex flex-grow-0" style="width: 30%; font-weight: bold">Work time</div>
                                                         <div class="d-inline-flex flex-grow-1 mx-4">
                                                             <TimeField
+                                                                v-if="$helpers.auth.checkPermissionByIds([81])"
                                                                 style="max-width: 100px"
                                                                 placeholder="hh:mm"
                                                                 format="HH:mm"
                                                                 v-model="item.workTime.start"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
+                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{moment(item.workTime.start).format('HH:mm')}}
+                                                            </span>
                                                             <TimeField
+                                                                v-if="$helpers.auth.checkPermissionByIds([81])"
                                                                 style="max-width: 100px"
                                                                 placeholder="hh:mm"
                                                                 format="HH:mm"
                                                                 v-model="item.workTime.end"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
+                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{moment(item.workTime.end).format('HH:mm')}}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                     <div class="d-inline-flex d-flex flex-row">
                                                         <div class="d-inline-flex flex-grow-0" style="width: 30%; font-weight: bold">Lunch time</div>
                                                         <div class="d-inline-flex flex-grow-1 mx-4">
                                                             <TimeField
+                                                                v-if="$helpers.auth.checkPermissionByIds([81])"
                                                                 style="max-width: 100px"
                                                                 placeholder="hh:mm"
                                                                 format="HH:mm"
                                                                 v-model="item.lunchTime.start"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
+                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{moment(item.lunchTime.start).format('HH:mm')}}
+                                                            </span>
                                                             <TimeField
+                                                                v-if="$helpers.auth.checkPermissionByIds([81])"
                                                                 style="max-width: 100px"
                                                                 placeholder="hh:mm"
                                                                 format="HH:mm"
                                                                 v-model="item.lunchTime.end"
                                                                 @input="debounceSaveSettings"
                                                             ></TimeField>
+                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{moment(item.lunchTime.end).format('HH:mm')}}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -118,15 +141,17 @@
                     </div>
                 </v-tab-item>
 
-                <v-tab-item :key="2">
+                <v-tab-item :key="2" v-if="$helpers.auth.checkPermissionByIds([75])">
                     <v-card flat>
                         <v-toolbar flat>
                             <v-dialog
+                                v-if="$helpers.auth.checkPermissionByIds([76])"
                                 v-model="dialogServices"
                                 width="500"
                             >
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                        v-if="$helpers.auth.checkPermissionByIds([76])"
                                         :color="themeBgColor"
                                         style="color: white"
                                         v-bind="attrs"
@@ -173,6 +198,7 @@
                         </v-toolbar>
                         <v-card-text>
                             <v-data-table
+                                v-if="$helpers.auth.checkPermissionByIds([75])"
                                 dense
                                 :headers="headers.services"
                                 :items="$store.getters['Services/getServices']"
@@ -181,6 +207,7 @@
                             >
                                 <template v-slot:item.name="props">
                                     <v-edit-dialog
+                                        v-if="$helpers.auth.checkPermissionByIds([77])"
                                         @save="saveService(props.item)"
                                         @cancel="saveService(props.item)"
                                         @open="saveService(props.item)"
@@ -197,9 +224,15 @@
                                             ></v-text-field>
                                         </template>
                                     </v-edit-dialog>
+                                    <span
+                                        v-else
+                                    >
+                                        {{props.item.name}}
+                                    </span>
                                 </template>
                                 <template v-slot:item.actions="props">
                                     <v-btn
+                                        v-if="$helpers.auth.checkPermissionByIds([78])"
                                         icon
                                         :color="themeBgColor"
                                         @click="removeService(props.item.id)"

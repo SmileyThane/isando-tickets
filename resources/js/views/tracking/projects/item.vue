@@ -34,7 +34,7 @@
             </v-card>
         </template>
         <br>
-        <template>
+        <template v-if="$helpers.auth.checkPermissionByIds([56])">
             <v-tabs
                 v-model="tab"
                 :color="themeBgColor"
@@ -61,9 +61,11 @@
                                 </v-col>
                                 <v-col cols="10" lg="4" md="6">
                                     <v-text-field
+                                        v-if="$helpers.auth.checkPermissionByIds([57])"
                                         v-model="project.name"
                                         @blur="actionSave()"
                                     ></v-text-field>
+                                    <div class="mt-3" v-else>{{project.name}}</div>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -73,6 +75,7 @@
                                 <v-col cols="10" lg="4" md="6">
                                     <template>
                                         <v-autocomplete
+                                            v-if="$helpers.auth.checkPermissionByIds([57])"
                                             v-model="project.product"
                                             :items="getFilteredProducts"
                                             :loading="isLoadingSearchProduct"
@@ -84,6 +87,7 @@
                                             return-object
                                             @change="actionSave()"
                                         ></v-autocomplete>
+                                        <div class="mt-3" v-else>{{project.product.name}}</div>
                                     </template>
                                 </v-col>
                             </v-row>
@@ -94,6 +98,7 @@
                                 <v-col cols="10" lg="4" md="6">
                                     <template>
                                         <v-autocomplete
+                                            v-if="$helpers.auth.checkPermissionByIds([57])"
                                             v-model="project.client"
                                             :items="getFilteredClients"
                                             :loading="isLoadingSearchClient"
@@ -105,6 +110,7 @@
                                             return-object
                                             @change="actionSave()"
                                         ></v-autocomplete>
+                                        <div class="mt-3" v-else>{{project.client.name}}</div>
                                     </template>
                                 </v-col>
                             </v-row>
@@ -114,6 +120,7 @@
                                 </v-col>
                                 <v-col cols="10" lg="4" md="6">
                                     <v-text-field
+                                        v-if="$helpers.auth.checkPermissionByIds([57])"
                                         v-model="project.color"
                                         hide-details
                                         class="ma-0 pa-0"
@@ -133,6 +140,12 @@
                                             </v-menu>
                                         </template>
                                     </v-text-field>
+                                    <span
+                                        v-else
+                                        class="mt-3 d-inline-flex"
+                                        style="width: 30px; height: 30px"
+                                        :style="{ 'background-color': project.color }"
+                                    ></span>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -141,12 +154,13 @@
                                 </v-col>
                                 <v-col cols="10" lg="4" md="6">
                                     <v-switch
+                                        :disabled="!$helpers.auth.checkPermissionByIds([57])"
                                         v-model="project.billable_by_default"
                                         @change="actionSave()"
                                     ></v-switch>
                                 </v-col>
                             </v-row>
-                            <v-row class="d-flex flex-row">
+                            <v-row class="d-flex flex-row" v-if="$helpers.auth.checkPermissionByIds([59])">
                                 <v-col cols="2" lg="1" class="text-right">
                                     <v-subheader class="float-right">Project billable rate</v-subheader>
                                 </v-col>
@@ -214,11 +228,13 @@
                                 </div>
                                 <div class="d-inline-flex">
                                     <v-dialog
+                                        v-if="$helpers.auth.checkPermissionByIds([60])"
                                         v-model="rateDialog"
                                         width="500"
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
+                                                v-if="$helpers.auth.checkPermissionByIds([60])"
                                                 class="ma-2"
                                                 outlined
                                                 :color="themeBgColor"

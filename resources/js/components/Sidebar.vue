@@ -88,7 +88,7 @@
             <v-divider></v-divider>
             <v-list dense>
                 <v-list-item
-                    v-if="checkPermissionByIds([25])"
+                    v-if="$helpers.auth.checkPermissionByIds([25])"
                     style="background-color: white;"
                     dense
                     link
@@ -103,7 +103,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
-                    v-if="checkPermissionByIds([25])"
+                    v-if="$helpers.auth.checkPermissionByIds([25])"
                     style="background-color: white;"
                     dense
                     link
@@ -121,7 +121,7 @@
             <v-divider></v-divider>
             <v-list dense>
                 <v-list-group
-                    v-if="checkPermissionByIds([7])"
+                    v-if="$helpers.auth.checkPermissionByIds([7])"
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
@@ -136,7 +136,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="checkPermissionByIds([7, 10])"
+                        v-if="$helpers.auth.checkPermissionByIds([7, 10])"
                         color="#757575"
                         link
                         style="background-color:white;"
@@ -150,7 +150,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkPermissionByIds([7])"
+                        v-if="$helpers.auth.checkPermissionByIds([7])"
                         color="#757575"
                         link
                         style="background-color:white;"
@@ -164,7 +164,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkPermissionByIds([10])"
+                        v-if="$helpers.auth.checkPermissionByIds([10])"
                         color="#757575"
                         link
                         style="background-color:white;"
@@ -178,7 +178,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkPermissionByIds([19])"
+                        v-if="$helpers.auth.checkPermissionByIds([19])"
                         color="#757575"
                         link
                         style="background-color:white;"
@@ -194,12 +194,12 @@
                 </v-list-group>
             </v-list>
             <v-divider
-                v-if="checkPermissionByIds([1])"
+                v-if="$helpers.auth.checkPermissionByIds([1])"
             >&nbsp;
             </v-divider>
             <v-list dense>
                 <v-list-group
-                    v-if="checkPermissionByIds([1])"
+                    v-if="$helpers.auth.checkPermissionByIds([1])"
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
@@ -214,7 +214,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="checkPermissionByIds([1])"
+                        v-if="$helpers.auth.checkPermissionByIds([1])"
                         color="#757575" link
                         style="background-color:white;"
                         to="/tickets"
@@ -229,7 +229,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkPermissionByIds([2])"
+                        v-if="$helpers.auth.checkPermissionByIds([2])"
                         color="#757575" link
                         style="background-color:white;"
                         to="/ticket_create"
@@ -245,7 +245,7 @@
                 </v-list-group>
             </v-list>
             <v-divider></v-divider>
-            <v-list dense v-if="hasLicense">
+            <v-list dense v-if="hasLicense && $helpers.auth.checkPermissionByIds([40,41,42,51,52,54,55,61,66])">
                 <v-list-group
                     v-if="hasLicense"
                     :style="'background-color: ' + 'white' + ';'"
@@ -262,7 +262,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="hasLicense"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([51])"
                         link
                         style="background-color:white;"
                         to="/tracking/dashboard"
@@ -276,7 +276,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="hasLicense"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([40,41,42])"
                         link
                         style="background-color:white;"
                         to="/tracking/tracker"
@@ -304,7 +304,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="hasLicense"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([52])"
                         link
                         style="background-color:white;"
                         to="/tracking/calendar"
@@ -318,7 +318,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="hasLicense"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([54,55])"
                         link
                         style="background-color:white;"
                         to="/tracking/projects"
@@ -332,7 +332,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="hasLicense"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([61,66])"
                         link
                         style="background-color:white;"
                         to="/tracking/reports"
@@ -346,7 +346,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="hasLicense"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([75,79])"
                         link
                         style="background-color:white;"
                         to="/tracking/settings"
@@ -378,7 +378,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="!checkPermissionByIds([36])"
+                        v-if="!$helpers.auth.checkPermissionByIds([36])"
                         link
                         style="background-color:white;"
                         to="/notify"
@@ -426,7 +426,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="checkPermissionByIds([7, 13])"
+                        v-if="$helpers.auth.checkPermissionByIds([7, 13])"
                         link
                         style="background-color:white;"
                         to="/company">
@@ -438,7 +438,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkPermissionByIds([31])"
+                        v-if="$helpers.auth.checkPermissionByIds([31])"
                         link
                         style="background-color:white;"
                         to="/team"
@@ -451,7 +451,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkPermissionByIds([13])"
+                        v-if="$helpers.auth.checkPermissionByIds([13])"
                         link
                         style="background-color:white;"
                         to="/settings/system"
@@ -541,15 +541,6 @@ export default {
         });
     },
     methods: {
-        checkPermissionByIds(ids) {
-            let permissionExists = false;
-            ids.forEach(id => {
-                if (permissionExists === false) {
-                    permissionExists = this.$store.state.permissions.includes(id)
-                }
-            });
-            return permissionExists
-        },
         getCompanyName() {
             axios.get(`/api/main_company/name`)
                 .then(
