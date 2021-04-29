@@ -544,7 +544,7 @@ export default {
         checkPermissionByIds(ids) {
             let permissionExists = false;
             ids.forEach(id => {
-                if (permissionExists === false) {
+                if (permissionExists === false && this.$store.state.permissions) {
                     permissionExists = this.$store.state.permissions.includes(id)
                 }
             });
