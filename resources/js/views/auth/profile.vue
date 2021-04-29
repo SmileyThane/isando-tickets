@@ -934,7 +934,6 @@
                                                         </v-col>
                                                         <v-col cols="12">
                                                             <Tinymce
-                                                                ref="body"
                                                                 aria-rowcount="7"
                                                                 :color="themeBgColor"
                                                                 v-model="emailSignatureForm.signature"
@@ -1260,7 +1259,6 @@
                                     />                                </v-col>
                                 <v-col cols="12" class="pa-1">
                                     <Tinymce
-                                        ref="body"
                                         aria-rowcount="7"
                                         v-model="emailSignatureForm.signature"
                                         :placeholder="langMap.profile.signature"
