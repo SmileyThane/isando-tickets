@@ -10,6 +10,7 @@
         </v-snackbar>
 
         <v-data-table
+            v-if="$helpers.auth.checkPermissionByIds([54,55,56])"
             :headers="headers"
             :items="$store.getters['Projects/getProjects']"
             item-key="id"
@@ -49,6 +50,7 @@
                     </v-col>
                     <v-col sm="12" md="2" class="pt-6">
                         <v-btn
+                            v-if="$helpers.auth.checkPermissionByIds([53])"
                             style="color: white;"
                             :color="themeBgColor"
                             :item-color="themeBgColor"
@@ -90,11 +92,12 @@
         <template>
             <v-row justify="center">
                 <v-dialog
+                    v-if="$helpers.auth.checkPermissionByIds([53])"
                     v-model="dialog"
                     persistent
                     max-width="520"
                 >
-                    <v-card>
+                    <v-card v-if="$helpers.auth.checkPermissionByIds([53])">
                         <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                             {{ langMap.tracking.create_project.modal_title }}
                         </v-card-title>
@@ -263,7 +266,9 @@ themeBgColor: this.$store.state.themeBgColor,
             this.options.page = 1
         },
         showItem(item) {
-            this.$router.push(`/tracking/projects/${item.id}`)
+            if (this.$helpers.auth.checkPermissionByIds([56])) {
+                this.$router.push(`/tracking/projects/${item.id}`)
+            }
         },
         resetProject() {
             this.project = {

@@ -11,6 +11,7 @@ use App\TrackingProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
 class TrackingProjectRepository
 {
@@ -42,21 +43,30 @@ class TrackingProjectRepository
 
     public function all(Request $request)
     {
-        $trackingProjects = TrackingProject::with('Product')->with(['Client' => function ($query) use ($request) {
-            if ($request->has('column') && $request->column === 'client.name' && $request->has('direction')) {
+        $trackingProjects = collect([]);
+        if (Auth::user()->employee->getPermissionIds(54, 55)) {
+            $trackingProjects = TrackingProject::with('Product')->with(['Client' => function ($query) use ($request) {
+                if ($request->has('column') && $request->column === 'client.name' && $request->has('direction')) {
+                    if ((string)$request->direction === 'true') $request->direction = 'desc';
+                    if ((string)$request->direction === 'false') $request->direction = 'asc';
+                    return $query->orderBy('name', $request->direction);
+                }
+            }]);
+
+            if (Auth::user()->employee->getPermissionIds(54)) {
+                $trackingProjects->MyCompany();
+            } elseif (Auth::user()->employee->getPermissionIds(55)) {
+                $trackingProjects->MyTeams();
+            }
+
+            if ($request->has('search')) {
+                $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
+            }
+            if ($request->has('column') && $request->get('name') === 'name' && $request->has('direction')) {
                 if ((string)$request->direction === 'true') $request->direction = 'desc';
                 if ((string)$request->direction === 'false') $request->direction = 'asc';
-                return $query->orderBy('name', $request->direction);
+                $trackingProjects->orderBy($request->column, $request->direction);
             }
-        }]);
-        $trackingProjects->MyCompany();
-        if ($request->has('search')) {
-            $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
-        }
-        if ($request->has('column') && $request->get('name') === 'name' && $request->has('direction')) {
-            if ((string)$request->direction === 'true') $request->direction = 'desc';
-            if ((string)$request->direction === 'false') $request->direction = 'asc';
-            $trackingProjects->orderBy($request->column, $request->direction);
         }
 
 //        dd($trackingProjects->toSql());
@@ -71,6 +81,9 @@ class TrackingProjectRepository
 
     public function create(Request $request)
     {
+        if (!Auth::user()->employee->getPermissionIds(53)) {
+            throw new AccessDeniedException();
+        }
         $trackingProject = new TrackingProject();
         $trackingProject->name = $request->name;
         $trackingProject->product_id = $request->product['id'] ?? $request->productId;
@@ -99,6 +112,9 @@ class TrackingProjectRepository
 
     public function update(Request $request, $id)
     {
+        if (!Auth::user()->employee->getPermissionIds(57,60)) {
+            throw new AccessDeniedException();
+        }
         $trackingProject = TrackingProject::find($id);
         if ($request->has('name')) {
             $trackingProject->name = $request->name;
@@ -140,6 +156,9 @@ class TrackingProjectRepository
 
     public function delete($id)
     {
+        if (!Auth::user()->employee->getPermissionIds(58)) {
+            throw new AccessDeniedException();
+        }
         $result = false;
         $trackingProject = TrackingProject::find($id);
         if ($trackingProject) {

@@ -225,7 +225,7 @@
                                         </template>
                                     </v-edit-dialog>
                                     <span
-                                        v-if="!$helpers.auth.checkPermissionByIds([77])"
+                                        v-else
                                     >
                                         {{props.item.name}}
                                     </span>
