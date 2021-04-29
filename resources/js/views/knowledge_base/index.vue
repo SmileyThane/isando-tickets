@@ -509,7 +509,7 @@ export default {
             this.$router.push(`/knowledge_base/${id}`);
         },
         createArticle() {
-            this.$router.push('/knowledge_base/create');
+            location.href = '/knowledge_base/create';
         },
         editArticle(id) {
             this.$router.push(`/knowledge_base/${id}/edit`);
