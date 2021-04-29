@@ -294,5 +294,341 @@ class PermissionSeeder extends Seeder
         );
 
         //custom permissions
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 81],
+            [
+                'name' => 'tracker_settings_fill_working_hours_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 80],
+            [
+                'name' => 'tracker_settings_toggle_timesheet_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 79],
+            [
+                'name' => 'tracker_settings_view_general_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 78],
+            [
+                'name' => 'tracker_settings_delete_services_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 77],
+            [
+                'name' => 'tracker_settings_edit_services_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 76],
+            [
+                'name' => 'tracker_settings_create_services_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 75],
+            [
+                'name' => 'tracker_settings_view_services_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 74],
+            [
+                'name' => 'tracker_report_download_company_time_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 73],
+            [
+                'name' => 'tracker_report_download_team_time_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 72],
+            [
+                'name' => 'tracker_report_download_own_time_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 71],
+            [
+                'name' => 'tracker_report_view_revenue_in_pdf_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 70],
+            [
+                'name' => 'tracker_report_view_revenue_preview_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 69],
+            [
+                'name' => 'tracker_report_view_revenue_diagram_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 68],
+            [
+                'name' => 'tracker_report_add_team_time_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 67],
+            [
+                'name' => 'tracker_report_edit_team_time_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 66],
+            [
+                'name' => 'tracker_report_view_team_time_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 65],
+            [
+                'name' => 'tracker_report_toggle_billable_select_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 64],
+            [
+                'name' => 'tracker_report_edit_delete_own_time_2w_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 63],
+            [
+                'name' => 'tracker_report_edit_delete_own_time_1w_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 62],
+            [
+                'name' => 'tracker_report_edit_delete_own_time_unlimited_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 61],
+            [
+                'name' => 'tracker_report_view_own_time_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 60],
+            [
+                'name' => 'tracker_edit_rates_project_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 59],
+            [
+                'name' => 'tracker_view_rates_project_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 58],
+            [
+                'name' => 'tracker_delete_projects_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 57],
+            [
+                'name' => 'tracker_edit_projects_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 56],
+            [
+                'name' => 'tracker_view_project_details_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 55],
+            [
+                'name' => 'tracker_view_team_projects_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 54],
+            [
+                'name' => 'tracker_view_projects_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 53],
+            [
+                'name' => 'tracker_create_projects_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 52],
+            [
+                'name' => 'tracker_view_calendar_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 51],
+            [
+                'name' => 'tracker_view_dashboard_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 50],
+            [
+                'name' => 'tracker_select_tickets_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 49],
+            [
+                'name' => 'tracker_select_projects_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 48],
+            [
+                'name' => 'tracker_create_project_from_tracker_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 47],
+            [
+                'name' => 'tracker_disable_adding_time_manually_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 46],
+            [
+                'name' => 'tracker_toggle_billable_select_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 45],
+            [
+                'name' => 'tracker_edit_delete_own_time_2w_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 44],
+            [
+                'name' => 'tracker_edit_delete_own_time_1w_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 43],
+            [
+                'name' => 'tracker_edit_delete_own_time_unlimited_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 42],
+            [
+                'name' => 'tracker_view_team_time_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 41],
+            [
+                'name' => 'tracker_view_own_time_access',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 40],
+            [
+                'name' => 'tracker_track_own_time_access',
+                'guard_name' => 'web'
+            ]
+        );
     }
 }
