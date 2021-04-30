@@ -2130,7 +2130,7 @@
             <v-dialog v-model="showClientGroupDlg" max-width="60%" persistent>
                 <v-card>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                        {{ langMap.client_group.single }}?
+                        {{ langMap.client_group.single }}
                     </v-card-title>
                     <v-card-text>
                         <v-row>
