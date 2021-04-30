@@ -20,20 +20,21 @@ class CompanyController extends Controller
     public function __construct(
         CompanyRepository $companyRepository,
         CompanyUserRepository $companyUserRepository
-    )
-    {
+    ) {
         $this->companyRepo = $companyRepository;
         $this->companyUserRepo = $companyUserRepository;
     }
 
     public function mainCompanyName(): JsonResponse
     {
-        return self::showResponse(true,
+        return self::showResponse(
+            true,
             [
                 'id' => Auth::user()->employee->companyData->id,
                 'first_alias' => Auth::user()->employee->companyData->first_alias,
                 'second_alias' => Auth::user()->employee->companyData->second_alias
-            ]);
+            ]
+        );
     }
 
     public function mainCompanyLogo(): JsonResponse
@@ -108,7 +109,9 @@ class CompanyController extends Controller
     {
         if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
             return self::showResponse($this->companyRepo->attachProductCategory(
-                $request->name, $request->company_id, $request->parent_id
+                $request->name,
+                $request->company_id,
+                $request->parent_id
             ));
         }
 
