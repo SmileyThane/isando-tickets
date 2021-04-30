@@ -38,6 +38,11 @@ class Company extends Model
         return $this->morphMany(Client::class, 'supplier');
     }
 
+    public function clientGroups(): HasMany
+    {
+        return $this->hasMany(ClientGroup::class, 'company_id', 'id');
+    }
+
     public function teams(): MorphMany
     {
         return $this->morphMany(Team::class, 'team_owner');

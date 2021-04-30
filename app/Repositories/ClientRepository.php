@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Client;
 use App\ClientCompanyUser;
+use App\ClientGroup;
+use App\ClientGroupHasClient;
 use App\Company;
 use App\Email;
 use App\Permission;
@@ -60,6 +62,21 @@ class ClientRepository
         if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
+        } elseif ($employee->hasPermissionId([Permission::EMPLOYEE_USER_ACCESS])) {
+            $assignedClients = [];
+            $clientGroups = ClientGroup::query()->whereHas(
+                'employees',
+                static function ($query) {
+                    $query->where('company_user_id', Auth::user()->employee->id);
+                }
+            )->get();
+            if ($clientGroups) {
+                $assignedClients = ClientGroupHasClient::whereIn(
+                    'client_group_id',
+                    $clientGroups->pluck('id')->toArray()
+                )->get();
+            }
+            $clients = Client::whereIn('id', $assignedClients);
         } else {
             $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
         }
@@ -235,6 +252,22 @@ class ClientRepository
         if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
+        } elseif ($employee->hasPermissionId([Permission::EMPLOYEE_USER_ACCESS])) {
+            $assignedClients = [];
+            $clientGroups = ClientGroup::query()->whereHas(
+                'employees',
+                static function ($query) {
+                    $query->where('company_user_id', Auth::user()->employee->id);
+                }
+            )->get();
+            if ($clientGroups) {
+                $assignedClients = ClientGroupHasClient::whereIn(
+                    'client_group_id',
+                    $clientGroups->pluck('id')->toArray()
+                )->get();
+            }
+            $clients = Client::whereIn('id', $assignedClients);
+            $clientIds = Client::whereIn('id', $assignedClients)->get()->pluck('id')->toArray();
         } else {
             $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
             $clientIds = Client::where([

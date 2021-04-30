@@ -3,9 +3,10 @@
 
 namespace App\Repositories;
 
-
 use App\Client;
 use App\ClientCompanyUser;
+use App\ClientGroup;
+use App\ClientGroupHasClient;
 use App\Company;
 use App\CompanyUser;
 use App\Email;
@@ -43,16 +44,42 @@ class CompanyUserRepository
         $request->sort_by = null;
 
         $employee = Auth::user()->employee;
-        $clientIds = $employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS) ? [] :
-            Client::where([
+        $clientIds = [];
+        if ($employee->hasPermissionId([Permission::EMPLOYEE_USER_ACCESS])) {
+            $assignedClients = [];
+            $clientGroups = ClientGroup::query()->whereHas(
+                'employees',
+                static function ($query) use ($employee) {
+                    $query->where('company_user_id', $employee->id);
+                }
+            )->get();
+            if ($clientGroups) {
+                $assignedClients = ClientGroupHasClient::whereIn(
+                    'client_group_id',
+                    $clientGroups->pluck('id')->toArray()
+                )->get();
+            }
+            $clientIds = Client::whereIn('id', $assignedClients)->get()->pluck('id')->toArray();
+            $freeCompanyUsers = [];
+        } elseif (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
+            $clientIds = Client::where([
                 'supplier_type' => Company::class,
                 'supplier_id' => $employee->company_id
             ])->get()->pluck('id')->toArray();
+            $freeCompanyUsers = CompanyUser::where([
+                ['company_id', $employee->company_id],
+                ['is_clientable', true]
+            ])->withTrashed($request->with_trashed)->get()->pluck('id')->toArray();
+        }
 
         $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds)->withTrashed($request->with_trashed);
-        $freeCompanyUsers = CompanyUser::where([['company_id', $employee->company_id], ['is_clientable', true]])->withTrashed($request->with_trashed);
-
-        $companyUsers = CompanyUser::whereIn('id', array_merge($clientCompanyUsers->get()->pluck('company_user_id')->toArray(), $freeCompanyUsers->get()->pluck('id')->toArray()))
+        $companyUsers = CompanyUser::whereIn(
+            'id',
+            array_merge(
+                $clientCompanyUsers->get()->pluck('company_user_id')->toArray(),
+                $freeCompanyUsers
+            )
+        )
             ->has('userData')
             ->with(['userData' => function ($query) use ($request) {
                 $query->withTrashed($request->with_trashed);
@@ -214,6 +241,4 @@ class CompanyUserRepository
         $companyUser->save();
         return $companyUser;
     }
-
-
 }
