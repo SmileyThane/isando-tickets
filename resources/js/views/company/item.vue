@@ -10,7 +10,7 @@
         </v-snackbar>
         <div class="row">
             <div class="col-md-6">
-                <v-card class="elevation-12 without-bottom">
+                <v-card class="elevation-12 ">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
@@ -128,10 +128,8 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
-                <v-card class="elevation-12 without-bottom">
+                <br>
+                <v-card class="elevation-12 ">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
@@ -489,7 +487,7 @@
                     </v-card-text>
                 </v-card>
                 <br>
-                <v-card>
+                <v-card class="elevation-12 ">
                     <v-toolbar
                         dark
                         dense
@@ -582,10 +580,242 @@
                         </v-row>
                     </v-card-text>
                 </v-card>
+                <br>
+                <v-card class="elevation-12">
+                    <v-spacer></v-spacer>
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.product_categories }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-treeview
+                                        :items="productCategoriesTree"
+                                        activatable
+                                        item-key="id"
+                                        open-on-click
+                                    >
+                                        <template v-slot:prepend="{ item }">
+                                            <v-icon v-if="item.children.length">mdi-folder</v-icon>
+                                            <v-icon v-else>mdi-file</v-icon>
+                                        </template>
+                                        <template v-slot:append="{ item }">
+                                            <v-btn
+                                                icon
+                                                small
+                                                @click="deleteProductCategory(item.id)"
+                                            >
+                                                <v-icon>mdi-trash-can</v-icon>
+                                            </v-btn>
+                                        </template>
+
+                                    </v-treeview>
+
+                                    <v-expansion-panels>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{ langMap.company.new_product_category }}
+                                                <template v-slot:actions>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col class="pa-1" cols="md-6">
+                                                            <v-text-field
+                                                                v-model="productCategoryForm.name"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :label="langMap.main.name"
+                                                                dense
+                                                            ></v-text-field>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="6">
+                                                            <v-select
+                                                                v-model="productCategoryForm.parent_id"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :items="productCategoriesFlat"
+                                                                :label="langMap.company.parent_product_category"
+                                                                dense
+                                                                item-text="full_name"
+                                                                item-value="id"
+                                                            >
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn
+                                                            :color="themeBgColor"
+                                                            bottom
+                                                            dark
+                                                            fab
+                                                            right
+                                                            small
+                                                            @click="submitNewData(company.id, productCategoryForm, 'addProductCategory')"
+                                                        >
+                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+                <br>
+                <v-card class="elevation-12">
+                    <v-toolbar
+                        :color="themeBgColor"
+                        dark
+                        dense
+                        flat
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.product.info }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-data-table
+                            :footer-props="footerProps"
+                            :headers="productHeaders"
+                            :items="company.products"
+                            class="elevation-1"
+                            dense
+                            item-key="id"
+                            :options.sync="options"
+                            @update:options="updateItemsPerPage"
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showProduct(item.product_data)">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-eye
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.show_product }}</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteProductDlg(item)">
+                                            <v-icon
+                                                small
+                                            >
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span>{{ langMap.customer.unlink_product }}</span>
+                                </v-tooltip>
+                            </template>
+                        </v-data-table>
+                        <br>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.product.add_new }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content style="padding-bottom: 0">
+                                    <v-form>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <v-select
+                                                    :color="themeBgColor"
+                                                    :label="langMap.main.category"
+                                                    name="category_id"
+                                                    prepend-icon="mdi-rename-box"
+                                                    v-model="productForm.category_id"
+                                                    :items="productCategoriesFlat"
+                                                    :item-color="themeBgColor"
+                                                    item-value="id"
+                                                    item-text="full_name"
+                                                />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    v-model="productForm.product_name"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.main.name"
+                                                    name="product_name"
+                                                    required
+                                                    type="text"
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-textarea
+                                                    v-model="productForm.product_description"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.main.description"
+                                                    auto-grow
+                                                    name="product_description"
+                                                    required
+                                                    rows="1"
+                                                    type="text"
+                                                ></v-textarea>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-text-field
+                                                    v-model="productForm.product_code"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.product.code"
+                                                    name="product_code"
+                                                    required
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <v-file-input
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :label="langMap.ticket.add_attachments"
+                                                    :show-size="1000"
+                                                    chips
+                                                    multiple
+                                                    prepend-icon="mdi-paperclip"
+                                                    v-on:change="onFileChange('productForm')"
+                                                >
+                                                    <template v-slot:selection="{ index, text }">
+                                                        <v-chip
+                                                            :color="themeBgColor"
+                                                            class="ma-2"
+                                                            :text-color="themeFgColor"                                                        >
+                                                            {{ text }}
+                                                        </v-chip>
+                                                    </template>
+                                                </v-file-input>
+                                            </div>
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                @click="addProduct"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+
+                    </v-card-text>
+                </v-card>
+
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
-
                     <v-toolbar
                         :color="themeBgColor"
                         dark
@@ -824,9 +1054,7 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
-                <v-spacer>
-                    &nbsp;
-                </v-spacer>
+                <br>
                 <v-card class="elevation-12">
 
                     <v-toolbar
@@ -935,10 +1163,7 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
-            </div>
-        </div>
-        <v-row>
-            <v-col md="6">
+                <br>
                 <v-card class="elevation-12">
                     <v-toolbar
                         :color="themeBgColor"
@@ -946,105 +1171,14 @@
                         dense
                         flat
                     >
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.product.info }}</v-toolbar-title>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.client_group.info }}</v-toolbar-title>
                         <v-spacer></v-spacer>
                     </v-toolbar>
                     <v-card-text>
-                        <v-expansion-panels>
-                            <v-expansion-panel>
-                                <v-expansion-panel-header>
-                                    {{ langMap.product.add_new }}
-                                    <template v-slot:actions>
-                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
-                                    </template>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content style="padding-bottom: 0">
-                                    <v-form>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <v-select
-                                                    :color="themeBgColor"
-                                                    :label="langMap.main.category"
-                                                    name="category_id"
-                                                    prepend-icon="mdi-rename-box"
-                                                    v-model="productForm.category_id"
-                                                    :items="productCategoriesFlat"
-                                                    :item-color="themeBgColor"
-                                                    item-value="id"
-                                                    item-text="full_name"
-                                                />
-                                            </div>
-                                            <div class="col-md-6">
-                                                <v-text-field
-                                                    v-model="productForm.product_name"
-                                                    :color="themeBgColor"
-                                                    :label="langMap.main.name"
-                                                    name="product_name"
-                                                    required
-                                                    type="text"
-                                                ></v-text-field>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <v-textarea
-                                                    v-model="productForm.product_description"
-                                                    :color="themeBgColor"
-                                                    :label="langMap.main.description"
-                                                    auto-grow
-                                                    name="product_description"
-                                                    required
-                                                    rows="1"
-                                                    type="text"
-                                                ></v-textarea>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <v-text-field
-                                                    v-model="productForm.product_code"
-                                                    :color="themeBgColor"
-                                                    :label="langMap.product.code"
-                                                    name="product_code"
-                                                    required
-                                                ></v-text-field>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <v-file-input
-                                                    :color="themeBgColor"
-                                                    :item-color="themeBgColor"
-                                                    :label="langMap.ticket.add_attachments"
-                                                    :show-size="1000"
-                                                    chips
-                                                    multiple
-                                                    prepend-icon="mdi-paperclip"
-                                                    v-on:change="onFileChange('productForm')"
-                                                >
-                                                    <template v-slot:selection="{ index, text }">
-                                                        <v-chip
-                                                            :color="themeBgColor"
-                                                            class="ma-2"
-                                                            :text-color="themeFgColor"                                                        >
-                                                            {{ text }}
-                                                        </v-chip>
-                                                    </template>
-                                                </v-file-input>
-                                            </div>
-                                            <v-btn
-                                                :color="themeBgColor"
-                                                bottom
-                                                dark
-                                                fab
-                                                right
-                                                @click="addProduct"
-                                            >
-                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
-                                            </v-btn>
-                                        </div>
-                                    </v-form>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
                         <v-data-table
                             :footer-props="footerProps"
-                            :headers="productHeaders"
-                            :items="company.products"
+                            :headers="clientGroupHeaders"
+                            :items="company.client_groups"
                             class="elevation-1"
                             dense
                             item-key="id"
@@ -1062,11 +1196,11 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{ langMap.customer.show_product }}</span>
+                                    <span>{{ langMap.main.show }}</span>
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteProductDlg(item)">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteClientGroupDlg(item)">
                                             <v-icon
                                                 small
                                             >
@@ -1074,102 +1208,54 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{ langMap.customer.unlink_product }}</span>
+                                    <span>{{ langMap.client_group.delete }}</span>
                                 </v-tooltip>
                             </template>
                         </v-data-table>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col md="6">
-                <v-spacer></v-spacer>
-                <v-card class="elevation-12 without-bottom">
-                    <v-toolbar :color="themeBgColor" dark dense flat>
-                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.company.product_categories }}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                    </v-toolbar>
-
-                    <v-card-text>
-                        <v-form>
-                            <v-row>
-                                <v-col class="col-md-12">
-                                    <v-treeview
-                                        :items="productCategoriesTree"
-                                        activatable
-                                        item-key="id"
-                                        open-on-click
-                                    >
-                                        <template v-slot:prepend="{ item }">
-                                            <v-icon v-if="item.children.length">mdi-folder</v-icon>
-                                            <v-icon v-else>mdi-file</v-icon>
-                                        </template>
-                                        <template v-slot:append="{ item }">
+                        <br>
+                        <v-expansion-panels>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.product.add_new }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content style="padding-bottom: 0">
+                                    <v-form>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <v-text-field
+                                                    v-model="clientGroupForm.name"
+                                                    :color="themeBgColor"
+                                                    :label="langMap.main.name"
+                                                    name="product_name"
+                                                    required
+                                                    type="text"
+                                                ></v-text-field>
+                                            </div>
                                             <v-btn
-                                                icon
-                                                small
-                                                @click="deleteProductCategory(item.id)"
+                                                :color="themeBgColor"
+                                                bottom
+                                                dark
+                                                fab
+                                                right
+                                                @click="addClientGroup"
                                             >
-                                                <v-icon>mdi-trash-can</v-icon>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                             </v-btn>
-                                        </template>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
 
-                                    </v-treeview>
-
-                                    <v-expansion-panels>
-                                        <v-expansion-panel>
-                                            <v-expansion-panel-header>
-                                                {{ langMap.company.new_product_category }}
-                                                <template v-slot:actions>
-                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
-                                                </template>
-                                            </v-expansion-panel-header>
-                                            <v-expansion-panel-content>
-                                                <v-form>
-                                                    <div class="row">
-                                                        <v-col class="pa-1" cols="md-6">
-                                                            <v-text-field
-                                                                v-model="productCategoryForm.name"
-                                                                :color="themeBgColor"
-                                                                :item-color="themeBgColor"
-                                                                :label="langMap.main.name"
-                                                                dense
-                                                            ></v-text-field>
-                                                        </v-col>
-                                                        <v-col class="pa-1" cols="6">
-                                                            <v-select
-                                                                v-model="productCategoryForm.parent_id"
-                                                                :color="themeBgColor"
-                                                                :item-color="themeBgColor"
-                                                                :items="productCategoriesFlat"
-                                                                :label="langMap.company.parent_product_category"
-                                                                dense
-                                                                item-text="full_name"
-                                                                item-value="id"
-                                                            >
-                                                            </v-select>
-                                                        </v-col>
-                                                        <v-btn
-                                                            :color="themeBgColor"
-                                                            bottom
-                                                            dark
-                                                            fab
-                                                            right
-                                                            small
-                                                            @click="submitNewData(company.id, productCategoryForm, 'addProductCategory')"
-                                                        >
-                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
-                                                        </v-btn>
-                                                    </div>
-                                                </v-form>
-                                            </v-expansion-panel-content>
-                                        </v-expansion-panel>
-                                    </v-expansion-panels>
-                                </v-col>
-                            </v-row>
-                        </v-form>
                     </v-card-text>
                 </v-card>
-            </v-col>
+            </div>
+        </div>
+        <v-row>
+
         </v-row>
         <v-row justify="center">
             <v-dialog v-model="rolesDialog" max-width="600px" persistent>
@@ -1912,6 +1998,23 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+            <v-dialog v-model="deleteClientGroupDlg" max-width="480" persistent>
+                <v-card>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.client_group.delete_msg }}?
+                    </v-card-title>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="grey darken-1" text @click="deleteClientGroupDlg = false">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn color="red darken-1" text
+                               @click="deleteClientGroup(selectedClientGroupId)">
+                            {{ langMap.main.delete }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
             <v-dialog v-model="removeEmployeeDlg" max-width="480" persistent>
                 <v-card>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
@@ -1974,6 +2077,10 @@ export default {
                 category_id: null,
                 files:[]
             },
+            clientGroupForm: {
+                name: '',
+                company_id: null,
+            },
             productHeaders: [
                 {
                     text: 'ID',
@@ -1985,8 +2092,20 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
+            clientGroupHeaders: [
+                {
+                    text: 'ID',
+                    align: 'start',
+                    sortable: false,
+                    value: 'id',
+                },
+                {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
+            ],
             deleteProductDlg: false,
             selectedProductId: null,
+            selectedClientGroupId: null,
+            deleteClientGroupDlg: false,
             companyIsLoaded: false,
             company: {
                 name: '',
@@ -2317,6 +2436,22 @@ export default {
                 }
             });
         },
+        addClientGroup() {
+            this.clientGroupForm.company_id = this.$route.params.id
+            axios.post('/api/client_group', this.clientGroupForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getCompany();
+                    this.snackbarMessage = this.langMap.client_group.created;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
         showProduct(item) {
             this.$router.push(`/product/${item.id}`)
         },
@@ -2331,6 +2466,27 @@ export default {
                     this.getCompany()
                     this.selectedProductId = null;
                     this.snackbarMessage = this.langMap.customer.product_deleted;
+                    this.actionColor = 'success'
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                }
+            });
+        },
+        showDeleteClientGroupDlg(item) {
+            this.selectedClientGroupId = item.id;
+            this.deleteClientGroupDlg = true;
+        },
+        deleteClientGroup(id) {
+            axios.delete(`/api/client_group/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getCompany()
+                    this.selectedClientGroupId = null;
+                    this.deleteClientGroupDlg = false;
+                    this.snackbarMessage = this.langMap.client_group.deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
