@@ -195,7 +195,7 @@ class LanguageSeeder extends Seeder
                                 'period_this_year' => 'This year',
                                 'period_totl_time' => 'Total time',
                                 'select_custom_period' => 'Or select a custom period',
-//                                'rounding_up_of_times' => 'Rounding up of times',
+            //                                'rounding_up_of_times' => 'Rounding up of times',
                                 'sorting' => 'Sorting',
                                 'grouping' => 'Group entries by...',
                                 'filter' => 'Filter entries',
@@ -247,7 +247,7 @@ class LanguageSeeder extends Seeder
                                 'billability' => 'Billability',
                                 'clients' => 'Clients',
                                 'month' => 'Month',
-//                                'billable' => 'Billable',
+            //                                'billable' => 'Billable',
                                 'tags' => 'Tags',
                                 'title' => 'Title',
                                 'description' => 'Description',
@@ -448,6 +448,14 @@ class LanguageSeeder extends Seeder
                             'show_product' => 'Show product',
                             'delete_product' => 'Delete product',
                             'product_deleted' => 'Product deleted',
+                        ],
+                    'client_group' =>
+                        [
+                            'deleted' => 'Client group was deleted',
+                            'created' => 'Client group was created',
+                            'info' => 'Client groups',
+                            'single' => 'Client group',
+                            'delete_msg' => 'Are you sure that you want to delete this client group?',
                         ],
                     'product' =>
                         [
@@ -948,7 +956,7 @@ class LanguageSeeder extends Seeder
                             'access' => 'Zugriff',
                             'create' => 'Erstellen',
                             'cancel' => 'Stornieren',
-//                            'create_project' => 'Projekt_erstellen'
+                    //                            'create_project' => 'Projekt_erstellen'
                             'create_project' => [
                                 'btn_title' => 'Neues Projekt erstellen',
                                 'modal_title' => 'Neues Projekt erstellen',
@@ -1073,7 +1081,7 @@ class LanguageSeeder extends Seeder
                                 'period_this_year' => 'Dieses Jahr',
                                 'period_total_time' => 'Total Zeit',
                                 'select_custom_period' => 'Oder wählen Sie einen benutzerdefinierten Zeitraum',
-//                                'rounding_up_of_times' => 'Aufrunden von Zeiten',
+                    //                                'rounding_up_of_times' => 'Aufrunden von Zeiten',
                                 'sorting' => 'Sortierung',
                                 'grouping' => 'Einträge gruppieren nach...',
                                 'filter' => 'Filter Einträge',
@@ -1125,7 +1133,7 @@ class LanguageSeeder extends Seeder
                                 'billability' => 'Fakturierbar',
                                 'clients' => 'Kunden',
                                 'month' => 'Monat',
-//                                'billable' => 'Billable','Kostenpflichtig',
+                    //                                'billable' => 'Billable','Kostenpflichtig',
                                 'tags' => 'Tags',
                                 'title' => 'Titel',
                                 'description' => 'Beschreibung',
@@ -1312,6 +1320,14 @@ class LanguageSeeder extends Seeder
                             'delete_product' => 'Produkt löschen',
                             'product_deleted' => 'Produkt gelöscht',
                         ],
+                        'client_group' =>
+                            [
+                                'deleted' => 'Clientgruppe wurde gelöscht ',
+                                'created' => 'Clientgruppe wurde erstellt ',
+                                'info' => 'Kundengruppen',
+                                'single' => 'Kundengruppe',
+                                'delete_msg' => 'Sind Sie sicher, dass Sie diese Clientgruppe löschen möchten?',
+                            ],
                         'product' => [
                             'add_new' => 'Neues Produkt hinzufügen',
                             'code' => 'Produktcode',
