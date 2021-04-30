@@ -57,7 +57,7 @@ class CompanyRepository
             }
             return $result->get();
         }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type',
-            'employees.userData.emails.type', 'clients',
+            'employees.userData.emails.type', 'clients', 'clientGroups.clients', 'clientGroups.employees',
             'products.productData', 'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type',
             'emails', 'billing', 'emails.type'])
             ->first() :
@@ -82,7 +82,10 @@ class CompanyRepository
                 Storage::makeDirectory('public/logos');
             }
 
-            $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
+            $file = $request->file('logo')->storeAs(
+                'public/logos',
+                $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension()
+            );
             $company->logo_url = Storage::url($file);
             $company->save();
         }
@@ -110,7 +113,10 @@ class CompanyRepository
                 Storage::makeDirectory('public/logos');
             }
 
-            $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
+            $file = $request->file('logo')->storeAs(
+                'public/logos',
+                $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension()
+            );
             $company->logo_url = Storage::url($file);
         }
 
