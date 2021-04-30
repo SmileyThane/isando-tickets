@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ClientGroupController;
 use App\Http\Controllers\API\InternalBillingController;
 use Illuminate\Support\Facades\Route;
 
@@ -304,5 +305,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('billing/internal/{id}', [InternalBillingController::class, 'find']);
     Route::put('billing/internal/{id}', [InternalBillingController::class, 'update']);
     Route::delete('billing/internal/{id}', [InternalBillingController::class, 'delete']);
+
+    Route::post('client_group', [ClientGroupController::class, 'create']);
+    Route::delete('client_group/{id}', [ClientGroupController::class, 'delete']);
+    Route::post('client_group/client', [ClientGroupController::class, 'addClient']);
+    Route::delete('client_group/client/{id}', [ClientGroupController::class, 'removeClient']);
+    Route::post('client_group/employee', [ClientGroupController::class, 'addCompanyUser']);
+    Route::delete('client_group/employee/{id}', [ClientGroupController::class, 'removeCompanyUser']);
 });
 
