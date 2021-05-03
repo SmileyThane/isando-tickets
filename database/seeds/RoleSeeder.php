@@ -29,14 +29,14 @@ class RoleSeeder extends Seeder
         DB::table('roles')->updateOrInsert(
             ['id' => 3],
             [
-                'name' => 'company_admin',
+                'name' => 'ticketing_admin',
                 'guard_name' => 'web'
             ]
         );
         DB::table('roles')->updateOrInsert(
             ['id' => 4],
             [
-                'name' => 'company_manager',
+                'name' => 'ticketing_manager',
                 'guard_name' => 'web'
             ]
         );
