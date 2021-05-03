@@ -16,7 +16,7 @@ class RoleSeeder extends Seeder
             ['id' => 1],
             [
                 'name' => 'superadmin',
-                'guard_name' => 'web'
+                'guard_name' => 'web',
             ]
         );
         DB::table('roles')->updateOrInsert(
@@ -73,6 +73,14 @@ class RoleSeeder extends Seeder
             [
                 'name' => 'team_member_tracking',
                 'guard_name' => 'web'
+            ]
+        );
+        DB::table('roles')->updateOrInsert(
+            ['id' => 10],
+            [
+                'name' => 'contractor',
+                'guard_name' => 'web',
+                'is_public' => false
             ]
         );
     }
