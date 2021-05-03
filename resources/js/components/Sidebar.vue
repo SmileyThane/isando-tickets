@@ -118,7 +118,9 @@
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
-            <v-divider></v-divider>
+            <v-divider
+                v-if="$helpers.auth.checkPermissionByIds([25])"
+            ></v-divider>
             <v-list dense>
                 <v-list-group
                     v-if="$helpers.auth.checkPermissionByIds([7])"
@@ -378,7 +380,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="!$helpers.auth.checkPermissionByIds([36])"
+                        v-if="$helpers.auth.checkPermissionByIds([22])"
                         link
                         style="background-color:white;"
                         to="/notify"
@@ -426,7 +428,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([7, 13])"
+                        v-if="$helpers.auth.checkPermissionByIds([13])"
                         link
                         style="background-color:white;"
                         to="/company">
@@ -451,7 +453,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([13])"
+                        v-if="$helpers.auth.checkPermissionByIds([28])"
                         link
                         style="background-color:white;"
                         to="/settings/system"
