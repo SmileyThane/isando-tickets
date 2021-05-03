@@ -146,10 +146,7 @@ class CompanyController extends Controller
 
     public function getSettings(Request $request, $id = null): JsonResponse
     {
-        if (Auth::user()->employee->hasPermissionId(Permission::SETTINGS_READ_ACCESS)) {
-            return self::showResponse(true, $this->companyRepo->getSettings($id));
-        }
-        return self::showResponse(false);
+        return self::showResponse(true, $this->companyRepo->getSettings($id));
     }
 
     public function updateSettings(Request $request, $id = null): JsonResponse
