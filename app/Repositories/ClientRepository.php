@@ -62,7 +62,7 @@ class ClientRepository
         if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
-        } elseif ($employee->hasPermissionId([Permission::EMPLOYEE_USER_ACCESS])) {
+        } elseif ($employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
             $assignedClients = [];
             $clientGroups = ClientGroup::query()->whereHas(
                 'employees',
@@ -252,7 +252,7 @@ class ClientRepository
         if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
-        } elseif ($employee->hasPermissionId([Permission::EMPLOYEE_USER_ACCESS])) {
+        } elseif ($employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
             $assignedClients = [];
             $clientGroups = ClientGroup::query()->whereHas(
                 'employees',
