@@ -45,7 +45,7 @@ class CompanyUserRepository
 
         $employee = Auth::user()->employee;
         $clientIds = [];
-        if ($employee->hasPermissionId([Permission::EMPLOYEE_USER_ACCESS])) {
+        if ($employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
             $assignedClients = [];
             $clientGroups = ClientGroup::query()->whereHas(
                 'employees',

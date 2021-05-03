@@ -296,6 +296,14 @@ class PermissionSeeder extends Seeder
         //custom permissions
 
         DB::table('permissions')->updateOrInsert(
+            ['id' => 82],
+            [
+                'name' => 'client_groups_dependency',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
             ['id' => 81],
             [
                 'name' => 'tracker_settings_fill_working_hours_access',
