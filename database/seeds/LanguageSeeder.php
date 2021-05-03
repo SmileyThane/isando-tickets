@@ -367,6 +367,7 @@ class LanguageSeeder extends Seeder
                             'regular_user' => 'Regular user',
                             'company_client' => 'Client',
                             'contact' => 'Contact',
+                            'contractor' => 'Contractor'
                         ],
                     'company' =>
                         [
@@ -1247,6 +1248,7 @@ class LanguageSeeder extends Seeder
                             'regular_user' => 'Benutzer',
                             'company_client' => 'Kunde',
                             'contact' => 'Kontakt',
+                            'contractor' => 'Auftragnehmer'
                         ],
                         'company' => [
                             'company_number' => 'Firmennummer',
