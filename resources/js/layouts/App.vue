@@ -122,7 +122,7 @@ export default {
   },
   mounted: function () {
     if (localStorage.getItem('auth_token')) {
-      this.$router.push($helpers.auth.checkPermissionByIds([1]) ? 'tickets' : 'knowledge_base')
+      this.$router.push(this.$helpers.auth.checkPermissionByIds([1]) ? 'tickets' : 'knowledge_base')
     }
     this.getPlans()
   },
