@@ -37,15 +37,15 @@
                     </div>
 
                     <div class="card-body">
+
                         <v-data-table
                             :headers="headers"
                             :items="items"
-                            :items-per-page="100"
+                            :items-per-page="15"
                             :loading="loading"
                             :loading-text="langMap.main.loading"
                             class="elevation-1"
                             dense
-                            hide-default-footer
                         >
                             <template v-slot:body="props">
                                 <tr v-for="index in props.items">
@@ -69,9 +69,9 @@
                                     </td>
                                 </tr>
                             </template>
-                            <template v-slot:footer>
-                            </template>
+
                         </v-data-table>
+
                     </div>
                 </div>
             </div>
