@@ -28,6 +28,9 @@ class TrackingReportRepository
     protected $currency = 'EUR';
 
     public function all(Request $request) {
+        if (!Auth::user()->employee->hasPermissionId(61)) {
+            throw new \Exception('Access denied');
+        }
         return Auth::user()->trackingReports()->orderBy('id', 'desc')->get();
     }
 
@@ -77,18 +80,14 @@ class TrackingReportRepository
 
     protected function getData(Request $request) {
 
-        $hasLicensed = Auth::user()->employee->companyData->license;
-        if (!$hasLicensed) {
+        if (!Auth::user()->employee->hasPermissionId([61, 66])) {
             throw new \Exception('Access denied');
         }
 
         $tracking = Tracking::with('User.employee.assignedToTeams')
             ->with('Tags.Translates');
 
-        if (Auth::user()->employee->hasRoleId(Role::ADMIN)) {
-            // Admin
-            $tracking = $tracking->CompanyAdmin();
-        } elseif (Auth::user()->employee->hasRoleId(Role::MANAGER)) {
+        if (Auth::user()->employee->hasPermissionId(42)) {
             // Manager
             $tracking = $tracking->TeamManager();
         } else {
@@ -202,7 +201,9 @@ class TrackingReportRepository
                         );
                         break;
                     case 'billable':
-                        $tracking->where('tracking.billable', '=', (int)$filter['selected']);
+                        if (Auth::user()->employee->hasPermissionId(65)) {
+                            $tracking->where('tracking.billable', '=', (int)$filter['selected']);
+                        }
                         break;
                     case 'tag':
                         $tracking->whereHas('Tags', function($query) use ($filter) {
@@ -224,8 +225,10 @@ class TrackingReportRepository
                 $roundedTime = $this->getRoundTime($time, $round);
                 $passed = $this->convertTimeToSeconds($roundedTime);
                 $track['passed'] = $passed;
-                if ($track['billable']) {
+                if ($track['billable'] && Auth::user()->employee->hasPermissionId(70)) {
                     $track['revenue'] = number_format((float)$track['rate'] * (float)$this->convertSecondsToDecimal((float)$passed), 2, '.', '');
+                } else {
+                    $track['revenue'] = 0;
                 }
                 return $track;
             });

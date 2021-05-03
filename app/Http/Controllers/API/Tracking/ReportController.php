@@ -54,7 +54,7 @@ class ReportController extends BaseController
         try {
             return $this->trackingReportRepo->generate($request);
         } catch (\Exception $exception) {
-            return self::showResponse(false, $exception->getMessage());
+            throw new \Exception($exception->getMessage());
         }
     }
 

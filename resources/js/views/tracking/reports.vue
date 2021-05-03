@@ -375,6 +375,7 @@
                         class="d-inline-flex mt-2 align-content-end pa-6"
                         outlined
                         x-large
+                        v-if="$helpers.auth.checkPermissionByIds([69])"
                     >
                         <div class="d-flex flex-column">
                             <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
@@ -462,9 +463,11 @@
                                         {{ $helpers.time.convertSecToTime(item.passed, false) }}
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
-                                        <span v-if="currentCurrency">
-                                            {{ currentCurrency.slug }}
-                                        </span> {{ $helpers.numbers.numberFormat(item.revenue) }}
+                                        <span v-if="$helpers.auth.checkPermissionByIds([69])">
+                                            <span v-if="currentCurrency">
+                                                {{ currentCurrency.slug }}
+                                            </span> {{ $helpers.numbers.numberFormat(item.revenue) }}
+                                        </span>
                                     </td>
                                     <td class="pa-2" align="center" width="5%">
                                         <span
@@ -475,11 +478,13 @@
                                         </span>
                                         <span class="pl-7" v-if="item.status !== 'started'"></span>
                                         <v-dialog
+                                            v-if="$helpers.auth.checkPermissionByIds([62])"
                                             v-model="dialogEdit[item.id]"
                                             width="500"
                                         >
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-btn
+                                                    v-if="$helpers.auth.checkPermissionByIds([62])"
                                                     icon
                                                     v-bind="attrs"
                                                     v-on="on"
@@ -490,7 +495,7 @@
                                                 </v-btn>
                                             </template>
 
-                                            <v-card>
+                                            <v-card v-if="$helpers.auth.checkPermissionByIds([62])">
                                                 <v-card-title>
                                                     {{ langMap.tracking.report.edit }}
                                                 </v-card-title>
@@ -551,6 +556,7 @@
                                                     <div class="d-flex flex-row">
                                                         <div class="d-flex-inline flex-grow-1">
                                                             <v-checkbox
+                                                                :disabled="!$helpers.auth.checkPermissionByIds([65])"
                                                                 v-model="editForm.billable"
                                                                 :label="langMap.tracking.report.billable"
                                                             ></v-checkbox>
@@ -578,12 +584,14 @@
                                             </v-card>
                                         </v-dialog>
                                         <v-dialog
+                                            v-if="$helpers.auth.checkPermissionByIds([62])"
                                             v-model="dialogDelete[item.id]"
                                             persistent
                                             max-width="290"
                                         >
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-btn
+                                                    v-if="$helpers.auth.checkPermissionByIds([62])"
                                                     x-small
                                                     icon
                                                     v-bind="attrs"
@@ -592,7 +600,7 @@
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
-                                            <v-card>
+                                            <v-card v-if="$helpers.auth.checkPermissionByIds([62])">
                                                 <v-card-title class="headline">
                                                     {{ langMap.tracking.report.are_you_sure }}
                                                 </v-card-title>
@@ -703,6 +711,7 @@
                                 </div>
                                 <div class="d-inline-block">
                                     <v-checkbox
+                                        :disabled="!$helpers.auth.checkPermissionByIds([69])"
                                         class="my-0"
                                         hide-details
                                         v-model="report.pdf.showRevenue"
@@ -1168,7 +1177,7 @@ export default {
                     periodText: '',
                     groupSel: 1,
                     showCover: true,
-                    showRevenue: true,
+                    showRevenue: false,
                     timeInDecimal: false,
                     hideColumns: [],
                     sendByEmail: false,

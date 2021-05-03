@@ -1,5 +1,6 @@
 <template>
     <v-menu
+        v-if="$helpers.auth.checkPermissionByIds([48,49,50])"
         :close-on-content-click="false"
         :nudge-width="200"
         offset-y
@@ -7,6 +8,7 @@
     >
         <template v-slot:activator="{ on, attrs }">
             <v-btn
+                v-if="$helpers.auth.checkPermissionByIds([48,49,50])"
                 tile
                 small
                 text
@@ -32,6 +34,7 @@
             </v-btn>
         </template>
         <v-card
+            v-if="$helpers.auth.checkPermissionByIds([48,49,50])"
             max-width="450"
             class="d-flex pa-2"
             style="overflow: hidden"
@@ -39,7 +42,7 @@
             <v-expansion-panels
                 v-model="panels"
             >
-                <v-expansion-panel>
+                <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([49])">
                     <v-expansion-panel-header>
                         {{langMap.tracking.project_btn.choose_project}}
                     </v-expansion-panel-header>
@@ -92,7 +95,7 @@
                         </perfect-scrollbar>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel>
+                <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([48])">
                     <v-expansion-panel-header>
                         {{langMap.tracking.project_btn.create_new_project}}
                     </v-expansion-panel-header>
@@ -187,7 +190,7 @@
                         </v-card-actions>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel v-if="$store.getters['Tickets/getTreeTickets'].length">
+                <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([50]) && $store.getters['Tickets/getTreeTickets'].length">
                     <v-expansion-panel-header>
                         {{langMap.tracking.project_btn.choose_ticket}}
                     </v-expansion-panel-header>

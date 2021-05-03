@@ -16,7 +16,9 @@ class RoleRepository
     public function replicate($roleId, $companyId): bool
     {
         $role = Role::find($roleId);
-        if (!Role::query()->where(['name' => $role->name, 'company_id' => $companyId])->exists()) {
+        if ($role->is_public === 1 &&
+            !Role::query()->where(['name' => $role->name, 'company_id' => $companyId])->exists()
+        ) {
             $newRole = $role->replicate()->fill([
                 'company_id' => $companyId
             ]);

@@ -40,12 +40,12 @@
                         <v-data-table
                             :headers="headers"
                             :items="items"
-                            :items-per-page="100"
+                            :items-per-page="10"
                             :loading="loading"
+                            :footer-props="footerProps"
                             :loading-text="langMap.main.loading"
                             class="elevation-1"
                             dense
-                            hide-default-footer
                         >
                             <template v-slot:body="props">
                                 <tr v-for="index in props.items">
@@ -69,9 +69,9 @@
                                     </td>
                                 </tr>
                             </template>
-                            <template v-slot:footer>
-                            </template>
+
                         </v-data-table>
+
                     </div>
                 </div>
             </div>
@@ -96,6 +96,10 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             headers: [],
             items: [],
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [5, 10],
+            },
             canBeEdited: false
         }
     },
