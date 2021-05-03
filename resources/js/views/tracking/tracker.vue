@@ -63,6 +63,7 @@
                         </div>
                         <div class="mx-2 align-self-center">
                             <v-btn
+                                v-if="$helpers.auth.checkPermissionByIds([46])"
                                 fab
                                 :icon="!timerPanel.billable"
                                 x-small
@@ -99,6 +100,7 @@
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                        v-if="!$helpers.auth.checkPermissionByIds([47])"
                                         fab
                                         x-small
                                         :icon="!mode"
@@ -115,6 +117,7 @@
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                        v-if="!$helpers.auth.checkPermissionByIds([47])"
                                         fab
                                         x-small
                                         :icon="mode"
@@ -131,7 +134,7 @@
                         </div>
                     </div>
                     <!-- Manual mode-->
-                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!mode">
+                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!$helpers.auth.checkPermissionByIds([47]) && !mode">
                         <div class="mx-2 align-self-center">
                             <v-select
                                 :items="$store.getters['Services/getServices']"
@@ -173,6 +176,7 @@
                         </div>
                         <div class="mx-1 align-self-center">
                             <v-btn
+                                v-if="$helpers.auth.checkPermissionByIds([46])"
                                 :icon="!manualPanel.billable"
                                 x-small
                                 :color="themeBgColor"
@@ -398,6 +402,7 @@
                                                 :width="headers.find(i => i.value === 'description').width"
                                             >
                                                 <v-edit-dialog
+                                                    v-if="$helpers.auth.checkPermissionByIds([43])"
                                                     @save="debounceSave(row, 'description')"
                                                     @cancel="cancel"
                                                     @open="open"
@@ -442,6 +447,18 @@
                                                         </v-btn>
                                                     </template>
                                                 </v-edit-dialog>
+                                                <div v-else>
+                                                    <span v-if="row.service">
+                                                        {{ row.service.name }}
+                                                        <v-icon x-small>mdi-checkbox-blank-circle</v-icon>
+                                                    </span>
+                                                    <span class="text--secondary" v-if="!row.description">
+                                                        {{ langMap.tracking.tracker.add_description }}
+                                                    </span>
+                                                    <span v-else>
+                                                        {{ row.description }}
+                                                    </span>
+                                                </div>
                                             </td>
                                             <td
                                                 class="pa-3"
@@ -457,6 +474,7 @@
                                                 :width="headers.find(i => i.value === 'entity.name').width"
                                             >
                                                 <v-edit-dialog
+                                                    v-if="$helpers.auth.checkPermissionByIds([43])"
                                                     @save="debounceSave(row, 'entity', row.entity)"
                                                     @cancel="cancel"
                                                     @open="open"
@@ -470,12 +488,21 @@
                                                         @input="debounceSave(row, 'entity', row.entity)"
                                                     ></ProjectBtn>
                                                 </v-edit-dialog>
+                                                <div v-else>
+                                                    <div
+                                                        v-if="row.entity"
+                                                        :style="{color: row.entity && row.entity.color ? row.entity.color : themeBgColor}"
+                                                    >
+                                                        {{row.entity.name}}
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td
                                                 class="pa-3"
                                                 :width="headers.find(i => i.value === 'tags').width"
                                             >
                                                 <TagField
+                                                    :disabled="!$helpers.auth.checkPermissionByIds([43])"
                                                     :key="row.id"
                                                     :color="themeBgColor"
                                                     v-model="row.tags"
@@ -487,6 +514,8 @@
                                                 :width="headers.find(i => i.value === 'billable').width"
                                             >
                                                 <v-btn
+                                                    v-if="$helpers.auth.checkPermissionByIds([43])"
+                                                    :disabled="!$helpers.auth.checkPermissionByIds([46])"
                                                     fab
                                                     :icon="!row.billable"
                                                     x-small
@@ -505,6 +534,7 @@
                                                 <div class="d-flex flex-row">
                                                     <div class="d-flex-inline">
                                                         <v-edit-dialog
+                                                            v-if="$helpers.auth.checkPermissionByIds([43])"
                                                             @save="debounceSave(row, 'date_from', row.date_from)"
                                                             @cancel="cancel"
                                                             @open="open"
@@ -521,15 +551,18 @@
                                                                 ></TimeField>
                                                             </template>
                                                         </v-edit-dialog>
+                                                        <span v-else>
+                                                            {{moment(row.date_from).format('HH:mm')}}
+                                                        </span>
                                                     </div>
                                                     <div class="d-flex-inline">&nbsp;&mdash;&nbsp;</div>
                                                     <div class="d-flex-inline">
                                                         <v-edit-dialog
+                                                            v-if="$helpers.auth.checkPermissionByIds([43]) && row.status == 'stopped'"
                                                             @save="debounceSave(row, 'date_to', row.date_to)"
                                                             @cancel="cancel"
                                                             @open="open"
                                                             @close="debounceSave(row, 'date_to', row.date_to)"
-                                                            v-if="row.status == 'stopped'"
                                                         >
                                                             <span v-if="row.date_to && row.status == 'stopped'">
                                                                 {{ moment(row.date_to).format(timeFormat) }}
@@ -544,6 +577,9 @@
                                                                 ></TimeField>
                                                             </template>
                                                         </v-edit-dialog>
+                                                        <span v-else>
+                                                            {{moment(row.date_to).format('HH:mm')}}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -558,6 +594,7 @@
                                                 :width="headers.find(i => i.value === 'date').width"
                                             >
                                                 <v-menu
+                                                    :disabled="!$helpers.auth.checkPermissionByIds([43])"
                                                     v-model="row.date_picker"
                                                     :close-on-content-click="false"
                                                     :nudge-right="40"
@@ -568,6 +605,7 @@
                                                 >
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-btn
+                                                            :disabled="!$helpers.auth.checkPermissionByIds([43])"
                                                             icon
                                                             v-bind="attrs"
                                                             v-on="on"
@@ -577,6 +615,7 @@
                                                         </v-btn>
                                                     </template>
                                                     <v-date-picker
+                                                        :disabled="!$helpers.auth.checkPermissionByIds([43])"
                                                         dense
                                                         v-model="row.date"
                                                         @input="row.date_picker = false; handlerChangeDate(row)"
@@ -639,7 +678,7 @@
                                                                                 </v-list-item-title>
                                                                             </v-list-item-content>
                                                                         </v-list-item>
-                                                                        <v-list-item>
+                                                                        <v-list-item v-if="$helpers.auth.checkPermissionByIds([43])">
                                                                             <v-list-item-content>
                                                                                 <v-list-item-title
                                                                                     @click="actionDeleteTracking(row.id)"
