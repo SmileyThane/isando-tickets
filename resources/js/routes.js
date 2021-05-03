@@ -59,7 +59,7 @@ export default [
     {
         path: '/home',
         name: 'home',
-        component: this.$helpers.auth.checkPermissionByIds([1]) ? Ticket : KnowledgeBase
+        component: Ticket
     },
     {
         path: '/user',
