@@ -37,12 +37,12 @@
                     </div>
 
                     <div class="card-body">
-
                         <v-data-table
                             :headers="headers"
                             :items="items"
-                            :items-per-page="15"
+                            :items-per-page="10"
                             :loading="loading"
+                            :footer-props="footerProps"
                             :loading-text="langMap.main.loading"
                             class="elevation-1"
                             dense
@@ -96,6 +96,10 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             headers: [],
             items: [],
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [5, 10],
+            },
             canBeEdited: false
         }
     },
