@@ -100,16 +100,11 @@ class TrackingRepository
 
     public function all(Request $request)
     {
-
-        $hasLicensed = Auth::user()->employee->companyData->license;
-        if (!$hasLicensed) {
+        if (!Auth::user()->employee->hasPermissionId([41, 42])) {
             throw new \Exception('Access denied');
         }
 
-        if (Auth::user()->employee->hasRoleId(Role::ADMIN)) {
-            // Admin
-            $tracking = Tracking::CompanyAdmin();
-        } elseif (Auth::user()->employee->hasRoleId(Role::MANAGER)) {
+        if (Auth::user()->employee->hasPermissionId(42)) {
             // Manager
             $tracking = Tracking::TeamManager();
         } else {
@@ -138,6 +133,9 @@ class TrackingRepository
 
     public function create(Request $request)
     {
+        if (!Auth::user()->employee->hasPermissionId(40)) {
+            throw new \Exception('Access denied');
+        }
         $tracking = new Tracking();
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
@@ -149,7 +147,16 @@ class TrackingRepository
         }
         $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->utc() : null;
         $tracking->status = $request->status;
-        if ($request->has('billable')) { $tracking->billable = $request->billable; }
+        if ($request->has('billable')) {
+            $tracking->billable = $request->billable;
+        } else {
+            if ($request->has('entity') && $request->entity_type && $request->entity_type === TrackingProject::class) {
+                $trackingProject = TrackingProject::find($request->entity['id']);
+                if ($trackingProject) {
+                    $tracking->billable = $trackingProject->billable_by_default;
+                }
+            }
+        }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('entity') && $request->entity && $request->entity_type) {
             $tracking->entity_id = $request->entity['id'];
@@ -193,6 +200,9 @@ class TrackingRepository
 
     public function update(Request $request, Tracking $tracking)
     {
+        if (!Auth::user()->employee->hasPermissionId(40)) {
+            throw new \Exception('Access denied');
+        }
         $oldTracking = $tracking;
         if ($request->has('description')) { $tracking->description = $request->description; }
         if ($request->has('date_from')) {
@@ -210,7 +220,9 @@ class TrackingRepository
         if ($request->has('status')) {
             $tracking->status = $request->status;
         }
-        if ($request->has('billable')) { $tracking->billable = $request->billable; }
+        if ($request->has('billable') && Auth::user()->employee->hasPermissionId(46)) {
+            $tracking->billable = $request->billable;
+        }
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('entity') && $request->entity && $request->entity_type) {
             $tracking->entity_id = $request->entity['id'];
@@ -247,6 +259,9 @@ class TrackingRepository
 
     public function delete(Tracking $tracking)
     {
+        if (!Auth::user()->employee->hasPermissionId(43)) {
+            throw new \Exception('Access denied');
+        }
         $oldTracking = $tracking;
         $this->logTracking($tracking->id, TrackingLogger::DELETE, $tracking, null);
         $tracking->delete();
