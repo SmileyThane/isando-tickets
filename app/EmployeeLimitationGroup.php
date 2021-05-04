@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class EmployeeClientGroup extends Model
+class EmployeeLimitationGroup extends Model
 {
     protected $fillable = ['company_user_id', 'client_group_id'];
 
@@ -16,6 +16,6 @@ class EmployeeClientGroup extends Model
 
     public function clientGroup(): HasOne
     {
-        return $this->hasOne(ClientGroup::class, 'id', 'client_group_id');
+        return $this->hasOne(LimitationGroup::class, 'id', 'client_group_id');
     }
 }
