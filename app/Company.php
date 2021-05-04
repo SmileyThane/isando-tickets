@@ -38,9 +38,9 @@ class Company extends Model
         return $this->morphMany(Client::class, 'supplier');
     }
 
-    public function clientGroups(): HasMany
+    public function limitationGroups(): HasMany
     {
-        return $this->hasMany(ClientGroup::class, 'company_id', 'id');
+        return $this->hasMany(LimitationGroup::class, 'company_id', 'id');
     }
 
     public function teams(): MorphMany
