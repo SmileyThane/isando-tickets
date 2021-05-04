@@ -52,12 +52,16 @@ class CompanyRepository
 
         return $id ? $company->with(['employees' => function ($query) {
             $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
-            if (Auth::user()->employee->hasPermissionId([Permission::EMPLOYEE_CLIENT_ACCESS, Permission::EMPLOYEE_USER_ACCESS])) {
+            if (Auth::user()->employee->hasPermissionId([
+                Permission::EMPLOYEE_CLIENT_ACCESS,
+                Permission::EMPLOYEE_USER_ACCESS
+            ])) {
                 $result->where('user_id', Auth::id());
             }
             return $result->get();
         }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type',
-            'employees.userData.emails.type', 'clients', 'clientGroups.clients', 'clientGroups.employees',
+            'employees.userData.emails.type', 'clients', 'limitationGroups.limitationModels',
+            'limitationGroups.employees', 'limitationGroups.type',
             'products.productData', 'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type',
             'emails', 'billing', 'emails.type'])
             ->first() :
