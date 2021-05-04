@@ -4,10 +4,10 @@ namespace App\Repositories;
 
 use App\Client;
 use App\ClientCompanyUser;
-use App\ClientGroup;
-use App\ClientGroupHasClient;
 use App\Company;
 use App\Email;
+use App\LimitationGroup;
+use App\LimitationGroupHasModel;
 use App\Permission;
 use App\User;
 use Illuminate\Http\Request;
@@ -64,19 +64,23 @@ class ClientRepository
             $clients = Client::where('id', $clientCompanyUser->client_id);
         } elseif ($employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
             $assignedClients = [];
-            $clientGroups = ClientGroup::query()->whereHas(
+            $clientGroups = LimitationGroup::query()->whereHas(
                 'employees',
                 static function ($query) {
                     $query->where('company_user_id', Auth::user()->employee->id);
                 }
+            )->whereHas(
+                'type',
+                static function ($query) {
+                    $query->where('model', Client::class);
+                }
             )->get();
             if ($clientGroups) {
-                $assignedClients = ClientGroupHasClient::whereIn(
-                    'client_group_id',
-                    $clientGroups->pluck('id')->toArray()
-                )->get();
+                $assignedClients = LimitationGroupHasModel::query()
+                    ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
+                    ->get();
             }
-            $clients = Client::whereIn('id', $assignedClients);
+            $clients = Client::whereIn('id', $assignedClients->pluck('model_id'));
         } else {
             $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
         }
@@ -254,20 +258,19 @@ class ClientRepository
             $clients = Client::where('id', $clientCompanyUser->client_id);
         } elseif ($employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
             $assignedClients = [];
-            $clientGroups = ClientGroup::query()->whereHas(
-                'employees',
-                static function ($query) {
+            $clientGroups = LimitationGroup::query()
+                ->whereHas('employees', static function ($query) {
                     $query->where('company_user_id', Auth::user()->employee->id);
-                }
-            )->get();
+                })->whereHas('type', static function ($query) {
+                    $query->where('model', Client::class);
+                })->get();
             if ($clientGroups) {
-                $assignedClients = ClientGroupHasClient::whereIn(
-                    'client_group_id',
-                    $clientGroups->pluck('id')->toArray()
-                )->get();
+                $assignedClients = LimitationGroupHasModel::query()
+                    ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
+                    ->get();
             }
-            $clients = Client::whereIn('id', $assignedClients);
-            $clientIds = Client::whereIn('id', $assignedClients)->get()->pluck('id')->toArray();
+            $clients = Client::whereIn('id', $assignedClients->pluck('model_id'));
+            $clientIds = $assignedClients->pluck('model_id')->toArray();
         } else {
             $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
             $clientIds = Client::where([
