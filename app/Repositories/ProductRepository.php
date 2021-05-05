@@ -35,21 +35,11 @@ class ProductRepository
         $companyId = $employee->company_id;
         $productIds = null;
         if ($employee->hasPermissionId(Permission::CLIENT_GROUPS_DEPENDENCY)) {
-            $clientGroups = LimitationGroup::query()->whereHas(
-                'employees',
-                static function ($query) {
-                    $query->where('company_user_id', Auth::user()->employee->id);
-                }
-            )->whereHas(
-                'type',
-                static function ($query) {
-                    $query->where('model', Product::class);
-                }
-            )->get();
+            $productGroups = (new LimitationGroupRepository())->getAssignedLimitationGroupByModel(Product::class);
 
-            if ($clientGroups) {
+            if ($productGroups) {
                 $assignedClients = LimitationGroupHasModel::query()
-                    ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
+                    ->whereIn('limitation_group_id', $productGroups->pluck('id')->toArray())
                     ->get();
                 $productIds = $assignedClients->pluck('model_id')->toArray();
             }
