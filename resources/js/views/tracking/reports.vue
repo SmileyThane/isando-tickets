@@ -478,13 +478,13 @@
                                         </span>
                                         <span class="pl-7" v-if="item.status !== 'started'"></span>
                                         <v-dialog
-                                            v-if="$helpers.auth.checkPermissionByIds([62])"
+                                            v-if="isEditable(item)"
                                             v-model="dialogEdit[item.id]"
                                             width="500"
                                         >
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-btn
-                                                    v-if="$helpers.auth.checkPermissionByIds([62])"
+                                                    v-if="isEditable(item)"
                                                     icon
                                                     v-bind="attrs"
                                                     v-on="on"
@@ -495,7 +495,7 @@
                                                 </v-btn>
                                             </template>
 
-                                            <v-card v-if="$helpers.auth.checkPermissionByIds([62])">
+                                            <v-card v-if="isEditable(item)">
                                                 <v-card-title>
                                                     {{ langMap.tracking.report.edit }}
                                                 </v-card-title>
@@ -556,7 +556,7 @@
                                                     <div class="d-flex flex-row">
                                                         <div class="d-flex-inline flex-grow-1">
                                                             <v-checkbox
-                                                                :disabled="!$helpers.auth.checkPermissionByIds([65])"
+                                                                :disabled="!isEditable(item)"
                                                                 v-model="editForm.billable"
                                                                 :label="langMap.tracking.report.billable"
                                                             ></v-checkbox>
@@ -584,14 +584,14 @@
                                             </v-card>
                                         </v-dialog>
                                         <v-dialog
-                                            v-if="$helpers.auth.checkPermissionByIds([62])"
+                                            v-if="isEditable(item)"
                                             v-model="dialogDelete[item.id]"
                                             persistent
                                             max-width="290"
                                         >
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-btn
-                                                    v-if="$helpers.auth.checkPermissionByIds([62])"
+                                                    v-if="isEditable(item)"
                                                     x-small
                                                     icon
                                                     v-bind="attrs"
@@ -600,7 +600,7 @@
                                                     <v-icon>mdi-delete</v-icon>
                                                 </v-btn>
                                             </template>
-                                            <v-card v-if="$helpers.auth.checkPermissionByIds([62])">
+                                            <v-card v-if="isEditable(item)">
                                                 <v-card-title class="headline">
                                                     {{ langMap.tracking.report.are_you_sure }}
                                                 </v-card-title>
@@ -1611,6 +1611,22 @@ export default {
         resetSelectedReport() {
             this.report.selected = null;
             this.debounceGetReports();
+        },
+        hasPermission(ids) {
+            return this.$helpers.auth.checkPermissionByIds(ids);
+        },
+        isEditable(tracker) {
+            if (!this.hasPermission([62, 63, 64])) {
+                return false;
+            }
+            const trackerDiff = moment().diff(tracker.date_from, 'seconds');
+            if (
+                (this.hasPermission([64]) &&  trackerDiff > 60 * 60 * 24 * 14)
+                || (this.hasPermission([63]) &&  trackerDiff > 60 * 60 * 24 * 7)
+            ) {
+                return false;
+            }
+            return true;
         }
     },
     computed: {
