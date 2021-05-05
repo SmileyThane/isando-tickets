@@ -3,13 +3,13 @@
 
 namespace App\Repositories;
 
-
 use App\CompanyProduct;
+use App\LimitationGroup;
+use App\LimitationGroupHasModel;
 use App\Permission;
 use App\Product;
 use App\ProductClient;
 use App\ProductCompanyUser;
-use App\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -34,23 +34,44 @@ class ProductRepository
         $employee = Auth::user()->employee()->with('assignedToClients')->first();
         $companyId = $employee->company_id;
         $productIds = null;
-        if (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
-            $productIds = CompanyProduct::where('company_id', $companyId);
-        } else {
+        if ($employee->hasPermissionId(Permission::CLIENT_GROUPS_DEPENDENCY)) {
+            $clientGroups = LimitationGroup::query()->whereHas(
+                'employees',
+                static function ($query) {
+                    $query->where('company_user_id', Auth::user()->employee->id);
+                }
+            )->whereHas(
+                'type',
+                static function ($query) {
+                    $query->where('model', Product::class);
+                }
+            )->get();
+
+            if ($clientGroups) {
+                $assignedClients = LimitationGroupHasModel::query()
+                    ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
+                    ->get();
+                $productIds = $assignedClients->pluck('model_id')->toArray();
+            }
+
+        } elseif ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientIds = $employee->assignedToClients->pluck('client_id')->toArray();
-            $productIds = ProductClient::where('client_id', $clientIds);
+            if ($clientIds) {
+                $productIds = ProductClient::where('client_id', $clientIds)->get()->pluck('product_id')->toArray();
+            }
+        } else {
+            $productIds = CompanyProduct::where('company_id', $companyId)->get()->pluck('product_id')->toArray();
         }
 
+        $productsData = Product::whereIn('id', $productIds);
         if (!empty($request->search)) {
-            $productIds->whereHas(
-                'productData',
-                function ($query) use ($request) {
-                    $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('description', 'like', '%' . $request->search . '%');
-                }
-            );
+            $productsData
+                ->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('description', 'like', '%' . $request->search . '%');
         }
-        $products = Product::whereIn('id', $productIds->get()->pluck('product_id')->toArray())->with('category')->get();
+
+        $products = $productsData->with('category')->get();
+
         $orderFunc = function ($item, $key) use ($request) {
             switch ($request->sort_by ?? 'name') {
                 case 'id':
@@ -64,7 +85,7 @@ class ProductRepository
                 case 'description':
                     return $item->mb_strtolower($item->description);
                 case 'full_name':
-                return mb_strtolower($item->full_name);
+                    return mb_strtolower($item->full_name);
             }
         };
 
@@ -91,11 +112,6 @@ class ProductRepository
         return $product;
     }
 
-    public function update(Request $request, $id)
-    {
-        return $this->save(Product::find($id), $request);
-    }
-
     private function save($product, $request)
     {
         $product->name = $request->product_name;
@@ -109,6 +125,11 @@ class ProductRepository
             (new FileRepository())->store($file, $product->id, Product::class);
         }
         return $product;
+    }
+
+    public function update(Request $request, $id)
+    {
+        return $this->save(Product::find($id), $request);
     }
 
     public function delete($id)

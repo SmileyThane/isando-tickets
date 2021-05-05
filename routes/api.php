@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\ClientGroupController;
 use App\Http\Controllers\API\InternalBillingController;
+use App\Http\Controllers\API\LimitationGroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -306,11 +307,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('billing/internal/{id}', [InternalBillingController::class, 'update']);
     Route::delete('billing/internal/{id}', [InternalBillingController::class, 'delete']);
 
-    Route::post('client_group', [ClientGroupController::class, 'create']);
-    Route::delete('client_group/{id}', [ClientGroupController::class, 'delete']);
-    Route::post('client_group/client', [ClientGroupController::class, 'addClient']);
-    Route::delete('client_group/client/{id}', [ClientGroupController::class, 'removeClient']);
-    Route::post('client_group/employee', [ClientGroupController::class, 'addCompanyUser']);
-    Route::delete('client_group/employee/{id}', [ClientGroupController::class, 'removeCompanyUser']);
+    Route::get('limit_group/types', [LimitationGroupController::class, 'types']);
+    Route::post('limit_group', [LimitationGroupController::class, 'create']);
+    Route::delete('limit_group/{id}', [LimitationGroupController::class, 'delete']);
+    Route::post('limit_group/client', [LimitationGroupController::class, 'addLimitationModel']);
+    Route::delete('limit_group/client/{id}', [LimitationGroupController::class, 'removeLimitationModel']);
+    Route::post('limit_group/employee', [LimitationGroupController::class, 'addCompanyUser']);
+    Route::delete('limit_group/employee/{id}', [LimitationGroupController::class, 'removeCompanyUser']);
 });
 

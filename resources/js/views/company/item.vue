@@ -1236,7 +1236,7 @@
                         flat
                     >
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{
-                                langMap.client_group.info
+                                langMap.limitation_group.info
                             }}
                         </v-toolbar-title>
                         <v-spacer></v-spacer>
@@ -1244,8 +1244,8 @@
                     <v-card-text>
                         <v-data-table
                             :footer-props="footerProps"
-                            :headers="clientGroupHeaders"
-                            :items="company.client_groups"
+                            :headers="limitationGroupHeaders"
+                            :items="company.limitation_groups"
                             :options.sync="options"
                             class="elevation-1"
                             dense
@@ -1255,7 +1255,7 @@
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showClientGroup(item)">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showLimitationGroup(item)">
                                             <v-icon
                                                 small
                                             >
@@ -1267,7 +1267,7 @@
                                 </v-tooltip>
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
-                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteClientGroupDlg(item)">
+                                        <v-btn v-bind="attrs" v-on="on" icon @click="showDeleteLimitationGroupDlg(item)">
                                             <v-icon
                                                 small
                                             >
@@ -1275,7 +1275,7 @@
                                             </v-icon>
                                         </v-btn>
                                     </template>
-                                    <span>{{ langMap.client_group.delete }}</span>
+                                    <span>{{ langMap.main.delete }}</span>
                                 </v-tooltip>
                             </template>
                         </v-data-table>
@@ -1283,7 +1283,7 @@
                         <v-expansion-panels>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
-                                    {{ langMap.product.add_new }}
+                                    {{ langMap.limitation_group.add }}
                                     <template v-slot:actions>
                                         <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus
                                         </v-icon>
@@ -1292,9 +1292,9 @@
                                 <v-expansion-panel-content style="padding-bottom: 0">
                                     <v-form>
                                         <div class="row">
-                                            <div class="col-md-12">
+                                            <div class="col-md-6">
                                                 <v-text-field
-                                                    v-model="clientGroupForm.name"
+                                                    v-model="limitationGroupForm.name"
                                                     :color="themeBgColor"
                                                     :label="langMap.main.name"
                                                     name="product_name"
@@ -1302,13 +1302,24 @@
                                                     type="text"
                                                 ></v-text-field>
                                             </div>
+                                            <div class="col-md-6">
+                                                <v-select
+                                                    v-model="limitationGroupForm.limitation_type_id"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :items="limitationTypes"
+                                                    :label="langMap.main.type"
+                                                    item-value="id"
+                                                    item-text="short_code"
+                                                />
+                                            </div>
                                             <v-btn
                                                 :color="themeBgColor"
                                                 bottom
                                                 dark
                                                 fab
                                                 right
-                                                @click="addClientGroup"
+                                                @click="addLimitationGroup"
                                             >
                                                 <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">
                                                     mdi-plus
@@ -2110,37 +2121,37 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            <v-dialog v-model="deleteClientGroupDlg" max-width="480" persistent>
+            <v-dialog v-model="deleteLimitationGroupDlg" max-width="480" persistent>
                 <v-card>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                        {{ langMap.client_group.delete_msg }}?
+                        {{ langMap.limitation_group.delete_msg }}?
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="deleteClientGroupDlg = false">
+                        <v-btn color="grey darken-1" text @click="deleteLimitationGroupDlg = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn color="red darken-1" text
-                               @click="deleteClientGroup(selectedClientGroupId)">
+                               @click="deleteLimitationGroup(selectedLimitationGroupId)">
                             {{ langMap.main.delete }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-            <v-dialog v-model="showClientGroupDlg" max-width="60%" persistent>
+            <v-dialog v-model="showLimitationGroupDlg" max-width="60%" persistent>
                 <v-card>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                        {{ langMap.client_group.single }}
+                        {{ langMap.limitation_group.single }}
                     </v-card-title>
                     <v-card-text>
                         <v-row>
                             <v-col md="6">
                                 <v-select
-                                    v-model="selectedGroupCustomers"
+                                    v-model="selectedGroupModelItems"
                                     :color="themeBgColor"
                                     :item-color="themeBgColor"
-                                    :items="customers"
-                                    :label="langMap.company.company_contacts"
+                                    :items="groupModelItems"
+                                    :label="langMap.limitation_group.limitation_items"
                                     chips
                                     class="mx-4"
                                     item-text="name"
@@ -2176,11 +2187,11 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="showClientGroupDlg = false">
+                        <v-btn color="grey darken-1" text @click="showLimitationGroupDlg = false">
                             {{ langMap.main.cancel }}
                         </v-btn>
                         <v-btn color="green darken-1" text
-                               @click="updateClientGroup()">
+                               @click="updateLimitationGroup()">
                             {{ langMap.main.add }}
                         </v-btn>
                     </v-card-actions>
@@ -2248,9 +2259,10 @@ export default {
                 category_id: null,
                 files: []
             },
-            clientGroupForm: {
+            limitationGroupForm: {
                 name: '',
                 company_id: null,
+                limitation_type_id: null
             },
             productHeaders: [
                 {
@@ -2263,7 +2275,7 @@ export default {
                 {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'product_data.description'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
-            clientGroupHeaders: [
+            limitationGroupHeaders: [
                 {
                     text: 'ID',
                     align: 'start',
@@ -2271,13 +2283,14 @@ export default {
                     value: 'id',
                 },
                 {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                {text: `${this.$store.state.lang.lang_map.main.type}`, value: 'type.short_code'},
                 {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions', sortable: false},
             ],
             deleteProductDlg: false,
             selectedProductId: null,
-            selectedClientGroupId: null,
-            deleteClientGroupDlg: false,
-            showClientGroupDlg: false,
+            selectedLimitationGroupId: null,
+            deleteLimitationGroupDlg: false,
+            showLimitationGroupDlg: false,
             companyIsLoaded: false,
             company: {
                 name: '',
@@ -2395,13 +2408,15 @@ export default {
                 parent_id: '',
             },
             customers: [],
-            selectedGroupCustomers: [],
+            groupModelItems: [],
+            selectedGroupModelItems: [],
             selectedGroupEmployees: [],
-            selectedClientGroup: null,
+            selectedGroupModel: [],
             phoneTypes: [],
             addressTypes: [],
             socialTypes: [],
             emailTypes: [],
+            limitationTypes: [],
             countries: [],
             productCategoriesFlat: [],
             productCategoriesTree: [],
@@ -2423,6 +2438,7 @@ export default {
         this.debounceGetCurrencies();
         this.getCompany();
         this.getCompanyLogo();
+        this.getLimitationTypes();
         this.getLanguages();
         this.getRoles();
         this.getPhoneTypes();
@@ -2477,12 +2493,25 @@ export default {
 
             });
         },
-        getClients() {
-            axios.get('/api/client').then(response => {
+        // getClients() {
+        //     axios.get('/api/client').then(response => {
+        //         this.loading = false
+        //         response = response.data
+        //         if (response.success === true) {
+        //             this.customers = response.data.data
+        //         } else {
+        //             this.snackbarMessage = this.langMap.main.generic_error;
+        //             this.actionColor = 'error'
+        //             this.snackbar = true;
+        //         }
+        //     });
+        // },
+        getLimitationTypes() {
+            axios.get('/api/limit_group/types').then(response => {
                 this.loading = false
                 response = response.data
                 if (response.success === true) {
-                    this.customers = response.data.data
+                    this.limitationTypes = response.data
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error'
@@ -2625,13 +2654,13 @@ export default {
                 }
             });
         },
-        addClientGroup() {
-            this.clientGroupForm.company_id = this.$route.params.id
-            axios.post('/api/client_group', this.clientGroupForm).then(response => {
+        addLimitationGroup() {
+            this.limitationGroupForm.company_id = this.company.id
+            axios.post('/api/limit_group', this.limitationGroupForm).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getCompany();
-                    this.snackbarMessage = this.langMap.client_group.created;
+                    this.snackbarMessage = this.langMap.limitation_group.created;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
@@ -2664,22 +2693,30 @@ export default {
                 }
             });
         },
-        showClientGroup(item) {
-            this.showClientGroupDlg = true;
-            this.getClients()
-            if (item.clients !== null) {
-                this.selectedGroupCustomers = item.clients.map((i) => i.client_id);
+        showLimitationGroup(item) {
+            this.showLimitationGroupDlg = true;
+            this.groupModelItems = []
+            if (item.type.model === "App\\Client") {
+                this.groupModelItems = this.company.clients
+            }
+            if (item.type.model === "App\\Product") {
+                this.groupModelItems = this.company.products.map((i) => i.product_data);
+
+            }
+            console.log(this.groupModelItems);
+            if (item.limitation_models !== null) {
+                this.selectedGroupModelItems = item.limitation_models.map((i) => i.model_id);
             }
             if (item.employees !== null) {
                 this.selectedGroupEmployees = item.employees.map((i) => i.company_user_id);
             }
-            this.selectedClientGroup = item.id
+            this.selectedLimitationGroupId = item.id
         },
-        updateClientGroup() {
-            axios.post(`/api/client_group/client`,
+        updateLimitationGroup() {
+            axios.post(`/api/limit_group/client`,
                 {
-                    'client_ids': this.selectedGroupCustomers,
-                    'client_group_id': this.selectedClientGroup
+                    'model_ids': this.selectedGroupModelItems,
+                    'limitation_group_id': this.selectedLimitationGroupId
                 }).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -2694,10 +2731,10 @@ export default {
                 }
 
             });
-            axios.post(`/api/client_group/employee`,
+            axios.post(`/api/limit_group/employee`,
                 {
                     'company_user_ids': this.selectedGroupEmployees,
-                    'client_group_id': this.selectedClientGroup
+                    'limitation_group_id': this.selectedLimitationGroupId
                 }).then(response => {
                 response = response.data
                 if (response.success === true) {
@@ -2710,22 +2747,22 @@ export default {
                     this.actionColor = 'error';
                     this.snackbar = true;
                 }
-                this.showClientGroupDlg = false
+                this.showLimitationGroupDlg = false
             });
 
         },
-        showDeleteClientGroupDlg(item) {
-            this.selectedClientGroupId = item.id;
-            this.deleteClientGroupDlg = true;
+        showDeleteLimitationGroupDlg(item) {
+            this.selectedLimitationGroupId = item.id;
+            this.deleteLimitationGroupDlg = true;
         },
-        deleteClientGroup(id) {
-            axios.delete(`/api/client_group/${id}`).then(response => {
+        deleteLimitationGroup(id) {
+            axios.delete(`/api/limit_group/${id}`).then(response => {
                 response = response.data
                 if (response.success === true) {
                     this.getCompany()
-                    this.selectedClientGroupId = null;
-                    this.deleteClientGroupDlg = false;
-                    this.snackbarMessage = this.langMap.client_group.deleted;
+                    this.selectedLimitationGroupId = null;
+                    this.deleteLimitationGroupDlg = false;
+                    this.snackbarMessage = this.langMap.limitation_group.deleted;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {

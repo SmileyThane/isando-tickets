@@ -5,8 +5,8 @@ namespace App\Repositories;
 
 use App\Client;
 use App\ClientCompanyUser;
-use App\ClientGroup;
-use App\ClientGroupHasClient;
+use App\LimitationGroup;
+use App\LimitationGroupHasModel;
 use App\Company;
 use App\CompanyUser;
 use App\Email;
@@ -47,19 +47,27 @@ class CompanyUserRepository
         $clientIds = [];
         if ($employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
             $assignedClients = [];
-            $clientGroups = ClientGroup::query()->whereHas(
+            $clientGroups = LimitationGroup::query()->whereHas(
                 'employees',
                 static function ($query) use ($employee) {
                     $query->where('company_user_id', $employee->id);
                 }
+            )->whereHas(
+                'type',
+                static function ($query) {
+                    $query->where('model', Client::class);
+                }
             )->get();
             if ($clientGroups) {
-                $assignedClients = ClientGroupHasClient::whereIn(
-                    'client_group_id',
-                    $clientGroups->pluck('id')->toArray()
-                )->get();
+                $assignedClients = LimitationGroupHasModel::query()
+                    ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
+                    ->get();
             }
-            $clientIds = Client::whereIn('id', $assignedClients)->get()->pluck('id')->toArray();
+            $clientIds = Client::query()
+                ->whereIn('id', $assignedClients->pluck('model_id')->toArray())
+                ->get()
+                ->pluck('id')
+                ->toArray();
             $freeCompanyUsers = [];
         } elseif (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientIds = Client::where([
@@ -86,6 +94,8 @@ class CompanyUserRepository
             }, 'assignedToClients.clients', 'userData.emails.type'])
             ->withTrashed($request->with_trashed);
 
+
+
         if ($request->search) {
             $request['page'] = 1;
             $companyUsers = $companyUsers->whereHas(
@@ -98,7 +108,6 @@ class CompanyUserRepository
             );
         }
         $companyUsers = $companyUsers->get();
-
 
         $orderFunc = function ($item, $key) use ($orderBy) {
             switch ($orderBy) {

@@ -450,13 +450,15 @@ class LanguageSeeder extends Seeder
                             'delete_product' => 'Delete product',
                             'product_deleted' => 'Product deleted',
                         ],
-                    'client_group' =>
+                    'limitation_group' =>
                         [
-                            'deleted' => 'Client group was deleted',
-                            'created' => 'Client group was created',
-                            'info' => 'Client groups',
-                            'single' => 'Client group',
-                            'delete_msg' => 'Are you sure that you want to delete this client group?',
+                            'deleted' => 'Limitation group was deleted',
+                            'created' => 'Limitation group was created',
+                            'info' => 'Limitation groups',
+                            'single' => 'Limitation group',
+                            'add' => 'Add limitation group',
+                            'limitation_items' => 'Items for limitation',
+                            'delete_msg' => 'Are you sure that you want to delete this limitation group?',
                         ],
                     'product' =>
                         [
@@ -1322,13 +1324,15 @@ class LanguageSeeder extends Seeder
                             'delete_product' => 'Produkt löschen',
                             'product_deleted' => 'Produkt gelöscht',
                         ],
-                        'client_group' =>
+                        'limitation_group' =>
                             [
-                                'deleted' => 'Clientgruppe wurde gelöscht ',
-                                'created' => 'Clientgruppe wurde erstellt ',
-                                'info' => 'Kundengruppen',
-                                'single' => 'Kundengruppe',
-                                'delete_msg' => 'Sind Sie sicher, dass Sie diese Clientgruppe löschen möchten?',
+                                'deleted' => 'Die Beschränkungsgruppe wurde gelöscht',
+                                'created' => 'Die Begrenzungsgruppe wurde erstellt',
+                                'info' => 'Begrenzungsgruppen',
+                                'single' => 'Begrenzungsgruppe',
+                                'add' => 'Begrenzungsgruppe hinzufügen',
+                                'limitation_items' => 'Artikel zur Einschränkung',
+                                'delete_msg' => 'Sind Sie sicher, dass Sie diese Einschränkungsgruppe löschen möchten?',
                             ],
                         'product' => [
                             'add_new' => 'Neues Produkt hinzufügen',
