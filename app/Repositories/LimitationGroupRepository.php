@@ -7,6 +7,7 @@ use App\Client;
 use App\LimitationGroup;
 use App\LimitationGroupHasModel;
 use App\EmployeeLimitationGroup;
+use Illuminate\Support\Facades\Auth;
 
 class LimitationGroupRepository
 {
@@ -74,5 +75,20 @@ class LimitationGroupRepository
         LimitationGroupHasModel::query()->where('id', $id)->delete();
 
         return true;
+    }
+
+    public function getAssignedLimitationGroupByModel($model)
+    {
+        return LimitationGroup::query()->whereHas(
+            'employees',
+            static function ($query) {
+                $query->where('company_user_id', Auth::user()->employee->id);
+            }
+        )->whereHas(
+            'type',
+            static function ($query) use ($model) {
+                $query->where('model', $model);
+            }
+        )->get();
     }
 }

@@ -64,17 +64,7 @@ class ClientRepository
             $clients = Client::where('id', $clientCompanyUser->client_id);
         } elseif ($employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
             $assignedClients = [];
-            $clientGroups = LimitationGroup::query()->whereHas(
-                'employees',
-                static function ($query) {
-                    $query->where('company_user_id', Auth::user()->employee->id);
-                }
-            )->whereHas(
-                'type',
-                static function ($query) {
-                    $query->where('model', Client::class);
-                }
-            )->get();
+            $clientGroups = (new LimitationGroupRepository())->getAssignedLimitationGroupByModel(Client::class);
             if ($clientGroups) {
                 $assignedClients = LimitationGroupHasModel::query()
                     ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
