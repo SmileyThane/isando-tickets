@@ -402,7 +402,7 @@
                                                 :width="headers.find(i => i.value === 'description').width"
                                             >
                                                 <v-edit-dialog
-                                                    v-if="$helpers.auth.checkPermissionByIds([43])"
+                                                    v-if="isEditable(row)"
                                                     @save="debounceSave(row, 'description')"
                                                     @cancel="cancel"
                                                     @open="open"
@@ -476,7 +476,7 @@
                                                 :width="headers.find(i => i.value === 'entity.name').width"
                                             >
                                                 <v-edit-dialog
-                                                    v-if="$helpers.auth.checkPermissionByIds([43])"
+                                                    v-if="isEditable(row)"
                                                     @save="debounceSave(row, 'entity', row.entity)"
                                                     @cancel="cancel"
                                                     @open="open"
@@ -495,7 +495,7 @@
                                                         v-if="row.entity"
                                                         :style="{color: row.entity && row.entity.color ? row.entity.color : themeBgColor}"
                                                     >
-                                                        {{$helpers.string.shortenText(row.entity.name, 100)}}
+                                                        {{$helpers.string.shortenText(row.entity.name, 35)}}
                                                     </div>
                                                 </div>
                                             </td>
@@ -504,7 +504,7 @@
                                                 :width="headers.find(i => i.value === 'tags').width"
                                             >
                                                 <TagField
-                                                    :disabled="!$helpers.auth.checkPermissionByIds([43])"
+                                                    :disabled="!isEditable(row)"
                                                     :key="row.id"
                                                     :color="themeBgColor"
                                                     v-model="row.tags"
@@ -516,7 +516,7 @@
                                                 :width="headers.find(i => i.value === 'billable').width"
                                             >
                                                 <v-btn
-                                                    v-if="$helpers.auth.checkPermissionByIds([43])"
+                                                    v-if="isEditable(row)"
                                                     :disabled="!$helpers.auth.checkPermissionByIds([46])"
                                                     fab
                                                     :icon="!row.billable"
@@ -536,7 +536,7 @@
                                                 <div class="d-flex flex-row">
                                                     <div class="d-flex-inline">
                                                         <v-edit-dialog
-                                                            v-if="$helpers.auth.checkPermissionByIds([43])"
+                                                            v-if="isEditable(row)"
                                                             @save="debounceSave(row, 'date_from', row.date_from)"
                                                             @cancel="cancel"
                                                             @open="open"
@@ -560,7 +560,7 @@
                                                     <div class="d-flex-inline">&nbsp;&mdash;&nbsp;</div>
                                                     <div class="d-flex-inline">
                                                         <v-edit-dialog
-                                                            v-if="$helpers.auth.checkPermissionByIds([43]) && row.status == 'stopped'"
+                                                            v-if="isEditable(row) && row.status == 'stopped'"
                                                             @save="debounceSave(row, 'date_to', row.date_to)"
                                                             @cancel="cancel"
                                                             @open="open"
@@ -596,7 +596,7 @@
                                                 :width="headers.find(i => i.value === 'date').width"
                                             >
                                                 <v-menu
-                                                    :disabled="!$helpers.auth.checkPermissionByIds([43])"
+                                                    :disabled="!isEditable(row)"
                                                     v-model="row.date_picker"
                                                     :close-on-content-click="false"
                                                     :nudge-right="40"
@@ -607,7 +607,7 @@
                                                 >
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-btn
-                                                            :disabled="!$helpers.auth.checkPermissionByIds([43])"
+                                                            :disabled="!isEditable(row)"
                                                             icon
                                                             v-bind="attrs"
                                                             v-on="on"
@@ -617,7 +617,7 @@
                                                         </v-btn>
                                                     </template>
                                                     <v-date-picker
-                                                        :disabled="!$helpers.auth.checkPermissionByIds([43])"
+                                                        :disabled="!isEditable(row)"
                                                         dense
                                                         v-model="row.date"
                                                         @input="row.date_picker = false; handlerChangeDate(row)"
@@ -680,7 +680,7 @@
                                                                                 </v-list-item-title>
                                                                             </v-list-item-content>
                                                                         </v-list-item>
-                                                                        <v-list-item v-if="$helpers.auth.checkPermissionByIds([43])">
+                                                                        <v-list-item v-if="isEditable(row)">
                                                                             <v-list-item-content>
                                                                                 <v-list-item-title
                                                                                     @click="actionDeleteTracking(row.id)"
@@ -1173,6 +1173,22 @@ export default {
             item.date_from = moment(item.date_from).set(date).format();
             item.date_to = moment(item.date_from).add(seconds, "seconds").format();
             this.debounceSave(item, 'date_from');
+        },
+        hasPermission(ids) {
+            return this.$helpers.auth.checkPermissionByIds(ids);
+        },
+        isEditable(tracker) {
+            if (!this.hasPermission([43, 44, 45])) {
+                return false;
+            }
+            const trackerDiff = moment().diff(tracker.date_from, 'seconds');
+            if (
+                (this.hasPermission([45]) &&  trackerDiff > 60 * 60 * 24 * 14)
+                || (this.hasPermission([44]) &&  trackerDiff > 60 * 60 * 24 * 7)
+            ) {
+                return false;
+            }
+            return true;
         }
     },
     computed: {

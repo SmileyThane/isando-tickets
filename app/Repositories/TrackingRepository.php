@@ -3,6 +3,7 @@
 
 namespace App\Repositories;
 
+use App\Permission;
 use App\Role;
 use App\Service;
 use App\Team;
@@ -204,9 +205,22 @@ class TrackingRepository
 
     public function update(Request $request, Tracking $tracking)
     {
-        if (!Auth::user()->employee->hasPermissionId(40)) {
+        $trackingDiff = Carbon::parse($tracking->date_from)->diffInSeconds(Carbon::now());
+
+        if (
+            !Auth::user()->employee->hasPermissionId([Permission::TRACKER_EDIT_DELETE_OWN_TIME_UNLIMITED_ACCESS])
+            && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS)
+            && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_1W_ACCESS)
+        ) {
             throw new \Exception('Access denied');
         }
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS) && $trackingDiff > 60 * 60 * 24 * 14) {
+            throw new \Exception('Access denied');
+        }
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_1W_ACCESS) && $trackingDiff > 60 * 60 * 24 * 7) {
+            throw new \Exception('Access denied');
+        }
+
         $oldTracking = $tracking;
         if ($request->has('description')) { $tracking->description = $request->description; }
         if ($request->has('date_from')) {
