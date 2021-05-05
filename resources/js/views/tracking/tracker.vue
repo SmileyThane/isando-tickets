@@ -417,7 +417,7 @@
                                                         {{ langMap.tracking.tracker.add_description }}
                                                     </span>
                                                     <span v-else>
-                                                        {{ row.description }}
+                                                        {{ $helpers.string.shortenText(row.description, 100) }}
                                                     </span>
                                                     <template v-slot:input>
                                                         <v-text-field
@@ -785,7 +785,8 @@ export default {
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.description,
                     align: 'start',
-                    value: 'description'
+                    value: 'description',
+                    width: '43%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.company,

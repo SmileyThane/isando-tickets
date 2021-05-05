@@ -107,7 +107,9 @@ class Tracking extends Model
     }
 
     public function scopeCompanyAdmin($query) {
-        $company = Auth::user()->employee->companyData()->with('employees.userData')->first();
+        $company = Auth::user()->employee->companyData()
+            ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+            ->with('employees.userData')->first();
         return $query->SimpleUser()
             ->orWhere('company_id', '=', $company->id);
     }

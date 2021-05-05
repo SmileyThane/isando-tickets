@@ -24,10 +24,11 @@
                 </span>
                 <span v-if="selectedProject">
                     <span v-if="selectedProject && selectedProject.from">
-                        Ticket: {{ selectedProject.number }}.
+
+                        Ticket:<br>{{ selectedProject.number }}.
                     </span>
                     <span v-else>
-                        Project:
+                        Project:<br>
                     </span>
                     {{ selectedProject.name }}
                 </span>

@@ -144,7 +144,7 @@ export default {
         },
         width: {
             required: false,
-            default: 300
+            default: 150
         }
     },
     data() {
