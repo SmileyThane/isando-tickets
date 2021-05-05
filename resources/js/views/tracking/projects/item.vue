@@ -423,7 +423,7 @@ export default {
             });
             axios.get(`/api/product?${queryParams.toString()}`)
                 .then(({data}) => {
-                    this.products = data.data;
+                    this.products = data.data.data;
                 })
                 .finally(() => (this.isLoadingSearchProduct = false));
         },
