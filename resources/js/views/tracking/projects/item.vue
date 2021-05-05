@@ -421,7 +421,7 @@ export default {
             const queryParams = new URLSearchParams({
                 search: this.searchProduct ?? ''
             });
-            axios.get(`/api/tracking/products?${queryParams.toString()}`)
+            axios.get(`/api/product?${queryParams.toString()}`)
                 .then(({data}) => {
                     this.products = data.data;
                 })
