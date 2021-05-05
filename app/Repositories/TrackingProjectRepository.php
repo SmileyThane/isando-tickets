@@ -79,13 +79,6 @@ class TrackingProjectRepository
                     }
                 }]);
 
-            $trackingProjects = TrackingProject::with('Product')->with(['Client' => function ($query) use ($request) {
-                if ($request->has('column') && $request->column === 'client.name' && $request->has('direction')) {
-                    if ((string)$request->direction === 'true') $request->direction = 'desc';
-                    if ((string)$request->direction === 'false') $request->direction = 'asc';
-                    return $query->orderBy('name', $request->direction);
-                }
-            }]);
 //                ->where(function($query) {
 //                    $query->where('status', '!=', TrackingProject::$STATUS_ARCHIVED)
 //                        ->orWhereNull('status');
@@ -225,7 +218,8 @@ class TrackingProjectRepository
         return true;
     }
 
-    public function toggleArchive($id) {
+    public function toggleArchive($id)
+    {
         if (!Auth::user()->employee->getPermissionIds(58)) {
             throw new AccessDeniedException();
         }
