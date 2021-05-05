@@ -121,8 +121,10 @@ export default {
     };
   },
   mounted: function () {
-    if (localStorage.getItem('auth_token')) {
-      this.$router.push(this.$helpers.auth.checkPermissionByIds([1]) ? 'tickets' : 'knowledge_base')
+      console.log(this.$route.name);
+    if (localStorage.getItem('auth_token') && this.$route.name === 'ticket_list') {
+
+        this.$router.push(this.$helpers.auth.checkPermissionByIds([1]) ? 'tickets' : 'knowledge_base')
     }
     this.getPlans()
   },

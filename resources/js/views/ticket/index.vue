@@ -476,7 +476,8 @@ export default {
         }
     },
     mounted() {
-        if (!this.$helpers.auth.checkPermissionByIds([1])) {
+        console.log(this.$route.name);
+        if (!this.$helpers.auth.checkPermissionByIds([1]) && this.$route.name === 'ticket_list') {
             this.$router.push('knowledge_base')
         }
 
