@@ -23,14 +23,14 @@
                     &nbsp;&nbsp;{{langMap.tracking.project_btn.project_or_ticket}}
                 </span>
                 <span v-if="selectedProject">
-                    <span v-if="selectedProject && selectedProject.from">
-
-                        Ticket:<br>{{ selectedProject.number }}.
+                    <span
+                        v-if="selectedProject && selectedProject.from">
+                        Ticket: {{ $helpers.string.shortenText(selectedProject.number, 15) }}.<br>
+                        {{ $helpers.string.shortenText(selectedProject.name, 20) }}
                     </span>
                     <span v-else>
-                        Project:<br>
+                        Project:<br>{{ $helpers.string.shortenText(selectedProject.name, 35) }}
                     </span>
-                    {{ selectedProject.name }}
                 </span>
             </v-btn>
         </template>

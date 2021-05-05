@@ -471,6 +471,7 @@
                                             </td>
                                             <td
                                                 class="pa-3"
+                                                align="center"
                                                 :width="headers.find(i => i.value === 'entity.name').width"
                                             >
                                                 <v-edit-dialog
@@ -493,7 +494,7 @@
                                                         v-if="row.entity"
                                                         :style="{color: row.entity && row.entity.color ? row.entity.color : themeBgColor}"
                                                     >
-                                                        {{row.entity.name}}
+                                                        {{$helpers.string.shortenText(row.entity.name, 100)}}
                                                     </div>
                                                 </div>
                                             </td>
