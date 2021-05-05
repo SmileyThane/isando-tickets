@@ -11,6 +11,11 @@ class Tracking extends Model
 {
     protected $table = 'tracking';
 
+    static $STATUS_STARTED = 'started';
+    static $STATUS_PAUSED = 'paused';
+    static $STATUS_STOPPED = 'stopped';
+    static $STATUS_ARCHIVED = 'archived';
+
     protected $fillable = [
         'entity_id',
         'entity_type'

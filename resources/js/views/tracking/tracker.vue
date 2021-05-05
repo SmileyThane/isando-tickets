@@ -420,13 +420,14 @@
                                                         {{ $helpers.string.shortenText(row.description, 100) }}
                                                     </span>
                                                     <template v-slot:input>
-                                                        <v-text-field
+                                                        <v-textarea
                                                             v-model="row.description"
                                                             :label="langMap.tracking.tracker.description"
                                                             :placeholder="langMap.tracking.tracker.description"
                                                             single-line
                                                             counter
-                                                        ></v-text-field>
+                                                            rows="2"
+                                                        ></v-textarea>
                                                         <v-select
                                                             :items="$store.getters['Services/getServices']"
                                                             :label="langMap.tracking.tracker.service_type"
@@ -787,7 +788,7 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.tracker.description,
                     align: 'start',
                     value: 'description',
-                    width: '43%'
+                    width: '80%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.company,

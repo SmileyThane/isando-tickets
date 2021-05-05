@@ -85,7 +85,11 @@ class TrackingReportRepository
         }
 
         $tracking = Tracking::with('User.employee.assignedToTeams')
-            ->with('Tags.Translates');
+            ->with('Tags.Translates')
+            ->where(function($query) {
+                $query->where('status', '!=', Tracking::$STATUS_ARCHIVED)
+                    ->orWhereNull('status');
+            });
 
         if (Auth::user()->employee->hasPermissionId(42)) {
             // Manager

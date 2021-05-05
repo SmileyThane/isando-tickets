@@ -7,6 +7,7 @@ use App\Client;
 use App\Product;
 use App\Team;
 use App\Ticket;
+use App\Tracking;
 use App\TrackingProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -52,7 +53,10 @@ class TrackingProjectRepository
                     return $query->orderBy('name', $request->direction);
                 }
             }]);
-
+//                ->where(function($query) {
+//                    $query->where('status', '!=', TrackingProject::$STATUS_ARCHIVED)
+//                        ->orWhereNull('status');
+//                });
             if (Auth::user()->employee->getPermissionIds(54)) {
                 $trackingProjects->MyCompany();
             } elseif (Auth::user()->employee->getPermissionIds(55)) {
@@ -176,6 +180,31 @@ class TrackingProjectRepository
             Auth::user()->favoriteTrackingProjects()->attach($project);
         }
         return true;
+    }
+
+    public function toggleArchive($id) {
+        if (!Auth::user()->employee->getPermissionIds(58)) {
+            throw new AccessDeniedException();
+        }
+        $result = false;
+        $trackingProject = TrackingProject::find($id);
+        if ($trackingProject) {
+            if ($trackingProject->status === TrackingProject::$STATUS_ARCHIVED) {
+                $trackingProject->status = '';
+                $status = Tracking::$STATUS_STOPPED;
+            } else {
+                $trackingProject->status = TrackingProject::$STATUS_ARCHIVED;
+                $status = Tracking::$STATUS_ARCHIVED;
+            }
+            $trackingProject->save();
+
+            Tracking::where([
+                ['entity_type', '=', TrackingProject::class],
+                ['entity_id', '=', $trackingProject->id]
+            ])->update(['status' => $status]);
+            $result = true;
+        }
+        return $result;
     }
 
     // not used

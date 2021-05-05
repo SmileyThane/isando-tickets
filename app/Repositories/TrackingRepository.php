@@ -114,6 +114,10 @@ class TrackingRepository
 
 
         return $tracking
+            ->where(function($query) {
+                $query->where('status', '!=', Tracking::$STATUS_ARCHIVED)
+                    ->orWhereNull('status');
+            })
             ->whereBetween('date_from', [
                 Carbon::parse($request->date_from)->startOfDay(),
                 Carbon::parse($request->date_to)->endOfDay()

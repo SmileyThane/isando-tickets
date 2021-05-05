@@ -201,6 +201,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::patch('/projects/{id}', 'ProjectController@update');
                 Route::delete('/projects/{id}', 'ProjectController@delete');
                 Route::patch('/projects/{id}/favorite', 'ProjectController@toggleFavorite');
+                Route::patch('/projects/{id}/archive', 'ProjectController@toggleArchive');
 
                 //Additional tracking routes
                 Route::get('/clients', 'BaseController@getClientList');

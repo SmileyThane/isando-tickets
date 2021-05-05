@@ -17,6 +17,11 @@ class TrackingProject extends Model
         'is_favorite' => 'boolean'
     ];
 
+    static $STATUS_STARTED = 'started';
+    static $STATUS_PAUSED = 'paused';
+    static $STATUS_STOPPED = 'stopped';
+    static $STATUS_ARCHIVED = 'archived';
+
     public function Product() {
         return $this->hasOne('App\Product', 'id', 'product_id');
     }
@@ -26,7 +31,8 @@ class TrackingProject extends Model
     }
 
     public function Trackers() {
-        return $this->morphMany('App\Tracking', 'entity');
+        return $this->morphMany('App\Tracking', 'entity')
+            ->where('status', '<>', Tracking::$STATUS_ARCHIVED);
     }
 
     public function Timesheet() {

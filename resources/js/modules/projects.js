@@ -35,6 +35,14 @@ export default {
                         dispatch('getProjectList', state.filter);
                     }
                 });
+        },
+        toggleArchive({commit, dispatch, state}, project) {
+            return axios.patch(`/api/tracking/projects/${project.id}/archive`, null, { retry: 5, retryDelay: 1000 })
+                .then(({ data: { data, success } }) => {
+                    if (success) {
+                        dispatch('getProjectList', state.filter);
+                    }
+                });
         }
     },
     mutations: {
