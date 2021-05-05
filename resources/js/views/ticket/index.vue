@@ -476,11 +476,6 @@ export default {
         }
     },
     mounted() {
-        console.log(this.$route.name);
-        if (!this.$helpers.auth.checkPermissionByIds([1]) && this.$route.name === 'ticket_list') {
-            this.$router.push('knowledge_base')
-        }
-
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
