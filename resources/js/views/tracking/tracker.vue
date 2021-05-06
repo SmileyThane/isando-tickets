@@ -551,7 +551,6 @@
                                                                             style="max-width: 100px; height: 40px"
                                                                             placeholder="hh:mm"
                                                                             format="HH:mm"
-                                                                            @input="debounceSave(row, 'date_from', row.date_from)"
                                                                         ></TimeField>
                                                                     </div>
                                                                     <div class="d-inline-flex mt-2">&nbsp;&mdash;&nbsp;</div>
