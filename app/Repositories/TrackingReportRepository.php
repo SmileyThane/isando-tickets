@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Client;
 use App\Http\Controllers\API\Tracking\PDF;
 use App\Notifications\SendTrackingReportByEmail;
+use App\Permission;
 use App\Role;
 use App\Ticket;
 use App\Tracking;
@@ -80,7 +81,11 @@ class TrackingReportRepository
 
     protected function getData(Request $request) {
 
-        if (!Auth::user()->employee->hasPermissionId([61, 66])) {
+        if (!Auth::user()->employee->hasPermissionId([
+            Permission::TRACKER_REPORT_VIEW_OWN_TIME_ACCESS,
+            Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS,
+            Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS
+        ])) {
             throw new \Exception('Access denied');
         }
 
@@ -91,7 +96,10 @@ class TrackingReportRepository
                     ->orWhereNull('status');
             });
 
-        if (Auth::user()->employee->hasPermissionId(42)) {
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS)) {
+            // Company Admin
+            $tracking = $tracking->CompanyAdmin();
+        } elseif (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
             // Manager
             $tracking = $tracking->TeamManager();
         } else {

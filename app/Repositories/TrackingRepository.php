@@ -101,11 +101,18 @@ class TrackingRepository
 
     public function all(Request $request)
     {
-        if (!Auth::user()->employee->hasPermissionId([41, 42])) {
+        if (!Auth::user()->employee->hasPermissionId([
+            Permission::TRACKER_VIEW_OWN_TIME_ACCESS,
+            Permission::TRACKER_VIEW_TEAM_TIME_ACCESS,
+            Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS,
+        ])) {
             throw new \Exception('Access denied');
         }
 
-        if (Auth::user()->employee->hasPermissionId(42)) {
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+            // Company Admin
+            $tracking = Tracking::CompanyAdmin();
+        }elseif (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
             // Manager
             $tracking = Tracking::TeamManager();
         } else {
