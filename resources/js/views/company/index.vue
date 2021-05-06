@@ -139,7 +139,7 @@ themeBgColor: this.$store.state.themeBgColor,
                 options: {
                     page: 1,
                     sortDesc: [false],
-                    sortBy: ['id'],
+                    sortBy: ['name'],
                     itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
                 },
                 footerProps: {
