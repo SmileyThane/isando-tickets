@@ -511,7 +511,7 @@
                     </v-card-text>
                 </v-card>
                 <br>
-                <v-card class="elevation-12 ">
+                <v-card v-if="$helpers.auth.checkPermissionByIds([88])" class="elevation-12 ">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
@@ -613,8 +613,8 @@
                         </v-row>
                     </v-card-text>
                 </v-card>
-                <br>
-                <v-card class="elevation-12">
+                <br v-if="$helpers.auth.checkPermissionByIds([88])">
+                <v-card v-if="$helpers.auth.checkPermissionByIds([87])" class="elevation-12">
                     <v-spacer></v-spacer>
                     <v-toolbar :color="themeBgColor" dark dense flat>
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{
@@ -708,8 +708,8 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
-                <br>
-                <v-card class="elevation-12">
+                <br v-if="$helpers.auth.checkPermissionByIds([87])">
+                <v-card v-if="$helpers.auth.checkPermissionByIds([86])" class="elevation-12">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
@@ -858,7 +858,7 @@
 
             </div>
             <div class="col-md-6">
-                <v-card class="elevation-12">
+                <v-card v-if="$helpers.auth.checkPermissionByIds([85])" class="elevation-12">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
@@ -1112,7 +1112,7 @@
                         </v-expansion-panels>
                     </v-card-text>
                 </v-card>
-                <br>
+                <br v-if="$helpers.auth.checkPermissionByIds([85])">
                 <v-card class="elevation-12">
 
                     <v-toolbar
@@ -1228,7 +1228,7 @@
                     </v-card-text>
                 </v-card>
                 <br>
-                <v-card class="elevation-12">
+                <v-card v-if="$helpers.auth.checkPermissionByIds([89])" class="elevation-12">
                     <v-toolbar
                         :color="themeBgColor"
                         dark
@@ -1335,9 +1335,6 @@
                 </v-card>
             </div>
         </div>
-        <v-row>
-
-        </v-row>
         <v-row justify="center">
             <v-dialog v-model="rolesDialog" max-width="600px" persistent>
                 <v-card>
