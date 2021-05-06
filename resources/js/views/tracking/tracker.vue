@@ -542,45 +542,32 @@
                                                             @open="open"
                                                             @close="debounceSave(row, 'date_from', row.date_from)"
                                                         >
-                                                            {{ moment(row.date_from).format(timeFormat) }}
+                                                            {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;{{moment(row.date_to).format(timeFormat)}}
                                                             <template v-slot:input>
-                                                                <TimeField
-                                                                    v-model="row.date_from"
-                                                                    style="max-width: 100px; height: 40px"
-                                                                    placeholder="hh:mm"
-                                                                    format="HH:mm"
-                                                                    @input="debounceSave(row, 'date_from', row.date_from)"
-                                                                ></TimeField>
+                                                                <div class="d-flex flex-row">
+                                                                    <div class="d-inline-flex">
+                                                                        <TimeField
+                                                                            v-model="row.date_from"
+                                                                            style="max-width: 100px; height: 40px"
+                                                                            placeholder="hh:mm"
+                                                                            format="HH:mm"
+                                                                        ></TimeField>
+                                                                    </div>
+                                                                    <div class="d-inline-flex mt-2">&nbsp;&mdash;&nbsp;</div>
+                                                                    <div class="d-inline-flex">
+                                                                        <TimeField
+                                                                            v-model="row.date_to"
+                                                                            style="max-width: 100px; height: 40px"
+                                                                            placeholder="hh:mm"
+                                                                            format="HH:mm"
+                                                                            @input="debounceSave(row, 'date_to', row.date_to)"
+                                                                        ></TimeField>
+                                                                    </div>
+                                                                </div>
                                                             </template>
                                                         </v-edit-dialog>
                                                         <span v-else>
-                                                            {{moment(row.date_from).format('HH:mm')}}
-                                                        </span>
-                                                    </div>
-                                                    <div class="d-flex-inline">&nbsp;&mdash;&nbsp;</div>
-                                                    <div class="d-flex-inline">
-                                                        <v-edit-dialog
-                                                            v-if="isEditable(row) && row.status == 'stopped'"
-                                                            @save="debounceSave(row, 'date_to', row.date_to)"
-                                                            @cancel="cancel"
-                                                            @open="open"
-                                                            @close="debounceSave(row, 'date_to', row.date_to)"
-                                                        >
-                                                            <span v-if="row.date_to && row.status == 'stopped'">
-                                                                {{ moment(row.date_to).format(timeFormat) }}
-                                                            </span>
-                                                            <template v-slot:input>
-                                                                <TimeField
-                                                                    v-model="row.date_to"
-                                                                    style="max-width: 100px; height: 40px"
-                                                                    placeholder="hh:mm"
-                                                                    format="HH:mm"
-                                                                    @input="debounceSave(row, 'date_to', row.date_to)"
-                                                                ></TimeField>
-                                                            </template>
-                                                        </v-edit-dialog>
-                                                        <span v-else>
-                                                            {{moment(row.date_to).format('HH:mm')}}
+                                                            {{moment(row.date_from).format('HH:mm')}}&nbsp;&mdash;&nbsp;{{moment(row.date_to).format('HH:mm')}}
                                                         </span>
                                                     </div>
                                                 </div>

@@ -594,8 +594,6 @@
                                             <!--                                        {{ ticket.contact.user_data.surname }}-->
                                             <!--                                    </v-btn>-->
                             </span>
-
-
                             <template v-slot:actions>
                                 <v-icon>$expand</v-icon>
                             </template>
@@ -1142,6 +1140,7 @@
                                     </template>
                                 </v-autocomplete>
                                 <v-btn :color="themeBgColor"
+                                       :disabled="selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                        class="ma-2"
                                        small
                                        style="color: white;"
