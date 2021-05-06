@@ -62,6 +62,13 @@ class Permission extends Model
     public const EMPLOYEE_TICKET_ADMIN_ACCESS = 39;
 
     //custom permissions
+	public const VIEW_LIMITATION_GROUPS_SECTION = 89;
+	public const VIEW_INTERNAL_BILLING_SECTION = 88;
+	public const VIEW_PRODUCT_CATEGORIES_SECTION = 87;
+	public const VIEW_PRODUCT_INFO_SECTION = 86;
+	public const VIEW_ROLES_OF_EMPLOYEES = 85;
+	public const EDIT_ROLES_OF_EMPLOYEES = 84;
+	public const EDIT_TEAM_MANAGER_FLAG = 83;
 	public const CLIENT_GROUPS_DEPENDENCY = 82;
 	public const TRACKER_SETTINGS_FILL_WORKING_HOURS_ACCESS = 81;
 	public const TRACKER_SETTINGS_TOGGLE_TIMESHEET_ACCESS = 80;
