@@ -296,6 +296,62 @@ class PermissionSeeder extends Seeder
         //custom permissions
 
         DB::table('permissions')->updateOrInsert(
+            ['id' => 89],
+            [
+                'name' => 'view_limitation_groups_section',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 88],
+            [
+                'name' => 'view_internal_billing_section',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 87],
+            [
+                'name' => 'view_product_categories_section',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 86],
+            [
+                'name' => 'view_product_info_section',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 85],
+            [
+                'name' => 'view_roles_of_employees',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 84],
+            [
+                'name' => 'edit_roles_of_employees',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
+            ['id' => 83],
+            [
+                'name' => 'edit_team_manager_flag',
+                'guard_name' => 'web'
+            ]
+        );
+
+        DB::table('permissions')->updateOrInsert(
             ['id' => 82],
             [
                 'name' => 'client_groups_dependency',

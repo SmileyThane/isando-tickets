@@ -51,4 +51,9 @@ class ProjectController extends BaseController
         return self::showResponse($result);
     }
 
+    public function toggleArchive($id) {
+        $result = $this->trackingProjectsRepo->toggleArchive($id);
+        return self::showResponse($result);
+    }
+
 }

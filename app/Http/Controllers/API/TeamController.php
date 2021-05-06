@@ -98,7 +98,7 @@ class TeamController extends Controller
 
     public function toggleAsManager(Request $request)
     {
-        if (Auth::user()->employee->hasPermissionId(Permission::TEAM_WRITE_ACCESS)) {
+        if (Auth::user()->employee->hasPermissionId(Permission::EDIT_TEAM_MANAGER_FLAG)) {
             return self::showResponse($this->teamRepo->toggleAsManager($request));
         }
 

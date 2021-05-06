@@ -123,6 +123,7 @@ class TrackingTimesheetRepository
             return false;
 
         $trackers = Tracking::where([
+            ['status', '<>', Tracking::$STATUS_ARCHIVED],
             ['user_id', '=', $tracking->user_id],
             ['team_id', '=', $tracking->team_id],
             ['company_id', '=', $tracking->company_id],

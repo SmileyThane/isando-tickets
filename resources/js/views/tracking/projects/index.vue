@@ -70,6 +70,9 @@
                 >
                 </v-pagination>
             </template>
+            <template v-slot:item.name="props">
+                {{ props.item.name }} <v-chip small v-if="props.item.status === 'archived'">Archived</v-chip>
+            </template>
             <template v-slot:item.is_favorite="props">
                 <v-icon v-if="props.item.is_favorite" @click.stop="toggleFavorite(props.item)">mdi-star</v-icon>
                 <v-icon v-else @click.stop="toggleFavorite(props.item)">mdi-star-outline</v-icon>
@@ -81,6 +84,22 @@
                 <span v-if="currentCurrency">
                     {{ currentCurrency.slug }}
                 </span> {{ props.item.revenue }}
+            </template>
+            <template v-slot:item.actions="props">
+                <v-btn
+                    v-if="$helpers.auth.checkPermissionByIds([58]) && props.item.status==='archived'"
+                    icon
+                    @click.stop="toggleArchive(props.item)"
+                >
+                    <v-icon>mdi-archive-arrow-up-outline</v-icon>
+                </v-btn>
+                <v-btn
+                    v-else-if="$helpers.auth.checkPermissionByIds([58])"
+                    icon
+                    @click.stop="toggleArchive(props.item)"
+                >
+                    <v-icon>mdi-archive-arrow-down-outline</v-icon>
+                </v-btn>
             </template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
@@ -171,7 +190,7 @@ export default {
         return {
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
@@ -195,7 +214,8 @@ themeBgColor: this.$store.state.themeBgColor,
                 {text: `${this.$store.state.lang.lang_map.tracking.client}`, value: 'client.name'},
                 {text: ``, value: 'is_favorite'},
                 {text: `${this.$store.state.lang.lang_map.tracking.tracked}`, value: 'tracked'},
-                {text: `${this.$store.state.lang.lang_map.tracking.revenue}`, value: 'revenue'}
+                {text: `${this.$store.state.lang.lang_map.tracking.revenue}`, value: 'revenue'},
+                {text: ``, value: 'actions'}
             ],
             project: {
                 name: '',
@@ -284,6 +304,9 @@ themeBgColor: this.$store.state.themeBgColor,
         },
         toggleFavorite(project) {
             this.$store.dispatch('Projects/toggleFavorite', project);
+        },
+        toggleArchive(project) {
+            this.$store.dispatch('Projects/toggleArchive', project);
         }
     },
     watch: {

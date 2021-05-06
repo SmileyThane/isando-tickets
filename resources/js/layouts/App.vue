@@ -121,7 +121,7 @@ export default {
     };
   },
   mounted: function () {
-    if (localStorage.getItem('auth_token')) {
+    if (localStorage.getItem('auth_token') !== null && this.$route.name === 'main') {
       this.$router.push(this.$helpers.auth.checkPermissionByIds([1]) ? 'tickets' : 'knowledge_base')
     }
     this.getPlans()
