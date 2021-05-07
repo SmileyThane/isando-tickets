@@ -138,7 +138,7 @@
                         </v-row>
 
                         <v-row>
-                            <v-col cols="6">
+                            <v-col cols="12">
                                 <hr/>
 
                                 <p class="mb-0" v-if="langs && langs[userData.language_id]">
@@ -146,21 +146,21 @@
                                     {{ langs[userData.language_id].name }}
                                 </p>
                             </v-col>
-                            <v-col cols="6">
-                                <hr/>
+<!--                            <v-col cols="6">-->
+<!--                                <hr/>-->
 
-                                <p class="mb-0">
-                                    <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>
-                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
-                                    {{ langMap.individuals.active }}
-                                </p>
+<!--                                <p class="mb-0">-->
+<!--                                    <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>-->
+<!--                                    <v-icon v-else small dense left>mdi-cancel</v-icon>-->
+<!--                                    {{ langMap.individuals.active }}-->
+<!--                                </p>-->
 
-                                <p class="mb-0">
-                                    <v-icon v-if="userData.is_active" small dense left color="success">mdi-check-circle</v-icon>
-                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
-                                    {{ langMap.main.give_access }}
-                                </p>
-                            </v-col>
+<!--                                <p class="mb-0">-->
+<!--                                    <v-icon v-if="userData.is_active" small dense left color="success">mdi-check-circle</v-icon>-->
+<!--                                    <v-icon v-else small dense left>mdi-cancel</v-icon>-->
+<!--                                    {{ langMap.main.give_access }}-->
+<!--                                </p>-->
+<!--                            </v-col>-->
                         </v-row>
 
                     </v-card-text>
@@ -751,16 +751,16 @@
 <!--                                                @change="updateStatus"-->
 <!--                                            />-->
 <!--                                        </v-col>-->
-                                        <v-col cols="12">
-                                            <v-checkbox
-                                                v-model="userData.is_active"
-                                                :label="langMap.main.give_access"
-                                                :color="themeBgColor"
-                                                dense
-                                                hide-details
-                                                @change="showIsAccessedModal(userData)"
-                                            />
-                                        </v-col>
+<!--                                        <v-col cols="12">-->
+<!--                                            <v-checkbox-->
+<!--                                                v-model="userData.is_active"-->
+<!--                                                :label="langMap.main.give_access"-->
+<!--                                                :color="themeBgColor"-->
+<!--                                                dense-->
+<!--                                                hide-details-->
+<!--                                                @change="showIsAccessedModal(userData)"-->
+<!--                                            />-->
+<!--                                        </v-col>-->
                                     </v-row>
                                 </v-form>
                             </v-card-text>
