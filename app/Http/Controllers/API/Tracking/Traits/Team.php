@@ -33,7 +33,10 @@ trait Team
         $teams = \App\Team::whereHas('employees', function ($query) {
             return $query->where('company_user_id', '=', Auth::user()->employee->id)
                 ->where('is_manager', '=', true);
-        })->get();
-        return self::showResponse((bool)$teams, $teams);
+        });
+        if ($request->has('withEmployee') && $request->get('withEmployee') == true) {
+            $teams->with('employees.employee.userData');
+        }
+        return self::showResponse((bool)$teams, $teams->get());
     }
 }

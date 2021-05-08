@@ -106,9 +106,9 @@ class Tracking extends Model
             return $query
                 ->where('company_user_id', '=', Auth::user()->employee->id)
                 ->where('is_manager', '=', true);
-        })->get();
+        })->get()->pluck('id')->toArray();
         return $query->SimpleUser()
-            ->orWhereIn('team_id', '=', $teams->map(function ($team) { return $team->id; }));
+            ->orWhereIn('team_id', $teams);
     }
 
     public function scopeCompanyAdmin($query) {

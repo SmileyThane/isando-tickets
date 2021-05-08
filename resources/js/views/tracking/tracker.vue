@@ -300,10 +300,50 @@
             </v-card>
         </template>
 
-<!--        dateRangePicker-->
+<!--        Team selector   -->
+<!--        dateRangePicker -->
         <template>
-            <div class="d-flex flex-row-reverse mr-16">
-                <v-menu
+            <div class="d-flex flex-row mr-16">
+                <div class="d-inline-flex flex-grow-0">
+                    <v-select
+                        v-if="hasPermission([42])"
+                        placeholder="Choose team members"
+                        :items="teamEmployee"
+                        item-value="id"
+                        item-text="name"
+                        v-model="teamFilter"
+                        hide-details
+                        multiple
+                        clearable
+                        single-line
+                        style="min-width: 300px"
+                    >
+                        <template v-slot:item="{ parent, item, on, attrs }">
+                            <div class="d-flex">
+                                <div class="d-inline-flex">
+                                    <v-avatar
+                                        :style="{ backgroundColor: getUserColor(item.id) }"
+                                    >
+                                        <img
+                                            v-if="item.avatar_url"
+                                            :src="item.avatar_url"
+                                            alt="item.full_name"
+                                        >
+                                        <span v-else class="white--text headline text-uppercase">
+                                            {{item.name[0]}} {{item.surname[0]}}
+                                        </span>
+                                    </v-avatar>
+                                </div>
+                                <div class="d-inline-flex mt-3 ma-4">
+                                    {{ item.full_name }}
+                                </div>
+                            </div>
+                        </template>
+                    </v-select>
+                </div>
+                <div class="d-inline-flex flex-grow-1" style="width: 100%;">&nbsp;</div>
+                <div class="d-inline-flex flex-grow-0">
+                    <v-menu
                         ref="dateRangePicker"
                         v-model="dateRangePicker"
                         :close-on-content-click="false"
@@ -327,9 +367,10 @@
                                     'border-color': themeBgColor,
                                     'border-width': '2px',
                                     'min-width': '280px',
-                                    'max-width': '300px'
+                                    'max-width': '300px',
+                                    'max-height': '36px',
                                 }"
-                                class="py-0 mt-3 mb-n3 dateRangePicker"
+                                class="py-0 mt-5 mb-n3 dateRangePicker"
                             ></v-text-field>
                         </template>
                         <v-card>
@@ -361,6 +402,7 @@
                             ></vc-date-picker>
                         </v-card>
                     </v-menu>
+                </div>
             </div>
         </template>
 
@@ -397,6 +439,32 @@
                                 >
                                     <template v-slot:body="props">
                                         <tr v-for="row in props.items">
+                                            <td class="pa-3" v-if="hasPermission([42])">
+                                                <v-avatar
+                                                    :style="{ backgroundColor: getUserColor(row.user.id) }"
+                                                >
+                                                    <v-tooltip top>
+                                                        <template v-slot:activator="{ on, attrs }">
+                                                            <img
+                                                                v-bind="attrs"
+                                                                v-on="on"
+                                                                v-if="row.user.avatar_url"
+                                                                :src="row.user.avatar_url"
+                                                                alt="row.user.full_name"
+                                                            >
+                                                            <span
+                                                                v-else
+                                                                v-bind="attrs"
+                                                                v-on="on"
+                                                                class="white--text headline text-uppercase"
+                                                            >
+                                                                {{row.user.name[0]}} {{row.user.surname[0]}}
+                                                            </span>
+                                                        </template>
+                                                        <span>{{row.user.full_name}}</span>
+                                                    </v-tooltip>
+                                                </v-avatar>
+                                            </td>
                                             <td
                                                 class="pa-3"
                                                 :width="headers.find(i => i.value === 'description').width"
@@ -859,7 +927,8 @@ export default {
             },
             globalTimer: null,
             isLoadingTags: false,
-            isLoadingProject: false
+            isLoadingProject: false,
+            teamFilter: []
         }
     },
     created: function () {
@@ -896,6 +965,7 @@ export default {
         this.$store.dispatch('Tags/getTagList');
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Tickets/getTicketList', { search: null });
+        this.$store.dispatch('Team/getManagedTeams', { withEmployee: true });
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1124,7 +1194,14 @@ export default {
         },
         filterTracking(date) {
             const self = this;
-            return this.tracking.filter(function(item) {
+            return this.tracking
+                .filter(function(item) {
+                    if (self.teamFilter.length) {
+                        return self.teamFilter.indexOf(item.user_id) !== -1;
+                    }
+                    return true;
+                })
+                .filter(function(item) {
                 return moment(item.date_from).format(self.dateFormat) === date;
             });
         },
@@ -1176,6 +1253,13 @@ export default {
                 return false;
             }
             return true;
+        },
+        getUserColor(userId) {
+            const foundItem = this.teamEmployee.find(i => i.id === userId);
+            if (foundItem) {
+                return foundItem.color;
+            }
+            return this.$helpers.color.genRandomColor();
         }
     },
     computed: {
@@ -1191,10 +1275,17 @@ export default {
             return `${moment(this.dateRange.start).format(dateFormat)} - ${moment(this.dateRange.end).format(dateFormat)}`;
         },
         getPanelDates () {
-            const items = this.tracking.reduce(function (acc, item) {
-                const date = moment(item.date_from).format('YYYY-MM-DD');
-                return [...acc, date.toString()];
-            }, []);
+            const self = this;
+            const items = this.tracking
+                .filter(function(item) {
+                    if (self.teamFilter.length) {
+                        return self.teamFilter.indexOf(item.user_id) !== -1;
+                    }
+                    return true;
+                }).reduce(function (acc, item) {
+                    const date = moment(item.date_from).format('YYYY-MM-DD');
+                    return [...acc, date.toString()];
+                }, []);
             const panels = [...new Set(items)].sort().reverse();
             this.panels = panels.map((i,k) => k);
             return panels;
@@ -1213,6 +1304,27 @@ export default {
         },
         periodEnd () {
             return moment(this.dateRange.end).format('DD/MM/YYYY');
+        },
+        teamEmployee () {
+            if (!this.hasPermission([42])) {
+                return [];
+            } else {
+                const empl = [];
+                this.$store.getters['Team/getManagedTeams'].map(team => {
+                   team.employees.map(e => {
+                       empl.push({
+                           id: e.employee.user_data.id,
+                           name: e.employee.user_data.name,
+                           surname: e.employee.user_data.surname,
+                           middle_name: e.employee.user_data.middle_name,
+                           full_name: e.employee.user_data.full_name,
+                           avatar_url: e.employee.user_data.avatar_url,
+                           color: this.$helpers.color.genRandomColor(),
+                       });
+                   });
+                });
+                return empl;
+            }
         }
     },
     watch: {
