@@ -31,8 +31,9 @@ export default {
                     }
                 })
         },
-        getManagedTeams({ commit }) {
-            return axios.get('/api/tracking/managed_teams')
+        getManagedTeams({ commit }, { withEmployee }) {
+            if (!withEmployee) withEmployee = false;
+            return axios.get(`/api/tracking/managed_teams?withEmployee=${withEmployee}`)
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         commit('SET_MANAGED_TEAMS', data);

@@ -227,6 +227,9 @@ class TrackingRepository
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_1W_ACCESS) && $trackingDiff > 60 * 60 * 24 * 7) {
             throw new \Exception('Access denied');
         }
+        if ($tracking->user_id !== Auth::user()->id  && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_TEAM_TIME_ACCESS)) {
+            throw new \Exception('Access denied');
+        }
 
         $oldTracking = $tracking;
         if ($request->has('description')) { $tracking->description = $request->description; }
@@ -284,7 +287,22 @@ class TrackingRepository
 
     public function delete(Tracking $tracking)
     {
-        if (!Auth::user()->employee->hasPermissionId(43)) {
+        $trackingDiff = Carbon::parse($tracking->date_from)->diffInSeconds(Carbon::now());
+        if (
+            !Auth::user()->employee->hasPermissionId([Permission::TRACKER_EDIT_DELETE_OWN_TIME_UNLIMITED_ACCESS])
+            && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS)
+            && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_1W_ACCESS)
+        ) {
+            throw new \Exception('Access denied');
+        }
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS) && $trackingDiff > 60 * 60 * 24 * 14) {
+            throw new \Exception('Access denied');
+        }
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_1W_ACCESS) && $trackingDiff > 60 * 60 * 24 * 7) {
+            throw new \Exception('Access denied');
+        }
+
+        if ($tracking->user_id !== Auth::user()->id  && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_DELETE_TEAM_TIME_ACCESS)) {
             throw new \Exception('Access denied');
         }
         $oldTracking = $tracking;

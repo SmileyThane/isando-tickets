@@ -62,6 +62,8 @@ class Permission extends Model
     public const EMPLOYEE_TICKET_ADMIN_ACCESS = 39;
 
     //custom permissions
+	public const TRACKER_DELETE_TEAM_TIME_ACCESS = 93;
+	public const TRACKER_EDIT_TEAM_TIME_ACCESS = 92;
 	public const TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS = 91;
 	public const TRACKER_VIEW_COMPANY_TIME_ACCESS = 90;
 	public const VIEW_LIMITATION_GROUPS_SECTION = 89;

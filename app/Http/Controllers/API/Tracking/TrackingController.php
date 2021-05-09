@@ -39,8 +39,12 @@ class TrackingController extends BaseController
 
     public function delete(Tracking $tracking)
     {
-        $result = $this->trackingRepo->delete($tracking);
-        return self::showResponse($result);
+        try {
+            $result = $this->trackingRepo->delete($tracking);
+            return self::showResponse($result);
+        } catch (\Exception $exception) {
+            return self::showResponse(false, $exception->getMessage());
+        }
     }
 
     public function duplicate(Tracking $tracking)

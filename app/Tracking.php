@@ -106,15 +106,15 @@ class Tracking extends Model
             return $query
                 ->where('company_user_id', '=', Auth::user()->employee->id)
                 ->where('is_manager', '=', true);
-        })->get();
+        })->get()->pluck('id')->toArray();
         return $query->SimpleUser()
-            ->orWhereIn('team_id', '=', $teams->map(function ($team) { return $team->id; }));
+            ->orWhereIn('team_id', $teams);
     }
 
     public function scopeCompanyAdmin($query) {
-        $company = Auth::user()->employee->companyData()
+        $company = Auth::user()->employee()
             ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
-            ->with('employees.userData')->first();
+            ->with('userData')->first();
         return $query->SimpleUser()
             ->orWhere('company_id', '=', $company->id);
     }
