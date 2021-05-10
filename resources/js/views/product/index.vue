@@ -206,7 +206,7 @@
                         <v-spacer></v-spacer>
                         <v-btn color="grey darken-1" text @click="removeProductDialog = false">{{langMap.main.cancel}}
                         </v-btn>
-                        <v-btn color="red darken-1" disabled text @click="deleteProduct(selectedProductId)">
+                        <v-btn color="red darken-1" :disabled="!$helpers.auth.checkPermissionByIds([21])" text @click="deleteProduct(selectedProductId)">
                             {{langMap.main.delete}}
                         </v-btn>
                     </v-card-actions>
