@@ -113,7 +113,7 @@
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>
-                            {{ langMap.sidebar.custom_licenses }}
+                            {{ langMap.sidebar.custom_license_unassigned }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
