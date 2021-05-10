@@ -949,7 +949,7 @@ class LanguageSeeder extends Seeder
                             'tracking_settings' => 'die Einstellungen',
                             'custom_licenses' => 'Lizenzen',
                             'custom_license' => 'Lizenz',
-                            'custom_license_unassigned' => 'Nicht zugeordnet',
+                            'custom_license_unassigned' => 'Unzugeordnet',
                             'tracking_timesheet' => 'Arbeitszeittabelle'
                         ],
                         'tracking' => [
