@@ -706,7 +706,8 @@ class LanguageSeeder extends Seeder
                             'cost' => 'Cost',
                             'mark_as_manager' => 'Mark as manager',
                             'unmark_as_manager' => 'Unmark as manager',
-                            'team_manager' => 'Team manager'
+                            'team_manager' => 'Team manager',
+                            'example' => 'Example',
                         ],
                     'system_settings' =>
                         [
@@ -774,7 +775,7 @@ class LanguageSeeder extends Seeder
                             'user_theme_fg_color' => 'Personal theme text color',
                             'user_theme_bg_color' => 'Personal theme background color',
                             'show_speed_panel' => 'Show color floating gear',
-                            'revert_to_company_theme_color' => 'Change to default color',
+                            'revert_to_company_theme_colors' => 'Change to company theme colors',
                             'login_email' => 'Login Email',
                             'email_signatures' => 'Email signatures',
                             'new_email_signature' => 'Add new Email signature',
@@ -1573,7 +1574,8 @@ class LanguageSeeder extends Seeder
                             'cost' => 'Kosten',
                             'mark_as_manager' => 'Als Manager markieren',
                             'unmark_as_manager' => 'Markierung als Manager aufheben',
-                            'team_manager' => 'Team-Manager'
+                            'team_manager' => 'Team-Manager',
+                            'example' => 'Exempel',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
@@ -1638,7 +1640,7 @@ class LanguageSeeder extends Seeder
                             'user_theme_fg_color' => 'Persönliche Textfarbe',
                             'user_theme_bg_color' => 'Persönliche Hintergrundfarbe',
                             'show_speed_panel' => 'Colour floating bar anzeigen',
-                            'revert_to_company_theme_color' => 'Farbe des Firmenthemas benutzen',
+                            'revert_to_company_theme_colors' => 'Farben des Firmenthemas benutzen',
                             'login_email' => 'Einloggen E-Mail',
                             'email_signatures' => 'E-Mail-Signaturen',
                             'new_email_signature' => 'Neuen E-Mail-Signatur',
