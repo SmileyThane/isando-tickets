@@ -1264,9 +1264,9 @@ export default {
     },
     computed: {
         timeAdd () {
-            if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
-                this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format();
-            }
+            // if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
+            //     this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format();
+            // }
             const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to);
             return this.$helpers.time.convertSecToTime(seconds);
         },
@@ -1344,12 +1344,12 @@ export default {
             this.timeFrom = moment(this.timeFrom).set(date).format();
             this.timeTo = moment(this.timeTo).set(date).format();
             this.manualPanel.date_from = moment(this.timeFrom).format();
-            let dayToAdding = 0;
-            if (moment(this.manualPanel.date_to).format(this.dateFormat) > moment(this.manualPanel.date_from).format(this.dateFormat)) {
-                dayToAdding = 1;
-            }
+            // let dayToAdding = 0;
+            // if (moment(this.manualPanel.date_to).format(this.dateFormat) > moment(this.manualPanel.date_from).format(this.dateFormat)) {
+            //     dayToAdding = 1;
+            // }
             this.manualPanel.date_to = moment(this.timeTo)
-                .add(dayToAdding, 'day')
+                // .add(dayToAdding, 'day')
                 .format();
         },
         search () {
