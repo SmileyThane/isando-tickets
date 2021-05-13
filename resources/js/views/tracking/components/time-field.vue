@@ -27,18 +27,48 @@
                         @blur="setTimeHandler"
                         @focus="$event.target.select()"
                     >
+                    <v-menu
+                        v-model="calendarMenu"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                        left
+                    >
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                class="mt-1"
+                                icon
+                                small
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                <v-icon>mdi-calendar</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-date-picker
+                            v-model="date"
+                            :min="min"
+                            @input="calendarMenu = false; setTimeHandler()"
+                        ></v-date-picker>
+                    </v-menu>
                 </div>
             </div>
         </div>
     </div>
 </template>
 
-<style>
+<style scoped>
 .v-text-field.time-field__flat>.v-input__control>.v-input__slot:before {
     border: none;
 }
 .v-text-field.time-field__flat>.v-input__control>.v-input__slot>.v-text-field__slot {
     flex: inherit;
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+    background: none;
+    display: none;
 }
 </style>
 
@@ -51,15 +81,18 @@ import VInput from 'vuetify/lib/components/VInput/VInput';
 export default {
     name: "time-field",
     extends: VInput,
-    props: ['format', 'value', 'prependIcon', 'label', 'dense'],
+    props: ['format', 'value', 'prependIcon', 'label', 'dense', 'min'],
     data: () => {
         return {
             isFocused: false,
-            time: ''
+            time: '',
+            calendarMenu: false,
+            date: null,
         };
     },
     mounted() {
         this.time = moment(this.value).format(this.format);
+        this.date = moment(this.value).format('YYYY-MM-DD');
     },
     methods: {
         // onInput(val) {
@@ -139,19 +172,31 @@ export default {
                 return this.value;
             },
             set(val) {
+                val = moment(val).set({
+                    year: moment(this.date).year(),
+                    month: moment(this.date).month(),
+                    date: moment(this.date).date(),
+                }).toISOString();
                 this.$emit('input', val);
             }
+        },
+        formattedDate: function () {
+            if (!this.date) {
+                this.date = moment().format('YYYY-MM-DD');
+            }
+
         },
         classes: () =>{
             return ['v-input', 'v-input--hide-details', 'v-input--is-label-active',
                 'v-input--is-dirty', 'theme--light', 'v-text-field',
                 'v-text-field--is-booted', 'v-text-field--placeholder', 'v-input--dense', 'time-field__flat'];
-        }
+        },
     },
     watch: {
         value: function () {
             if (moment(this.value).isValid()) {
                 this.time = moment(this.value).format(this.format);
+                this.date = moment(this.value).format('YYYY-MM-DD');
             }
         }
     }
