@@ -44,7 +44,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                             >
-                                <v-icon>mdi-calendar</v-icon>
+                                <v-icon>mdi-clock-outline</v-icon>
                             </v-btn>
                         </template>
                         <v-date-picker
