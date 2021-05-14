@@ -9,7 +9,8 @@ export default {
             email: null,
             settings: {
                 enableTimesheet: false,
-                timesheetWeek: []
+                timesheetWeek: [],
+                customRounding: [],
             }
         },
         reports: [],
@@ -112,7 +113,24 @@ export default {
                         return data;
                     }
                 });
-        }
+        },
+        createCustomRounding({commit, dispatch, state}, data) {
+            if (data.name && data.seconds && data.direction) {
+                data.key = `custom_${data.seconds}_${data.direction}_${Date.now()}`
+                commit('CREATE_CUSTOM_ROUNDING', data);
+                dispatch('saveSettings');
+            }
+        },
+        updateCustomRounding({commit, dispatch}, data) {
+            if (data.name && data.seconds && data.direction) {
+                commit('UPDATE_CUSTOM_ROUNDING', data);
+                dispatch('saveSettings');
+            }
+        },
+        deleteCustomRounding({commit, dispatch}, data) {
+            commit('DELETE_CUSTOM_ROUNDING', data);
+            dispatch('saveSettings');
+        },
     },
     mutations: {
         SET_TOGGLE_TIMESHEET (state, timesheet) {
@@ -126,7 +144,22 @@ export default {
         },
         SET_REPORTS(state, reports) {
             state.reports = reports;
-        }
+        },
+        CREATE_CUSTOM_ROUNDING(state, rounding) {
+            if (!state.settings.settings.customRounding) {
+                state.settings.settings.customRounding = [];
+            }
+            state.settings.settings.customRounding.push(rounding);
+        },
+        UPDATE_CUSTOM_ROUNDING(state, rounding) {
+            const index = state.settings.settings.customRounding.findIndex(i => i.key === rounding.key);
+            rounding = { ...rounding, key: `custom_${rounding.seconds}_${rounding.direction}_${Date.now()}` };
+            state.settings.settings.customRounding[index] = rounding;
+        },
+        DELETE_CUSTOM_ROUNDING(state, rounding) {
+            const index = state.settings.settings.customRounding.findIndex(i => i.key === rounding.key);
+            state.settings.settings.customRounding.splice(index, 1);
+        },
     },
     getters: {
         getSettings(state) {

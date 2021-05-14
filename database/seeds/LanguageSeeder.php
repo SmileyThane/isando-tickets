@@ -152,6 +152,7 @@ class LanguageSeeder extends Seeder
                                 'general' => 'General',
                                 'enable_timesheet' => 'Enable timesheet',
                                 'timesheet' => 'Timesheet',
+                                'custom_rounding' => 'Custom rounding',
                             ],
                             'tag_btn' => [
                                 'tags' => 'Tags',
@@ -1043,6 +1044,7 @@ class LanguageSeeder extends Seeder
                                 'general' => 'Allgemeines',
                                 'enable_timesheet' => 'Arbeitszeittabelle aktivieren',
                                 'timesheet' => 'Timesheet',
+                                'custom_rounding' => 'Kundenspezifische Rundung',
                             ],
                             'tag_btn' => [
                                 'tags' => 'Tags',

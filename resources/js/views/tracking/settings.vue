@@ -26,19 +26,162 @@
                     <div class="d-flex flex-row">
                         <div class="d-inline-flex flex-grow-1 ma-4" style="width: 100%">
                             <!--Column 1-->
-                            <v-card class="elevation-12 without-bottom" style="width: 100%">
-                                <v-toolbar :color="themeBgColor" dark dense flat>
-                                    <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.general }}</v-toolbar-title>
-                                </v-toolbar>
-                                <v-card-text>
-                                    <v-checkbox
-                                        :disabled="!$helpers.auth.checkPermissionByIds([80])"
-                                        v-model="enableTimesheet"
-                                        :label="langMap.tracking.settings.enable_timesheet"
-                                    ></v-checkbox>
-                                </v-card-text>
-                            </v-card>
+                            <div class="d-flex mb-auto flex-column" style="width: 100%">
+                                <div class="d-inline-flex">
+                                    <v-card class="elevation-12 without-bottom" style="width: 100%">
+                                        <v-toolbar :color="themeBgColor" dark dense flat>
+                                            <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.general }}</v-toolbar-title>
+                                        </v-toolbar>
+                                        <v-card-text>
+                                            <v-checkbox
+                                                :disabled="!$helpers.auth.checkPermissionByIds([80])"
+                                                v-model="enableTimesheet"
+                                                :label="langMap.tracking.settings.enable_timesheet"
+                                            ></v-checkbox>
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+                                <v-spacer>&nbsp;</v-spacer>
+                                <div class="d-inline-flex">
+                                    <v-card class="elevation-12 without-bottom" style="width: 100%">
+                                        <v-toolbar :color="themeBgColor" dark dense flat>
+                                            <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.custom_rounding }}</v-toolbar-title>
+                                        </v-toolbar>
+                                        <v-card-text>
 
+                                            <v-expansion-panels>
+                                                <v-expansion-panel
+                                                    v-for="item in this.$store.getters['Tracking/getSettings'].settings.customRounding"
+                                                    :key="item.key"
+                                                >
+                                                    <v-expansion-panel-header v-slot="{ open }">
+                                                        <div class="d-flex flex-row">
+                                                            <div class="d-inline-flex" style="width: 40%">
+                                                                {{ item.name }}
+                                                            </div>
+                                                            <div class="d-inline-flex" style="width: 80%">
+                                                                <v-fade-transition leave-absolute>
+                                                                    <span v-if="open"></span>
+                                                                    <div class="d-flex flex-row"
+                                                                         v-else
+                                                                         style="width: 100%"
+                                                                    >
+                                                                        <div class="d-inline-flex mx-4">
+
+                                                                        </div>
+                                                                    </div>
+                                                                </v-fade-transition>
+                                                            </div>
+                                                        </div>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-text-field
+                                                            v-model="item.name"
+                                                            placeholder="Name"
+                                                        ></v-text-field>
+                                                        <v-text-field
+                                                            type="number"
+                                                            v-model="item.seconds"
+                                                            label="Time in minutes"
+                                                            step="1"
+                                                        ></v-text-field>
+                                                        <v-select
+                                                            v-model="item.direction"
+                                                            :items="availableDirections"
+                                                            item-text="text"
+                                                            item-value="value"
+                                                            label="Direction"
+                                                        ></v-select>
+                                                        <div class="d-flex flex-row-reverse">
+                                                            <v-btn
+                                                                right
+                                                                color="success"
+                                                                class="mx-2"
+                                                                @click="actionUpdateCustomRounding(item)"
+                                                            >
+                                                                Update
+                                                            </v-btn>
+                                                            <v-btn
+                                                                right
+                                                                color="error"
+                                                                class="mx-2"
+                                                                @click="actionDeleteCustomRounding(item)"
+                                                            >
+                                                                Remove
+                                                            </v-btn>
+                                                        </div>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+
+                                                <v-spacer>&nbsp;</v-spacer>
+
+                                                <v-expansion-panel
+                                                    :key="0"
+                                                >
+                                                    <v-expansion-panel-header v-slot="{ open }">
+                                                        <div class="d-flex flex-row">
+                                                            <div class="d-inline-flex" style="width: 40%">
+                                                                Create new
+                                                            </div>
+                                                            <div class="d-inline-flex" style="width: 80%">
+                                                                <v-fade-transition leave-absolute>
+                                                                    <span v-if="open"></span>
+                                                                    <div class="d-flex flex-row"
+                                                                         v-else
+                                                                         style="width: 100%"
+                                                                    >
+                                                                        <div class="d-inline-flex mx-4">
+
+                                                                        </div>
+                                                                    </div>
+                                                                </v-fade-transition>
+                                                            </div>
+                                                        </div>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-text-field
+                                                            v-model="forms.customRounding.name"
+                                                            placeholder="Name"
+                                                        ></v-text-field>
+                                                        <v-text-field
+                                                            type="number"
+                                                            v-model="forms.customRounding.seconds"
+                                                            label="Time in minutes"
+                                                            step="1"
+                                                        ></v-text-field>
+                                                        <v-select
+                                                            v-model="forms.customRounding.direction"
+                                                            :items="availableDirections"
+                                                            item-text="text"
+                                                            item-value="value"
+                                                            label="Direction"
+                                                        ></v-select>
+                                                        <div class="d-flex flex-row-reverse">
+                                                            <v-btn
+                                                                right
+                                                                color="success"
+                                                                class="mx-2"
+                                                                @click="actionCreateCustomRounding()"
+                                                            >
+                                                                Create
+                                                            </v-btn>
+                                                            <v-btn
+                                                                right
+                                                                color="error"
+                                                                class="mx-2"
+                                                                @click="resetForm"
+                                                            >
+                                                                Cancel
+                                                            </v-btn>
+                                                        </div>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+                                            </v-expansion-panels>
+
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+                            </div>
                         </div>
                         <div class="d-inline-flex flex-grow-1 ma-4" style="width: 100%">
                             <!--Column 2-->
@@ -287,8 +430,27 @@ export default {
             forms: {
                 services: {
                     name: ''
-                }
+                },
+                customRounding: {
+                    name: '',
+                    seconds: 1,
+                    direction: 'nearest'
+                },
             },
+            availableDirections: [
+                {
+                    value: 'up',
+                    text: 'up',
+                },
+                {
+                    value: 'nearest',
+                    text: 'nearest',
+                },
+                {
+                    value: 'down',
+                    text: 'down',
+                },
+            ],
             searchService: null,
             daysOfWeekTitle: [
                 this.$store.state.lang.lang_map.tracking.timesheet.monday,
@@ -344,6 +506,11 @@ export default {
             this.forms.services = {
                 name: ''
             };
+            this.forms.customRounding = {
+                name: '',
+                seconds: 1,
+                direction: 'nearest'
+            }
         },
         removeService(serviceId) {
             this.$store.dispatch('Services/deleteService', serviceId)
@@ -364,7 +531,17 @@ export default {
         },
         __saveSettings() {
             this.$store.dispatch('Tracking/saveSettings');
-        }
+        },
+        actionCreateCustomRounding() {
+            this.$store.dispatch('Tracking/createCustomRounding', this.forms.customRounding);
+            this.resetForm();
+        },
+        actionUpdateCustomRounding(item) {
+            this.$store.dispatch('Tracking/updateCustomRounding', item);
+        },
+        actionDeleteCustomRounding(item) {
+            this.$store.dispatch('Tracking/deleteCustomRounding', item);
+        },
     },
     computed: {
         enableTimesheet: {
@@ -376,7 +553,10 @@ export default {
                 await this.$store.commit('Tracking/SET_TOGGLE_TIMESHEET', val);
                 await this.debounceSaveSettings();
             }
-        }
+        },
+    },
+    watch: {
+
     }
 }
 </script>
