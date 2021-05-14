@@ -1015,14 +1015,11 @@
                                         :color="themeBgColor"
                                         :readonly="!enableToEditColor"
                                         v-model="resetThemeBgColorFlag"
+                                        :label="langMap.profile.revert_to_company_theme_colors"
                                         :value="1"
                                         @change="resetThemeBgColor()"
-                                    >
-                                        <template v-slot:label>
-                                            {{ langMap.profile.revert_to_company_theme_color }} <v-icon x-large right :color="companySettings.theme_color">mdi-checkbox-blank</v-icon>
-                                        </template>
-                                    </v-checkbox>
-
+                                    />
+                                    <v-btn :color="companySettings.theme_bg_color" :style="`color: ${companySettings.theme_fg_color};`">{{langMap.main.example}}</v-btn>
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <v-checkbox
@@ -1374,7 +1371,8 @@ export default {
             internalBillingForm: {},
             autoFgColor: false,
             companySettings: {
-                theme_color: '',
+                theme_bg_color: '#6AA75D',
+                theme_fg_color: '#FFFFFF',
                 override_user_theme: false
             },
             resetThemeBgColorFlag: 0,
@@ -1805,39 +1803,23 @@ export default {
                 opened: null
             }
         },
-        getUserSettings() {
-            this.snackbar = false;
-
-            axios.get('/api/user/settings').then(response => {
-                response = response.data;
-                if (response.success === true) {
-                    if (this.companySettings.override_user_theme !== true) {
-                        this.themeBgColor = response.data.theme_color;
-                        this.$store.state.themeBgColor = response.data.theme_color;
-                        localStorage.themeBgColor = response.data.theme_color;
-                        EventBus.$emit('update-theme-color', response.data.theme_color);
-                    }
-                    this.enableToEdit = false;
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
-                }
-                return true;
-            });
-        },
         updateUserDataSettings() {
             this.snackbar = false;
 
-            axios.post('/api/user/settings', {theme_color: this.themeBgColorNew}).then(response => {
+            axios.post('/api/user/settings', {
+                theme_bg_color: this.themeBgColorNew,
+                theme_fg_color: this.themeFgColorNew
+            }).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    if (this.companySettings.override_user_theme !== true) {
-                        this.themeBgColor = this.themeBgColorNew;
-                        this.$store.state.themeBgColor = this.themeBgColorNew;
-                        localStorage.themeBgColor = this.themeBgColorNew;
-                        EventBus.$emit('update-theme-color', this.themeBgColorNew);
-                    }
+                    this.themeBgColor = this.themeBgColorNew;
+                    this.$store.state.themeBgColor = this.themeBgColorNew;
+                    EventBus.$emit('update-theme-bg-color', this.themeBgColorNew);
+
+                    this.themeFgColor = this.themeFgColorNew;
+                    this.$store.state.themeFgColor = this.themeFgColorNew;
+                    EventBus.$emit('update-theme-fg-color', this.themeFgColorNew);
+
                     localStorage.themeBgColorDlg = this.themeBgColorDlg == 1 ? 0 : 1;
                     this.enableToEditColor = false;
                 } else {
@@ -1852,16 +1834,56 @@ export default {
             this.enableToEditColor = false;
             this.getUser();
             this.getCompanySettings();
-            if (!this.companySettings.override_user_theme) {
-                this.getUserSettings();
-            }
         },
         getCompanySettings() {
+            this.snackbar = false;
+
             axios.get(`/api/main_company/settings`).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
+                    this.companySettings['theme_fg_color'] = response.data.hasOwnProperty('theme_fg_color') ? response.data.theme_fg_color : '#FFFFFF';
+
+                    if (response.data.hasOwnProperty('theme_bg_color')) {
+                        this.companySettings['theme_bg_color'] = response.data.theme_bg_color;
+                    } else if (response.data.hasOwnProperty('theme_color')) {
+                        this.companySettings['theme_bg_color'] = response.data.theme_color;
+                    } else {
+                        this.companySettings['theme_bg_color'] = '#6AA75D';
+                    }
+
                     this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
+
+                    axios.get('/api/user/settings').then(response => {
+                        response = response.data;
+                        if (response.success === true) {
+                            if (response.data.hasOwnProperty('theme_bg_color')) {
+                                this.themeBgColorNew = response.data.theme_bg_color;
+                            } else if (response.data.hasOwnProperty('theme_color')) {
+                                this.themeBgColorNew = response.data.theme_color;
+                            } else if (this.companySettings.override_user_theme) {
+                                this.themeBgColorNew = this.companySettings.theme_bg_color
+                            } else {
+                                this.themeBgColorNew = '#6AA75D';
+                            }
+                            this.themeBgColor = this.themeBgColorNew;
+
+                            if (response.data.hasOwnProperty('theme_fg_color')) {
+                                this.themeFgColorNew = response.data.theme_fg_color;
+                            } else if (this.companySettings.override_user_theme) {
+                                this.themeFgColorNew = this.companySettings.theme_fg_color
+                            } else {
+                                this.themeFgColorNew = '#FFFFFF';
+                            }
+
+                            this.themeFgColor = this.themeFgColorNew;
+
+                            this.enableToEdit = false;
+                        } else {
+                            this.snackbarMessage = this.langMap.main.generic_error;
+                            this.actionColor = 'error';
+                            this.snackbar = true;
+                        }
+                    });
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1870,11 +1892,12 @@ export default {
             });
         },
         resetThemeBgColor() {
-            let resetThemeBgColorFlag = this.resetThemeBgColorFlag;
-            if (resetThemeBgColorFlag === 1) {
-                this.themeBgColorNew = this.companySettings.theme_color;
+            if (this.resetThemeBgColorFlag === 1) {
+                this.themeFgColorNew = this.companySettings.theme_fg_color;
+                this.themeBgColorNew = this.companySettings.theme_bg_color;
             } else {
-                this.themeBgColorNew = this.$store.state.themeBgColor;
+                this.themeBgColorNew = this.themeBgColor;
+                this.themeFgColorNew = this.themeFgColor;
             }
         },
         setThemeFgColor() {

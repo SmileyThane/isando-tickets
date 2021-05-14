@@ -25,10 +25,11 @@ export const convertSecToTime = (seconds, withSeconds = true) => {
  * Get count of seconds between two dates
  * @param dateStart: dateTime
  * @param dateEnd: dateTime
+ * @param useCorrector: boolean = false,  if (dateStart > dateEnd) then dateEnd + 1day
  * @returns {number}
  */
-export const getSecBetweenDates = (dateStart, dateEnd) => {
-    if (moment(dateStart) > moment(dateEnd)) {
+export const getSecBetweenDates = (dateStart, dateEnd, useCorrector = false) => {
+    if (moment(dateStart) > moment(dateEnd) && useCorrector) {
         dateEnd = moment(dateEnd).add(1, 'day');
     }
     return moment(dateEnd).diff(moment(dateStart), 'seconds');
