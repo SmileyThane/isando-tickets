@@ -204,6 +204,7 @@
                                 :label="langMap.tracking.tracker.to"
                                 placeholder="hh:mm"
                                 format="HH:mm"
+                                :min="manualPanel.date_from"
                             ></TimeField>
                         </div>
                         <div class="mx-1 align-self-center">
@@ -219,7 +220,7 @@
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
                                         dense
-                                        v-model="date"
+                                        v-model="manualFormattedDate"
                                         :label="langMap.tracking.tracker.date"
                                         placeholder="yyyy-mm-dd"
                                         prepend-icon="mdi-calendar"
@@ -228,12 +229,12 @@
                                         hide-details="auto"
                                         class="date-picker__without-line mt-1"
                                         style="min-width: 100px; max-width: 130px"
-                                        @blur="handlerSetDate()"
+                                        readonly
                                     ></v-text-field>
                                 </template>
                                 <v-date-picker
                                     dense
-                                    v-model="date"
+                                    v-model="manualFormattedDate"
                                     @input="createDatePicker = false"
                                 ></v-date-picker>
                             </v-menu>
@@ -605,10 +606,10 @@
                                                     <div class="d-flex-inline">
                                                         <v-edit-dialog
                                                             v-if="isEditable(row)"
-                                                            @save="debounceSave(row, 'date_from', row.date_from)"
+                                                            @save=""
                                                             @cancel="cancel"
                                                             @open="open"
-                                                            @close="debounceSave(row, 'date_from', row.date_from)"
+                                                            @close=""
                                                         >
                                                             {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;{{moment(row.date_to).format(timeFormat)}}
                                                             <template v-slot:input>
@@ -619,6 +620,7 @@
                                                                             style="max-width: 100px; height: 40px"
                                                                             placeholder="hh:mm"
                                                                             format="HH:mm"
+                                                                            @input="correctionTime(row.date_from, row.date_to); debounceSave(row, 'date_from', row.date_from)"
                                                                         ></TimeField>
                                                                     </div>
                                                                     <div class="d-inline-flex mt-2">&nbsp;&mdash;&nbsp;</div>
@@ -628,7 +630,8 @@
                                                                             style="max-width: 100px; height: 40px"
                                                                             placeholder="hh:mm"
                                                                             format="HH:mm"
-                                                                            @input="debounceSave(row, 'date_to', row.date_to)"
+                                                                            :min="row.date_from"
+                                                                            @input="correctionTime(row.date_from, row.date_to); debounceSave(row, 'date_to', row.date_to)"
                                                                         ></TimeField>
                                                                     </div>
                                                                 </div>
@@ -825,10 +828,6 @@ export default {
             loadingCreateTrack: false,
             loadingUpdateTrack: false,
             loadingDeleteTrack: false,
-            timeFromPicker: false,
-            timeToPicker: false,
-            timeFrom: null,
-            timeTo: null,
             date: null,
             menuProject: false,
             search: '',
@@ -952,8 +951,6 @@ export default {
             };
             this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
         }
-        this.timeFrom = moment().format();
-        this.timeTo = moment().add(15, 'minutes').format();
         this.date = moment().format(this.dateFormat);
     },
     mounted() {
@@ -1035,8 +1032,7 @@ export default {
                             this.debounceGetTracking();
                             this.resetManualPanel();
                             this.loadingUpdateTrack = false;
-                            const error = Object.keys(data.error)[0];
-                            this.snackbarMessage = data.error[error].pop();
+                            this.snackbarMessage = data.error;
                             this.actionColor = 'error'
                             this.snackbar = true;
                         }
@@ -1174,12 +1170,6 @@ export default {
             this.dateRangePicker = false;
             this.debounceGetTracking();
         },
-        handlerSetDate() {
-            if (!this.date || ! /([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/.test(this.date)) {
-                this.date = moment().format(this.dateFormat);
-            }
-            return this.date;
-        },
         handlerProjectTimerPanel(data) {
             this.timerPanel.entity = data.project;
         },
@@ -1207,7 +1197,7 @@ export default {
         },
         save (item, fieldName, newValue = null) {
             if (['date_from', 'date_to'].indexOf(fieldName)) {
-                item.passed = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to);
+                item.passed = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to, true);
             }
             if (newValue) {
                 item[fieldName] = newValue;
@@ -1215,6 +1205,13 @@ export default {
             if (fieldName === 'entity') {
                 item.entity_id = item.entity && item.entity.id ? item.entity.id : item.entity_id;
                 item.entity_type = item.entity && item.entity.from ? 'App\\Ticket' : 'App\\TrackingProject';
+            }
+            if (moment(item.date_to).isBefore(moment(item.date_from))) {
+                item.date_to = moment(item.date_to).set({
+                    date: moment(item.date_from).add(1, 'days').date(),
+                    year: moment(item.date_from).year(),
+                    month: moment(item.date_from).month(),
+                }).format();
             }
             this.__updateTrackingById(item.id, item);
         },
@@ -1233,7 +1230,7 @@ export default {
                 month: moment(item.date).month(),
                 year: moment(item.date).year()
             };
-            const seconds = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to);
+            const seconds = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to, true);
             item.date_from = moment(item.date_from).set(date).format();
             item.date_to = moment(item.date_from).add(seconds, "seconds").format();
             this.debounceSave(item, 'date_from');
@@ -1260,6 +1257,15 @@ export default {
                 return foundItem.color;
             }
             return this.$helpers.color.genRandomColor();
+        },
+        correctionTime(dateFrom, dateTo) {
+            if (moment(dateTo).isBefore(moment(dateFrom))) {
+                dateTo = moment(dateTo).set({
+                    date: moment(dateFrom).add(1, 'days').date(),
+                    year: moment(dateFrom).year(),
+                    month: moment(dateFrom).month(),
+                }).toISOString();
+            }
         }
     },
     computed: {
@@ -1267,7 +1273,7 @@ export default {
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
                 this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format();
             }
-            const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to);
+            const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to, true);
             return this.$helpers.time.convertSecToTime(seconds);
         },
         dateRangeText () {
@@ -1325,14 +1331,27 @@ export default {
                 });
                 return empl;
             }
-        }
+        },
+        manualFormattedDate: {
+            get() {
+                return moment(this.manualPanel.date_from).format(this.dateFormat);
+            },
+            set(val) {
+                this.manualPanel.date = moment(val).format();
+                const date = {
+                    date: moment(val).date(),
+                    month: moment(val).month(),
+                    year: moment(val).year()
+                };
+                this.manualPanel.date_from = moment(this.manualPanel.date_from)
+                    .set(date).toISOString();
+                this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
+            }
+        },
     },
     watch: {
-        timeFrom: function () {
-            this.manualPanel.date_from = moment(this.timeFrom).format();
-        },
-        timeTo: function () {
-            this.manualPanel.date_to = moment(this.timeTo).format();
+        'manualPanel.date_from': function () {
+            this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
         },
         date: function () {
             this.manualPanel.date = moment(this.date).format();
@@ -1341,14 +1360,12 @@ export default {
                 month: moment(this.date).month(),
                 year: moment(this.date).year()
             };
-            this.timeFrom = moment(this.timeFrom).set(date).format();
-            this.timeTo = moment(this.timeTo).set(date).format();
-            this.manualPanel.date_from = moment(this.timeFrom).format();
+
             let dayToAdding = 0;
             if (moment(this.manualPanel.date_to).format(this.dateFormat) > moment(this.manualPanel.date_from).format(this.dateFormat)) {
                 dayToAdding = 1;
             }
-            this.manualPanel.date_to = moment(this.timeTo)
+            this.manualPanel.date_to = moment(this.manualPanel.date_to)
                 .add(dayToAdding, 'day')
                 .format();
         },
@@ -1361,7 +1378,7 @@ export default {
                 return i.status === 'started';
             }).forEach(i => {
                 const index = this.tracking.indexOf(i);
-                this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment());
+                this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment(), true);
                 this.tracking[index].date_picker = this.tracking[index].date_picker ?? false;
             });
             // Update timerPanel

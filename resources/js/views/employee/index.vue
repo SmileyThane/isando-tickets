@@ -136,14 +136,14 @@
                                     <v-col md="6" sm="12">
                                         <v-text-field v-model="employeesSearch" :color="themeBgColor"
                                                       :label="langMap.main.search"
-                                                      class="mx-4" @input="getEmployees"></v-text-field>
+                                                      class="mx-4" @input="debounceGetEmployees"></v-text-field>
                                     </v-col>
                                     <v-col md="4" sm="12">
                                         <v-checkbox v-model="withTrashed"  :color="themeBgColor"
                                                     value="1"
                                                     dense
                                                     :label="langMap.individuals.with_trashed"
-                                                    class="mx-4" @change="getEmployees"/>
+                                                    class="mx-4" @change="debounceGetEmployees"/>
                                     </v-col>
                                     <v-col md="2" sm="12">
                                         <v-select
@@ -309,8 +309,10 @@ themeBgColor: this.$store.state.themeBgColor,
             suppliers: []
         }
     },
+    created() {
+        this.debounceGetEmployees = _.debounce(this.getEmployees, 1000);
+    },
     mounted() {
-        this.getEmployees();
         this.getClients();
         this.getLanguages();
         let that = this;

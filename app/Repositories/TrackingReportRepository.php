@@ -66,7 +66,7 @@ class TrackingReportRepository
             'period.end'            => 'required|date',
             'sort'                  => 'required|array',
             'sort.value'            => 'required|string|in:alph-asc,chron-desc,duration-desc,duration-asc,revenue-desc,revenue-asc',
-            'round'                 => 'required|integer',
+            'round'                 => 'required|string',
             'group'                 => 'array',
             'group.*.value'         => 'string|in:day,description,week,billability,month',
             'filters'               => 'array',
@@ -231,13 +231,13 @@ class TrackingReportRepository
         $this->round = $request->get('round', 0);
         $round = $this->round;
 
-        if ($round > 0) {
+        if (!empty($round)) {
             $tracks = collect($tracks)->map(function ($track) use ($round) {
                 $time = $this->convertSecondsToTimeFormat($track['passed']);
                 $roundedTime = $this->getRoundTime($time, $round);
                 $passed = $this->convertTimeToSeconds($roundedTime);
                 $track['passed'] = $passed;
-                if ($track['billable'] && Auth::user()->employee->hasPermissionId(70)) {
+                if ($track['billable'] && Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_REVENUE_PREVIEW_ACCESS)) {
                     $track['revenue'] = number_format((float)$track['rate'] * (float)$this->convertSecondsToDecimal((float)$passed), 2, '.', '');
                 } else {
                     $track['revenue'] = 0;
@@ -252,12 +252,28 @@ class TrackingReportRepository
         ];
     }
 
-    function getRoundTime($time, $minutes = '5') {
-        if ($minutes === 0) return $time;
+    function getRoundTime($time, $round = '5') {
+        if ($round === 0) return $time;
+        $minutes = $round;
+        $direction = 'nearest';
+        if (!is_numeric($round)) {
+            try {
+                $round = explode('_', $round);
+                if ($round[0] !== 'custom' || count($round) !== 4) return $time;
+                $minutes = $round[1];
+                $direction = $round[2];
+            } catch (\Exception $exception) {
+                return $time;
+            }
+        }
         $time = explode(':', $time);
-        $seconds = (int)$time[0]*60*60 + (int)$time[1]*60;
+        $seconds = (int)$time[0] * 60 * 60 + (int)$time[1] * 60;
         if (isset($time[2])) $seconds += (int)$time[2];
-        $rounded = round((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60);
+        switch ($direction) {
+            case 'up': $rounded = ceil((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60); break;
+            case 'down': $rounded = floor((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60); break;
+            default: $rounded = round((int)$seconds / ((int)$minutes * 60)) * ((int)$minutes * 60);
+        }
 //        dd($time, $minutes, $rounded, $this->convertSecondsToTimeFormat($rounded));
         return $this->convertSecondsToTimeFormat($rounded);
     }

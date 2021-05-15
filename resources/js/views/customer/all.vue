@@ -24,7 +24,7 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getCustomers()" v-model="customersSearch" :color="themeBgColor"
+                                        <v-text-field @input="debounceGetCustomers" v-model="customersSearch" :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
@@ -166,6 +166,9 @@ themeBgColor: this.$store.state.themeBgColor,
             EventBus.$on('update-theme-color', function (color) {
                 that.themeBgColor = color;
             });
+        },
+        created() {
+            this.debounceGetCustomers = _.debounce(this.getCustomers, 1000);
         },
         methods: {
             getCustomers() {

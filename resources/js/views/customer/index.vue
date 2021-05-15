@@ -89,7 +89,7 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getClients" v-model="customersSearch" :color="themeBgColor"
+                                        <v-text-field @input="debounceGetClients" v-model="customersSearch" :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
@@ -257,6 +257,9 @@
                 },
                 suppliers: []
             }
+        },
+        created() {
+            this.debounceGetClients = _.debounce(this.getClients, 1000);
         },
         mounted() {
             this.getSuppliers();

@@ -2116,8 +2116,6 @@ export default {
             axios.post('/api/main_company/settings', this.companySettings).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    localStorage.removeItem('themeFgColor');
-                    localStorage.removeItem('themeBgColor');
                     window.location.reload()
                 } else {
                     this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;

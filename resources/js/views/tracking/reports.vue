@@ -204,7 +204,7 @@
                     prepend-inner-icon="mdi-approximately-equal"
                     :placeholder="langMap.tracking.report.rounding_up_of_times"
                     outlined
-                    :items="roundingItems"
+                    :items="availableRoundingItems"
                     item-text="text"
                     item-value="value"
                     v-model="builder.round"
@@ -1729,7 +1729,18 @@ export default {
             set: function (currency) {
                 this.$store.dispatch('Tracking/updateSettings', {currency});
             }
-        }
+        },
+        availableRoundingItems: function () {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            let roundingItems = this.roundingItems;
+            if (settings && settings.customRounding) {
+                roundingItems = roundingItems.concat(settings.customRounding.map(i => ({
+                    value: i.key,
+                    text: i.name,
+                })))
+            }
+            return roundingItems;
+        },
     },
     watch: {
         'builder.round': function() {
