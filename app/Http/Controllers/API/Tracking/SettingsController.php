@@ -27,7 +27,7 @@ class SettingsController extends BaseController
     }
 
     public function update(Request $request) {
-        if ($request->has('currency')) {
+        if ($request->has('currency') && $request->get('currency') !== null) {
             try {
                 $currency = Currency::find((int)$request->get('currency'));
                 $company = Company::find(Auth::user()->employee->companyData->id);
