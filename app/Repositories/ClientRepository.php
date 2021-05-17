@@ -441,27 +441,30 @@ class ClientRepository
                 if ($employee->employee) {
                     $employee = $employee->employee;
                 }
-                $employeeData = [
-                    'id' => $clientData['id'] . '-' . $employee->userData->id,
-                    'entity_type' => User::class,
-                    'entity_id' => $employee->userData->id,
-                    'name' => $employee->userData->full_name,
-                    'children' => []
-                ];
-                foreach ($employee->userData->emails as $email) {
-                    if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
-                        array_push($employeeData['children'], [
-                            'id' => $employeeData['id'] . '-' . $email->id,
-                            'entity_type' => Email::class,
-                            'entity_id' => $email->id,
-                            'name' => $email->email,
-                            'type' => $email->type
-                        ]);
+                if ($employee->userData !== null) {
+                    $employeeData = [
+                        'id' => $clientData['id'] . '-' . $employee->userData->id,
+                        'entity_type' => User::class,
+                        'entity_id' => $employee->userData->id,
+                        'name' => $employee->userData->full_name,
+                        'children' => []
+                    ];
+                    foreach ($employee->userData->emails as $email) {
+                        if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
+                            array_push($employeeData['children'], [
+                                'id' => $employeeData['id'] . '-' . $email->id,
+                                'entity_type' => Email::class,
+                                'entity_id' => $email->id,
+                                'name' => $email->email,
+                                'type' => $email->type
+                            ]);
+                        }
+                    }
+                    if ($employeeData['children']) {
+                        array_push($clientData['children'], $employeeData);
                     }
                 }
-                if ($employeeData['children']) {
-                    array_push($clientData['children'], $employeeData);
-                }
+
             }
 
             if ($clientData['children']) {

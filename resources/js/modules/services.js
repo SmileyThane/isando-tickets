@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default {
     namespaced: true,
     state: {
@@ -55,7 +57,7 @@ export default {
     },
     getters: {
         getServices(state) {
-            return state.services
+            return _.sortBy(state.services, item => item.name.toLowerCase());
         },
         getSearch(state) {
             return state.search

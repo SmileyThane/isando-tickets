@@ -116,6 +116,6 @@ class Tracking extends Model
             ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
             ->with('userData')->first();
         return $query->SimpleUser()
-            ->orWhere('company_id', '=', $company->id);
+            ->orWhere('company_id', '=', $company->company_id);
     }
 }

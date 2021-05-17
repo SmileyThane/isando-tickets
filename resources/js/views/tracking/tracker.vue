@@ -307,7 +307,7 @@
             <div class="d-flex flex-row mr-16">
                 <div class="d-inline-flex flex-grow-0">
                     <v-select
-                        v-if="hasPermission([42])"
+                        v-if="hasPermission([42, 90])"
                         placeholder="Choose team members"
                         :items="teamEmployee"
                         item-value="id"
@@ -331,7 +331,8 @@
                                             alt="item.full_name"
                                         >
                                         <span v-else class="white--text headline text-uppercase">
-                                            {{item.name[0]}} {{item.surname[0]}}
+                                            <template v-if="item.name && item.name[0]">{{item.name[0]}}</template>
+                                            <template v-if="item.surname && item.surname[0]">{{item.surname[0]}}</template>
                                         </span>
                                     </v-avatar>
                                 </div>
@@ -963,6 +964,7 @@ export default {
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Tickets/getTicketList', { search: null });
         this.$store.dispatch('Team/getManagedTeams', { withEmployee: true });
+        this.$store.dispatch('Team/getCoworkers', { search: null });
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1312,25 +1314,29 @@ export default {
             return moment(this.dateRange.end).format('DD/MM/YYYY');
         },
         teamEmployee () {
-            if (!this.hasPermission([42])) {
-                return [];
-            } else {
+            if (this.hasPermission([90])) {
+                return this.$store.getters['Team/getCoworkers'];
+            }
+            if (this.hasPermission([42])) {
                 const empl = [];
                 this.$store.getters['Team/getManagedTeams'].map(team => {
-                   team.employees.map(e => {
-                       empl.push({
-                           id: e.employee.user_data.id,
-                           name: e.employee.user_data.name,
-                           surname: e.employee.user_data.surname,
-                           middle_name: e.employee.user_data.middle_name,
-                           full_name: e.employee.user_data.full_name,
-                           avatar_url: e.employee.user_data.avatar_url,
-                           color: this.$helpers.color.genRandomColor(),
-                       });
-                   });
+                    team.employees.map(e => {
+                        empl.push({
+                            id: e.employee.user_data.id,
+                            name: e.employee.user_data.name,
+                            surname: e.employee.user_data.surname,
+                            middle_name: e.employee.user_data.middle_name,
+                            full_name: e.employee.user_data.full_name,
+                            avatar_url: e.employee.user_data.avatar_url,
+                            color: this.$helpers.color.genRandomColor(),
+                        });
+                    });
                 });
-                return empl;
+                return _.sortBy(empl, item => {
+                    return item.full_name.toLowerCase();
+                });
             }
+            return [];
         },
         manualFormattedDate: {
             get() {

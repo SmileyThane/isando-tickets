@@ -146,7 +146,7 @@ class NotificationRepository
         $companyId = $request['company_id'] ?? $companyUser->companyData->id;
 
         $notifications = new Collection([]);
-        if ($companyUser->is_clientable || $companyUser->hasPermissionId(Permission::CLIENT_WRITE_ACCESS)) {
+        if ($companyUser->is_clientable || $companyUser->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
 //           $notifications = SentNotification::where('entity_type', Company::class)->where('entity_id', $companyId)->with(['type', 'sender'])->get();
             foreach (Auth::user()->emails as $email) {
                 $notifications = $notifications->merge(SentNotification::whereNotNull(DB::raw("JSON_SEARCH(recipients, 'one', '" . $email->email . "')"))->with(['type', 'sender'])->get());

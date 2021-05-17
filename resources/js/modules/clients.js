@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default {
     namespaced: true,
     state: {
@@ -23,7 +25,9 @@ export default {
     },
     getters: {
         getClients(state) {
-            return state.clients
+            return _.sortBy(state.clients, item => {
+               return item.name.toLowerCase();
+            });
         }
     }
 }
