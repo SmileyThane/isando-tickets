@@ -367,6 +367,7 @@
             <v-list dense>
                 <v-list-group
                     :style="'background-color: ' + 'white' + ';'"
+                    v-if="$helpers.auth.checkPermissionByIds([22])"
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
@@ -380,7 +381,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="$helpers.auth.checkPermissionByIds([22])"
+                        v-if="$helpers.auth.checkPermissionByIds([23])"
                         link
                         style="background-color:white;"
                         to="/notify"
@@ -408,7 +409,9 @@
                     </v-list-item>
                 </v-list-group>
             </v-list>
-            <v-divider>&nbsp;</v-divider>
+            <v-divider
+                v-if="$helpers.auth.checkPermissionByIds([22])"
+            >&nbsp;</v-divider>
             <v-list dense>
                 <v-list-group
                     :style="'background-color: ' + 'white' + ';'"
