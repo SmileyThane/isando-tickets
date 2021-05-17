@@ -451,7 +451,7 @@
                                 </v-btn>
                             </template>
                         </v-data-table>
-                        <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                        <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.tracking.settings.create_currency_title }}
@@ -522,13 +522,13 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, phoneIcons,'updatePhoneType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deletePhoneType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -536,7 +536,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_phone_type }}
@@ -611,13 +611,13 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, socialIcons, 'updateSocialType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteSocialType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -625,7 +625,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_social_type }}
@@ -700,13 +700,13 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, addressIcons, 'updateAddressType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteAddressType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -714,7 +714,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_address_type }}
@@ -790,7 +790,7 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="item.id !== 1 && checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, emailIcons,'updateEmailType')">
                                                         mdi-pencil
@@ -801,7 +801,7 @@
                                                         mdi-lock
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="item.id !== 1 && checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteEmailType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -809,7 +809,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_email_type }}
@@ -884,13 +884,13 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, notificationIcons,'updateNotificationType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteNotificationType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -898,7 +898,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_notification_type }}
@@ -939,6 +939,100 @@
                                                         </v-col>
                                                         <v-btn :color="themeBgColor" bottom dark fab right small
                                                                @click="submitNewData(notificationTypeForm, 'addNotificationType')">
+                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.ticket_types }}</v-toolbar-title>
+
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-list dense subheader>
+                                        <v-list-item-group :color="themeBgColor">
+                                            <v-list-item
+                                                v-for="(item, i) in ticketTypes"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-icon>
+                                                    <v-icon left v-text="item.icon"></v-icon>
+                                                </v-list-item-icon>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                </v-list-item-content>
+                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                    <v-icon small
+                                                            @click="showUpdateTypeDialog(item, ticketIcons,'updateTicketType')">
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action v-if="item.id === 1">
+                                                    <v-icon small :title="langMap.profile.login_ticket">
+                                                        mdi-lock
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                    <v-icon small @click="deleteTicketType(item.id)">
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{ langMap.system_settings.new_ticket_type }}
+                                                <template v-slot:actions>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col class="pa-1" cols="md-5">
+                                                            <v-text-field v-model="ticketTypeForm.name"
+                                                                          :color="themeBgColor"
+                                                                          :item-color="themeBgColor"
+                                                                          :label="langMap.main.name"
+                                                                          dense></v-text-field>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="md-5">
+                                                            <v-text-field v-model="ticketTypeForm.name_de"
+                                                                          :color="themeBgColor"
+                                                                          :item-color="themeBgColor"
+                                                                          :label="langMap.main.name_de"
+                                                                          dense></v-text-field>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="md-2">
+                                                            <v-select v-model="ticketTypeForm.icon" :color="themeBgColor"
+                                                                      :item-color="themeBgColor" :items="ticketIcons"
+                                                                      :label="langMap.main.icon" dense>
+                                                                <template slot="selection" slot-scope="data">
+                                                                    <v-icon small v-text="data.item"></v-icon>
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    <v-icon small v-text="data.item"></v-icon>
+                                                                </template>
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn :color="themeBgColor" bottom dark fab right small
+                                                               @click="submitNewData(ticketTypeForm, 'addTicketType')">
                                                             <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
                                                         </v-btn>
                                                     </div>
@@ -1118,7 +1212,7 @@
                                 </td>
                             </template>
                         </v-data-table>
-                        <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                        <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                             <v-expansion-panel>
                                 <v-expansion-panel-header>
                                     {{ langMap.tracking.settings.create_tag_title }}
@@ -1356,6 +1450,26 @@ export default {
                 'mdi-bell',
                 'mdi-calendar'
             ],
+            ticketTypeForm: {
+                entity_id: '',
+                entity_type: 'App\\Company',
+                name: '',
+                name_de: '',
+                icon: 'mdi-alert'
+            },
+            ticketIcons: [
+                'mdi-alert',
+                'mdi-alert-box',
+                'mdi-alert-cyrcle',
+                'mdi-information',
+                'mdi-information-outline',
+                'mdi-information-variant',
+                'mdi-ticket',
+                'mdi-ticket-account',
+                'mdi-ticket-confirmation',
+                'mdi-ticket-confirmation-outline',
+                'mdi-ticket-percent-outline',
+            ],
             updateTypeForm: {
                 entity_id: this.$route.params.id,
                 entity_type: 'App\\Company',
@@ -1368,6 +1482,7 @@ export default {
             socialTypes: [],
             emailTypes: [],
             notificationTypes: [],
+            ticketTypes: [],
             countries: [],
             companyCountries: [],
             languages: [],
@@ -1540,6 +1655,7 @@ export default {
         this.getSocialTypes();
         this.getEmailTypes();
         this.getNotificationTypes();
+        this.getTicketTypes();
         this.getCountries();
         this.getCompanyCountries();
         this.getLanguages();
@@ -1619,15 +1735,6 @@ export default {
                 }
 
             });
-        },
-        checkRoleByIds(ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
-                }
-            });
-            return roleExists
         },
         getLanguages() {
             axios.get('/api/lang/all').then(response => {
@@ -2011,6 +2118,68 @@ export default {
                 if (response.success === true) {
                     this.getNotificationTypes();
                     this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.notification_type_deleted}`;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+
+                }
+            });
+        },
+        getTicketTypes() {
+            axios.get(`/api/ticket_types/all`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.ticketTypes = response.data
+                } else {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+                }
+            });
+        },
+        addTicketType(form) {
+            axios.post('/api/ticket_type', form).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getTicketTypes();
+                    this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.ticket_type_created}`;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+
+                }
+                return true
+            });
+        },
+        updateTicketType(form) {
+            axios.patch(`/api/ticket_type/${form.id}`, form).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getTicketTypes();
+                    this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.ticket_type_updated}`;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+
+                }
+                return true
+            });
+        },
+        deleteTicketType(id) {
+            axios.delete(`/api/ticket_type/${id}`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getTicketTypes();
+                    this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.ticket_type_deleted}`;
                     this.actionColor = 'success';
                     this.snackbar = true;
                 } else {

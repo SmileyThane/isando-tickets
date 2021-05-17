@@ -31,7 +31,7 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getCompanies" v-model="companiesSearch" :color="themeBgColor"
+                                        <v-text-field @input="debounceGetCompanies" v-model="companiesSearch" :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
@@ -128,7 +128,7 @@
                 snackbar: false,
                 actionColor: '',
                 themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+                themeBgColor: this.$store.state.themeBgColor,
                 snackbarMessage: '',
                 totalCompanies: 0,
                 lastPage: 0,
@@ -171,22 +171,27 @@ themeBgColor: this.$store.state.themeBgColor,
                 that.themeBgColor = color;
             });
         },
+        created() {
+            this.debounceGetCompanies = _.debounce(this.getCompanies, 1000);
+        },
         methods: {
             getCompanies() {
-                axios.get(`api/company?
-                    search=${this.companiesSearch}&
-                    sort_by=${this.options.sortBy[0]}&
-                    sort_val=${this.options.sortDesc[0]}&
-                    per_page=${this.options.itemsPerPage}&
-                    page=${this.options.page}`)
-                    .then(
-                        response => {
-                            response = response.data
-                            this.companies = response.data.data
-                            this.totalCompanies = response.data.total
-                            this.lastPage = response.data.last_page
-                            this.loading = false
-                        });
+                axios.get('/api/company', {
+                    params: {
+                        search: this.companiesSearch,
+                        sort_by: this.options.sortBy[0],
+                        sort_val: this.options.sortDesc[0],
+                        per_page: this.options.itemsPerPage,
+                        page: this.options.page
+                    }
+                }).then(
+                    response => {
+                        response = response.data
+                        this.companies = response.data.data
+                        this.totalCompanies = response.data.total
+                        this.lastPage = response.data.last_page
+                        this.loading = false
+                    });
             },
             showItem(item) {
                 let route = this.$store.state.roles.includes(this.clientId) ? '/customer' : '/company';

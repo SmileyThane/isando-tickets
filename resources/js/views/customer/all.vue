@@ -132,7 +132,7 @@
                 actionColor: '',
                 snackbarMessage: '',
                 themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+                themeBgColor: this.$store.state.themeBgColor,
                 totalCustomers: 0,
                 lastPage: 0,
                 loading: this.themeBgColor,

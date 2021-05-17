@@ -320,15 +320,6 @@ export default {
         this.dGetTags = _.debounce(this.getTags, 1000);
     },
     methods: {
-        checkRoleByIds(ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
-                }
-            });
-            return roleExists
-        },
         limitTo (str, count = 50) {
             if (!str) return '';
             if (String(str).length <= count) return str;

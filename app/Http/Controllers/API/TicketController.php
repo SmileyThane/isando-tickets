@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Notifications\NewTicket;
 use App\Permission;
 use App\Repositories\TicketRepository;
+use App\Company;
 use App\Team;
 use App\Ticket;
 use App\TicketCategory;
@@ -44,15 +45,62 @@ class TicketController extends Controller
 
     }
 
-    public function types()
+    public function getTypes()
     {
-        $types = TicketType::where('name', '!=', null);
+        $types = TicketType::where('name', '!=', null)
+            ->where('entity_type', Company::class)
+            ->where('entity_id', Auth::user()->employee->companyData->id);
 
         if ($companyUser = Auth::user()->employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $types->where('id', '!=', TicketType::INTERNAL);
         }
 
         return self::showResponse(true, $types->get());
+    }
+
+    public function getAllTypesInCompanyContext()
+    {
+        $types = TicketType::where('entity_type', Company::class)->where('entity_id', Auth::user()->employee->companyData->id);
+        return self::showResponse(true, $types->get());
+    }
+
+    public function createType($name, $name_de, $icon, $companyId = null): TicketType
+    {
+        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+
+        return TicketType::firstOrCreate([
+            'entity_type' => Company::class,
+            'entity_id' => $companyId,
+            'name' => $name,
+            'name_de' => $name_de,
+            'icon' => $icon
+        ]);
+    }
+
+    public function updateType($id, $name, $name_de, $icon): TicketType
+    {
+        $type = TicketType::findOrFail($id);
+        if ($id !== 1) {
+            $type->update([
+                'name' => $name,
+                'name_de' => $name_de,
+                'icon' => $icon
+            ]);
+            $type->save();
+        }
+        return $type;
+    }
+
+    public function deleteType($id): ?bool
+    {
+        try {
+            if ($id !== 1) {
+                TicketType::where('id', $id)->delete();
+            }
+            return true;
+        } catch (Throwable $throwable) {
+            return false;
+        }
     }
 
     public function find($id)
