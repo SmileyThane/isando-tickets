@@ -1569,11 +1569,6 @@ export default {
         openEditDialog(item) {
             this.editForm.id = item.id;
             this.editForm.date_from = item.date_from;
-            console.log({
-                hours: moment(item.date_to).hours(),
-                minutes: moment(item.date_to).minutes(),
-                seconds: moment(item.date_to).seconds(),
-            });
             this.editForm.date_to = item.date_to
                 ? moment(item.date_from)
                     .hours(moment(item.date_to).hours())

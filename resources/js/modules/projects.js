@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default {
     namespaced: true,
     state: {
@@ -57,7 +59,9 @@ export default {
                 }
             })
             clients = clients.map(client => {
-                client.projects = projects.filter(i => i.client.id === client.id).sort((a,b) => b.is_favorite - a.is_favorite);
+                client.projects = projects.filter(i => i.client.id === client.id)
+                    .sort((a,b) => a.name.toLowerCase() - b.name.toLowerCase())
+                    .sort((a,b) => b.is_favorite - a.is_favorite);
                 return client;
             })
             state.treeProjects = clients
@@ -68,7 +72,7 @@ export default {
     },
     getters: {
         getProjects(state) {
-            return state.projects
+            return _.sortBy(_.sortBy(state.projects, ['name']), item => !item.is_favorite);
         },
         getTreeProjects(state) {
             return state.treeProjects

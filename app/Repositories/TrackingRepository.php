@@ -120,8 +120,7 @@ class TrackingRepository
             $tracking = Tracking::SimpleUser();
         }
 
-
-        return $tracking
+        $tracking
             ->where(function($query) {
                 $query->where('status', '!=', Tracking::$STATUS_ARCHIVED)
                     ->orWhereNull('status');
@@ -132,8 +131,9 @@ class TrackingRepository
             ])
             ->with('Tags.Translates')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
-            ->orderBy('id', 'desc')
-            ->get();
+            ->orderBy('id', 'desc');
+
+        return $tracking->get();
     }
 
     public function find($id)

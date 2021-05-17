@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default {
     namespaced: true,
     state: {
@@ -58,7 +60,9 @@ export default {
     },
     getters: {
         getCoworkers(state) {
-            return state.coworkers
+            return _.sortBy(state.coworkers, item => {
+                return item.full_name.toLowerCase();
+            });
         },
         getTeams(state) {
             return state.teams
