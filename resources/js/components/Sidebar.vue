@@ -418,6 +418,7 @@
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
+                    v-if="$helpers.auth.checkPermissionByIds([13, 28, 31])"
                     prepend-icon="mdi-cog"
 
                 >
