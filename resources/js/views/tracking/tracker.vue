@@ -444,7 +444,7 @@
                                         <tr v-for="row in props.items">
                                             <td class="pa-3" v-if="hasPermission([42])">
                                                 <v-avatar
-                                                    :style="{ backgroundColor: getUserColor(row.user.id) }"
+                                                    :color="getUserColor(row.user.id)"
                                                 >
                                                     <v-tooltip top>
                                                         <template v-slot:activator="{ on, attrs }">
@@ -1257,10 +1257,12 @@ export default {
         },
         getUserColor(userId) {
             const foundItem = this.teamEmployee.find(i => i.id === userId);
+            console.log(userId, foundItem);
             if (foundItem) {
                 return foundItem.color;
+            } else {
+                return this.$helpers.color.genRandomColor();
             }
-            return this.$helpers.color.genRandomColor();
         },
         correctionTime(dateFrom, dateTo) {
             if (moment(dateTo).isBefore(moment(dateFrom))) {
@@ -1316,11 +1318,11 @@ export default {
             return moment(this.dateRange.end).format('DD/MM/YYYY');
         },
         teamEmployee () {
+            let empl = [];
             if (this.hasPermission([90])) {
-                return this.$store.getters['Team/getCoworkers'];
+                empl = this.$store.getters['Team/getCoworkers'];
             }
             if (this.hasPermission([42])) {
-                const empl = [];
                 this.$store.getters['Team/getManagedTeams'].map(team => {
                     team.employees.map(e => {
                         empl.push({
@@ -1338,7 +1340,7 @@ export default {
                     return item.full_name.toLowerCase();
                 });
             }
-            return [];
+            return empl.map(e => ({ ...e, color: this.$helpers.color.genRandomColor() }));
         },
         manualFormattedDate: {
             get() {
