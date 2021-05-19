@@ -2192,7 +2192,7 @@ export default {
         },
         resetPassword(item) {
             axios.post('/api/reset_password', {
-                email: item.email
+                email: item.user_data.email
             }).then(response => {
                 response = response.data
                 if (response.success === true) {
