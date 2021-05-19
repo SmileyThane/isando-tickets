@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Role extends Model
 {
     public const SUPERADMIN = 1;
-    public const LICENSE_OWNER = 2;
+    public const CO_ADMIN = 2;
     public const ADMIN = 3;
     public const MANAGER = 4;
     public const USER = 5;
@@ -16,7 +16,7 @@ class Role extends Model
     public const IS_CLIENTABLE = 101;
 
     //staff
-    public const HIGH_PRIVIGIES = [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER];
+    public const HIGH_PRIVIGIES = [Role::CO_ADMIN, Role::ADMIN, Role::MANAGER];
 
     // this is a virtual role
     protected $table = 'roles';

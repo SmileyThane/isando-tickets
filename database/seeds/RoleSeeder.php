@@ -22,7 +22,7 @@ class RoleSeeder extends Seeder
         DB::table('roles')->updateOrInsert(
             ['id' => 2],
             [
-                'name' => 'license_owner',
+                'name' => 'company_admin',
                 'guard_name' => 'web'
             ]
         );

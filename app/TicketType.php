@@ -9,18 +9,5 @@ class TicketType extends Model
 {
     const INTERNAL = 4;
 
-    protected $langId;
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-        $this->langId = Auth::user() ? Auth::user()->language_id : 1;
-    }
-
-    public function getNameAttribute()
-    {
-        $translationsArray = Language::find($this->langId)->lang_map;
-        $name = $this->attributes['name'];
-        return $translationsArray->ticket_types->$name ?? $this->attributes['name'];
-    }
+    protected $fillable = ['name', 'name_de', 'icon', 'entity_id', 'entity_type'];
 }

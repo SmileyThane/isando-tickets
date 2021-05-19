@@ -77,15 +77,6 @@ export default {
         this.getArticle();
     },
     methods: {
-        checkRoleByIds(ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
-                }
-            });
-            return roleExists
-        },
         invertColor(hex) {
             return this.$helpers.color.invertColor(hex);
         },

@@ -24,8 +24,10 @@ class CompanyUser extends Model
         $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
         foreach ($roles as $key => $role) {
             $roleName = $role->name;
-            $result .= $translationsArray->roles->$roleName;
-            $result .= $key !== count($roles) - 1 ? ', ' : '';
+            if (property_exists($translationsArray->roles, $roleName)) {
+                $result .= $translationsArray->roles->$roleName;
+                $result .= $key !== count($roles) - 1 ? ', ' : '';
+            }
         }
         return $result ?? $translationsArray->roles->contact;
     }

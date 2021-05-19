@@ -84,7 +84,7 @@ class AuthController extends Controller
                 $request->password = Controller::getRandomString();
                 $user = $this->userRepo->create($request);
                 $companyUser = $this->companyUserRepo->create($company->id, $user->id, false);
-                $this->roleRepo->attach($companyUser->id, CompanyUser::class, Role::LICENSE_OWNER);
+                $this->roleRepo->attach($companyUser->id, CompanyUser::class, Role::CO_ADMIN);
                 $this->userRepo->sendInvite($user, true, $request->password);
                 return self::showResponse(true);
             }

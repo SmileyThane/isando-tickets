@@ -48,6 +48,7 @@
                             </v-btn>
                         </template>
                         <v-date-picker
+                            first-day-of-week="1"
                             v-model="date"
                             :min="min"
                             @input="calendarMenu = false; setTimeHandler()"

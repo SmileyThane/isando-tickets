@@ -159,7 +159,11 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('ticket/{id}/answer', 'API\TicketController@addAnswer');
         Route::post('ticket/{id}/notice', 'API\TicketController@addNotice');
         Route::get('ticket_priorities', 'API\TicketController@priorities');
-        Route::get('ticket_types', 'API\TicketController@types');
+        Route::get('ticket_types', 'API\TicketController@getTypes');
+        Route::get('ticket_types/all', 'API\TicketController@getAllTypesInCompanyContext');
+        Route::post('ticket_type', 'API\TicketController@addType');
+        Route::patch('ticket_type/{id}', 'API\TicketController@updateType');
+        Route::delete('ticket_type/{id}', 'API\TicketController@deleteType');
         Route::get('ticket_categories', 'API\TicketController@categories');
         Route::post('merge/ticket', 'API\TicketController@addMerge');
         Route::delete('merge/ticket/{id}', 'API\TicketController@removeMerge');
