@@ -360,7 +360,7 @@ class LanguageSeeder extends Seeder
                     'roles' =>
                         [
                             'superadmin' => 'Superadmin',
-                            'license_owner' => 'License owner',
+                            'company_admin' => 'Company admin',
                             'ticketing_admin' => 'Ticketing admin',
                             'company_admin_tracking' => 'Time tracking admin',
                             'team_manager_tracking' => 'Time tracking team manager',
@@ -1252,7 +1252,7 @@ class LanguageSeeder extends Seeder
                         ],
                         'roles' => [
                             'superadmin' => 'Superadmin',
-                            'license_owner' => 'Lizenzinhaber',
+                            'company_admin' => 'Lizenzinhaber',
                             'ticketing_admin' => 'Admin',
                             'company_admin_tracking' => 'Time tracking admin',
                             'team_manager_tracking' => 'Time tracking team manager',
