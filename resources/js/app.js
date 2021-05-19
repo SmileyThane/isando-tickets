@@ -19,7 +19,8 @@ Vue.use(PerfectScrollbar)
 Vue.use(Vuetify)
 Vue.use(VueRouter)
 Vue.use(VCalendar, {
-    componentPrefix: 'vc'
+    componentPrefix: 'vc',
+    firstDayOfWeek: 2,  // Monday
 })
 Vue.prototype.moment = moment
 Vue.use({

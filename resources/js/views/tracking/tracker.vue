@@ -233,6 +233,7 @@
                                     ></v-text-field>
                                 </template>
                                 <v-date-picker
+                                    first-day-of-week="1"
                                     dense
                                     v-model="manualFormattedDate"
                                     @input="createDatePicker = false"
@@ -676,6 +677,7 @@
                                                         </v-btn>
                                                     </template>
                                                     <v-date-picker
+                                                        first-day-of-week="1"
                                                         :disabled="!isEditable(row)"
                                                         dense
                                                         v-model="row.date"

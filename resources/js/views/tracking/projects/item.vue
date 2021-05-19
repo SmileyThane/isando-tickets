@@ -301,6 +301,7 @@
                                                                 </v-text-field>
                                                             </template>
                                                             <v-date-picker
+                                                                first-day-of-week="1"
                                                                 :min="moment().add(1, 'days').format('YYYY-MM-DD')"
                                                                 v-model="project.rate_from_date"
                                                                 @input="rateFromMenu = false"
