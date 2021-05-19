@@ -317,6 +317,9 @@ class TrackingRepository
         if ($tracking->user_id === Auth::user()->id) {
             $newTracking = $tracking->replicate();
             $newTracking->save();
+            if ($tracking->service) {
+                $newTracking->Services()->attach($tracking->service->id);
+            }
             TrackingTimesheetRepository::recalculate($tracking);
             $this->logTracking($tracking->id, TrackingLogger::DUPLICATE, $tracking, $newTracking);
             return $newTracking;
