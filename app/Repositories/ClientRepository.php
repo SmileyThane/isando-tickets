@@ -124,10 +124,15 @@ class ClientRepository
         $suppliers[] = ['name' => $company->name, 'item' => [Company::class => $companyId]];
         if (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $childClientIds = $this->getRecursiveChildClientIds($company->clients);
-            $clients = Client::whereIn('id', $childClientIds)->get();
+            $clients = Client::query()->whereIn('id', $childClientIds)
+                ->orderBy('name', 'asc')
+                ->get();
         } else {
-            $clientsArray = ClientCompanyUser::where('company_user_id', $employee->id)->first()->clients();
-            $clients = $clientsArray->paginate($clientsArray->count());
+            $clientsArray = ClientCompanyUser::query()->where('company_user_id', $employee->id)->first()->clients();
+            $clients = $clientsArray
+                ->orderBy('name', 'asc')
+                ->paginate($clientsArray->count());
+
         }
         foreach ($clients as $client) {
             $suppliers[] = ['name' => $client->name, 'item' => [Client::class => $client->id]];
