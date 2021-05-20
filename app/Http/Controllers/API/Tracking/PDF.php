@@ -179,7 +179,11 @@ class PDF extends FPDF {
         $this->Cell(array_sum($w),0,'','T');
     }
 
+    // Rubber table
     public function EasyTable(Array $headers, Array $data) {
+        foreach ($headers as $key => $header) {
+            $headers[$key]['text'] = $this->fixCharacters($header['text']);
+        }
         $columnWidths = '%{' . implode(',', collect($headers)->map(function($item) {return $item['width'];})->toArray()) . '}';
         try {
             $table = new \easyTable($this, $columnWidths, 'width:100%;border:0;font-size:8');
@@ -191,7 +195,7 @@ class PDF extends FPDF {
 
             foreach($data as $keyRow => $row) {
                 foreach ($row as $keyColumn => $column) {
-                    $table->easyCell($column, 'border:B;border-width:0.1');
+                    $table->easyCell($this->fixCharacters($column), 'border:B;border-width:0.1');
                 }
                 $table->printRow(false);
             }
@@ -408,5 +412,14 @@ class PDF extends FPDF {
             $this->ws = 0;
             $this->_out('0 Tw');
         }
+    }
+
+    private function fixCharacters($text) {
+        return iconv('utf-8', 'windows-1252', $text);
+    }
+
+    function Write($h, $txt, $link='') {
+        $txt = $this->fixCharacters($txt);
+        parent::Write($h, $txt, $link);
     }
 }
