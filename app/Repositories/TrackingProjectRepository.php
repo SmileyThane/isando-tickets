@@ -23,8 +23,8 @@ class TrackingProjectRepository
     {
         $params = [
             'name' => 'required',
-            'productId' => 'required_without:product.id|exists:App\Product,id',
-            'product.id' => 'required_without:productId|exists:App\Product,id',
+//            'productId' => 'required_without:product.id|exists:App\Product,id',
+//            'product.id' => 'required_without:productId|exists:App\Product,id',
             'clientId' => 'required_without:client.id|exists:App\Client,id',
             'client.id' => 'required_without:clientId|exists:App\Client,id',
             'color' => 'required|string',
@@ -44,7 +44,7 @@ class TrackingProjectRepository
     {
         $trackingProjects = collect([]);
         if (Auth::user()->employee->getPermissionIds(54, 55)) {
-            $trackingProjects = TrackingProject::query();
+            $trackingProjects = TrackingProject::with('Team');
             if (Auth::user()->employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
                 $assignedClientIds = [];
                 $assignedProductIds = [];
@@ -110,7 +110,7 @@ class TrackingProjectRepository
 
     public function find($id)
     {
-        return TrackingProject::where('id', $id)->with('client', 'product')->first();
+        return TrackingProject::where('id', $id)->with('client', 'product', 'team')->first();
     }
 
     public function create(Request $request)
@@ -124,10 +124,7 @@ class TrackingProjectRepository
         $trackingProject->client_id = $request->client['id'] ?? $request->clientId;
         $trackingProject->color = $request->color ?? $this->genHexColor();
         $trackingProject->company_id = Auth::user()->employee->companyData->id;
-        $team = Team::whereHas('employees', function ($query) {
-            return $query->where('company_user_id', '=', Auth::user()->employee->id);
-        })->first();
-        $trackingProject->team_id = $team ? $team->id : null;
+        $trackingProject->team_id = $request->team['id'] ?? $request->teamId;
         if ($request->has('billableByDefault')) {
             $trackingProject->billable_by_default = $request->billable_by_default;
         }
@@ -163,6 +160,9 @@ class TrackingProjectRepository
         }
         if ($request->has('client')) {
             $trackingProject->client_id = $request->client['id'];
+        }
+        if ($request->has('team')) {
+            $trackingProject->team_id = $request->team['id'];
         }
         if ($request->has('color')) {
             $trackingProject->color = $request->color;

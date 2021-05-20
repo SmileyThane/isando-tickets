@@ -124,7 +124,7 @@
                             <v-text-field
                                 :color="themeBgColor"
                                 :item-color="themeBgColor"
-                                :label="langMap.tracking.create_project.name"
+                                :label="langMap.tracking.create_project.name + '*'"
                                 v-model="project.name"
                             ></v-text-field>
                             <v-select
@@ -138,8 +138,15 @@
                                 :items="$store.getters['Clients/getClients']"
                                 item-text="name"
                                 item-value="id"
-                                :label="langMap.tracking.create_project.client"
+                                :label="langMap.tracking.create_project.client + '*'"
                                 v-model="project.clientId"
+                            ></v-select>
+                            <v-select
+                                :items="getTeams"
+                                item-text="name"
+                                item-value="id"
+                                :label="langMap.tracking.create_project.team"
+                                v-model="project.teamId"
                             ></v-select>
                             <v-text-field v-model="project.color" hide-details class="ma-0 pa-0" solo>
                                 <template v-slot:append>
@@ -212,6 +219,7 @@ export default {
             headers: [
                 {text: `${this.$store.state.lang.lang_map.tracking.name}`, value: 'name'},
                 {text: `${this.$store.state.lang.lang_map.tracking.client}`, value: 'client.name'},
+                {text: `${this.$store.state.lang.lang_map.tracking.team}`, value: 'team.name'},
                 {text: ``, value: 'is_favorite'},
                 {text: `${this.$store.state.lang.lang_map.tracking.tracked}`, value: 'tracked'},
                 {text: `${this.$store.state.lang.lang_map.tracking.revenue}`, value: 'revenue'},
@@ -221,6 +229,8 @@ export default {
                 name: '',
                 clientId: null,
                 client: null,
+                teamId: null,
+                team: null,
                 productId: null,
                 product: null,
                 color: this.$helpers.color.genRandomColor()
@@ -233,6 +243,7 @@ export default {
         this.debounceGetProducts = _.debounce(this.__getProducts, 1000);
         this.debounceGetClients = _.debounce(this.__getClients, 1000);
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
+        this.debounceGetTeams = _.debounce(this.__getTeams, 1000);
         this.options.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking') ?? 10;
         this.footerProps.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking') ?? 10;
     },
@@ -240,6 +251,7 @@ export default {
         this.debounceGetProducts();
         this.debounceGetClients();
         this.debounceGetSettings();
+        this.debounceGetTeams();
         let self = this;
         EventBus.$on('update-theme-color', function (color) {
             self.themeBgColor = color;
@@ -274,6 +286,15 @@ export default {
         __getClients() {
             this.$store.dispatch('Clients/getClientList', {});
         },
+        __getTeams() {
+            this.$store.dispatch('Team/getTeams', {
+                search: null,
+                sort_by: 'id',
+                sort_val: false,
+                per_page: 500,
+                page: 1,
+            });
+        },
         __getProducts() {
             this.$store.dispatch('Products/getProductList', {});
         },
@@ -294,6 +315,7 @@ export default {
             this.project = {
                 name: '',
                 clientId: null,
+                teamId: null,
                 color: '#000000'
             };
             this.dialog = false;
@@ -329,6 +351,10 @@ export default {
         clientId: function () {
             const index = this.$store.getters['Clients/getClients'].findIndex(i => i.id === this.clientId);
             this.client = this.$store.getters['Clients/getClients'][index];
+        },
+        teamId: function () {
+            const index = this.$store.getters['Team/getTeams'].findIndex(i => i.id === this.teamId);
+            this.team = this.$store.getters['Team/getTeams'][index];
         }
     },
     computed: {
@@ -346,7 +372,13 @@ export default {
         currentCurrency() {
             const settings = this.$store.getters['Tracking/getSettings'];
             return settings.currency ?? null;
-        }
+        },
+        getTeams() {
+            if (this.$store.getters['Team/getTeams'] && this.$store.getters['Team/getTeams'].data) {
+                return this.$store.getters['Team/getTeams'].data;
+            }
+            return [];
+        },
     }
 }
 </script>

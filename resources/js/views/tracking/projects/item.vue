@@ -116,6 +116,29 @@
                             </v-row>
                             <v-row>
                                 <v-col cols="2" lg="1">
+                                    <v-subheader class="float-right">Team</v-subheader>
+                                </v-col>
+                                <v-col cols="10" lg="4" md="6">
+                                    <template>
+                                        <v-autocomplete
+                                            v-if="$helpers.auth.checkPermissionByIds([57])"
+                                            v-model="project.team"
+                                            :items="getFilteredTeams"
+                                            :loading="isLoadingSearchTeam"
+                                            :search-input.sync="searchTeam"
+                                            color="white"
+                                            item-text="name"
+                                            item-value="id"
+                                            placeholder="Start typing to Search"
+                                            return-object
+                                            @change="actionSave()"
+                                        ></v-autocomplete>
+                                        <div class="mt-3" v-else>{{project.team.name}}</div>
+                                    </template>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="2" lg="1">
                                     <v-subheader class="float-right">Color</v-subheader>
                                 </v-col>
                                 <v-col cols="10" lg="4" md="6">
@@ -387,6 +410,8 @@ export default {
             clients: [],
             isLoadingSearchClient: false,
             searchClient: null,
+            isLoadingSearchTeam: false,
+            searchTeam: null,
             nameLimit: 255
         }
     },
@@ -440,6 +465,17 @@ export default {
                 })
                 .finally(() => (this.isLoadingSearchClient = false));
         },
+        __getTeams() {
+            if (this.isLoadingSearchTeam) return;
+            this.isLoadingSearchTeam = true;
+            this.$store.dispatch('Team/getTeams', {
+                search: null,
+                sort_by: 'id',
+                sort_val: false,
+                per_page: 500,
+                page: 1,
+            });
+        },
         __updateProjectById(projectId, data) {
             axios.patch(`/api/tracking/projects/${projectId}`, data)
                 .then(({ data }) => {
@@ -464,6 +500,9 @@ export default {
         },
         searchClient () {
             this.__getClients();
+        },
+        searchTeam () {
+            this.__getTeams();
         }
     },
     computed: {
@@ -495,6 +534,18 @@ export default {
 
                 return Object.assign({}, entry, { name })
             })
+        },
+        getFilteredTeams() {
+            if (this.$store.getters['Team/getTeams'] && this.$store.getters['Team/getTeams'].data) {
+                return this.$store.getters['Team/getTeams'].data.map(entry => {
+                    const name = entry.name.length > this.nameLimit
+                        ? entry.name.slice(0, this.nameLimit) + '...'
+                        : entry.name
+
+                    return Object.assign({}, entry, { name })
+                });
+            }
+            return [];
         },
         currentCurrency () {
             const settings = this.$store.getters['Tracking/getSettings'];

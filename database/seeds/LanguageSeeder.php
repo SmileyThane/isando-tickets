@@ -66,6 +66,7 @@ class LanguageSeeder extends Seeder
                         [
                             'name' => 'Name',
                             'client' => 'Client',
+                            'team' => 'Team',
                             'tracked' => 'Tracked',
                             'revenue' => 'Revenue',
                             'progress' => 'Progress',
@@ -77,6 +78,7 @@ class LanguageSeeder extends Seeder
                                     'modal_title' => 'Create new project',
                                     'name' => 'Project name',
                                     'client' => 'Client',
+                                    'team' => 'Team',
                                     'cancel' => 'Cancel',
                                     'create' => 'Create',
                                     'product' => 'Product',
@@ -162,6 +164,7 @@ class LanguageSeeder extends Seeder
                             'project_btn' => [
                                 'project' => 'Project',
                                 'ticket' => 'Ticket',
+                                'team' => 'Team',
                                 'project_or_ticket' => 'Project/Ticket',
                                 'choose_project' => 'Choose project',
                                 'choose_ticket' => 'Choose ticket',
@@ -963,6 +966,7 @@ class LanguageSeeder extends Seeder
                         'tracking' => [
                             'name' => 'Name',
                             'client' => 'Kunde',
+                            'team' => 'Mannschaft',
                             'tracked' => 'Erfasste Zeit',
                             'revenue' => 'Umsatz',
                             'progress' => 'Progress',
@@ -975,6 +979,7 @@ class LanguageSeeder extends Seeder
                                 'modal_title' => 'Neues Projekt erstellen',
                                 'name' => 'Projektname',
                                 'client' => 'Kunde',
+                                'team' => 'Mannschaft',
                                 'cancel' => 'Stornieren',
                                 'create' => 'Erstellen',
                                 'product' => 'Produkt',
@@ -1060,6 +1065,7 @@ class LanguageSeeder extends Seeder
                             'project_btn' => [
                                 'project' => 'Projekt',
                                 'ticket' => 'Ticket',
+                                'team' => 'Mannschaft',
                                 'project_or_ticket' => 'Projekt/Ticket',
                                 'choose_project' => 'Projekt wählen',
                                 'choose_ticket' => 'Ticket wählen',
