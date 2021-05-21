@@ -373,6 +373,78 @@
 
                 <v-card class="elevation-12">
                     <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.client_number_format }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateCompanySettings">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompanySettings">
+                            {{ langMap.main.update }}
+                        </v-btn>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-checkbox
+                                        :color="themeBgColor"
+                                        :readonly="!enableToEdit"
+                                        :label="langMap.system_settings.client_number_automatic"
+                                        value="1"
+                                        v-model="companyNumberFormat.auto"
+                                        @change="updateEmployeeNumber()"
+                                    >
+                                    </v-checkbox>
+                                    <p>{{ langMap.system_settings.client_number_automatic_hint }}</p>
+
+                                </v-col>
+                                <v-col class="col-md-4">
+                                    <v-text-field
+                                        v-model.trim="companyNumberFormat.prefix"
+                                        :color="themeBgColor"
+                                        :label="langMap.system_settings.client_number_format_prefix"
+                                        :readonly="!enableToEdit || companyNumberFormat.auto !== '1'"
+                                        counter="6"
+                                        dense
+                                        maxlength="6"
+                                        @change="updateEmployeeNumber()"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col class="col-md-4">
+                                    <v-text-field
+                                        v-model.number="companyNumberFormat.start"
+                                        :color="themeBgColor"
+                                        :label="langMap.system_settings.client_number_format_start"
+                                        :readonly="!enableToEdit || companyNumberFormat.auto !== '1'"
+                                        dense
+                                        @change="updateEmployeeNumber()"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                                <v-col class="col-md-4">
+                                    <v-text-field
+                                        v-model.number="companyNumberFormat.size"
+                                        :color="themeBgColor"
+                                        :label="langMap.system_settings.client_number_format_size"
+                                        :readonly="!enableToEdit || companyNumberFormat.auto !== '1'"
+                                        dense
+                                        @change="updateEmployeeNumber()"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                            </v-row>
+                            <p>{{ langMap.system_settings.client_number_example }}
+                                <strong>{{ employeeNumber }}</strong></p>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
                         <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.currencies }}</v-toolbar-title>
                     </v-toolbar>
 
@@ -1549,6 +1621,12 @@ export default {
                 size: 8,
                 start: 50000
             },
+            companyNumberFormat: {
+                auto: false,
+                prefix: '',
+                size: 8,
+                start: 50000
+            },
             employeeNumber: '',
             headers: {
                 tags: [
@@ -2241,6 +2319,14 @@ export default {
                             this.employeeNumberFormat[pos[i]] = fmt[i];
                         }
                     }
+
+                    for (let i = 0; i < fmt.length; i++) {
+                        if (typeof fmt[i] === 'string') {
+                            this.companyNumberFormat[pos[i]] = fmt[i].toLocaleUpperCase();
+                        } else {
+                            this.companyNumberFormat[pos[i]] = fmt[i];
+                        }
+                    }
                     this.updateTicketNumber();
                     this.updateEmployeeNumber();
                 }
@@ -2279,6 +2365,9 @@ export default {
 
             this.companySettings.employee_number_format = this.employeeNumberFormat.auto + '｜' + this.employeeNumberFormat.prefix.toLocaleUpperCase() + '｜' +
                 this.employeeNumberFormat.start + '｜' + this.employeeNumberFormat.size;
+
+            this.companySettings.company_number_format = this.companyNumberFormat.auto + '｜' + this.companyNumberFormat.prefix.toLocaleUpperCase() + '｜' +
+                this.companyNumberFormat.start + '｜' + this.companyNumberFormat.size;
 
             this.updateCompany();
 
@@ -2323,6 +2412,17 @@ export default {
             }
 
             this.employeeNumber = this.employeeNumberFormat.prefix.toLocaleUpperCase() + (this.employeeNumberFormat.start + 1).toString().padStart(this.employeeNumberFormat.size, '0');
+        },
+        updateCompanyNumber() {
+            if (this.companyNumberFormat.start < 1) {
+                this.companyNumberFormat.start = 1;
+            }
+
+            if (this.companyNumberFormat.size < 1) {
+                this.companyNumberFormat.size = 1;
+            }
+
+            this.employeeNumber = this.companyNumberFormat.prefix.toLocaleUpperCase() + (this.companyNumberFormat.start + 1).toString().padStart(this.companyNumberFormat.size, '0');
         },
         setThemeFgColor() {
             if (this.autoFgColor) {
