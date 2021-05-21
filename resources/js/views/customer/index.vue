@@ -32,6 +32,7 @@
                                                     name="company_name"
                                                     type="text"
                                                     v-model="clientForm.client_name"
+                                                    :error-messages="errors.name"
                                                     required
                                                 ></v-text-field>
                                             </div>
@@ -43,6 +44,7 @@
                                                     type="text"
                                                     prepend-icon="mdi-numeric"
                                                     v-model="clientForm.number"
+                                                    :error-messages="errors.number"
                                                 ></v-text-field>
                                             </div>
                                             <div class="col-md-5">
@@ -52,6 +54,7 @@
                                                     name="company_description"
                                                     type="text"
                                                     v-model="clientForm.client_description"
+                                                    :error-messages="errors.description"
                                                     required
                                                 ></v-text-field>
                                             </div>
@@ -267,7 +270,8 @@
                     supplier_type: '',
                     supplier_id: ''
                 },
-                suppliers: []
+                suppliers: [],
+                errors: {}
             }
         },
         created() {
@@ -324,6 +328,7 @@
                         this.getSuppliers()
                         this.clientForm = {}
                     } else {
+                        this.errors = response.error
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;
