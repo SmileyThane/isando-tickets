@@ -4,9 +4,10 @@
 namespace App\Repositories;
 
 use App\Client;
+use App\EmployeeLimitationGroup;
 use App\LimitationGroup;
 use App\LimitationGroupHasModel;
-use App\EmployeeLimitationGroup;
+use App\LimitationType;
 use Illuminate\Support\Facades\Auth;
 
 class LimitationGroupRepository
@@ -90,5 +91,27 @@ class LimitationGroupRepository
                 $query->where('model', $model);
             }
         )->get();
+    }
+
+    public function limitationAutoAssignProcess($entity): bool
+    {
+        $type = LimitationType::query()->where('model', 'App\\'.class_basename($entity))->first();
+        if ($type) {
+            $limitationGroups = LimitationGroup::query()
+                ->where('is_auto_assign_new_entities', true)
+                ->where('limitation_type_id', $type->id)
+                ->where('company_id', Auth::user()->employee->company_id)
+                ->get();
+            $insertion = [];
+            foreach ($limitationGroups as $key => $limitationGroup) {
+                $insertion[$key]['model_id'] = $entity->id;
+                $insertion[$key]['model_type'] = $type->model;
+                $insertion[$key]['limitation_group_id'] = $limitationGroup->id;
+
+            }
+            LimitationGroupHasModel::query()->insert($insertion);
+        }
+
+        return true;
     }
 }
