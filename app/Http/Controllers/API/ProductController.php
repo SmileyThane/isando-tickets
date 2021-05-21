@@ -41,7 +41,7 @@ class ProductController extends Controller
         $isValid = $this->productRepo->validate($request);
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS);
 
-        if ($isValid && $hasAccess) {
+        if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->productRepo->create($request));
         }
 
@@ -53,7 +53,7 @@ class ProductController extends Controller
         $isValid = $this->productRepo->validate($request);
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS);
 
-        if ($isValid && $hasAccess) {
+        if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->productRepo->update($request, $id));
         }
 
