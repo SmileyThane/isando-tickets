@@ -50,7 +50,7 @@ class TeamController extends Controller
         $isValid = $this->teamRepo->validate($request);
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TEAM_WRITE_ACCESS);
 
-        if ($isValid && $hasAccess) {
+        if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->teamRepo->create($request));
         }
 
@@ -62,7 +62,7 @@ class TeamController extends Controller
         $isValid = $this->teamRepo->validate($request, false);
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TEAM_WRITE_ACCESS);
 
-        if ($isValid && $hasAccess) {
+        if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->teamRepo->update($request, $id));
         }
 

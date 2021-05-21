@@ -66,6 +66,7 @@ class LanguageSeeder extends Seeder
                         [
                             'name' => 'Name',
                             'client' => 'Client',
+                            'team' => 'Team',
                             'tracked' => 'Tracked',
                             'revenue' => 'Revenue',
                             'progress' => 'Progress',
@@ -77,6 +78,7 @@ class LanguageSeeder extends Seeder
                                     'modal_title' => 'Create new project',
                                     'name' => 'Project name',
                                     'client' => 'Client',
+                                    'team' => 'Team',
                                     'cancel' => 'Cancel',
                                     'create' => 'Create',
                                     'product' => 'Product',
@@ -162,6 +164,7 @@ class LanguageSeeder extends Seeder
                             'project_btn' => [
                                 'project' => 'Project',
                                 'ticket' => 'Ticket',
+                                'team' => 'Team',
                                 'project_or_ticket' => 'Project/Ticket',
                                 'choose_project' => 'Choose project',
                                 'choose_ticket' => 'Choose ticket',
@@ -775,6 +778,13 @@ class LanguageSeeder extends Seeder
                             'employee_number_format_start' => 'Start number',
                             'employee_number_format_size' => 'Digits count',
                             'employee_number_example' => 'Example: ',
+                            'client_number_format' => 'Client number format',
+                            'client_number_automatic' => 'Generate client number automatic',
+                            'client_number_automatic_hint' => 'Client number will be generated automatically using the rules below',
+                            'client_number_format_prefix' => 'Prefix',
+                            'client_number_format_start' => 'Start number',
+                            'client_number_format_size' => 'Digits count',
+                            'client_number_example' => 'Example: ',
                         ],
                     'profile' =>
                         [
@@ -963,6 +973,7 @@ class LanguageSeeder extends Seeder
                         'tracking' => [
                             'name' => 'Name',
                             'client' => 'Kunde',
+                            'team' => 'Mannschaft',
                             'tracked' => 'Erfasste Zeit',
                             'revenue' => 'Umsatz',
                             'progress' => 'Progress',
@@ -975,6 +986,7 @@ class LanguageSeeder extends Seeder
                                 'modal_title' => 'Neues Projekt erstellen',
                                 'name' => 'Projektname',
                                 'client' => 'Kunde',
+                                'team' => 'Mannschaft',
                                 'cancel' => 'Stornieren',
                                 'create' => 'Erstellen',
                                 'product' => 'Produkt',
@@ -1060,6 +1072,7 @@ class LanguageSeeder extends Seeder
                             'project_btn' => [
                                 'project' => 'Projekt',
                                 'ticket' => 'Ticket',
+                                'team' => 'Mannschaft',
                                 'project_or_ticket' => 'Projekt/Ticket',
                                 'choose_project' => 'Projekt wählen',
                                 'choose_ticket' => 'Ticket wählen',
@@ -1648,6 +1661,13 @@ class LanguageSeeder extends Seeder
                             'employee_number_format_start' => 'Startnummer',
                             'employee_number_format_size' => 'Ziffern zählen',
                             'employee_number_example' => 'Beispiel: ',
+                            'client_number_format' => 'Format der Mitarbeiternummer',
+                            'client_number_automatic' => 'Generieren Sie automatisch eine Mitarbeiternummer',
+                            'client_number_automatic_hint' => 'Die Mitarbeiternummer wird automatisch nach den folgenden Regeln generiert',
+                            'client_number_format_prefix' => 'Präfix',
+                            'client_number_format_start' => 'Startnummer',
+                            'client_number_format_size' => 'Ziffern zählen',
+                            'client_number_example' => 'Beispiel: ',
                         ],
                         'profile' => [
                             'user_theme_colors' => 'Persönliche Themenfarben',

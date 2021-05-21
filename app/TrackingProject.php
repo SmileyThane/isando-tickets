@@ -30,6 +30,10 @@ class TrackingProject extends Model
         return $this->hasOne('App\Client', 'id', 'client_id');
     }
 
+    public function Team() {
+        return $this->hasOne('App\Team', 'id', 'team_id');
+    }
+
     public function Trackers() {
         return $this->morphMany('App\Tracking', 'entity')
             ->where('status', '<>', Tracking::$STATUS_ARCHIVED);

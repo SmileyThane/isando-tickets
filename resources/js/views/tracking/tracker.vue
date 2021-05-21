@@ -967,6 +967,7 @@ export default {
         this.$store.dispatch('Tickets/getTicketList', { search: null });
         this.$store.dispatch('Team/getManagedTeams', { withEmployee: true });
         this.$store.dispatch('Team/getCoworkers', { search: null });
+        this.$store.dispatch('Team/getTeams', { search: null });
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1257,7 +1258,6 @@ export default {
         },
         getUserColor(userId) {
             const foundItem = this.teamEmployee.find(i => i.id === userId);
-            console.log(userId, foundItem);
             if (foundItem) {
                 return foundItem.color;
             } else {

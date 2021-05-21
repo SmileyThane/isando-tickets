@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Permission;
 use App\Repositories\ClientRepository;
 use App\Repositories\CompanyUserRepository;
+use App\Repositories\LimitationGroupRepository;
 use App\Repositories\UserRepository;
 use App\Role;
 use App\RoleHasPermission;
@@ -84,12 +85,13 @@ class ClientController extends Controller
     {
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
         $isValid = $this->clientRepo->validate($request);
-
-        if ($isValid && $hasAccess) {
-            return self::showResponse(true, $this->clientRepo->create($request));
+        if ($isValid === true && $hasAccess) {
+            $client = $this->clientRepo->create($request);
+            (new LimitationGroupRepository())->limitationAutoAssignProcess($client);
+            return self::showResponse(true, $client);
         }
 
-        return self::showResponse(true);
+        return self::showResponse(false, $isValid);
     }
 
     public function update(Request $request, $id)
@@ -97,7 +99,7 @@ class ClientController extends Controller
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
         $isValid = $this->clientRepo->validate($request, false);
 
-        if ($isValid && $hasAccess) {
+        if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->clientRepo->update($request, $id));
         }
 

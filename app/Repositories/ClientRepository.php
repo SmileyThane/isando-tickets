@@ -24,16 +24,17 @@ class ClientRepository
     {
         $params = [
             'client_name' => 'required',
+            'number' => 'unique:clients',
             // 'client_description' => 'required',
         ];
         if ($new === true) {
             $params['supplier_type'] = 'required';
             $params['supplier_id'] = [
                 'required',
-                Rule::unique('clients')->where(function ($query) use ($request) {
-                    return $query->where('name', $request['client_name'])
-                        ->where('supplier_type', $request['supplier_type']);
-                }),
+//                Rule::unique('clients')->where(function ($query) use ($request) {
+//                    return $query->where('name', $request['client_name'])
+//                        ->where('supplier_type', $request['supplier_type']);
+//                }),
             ];
         }
         $validator = Validator::make($request->all(), $params);
@@ -124,10 +125,15 @@ class ClientRepository
         $suppliers[] = ['name' => $company->name, 'item' => [Company::class => $companyId]];
         if (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $childClientIds = $this->getRecursiveChildClientIds($company->clients);
-            $clients = Client::whereIn('id', $childClientIds)->get();
+            $clients = Client::query()->whereIn('id', $childClientIds)
+                ->orderBy('name', 'asc')
+                ->get();
         } else {
-            $clientsArray = ClientCompanyUser::where('company_user_id', $employee->id)->first()->clients();
-            $clients = $clientsArray->paginate($clientsArray->count());
+            $clientsArray = ClientCompanyUser::query()->where('company_user_id', $employee->id)->first()->clients();
+            $clients = $clientsArray
+                ->orderBy('name', 'asc')
+                ->paginate($clientsArray->count());
+
         }
         foreach ($clients as $client) {
             $suppliers[] = ['name' => $client->name, 'item' => [Client::class => $client->id]];
@@ -163,6 +169,7 @@ class ClientRepository
         $client->name = $request->client_name;
         $client->description = $request->client_description;
         $client->photo = $request->photo;
+        $client->number = $request->number;
         $client->supplier_id = $request->supplier_id;
         $client->supplier_type = $request->supplier_type;
         $client->save();
@@ -174,6 +181,7 @@ class ClientRepository
         $client = Client::find($id);
         $client->name = $request->client_name;
         $client->description = $request->client_description;
+        $client->number = $request->number;
         $client->short_name = $request->short_name;
         $client->photo = $request->photo;
         $client->save();
@@ -188,7 +196,7 @@ class ClientRepository
             ClientCompanyUser::where('client_id', $id)->delete();
             $client->delete();
             $result = true;
-            if ($client->has('customLicense')) {
+            if ($client->customLicense !== null) {
                 $users = (new CustomLicenseRepository())->getUsers($client->customLicense->remote_client_id);
                 foreach ($users->entities as $user) {
                     (new CustomLicenseRepository())

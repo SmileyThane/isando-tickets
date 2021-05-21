@@ -10,13 +10,17 @@ export default {
     },
     actions: {
         getTeams({ commit }, { search, sort_by, sort_val, per_page, page }) {
-            const queryParams = new URLSearchParams({
-                search, sort_by, sort_val, per_page, page
-            });
+            let params = {};
+            if (search) params = { ...params, search };
+            if (sort_by) params = { ...params, sort_by };
+            if (sort_val) params = { ...params, sort_val };
+            if (per_page) params = { ...params, per_page };
+            if (page) params = { ...params, page };
+            const queryParams = new URLSearchParams(params);
             return axios.get('/api/team?' + queryParams.toString(), { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
-                        commit('SET_PARAMS', { search, sort_by, sort_val, per_page, page });
+                        commit('SET_PARAMS', params);
                         commit('SET_TEAMS', data);
                     }
                     return success;
