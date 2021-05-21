@@ -775,6 +775,13 @@ class LanguageSeeder extends Seeder
                             'employee_number_format_start' => 'Start number',
                             'employee_number_format_size' => 'Digits count',
                             'employee_number_example' => 'Example: ',
+                            'client_number_format' => 'Client number format',
+                            'client_number_automatic' => 'Generate client number automatic',
+                            'client_number_automatic_hint' => 'Client number will be generated automatically using the rules below',
+                            'client_number_format_prefix' => 'Prefix',
+                            'client_number_format_start' => 'Start number',
+                            'client_number_format_size' => 'Digits count',
+                            'client_number_example' => 'Example: ',
                         ],
                     'profile' =>
                         [
@@ -1648,6 +1655,13 @@ class LanguageSeeder extends Seeder
                             'employee_number_format_start' => 'Startnummer',
                             'employee_number_format_size' => 'Ziffern zählen',
                             'employee_number_example' => 'Beispiel: ',
+                            'client_number_format' => 'Format der Mitarbeiternummer',
+                            'client_number_automatic' => 'Generieren Sie automatisch eine Mitarbeiternummer',
+                            'client_number_automatic_hint' => 'Die Mitarbeiternummer wird automatisch nach den folgenden Regeln generiert',
+                            'client_number_format_prefix' => 'Präfix',
+                            'client_number_format_start' => 'Startnummer',
+                            'client_number_format_size' => 'Ziffern zählen',
+                            'client_number_example' => 'Beispiel: ',
                         ],
                         'profile' => [
                             'user_theme_colors' => 'Persönliche Themenfarben',
