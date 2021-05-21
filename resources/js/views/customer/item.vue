@@ -35,6 +35,7 @@
                             </v-col>
                             <v-col :cols="client.logo_url ? 4 : 6">
                                 <h3 class="mb-3">{{ client.client_name }}</h3>
+                                <h4 class="mb-3">{{ client.number }}</h4>
                                 <p v-if="client.client_description">| {{ client.client_description }}</p>
 
                                 <div v-if="client.emails && client.emails.length > 0" class="mb-3">
@@ -125,7 +126,7 @@
                                                         type="text"
                                                     />
                                                 </v-col>
-                                                <v-col cols="6">
+                                                <v-col cols="3">
                                                     <v-text-field
                                                         v-model="client.short_name"
                                                         :color="themeBgColor"
@@ -133,6 +134,17 @@
                                                         dense
                                                         prepend-icon="mdi-book-account-outline"
                                                         type="text"
+                                                    />
+                                                </v-col>
+                                                <v-col cols="3">
+                                                    <v-text-field
+                                                        v-model="client.number"
+                                                        :color="themeBgColor"
+                                                        :label="langMap.company.company_number"
+                                                        dense
+                                                        prepend-icon="mdi-numeric"
+                                                        type="text"
+                                                        :rules="[false, 0, ]"
                                                     />
                                                 </v-col>
                                                 <v-col cols="12">

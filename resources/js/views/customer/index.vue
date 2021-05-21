@@ -25,27 +25,40 @@
                                 <v-expansion-panel-content>
                                     <v-form>
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
                                                 <v-text-field
                                                     :color="themeBgColor"
                                                     :label="langMap.main.name"
                                                     name="company_name"
                                                     type="text"
                                                     v-model="clientForm.client_name"
+                                                    :error-messages="errors.name"
                                                     required
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
+                                                <v-text-field
+                                                    :color="themeBgColor"
+                                                    :label="langMap.company.company_number"
+                                                    name="number"
+                                                    type="text"
+                                                    prepend-icon="mdi-numeric"
+                                                    v-model="clientForm.number"
+                                                    :error-messages="errors.number"
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-5">
                                                 <v-text-field
                                                     :color="themeBgColor"
                                                     :label="langMap.main.description"
                                                     name="company_description"
                                                     type="text"
                                                     v-model="clientForm.client_description"
+                                                    :error-messages="errors.description"
                                                     required
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <v-select
                                                     :label="langMap.customer.supplier"
                                                     :color="themeBgColor"
@@ -56,6 +69,7 @@
                                                     :items="suppliers"
                                                 />
                                             </div>
+
                                             <v-btn
                                                 dark
                                                 fab
@@ -239,6 +253,7 @@
                     },
                     {text: `${this.$store.state.lang.lang_map.company.logo}`, value: 'logo', align: 'center', sortable: false},
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.company.company_number}`, value: 'number'},
                     {text: this.$store.state.lang.lang_map.main.email, value: 'email', sortable: false},
                     {text: this.$store.state.lang.lang_map.main.phone, value: 'phone', sortable: false},
                     {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
@@ -255,7 +270,8 @@
                     supplier_type: '',
                     supplier_id: ''
                 },
-                suppliers: []
+                suppliers: [],
+                errors: {}
             }
         },
         created() {
@@ -312,6 +328,7 @@
                         this.getSuppliers()
                         this.clientForm = {}
                     } else {
+                        this.errors = response.error
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;

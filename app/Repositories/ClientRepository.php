@@ -24,16 +24,17 @@ class ClientRepository
     {
         $params = [
             'client_name' => 'required',
+            'number' => 'unique:clients',
             // 'client_description' => 'required',
         ];
         if ($new === true) {
             $params['supplier_type'] = 'required';
             $params['supplier_id'] = [
                 'required',
-                Rule::unique('clients')->where(function ($query) use ($request) {
-                    return $query->where('name', $request['client_name'])
-                        ->where('supplier_type', $request['supplier_type']);
-                }),
+//                Rule::unique('clients')->where(function ($query) use ($request) {
+//                    return $query->where('name', $request['client_name'])
+//                        ->where('supplier_type', $request['supplier_type']);
+//                }),
             ];
         }
         $validator = Validator::make($request->all(), $params);
@@ -168,6 +169,7 @@ class ClientRepository
         $client->name = $request->client_name;
         $client->description = $request->client_description;
         $client->photo = $request->photo;
+        $client->number = $request->number;
         $client->supplier_id = $request->supplier_id;
         $client->supplier_type = $request->supplier_type;
         $client->save();
@@ -179,6 +181,7 @@ class ClientRepository
         $client = Client::find($id);
         $client->name = $request->client_name;
         $client->description = $request->client_description;
+        $client->number = $request->number;
         $client->short_name = $request->short_name;
         $client->photo = $request->photo;
         $client->save();
@@ -193,7 +196,7 @@ class ClientRepository
             ClientCompanyUser::where('client_id', $id)->delete();
             $client->delete();
             $result = true;
-            if ($client->has('customLicense')) {
+            if ($client->customLicense !== null) {
                 $users = (new CustomLicenseRepository())->getUsers($client->customLicense->remote_client_id);
                 foreach ($users->entities as $user) {
                     (new CustomLicenseRepository())

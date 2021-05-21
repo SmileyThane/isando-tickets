@@ -72,7 +72,7 @@
                                 :readonly="!enableToEdit"
                                 dense
                                 name="company_number"
-                                prepend-icon="mdi-message-alert"
+                                prepend-icon="mdi-numeric"
                                 required
                                 type="text"
                             ></v-text-field>

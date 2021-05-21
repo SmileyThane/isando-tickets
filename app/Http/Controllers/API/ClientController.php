@@ -84,12 +84,11 @@ class ClientController extends Controller
     {
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
         $isValid = $this->clientRepo->validate($request);
-
-        if ($isValid && $hasAccess) {
+        if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->clientRepo->create($request));
         }
 
-        return self::showResponse(true);
+        return self::showResponse(false, $isValid);
     }
 
     public function update(Request $request, $id)
@@ -97,7 +96,7 @@ class ClientController extends Controller
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
         $isValid = $this->clientRepo->validate($request, false);
 
-        if ($isValid && $hasAccess) {
+        if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->clientRepo->update($request, $id));
         }
 
