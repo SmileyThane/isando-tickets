@@ -1900,7 +1900,11 @@ export default {
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeBgColor = color;
-        })
+        });
+
+        let ticketId = this.$route.params.id;
+        window.history.replaceState({}, this.langMap.sidebar.ticket_list, '/tickets');
+        window.history.pushState({ticket_id: ticketId}, this.langMap.sidebar.ticket, `/ticket/${ticketId}`);
     },
     methods: {
         selectSearchCategory(item) {
