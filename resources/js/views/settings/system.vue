@@ -1521,12 +1521,14 @@ export default {
                 entity_type: 'App\\Company',
                 name: '',
                 name_de: '',
-                icon: 'mdi-alert'
+                icon: 'mdi-file-question'
             },
             ticketIcons: [
                 'mdi-alert',
                 'mdi-alert-box',
-                'mdi-alert-cyrcle',
+                'mdi-alert-circle',
+                'mdi-file-question',
+                'mdi-file-question-outline',
                 'mdi-cash-usd',
                 'mdi-cash-usd-outline',
                 'mdi-information',
