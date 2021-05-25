@@ -1287,8 +1287,7 @@ export default {
             let empl = [];
             if (this.hasPermission([90])) {
                 empl = this.$store.getters['Team/getCoworkers'];
-            }
-            if (this.hasPermission([42])) {
+            } else if (this.hasPermission([42])) {
                 this.$store.getters['Team/getManagedTeams'].map(team => {
                     team.employees.map(e => {
                         empl.push({
