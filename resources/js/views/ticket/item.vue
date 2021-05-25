@@ -158,16 +158,16 @@
             <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                        {{ langMap.ticket.create_answer }}
+                        {{ ticketAnswer.id ? langMap.ticket.edit_answer : langMap.ticket.create_answer }}
                     </v-card-title>
                     <v-card-text>
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12 mt-2">
-                                    <Tinymce @onActivate="zzz"
+                                    <Tinymce
                                         v-model="ticketAnswer.answer"
                                         :placeholder="langMap.ticket.answer_description"
-                                    ></Tinymce>
+                                    />
                                 </div>
                                 <div class="col-md-12">
                                     <v-select
@@ -213,7 +213,7 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="answerDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer">{{ langMap.main.create }}
+                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer">{{ ticketAnswer.id ? langMap.main.update : langMap.main.create }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -223,15 +223,15 @@
             <v-dialog v-model="noteDialog" max-width="50%" :retain-focus="false" :eager="true">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                        {{ langMap.ticket.add_internal_note }}
+                        {{ ticketNotice.id ? langMap.ticket.edit_internal_note : langMap.ticket.add_internal_note }}
                     </v-card-title>
                     <v-card-text>
                         <v-form>
                             <div class="row">
                                 <div class="col-md-12 mt-2">
-                                    <Tinymce @onActivate="zzz1"
+                                    <Tinymce
                                         v-model="ticketNotice.notice"
-                                        :placeholder="langMap.ticket.add_internal_note"
+                                        :placeholder="ticketNotice.id ? langMap.ticket.edit_internal_note : langMap.ticket.add_internal_note"
                                     />
                                 </div>
                             </div>
@@ -256,7 +256,7 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="noteDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="addTicketNotice">{{ langMap.main.create }}
+                        <v-btn :color="themeBgColor" dark @click="addTicketNotice">{{ ticketNotice.id ? langMap.main.update : langMap.main.create }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -815,7 +815,7 @@
                                 &nbsp;
                             </v-spacer>
                         </div>
-                        <div v-for="answer in ticket.answers"
+                        <div v-for="(answer, index) in ticket.answers"
                              :key="answer.id"
                              class="ticket--answer"
                         >
@@ -826,6 +826,7 @@
                             >
                                 <v-list-item>
                                     <v-list-item-content>
+                                        <v-col :cols="index == 0 && currentUser.id == answer.employee.user_data.id ? 11 : 12">
                                         <span class="text-left" style="font-weight: bold;">
                                             <v-avatar
                                                 v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
@@ -833,22 +834,24 @@
                                                 color="grey darken-1"
                                                 size="2em"
                                             >
-                                                    <v-img v-if="answer.employee.user_data.avatar_url"
-                                                           :src="answer.employee.user_data.avatar_url"/>
-                                                    <span v-else-if="answer.employee.user_data.full_name"
-                                                          class="white--text">
-                                                        {{
-                                                            answer.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                                        }}
+                                                    <v-img v-if="answer.employee.user_data.avatar_url" :src="answer.employee.user_data.avatar_url"/>
+                                                    <span v-else-if="answer.employee.user_data.full_name" class="white--text">
+                                                        {{answer.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase() }}
                                                     </span>
-                                                </v-avatar>
-                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
+                                            </v-avatar>
+                                            <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
                                             {{ answer.employee.user_data.full_name }}
-                                            {{
-                                                answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
-                                            }}:
+                                            {{ answer.created_at_time !== '' ? answer.created_at_time : answer.created_at }}
+                                            {{ answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? answer.updated_at_time : answer.updated_at) : '' }}
+                                            :
                                         </span>
+                                        </v-col>
+                                        <v-col v-if="index == 0 && currentUser.id == answer.employee.user_data.id"  cols="1">
+                                        <v-btn right icon :color="themeBgColor" :title="langMap.ticket.edit_answer" @click="editAnswer(answer)">
+                                            <v-icon>mdi-pencil</v-icon>
+                                        </v-btn>
+                                        </v-col>
                                         <div v-html="answer.answer"></div>
                                         <v-col v-if="answer.attachments.length > 0 " cols="12">
                                             <h4>{{ langMap.main.attachments }}</h4>
@@ -1118,7 +1121,7 @@
                                     dense
                                     item-text="name"
                                     item-value="id"
-                                    @change="selectTeam"
+                                    @change="selectTeam(); ticket.to_company_user_id = null;"
                                 ></v-autocomplete>
                                 <v-autocomplete
                                     v-model="ticket.to_company_user_id"
@@ -1234,7 +1237,7 @@
                                 <br/>
                             </div>
                             </span>
-                            <div v-for="noticeItem in ticket.notices"
+                            <div v-for="(noticeItem, index) in ticket.notices"
                                  :key="noticeItem.id"
                             >
                                 <v-card
@@ -1244,6 +1247,7 @@
                                 >
                                     <v-list-item three-line>
                                         <v-list-item-content class="custom-small-text">
+                                            <v-col :cols="index == 0 && currentUser.id == noticeItem.employee.user_data.id ? 11 : 12">
                                             <strong>
                                                 <v-avatar
                                                     v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
@@ -1264,8 +1268,16 @@
 
                                                 {{ noticeItem.employee.user_data.full_name }}
 
-                                                {{ noticeItem.created_at }}:
+                                                {{ noticeItem.created_at }}
+                                                {{ noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : ''}}
+                                                :
                                             </strong>
+                                            </v-col>
+                                            <v-col v-if="index == 0 && currentUser.id == noticeItem.employee.user_data.id" cols="1">
+                                                <v-btn icon :color="themeBgColor" right @click="editNotice(noticeItem)" :title="langMap.ticket.edit_notice">
+                                                    <v-icon>mdi-pencil</v-icon>
+                                                </v-btn>
+                                            </v-col>
                                             <div v-html="noticeItem.notice"></div>
                                         </v-list-item-content>
 
@@ -1875,16 +1887,21 @@ export default {
                 ],
             },
             ticketAnswer: {
+                id: '',
                 files: [],
                 answer: ''
             },
             ticketNotice: {
+                id: '',
                 notice: '',
             },
             onFileChange(form) {
                 this[form].files = null;
                 // console.log(event.target.files);
                 this[form].files = event.target.files;
+            },
+            currentUser: {
+                id: ''
             }
         }
     },
@@ -1904,6 +1921,7 @@ export default {
         this.getTeams()
         this.getTickets()
         this.getSignatures()
+        this.getCurrentUser()
         // if (localStorage.getticket('auth_token')) {
         //     this.$router.push('tickets')
         // }
@@ -2138,45 +2156,89 @@ export default {
             // console.log(this.ticketAnswer);
             let formData = new FormData();
             for (let key in this.ticketAnswer) {
-                if (key !== 'files') {
-                    if (this.selectedSignature !== '') {
+                if (key !== 'files' && key !== 'id') {
+                    if (key =='answer' && this.selectedSignature !== '') {
                         this.ticketAnswer[key] += '<hr><br/>' + this.selectedSignature
                     }
                     formData.append(key, this.ticketAnswer[key]);
                 }
             }
             Array.from(this.ticketAnswer.files).forEach(file => formData.append('files[]', file));
-            axios.post(`/api/ticket/${this.$route.params.id}/answer`, formData, config).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.ticketAnswer.answer = ''
-                    this.ticketAnswer.files = []
-                    this.getTicket()
-                    this.answerDialog = false
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error'
-                    this.snackbar = true;
-                }
-            });
+
+            if (this.ticketAnswer.id) {
+                axios.post(`/api/ticket/${this.$route.params.id}/answer/${this.ticketAnswer.id}`, formData, config).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.ticketAnswer.id = null
+                        this.ticketAnswer.answer = ''
+                        this.ticketAnswer.files = []
+                        this.selectedSignature = ''
+                        this.getTicket()
+                        this.answerDialog = false
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            } else {
+                axios.post(`/api/ticket/${this.$route.params.id}/answer`, formData, config).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.ticketAnswer.id = null
+                        this.ticketAnswer.answer = ''
+                        this.ticketAnswer.files = []
+                        this.selectedSignature = ''
+                        this.getTicket()
+                        this.answerDialog = false
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            }
         },
         addTicketNotice() {
             if (this.selectedSignature !== '') {
                 this.ticketNotice.notice += '<hr><br/>' + this.selectedSignature
             }
 
-            axios.post(`/api/ticket/${this.$route.params.id}/notice`, this.ticketNotice).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.ticketNotice.notice = ''
-                    this.getTicket()
-                    this.noteDialog = false
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error'
-                    this.snackbar = true;
-                }
-            });
+            if (this.ticketNotice.id) {
+                axios.post(`/api/ticket/${this.$route.params.id}/notice/${this.ticketNotice.id}`, {
+                    notice: this.ticketNotice.notice
+                }).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.ticketNotice.id = ''
+                        this.ticketNotice.notice = ''
+                        this.selectedSignature = ''
+                        this.getTicket()
+                        this.noteDialog = false
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            } else {
+                axios.post(`/api/ticket/${this.$route.params.id}/notice`, {
+                    notice: this.ticketNotice.notice
+                }).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.ticketNotice.id = ''
+                        this.ticketNotice.notice = ''
+                        this.selectedSignature = ''
+                        this.getTicket()
+                        this.noteDialog = false
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            }
         },
         makeCompanyLink(ticket) {
             let redirectToEntity = ticket.from_entity_type.substring(ticket.from_entity_type.lastIndexOf("\\") + 1).toLowerCase()
@@ -2339,12 +2401,30 @@ export default {
 
             return queryString.slice(0, -1)
         },
-        zzz() {
-          console.log('zzz');
+        getCurrentUser() {
+            axios.get('/api/user').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.currentUser = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
         },
-        zzz1() {
-          console.log('zzz1');
+        editAnswer(answer) {
+            this.ticketAnswer.id = answer.id;
+            this.ticketAnswer.answer = answer.answer;
+            this.selectedSignature = '';
+            this.answerDialog = true;
         },
+        editNotice(notice) {
+            this.ticketNotice.id = notice.id;
+            this.ticketNotice.notice = notice.notice;
+            this.selectedSignature = '';
+            this.noteDialog = true;
+        }
     },
     computed: {
         checkProgress: function () {

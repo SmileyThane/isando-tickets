@@ -157,7 +157,9 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('ticket/{id}/employee', 'API\TicketController@attachEmployee');
         Route::post('ticket/{id}/contact', 'API\TicketController@attachContact');
         Route::post('ticket/{id}/answer', 'API\TicketController@addAnswer');
+        Route::post('ticket/{id}/answer/{answer_id}', 'API\TicketController@editAnswer');
         Route::post('ticket/{id}/notice', 'API\TicketController@addNotice');
+        Route::post('ticket/{id}/notice/{notice_id}', 'API\TicketController@editNotice');
         Route::get('ticket_priorities', 'API\TicketController@priorities');
         Route::get('ticket_types', 'API\TicketController@getTypes');
         Route::get('ticket_types/all', 'API\TicketController@getAllTypesInCompanyContext');

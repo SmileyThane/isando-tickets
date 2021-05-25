@@ -197,10 +197,28 @@ class TicketController extends Controller
         return self::showResponse(false);
     }
 
+    public function editAnswer(Request $request, $id)
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->editAnswer($request, $id));
+        }
+
+        return self::showResponse(false);
+    }
+
     public function addNotice(Request $request, $id)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
             return self::showResponse($this->ticketRepo->addNotice($request, $id));
+        }
+
+        return self::showResponse(false);
+    }
+
+    public function editNotice(Request $request, $id)
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->editNotice($request, $id));
         }
 
         return self::showResponse(false);

@@ -56,6 +56,8 @@ class AuthController extends Controller
                 $tokenData['token'] = $tokenResult->accessToken;
                 $tokenData['client_name'] = $tokenResult->token->name;
                 $tokenData['expires_at'] = Carbon::parse($tokenResult->token['expires_at'])->format('U');
+                $tokenData['user_id'] = $user_id;
+
                 $result = true;
             }
         }
