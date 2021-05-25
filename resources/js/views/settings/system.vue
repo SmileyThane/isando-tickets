@@ -856,7 +856,7 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, emailIcons,'updateEmailType')">
                                                         mdi-pencil
@@ -1041,14 +1041,14 @@
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, ticketIcons,'updateTicketType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action v-if="item.id === 1">
-                                                    <v-icon small :title="langMap.profile.login_ticket">
+                                                    <v-icon small :title="langMap.profile.default_ticket_type">
                                                         mdi-lock
                                                     </v-icon>
                                                 </v-list-item-action>
@@ -1527,6 +1527,8 @@ export default {
                 'mdi-alert',
                 'mdi-alert-box',
                 'mdi-alert-cyrcle',
+                'mdi-cash-usd',
+                'mdi-cash-usd-outline',
                 'mdi-information',
                 'mdi-information-outline',
                 'mdi-information-variant',
