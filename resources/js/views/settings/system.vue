@@ -118,13 +118,7 @@
                                         v-model="companySettings.theme_bg_color"
                                         :disabled="!enableToEdit"
                                     />
-                                    <v-checkbox
-                                        :color="themeBgColor"
-                                        :readonly="!enableToEdit"
-                                        :label="langMap.system_settings.override_user_theme_color"
-                                        :value="true"
-                                        v-model="companySettings.override_user_theme"
-                                    />
+
                                     <p>{{ langMap.system_settings.override_user_theme_color_hint }}</p>
 
                                 </v-col>
@@ -1565,7 +1559,7 @@ export default {
                 timezone: '',
                 theme_fg_color: '',
                 theme_bg_color: '',
-                override_user_theme: false,
+                override_user_theme: true,
                 employee_number_format: ''
             },
             autoFgColor: false,
@@ -2293,7 +2287,7 @@ export default {
                     this.companySettings['timezone'] = response.data.hasOwnProperty('timezone') ? response.data.timezone : 35;
                     this.companySettings['theme_fg_color'] = response.data.hasOwnProperty('theme_fg_color') ? response.data.theme_fg_color : '#FFFFFF';
                     this.companySettings['theme_bg_color'] = response.data.hasOwnProperty('theme_bg_color') ? response.data.theme_bg_color : response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#6AA75D';
-                    this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
+                    this.companySettings['override_user_theme'] = true;
                     this.companySettings['employee_number_format'] = response.data.hasOwnProperty('employee_number_format') ? response.data.employee_number_format : '0||50000|8';
 
                     let fmt = this.companySettings.ticket_number_format.split('｜');

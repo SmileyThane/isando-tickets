@@ -1043,7 +1043,8 @@
                         </v-btn>
                         <v-btn
                             text
-                            :color="themeBgColor"
+                            :color="themeFgColor"
+                            :style="`color: ${themeBgColor};`"
                             @click="updateUserDataSettings"
                         >
                             {{ langMap.main.save}}
