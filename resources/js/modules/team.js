@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import * as ColorHelper from '../helpers/color';
 
 export default {
     namespaced: true,
@@ -66,7 +67,8 @@ export default {
         getCoworkers(state) {
             return _.sortBy(state.coworkers, item => {
                 return item.full_name.toLowerCase();
-            });
+            })
+                .map(item => ({ ...item, color: ColorHelper.genRandomColor() }));
         },
         getTeams(state) {
             return state.teams
