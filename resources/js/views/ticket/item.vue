@@ -1148,6 +1148,16 @@
                                 >
                                     {{ langMap.ticket.assign_to }}
                                 </v-btn>
+                                <v-btn :color="themeBgColor"
+                                       :disabled="!ticket.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
+                                       class="ma-2"
+                                       small
+                                       color="grey"
+                                       style="color: white;"
+                                       @click.native.stop="ticket.to_company_user_id = null; updateTicket()"
+                                >
+                                    {{ langMap.ticket.clear_agent }}
+                                </v-btn>
                                 <v-btn class="ma-2"
                                        color="white" small
                                        style="color: black;"

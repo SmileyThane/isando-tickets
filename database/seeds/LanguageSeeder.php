@@ -351,6 +351,7 @@ class LanguageSeeder extends Seeder
                             'team_attached' => 'Team updated to ',
                             'due_date_updated' => 'Due date updated to ',
                             'employee_attached' => 'Assigned to ',
+                            'employee_detached' => 'Unassigned from ',
                             'product_updated' => 'Product updated to',
                             'priority_updated' => 'Priority updated to',
                             'access_details_updated' => 'Access details updated to ',
@@ -527,8 +528,7 @@ class LanguageSeeder extends Seeder
                             'restored' => 'Restored',
                             'system_access' => 'Access to the system',
                         ],
-                    'ticket' =>
-                        [
+                    'ticket' => [
                             'type' => 'Type',
                             'merged_abbr' => 'Merged',
                             'merged_abbr_full' => 'Merged tickets',
@@ -570,6 +570,7 @@ class LanguageSeeder extends Seeder
                             'close_ticket' => 'Close ticket',
                             'ticket_merge_parent_msg' => 'Ticket $ticket_number "$ticket_subject" was merged with this ticket on $date by $unifier, and it was closed.',
                             'ticket_merge_child_msg' => 'This ticket was closed and merged with ticket $ticket_number "$ticket_subject" on $date by $unifier.',
+                            'clear_agent' => 'Unassign agent',
                         ],
                     'main' =>
                         [
@@ -1255,6 +1256,7 @@ class LanguageSeeder extends Seeder
                             'team_attached' => 'Team aktualisiert zu ',
                             'due_date_updated' => 'Fälligkeitsdatum aktualisiert auf ',
                             'employee_attached' => 'Zugewiesen an ',
+                            'employee_detached' => 'Nicht zugewiesen von ',
                             'product_updated' => 'Produkt aktualisiert zu ',
                             'priority_updated' => 'Priorität aktualisiert zu ',
                             'access_details_updated' => 'Zugangsdetails aktualisiert auf ',
@@ -1461,6 +1463,7 @@ class LanguageSeeder extends Seeder
                             'close_ticket' => 'Ticket schliessen',
                             'ticket_merge_parent_msg' => 'Ticket $ticket_number "$ticket_subject" wurde am $date von $unifier mit diesem Ticket zusammengeführt und geschlossen.',
                             'ticket_merge_child_msg' => 'Dieses Ticket wurde am $date von $unifier geschlossen und mit dem Ticket $ticket_number "$ticket_subject" zusammengeführt.',
+                            'clear_agent' => 'Agent abmelden',
                         ],
                         'main' => [
                             'create' => 'erstellen',
