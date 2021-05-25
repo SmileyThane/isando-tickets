@@ -492,10 +492,10 @@
                                                     <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
                                                 </v-list-item-content>
                                                 <v-list-item-action>
-                                                    <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
+                                                    <v-icon small @click="editSocial(item)">mdi-pencil</v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action>
-                                                    <v-icon small @click="deleteAddress(item.id)">mdi-delete</v-icon>
+                                                    <v-icon small @click="deleteSocial(item.id)">mdi-delete</v-icon>
                                                 </v-list-item-action>
                                             </v-list-item>
                                         </v-col>
@@ -511,7 +511,7 @@
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
-                                                        <v-form>
+                                                        <v-form ref="addressFormNew" lazy-validation>
                                                             <v-row>
                                                                 <v-col cols="12">
                                                                     <v-text-field
@@ -520,6 +520,8 @@
                                                                         :item-color="themeBgColor"
                                                                         :label="langMap.main.address_line1"
                                                                         dense
+                                                                        required
+                                                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.address_line1)]"
                                                                     />
                                                                     <v-text-field
                                                                         v-model="addressForm.address.street2"
@@ -548,7 +550,6 @@
                                                                         :color="themeBgColor"
                                                                         :item-color="themeBgColor"
                                                                         :label="langMap.main.city"
-                                                                        dense
                                                                     />
                                                                     <v-select
                                                                         v-model="addressForm.address.country_id"
@@ -558,6 +559,8 @@
                                                                         :label="langMap.main.country"
                                                                         dense
                                                                         item-value="id"
+                                                                        required
+                                                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.country)]"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
                                                                             ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
@@ -574,6 +577,8 @@
                                                                         :label="langMap.main.type"
                                                                         dense
                                                                         item-value="id"
+                                                                        required
+                                                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.type)]"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
                                                                             <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
@@ -1091,6 +1096,7 @@
 
             <v-dialog v-model="updateAddressDlg" persistent max-width="600px">
                 <v-card>
+                    <v-form ref="addressFormUpd" lazy-validation>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                         {{langMap.company.update_address}}
                     </v-card-title>
@@ -1107,6 +1113,8 @@
                                         :label="langMap.main.address_line1"
                                         placeholder=""
                                         dense
+                                        required
+                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.address_line1)]"
                                     />
                                     <v-text-field
                                         no-resize
@@ -1149,7 +1157,6 @@
                                 </v-col>
                                 <v-col cols="md-6" class="pa-1">
                                     <v-select
-                                        :rules="['Required']"
                                         :color="themeBgColor"
                                         :item-color="themeBgColor"
                                         item-value="id"
@@ -1157,6 +1164,8 @@
                                         :items="countries"
                                         :label="langMap.main.country"
                                         dense
+                                        required
+                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.country)]"
                                     >
                                         <template slot="selection" slot-scope="data">
                                             ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
@@ -1175,6 +1184,8 @@
                                         :items="addressTypes"
                                         :label="langMap.main.type"
                                         dense
+                                        required
+                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.type)]"
                                     >
                                         <template slot="selection" slot-scope="data">
                                             <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
@@ -1190,8 +1201,9 @@
                     <v-card-actions>
 
                         <v-btn color="red" text @click="updateAddressDlg=false; resetAddress()">{{langMap.main.cancel}}</v-btn>
-                        <v-btn :color="themeBgColor" text @click="updateAddressDlg=false; updateAddress()">{{langMap.main.save}}</v-btn>
+                        <v-btn :color="themeBgColor" text @click="updateAddress()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
+                    </v-form>
                 </v-card>
             </v-dialog>
 
@@ -1735,6 +1747,9 @@ export default {
             }
         },
         addAddress() {
+            if (!this.$refs.addressFormNew.validate()) {
+                return;
+            }
             this.addressForm.entity_id = this.userData.id
 
             axios.post('/api/address', this.addressForm).then(response => {
@@ -1755,9 +1770,14 @@ export default {
             });
         },
         updateAddress() {
+            if (!this.$refs.addressFormUpd.validate()) {
+                return;
+            }
             axios.patch(`/api/address/${this.addressForm.id}`, this.addressForm).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.updateAddressDlg=false;
+
                     this.resetAddress();
 
                     this.getUser()
@@ -1916,6 +1936,9 @@ export default {
             this.phoneForm.phone_type = item.type ? item.type.id : 0;
         },
         editAddress(item) {
+            if (this.$refs.addressFormUpd) {
+                this.$refs.addressFormUpd.resetValidation();
+            }
             this.updateAddressDlg = true;
 
             this.addressForm.id = item.id;
@@ -1925,6 +1948,7 @@ export default {
             this.addressForm.address.postal_code = item.postal_code;
             this.addressForm.address.city = item.city;
             this.addressForm.address.country_id = item.country ? item.country.id : 0;
+            this.addressForm.address_type = item.type ? item.type.id : 0;
         },
         addSocial() {
             this.socialForm.entity_id = this.userData.id

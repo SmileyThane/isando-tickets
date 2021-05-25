@@ -916,8 +916,9 @@ class LanguageSeeder extends Seeder
                         'next_step' => 'Next step',
                         'new_knowledge_name' => 'New post',
                     ],
-                    'exceptions' =>
-                        [],
+                    'exceptions' => [
+                        'field_is_required' => '%{field} is required',
+                    ],
                 ])
             ]
         );
@@ -1795,6 +1796,7 @@ class LanguageSeeder extends Seeder
                             'new_knowledge_name' => 'Neues Post',
                         ],
                         'exceptions' => [
+                            'field_is_required' => '%{field} ist erforderlich',
                         ],
                     ]
                 )
