@@ -11,6 +11,8 @@ class TicketNotice extends Model
 {
 //    use SoftDeletes;
 
+    protected $fillable = ['notice'];
+
     public function getCreatedAtAttribute()
     {
         $locale = Language::find(Auth::user()->language_id)->locale;
