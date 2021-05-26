@@ -1,6 +1,6 @@
 <template>
     <v-avatar
-        :color="color"
+        :color="getColor"
         v-if="user.avatar_url || user.full_name"
     >
         <v-tooltip top>
