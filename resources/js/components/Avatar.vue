@@ -50,7 +50,14 @@ export default {
     },
     created () {},
     mounted () {},
-    computed: {}
+    computed: {
+        getColor() {
+            if (this.color) {
+                return this.color;
+            }
+            return 'grey darken-1';
+        }
+    }
 }
 </script>
 
