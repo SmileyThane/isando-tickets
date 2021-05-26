@@ -149,6 +149,7 @@
                 213
             </template>
         </v-data-table>
+
         <v-data-table
             v-if="viewType === 'weekly'"
             :headers="weeklyHeaders"
@@ -158,45 +159,26 @@
             :loading="loading"
             loading-text="Loading... Please wait"
             v-model="selected"
+            hide-default-footer
         >
-            <template v-slot:header.data-table-select="{ header }"></template>
-            <template v-slot:header.mon="{ header }">
-                {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time, false)}}
+            <template v-slot:body.prepend="{ headers }">
+                <tr class="highlight">
+                    <td v-for="header in headers" :style="{
+                        width: header.width,
+                        maxWidth: header.width,
+                        minWidth: header.width
+                    }">
+                        <span v-if="header.time >= 0">{{$helpers.time.convertSecToTime(header.time, false)}}</span>
+                    </td>
+                </tr>
             </template>
-            <template v-slot:header.tue="{ header }">
-                {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time, false)}}
-            </template>
-            <template v-slot:header.wed="{ header }">
-                {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time, false)}}
-            </template>
-            <template v-slot:header.thu="{ header }">
-                {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time, false)}}
-            </template>
-            <template v-slot:header.fri="{ header }">
-                {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time, false)}}
-            </template>
-            <template v-slot:header.sat="{ header }">
-                {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time, false)}}
-            </template>
-            <template v-slot:header.sun="{ header }">
-                {{header.text}}<br>
-                {{$helpers.time.convertSecToTime(header.time, false)}}
-            </template>
-            <template v-slot:footer="{ props, on, headers, widths }">
-                <v-spacer>&nbsp;</v-spacer>
-                <div class="d-flex flex-row" v-if="[0].indexOf(typeOfItems) !== -1">
-                    <div
-                        class="d-inline-flex"
-                        v-for="(header, index) in headers"
-                        :key="index"
-                        :style="{ width: header.width ? header.width : '1%', 'min-width': '56px' }"
-                    >
+            <template v-slot:body.append="{ headers }">
+                <tr>
+                    <td v-for="header in headers" :style="{
+                        width: header.width,
+                        maxWidth: header.width,
+                        minWidth: header.width
+                    }">
                         <template v-if="header.value === 'data-table-select'">
                             <div class="text-center" style="width: 100%;">
                                 <v-btn
@@ -218,78 +200,115 @@
                             </div>
                         </template>
                         <template v-if="header.value === 'mon'">
-                            <div class="mx-4" style="width: 100%">
+                            <div class="" style="width: 100%">
                                 <TimeField
                                     v-model="form.mon"
                                     style="max-width: 100px"
                                     placeholder="hh:mm"
                                     format="HH:mm"
+                                    class="time-field__small"
                                 ></TimeField>
                             </div>
                         </template>
                         <template v-if="header.value === 'tue'">
-                            <div class="mx-4" style="width: 100%">
+                            <div class="" style="width: 100%">
                                 <TimeField
                                     v-model="form.tue"
                                     style="max-width: 100px"
                                     placeholder="hh:mm"
                                     format="HH:mm"
+                                    class="time-field__small"
                                 ></TimeField>
                             </div>
                         </template>
                         <template v-if="header.value === 'wed'">
-                            <div class="mx-4" style="width: 100%">
+                            <div class="" style="width: 100%">
                                 <TimeField
                                     v-model="form.wed"
                                     style="max-width: 100px"
                                     placeholder="hh:mm"
                                     format="HH:mm"
+                                    class="time-field__small"
                                 ></TimeField>
                             </div>
                         </template>
                         <template v-if="header.value === 'thu'">
-                            <div class="mx-4" style="width: 100%">
+                            <div class="" style="width: 100%">
                                 <TimeField
                                     v-model="form.thu"
                                     style="max-width: 100px"
                                     placeholder="hh:mm"
                                     format="HH:mm"
+                                    class="time-field__small"
                                 ></TimeField>
                             </div>
                         </template>
                         <template v-if="header.value === 'fri'">
-                            <div class="mx-4" style="width: 100%">
+                            <div class="" style="width: 100%">
                                 <TimeField
                                     v-model="form.fri"
                                     style="max-width: 100px"
                                     placeholder="hh:mm"
                                     format="HH:mm"
+                                    class="time-field__small"
                                 ></TimeField>
                             </div>
                         </template>
                         <template v-if="header.value === 'sat'">
-                            <div class="mx-4" style="width: 100%">
+                            <div class="" style="width: 100%">
                                 <TimeField
                                     v-model="form.sat"
                                     style="max-width: 100px"
                                     placeholder="hh:mm"
                                     format="HH:mm"
+                                    class="time-field__small"
                                 ></TimeField>
                             </div>
                         </template>
                         <template v-if="header.value === 'sun'">
-                            <div class="mx-4" style="width: 100%">
+                            <div class="" style="width: 100%">
                                 <TimeField
                                     v-model="form.sun"
                                     style="max-width: 100px"
                                     placeholder="hh:mm"
                                     format="HH:mm"
+                                    class="time-field__small"
                                 ></TimeField>
                             </div>
                         </template>
-                    </div>
-                </div>
+                    </td>
+                </tr>
             </template>
+            <template v-slot:header.data-table-select="{ header }"></template>
+            <template v-slot:header.mon="{ header }">
+                {{header.text}}<br>
+                {{header.date}}
+            </template>
+            <template v-slot:header.tue="{ header }">
+                {{header.text}}<br>
+                {{header.date}}
+            </template>
+            <template v-slot:header.wed="{ header }">
+                {{header.text}}<br>
+                {{header.date}}
+            </template>
+            <template v-slot:header.thu="{ header }">
+                {{header.text}}<br>
+                {{header.date}}
+            </template>
+            <template v-slot:header.fri="{ header }">
+                {{header.text}}<br>
+                {{header.date}}
+            </template>
+            <template v-slot:header.sat="{ header }">
+                {{header.text}}<br>
+                {{header.date}}
+            </template>
+            <template v-slot:header.sun="{ header }">
+                {{header.text}}<br>
+                {{header.date}}
+            </template>
+
             <template v-slot:item.data-table-select="{ item }">
                 <v-simple-checkbox
                     v-if="[0,2].indexOf(typeOfItems) !== -1 || ([1].indexOf(typeOfItems) !== -1 && canApproval(item))"
@@ -345,6 +364,7 @@
                         placeholder="hh:mm"
                         format="HH:mm"
                         @input="saveChanges(item, 0, $event)"
+                        class="time-field__small"
                     ></TimeField>
                 </span>
                 </template>
@@ -361,6 +381,7 @@
                         placeholder="hh:mm"
                         format="HH:mm"
                         @input="saveChanges(item, 1, $event)"
+                        class="time-field__small"
                     ></TimeField>
                 </span>
                 </template>
@@ -377,6 +398,7 @@
                         placeholder="hh:mm"
                         format="HH:mm"
                         @input="saveChanges(item, 2, $event)"
+                        class="time-field__small"
                     ></TimeField>
                 </span>
                 </template>
@@ -393,6 +415,7 @@
                             placeholder="hh:mm"
                             format="HH:mm"
                             @input="saveChanges(item, 3, $event)"
+                            class="time-field__small"
                         ></TimeField>
                     </span>
                 </template>
@@ -409,6 +432,7 @@
                             placeholder="hh:mm"
                             format="HH:mm"
                             @input="saveChanges(item, 4, $event)"
+                            class="time-field__small"
                         ></TimeField>
                     </span>
                 </template>
@@ -425,6 +449,7 @@
                         placeholder="hh:mm"
                         format="HH:mm"
                         @input="saveChanges(item, 5, $event)"
+                        class="time-field__small"
                     ></TimeField>
                 </span>
                 </template>
@@ -441,6 +466,7 @@
                             placeholder="hh:mm"
                             format="HH:mm"
                             @input="saveChanges(item, 6, $event)"
+                            class="time-field__small"
                         ></TimeField>
                     </span>
                 </template>
@@ -616,6 +642,21 @@
     </v-container>
 </template>
 
+<style scoped>
+tr.highlight {
+    background-color: #f0f0f0;
+    border-color: #f0f0f0;
+}
+>>> .time-field__small input {
+    font-size: 14px;
+}
+>>> .time-field__small button .v-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+</style>
+
 <script>
 import EventBus from "../../components/EventBus";
 import moment from 'moment-timezone';
@@ -700,7 +741,7 @@ export default {
         },
         async _getManagedTeams() {
             this.loading = true;
-            await this.$store.dispatch('Team/getManagedTeams');
+            await this.$store.dispatch('Team/getManagedTeams', { withEmployee: false });
             this.loading = false;
             this.resetTimesheet();
         },
@@ -828,6 +869,10 @@ export default {
                     days[i] += this.timeBetween(timesheet.times[i].dateTime);
                 }
             });
+            let dates = [];
+            for (let i = moment(this.dateRange.start); moment(i).diff(moment(this.dateRange.end)) <= 0; i.add(1, 'day')) {
+                dates.push(i.format('MMM DD'));
+            }
             return [
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.projects,
@@ -839,12 +884,6 @@ export default {
                     text: '',
                     align: 'start',
                     value: 'is_manually',
-                    width: '3%'
-                },
-                {
-                    text: 'Total',
-                    align: 'center',
-                    value: 'total',
                     width: '3%'
                 },
                 // {
@@ -859,7 +898,8 @@ export default {
                     value: 'mon',
                     width: '10%',
                     sortable: false,
-                    time: days[0]
+                    time: days[0],
+                    date: dates[0]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.tue,
@@ -867,7 +907,8 @@ export default {
                     value: 'tue',
                     width: '10%',
                     sortable: false,
-                    time: days[1]
+                    time: days[1],
+                    date: dates[1]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.wed,
@@ -875,7 +916,8 @@ export default {
                     value: 'wed',
                     width: '10%',
                     sortable: false,
-                    time: days[2]
+                    time: days[2],
+                    date: dates[2]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.thu,
@@ -883,7 +925,8 @@ export default {
                     value: 'thu',
                     width: '10%',
                     sortable: false,
-                    time: days[3]
+                    time: days[3],
+                    date: dates[3]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.fri,
@@ -891,7 +934,8 @@ export default {
                     value: 'fri',
                     width: '10%',
                     sortable: false,
-                    time: days[4]
+                    time: days[4],
+                    date: dates[4]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.sat,
@@ -899,7 +943,8 @@ export default {
                     value: 'sat',
                     width: '10%',
                     sortable: false,
-                    time: days[5]
+                    time: days[5],
+                    date: dates[5]
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.sun,
@@ -907,7 +952,15 @@ export default {
                     value: 'sun',
                     width: '10%',
                     sortable: false,
-                    time: days[6]
+                    time: days[6],
+                    date: dates[6]
+                },
+                {
+                    text: 'Total',
+                    align: 'center',
+                    value: 'total',
+                    width: '3%',
+                    time: days.reduce((acc, val) => acc + val, 0),
                 },
             ];
         },
