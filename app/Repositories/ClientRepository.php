@@ -208,28 +208,29 @@ class ClientRepository
         return $result;
     }
 
-    public function attach(Request $request): bool
+    public function attach(Request $request)
     {
         Log::info('attached_c_cu_d:' . $request->client_id . '_' . $request->company_user_id . '_' . $request->description);
-        ClientCompanyUser::firstOrCreate(
+        return ClientCompanyUser::firstOrCreate(
             [
                 'client_id' => $request->client_id,
                 'company_user_id' => $request->company_user_id
             ],
             ['description' => $request->description]
         );
-        return true;
     }
 
-    public function updateDescription(Request $request): bool
+    public function updateDescription(Request $request)
     {
-        ClientCompanyUser::where(
+        $c = ClientCompanyUser::where(
             [
                 'client_id' => $request->client_id,
                 'company_user_id' => $request->company_user_id
             ]
-        )->update(['description' => $request->description]);
-        return true;
+        )->get();
+        $c->description = $request->description;
+        $c->save();
+        return $c;
     }
 
     public function detach($id): bool

@@ -1764,7 +1764,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.getClient()
-                    this.snackbarMessage = update ? this.langMap.company.employee_updated : this.langMap.company.employee_added;
+                    this.snackbarMessage = update ? this.langMap.company.employee_updated : this.langMap.company.employee_created;
                     this.actionColor = 'success'
                     this.snackbar = true;
                 } else {
