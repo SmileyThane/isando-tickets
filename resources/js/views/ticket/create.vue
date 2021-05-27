@@ -50,7 +50,6 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <v-select
-
                                             :label="langMap.ticket.company_from"
                                             :color="themeBgColor"
                                             :item-color="themeBgColor"
@@ -93,7 +92,14 @@
                                             v-model="ticketForm.contact_company_user_id"
                                             :items="employees"
                                             :label="langMap.ticket.contact_name"
-                                        ></v-autocomplete>
+                                        >
+                                            <template v-slot:append-outer>
+                                                <v-btn :disabled="Object.keys(ticketForm.from)[0] === 'App\\Company'"
+                                                    icon :color="themeBgColor" :title="langMap.individuals.add_new" @click="createContactDlg = true;">
+                                                    <v-icon>mdi-plus</v-icon>
+                                                </v-btn>
+                                            </template>
+                                        </v-autocomplete>
                                     </v-col>
                                     <v-col cols="12">
                                         <v-tooltip v-model="availabilityTooltip" bottom>
@@ -279,6 +285,94 @@
                 <v-spacer></v-spacer>
             </v-stepper>
         </div>
+
+        <v-row justify="center">
+            <v-dialog v-model="createContactDlg" max-width="600px" persistent>
+                <v-card dense outlined>
+                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
+                        {{ langMap.individuals.add_new }}
+                    </v-card-title>
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col cols="12">
+                                    {{ langMap.ticket.company_from }}:
+                                    {{ getSupplierName() }}
+                                </v-col>
+                                <v-col cols="4">
+                                    <v-text-field
+                                        v-model="createContactForm.name"
+                                        :color="themeBgColor"
+                                        :label="langMap.main.name"
+                                        name="name"
+                                        required
+                                        type="text"
+                                    />
+                                </v-col>
+                                <v-col cols="4">
+                                    <v-text-field
+                                        v-model="createContactForm.middle_name"
+                                        :color="themeBgColor"
+                                        :label="langMap.main.middle_name"
+                                        name="name"
+                                        required
+                                        type="text"
+                                    />
+                                </v-col>
+                                <v-col cols="4">
+                                    <v-text-field
+                                        v-model="createContactForm.surname"
+                                        :color="themeBgColor"
+                                        :label="langMap.main.last_name"
+                                        name="name"
+                                        required
+                                        type="text"
+                                    />
+                                </v-col>
+                                <v-col cols="6">
+                                    <v-autocomplete
+                                        v-model="createContactForm.language_id"
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
+                                        :items="languages"
+                                        :label="langMap.main.language"
+                                        item-text="name"
+                                        item-value="id"
+                                        name="language"
+                                        prepend-icon="mdi-web"
+                                    />
+                                </v-col>
+                                <v-col cols="6">
+                                    <v-text-field
+                                        v-model="createContactForm.email"
+                                        :color="themeBgColor"
+                                        :label="langMap.main.email"
+                                        name="email"
+                                        prepend-icon="mdi-mail"
+                                        required
+                                        type="text"
+                                    />
+                                    <v-checkbox
+                                        v-model="createContactForm.is_active"
+                                        :disabled="$helpers.auth.checkPermissionByIds(['36,37'])"
+                                        :label="langMap.main.give_access"
+                                        color="success"
+                                        hide-details
+                                    />
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="red" text @click="createContactDlg=false">{{ langMap.main.cancel }}</v-btn>
+                        <v-btn :color="themeBgColor" text @click="addEmployee()">
+                            {{ langMap.main.save }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-row>
+
     </v-container>
 </template>
 <script>
@@ -300,9 +394,11 @@
                 editable: true,
                 langMap: this.$store.state.lang.lang_map,
                 themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+                themeBgColor: this.$store.state.themeBgColor,
                 ticketForm: {
-                    from: '',
+                    from: {
+                        name: ''
+                    },
                     from_entity_type: '',
                     from_entity_id: '',
                     to: '',
@@ -330,7 +426,18 @@ themeBgColor: this.$store.state.themeBgColor,
                     this[form].files = null;
                     // console.log(event.target.files);
                     this[form].files = event.target.files;
-                }
+                },
+                createContactDlg: false,
+                createContactForm: {
+                    client_id: '',
+                    name: '',
+                    middle_name: '',
+                    surname: '',
+                    language_id: '',
+                    email: '',
+                    is_active: 0
+                },
+                languages: []
             }
         },
         watch: {
@@ -350,6 +457,7 @@ themeBgColor: this.$store.state.themeBgColor,
             this.getPriorities()
             this.getTypes()
             this.getCategories()
+            this.getLanguages()
             // this.getCompany()
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
@@ -442,10 +550,13 @@ themeBgColor: this.$store.state.themeBgColor,
             getContacts(entityItem) {
                 this.employees = []
                 let route = '';
+
                 if (Object.keys(entityItem)[0] === 'App\\Company') {
                     route = `/api/company/${Object.values(entityItem)[0]}`
+                    this.createContactForm.client_id = '';
                 } else {
                     route = `/api/client/${Object.values(entityItem)[0]}`
+                    this.createContactForm.client_id = Object.values(entityItem)[0];
                 }
                 // console.log(entityItem);
                 axios.get(route).then(response => {
@@ -500,6 +611,49 @@ themeBgColor: this.$store.state.themeBgColor,
                     }
                 });
             },
+            addEmployee() {
+                axios.post(`/api/client/employee`, this.createContactForm).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.createContactDlg = false;
+                        this.ticketForm.contact_company_user_id = response.data.company_user_id;
+                        this.getContacts(this.ticketForm.from);
+                        this.createContactForm = {
+                            client_id: '',
+                            name: '',
+                            middle_name: '',
+                            surname: '',
+                            language_id: '',
+                            email: '',
+                            is_active: 0
+                        };
+                        this.snackbarMessage = this.langMap.company.employee_created;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+
+                });
+            },
+            getLanguages() {
+                axios.get('/api/lang').then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.languages = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
+            },
+            getSupplierName() {
+                let index = this.suppliers.findIndex(supplier => supplier.item === this.ticketForm.from);
+                return index > -1 ? this.suppliers[index].name : '';
+            }
         }
     }
 </script>

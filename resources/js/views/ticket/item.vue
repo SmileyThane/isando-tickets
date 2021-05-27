@@ -470,6 +470,7 @@
                                 small
                             >
                                 <!--                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>-->
+                                <v-icon v-if="ticket.ticket_type.icon" small left :color="themeBgColor" v-text="ticket.ticket_type.icon"/>
                                 <strong>{{ ticket.ticket_type.name }}</strong>
 
                             </v-btn>
@@ -483,7 +484,9 @@
                                 link
                                 @click="changeType(type.id)"
                             >
+
                                 <v-list-item-title>
+                                    <v-icon v-if="type.icon" x-small left  v-text="type.icon"/>
                                     <!--                                    <strong>{{ langMap.ticket_types[type.name] }}</strong>-->
                                     <strong>{{ type.name }}</strong>
                                 </v-list-item-title>
