@@ -455,6 +455,28 @@ class TicketRepository
         return true;
     }
 
+    public function editAnswer(Request $request, $id, $employeeId = null): bool
+    {
+        $ticketAnswer = TicketAnswer::find($request->answer_id);
+        $ticketAnswer->answer = $request->answer;
+        $ticketAnswer->save();
+
+        $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
+        foreach ($files as $file) {
+            $this->fileRepo->store($file, $ticketAnswer->id, TicketAnswer::class);
+        }
+        $employee = $employeeId !== null ? CompanyUser::find($employeeId) : Auth::user()->employee;
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
+            $request->status_id = 3;
+        } else {
+            $request->status_id = 4;
+        }
+        $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
+        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_updated');
+        $this->ticketUpdateRepo->addHistoryItem($ticketAnswer->ticket_id, null, $historyDescription);
+        return true;
+    }
+
     public function addNotice(Request $request, $id): bool
     {
         $ticketNotice = new TicketNotice();
@@ -463,6 +485,16 @@ class TicketRepository
         $ticketNotice->ticket_id = $id;
         $ticketNotice->save();
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('notice_added');
+        $this->ticketUpdateRepo->addHistoryItem($ticketNotice->ticket_id, null, $historyDescription);
+        return true;
+    }
+
+    public function editNotice(Request $request, $id): bool
+    {
+        $ticketNotice = TicketNotice::find($request->notice_id);
+        $ticketNotice->notice = $request->notice;
+        $ticketNotice->save();
+        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('notice_updated');
         $this->ticketUpdateRepo->addHistoryItem($ticketNotice->ticket_id, null, $historyDescription);
         return true;
     }

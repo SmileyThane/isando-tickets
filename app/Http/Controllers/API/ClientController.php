@@ -119,6 +119,7 @@ class ClientController extends Controller
     {
         $result = false;
         $clientRole = null;
+        $companyUser = null;
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS)) {
             $roles = Role::query()->where('company_id', Auth::user()->employee->company_id)->get();
             if ($roles) {
@@ -145,12 +146,13 @@ class ClientController extends Controller
                 'company_user_id' => $request->company_user_id
             ])->exists();
 
-            $result = $existingClient ?
+            $companyUser = $existingClient ?
                 $this->clientRepo->updateDescription($request) :
                 $this->clientRepo->attach($request);
+            $result = !is_null($companyUser);
         }
 
-        return self::showResponse($result);
+        return self::showResponse($result, $companyUser);
     }
 
     public function detach($id)

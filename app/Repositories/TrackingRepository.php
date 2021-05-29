@@ -109,15 +109,15 @@ class TrackingRepository
             throw new \Exception('Access denied');
         }
 
+        // User
+        $tracking = Tracking::SimpleUser();
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+            // Manager
+            $tracking = Tracking::TeamManager();
+        }
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
             // Company Admin
             $tracking = Tracking::CompanyAdmin();
-        }elseif (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
-            // Manager
-            $tracking = Tracking::TeamManager();
-        } else {
-            // User
-            $tracking = Tracking::SimpleUser();
         }
 
         $tracking

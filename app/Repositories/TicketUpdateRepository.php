@@ -37,8 +37,13 @@ class TicketUpdateRepository
     public function setCompanyUserId($oldValue, $value, $ticketId, $companyUserId = null)
     {
         if ($oldValue !== $value) {
-            $fullName = CompanyUser::find($value)->userData->full_name;
-            $historyItem = $this->makeHistoryDescription('employee_attached', $fullName);
+            if ($value) {
+                $fullName = CompanyUser::find($value)->userData->full_name;
+                $historyItem = $this->makeHistoryDescription('employee_attached', $fullName);
+            } else {
+                $fullName = $oldValue ? CompanyUser::find($oldValue)->userData->full_name : '';
+                $historyItem = $this->makeHistoryDescription('employee_detached', $fullName);
+            }
             $this->addHistoryItem($ticketId, $companyUserId, $historyItem);
         }
         return $value;

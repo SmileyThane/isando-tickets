@@ -4,6 +4,8 @@
 namespace App\Repositories;
 
 use App\Tag;
+use Auth;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -54,7 +56,7 @@ class TagRepository
             $tagTranslation = new Tag([
                 'name' => $request->name,
                 'color' => $request->color,
-                'lang' => \Auth::user()->language->locale,
+                'lang' => Auth::user()->language->locale,
                 'tag_id' => $tag->id
             ]);
             $tagTranslation->save();
@@ -79,12 +81,13 @@ class TagRepository
         try {
             $tag->delete();
             return true;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return false;
         }
     }
 
-    public function createOrUpdateTranslation($request, $tag) {
+    public function createOrUpdateTranslation($request, $tag)
+    {
         $request->validate([
             'lang' => 'required|string',
             'name' => 'required|string'

@@ -15,6 +15,7 @@ use App\TicketPriority;
 use App\TicketType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
 class TicketController extends Controller
 {
@@ -64,31 +65,31 @@ class TicketController extends Controller
         return self::showResponse(true, $types->get());
     }
 
-    public function createType($name, $name_de, $icon, $companyId = null): TicketType
+    public function addType(Request $request): JsonResponse
     {
-        $companyId = $companyId ?? Auth::user()->employee->companyData->id;
+        $companyId = $request->company_id ?? Auth::user()->employee->companyData->id;
 
-        return TicketType::firstOrCreate([
+        return self::showResponse(true, TicketType::firstOrCreate([
             'entity_type' => Company::class,
             'entity_id' => $companyId,
-            'name' => $name,
-            'name_de' => $name_de,
-            'icon' => $icon
-        ]);
+            'name' => $request->name,
+            'name_de' => $request->name_de,
+            'icon' => $request->icon
+        ]));
     }
 
-    public function updateType($id, $name, $name_de, $icon): TicketType
+    public function updateType(Request $request, $id): JsonResponse
     {
         $type = TicketType::findOrFail($id);
         if ($id !== 1) {
             $type->update([
-                'name' => $name,
-                'name_de' => $name_de,
-                'icon' => $icon
+                'name' => $request->name,
+                'name_de' => $request->name_de,
+                'icon' => $request->icon
             ]);
             $type->save();
         }
-        return $type;
+        return self::showResponse(true, $type);
     }
 
     public function deleteType($id): ?bool
@@ -197,10 +198,29 @@ class TicketController extends Controller
         return self::showResponse(false);
     }
 
+    public function editAnswer(Request $request, $id)
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->editAnswer($request, $id));
+        }
+
+        return self::showResponse(false);
+    }
+
     public function addNotice(Request $request, $id)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
             return self::showResponse($this->ticketRepo->addNotice($request, $id));
+        }
+
+        return self::showResponse(false);
+    }
+
+
+    public function editNotice(Request $request, $id)
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->editNotice($request, $id));
         }
 
         return self::showResponse(false);

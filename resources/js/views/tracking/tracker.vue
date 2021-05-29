@@ -323,19 +323,7 @@
                         <template v-slot:item="{ parent, item, on, attrs }">
                             <div class="d-flex">
                                 <div class="d-inline-flex">
-                                    <v-avatar
-                                        :style="{ backgroundColor: getUserColor(item.id) }"
-                                    >
-                                        <img
-                                            v-if="item.avatar_url"
-                                            :src="item.avatar_url"
-                                            alt="item.full_name"
-                                        >
-                                        <span v-else class="white--text headline text-uppercase">
-                                            <template v-if="item.name && item.name[0]">{{item.name[0]}}</template>
-                                            <template v-if="item.surname && item.surname[0]">{{item.surname[0]}}</template>
-                                        </span>
-                                    </v-avatar>
+                                    <Avatar :user="item" :color="getUserColor(item.id)"></Avatar>
                                 </div>
                                 <div class="d-inline-flex mt-3 ma-4">
                                     {{ item.full_name }}
@@ -443,30 +431,7 @@
                                     <template v-slot:body="props">
                                         <tr v-for="row in props.items">
                                             <td class="pa-3" v-if="hasPermission([42])">
-                                                <v-avatar
-                                                    :color="getUserColor(row.user.id)"
-                                                >
-                                                    <v-tooltip top>
-                                                        <template v-slot:activator="{ on, attrs }">
-                                                            <img
-                                                                v-bind="attrs"
-                                                                v-on="on"
-                                                                v-if="row.user.avatar_url"
-                                                                :src="row.user.avatar_url"
-                                                                alt="row.user.full_name"
-                                                            >
-                                                            <span
-                                                                v-else
-                                                                v-bind="attrs"
-                                                                v-on="on"
-                                                                class="white--text headline text-uppercase"
-                                                            >
-                                                                {{row.user.name[0]}} {{row.user.surname[0]}}
-                                                            </span>
-                                                        </template>
-                                                        <span>{{row.user.full_name}}</span>
-                                                    </v-tooltip>
-                                                </v-avatar>
+                                                <Avatar :user="row.user" :color="getUserColor(row.user.id)"></Avatar>
                                             </td>
                                             <td
                                                 class="pa-3"
@@ -801,13 +766,15 @@ import ProjectBtn from "./components/project-btn";
 import TagBtn from "./components/tag-btn";
 import TagField from "./components/tag-field";
 import TimeField from "./components/time-field";
+import Avatar from "../../components/Avatar";
 
 export default {
     components: {
         ProjectBtn,
         TagBtn,
         TagField,
-        TimeField
+        TimeField,
+        Avatar
     },
     data() {
         return {
@@ -1260,9 +1227,8 @@ export default {
             const foundItem = this.teamEmployee.find(i => i.id === userId);
             if (foundItem) {
                 return foundItem.color;
-            } else {
-                return this.$helpers.color.genRandomColor();
             }
+            return null;
         },
         correctionTime(dateFrom, dateTo) {
             if (moment(dateTo).isBefore(moment(dateFrom))) {
@@ -1321,8 +1287,7 @@ export default {
             let empl = [];
             if (this.hasPermission([90])) {
                 empl = this.$store.getters['Team/getCoworkers'];
-            }
-            if (this.hasPermission([42])) {
+            } else if (this.hasPermission([42])) {
                 this.$store.getters['Team/getManagedTeams'].map(team => {
                     team.employees.map(e => {
                         empl.push({
@@ -1340,7 +1305,7 @@ export default {
                     return item.full_name.toLowerCase();
                 });
             }
-            return empl.map(e => ({ ...e, color: this.$helpers.color.genRandomColor() }));
+            return empl;
         },
         manualFormattedDate: {
             get() {

@@ -30,7 +30,8 @@ export default new Vuex.Store({
         themeFgColor: '#FFFFFF',
         themeBgColor: '#6AA75D',
         appVersion: '',
-        mainCompany: null
+        mainCompany: null,
+        userId: null
     },
     getters: {
         roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion],
@@ -175,6 +176,6 @@ export default new Vuex.Store({
                         reject(error.response && error.response.data.message || 'Error.');
                     });
             });
-        },
+        }
     }
 })
