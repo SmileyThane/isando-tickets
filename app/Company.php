@@ -5,6 +5,7 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,7 +20,8 @@ class Company extends Model
 
     public function getRegistrationDateAttribute()
     {
-        return $this->attributes['registration_date'] ? Carbon::parse($this->attributes['registration_date'])->format('Y-m-d') : null;
+        return $this->attributes['registration_date'] ?
+            Carbon::parse($this->attributes['registration_date'])->format('Y-m-d') : null;
     }
 
     public function employees(): HasMany
@@ -130,10 +132,12 @@ class Company extends Model
 
     public function getSecondAliasAttribute()
     {
-        return $this->attributes['second_alias'] ?? Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
+        return $this->attributes['second_alias'] ??
+            Language::find(Auth::user()->language_id)->lang_map->main->ticketing;
     }
 
-    public function currency() {
+    public function currency(): HasOne
+    {
         return $this->hasOne(Currency::class, 'id', 'currency_id');
     }
 
@@ -142,7 +146,8 @@ class Company extends Model
         return $this->morphMany(InternalBilling::class, 'entity');
     }
 
-    public function license() {
+    public function license(): HasOne
+    {
         return $this->hasOne(License::class, 'company_id', 'id');
     }
 }
