@@ -76,7 +76,7 @@
                                             <template v-slot:label="{ item }">
                                                 {{ item.name }}
                                                 <small v-if="item.type">
-                                                    ({{ localized(item.type) }})
+                                                    ({{ $helpers.i18n.localized(item.type) }})
                                                 </small>
                                             </template>
                                         </v-treeview>
@@ -161,10 +161,10 @@
                                         required
                                     >
                                         <template slot="selection" slot-scope="data">
-                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -450,7 +450,7 @@
                                             <template v-slot:label="{ item }">
                                                 {{ item.name }}
                                                 <small v-if="item.type">
-                                                    ({{ localized(item.type) }})
+                                                    ({{ $helpers.i18n.localized(item.type) }})
                                                 </small>
                                             </template>
                                         </v-treeview>
@@ -522,7 +522,7 @@
                                             <template v-slot:label="{ item }">
                                                 {{ item.name }}
                                                 <small v-if="item.type">
-                                                    ({{ localized(item.type) }})
+                                                    ({{ $helpers.i18n.localized(item.type) }})
                                                 </small>
                                             </template>
                                         </v-treeview>
@@ -614,10 +614,6 @@ export default {
         });
     },
     methods: {
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-        },
         getTemplate() {
             if (this.$route.params.id === 'create') {
                 return;

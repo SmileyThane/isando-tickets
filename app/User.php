@@ -183,4 +183,30 @@ class User extends Authenticatable
     {
         return $this->attributes['avatar_url'];
     }
+
+    public function trackingReports() {
+        return $this->hasMany(TrackingReport::class,'user_id', 'id');
+    }
+
+    public function favoriteTrackingProjects() {
+        return $this->morphedByMany(
+            TrackingProject::class,
+            'entity',
+            'user_favorites',
+            'user_id',
+            'entity_id',
+            'id',
+            'id'
+        );
+    }
+
+    public function billing(): MorphMany
+    {
+        return $this->morphMany(InternalBilling::class, 'entity');
+    }
+
+    public function Timesheet() {
+        return $this->hasMany(TrackingTimesheet::class, 'user_id', 'id')
+            ->with('Timesheet.Times');
+    }
 }

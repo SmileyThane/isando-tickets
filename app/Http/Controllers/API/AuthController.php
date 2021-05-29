@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\CompanyUser;
+use App\Currency;
 use App\Email;
 use App\Http\Controllers\Controller;
-use App\Plan;
+use App\PlanPrice;
 use App\Repositories\CompanyRepository;
 use App\Repositories\CompanyUserRepository;
-use App\Repositories\LicenceRepository;
+use App\Repositories\LicenseRepository;
 use App\Repositories\PlanRepository;
 use App\Repositories\RoleRepository;
 use App\Repositories\UserRepository;
@@ -31,12 +32,10 @@ class AuthController extends Controller
         CompanyRepository $companyRepository,
         UserRepository $userRepository,
         CompanyUserRepository $companyUserRepository,
-        LicenceRepository $licenceRepository,
+        LicenseRepository $licenceRepository,
         RoleRepository $roleRepository,
         PlanRepository $planRepository
-
-    )
-    {
+    ) {
         $this->companyRepo = $companyRepository;
         $this->userRepo = $userRepository;
         $this->companyUserRepo = $companyUserRepository;
@@ -57,9 +56,10 @@ class AuthController extends Controller
                 $tokenData['token'] = $tokenResult->accessToken;
                 $tokenData['client_name'] = $tokenResult->token->name;
                 $tokenData['expires_at'] = Carbon::parse($tokenResult->token['expires_at'])->format('U');
+                $tokenData['user_id'] = $user_id;
+
                 $result = true;
             }
-
         }
         return self::showResponse($result, $tokenData);
     }
@@ -79,14 +79,17 @@ class AuthController extends Controller
             $request->is_validated = true;
             $request->is_active = true;
             $company = $this->companyRepo->create($request);
+            $this->createDefaultRoles($company->id);
             $request->company_id = $company->id;
             $license = $this->licenseRepo->create($request);
-            $request->password = Controller::getRandomString();
-            $user = $this->userRepo->create($request);
-            $companyUser = $this->companyUserRepo->create($company->id, $user->id, false);
-            $this->roleRepo->attach($companyUser->id, CompanyUser::class, Role::LICENSE_OWNER);
-            $this->userRepo->sendInvite($user, Role::LICENSE_OWNER, $request->password);
-            return self::showResponse(true);
+            if ($license) {
+                $request->password = Controller::getRandomString();
+                $user = $this->userRepo->create($request);
+                $companyUser = $this->companyUserRepo->create($company->id, $user->id, false);
+                $this->roleRepo->attach($companyUser->id, CompanyUser::class, Role::CO_ADMIN);
+                $this->userRepo->sendInvite($user, true, $request->password);
+                return self::showResponse(true);
+            }
         }
         return self::showResponse(false, $errors);
     }
@@ -102,11 +105,21 @@ class AuthController extends Controller
         return $isCompanyValid === true && $isUserValid === true && $isLicenseValid === true ? null : $errors;
     }
 
-    public function plans()
+    private function createDefaultRoles($companyId)
     {
-        return self::showResponse(true, Plan::all());
+        foreach (Role::where('company_id', null)->get() as $role) {
+            $this->roleRepo->replicate($role->id, $companyId);
+        }
+        return true;
     }
 
+    public function plans($groupedBy = null)
+    {
+        if ($groupedBy === 'currency') {
+            return self::showResponse(true, Currency::with('planPrice.plan')->get());
+        }
+        return self::showResponse(true, PlanPrice::with('plan', 'currency')->get());
+    }
 
     public function resetPassword(Request $request)
     {
@@ -116,6 +129,11 @@ class AuthController extends Controller
 
     public function getAppVersion(Request $request)
     {
-        return self::showResponse(true, \Tremby\LaravelGitVersion\GitVersionHelper::getVersion());
+        $versionStr = \Tremby\LaravelGitVersion\GitVersionHelper::getVersion();
+        if (config('app.env') == 'production') {
+            $versionStr = str_ireplace('-dirty', '', $versionStr);
+            $versionStr = substr($versionStr, 0, strrpos($versionStr, '-'));
+        }
+        return self::showResponse(true, $versionStr);
     }
 }

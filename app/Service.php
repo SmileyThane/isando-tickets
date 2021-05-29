@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Service extends Model
 {
@@ -22,6 +23,11 @@ class Service extends Model
 
     public function Tracking() {
         return $this->Serviceable()->first()->Tracking();
+    }
+
+    public function scopeMyCompany($query) {
+        $company = Auth::user()->employee->companyData()->with('employees.userData')->first();
+        return $query->where('company_id', '=', $company->id);
     }
 
 }

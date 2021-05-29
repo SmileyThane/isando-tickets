@@ -11,9 +11,13 @@
         <div class="d-flex flex-row">
             <div class="d-inline-flex flex-grow-1">
                 <v-select
-                    placeholder="Choose report"
+                    :placeholder="langMap.tracking.report.choose_report"
                     outlined
-                    v-model="builder.report"
+                    :items="$store.getters['Tracking/getReports']"
+                    item-text="name"
+                    item-value="id"
+                    v-model="report.selected"
+                    @input="selectReport"
                 ></v-select>
             </div>
             <div class="d-inline-flex mx-16">
@@ -25,35 +29,76 @@
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
                             :color="themeBgColor"
-                            :style="{ color: invertColor(themeBgColor) }"
+                            :style="{ color: $helpers.color.invertColor(themeBgColor) }"
                             v-bind="attrs"
                             v-on="on"
                         >
-                            Save
+                            {{langMap.tracking.report.save_btn}}
                         </v-btn>
                     </template>
                     <v-card>
                         <v-card-title class="headline">
-                            Save report
+                            {{langMap.tracking.report.save_report}}
                         </v-card-title>
                         <v-card-text>
                             <div class="d-flex flex-column">
                                 <div class="d-inline-block">
-                                    <v-text-field
-                                        placeholder="Report name"
-                                        required
-                                    ></v-text-field>
+                                    <div class="d-flex flex-row">
+                                        <div class="d-inline-flex flex-grow-1">
+                                            <v-text-field
+                                                :placeholder="langMap.tracking.report.report_name"
+                                                required
+                                                v-model="builder.reportName"
+                                            ></v-text-field>
+                                        </div>
+                                        <div class="d-inline-flex flex-grow-0 pt-3">
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                :style="{ color: $helpers.color.invertColor(themeBgColor) }"
+                                                @click="saveReport()"
+                                            >
+                                                {{langMap.tracking.report.save_btn}}
+                                            </v-btn>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="d-inline-block">
+                                <div class="d-inline-block" v-if="$store.getters['Tracking/getReports'].length">
                                     <v-list dense>
-                                        <v-subheader>REPORTS</v-subheader>
+                                        <v-subheader>{{langMap.tracking.report.reports}}</v-subheader>
                                         <v-list-item-group
                                             color="primary"
                                         >
                                             <v-list-item
+                                                v-for="report in $store.getters['Tracking/getReports']"
+                                                :key="report.id"
                                             >
                                                 <v-list-item-content>
-                                                    <v-list-item-title></v-list-item-title>
+                                                    <v-list-item-title class="d-flex flex-row">
+                                                        <div
+                                                            class="d-inline-flex flex-grow-1"
+                                                            @click="selectReport(report.id)"
+                                                        >
+                                                            {{report.name}}
+                                                            <small
+                                                                style="color: gray"
+                                                            >
+                                                                &nbsp;({{langMap.tracking.report.from}} {{moment(report.created_at).format('DD/MM/YYYY H:m:ss')}})
+                                                            </small>
+                                                        </div>
+                                                        <div class="d-inline-flex flex-grow-0">
+                                                            <v-btn
+                                                                class="mx-2"
+                                                                icon
+                                                                x-small
+                                                                color="error"
+                                                                @click="deleteReport(report.id)"
+                                                            >
+                                                                <v-icon dark>
+                                                                    mdi-delete
+                                                                </v-icon>
+                                                            </v-btn>
+                                                        </div>
+                                                    </v-list-item-title>
                                                 </v-list-item-content>
                                             </v-list-item>
                                         </v-list-item-group>
@@ -68,7 +113,7 @@
                                 text
                                 @click="dialogSave = false"
                             >
-                                Close
+                                {{langMap.tracking.report.close_btn}}
                             </v-btn>
                         </v-card-actions>
                     </v-card>
@@ -90,11 +135,11 @@
                         <v-expansion-panel-header v-slot="{ open }">
                             <div class="d-flex flex-row">
                                 <div class="d-inline-flex">
-                                    Time period:
+                                    {{ langMap.tracking.report.time_period }}:
                                 </div>
                                 <div class="d-inline-flex float-right flex-grow-1 text-center">
                                     <v-fade-transition leave-absolute>
-                                        <span v-if="open" class="d-block flex-grow-1">Choose period</span>
+                                        <span v-if="open" class="d-block flex-grow-1">{{ langMap.tracking.report.choose_period }}</span>
                                         <span v-else class="d-block flex-grow-1">
                                             {{ builder.period.start ? moment(builder.period.start).format('ddd D MMM YYYY') : '...' }} -
                                             {{ moment(builder.period.end).format('ddd D MMM YYYY') }}
@@ -108,22 +153,22 @@
                         >
                             <div class="d-flex flex-row">
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('today')" :style="{ color: themeBgColor }">Today</a>
-                                    <a class="text-decoration-none" @click="setPeriod('yesterday')" :style="{ color: themeBgColor }">Yesterday</a>
-                                    <a class="text-decoration-none" @click="setPeriod('last7days')" :style="{ color: themeBgColor }">Last 7 days</a>
-                                    <a class="text-decoration-none" @click="setPeriod('last28days')" :style="{ color: themeBgColor }">Last 28 days</a>
+                                    <a class="text-decoration-none" @click="setPeriod('today')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_today }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('yesterday')" :style="{ color: themeBgColor }">{{langMap.tracking.report.period_yesterday}}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last7days')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last7days }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('last28days')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last28days }}</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')" :style="{ color: themeBgColor }">This week</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')" :style="{ color: themeBgColor }">Last week</a>
-                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')" :style="{ color: themeBgColor }">This month</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')" :style="{ color: themeBgColor }">Last month</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisWeek')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_week }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastWeek')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_week }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisMonth')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_month }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastMonth')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_month }}</a>
                                 </div>
                                 <div class="d-flex flex-column flex-grow-1">
-                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')" :style="{ color: themeBgColor }">This quarter</a>
-                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')" :style="{ color: themeBgColor }">Last quarter</a>
-                                    <a class="text-decoration-none" @click="setPeriod('thisYear')" :style="{ color: themeBgColor }">This year</a>
-                                    <a class="text-decoration-none" @click="setPeriod('totalTime')" :style="{ color: themeBgColor }">Total time</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_quarter }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('lastQuarter')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_last_quarter }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('thisYear')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_this_year }}</a>
+                                    <a class="text-decoration-none" @click="setPeriod('totalTime')" :style="{ color: themeBgColor }">{{ langMap.tracking.report.period_total_time }}</a>
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
@@ -131,7 +176,7 @@
                             </div>
                             <div class="d-flex flex-row">
                                 <div class="d-inline-flex flex-grow-1">
-                                    Or select a custom period:
+                                    {{langMap.tracking.report.select_custom_period}}:
                                 </div>
                             </div>
                             <div class="d-flex flex-row">
@@ -145,7 +190,7 @@
                                         :step="1"
                                         :columns="2"
                                         mode="range"
-                                        @input="activePeriod = null; genPreview()"
+                                        @input="activePeriod = null; genPreview(); resetSelectedReport()"
                                     ></vc-date-picker>
                                 </div>
                             </div>
@@ -157,13 +202,13 @@
             <div class="d-inline-flex flex-glow-1 mx-2 hidden-sm-and-up" style="width: 100%">
                 <v-select
                     prepend-inner-icon="mdi-approximately-equal"
-                    placeholder="Rounding up of times"
+                    :placeholder="langMap.tracking.report.rounding_up_of_times"
                     outlined
-                    :items="roundingItems"
+                    :items="availableRoundingItems"
                     item-text="text"
                     item-value="value"
                     v-model="builder.round"
-                    disabled
+                    @input="resetSelectedReport()"
                 >
                 </v-select>
             </div>
@@ -171,14 +216,14 @@
             <div class="d-inline-flex flex-glow-1 ml-2" style="width: 100%">
                 <v-select
                     :prepend-inner-icon="builder.sort.icon"
-                    placeholder="Sorting"
+                    :placeholder="langMap.tracking.report.sorting"
                     outlined
                     :items="sortingItems"
                     item-text="text"
                     item-value="value"
                     v-model="builder.sort"
                     return-object
-                    @input="genPreview"
+                    @input="genPreview(); resetSelectedReport()"
                 >
                     <template v-slot:item="{ parent, item, on, attrs }">
                         <span>
@@ -195,7 +240,7 @@
             outlined
         >
             <div class="d-inline-flex align-center order-first" style="min-width: 150px">
-                Group entries by...
+                {{langMap.tracking.report.grouping}}
             </div>
             <draggable
                 :options="{ group:'grouping' }"
@@ -205,6 +250,7 @@
                 :style="{ 'min-width': '45%' }"
                 class="d-inline-flex order-2 dragNDrop"
                 :class="{ 'active': draggable }"
+                @input="resetSelectedReport()"
             >
                 <v-btn
                     v-for="groupItem in builder.group"
@@ -228,6 +274,7 @@
                 :style="{ 'min-width': '40%' }"
                 class="d-inline-block order-last dragNDrop common"
                 :class="{ 'active': draggable }"
+                @input="resetSelectedReport()"
             >
                 <v-btn
                     v-for="groupItem in groupItems"
@@ -251,7 +298,7 @@
             class="d-flex px-6 py-2 mt-3 flex-row"
         >
             <div class="d-inline-flex">
-                Filter entries:
+                {{langMap.tracking.report.filter}}:
             </div>
             <div class="d-inline-flex flex-grow-1 mx-4">
                 <div class="d-flex flex-column" style="width: 100%">
@@ -289,7 +336,7 @@
                                     clearable
                                     style="max-width: 900px; width: 100%"
                                     v-model="filter.selected"
-                                    @input="genPreview"
+                                    @input="genPreview(); resetSelectedReport()"
                                 ></v-select>
                                 <v-btn
                                     color="danger"
@@ -318,9 +365,9 @@
                     >
                         <div class="d-flex flex-column">
                             <v-icon x-large class="d-inline-flex">mdi-clock-outline</v-icon>
-                            <span class="d-inline-block text-center">Total time</span>
+                            <span class="d-inline-block text-center">{{langMap.tracking.report.total_time}}</span>
                             <span class="d-inline-block text-center">
-                                {{ helperConvertSecondsToTimeFormat(totalTime) }}
+                                {{ $helpers.time.convertSecToTime(totalTime, false) }}
                             </span>
                         </div>
                     </v-card>
@@ -328,12 +375,13 @@
                         class="d-inline-flex mt-2 align-content-end pa-6"
                         outlined
                         x-large
+                        v-if="$helpers.auth.checkPermissionByIds([69])"
                     >
                         <div class="d-flex flex-column">
                             <v-icon x-large class="d-inline-flex">mdi-cash-multiple</v-icon>
-                            <span class="d-inline-block text-center">Revenue</span>
+                            <span class="d-inline-block text-center">{{langMap.tracking.report.revenue}}</span>
                             <span class="d-inline-block text-center">
-                                <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{totalRevenue}}
+                                <span v-if="currentCurrency">{{currentCurrency.slug}}</span> {{$helpers.numbers.numberFormat(totalRevenue, 2)}}
                             </span>
                         </div>
                     </v-card>
@@ -375,45 +423,206 @@
                         {{ item.name }}
                     </div>
                     <div v-else class="d-flex flex-row">
-                        <table border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
+                        <table class="v-data-table" :class="item.status === 'started' ? 'success lighten-5' : ''" border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
                             <tbody>
                                 <tr>
                                     <td class="pa-2" align="right" width="10%">
                                         {{ moment(item.date_from).format('DD MMM YYYY') }}
                                     </td>
                                     <td class="pa-2" align="left" width="15%">
-                                        <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>None</span>
+                                        <span v-if="item.user">{{ item.user.full_name }}</span><span v-else>{{langMap.tracking.report.none}}</span>
                                     </td>
                                     <td class="pa-2" align="left">
-                                        <span v-if="item.entity">{{ item.entity.name }}</span>
+                                        <span
+                                            v-if="item.entity"
+                                            :style="{ color: item.entity && item.entity.color ? item.entity.color : themeBgColor }"
+                                        >
+                                            <span v-if="item.entity_type === 'App\\TrackingProject'">{{ langMap.tracking.report.project }}: </span>
+                                            <span v-if="item.entity_type === 'App\\Ticket'">{{ langMap.tracking.report.ticket }}: </span>
+                                            {{ item.entity.name }}
+                                        </span>
                                         <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
                                         <span v-if="item.service">{{ item.service.name }}</span>
                                         <v-icon v-if="(item.service && item.description) || (item.entity && item.description)" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
                                         <span v-if="item.description">{{ item.description }}</span>
                                     </td>
                                     <td class="pa-2" align="right" width="10%">
-                                        <v-chip
-                                            v-for="tag in item.tags"
-                                            :key="tag.id"
-                                            :color="tag.color"
-                                            :text-color="invertColor(tag.color)"
-                                            v-text="tag.name"
-                                            small
-                                        ></v-chip>
+                                        <TagField
+                                            disabled
+                                            readonly
+                                            :key="item.id"
+                                            :color="themeBgColor"
+                                            v-model="item.tags"
+                                        ></TagField>
                                     </td>
                                     <td class="pa-2" align="center" width="5%">
-                                        <span v-if="item.billable">Yes</span>
-                                        <span v-else>No</span>
+                                        <span v-if="item.billable">{{ langMap.tracking.report.billable }}</span>
+                                        <span v-else>{{ langMap.tracking.report.non_billable }}</span>
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
-                                        {{ helperConvertSecondsToTimeFormat(helperCalculatePassedTime(item.date_from, item.date_to), false) }}
+                                        {{ $helpers.time.convertSecToTime(item.passed, false) }}
                                     </td>
                                     <td class="pa-2" align="right" width="5%">
-                                        <span v-if="item.revenue">
+                                        <span v-if="$helpers.auth.checkPermissionByIds([69])">
                                             <span v-if="currentCurrency">
                                                 {{ currentCurrency.slug }}
-                                            </span> {{ parseFloat(item.revenue).toFixed(2) }}
+                                            </span> {{ $helpers.numbers.numberFormat(item.revenue) }}
                                         </span>
+                                    </td>
+                                    <td class="pa-2" align="center" width="5%">
+                                        <span
+                                            v-if="item.status === 'started'"
+                                            @click="stopTrack(item.id)"
+                                        >
+                                            <v-icon>mdi-stop</v-icon>
+                                        </span>
+                                        <span class="pl-7" v-if="item.status !== 'started'"></span>
+                                        <v-dialog
+                                            v-if="isEditable(item)"
+                                            v-model="dialogEdit[item.id]"
+                                            width="500"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    v-if="isEditable(item)"
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                    x-small
+                                                    @click="openEditDialog(item)"
+                                                >
+                                                    <v-icon>mdi-pencil</v-icon>
+                                                </v-btn>
+                                            </template>
+
+                                            <v-card v-if="isEditable(item)">
+                                                <v-card-title>
+                                                    {{ langMap.tracking.report.edit }}
+                                                </v-card-title>
+                                                <v-card-text>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="d-flex-inline flex-grow-1">
+                                                            <v-select
+                                                                :items="$store.getters['Services/getServices']"
+                                                                :label="langMap.tracking.tracker.service_type"
+                                                                :placeholder="langMap.tracking.tracker.service_type"
+                                                                item-text="name"
+                                                                item-value="id"
+                                                                v-model="editForm.service"
+                                                                return-object
+                                                                dense
+                                                            ></v-select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="d-flex-inline flex-grow-1 mb-5">
+                                                            <ProjectBtn
+                                                                :color="themeBgColor"
+                                                                v-model="editForm.entity"
+                                                                :label="langMap.tracking.report.project_or_Ticket"
+                                                            ></ProjectBtn>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="d-flex-inline flex-grow-1">
+                                                            <TimeField
+                                                                v-model="editForm.date_from"
+                                                                style="max-width: 100px; height: 40px"
+                                                                :label="langMap.tracking.report.date_start"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                            ></TimeField>
+                                                        </div>
+                                                        <div class="d-flex-inline flex-grow-1">
+                                                            <TimeField
+                                                                v-model="editForm.date_to"
+                                                                style="max-width: 100px; height: 40px"
+                                                                :label="langMap.tracking.report.date_to"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                            ></TimeField>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="d-flex-inline flex-grow-1">
+                                                            <TagField
+                                                                :key="item.id"
+                                                                :color="themeBgColor"
+                                                                v-model="editForm.tags"
+                                                                width="450"
+                                                            ></TagField>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex flex-row">
+                                                        <div class="d-flex-inline flex-grow-1">
+                                                            <v-checkbox
+                                                                :disabled="!isEditable(item)"
+                                                                v-model="editForm.billable"
+                                                                :label="langMap.tracking.report.billable"
+                                                            ></v-checkbox>
+                                                        </div>
+                                                    </div>
+                                                </v-card-text>
+                                                <v-divider></v-divider>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="error"
+                                                        text
+                                                        @click="closeEditDialog(item)"
+                                                    >
+                                                        {{ langMap.tracking.report.cancel }}
+                                                    </v-btn>
+                                                    <v-btn
+                                                        color="success"
+                                                        text
+                                                        @click="saveChanges(item); closeEditDialog(item)"
+                                                    >
+                                                        {{ langMap.tracking.report.change }}
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
+                                        <v-dialog
+                                            v-if="isEditable(item)"
+                                            v-model="dialogDelete[item.id]"
+                                            persistent
+                                            max-width="290"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn
+                                                    v-if="isEditable(item)"
+                                                    x-small
+                                                    icon
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                >
+                                                    <v-icon>mdi-delete</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <v-card v-if="isEditable(item)">
+                                                <v-card-title class="headline">
+                                                    {{ langMap.tracking.report.are_you_sure }}
+                                                </v-card-title>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="red darken-1"
+                                                        text
+                                                        @click="dialogDelete[item.id] = false"
+                                                    >
+                                                        {{ langMap.tracking.report.cancel }}
+                                                    </v-btn>
+                                                    <v-btn
+                                                        color="green darken-1"
+                                                        text
+                                                        @click="removeTrack(item.id); dialogDelete[item.id] = false"
+                                                    >
+                                                        {{ langMap.tracking.report.confirm }}
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
                                     </td>
                                 </tr>
                             </tbody>
@@ -434,37 +643,37 @@
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
                             :color="themeBgColor"
-                            :style="{ color: invertColor(themeBgColor) }"
+                            :style="{ color: $helpers.color.invertColor(themeBgColor) }"
                             v-bind="attrs"
                             v-on="on"
                             class="mx-3"
                         >
                             <v-icon>mdi-file-pdf-box-outline</v-icon>
-                            Create PDF
+                            {{ langMap.tracking.report.create_pdf }}
                         </v-btn>
                     </template>
                     <v-card>
                         <v-card-title>
-                            <span class="headline">Create PDF</span>
+                            <span class="headline">{{ langMap.tracking.report.create_pdf }}</span>
                         </v-card-title>
                         <v-card-text>
                             <!-- FORM -->
                             <div class="d-flex flex-column">
                                 <div class="d-inline-block">
                                     <v-text-field
-                                        label="Name of the report"
+                                        :label="langMap.tracking.report.name_of_the_report"
                                         v-model="report.pdf.name"
                                     ></v-text-field>
                                 </div>
                                 <div class="d-inline-block">
                                     <v-text-field
-                                        label="Co-workers"
+                                        :label="langMap.tracking.report.co_worker"
                                         v-model="report.pdf.coworkers"
                                     ></v-text-field>
                                 </div>
                                 <div class="d-inline-block">
                                     <v-text-field
-                                        label="Period"
+                                        :label="langMap.tracking.report.period"
                                         v-model="report.pdf.periodText"
                                     ></v-text-field>
                                 </div>
@@ -473,10 +682,62 @@
                                         :items="report.groupItems"
                                         item-text="text"
                                         item-value="value"
-                                        label="Group"
+                                        :label="langMap.tracking.report.group"
                                         v-model="report.pdf.groupSel"
                                     >
                                     </v-select>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-combobox
+                                        v-model="report.pdf.hideColumns"
+                                        :items="report.availableColumns"
+                                        return-object
+                                        item-value="value"
+                                        item-text="text"
+                                        :label="langMap.tracking.report.hide_columns"
+                                        multiple
+                                        outlined
+                                        dense
+                                        clearable
+                                    ></v-combobox>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-checkbox
+                                        class="my-0"
+                                        hide-details
+                                        v-model="report.pdf.showCover"
+                                        :label="langMap.tracking.report.cover_page"
+                                    ></v-checkbox>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-checkbox
+                                        :disabled="!$helpers.auth.checkPermissionByIds([69])"
+                                        class="my-0"
+                                        hide-details
+                                        v-model="report.pdf.showRevenue"
+                                        :label="langMap.tracking.report.display_revenue"
+                                    ></v-checkbox>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-checkbox
+                                        class="my-0"
+                                        hide-details
+                                        v-model="report.pdf.timeInDecimal"
+                                        :label="langMap.tracking.report.display_time_with_decimal"
+                                    ></v-checkbox>
+                                </div>
+                                <div class="d-inline-block">
+                                    <v-checkbox
+                                        class="my-0"
+                                        hide-details
+                                        v-model="report.pdf.sendByEmail"
+                                        :label="langMap.tracking.report.send_report_by_email"
+                                    ></v-checkbox>
+                                    <v-text-field
+                                        v-if="report.pdf.sendByEmail"
+                                        v-model="report.pdf.email"
+                                        :label="langMap.tracking.report.recipient_email"
+                                    ></v-text-field>
                                 </div>
                             </div>
                         </v-card-text>
@@ -494,7 +755,7 @@
                                 text
                                 @click="createFile('pdf')"
                             >
-                                Create
+                                {{ langMap.tracking.report.create }}
                             </v-btn>
                         </v-card-actions>
                     </v-card>
@@ -507,18 +768,18 @@
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn
                             :color="themeBgColor"
-                            :style="{ color: invertColor(themeBgColor) }"
+                            :style="{ color: $helpers.color.invertColor(themeBgColor) }"
                             v-bind="attrs"
                             v-on="on"
                             class="mx-3"
                         >
                             <v-icon>mdi-file-delimited-outline</v-icon>
-                            CSV Export
+                            {{ langMap.tracking.report.csv_export }}
                         </v-btn>
                     </template>
                     <v-card>
                         <v-card-title>
-                            <span class="headline">CSV Export</span>
+                            <span class="headline">{{ langMap.tracking.report.csv_export }}</span>
                         </v-card-title>
                         <v-card-text>
                             <div class="d-flex flex-column">
@@ -555,14 +816,14 @@
                                 text
                                 @click="dialogExportCSV = false"
                             >
-                                Cancel
+                                {{ langMap.tracking.report.сancel }}
                             </v-btn>
                             <v-btn
                                 color="success"
                                 text
                                 @click="createFile('csv'); dialogExportCSV = false"
                             >
-                                Export
+                                {{ langMap.tracking.report.export }}
                             </v-btn>
                         </v-card-actions>
                     </v-card>
@@ -629,18 +890,25 @@
 
 <script>
 import EventBus from "../../components/EventBus";
-import * as Helper from "./helper";
 import moment from "moment-timezone";
 import draggable from "vuedraggable";
 import BarChart from "./components/bar-chart";
 import DoughnutChart from "./components/doughnut-chart";
 import _ from "lodash";
+import TimeField from "./components/time-field";
+import TagBtn from "./components/tag-btn";
+import TagField from "./components/tag-field";
+import ProjectBtn from "./components/project-btn";
 
 export default {
     components: {
         draggable,
         DoughnutChart,
-        BarChart
+        BarChart,
+        TimeField,
+        TagBtn,
+        TagField,
+        ProjectBtn
     },
     data() {
         const self = this;
@@ -655,7 +923,6 @@ export default {
             draggable: false,
             builder: {
                 reportName: 'Report',
-                report: null,
                 period: {
                     start: moment().subtract(1, 'months').format('YYYY-MM-DD'),
                     end: moment().format('YYYY-MM-DD')
@@ -664,12 +931,12 @@ export default {
                 sort: {
                     icon: 'mdi-sort-alphabetical-ascending',
                     value: 'alph-asc',
-                    text: 'A - Z and chronologically'
+                    text: this.$store.state.lang.lang_map.tracking.report.sort_chronologically
                 },
                 group: [
                     {
                         icon: "mdi-domain",
-                        text: "Services",
+                        text: this.$store.state.lang.lang_map.tracking.report.services,
                         value: "service"
                     }
                 ],
@@ -678,47 +945,47 @@ export default {
             roundingItems: [
                 {
                     value: 0,
-                    text: 'Rounding up of times'
+                    text: this.$store.state.lang.lang_map.tracking.report.rounding_up_of_times
                 },
                 {
                     value: 1,
-                    text: 'Rounding to full min.'
+                    text: this.$store.state.lang.lang_map.tracking.report.rounding_to_full_min
                 },
                 {
                     value: 5,
-                    text: 'Rounding to full 5 min.'
+                    text: this.$store.state.lang.lang_map.tracking.report.rounding_to_5_min
                 },
                 {
                     value: 10,
-                    text: 'Rounding to full 10 min.'
+                    text: this.$store.state.lang.lang_map.tracking.report.rounding_to_10_min
                 },
                 {
                     value: 15,
-                    text: 'Rounding to full 15 min.'
+                    text: this.$store.state.lang.lang_map.tracking.report.rounding_to_15_min
                 },
                 {
                     value: 30,
-                    text: 'Rounding to full 30 min.'
+                    text: this.$store.state.lang.lang_map.tracking.report.rounding_to_30_min
                 },
                 {
                     value: 45,
-                    text: 'Rounding to full 45 min.'
+                    text: this.$store.state.lang.lang_map.tracking.report.rounding_to_45_min
                 },
                 {
                     value: 60,
-                    text: 'Rounding to full hours'
+                    text: this.$store.state.lang.lang_map.tracking.report.rounding_to_hours
                 }
             ],
             sortingItems: [
                 {
                     icon: 'mdi-sort-alphabetical-ascending',
                     value: 'alph-asc',
-                    text: 'A - Z and chronologically'
+                    text: this.$store.state.lang.lang_map.tracking.report.sort_chronologically
                 },
                 {
                     icon: 'mdi-sort-alphabetical-descending',
                     value: 'chron-desc',
-                    text: 'A - Z and chronologically descending'
+                    text: this.$store.state.lang.lang_map.tracking.report.sort_chronologically_descending
                 },
                 // {
                 //     icon: 'mdi-sort-numeric-descending',
@@ -744,44 +1011,44 @@ export default {
             groupItems: [
                 {
                     icon: "mdi-calendar-today",
-                    text: "Day",
+                    text: this.$store.state.lang.lang_map.tracking.report.day,
                     value: "day"
                 },
                 {
                     icon: "mdi-folder-account-outline",
-                    text: "Projects",
+                    text: this.$store.state.lang.lang_map.tracking.report.projects,
                     value: "project"
                 },
                 {
                     icon: "mdi-calendar-week",
-                    text: "Week",
+                    text: this.$store.state.lang.lang_map.tracking.report.week,
                     value: "week"
                 },
                 {
                     icon: "mdi-currency-usd",
-                    text: "Billability",
+                    text: this.$store.state.lang.lang_map.tracking.report.billability,
                     value: "billability"
                 },
                 {
                     icon: "mdi-account",
-                    text: "Clients",
+                    text: this.$store.state.lang.lang_map.tracking.report.clients,
                     value: "client"
                 },
                 {
                     icon: "mdi-calendar-month",
-                    text: "Month",
+                    text: this.$store.state.lang.lang_map.tracking.report.month,
                     value: "month"
                 },
                 {
                     icon: "mdi-account-multiple",
-                    text: "Co-worker",
+                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
                     value: "coworker"
                 },
             ],
             availableFilters: [
                 {
                     value: 'coworkers',
-                    text: 'Co-worker',
+                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
                     store: 'Team/getCoworkers',
                     items: [],
                     selected: [],
@@ -789,7 +1056,7 @@ export default {
                 },
                 {
                     value: 'projects',
-                    text: 'Projects',
+                    text: this.$store.state.lang.lang_map.tracking.report.projects,
                     store: 'Projects/getProjects',
                     items: [],
                     selected: [],
@@ -797,7 +1064,7 @@ export default {
                 },
                 {
                     value: 'clients',
-                    text: 'Clients',
+                    text: this.$store.state.lang.lang_map.tracking.report.clients,
                     store: 'Clients/getClients',
                     items: [],
                     selected: [],
@@ -805,7 +1072,7 @@ export default {
                 },
                 {
                     value: 'services',
-                    text: 'Services',
+                    text: this.$store.state.lang.lang_map.tracking.report.services,
                     store: 'Services/getServices',
                     items: [],
                     selected: [],
@@ -813,20 +1080,28 @@ export default {
                 },
                 {
                     value: 'billable',
-                    text: 'Billable',
+                    text: this.$store.state.lang.lang_map.tracking.report.billable,
                     store: null,
                     items: [
                         {
                             id: 1,
-                            name: 'Billable'
+                            name: this.$store.state.lang.lang_map.tracking.report.billable
                         },
                         {
                             id: 0,
-                            name: 'Non-billable'
+                            name: this.$store.state.lang.lang_map.tracking.report.non_billable
                         }
                     ],
                     selected: null,
                     multiply: false
+                },
+                {
+                    value: 'tag',
+                    text: this.$store.state.lang.lang_map.tracking.report.tags,
+                    store: 'Tags/getTags',
+                    items: [],
+                    selected: [],
+                    multiply: true
                 }
             ],
             chart: {
@@ -844,7 +1119,7 @@ export default {
                                 return data.labels[tooltipItem[0].index] ?? 'Title';
                             },
                             label: function(tooltipItem, data) {
-                                return self.helperConvertSecondsToTimeFormat(data.datasets[0].data[tooltipItem.index] * 60 * 60);
+                                return self.$helpers.time.convertSecToTime(data.datasets[0].data[tooltipItem.index] * 60 * 60, false);
                             }
                         }
                     }
@@ -852,18 +1127,18 @@ export default {
             },
             reportData: {
                 headers: [
-                    { text: 'Description', value: 'description' },
-                    { text: 'Client', value: 'project.client.name' },
+                    { text: this.$store.state.lang.lang_map.tracking.report.description, value: 'description' },
+                    { text: this.$store.state.lang.lang_map.tracking.report.client, value: 'project.client.name' },
                     {
-                        text: 'Project',
+                        text: this.$store.state.lang.lang_map.tracking.report.project,
                         align: 'start',
                         sortable: false,
                         value: 'project.name',
                     },
-                    { text: 'Billable', value: 'billable' },
-                    { text: 'Date from', value: 'date_from' },
-                    { text: 'Date to', value: 'date_to' },
-                    { text: 'Passed', value: 'passed' },
+                    { text: this.$store.state.lang.lang_map.tracking.report.billable, value: 'billable' },
+                    { text: this.$store.state.lang.lang_map.tracking.report.date_from, value: 'date_from' },
+                    { text: this.$store.state.lang.lang_map.tracking.report.date_to, value: 'date_to' },
+                    { text: this.$store.state.lang.lang_map.tracking.report.passed, value: 'passed' },
                     { text: '', value: 'data-table-expand' },
                 ],
                 entities: []
@@ -872,45 +1147,110 @@ export default {
             dialogExportCSV: false,
             dialogPrint: false,
             dialogSave: false,
+            dialogEdit: {},
+            dialogDelete: {},
+            editForm: {
+                id: null,
+                entity: null,
+                service: null,
+                date_from: null,
+                date_to: null,
+                billable: null,
+                tags: [],
+            },
             report: {
                 groupItems: [
                     {
                         value: 1,
-                        text: 'Sort chronologically & do not group',
+                        text: this.$store.state.lang.lang_map.tracking.report.sort_chronologically_not_group,
                         items: []
                     },
-                    {
-                        value: 2,
-                        text: 'Group by service (Coming soon)',
-                        items: []
-                    }
+                    // {
+                    //     value: 2,
+                    //     text: this.$store.state.lang.lang_map.tracking.report.group_by_service,
+                    //     items: []
+                    // }
                 ],
                 pdf: {
                     name: 'Report',
                     coworkers: null,
                     periodText: '',
-                    groupSel: 1
+                    groupSel: 1,
+                    showCover: true,
+                    showRevenue: false,
+                    timeInDecimal: false,
+                    hideColumns: [],
+                    sendByEmail: false,
+                    email: ''
                 },
                 csv: {
                     group: {
                         value: 'all_no_group',
-                        text: 'All single entries, sorted based on the grouping',
+                        text: this.$store.state.lang.lang_map.tracking.report.all_entries_sorted_based_grouping,
                         items: []
                     },
                     timeFormat: 4,
                     dateFormat: 2
-                }
+                },
+                availableColumns: [
+                    {
+                        value: 'date',
+                        text: this.$store.state.lang.lang_map.tracking.report.date
+                    },
+                    {
+                        value: 'start',
+                        text: this.$store.state.lang.lang_map.tracking.report.start
+                    },
+                    {
+                        value: 'end',
+                        text: this.$store.state.lang.lang_map.tracking.report.end
+                    },
+                    {
+                        value: 'total',
+                        text: this.$store.state.lang.lang_map.tracking.report.total
+                    },
+                    {
+                        value: 'client',
+                        text: this.$store.state.lang.lang_map.tracking.report.clients
+                    },
+                    {
+                        value: 'coworker',
+                        text: this.$store.state.lang.lang_map.tracking.report.co_worker
+                    },
+                    // {
+                    //     value: 'project',
+                    //     text: this.$store.state.lang.lang_map.tracking.report.project
+                    // },
+                    {
+                        value: 'service',
+                        text: this.$store.state.lang.lang_map.tracking.report.services
+                    },
+                    {
+                        value: 'description',
+                        text: this.$store.state.lang.lang_map.tracking.report.description
+                    },
+                    {
+                        value: 'billable',
+                        text: this.$store.state.lang.lang_map.tracking.report.billable
+                    },
+                    // {
+                    //     value: 'revenue',
+                    //     text: this.$store.state.lang.lang_map.tracking.report.revenue
+                    // },
+                ],
+                name: '',
+                selected: null
             },
             csvForm: {
                 groupItems: [
                     {
                         value: 'all_no_group',
-                        text: 'All single entries, sorted based on the grouping',
+                        text: this.$store.state.lang.lang_map.tracking.report.all_entries_sorted_based_grouping,
                         items: []
                     },
                     {
                         value: 'all_chron',
-                        text: 'All single entries, chronologically sorted',
+                        text: this.$store.state.lang.lang_map.tracking.report.all_entries_chronologically_sorted,
                         items: []
                     }
                 ],
@@ -959,7 +1299,9 @@ export default {
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Projects/getProjectList', { search: null });
         this.$store.dispatch('Team/getCoworkers', { search: null });
+        this.$store.dispatch('Tags/getTagList', { search: null });
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
+        this.debounceGetReports = _.debounce(this.__getReports, 1000);
     },
     mounted() {
         let that = this;
@@ -971,13 +1313,22 @@ export default {
         });
         this.setPeriod();
         this.debounceGetSettings();
+        this.debounceGetReports();
     },
     methods: {
         __getSettings() {
-            this.$store.dispatch('Tracking/getSettings');
+            this.$store.dispatch('Tracking/getSettings')
+                .then(successResult => {
+                   if (successResult) {
+                       const settings = this.$store.getters['Tracking/getSettings'];
+                       if (settings && settings.email) {
+                           this.report.pdf.email = settings.email.email;
+                       }
+                   }
+                });
         },
-        invertColor(hex, bw = true) {
-            return Helper.invertColor(hex.substr(0, 7), bw);
+        __getReports() {
+            this.$store.dispatch('Tracking/getReports');
         },
         async setPeriod(periodKey = 'today') {
             let start = null;
@@ -1050,6 +1401,7 @@ export default {
             }
             this.activePeriod = null;
             this.genPreview();
+            this.resetSelectedReport();
         },
         onClickOutsideHandler() {
             this.activePeriod = null
@@ -1073,47 +1425,33 @@ export default {
             }
         },
         genPreview() {
-            const coworkers = this.builder.filters.find(i => i.value === 'coworkers');
-            if (coworkers) {
-                const list = this.$store.getters['Team/getCoworkers'];
-                this.report.pdf.coworkers = list.filter(x => coworkers.selected.indexOf(x.id) >= 0)
-                                                .map(i => i.full_name)
-                                                .join(', ');
-
+            const dateFormat = 'dddd DD/MM/YYYY';
+            if (this.builder.period.start) {
+                if (this.builder.period.start === this.builder.period.end) {
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format(dateFormat)}`;
+                } else {
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format(dateFormat)} - ${moment(this.builder.period.end).format(dateFormat)}`;
+                }
+            } else {
+                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format(dateFormat)}`;
             }
-            axios.post('/api/tracking/reports', this.builder)
+            axios.post('/api/tracking/reports/generate', this.builder)
                 .then(({ data: { data } }) => {
                     this.reportData.entities = data;
-
+                    this.dialogEdit = {};
+                    const self = this;
+                    data.map(i => function () {
+                       self.dialogEdit[i.id] = false;
+                       self.dialogDelete[i.id] = false;
+                    });
+                    this.report.pdf.coworkers = [...new Set(this.calculateCoworkers(data))].sort().join(', ');
                 })
                 .catch(err => {
                     console.log(err);
-                    this.snackbarMessage = 'Something went wrong';
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
                 });
-        },
-        helperAddZeros(num, len) {
-            while((""+num).length < len) num = "0" + num;
-            return num.toString();
-        },
-        helperConvertSecondsToTimeFormat(seconds, withSeconds = true) {
-            if (!seconds) {
-                return `00:00:00`;
-            }
-            const h = Math.floor(seconds / 60 / 60);
-            const m = Math.floor((seconds - h * 60 * 60) / 60);
-            const s = seconds - (m * 60) - (h * 60 * 60);
-            if (withSeconds) {
-                return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}:${this.helperAddZeros(s.toFixed(0),2)}`;
-            }
-            return `${this.helperAddZeros(h.toFixed(0),2)}:${this.helperAddZeros(m.toFixed(0),2)}`;
-        },
-        helperCalculatePassedTime(date_from, date_to) {
-            if (moment(date_from) > moment(date_to)) {
-                date_to = moment(date_to).add(1, 'day');
-            }
-            return moment(date_to).diff(moment(date_from), 'seconds');
         },
         calculateTime(entries, seconds = 0) {
             if (!entries) return seconds;
@@ -1121,7 +1459,7 @@ export default {
                 if (i.children) {
                     seconds += this.calculateTime(i.children);
                 } else {
-                    seconds += this.helperCalculatePassedTime(i.date_from, i.date_to);
+                    seconds += i.passed;
                 }
             });
             return seconds;
@@ -1132,19 +1470,30 @@ export default {
                 if (i.children) {
                     revenue += parseFloat(this.calculateRevenue(i.children));
                 } else {
-                    if (i.revenue) {
+                    if (i.billable) {
                         revenue += parseFloat(i.revenue);
                     }
                 }
             });
             return revenue ? parseFloat(revenue).toFixed(2) : 0;
         },
+        calculateCoworkers(entries, coworkers = []) {
+            if (!entries) return coworkers;
+            entries.map(i => {
+                if (i.children) {
+                    coworkers = coworkers.concat(this.calculateCoworkers(i.children));
+                } else {
+                    coworkers.push(i.user.full_name);
+                }
+            });
+            return coworkers;
+        },
         createFile(format) {
             if (format === 'csv' && this.report.csv.group && this.report.csv.group.value === 'all_chron') {
                 this.builder.sort = {
                     icon: 'mdi-sort-alphabetical-ascending',
                     value: 'alph-asc',
-                    text: 'A - Z and chronologically'
+                    text: this.$store.state.lang.lang_map.sort_chronologically
                 };
             }
             axios.post(`/api/tracking/reports?format=${format}`, { ...this.builder, ...this.report[format] }, {
@@ -1164,10 +1513,115 @@ export default {
                 })
                 .catch(err => {
                     console.log(err);
-                    this.snackbarMessage = 'Something went wrong';
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
                 })
+        },
+        saveChanges() {
+            this.$store.dispatch('Tracking/updateTrack', {
+                id: this.editForm.id,
+                date_from: this.editForm.date_from,
+                date_to: this.editForm.date_to,
+                billable: this.editForm.billable,
+                tags: this.editForm.tags,
+                service: this.editForm.service,
+                entity: this.editForm.entity,
+                entity_id: this.editForm.entity ? this.editForm.entity.id : null,
+                entity_type: this.editForm.entity && this.editForm.entity.from ? "App\\Ticket" : "App\\TrackingProject",
+            })
+                .then(successResult => {
+                    if (successResult) {
+                        this.genPreview();
+                    }
+                });
+        },
+        removeTrack(id) {
+            this.$store.dispatch('Tracking/deleteTrack', {id})
+                .then(successResult => {
+                    if (successResult) {
+                        this.genPreview();
+                    }
+                })
+        },
+        stopTrack(id) {
+            this.$store.dispatch('Tracking/updateTrack', {
+                id: id,
+                date_to: moment().format(),
+                status: 'stopped'
+            })
+                .then(successResult => {
+                    if (successResult) {
+                        this.genPreview();
+                    }
+                });
+        },
+        closeEditDialog(item) {
+            this.editForm.id = null;
+            this.editForm.date_from = null;
+            this.editForm.date_to = null;
+            this.editForm.billable = null;
+            this.editForm.tags = [];
+            this.editForm.entity = null;
+            this.editForm.service = null;
+            this.dialogEdit[item.id] = false;
+        },
+        openEditDialog(item) {
+            this.editForm.id = item.id;
+            this.editForm.date_from = item.date_from;
+            this.editForm.date_to = item.date_to
+                ? moment(item.date_from)
+                    .hours(moment(item.date_to).hours())
+                    .minutes(moment(item.date_to).minutes())
+                    .seconds(moment(item.date_to).seconds())
+                : item.date_to;
+            this.editForm.billable = item.billable;
+            this.editForm.tags = item.tags;
+            this.editForm.entity = item.entity;
+            this.editForm.service = item.service;
+            this.dialogEdit[item.id] = true;
+        },
+        saveReport() {
+            if (this.builder.reportName) {
+                this.$store.dispatch('Tracking/createReport', {
+                    name: this.builder.reportName,
+                    configuration: this.builder
+                });
+            }
+        },
+        deleteReport(id) {
+            this.$store.dispatch('Tracking/deleteReport', { id });
+        },
+        selectReport(id) {
+            const report = this.$store.getters['Tracking/getReports'].find(i => i.id === id);
+            if (report) {
+                this.dialogSave = false;
+                this.groupItems = this.groupItems.concat(this.builder.group);
+                this.builder = report.configuration;
+                const groups = this.builder.group.map(g => g.value);
+                this.groupItems = this.groupItems.filter(i => groups.indexOf(i.value) === -1);
+                this.report.selected = report;
+            }
+        },
+        resetSelectedReport() {
+            this.report.selected = null;
+            this.debounceGetReports();
+        },
+        hasPermission(ids) {
+            return this.$helpers.auth.checkPermissionByIds(ids);
+        },
+        isEditable(tracker) {
+            if (!this.hasPermission([62, 63, 64])) {
+                return false;
+            }
+            const trackerDiff = moment().diff(tracker.date_from, 'seconds');
+            if (
+                (this.hasPermission([64]) &&  trackerDiff > 60 * 60 * 24 * 14)
+                || (this.hasPermission([63]) &&  trackerDiff > 60 * 60 * 24 * 7)
+            ) {
+                return false;
+            }
+            return true;
         }
     },
     computed: {
@@ -1194,12 +1648,12 @@ export default {
                     if (i.children) {
                         values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
                     } else {
-                        values.push((this.helperCalculatePassedTime(i.date_from, i.date_to) / 60 / 60).toFixed(2));
+                        values.push((i.passed / 60 / 60).toFixed(2));
                     }
                 });
                 let colors = [];
                 for (let i = 0; i <= values.length - 1; i++) {
-                    colors.push(Helper.genRandomColor());
+                    colors.push(this.$helpers.color.genRandomColor());
                 }
                 data.datasets.push({
                     label: labels,
@@ -1231,11 +1685,11 @@ export default {
                         );
                     } else {
                         values.push(
-                            (this.helperCalculatePassedTime(i.date_from, i.date_to) / 60 / 60).toFixed(2)
+                            (i.passed / 60 / 60).toFixed(2)
                         );
                     }
                 });
-                const c = Helper.genRandomColor();
+                const c = this.$helpers.color.genRandomColor();
                 for (let i = 0; i <= values.length - 1; i++) {
                     colors.push(c);
                 }
@@ -1270,24 +1724,39 @@ export default {
             set: function (currency) {
                 this.$store.dispatch('Tracking/updateSettings', {currency});
             }
-        }
+        },
+        availableRoundingItems: function () {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            let roundingItems = this.roundingItems;
+            if (settings && settings.customRounding) {
+                roundingItems = roundingItems.concat(settings.customRounding.map(i => ({
+                    value: i.key,
+                    text: i.name,
+                })))
+            }
+            return roundingItems;
+        },
     },
     watch: {
+        'builder.round': function() {
+            this.genPreview();
+        },
         'builder.filters': function() {
             this.genPreview();
         },
         'builder.group': function() {
             this.genPreview();
         },
-        'builder.period': function () {
+        'builder': function () {
+            const dateFormat = 'dddd DD/MM/YYYY';
             if (this.builder.period.start) {
                 if (this.builder.period.start === this.builder.period.end) {
-                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')}`;
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format(dateFormat)}`;
                 } else {
-                    this.report.pdf.periodText = `${moment(this.builder.period.start).format('ddd D MMM YYYY')} - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                    this.report.pdf.periodText = `${moment(this.builder.period.start).format(dateFormat)} - ${moment(this.builder.period.end).format(dateFormat)}`;
                 }
             } else {
-                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format('ddd D MMM YYYY')}`;
+                this.report.pdf.periodText = `... - ${moment(this.builder.period.end).format(dateFormat)}`;
             }
         },
         activePeriod: function () {

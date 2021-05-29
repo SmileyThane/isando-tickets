@@ -37,7 +37,7 @@ class Ticket extends Model
 
     protected static function booted()
     {
-        static::created(function ($ticket) {
+        static::created(static function ($ticket) {
             $last = Ticket::where('to_entity_type', $ticket->to_entity_type)
                 ->where('to_entity_id', $ticket->to_entity_id)
                 ->whereDate('created_at', date('Y-m-d'))->count();
@@ -92,6 +92,7 @@ class Ticket extends Model
 
     public function getCanBeEditedAttribute(): bool
     {
+        return true;
         $roles = Auth::user()->employee->roles->pluck('id')->toArray();
         return count(array_intersect($roles, Role::HIGH_PRIVIGIES)) > 0;
     }
@@ -114,17 +115,6 @@ class Ticket extends Model
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return Carbon::parse($this->attributes['created_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
     }
-
-//    public function getMergedAtAttribute()
-//    {
-//        dd($this->attributes);
-//        if ($this->attributes['merged_at']) {
-//            $locale = Language::find(Auth::user()->language_id)->locale;
-//            $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
-//            return Carbon::parse($this->attributes['merged_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
-//        }
-//        return null;
-//    }
 
     public function getCreatedAtTimeAttribute()
     {
@@ -238,7 +228,10 @@ class Ticket extends Model
                 $mergeComment = $translationsArray->ticket->ticket_merge_child_msg;
                 $mergeComment = str_replace(
                     ['$ticket_number', '$ticket_subject', '$date', '$unifier'],
-                    [$parentTicket->number, $parentTicket->original_name, $this->merged_at, User::find($this->unifier_id)->full_name],
+                    [
+                        $parentTicket->number, $parentTicket->original_name,
+                        $this->merged_at, User::find($this->unifier_id)->full_name
+                    ],
                     $mergeComment
                 );
                 return $mergeComment;
@@ -249,7 +242,6 @@ class Ticket extends Model
 
     public function childTickets(): HasMany
     {
-//        return self::where('parent_id', $this->id);
         return $this->hasMany(self::class, 'parent_id', 'id')->orderByDesc('id');
     }
 
@@ -275,7 +267,9 @@ class Ticket extends Model
         }
 
         $settings = $owner->settings;
-        if (empty($settings->data['ticket_number_format']) || count(explode('｜', $settings->data['ticket_number_format'])) != 5) {
+        if (empty($settings->data['ticket_number_format']) ||
+            count(explode('｜', $settings->data['ticket_number_format'])) != 5
+        ) {
             $format = strtoupper(substr(str_replace(' ', '', $owner->name), 0, 6)) . '｜-｜YYYYMMDD｜-｜###';
         } else {
             $format = $settings->data['ticket_number_format'];
@@ -284,18 +278,22 @@ class Ticket extends Model
         list($prefix, $delim1, $date, $delim2, $suffix) = explode('｜', $format);
 
         // prepare date format for PHP
-        $date = str_replace('YYYY', 'Y', $date);
-        $date = str_replace('YY', 'y', $date);
-        $date = str_replace('MM', 'm', $date);
-        $date = str_replace('DD', 'd', $date);
+        $date = str_replace(array('YYYY', 'YY', 'MM', 'DD'), array('Y', 'y', 'm', 'd'), $date);
 
         // prepare suffix for PHP
         $suffix = '%0' . strlen($suffix) . 'd';
-        $this->attributes['number'] = $prefix . $delim1 . date($date, strtotime($this->attributes['created_at'])) . $delim2 . sprintf($suffix, $this->sequence);
+        $this->attributes['number'] = $prefix .
+            $delim1 . date($date, strtotime($this->attributes['created_at'])) .
+            $delim2 . sprintf($suffix, $this->sequence);
     }
 
     public function getTicketTypeAttribute()
     {
         return TicketType::find($this->ticket_type_id);
+    }
+
+    public function billedBy(): HasOne
+    {
+        return $this->hasOne(InternalBilling::class, 'id', 'internal_billing_id');
     }
 }

@@ -76,6 +76,28 @@
                             :footer-props="footerProps"
                             @update:options="updateItemsPerPage"
                         >
+                            <template v-slot:item.is_manager="{ item }">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <v-btn @click="toggleAsManager(item)" icon v-bind="attrs" v-on="on">
+                                            <v-icon
+                                                small
+                                                v-if="item.is_manager"
+                                            >
+                                                mdi-flag-variant
+                                            </v-icon>
+                                            <v-icon
+                                                small
+                                                v-else
+                                            >
+                                                mdi-flag-variant-outline
+                                            </v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <span v-if="item.is_manager">{{langMap.main.unmark_as_manager}}</span>
+                                    <span v-else>{{langMap.main.mark_as_manager}}</span>
+                                </v-tooltip>
+                            </template>
                             <template v-slot:item.actions="{ item }">
                                 <v-tooltip top>
                                     <template v-slot:activator="{ on, attrs }">
@@ -187,7 +209,7 @@ themeBgColor: this.$store.state.themeBgColor,
                     },
                     {text: `${this.$store.state.lang.lang_map.company.user}`, value: 'employee.user_data.name'},
                     {text: `${this.$store.state.lang.lang_map.main.email}`, value: 'employee.user_data.email'},
-                    {text: `${this.$store.state.lang.lang_map.main.roles}`, value: 'employee.role_names'},
+                    {text: `${this.$store.state.lang.lang_map.main.team_manager}`, value: 'is_manager'},
                     {text: `${this.$store.state.lang.lang_map.main.actions}`, value: 'actions'},
                 ],
                 team: {
@@ -307,6 +329,20 @@ themeBgColor: this.$store.state.themeBgColor,
                         this.snackbarMessage = this.langMap.main.update_successful
                         this.actionColor = 'success'
                         this.snackbar = true;
+                    } else {
+                        console.log('error')
+                    }
+
+                });
+            },
+            toggleAsManager(item) {
+                axios.post(`/api/team/employee/manager`, {
+                    company_user_id: item.company_user_id,
+                    team_id: item.team_id
+                }).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.getTeam()
                     } else {
                         console.log('error')
                     }

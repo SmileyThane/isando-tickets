@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default {
     namespaced: true,
     state: {
@@ -8,8 +10,8 @@ export default {
             const queryParams = new URLSearchParams({
                 search: search ?? ''
             });
-            axios.get(`/api/tracking/clients?${queryParams.toString()}`)
-                .then(({ data: { success, data: clients } }) => {
+            axios.get(`/api/tracking/clients?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
+                .then(({ data: { success, data: { data: clients } } }) => {
                     if (success) {
                         commit('GET_CLIENTS', clients)
                     }
@@ -23,7 +25,9 @@ export default {
     },
     getters: {
         getClients(state) {
-            return state.clients
+            return _.sortBy(state.clients, item => {
+               return item.name.toLowerCase();
+            });
         }
     }
 }

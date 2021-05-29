@@ -4,27 +4,27 @@
 namespace App\Repositories;
 
 use App\Client;
+use App\LimitationGroupHasModel;
+use App\Permission;
 use App\Product;
-use App\Tag;
+use App\Team;
 use App\Ticket;
+use App\Tracking;
 use App\TrackingProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 
 class TrackingProjectRepository
 {
-
-    public function genHexColor() {
-        return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
-    }
 
     public function validate($request, $new = true)
     {
         $params = [
             'name' => 'required',
-            'productId' => 'required_without:product.id|exists:App\Product,id',
-            'product.id' => 'required_without:productId|exists:App\Product,id',
+//            'productId' => 'required_without:product.id|exists:App\Product,id',
+//            'product.id' => 'required_without:productId|exists:App\Product,id',
             'clientId' => 'required_without:client.id|exists:App\Client,id',
             'client.id' => 'required_without:clientId|exists:App\Client,id',
             'color' => 'required|string',
@@ -42,38 +42,89 @@ class TrackingProjectRepository
 
     public function all(Request $request)
     {
-//        $productIds = Auth::user()
-//            ->employee
-//            ->companyData
-//            ->products
-//            ->pluck('product_id');
-        $trackingProjects = TrackingProject::with('Product', 'Client');
-//            ->whereIn('product_id', $productIds);
-        if ($request->has('search')) {
-            $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
+        $trackingProjects = collect([]);
+        if (Auth::user()->employee->getPermissionIds(54, 55)) {
+            $trackingProjects = TrackingProject::with('Team');
+            if (Auth::user()->employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
+                $assignedClientIds = [];
+                $assignedProductIds = [];
+                $productGroups = (new LimitationGroupRepository())->getAssignedLimitationGroupByModel(Product::class);
+                $clientGroups = (new LimitationGroupRepository())->getAssignedLimitationGroupByModel(Client::class);
+                if ($clientGroups) {
+                    $assignedClients = LimitationGroupHasModel::query()
+                        ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
+                        ->get();
+                    $assignedClientIds = $assignedClients ? $assignedClients->pluck('model_id')->toArray() : [];
+                }
+                if ($productGroups) {
+                    $assignedProducts = LimitationGroupHasModel::query()
+                        ->whereIn('limitation_group_id', $productGroups->pluck('id')->toArray())
+                        ->get();
+                    $assignedProductIds = $assignedProducts ? $assignedProducts->pluck('model_id')->toArray() : [];
+                }
+                $trackingProjects->whereIn('client_id', $assignedClientIds)
+                    ->orWhereIn('product_id', $assignedProductIds);
+            }
+
+            $trackingProjects->with('Product')
+                ->with(['Client' => static function ($query) use ($request) {
+                    if ($request->column === 'client.name' && $request->has('column') && $request->has('direction')) {
+                        if ((string)$request->direction === 'true') {
+                            $request->direction = 'desc';
+                        }
+                        if ((string)$request->direction === 'false') {
+                            $request->direction = 'asc';
+                        }
+                        return $query->orderBy('name', $request->direction);
+                    }
+                }]);
+
+//                ->where(function($query) {
+//                    $query->where('status', '!=', TrackingProject::$STATUS_ARCHIVED)
+//                        ->orWhereNull('status');
+//                });
+            if (Auth::user()->employee->getPermissionIds(54)) {
+                $trackingProjects->MyCompany();
+            } elseif (Auth::user()->employee->getPermissionIds(55)) {
+                $trackingProjects->MyTeams();
+            }
+
+            if ($request->has('search')) {
+                $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
+            }
+            if ($request->has('column') && $request->get('name') === 'name' && $request->has('direction')) {
+                if ((string)$request->direction === 'true') {
+                    $request->direction = 'desc';
+                }
+                if ((string)$request->direction === 'false') {
+                    $request->direction = 'asc';
+                }
+                $trackingProjects->orderBy($request->column, $request->direction);
+            }
         }
-        if ($request->has('column') && $request->has('direction')) {
-            if ((string)$request->direction === 'true') $request->direction = 'desc';
-            if ((string)$request->direction === 'false') $request->direction = 'asc';
-            $trackingProjects->orderBy($request->column, $request->direction);
-        }
+
+//        dd($trackingProjects->toSql());
         return $trackingProjects
             ->paginate($request->per_page ?? $trackingProjects->count());
     }
 
-
     public function find($id)
     {
-        return TrackingProject::where('id', $id)->with('client', 'product')->first();
+        return TrackingProject::where('id', $id)->with('client', 'product', 'team')->first();
     }
 
     public function create(Request $request)
     {
+        if (!Auth::user()->employee->getPermissionIds(53)) {
+            throw new AccessDeniedException();
+        }
         $trackingProject = new TrackingProject();
         $trackingProject->name = $request->name;
         $trackingProject->product_id = $request->product['id'] ?? $request->productId;
         $trackingProject->client_id = $request->client['id'] ?? $request->clientId;
         $trackingProject->color = $request->color ?? $this->genHexColor();
+        $trackingProject->company_id = Auth::user()->employee->companyData->id;
+        $trackingProject->team_id = $request->team['id'] ?? $request->teamId;
         if ($request->has('billableByDefault')) {
             $trackingProject->billable_by_default = $request->billable_by_default;
         }
@@ -90,8 +141,16 @@ class TrackingProjectRepository
         return $trackingProject;
     }
 
+    public function genHexColor()
+    {
+        return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+    }
+
     public function update(Request $request, $id)
     {
+        if (!Auth::user()->employee->getPermissionIds(57, 60)) {
+            throw new AccessDeniedException();
+        }
         $trackingProject = TrackingProject::find($id);
         if ($request->has('name')) {
             $trackingProject->name = $request->name;
@@ -102,6 +161,9 @@ class TrackingProjectRepository
         if ($request->has('client')) {
             $trackingProject->client_id = $request->client['id'];
         }
+        if ($request->has('team')) {
+            $trackingProject->team_id = $request->team['id'];
+        }
         if ($request->has('color')) {
             $trackingProject->color = $request->color;
         }
@@ -111,11 +173,21 @@ class TrackingProjectRepository
         if ($request->has('rate')) {
             $trackingProject->rate = $request->rate;
         }
-        if ($request->has('rate_from')) {
+        if ($request->has('rate_from') && $trackingProject->rate_from !== $request->rate_from) {
             $trackingProject->rate_from = $request->rate_from;
         }
         if ($request->has('rate_from_date')) {
             $trackingProject->rate_from_date = $request->rate_from_date;
+        }
+        if ($request->has('rate_type_from') && $request->get('rate_type_from') === 2) {
+            $trackers = $trackingProject->Trackers()->get();
+            foreach ($trackers as $tracker) {
+                $tracker->rate = $trackingProject->rate_from;
+                $tracker->save();
+            }
+            $trackingProject->rate = $trackingProject->rate_from;
+            $trackingProject->rate_from = null;
+            $trackingProject->rate_from_date = null;
         }
         $trackingProject->save();
         return $trackingProject;
@@ -123,6 +195,9 @@ class TrackingProjectRepository
 
     public function delete($id)
     {
+        if (!Auth::user()->employee->getPermissionIds(58)) {
+            throw new AccessDeniedException();
+        }
         $result = false;
         $trackingProject = TrackingProject::find($id);
         if ($trackingProject) {
@@ -132,7 +207,46 @@ class TrackingProjectRepository
         return $result;
     }
 
-    public function getClients(Request $request) {
+    public function toggleFavorite($id)
+    {
+        $project = TrackingProject::find($id);
+        if ($project->is_favorite) {
+            Auth::user()->favoriteTrackingProjects()->detach($project->id);
+        } else {
+            Auth::user()->favoriteTrackingProjects()->attach($project);
+        }
+        return true;
+    }
+
+    public function toggleArchive($id)
+    {
+        if (!Auth::user()->employee->getPermissionIds(58)) {
+            throw new AccessDeniedException();
+        }
+        $result = false;
+        $trackingProject = TrackingProject::find($id);
+        if ($trackingProject) {
+            if ($trackingProject->status === TrackingProject::$STATUS_ARCHIVED) {
+                $trackingProject->status = '';
+                $status = Tracking::$STATUS_STOPPED;
+            } else {
+                $trackingProject->status = TrackingProject::$STATUS_ARCHIVED;
+                $status = Tracking::$STATUS_ARCHIVED;
+            }
+            $trackingProject->save();
+
+            Tracking::where([
+                ['entity_type', '=', TrackingProject::class],
+                ['entity_id', '=', $trackingProject->id]
+            ])->update(['status' => $status]);
+            $result = true;
+        }
+        return $result;
+    }
+
+    // not used
+    public function getClients(Request $request)
+    {
         $productIds = Auth::user()
             ->employee
             ->companyData
@@ -142,7 +256,7 @@ class TrackingProjectRepository
             ->whereIn('id', $productIds)
             ->whereHas('clients')
             ->get();
-        $clientIds = $products->map(function($product) {
+        $clientIds = $products->map(function ($product) {
             return $product->clients;
         })->collapse()->pluck('client_id')->all();
         $clients = Client::whereIn('id', $clientIds);
@@ -152,7 +266,8 @@ class TrackingProjectRepository
         return $clients->get();
     }
 
-    public function getProducts(Request $request) {
+    public function getProducts(Request $request)
+    {
         $productIds = Auth::user()
             ->employee
             ->companyData
@@ -165,7 +280,8 @@ class TrackingProjectRepository
         return $products->get();
     }
 
-    public function getTickets(Request $request) {
+    public function getTickets(Request $request)
+    {
         $companyUser = Auth::user()->employee;
         $tickets = Ticket::query();
         $tickets->where(function ($ticketsQuery) use ($companyUser) {
@@ -173,7 +289,7 @@ class TrackingProjectRepository
                 ->orWhere('contact_company_user_id', $companyUser->id);
         });
         if ($request->has('search')) {
-            $tickets->where(function($query) use ($request) {
+            $tickets->where(function ($query) use ($request) {
                 $query->where('name', 'like', '%' . trim($request->search) . '%')
                     ->orWhere('description', 'like', '%' . trim($request->search) . '%');
             });

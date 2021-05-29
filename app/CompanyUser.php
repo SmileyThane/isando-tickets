@@ -24,8 +24,10 @@ class CompanyUser extends Model
         $translationsArray = Language::find(Auth::user()->language_id)->lang_map;
         foreach ($roles as $key => $role) {
             $roleName = $role->name;
-            $result .= $translationsArray->roles->$roleName;
-            $result .= $key !== count($roles) - 1 ? ', ' : '';
+            if (property_exists($translationsArray->roles, $roleName)) {
+                $result .= $translationsArray->roles->$roleName;
+                $result .= $key !== count($roles) - 1 ? ', ' : '';
+            }
         }
         return $result ?? $translationsArray->roles->contact;
     }
@@ -34,6 +36,11 @@ class CompanyUser extends Model
     {
         $roleIds = $this->roleIds();
         return Role::whereIn('id', $roleIds)->get();
+    }
+
+    public function roleIds()
+    {
+        return ModelHasRole::where(['model_id' => $this->attributes['id'], 'model_type' => self::class])->get()->pluck('role_id')->toArray();
     }
 
     public function getPermissionIds()
@@ -45,17 +52,19 @@ class CompanyUser extends Model
         return [];
     }
 
-    public function roleIds()
-    {
-        return ModelHasRole::where(['model_id' => $this->attributes['id'], 'model_type' => self::class])->get()->pluck('role_id')->toArray();
-    }
-
     public function hasRoleId($id)
     {
         $roleIds = $this->roleIds();
         if ($roleIds) {
-            return in_array($id, $roleIds, true);
+            if (is_int($id)) {
+                return in_array($id, $roleIds, true);
+            } else {
+                foreach ($id as $item) {
+                    return in_array($item, $roleIds, true);
+                }
+            }
         }
+
         return false;
     }
 

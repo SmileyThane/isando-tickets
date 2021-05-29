@@ -149,7 +149,16 @@
 
                         >
                         </v-checkbox>
+                        <v-checkbox
+                            v-model="options.onlyForUser"
+                            :color="themeBgColor"
+                            class="ma-2"
+                            hide-details
+                            label="Assigned for me Only"
+                        >
+                        </v-checkbox>
                     </v-col>
+
                 </v-row>
                 <v-expand-transition>
                     <v-row v-show="filterPanel">
@@ -216,6 +225,10 @@
                               circle
                 >
                 </v-pagination>
+            </template>
+            <template v-slot:item.ticket_type_id="{ item }">
+                <v-icon v-if="item.ticket_type.icon" small :title="$helpers.i18n.localized(item.ticket_type)" v-text="item.ticket_type.icon" />
+                <v-icon v-else small :title="$helpers.i18n.localized(item.ticket_type)">mdi-alert</v-icon>
             </template>
             <template v-slot:item.status.name="{ item }">
                 <v-badge :color="item.status.color" dot inline @click="showItem(item)">
@@ -372,6 +385,19 @@
     </v-container>
 </template>
 
+<style scoped>
+.v-data-table /deep/ .sticky-header {
+    position: sticky;
+}
+
+.v-data-table /deep/ .v-data-table__wrapper {
+    overflow: unset;
+    z-index: 5;
+    position: relative;
+    background: #fff;
+}
+</style>
+
 <script>
 import EventBus from "../../components/EventBus";
 
@@ -436,6 +462,7 @@ export default {
                 //     sortable: false,
                 //     value: 'id',
                 // },
+                {text: `${this.$store.state.lang.lang_map.ticket.type}`, value: 'ticket_type_id'},
                 {text: `${this.$store.state.lang.lang_map.ticket.number}`, value: 'number'},
                 {text: `${this.$store.state.lang.lang_map.ticket.status}`, value: 'status.name'},
                 {text: `${this.$store.state.lang.lang_map.ticket.priority}`, value: 'priority.name'},
@@ -467,7 +494,9 @@ export default {
         }
     },
     mounted() {
-        // this.getTickets()
+        if (!this.$helpers.auth.checkPermissionByIds([1])) {
+            this.$router.push('knowledge_base')
+        }
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -579,19 +608,21 @@ export default {
             if (this.totalTickets < this.options.itemsPerPage) {
                 this.options.page = 1
             }
-            let queryParams = new URLSearchParams({
-                search_param: this.searchLabel,
-                search: this.ticketsSearch,
-                sort_by: this.manageSortableField(this.options.sortBy[0]),
-                sort_val: this.options.sortDesc[0],
-                with_spam: this.options.withSpam,
-                per_page: this.options.itemsPerPage,
-                minified: this.minifiedTickets,
-                page: this.options.page,
-                filter_id: this.filterId
-            });
-            axios.get(`/api/ticket?${queryParams.toString()}`)
-                .then(
+
+            axios.get('/api/ticket', {
+                    params: {
+                        search_param: this.searchLabel,
+                        search: this.ticketsSearch,
+                        sort_by: this.manageSortableField(this.options.sortBy[0]),
+                        sort_val: this.options.sortDesc[0],
+                        with_spam: this.options.withSpam,
+                        only_for_user: this.options.onlyForUser,
+                        per_page: this.options.itemsPerPage,
+                        minified: this.minifiedTickets,
+                        page: this.options.page,
+                        filter_id: this.filterId
+                    }
+            }).then(
                     response => {
                         response = response.data
                         if (response.success === true) {
@@ -615,7 +646,8 @@ export default {
                     });
         },
         showItem(item) {
-            this.$router.push(`/ticket/${item.id}`)
+            location.href = `/ticket/${item.id}`;
+            // this.$router.push()
         },
         ticketDeleteProcess(item) {
             this.selectedticketId = item.id
@@ -659,15 +691,6 @@ export default {
                     this.snackbar = true;
                 }
             });
-        },
-        checkRoleByIds(ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
-                }
-            });
-            return roleExists
         },
         updateItemsCount(value) {
             this.options.itemsPerPage = value

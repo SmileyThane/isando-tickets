@@ -1,5 +1,6 @@
 <?php
 
+use App\UserNotificationStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,7 @@ class CreateCompanyUserNotificationsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('company_id')->constrained('companies');
-            $table->unsignedInteger('ticket_notification_type_id')->default(\App\UserNotificationStatus::ALL);
+            $table->unsignedInteger('ticket_notification_type_id')->default(UserNotificationStatus::NONE);
             $table->timestamps();
         });
     }

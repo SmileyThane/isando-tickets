@@ -12,19 +12,23 @@ class CurrencyController extends Controller
 {
     private $currencyRepo;
 
-    public function __construct(CurrencyRepository $currencyRepository) {
+    public function __construct(CurrencyRepository $currencyRepository)
+    {
         $this->currencyRepo = $currencyRepository;
     }
 
-    public function get(Request $request) {
+    public function get(Request $request)
+    {
         return self::showResponse(true, $this->currencyRepo->all($request));
     }
 
-    public function find(Request $request, Currency $currency) {
+    public function find(Request $request, Currency $currency)
+    {
         return self::showResponse(true, $this->currencyRepo->all($request));
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         try {
             $validate = $this->currencyRepo->validate($request, true);
             if ($validate === false) {
@@ -36,7 +40,8 @@ class CurrencyController extends Controller
         }
     }
 
-    public function update(Request $request, Currency $currency) {
+    public function update(Request $request, Currency $currency)
+    {
         $this->currencyRepo->validate($request, false);
         try {
             $validate = $this->currencyRepo->validate($request, false);
@@ -49,7 +54,8 @@ class CurrencyController extends Controller
         }
     }
 
-    public function delete(Request $request, Currency $currency) {
+    public function delete(Request $request, Currency $currency)
+    {
         try {
             $this->currencyRepo->delete($request, $currency);
             return self::showResponse(true, null);

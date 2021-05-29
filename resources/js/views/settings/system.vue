@@ -118,13 +118,7 @@
                                         v-model="companySettings.theme_bg_color"
                                         :disabled="!enableToEdit"
                                     />
-                                    <v-checkbox
-                                        :color="themeBgColor"
-                                        :readonly="!enableToEdit"
-                                        :label="langMap.system_settings.override_user_theme_color"
-                                        :value="true"
-                                        v-model="companySettings.override_user_theme"
-                                    />
+
                                     <p>{{ langMap.system_settings.override_user_theme_color_hint }}</p>
 
                                 </v-col>
@@ -251,7 +245,7 @@
                                                                 v-on:change="updateCompanyLanguages(item.id)"></v-checkbox>
                                                 </v-list-item-action>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                             </v-list-item>
                                         </v-list-item-group>
@@ -286,7 +280,7 @@
                                                 </v-list-item-action>
                                                 <v-list-item-content>
                                                     <v-list-item-title
-                                                        v-text="'('+item.iso_3166_2+') '+localized(item)"></v-list-item-title>
+                                                        v-text="'('+item.iso_3166_2+') '+$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
                                             </v-list-item>
                                         </v-list-item-group>
@@ -369,6 +363,207 @@
                     </v-card-text>
                 </v-card>
 
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.client_number_format }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-icon v-if="!enableToEdit" :color="themeFgColor" @click="enableToEdit = true">mdi-pencil</v-icon>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black; margin-right: 10px" @click="cancelUpdateCompanySettings">
+                            {{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn v-if="enableToEdit" color="white" style="color: black;" @click="updateCompanySettings">
+                            {{ langMap.main.update }}
+                        </v-btn>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-checkbox
+                                        :color="themeBgColor"
+                                        :readonly="!enableToEdit"
+                                        :label="langMap.system_settings.client_number_automatic"
+                                        value="1"
+                                        v-model="companyNumberFormat.auto"
+                                        @change="updateEmployeeNumber()"
+                                    >
+                                    </v-checkbox>
+                                    <p>{{ langMap.system_settings.client_number_automatic_hint }}</p>
+
+                                </v-col>
+                                <v-col class="col-md-4">
+                                    <v-text-field
+                                        v-model.trim="companyNumberFormat.prefix"
+                                        :color="themeBgColor"
+                                        :label="langMap.system_settings.client_number_format_prefix"
+                                        :readonly="!enableToEdit || companyNumberFormat.auto !== '1'"
+                                        counter="6"
+                                        dense
+                                        maxlength="6"
+                                        @change="updateEmployeeNumber()"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col class="col-md-4">
+                                    <v-text-field
+                                        v-model.number="companyNumberFormat.start"
+                                        :color="themeBgColor"
+                                        :label="langMap.system_settings.client_number_format_start"
+                                        :readonly="!enableToEdit || companyNumberFormat.auto !== '1'"
+                                        dense
+                                        @change="updateEmployeeNumber()"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                                <v-col class="col-md-4">
+                                    <v-text-field
+                                        v-model.number="companyNumberFormat.size"
+                                        :color="themeBgColor"
+                                        :label="langMap.system_settings.client_number_format_size"
+                                        :readonly="!enableToEdit || companyNumberFormat.auto !== '1'"
+                                        dense
+                                        @change="updateEmployeeNumber()"
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                            </v-row>
+                            <p>{{ langMap.system_settings.client_number_example }}
+                                <strong>{{ employeeNumber }}</strong></p>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.currencies }}</v-toolbar-title>
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-data-table
+                            dense
+                            :headers="headers.currencies"
+                            :items="$store.getters['Currencies/getCurrencies']"
+                            :items-per-page="15"
+                            class="elevation-1"
+                        >
+                            <template v-slot:item.name="props">
+                                <v-edit-dialog
+                                    @save="saveCurrency(props.item)"
+                                    @cancel="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @close="saveCurrency(props.item)"
+                                >
+                                    {{ props.item.name }}
+                                    <template v-slot:input>
+                                        <v-text-field
+                                            v-model="props.item.name"
+                                            :label="langMap.tracking.settings.name"
+                                            :hint="langMap.tracking.settings.name"
+                                            single-line
+                                            counter
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+                            <template v-slot:item.slug="props">
+                                <v-edit-dialog
+                                    @save="saveCurrency(props.item)"
+                                    @cancel="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @close="saveCurrency(props.item)"
+                                >
+                                    {{ props.item.slug }}
+                                    <template v-slot:input>
+                                        <v-text-field
+                                            v-model="props.item.slug"
+                                            :label="langMap.tracking.settings.slug"
+                                            :hint="langMap.tracking.settings.slug"
+                                            single-line
+                                            counter
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+                            <template v-slot:item.symbol="props">
+                                <v-edit-dialog
+                                    @save="saveCurrency(props.item)"
+                                    @cancel="saveCurrency(props.item)"
+                                    @open="saveCurrency(props.item)"
+                                    @close="saveCurrency(props.item)"
+                                >
+                                    {{ props.item.symbol }}
+                                    <template v-slot:input>
+                                        <v-text-field
+                                            v-model="props.item.symbol"
+                                            :label="langMap.tracking.settings.symbol"
+                                            :hint="langMap.tracking.settings.symbol"
+                                            single-line
+                                            counter
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+                            <template v-slot:item.actions="props">
+                                <v-btn
+                                    icon
+                                    :color="themeBgColor"
+                                    @click="removeCurrency(props.item.id)"
+                                >
+                                    <v-icon>mdi-delete</v-icon>
+                                </v-btn>
+                            </template>
+                        </v-data-table>
+                        <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.tracking.settings.create_currency_title }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col class="pa-1" cols="md-4">
+                                                <v-text-field
+                                                    :label="langMap.tracking.settings.name"
+                                                    v-model="forms.currency.name"
+                                                    required
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col class="pa-1" cols="md-4">
+                                                <v-text-field
+                                                    :label="langMap.tracking.settings.slug"
+                                                    v-model="forms.currency.slug"
+                                                    required
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col class="pa-1" cols="md-4">
+                                                <v-text-field
+                                                    :label="langMap.tracking.settings.symbol"
+                                                    v-model="forms.currency.symbol"
+                                                    required
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom dark fab right small
+                                                @click="createCurrency(); dialogCurrencies = false"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                    </v-card-text>
+                </v-card>
+
             </div>
             <div class="col-md-6">
                 <v-card class="elevation-12">
@@ -391,15 +586,15 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, phoneIcons,'updatePhoneType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deletePhoneType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -407,7 +602,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_phone_type }}
@@ -480,15 +675,15 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, socialIcons, 'updateSocialType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteSocialType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -496,7 +691,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_social_type }}
@@ -569,15 +764,15 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, addressIcons, 'updateAddressType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteAddressType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -585,7 +780,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_address_type }}
@@ -659,9 +854,9 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="item.id !== 1 && checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, emailIcons,'updateEmailType')">
                                                         mdi-pencil
@@ -672,7 +867,7 @@
                                                         mdi-lock
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="item.id !== 1 && checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteEmailType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -680,7 +875,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_email_type }}
@@ -753,15 +948,15 @@
                                                     <v-icon left v-text="item.icon"></v-icon>
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
-                                                    <v-list-item-title v-text="localized(item)"></v-list-item-title>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
                                                 </v-list-item-content>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small
                                                             @click="showUpdateTypeDialog(item, notificationIcons,'updateNotificationType')">
                                                         mdi-pencil
                                                     </v-icon>
                                                 </v-list-item-action>
-                                                <v-list-item-action v-if="checkRoleByIds([1, 2, 3])">
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
                                                     <v-icon small @click="deleteNotificationType(item.id)">
                                                         mdi-delete
                                                     </v-icon>
@@ -769,7 +964,7 @@
                                             </v-list-item>
                                         </v-list-item-group>
                                     </v-list>
-                                    <v-expansion-panels v-if="checkRoleByIds([1, 2, 3])" multiple>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
                                         <v-expansion-panel>
                                             <v-expansion-panel-header>
                                                 {{ langMap.system_settings.new_notification_type }}
@@ -820,6 +1015,344 @@
                                 </v-col>
                             </v-row>
                         </v-form>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.system_settings.ticket_types }}</v-toolbar-title>
+
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-form>
+                            <v-row>
+                                <v-col class="col-md-12">
+                                    <v-list dense subheader>
+                                        <v-list-item-group :color="themeBgColor">
+                                            <v-list-item
+                                                v-for="(item, i) in ticketTypes"
+                                                :key="item.id"
+                                            >
+                                                <v-list-item-icon>
+                                                    <v-icon left v-text="item.icon"></v-icon>
+                                                </v-list-item-icon>
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-text="$helpers.i18n.localized(item)"></v-list-item-title>
+                                                </v-list-item-content>
+                                                <v-list-item-action v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                    <v-icon small
+                                                            @click="showUpdateTypeDialog(item, ticketIcons,'updateTicketType')">
+                                                        mdi-pencil
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action v-if="item.id === 1">
+                                                    <v-icon small :title="langMap.profile.default_ticket_type">
+                                                        mdi-lock
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                                <v-list-item-action v-if="item.id !== 1 && $helpers.auth.checkPermissionByIds([1, 2, 3])">
+                                                    <v-icon small @click="deleteTicketType(item.id)">
+                                                        mdi-delete
+                                                    </v-icon>
+                                                </v-list-item-action>
+                                            </v-list-item>
+                                        </v-list-item-group>
+                                    </v-list>
+                                    <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{ langMap.system_settings.new_ticket_type }}
+                                                <template v-slot:actions>
+                                                    <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <div class="row">
+                                                        <v-col class="pa-1" cols="md-5">
+                                                            <v-text-field v-model="ticketTypeForm.name"
+                                                                          :color="themeBgColor"
+                                                                          :item-color="themeBgColor"
+                                                                          :label="langMap.main.name"
+                                                                          dense></v-text-field>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="md-5">
+                                                            <v-text-field v-model="ticketTypeForm.name_de"
+                                                                          :color="themeBgColor"
+                                                                          :item-color="themeBgColor"
+                                                                          :label="langMap.main.name_de"
+                                                                          dense></v-text-field>
+                                                        </v-col>
+                                                        <v-col class="pa-1" cols="md-2">
+                                                            <v-select v-model="ticketTypeForm.icon" :color="themeBgColor"
+                                                                      :item-color="themeBgColor" :items="ticketIcons"
+                                                                      :label="langMap.main.icon" dense>
+                                                                <template slot="selection" slot-scope="data">
+                                                                    <v-icon small v-text="data.item"></v-icon>
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    <v-icon small v-text="data.item"></v-icon>
+                                                                </template>
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn :color="themeBgColor" bottom dark fab right small
+                                                               @click="submitNewData(ticketTypeForm, 'addTicketType')">
+                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </div>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+                <v-spacer>&nbsp;</v-spacer>
+
+                <v-card class="elevation-12">
+                    <v-toolbar :color="themeBgColor" dark dense flat>
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.tags }}</v-toolbar-title>
+
+                    </v-toolbar>
+
+                    <v-card-text>
+                        <v-data-table
+                            dense
+                            :headers="headers.tags"
+                            :items="$store.getters['Tags/getTags']"
+                            :items-per-page="15"
+                            class="elevation-1"
+                            single-expand
+                            show-expand
+                        >
+                            <template v-slot:item.name="props">
+                                <v-edit-dialog
+                                    @save="saveTag(props.item)"
+                                    @cancel="saveTag(props.item)"
+                                    @open="saveTag(props.item)"
+                                    @close="saveTag(props.item)"
+                                >
+                                    {{ props.item.name }}
+                                    <template v-slot:input>
+                                        <v-text-field
+                                            v-model="props.item.name"
+                                            :label="langMap.tracking.settings.name"
+                                            :hint="langMap.tracking.settings.name"
+                                            single-line
+                                            counter
+                                        ></v-text-field>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
+                            <template v-slot:item.color="props">
+                                <v-menu
+                                    v-model="colorMenu[props.item.id]"
+                                    top
+                                    nudge-bottom="105"
+                                    nudge-left="16"
+                                    :close-on-content-click="false"
+                                >
+                                    <template v-slot:activator="{ on }">
+                                        <div
+                                            v-on="on"
+                                            :style="{
+                                                    backgroundColor: props.item.color,
+                                                    cursor: 'pointer',
+                                                    height: '30px',
+                                                    width: '30px',
+                                                    borderRadius: colorMenu[props.item.id] ? '50%' : '4px',
+                                                    transition: 'border-radius 200ms ease-in-out'
+                                                }"
+                                        />
+                                    </template>
+                                    <v-card>
+                                        <v-card-text class="pa-0">
+                                            <v-color-picker
+                                                v-model="props.item.color"
+                                                flat
+                                                @input="saveTag(props.item)"
+                                            />
+                                        </v-card-text>
+                                    </v-card>
+                                </v-menu>
+
+                            </template>
+                            <template v-slot:item.actions="props">
+                                <v-btn
+                                    icon
+                                    :color="themeBgColor"
+                                    @click="removeTag(props.item.id)"
+                                >
+                                    <v-icon>mdi-delete</v-icon>
+                                </v-btn>
+                            </template>
+                            <template v-slot:expanded-item="{ headers, item }">
+                                <td :colspan="headers.length">
+                                    <v-list
+                                        dense
+                                    >
+                                        <v-list-item
+                                            v-for="translate in item.translates"
+                                            :key="translate.id"
+                                            class="d-flex flex-row"
+                                        >
+                                            <div
+                                                class="d-inline-flex flex-grow-0 mx-3"
+                                                style="min-width: 100px"
+                                            >
+                                                {{ getLangName(translate.lang) }}
+                                            </div>
+                                            <div class="d-inline-flex flex-grow-1">
+                                                <v-text-field
+                                                    class="mt-n1"
+                                                    hide-details
+                                                    dense
+                                                    v-model="translate.name"
+                                                    @blur="addOrUpdateTranslate(item, translate.lang, translate.name)"
+                                                ></v-text-field>
+                                            </div>
+                                        </v-list-item>
+                                        <v-list-item-action v-if="filterLang(item).length > 0">
+                                            <v-dialog
+                                                v-model="addTranslationDialog[item.id]"
+                                                width="500"
+                                            >
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn
+                                                        :color="themeBgColor"
+                                                        text
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                        @click="resetDialog()"
+                                                    >
+                                                        {{ langMap.tracking.settings.add_translation }}
+                                                    </v-btn>
+                                                </template>
+
+                                                <v-card>
+                                                    <v-card-title class="headline grey lighten-2">
+                                                        {{ langMap.tracking.settings.add_translation }}
+                                                    </v-card-title>
+
+                                                    <v-card-text>
+                                                        <v-select
+                                                            :items="filterLang(item)"
+                                                            :label="langMap.tracking.settings.language"
+                                                            item-text="name"
+                                                            item-value="locale"
+                                                            v-model="tagTranslateForm.lang"
+                                                        ></v-select>
+                                                        <v-text-field
+                                                            label="Tag name"
+                                                            v-model="tagTranslateForm.name"
+                                                        ></v-text-field>
+                                                    </v-card-text>
+
+                                                    <v-divider></v-divider>
+
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn
+                                                            color="error"
+                                                            text
+                                                            @click="closeDialog(item.id)"
+                                                        >
+                                                            {{ langMap.tracking.settings.cancel }}
+                                                        </v-btn>
+                                                        <v-btn
+                                                            color="success"
+                                                            text
+                                                            @click="addOrUpdateTranslate(item); closeDialog(item.id)"
+                                                        >
+                                                            {{ langMap.tracking.settings.add }}
+                                                        </v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                        </v-list-item-action>
+                                    </v-list>
+                                </td>
+                            </template>
+                        </v-data-table>
+                        <v-expansion-panels v-if="$helpers.auth.checkPermissionByIds([1, 2, 3])" multiple>
+                            <v-expansion-panel>
+                                <v-expansion-panel-header>
+                                    {{ langMap.tracking.settings.create_tag_title }}
+                                    <template v-slot:actions>
+                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                    </template>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-form>
+                                        <div class="row">
+                                            <v-col class="pa-1" cols="md-6">
+                                                <v-text-field
+                                                    :label="langMap.tracking.settings.name"
+                                                    v-model="forms.tags.name"
+                                                    required
+                                                ></v-text-field>
+
+                                            </v-col>
+                                            <v-col class="pa-1" cols="md-6">
+                                                <v-text-field
+                                                    v-model="forms.tags.color"
+                                                    hide-details
+                                                    class="ma-0 pa-0"
+                                                    solo
+                                                    :label="langMap.tracking.settings.color"
+                                                    required
+                                                >
+                                                    <template v-slot:append>
+                                                        <v-menu
+                                                            v-model="colorMenuCreate"
+                                                            top
+                                                            nudge-bottom="105"
+                                                            nudge-left="16"
+                                                            :close-on-content-click="false"
+                                                        >
+                                                            <template v-slot:activator="{ on }">
+                                                                <div
+                                                                    :style="{
+                                                                backgroundColor: forms.tags.color,
+                                                                cursor: 'pointer',
+                                                                height: '30px',
+                                                                width: '30px',
+                                                                borderRadius: colorMenuCreate ? '50%' : '4px',
+                                                                transition: 'border-radius 200ms ease-in-out'
+                                                            }"
+                                                                    v-on="on"
+                                                                />
+                                                            </template>
+                                                            <v-card>
+                                                                <v-card-text
+                                                                    class="pa-0"
+                                                                >
+                                                                    <v-color-picker
+                                                                        v-model="forms.tags.color"
+                                                                        flat
+                                                                    />
+                                                                </v-card-text>
+                                                            </v-card>
+                                                        </v-menu>
+                                                    </template>
+                                                </v-text-field>
+                                            </v-col>
+                                            <v-btn
+                                                :color="themeBgColor"
+                                                bottom dark fab right small
+                                                @click="createTag"
+                                            >
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            </v-btn>
+                                        </div>
+                                    </v-form>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                     </v-card-text>
                 </v-card>
             </div>
@@ -876,6 +1409,7 @@
 
 <script>
 import EventBus from '../../components/EventBus';
+import _ from 'lodash';
 
 export default {
     data() {
@@ -982,6 +1516,30 @@ export default {
                 'mdi-bell',
                 'mdi-calendar'
             ],
+            ticketTypeForm: {
+                entity_id: '',
+                entity_type: 'App\\Company',
+                name: '',
+                name_de: '',
+                icon: 'mdi-file-question'
+            },
+            ticketIcons: [
+                'mdi-alert',
+                'mdi-alert-box',
+                'mdi-alert-circle',
+                'mdi-file-question',
+                'mdi-file-question-outline',
+                'mdi-cash-usd',
+                'mdi-cash-usd-outline',
+                'mdi-information',
+                'mdi-information-outline',
+                'mdi-information-variant',
+                'mdi-ticket',
+                'mdi-ticket-account',
+                'mdi-ticket-confirmation',
+                'mdi-ticket-confirmation-outline',
+                'mdi-ticket-percent-outline',
+            ],
             updateTypeForm: {
                 entity_id: this.$route.params.id,
                 entity_type: 'App\\Company',
@@ -994,6 +1552,7 @@ export default {
             socialTypes: [],
             emailTypes: [],
             notificationTypes: [],
+            ticketTypes: [],
             countries: [],
             companyCountries: [],
             languages: [],
@@ -1004,7 +1563,7 @@ export default {
                 timezone: '',
                 theme_fg_color: '',
                 theme_bg_color: '',
-                override_user_theme: false,
+                override_user_theme: true,
                 employee_number_format: ''
             },
             autoFgColor: false,
@@ -1060,10 +1619,111 @@ export default {
                 size: 8,
                 start: 50000
             },
+            companyNumberFormat: {
+                auto: false,
+                prefix: '',
+                size: 8,
+                start: 50000
+            },
             employeeNumber: '',
+            headers: {
+                tags: [
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.tag_name,
+                        align: 'start',
+                        sortable: true,
+                        value: 'name',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.color,
+                        sortable: false,
+                        value: 'color',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
+                        sortable: false,
+                        value: 'actions',
+                    }
+                ],
+                services: [
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.service_name,
+                        align: 'start',
+                        sortable: true,
+                        value: 'name',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
+                        sortable: false,
+                        value: 'actions',
+                    }
+                ],
+                currencies: [
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.currency_name,
+                        align: 'start',
+                        sortable: true,
+                        value: 'name',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.currency_slug,
+                        align: 'start',
+                        sortable: true,
+                        value: 'slug',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.currency_symbol,
+                        align: 'start',
+                        sortable: true,
+                        value: 'symbol',
+                    },
+                    {
+                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
+                        sortable: false,
+                        value: 'actions',
+                    }
+                ]
+            },
+            forms: {
+                tags: {
+                    name: '',
+                    color: this.$helpers.color.genRandomColor()
+                },
+                services: {
+                    name: ''
+                },
+                currency: {
+                    name: '',
+                    slug: '',
+                    symbol: ''
+                }
+            },
+            colorMenuCreate: false,
+            colorMenu: {},
+            searchService: null,
+            searchCurrency: null,
+            tagTranslateForm: {
+                lang: null,
+                name: ''
+            },
+            addTranslationDialog: {},
+            searchTag: null,
+            dialogTags: false,
+            dialogServices: false,
+            dialogCurrencies: false,
         }
     },
+    created () {
+        this.debounceGetTags = _.debounce(this.__getTags, 1000);
+        this.debounceGetServices = _.debounce(this.__getServices, 1000);
+        this.debounceGetCurrencies = _.debounce(this.__getCurrencies, 1000);
+        this.debounceGetLanguages = _.debounce(this.__getLanguages, 1000);
+    },
     mounted() {
+        this.debounceGetLanguages();
+        this.debounceGetTags();
+        this.debounceGetServices();
+        this.debounceGetCurrencies();
         this.getCompany();
         this.getCompanyLogo();
         this.getPhoneTypes();
@@ -1071,6 +1731,7 @@ export default {
         this.getSocialTypes();
         this.getEmailTypes();
         this.getNotificationTypes();
+        this.getTicketTypes();
         this.getCountries();
         this.getCompanyCountries();
         this.getLanguages();
@@ -1081,7 +1742,7 @@ export default {
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
@@ -1094,6 +1755,21 @@ export default {
         }
     },
     methods: {
+        __getLanguages() {
+            this.$store.dispatch('Languages/getLanguageList');
+        },
+        __getTags() {
+            this.$store.dispatch('Tags/getTagList', { search: this.searchTag });
+            this.$store.getters['Tags/getTags'].map(i => {
+                this.addTranslationDialog[i.id] = false;
+            });
+        },
+        __getServices() {
+            this.$store.dispatch('Services/getServicesList', { search: this.searchService });
+        },
+        __getCurrencies() {
+            this.$store.dispatch('Currencies/getCurrencyList', { search: this.searchCurrency });
+        },
         getCompany() {
             axios.get(`/api/main_company/name`).then(response => {
                 response = response.data
@@ -1136,15 +1812,6 @@ export default {
 
             });
         },
-        checkRoleByIds(ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
-                }
-            });
-            return roleExists
-        },
         getLanguages() {
             axios.get('/api/lang/all').then(response => {
                 response = response.data;
@@ -1185,10 +1852,6 @@ export default {
                     return true;
                 });
             }
-        },
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
         },
         getCountries() {
             axios.get('/api/countries/all').then(response => {
@@ -1541,6 +2204,68 @@ export default {
                 }
             });
         },
+        getTicketTypes() {
+            axios.get(`/api/ticket_types/all`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.ticketTypes = response.data
+                } else {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+                }
+            });
+        },
+        addTicketType(form) {
+            axios.post('/api/ticket_type', form).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getTicketTypes();
+                    this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.ticket_type_created}`;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+
+                }
+                return true
+            });
+        },
+        updateTicketType(form) {
+            axios.patch(`/api/ticket_type/${form.id}`, form).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getTicketTypes();
+                    this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.ticket_type_updated}`;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+
+                }
+                return true
+            });
+        },
+        deleteTicketType(id) {
+            axios.delete(`/api/ticket_type/${id}`).then(response => {
+                response = response.data;
+                if (response.success === true) {
+                    this.getTicketTypes();
+                    this.snackbarMessage = `${this.$store.state.lang.lang_map.system_settings.ticket_type_deleted}`;
+                    this.actionColor = 'success';
+                    this.snackbar = true;
+                } else {
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.errorType = 'error';
+                    this.alert = true;
+
+                }
+            });
+        },
         submitNewData(data, method) {
             this[method](data);
         },
@@ -1566,7 +2291,7 @@ export default {
                     this.companySettings['timezone'] = response.data.hasOwnProperty('timezone') ? response.data.timezone : 35;
                     this.companySettings['theme_fg_color'] = response.data.hasOwnProperty('theme_fg_color') ? response.data.theme_fg_color : '#FFFFFF';
                     this.companySettings['theme_bg_color'] = response.data.hasOwnProperty('theme_bg_color') ? response.data.theme_bg_color : response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#6AA75D';
-                    this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
+                    this.companySettings['override_user_theme'] = true;
                     this.companySettings['employee_number_format'] = response.data.hasOwnProperty('employee_number_format') ? response.data.employee_number_format : '0||50000|8';
 
                     let fmt = this.companySettings.ticket_number_format.split('｜');
@@ -1590,6 +2315,14 @@ export default {
                             this.employeeNumberFormat[pos[i]] = fmt[i].toLocaleUpperCase();
                         } else {
                             this.employeeNumberFormat[pos[i]] = fmt[i];
+                        }
+                    }
+
+                    for (let i = 0; i < fmt.length; i++) {
+                        if (typeof fmt[i] === 'string') {
+                            this.companyNumberFormat[pos[i]] = fmt[i].toLocaleUpperCase();
+                        } else {
+                            this.companyNumberFormat[pos[i]] = fmt[i];
                         }
                     }
                     this.updateTicketNumber();
@@ -1631,13 +2364,14 @@ export default {
             this.companySettings.employee_number_format = this.employeeNumberFormat.auto + '｜' + this.employeeNumberFormat.prefix.toLocaleUpperCase() + '｜' +
                 this.employeeNumberFormat.start + '｜' + this.employeeNumberFormat.size;
 
+            this.companySettings.company_number_format = this.companyNumberFormat.auto + '｜' + this.companyNumberFormat.prefix.toLocaleUpperCase() + '｜' +
+                this.companyNumberFormat.start + '｜' + this.companyNumberFormat.size;
+
             this.updateCompany();
 
             axios.post('/api/main_company/settings', this.companySettings).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    localStorage.removeItem('themeFgColor');
-                    localStorage.removeItem('themeBgColor');
                     window.location.reload()
                 } else {
                     this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
@@ -1677,6 +2411,17 @@ export default {
 
             this.employeeNumber = this.employeeNumberFormat.prefix.toLocaleUpperCase() + (this.employeeNumberFormat.start + 1).toString().padStart(this.employeeNumberFormat.size, '0');
         },
+        updateCompanyNumber() {
+            if (this.companyNumberFormat.start < 1) {
+                this.companyNumberFormat.start = 1;
+            }
+
+            if (this.companyNumberFormat.size < 1) {
+                this.companyNumberFormat.size = 1;
+            }
+
+            this.employeeNumber = this.companyNumberFormat.prefix.toLocaleUpperCase() + (this.companyNumberFormat.start + 1).toString().padStart(this.companyNumberFormat.size, '0');
+        },
         setThemeFgColor() {
             if (this.autoFgColor) {
                 this.companySettings.theme_fg_color = this.invertColor(this.themeBgColor);
@@ -1707,7 +2452,133 @@ export default {
             len = len || 2;
             let zeros = new Array(len).join('0');
             return (zeros + str).slice(-len);
-        }
+        },
+        createTag() {
+            this.$store.dispatch('Tags/createTag', this.forms.tags)
+                .then(tag => {
+                    if (tag) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_created_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.resetForm();
+                    }
+                });
+        },
+        createService() {
+            this.$store.dispatch('Services/createService', this.forms.services)
+                .then(service => {
+                    if (service) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.service_created_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.resetForm();
+                    }
+                });
+        },
+        createCurrency() {
+            this.$store.dispatch('Currencies/createCurrency', this.forms.currency)
+                .then(currency => {
+                    if (currency) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_created_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                        this.resetForm();
+                    }
+                });
+        },
+        getLangName(code) {
+            const languages = this.$store.getters['Languages/getLanguages'];
+            const foundLang = languages.find(i => i.locale === code);
+            return foundLang ? foundLang.name : code;
+        },
+        saveTag (item) {
+            this.$store.dispatch('Tags/updateTag', item);
+        },
+        saveService (item) {
+            this.$store.dispatch('Services/updateService', item);
+        },
+        saveCurrency (item) {
+            this.$store.dispatch('Currencies/updateCurrency', item);
+        },
+        removeTag(tagId) {
+            this.$store.dispatch('Tags/deleteTag', tagId)
+                .then(result => {
+                    if (result) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_deleted_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_removal_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        removeService(serviceId) {
+            this.$store.dispatch('Services/deleteService', serviceId)
+                .then(result => {
+                    if (result) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.service_deleted_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.service_removal_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        removeCurrency(currencyId) {
+            this.$store.dispatch('Currencies/removeCurrency', currencyId)
+                .then(result => {
+                    console.log(result);
+                    if (result) {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_deleted_successfully;
+                        this.actionColor = 'success'
+                        this.snackbar = true;
+                    } else {
+                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_removal_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+        },
+        filterLang(item) {
+            const languages = this.$store.getters['Languages/getLanguages'];
+            const langs = item.translates.map(t => t.lang);
+            return languages.filter(i => langs && langs.indexOf(i.locale) == -1);
+        },
+        resetForm() {
+            this.forms.tags = {
+                name: '',
+                color: this.$helpers.color.genRandomColor()
+            };
+            this.forms.services = {
+                name: ''
+            };
+            this.forms.currency = {
+                name: '',
+                slug: '',
+                symbol: ''
+            }
+        },
+        closeDialog(id) {
+            console.log(id);
+            this.addTranslationDialog[id] = false;
+        },
+        resetDialog() {
+            this.tagTranslateForm = {
+                lang: null,
+                name: ''
+            };
+        },
+        addOrUpdateTranslate(item, lang = null, name = null) {
+            this.$store.dispatch('Tags/addOrUpdateTranslate', {
+                id: item.id,
+                lang: lang ?? this.tagTranslateForm.lang,
+                name: name ?? this.tagTranslateForm.name
+            });
+        },
     }
 }
 </script>

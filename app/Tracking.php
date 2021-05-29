@@ -4,10 +4,17 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class Tracking extends Model
 {
     protected $table = 'tracking';
+
+    static $STATUS_STARTED = 'started';
+    static $STATUS_PAUSED = 'paused';
+    static $STATUS_STOPPED = 'stopped';
+    static $STATUS_ARCHIVED = 'archived';
 
     protected $fillable = [
         'entity_id',
@@ -58,11 +65,20 @@ class Tracking extends Model
     }
 
     public function getPassedAttribute() {
-        return Carbon::parse($this->date_to)->diffInSeconds(Carbon::parse($this->date_from));
+        return Carbon::parse($this->date_from)->diffInSeconds($this->status !== 'stopped' ? now() : Carbon::parse($this->date_to));
     }
 
     public function getPassedDecimalAttribute() {
-        return floor($this->passed / 60 / 60 * 100) / 100;
+        try {
+            return round($this->passed / 60 / 60 * 100) / 100;
+        } catch (\Exception $exception) {
+            return 0;
+        }
+    }
+
+    public function setPassedAttribute($value)
+    {
+        $this->attributes['passed'] = $value;
     }
 
     public function getDateFromAttribute() {
@@ -74,9 +90,32 @@ class Tracking extends Model
     }
 
     public function getRevenueAttribute() {
-        if (isset($this->entity) && $this->entity_type === TrackingProject::class) {
-            return number_format($this->entity->rate * $this->passed_decimal, 2);
+        if (!$this->billable) return 0;
+        if (isset($this->rate) && !empty($this->rate)) {
+            return round(($this->rate * $this->passed_decimal) * 100) / 100;
         }
-        return null;
+        return 0;
+    }
+
+    public function scopeSimpleUser($query) {
+        return $query->where('user_id', '=', Auth::user()->id);
+    }
+
+    public function scopeTeamManager($query) {
+        $teams = $teams = Team::whereHas('employees', function ($query) {
+            return $query
+                ->where('company_user_id', '=', Auth::user()->employee->id)
+                ->where('is_manager', '=', true);
+        })->get()->pluck('id')->toArray();
+        return $query->SimpleUser()
+            ->orWhereIn('team_id', $teams);
+    }
+
+    public function scopeCompanyAdmin($query) {
+        $company = Auth::user()->employee()
+            ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+            ->with('userData')->first();
+        return $query->SimpleUser()
+            ->orWhere('company_id', '=', $company->company_id);
     }
 }

@@ -98,7 +98,7 @@
                                     item-value="id"
                                 />
                             </v-col>
-                            <v-col cols="12">
+                            <v-col cols="12" md="6">
                                 <v-textarea
                                     v-model="ticket.availability"
                                     :color="themeBgColor"
@@ -110,6 +110,18 @@
                                     row-height="25"
                                     rows="1"
                                 ></v-textarea>
+                            </v-col>
+                            <v-col cols="12" md="6">
+                                <v-select
+                                    v-model="ticket.internal_billing_id"
+                                    :color="themeBgColor"
+                                    :item-color="themeBgColor"
+                                    :items="internalBillings"
+                                    :label="langMap.profile.internal_billing"
+                                    item-text="name"
+                                    item-value="id"
+                                    prepend-icon="mdi-cash"
+                                ></v-select>
                             </v-col>
                             <v-col cols="12" md="6">
                                 <v-textarea
@@ -143,10 +155,10 @@
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="answerDialog" max-width="50%">
+            <v-dialog v-model="answerDialog" max-width="50%" :retain-focus="false" :eager="true">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                        {{ langMap.ticket.create_answer }}
+                        {{ ticketAnswer.id ? langMap.ticket.edit_answer : langMap.ticket.create_answer }}
                     </v-card-title>
                     <v-card-text>
                         <v-form>
@@ -155,7 +167,7 @@
                                     <Tinymce
                                         v-model="ticketAnswer.answer"
                                         :placeholder="langMap.ticket.answer_description"
-                                    ></Tinymce>
+                                    />
                                 </div>
                                 <div class="col-md-12">
                                     <v-select
@@ -188,8 +200,8 @@
                                         <template v-slot:selection="{ index, text }">
                                             <v-chip
                                                 :color="themeBgColor"
-                                                class="ma-2"
-                                                :text-color="themeFgColor"                                            >
+                                                :text-color="themeFgColor"
+                                                class="ma-2">
                                                 {{ text }}
                                             </v-chip>
                                         </template>
@@ -201,17 +213,17 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="answerDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer">{{ langMap.main.create }}
+                        <v-btn :color="themeBgColor" dark @click="addTicketAnswer">{{ ticketAnswer.id ? langMap.main.update : langMap.main.create }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
         </template>
         <template>
-            <v-dialog v-model="noteDialog" max-width="50%">
+            <v-dialog v-model="noteDialog" max-width="50%" :retain-focus="false" :eager="true">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                        {{ langMap.ticket.add_internal_note }}
+                        {{ ticketNotice.id ? langMap.ticket.edit_internal_note : langMap.ticket.add_internal_note }}
                     </v-card-title>
                     <v-card-text>
                         <v-form>
@@ -219,7 +231,7 @@
                                 <div class="col-md-12 mt-2">
                                     <Tinymce
                                         v-model="ticketNotice.notice"
-                                        :placeholder="langMap.ticket.add_internal_note"
+                                        :placeholder="ticketNotice.id ? langMap.ticket.edit_internal_note : langMap.ticket.add_internal_note"
                                     />
                                 </div>
                             </div>
@@ -244,7 +256,7 @@
                     <v-card-actions>
                         <v-btn color="grey darken-1" text @click="noteDialog = false">{{ langMap.main.cancel }}
                         </v-btn>
-                        <v-btn :color="themeBgColor" dark @click="addTicketNotice">{{ langMap.main.create }}
+                        <v-btn :color="themeBgColor" dark @click="addTicketNotice">{{ ticketNotice.id ? langMap.main.update : langMap.main.create }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -329,7 +341,7 @@
                            @click="answerDialog = true"
                     >{{ langMap.ticket.create_answer }}
                     </v-btn>
-                    <v-btn v-if="!checkRoleByIds([6, 101])"
+                    <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
                            :color="!linkBlock ? '#f2f2f2' : themeBgColor"
                            :outlined="linkBlock"
                            class="ma-2 d-sm-none d-md-flex"
@@ -339,7 +351,7 @@
                         {{ langMap.main.link }}
                     </v-btn>
                     <v-btn
-                        v-if="!checkRoleByIds([6, 101]) && (ticket.parent_id !== null || ticket.child_tickets !== null)"
+                        v-if="!$helpers.auth.checkPermissionByIds([36]) && (ticket.parent_id !== null || ticket.child_tickets !== null)"
                         :color="!mergeBlock ? '#f2f2f2' : themeBgColor"
                         :outlined="mergeBlock"
                         class="ma-2 d-sm-none d-md-flex"
@@ -355,14 +367,14 @@
                     >
                         {{ langMap.ticket.ticket_history }}
                     </v-btn>
-                    <v-btn v-if="!checkRoleByIds([6, 101])"
+                    <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
                            :color="this.ticket.is_spam ? 'red' : '#f2f2f2'" class="ma-2 d-sm-none d-md-flex"
                            small
                            @click="markAsSpam"
                     >
                         Spam
                     </v-btn>
-                    <v-btn v-if="!checkRoleByIds([6, 101])"
+                    <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
                            class="ma-2 d-sm-none d-md-flex" color="#f2f2f2" small
                            @click="ticketDeleteProcess"
                     >
@@ -458,6 +470,7 @@
                                 small
                             >
                                 <!--                                <strong>{{ langMap.ticket_types[ticket.ticket_type.name] }}</strong>-->
+                                <v-icon v-if="ticket.ticket_type.icon" small left :color="themeBgColor" v-text="ticket.ticket_type.icon"/>
                                 <strong>{{ ticket.ticket_type.name }}</strong>
 
                             </v-btn>
@@ -471,7 +484,9 @@
                                 link
                                 @click="changeType(type.id)"
                             >
+
                                 <v-list-item-title>
+                                    <v-icon v-if="type.icon" x-small left  v-text="type.icon"/>
                                     <!--                                    <strong>{{ langMap.ticket_types[type.name] }}</strong>-->
                                     <strong>{{ type.name }}</strong>
                                 </v-list-item-title>
@@ -582,8 +597,6 @@
                                             <!--                                        {{ ticket.contact.user_data.surname }}-->
                                             <!--                                    </v-btn>-->
                             </span>
-
-
                             <template v-slot:actions>
                                 <v-icon>$expand</v-icon>
                             </template>
@@ -689,8 +702,8 @@
                                                     <v-chip
                                                         :color="themeBgColor"
                                                         :href="attachment.link"
+                                                        :text-color="themeFgColor"
                                                         class="ma-2"
-                                                        text-color="white"
                                                     >
                                                         {{ attachment.name }}
                                                     </v-chip>
@@ -745,17 +758,18 @@
                                             }} - {{ ticket.name }}:
                                         </span>
                                         <div v-html="child_ticket.description"></div>
-                                        <v-col v-if="child_ticket.attachments.length > 0 " cols="12">
+                                        <v-col v-if="child_ticket.attachments && child_ticket.attachments.length > 0 "
+                                               cols="12">
                                             <h4>{{ langMap.main.attachments }}</h4>
                                             <div
                                                 v-for="attachment in child_ticket.attachments"
-                                                v-if="ticket.attachments.length > 0"
+                                                v-if="child_ticket.attachments.length > 0"
                                             >
                                                 <v-chip
                                                     :color="themeBgColor"
                                                     :href="attachment.link"
-                                                    class="ma-2"
                                                     :text-color="themeFgColor"
+                                                    class="ma-2"
                                                 >
                                                     {{ attachment.name }}
                                                 </v-chip>
@@ -804,7 +818,7 @@
                                 &nbsp;
                             </v-spacer>
                         </div>
-                        <div v-for="answer in ticket.answers"
+                        <div v-for="(answer, index) in ticket.answers"
                              :key="answer.id"
                              class="ticket--answer"
                         >
@@ -815,6 +829,7 @@
                             >
                                 <v-list-item>
                                     <v-list-item-content>
+                                        <v-col :cols="index == 0 && currentUser.id == answer.employee.user_data.id ? 11 : 12">
                                         <span class="text-left" style="font-weight: bold;">
                                             <v-avatar
                                                 v-if="answer.employee.user_data.avatar_url || answer.employee.user_data.full_name"
@@ -822,22 +837,24 @@
                                                 color="grey darken-1"
                                                 size="2em"
                                             >
-                                                    <v-img v-if="answer.employee.user_data.avatar_url"
-                                                           :src="answer.employee.user_data.avatar_url"/>
-                                                    <span v-else-if="answer.employee.user_data.full_name"
-                                                          class="white--text">
-                                                        {{
-                                                            answer.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase()
-                                                        }}
+                                                    <v-img v-if="answer.employee.user_data.avatar_url" :src="answer.employee.user_data.avatar_url"/>
+                                                    <span v-else-if="answer.employee.user_data.full_name" class="white--text">
+                                                        {{answer.employee.user_data.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase() }}
                                                     </span>
-                                                </v-avatar>
-                                                <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
+                                            </v-avatar>
+                                            <v-icon v-else class="mr-2" large>mdi-account-circle</v-icon>
 
                                             {{ answer.employee.user_data.full_name }}
-                                            {{
-                                                answer.created_at_time !== '' ? answer.created_at_time : answer.created_at
-                                            }}:
+                                            {{ answer.created_at_time !== '' ? answer.created_at_time : answer.created_at }}
+                                            {{ answer.created_at !== answer.updated_at ? ', ' + langMap.main.updated + ' ' + (answer.updated_at_time !== '' ? answer.updated_at_time : answer.updated_at) : '' }}
+                                            :
                                         </span>
+                                        </v-col>
+                                        <v-col v-if="index == 0 && currentUser.id == answer.employee.user_data.id"  cols="1">
+                                        <v-btn right icon :color="themeBgColor" :title="langMap.ticket.edit_answer" @click="editAnswer(answer)">
+                                            <v-icon>mdi-pencil</v-icon>
+                                        </v-btn>
+                                        </v-col>
                                         <div v-html="answer.answer"></div>
                                         <v-col v-if="answer.attachments.length > 0 " cols="12">
                                             <h4>{{ langMap.main.attachments }}</h4>
@@ -847,8 +864,8 @@
                                                 <v-chip
                                                     :color="themeBgColor"
                                                     :href="attachment.link"
+                                                    :text-color="themeFgColor"
                                                     class="ma-2"
-                                                    text-color="white"
                                                 >
                                                     {{ attachment.name }}
                                                 </v-chip>
@@ -896,7 +913,7 @@
                                         }} - {{ ticket.name }}:
                                     </span>
                                     <div v-html="ticket.description"></div>
-                                    <v-col v-if="ticket.attachments.length > 0 " cols="12">
+                                    <v-col v-if="ticket.attachments && ticket.attachments.length > 0 " cols="12">
                                         <h4>{{ langMap.main.attachments }}</h4>
                                         <div
                                             v-for="attachment in ticket.attachments"
@@ -905,8 +922,8 @@
                                             <v-chip
                                                 :color="themeBgColor"
                                                 :href="attachment.link"
+                                                :text-color="themeFgColor"
                                                 class="ma-2"
-                                                text-color="white"
                                             >
                                                 {{ attachment.name }}
                                             </v-chip>
@@ -1083,7 +1100,7 @@
                             </span>
                             <v-spacer></v-spacer>
                             <template v-slot:actions>
-                                <v-btn v-if="!checkRoleByIds([6, 101])"
+                                <v-btn v-if="!$helpers.auth.checkPermissionByIds([36])"
                                        class="float-md-right"
                                        color="white" small
                                        style="color: black;"
@@ -1107,7 +1124,7 @@
                                     dense
                                     item-text="name"
                                     item-value="id"
-                                    @change="selectTeam"
+                                    @change="selectTeam(); ticket.to_company_user_id = null;"
                                 ></v-autocomplete>
                                 <v-autocomplete
                                     v-model="ticket.to_company_user_id"
@@ -1129,12 +1146,23 @@
                                     </template>
                                 </v-autocomplete>
                                 <v-btn :color="themeBgColor"
+                                       :disabled="selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
                                        class="ma-2"
                                        small
                                        style="color: white;"
                                        @click.native.stop="updateTicket"
                                 >
                                     {{ langMap.ticket.assign_to }}
+                                </v-btn>
+                                <v-btn :color="themeBgColor"
+                                       :disabled="!ticket.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
+                                       class="ma-2"
+                                       small
+                                       color="grey"
+                                       style="color: white;"
+                                       @click.native.stop="ticket.to_company_user_id = null; updateTicket()"
+                                >
+                                    {{ langMap.ticket.clear_agent }}
                                 </v-btn>
                                 <v-btn class="ma-2"
                                        color="white" small
@@ -1148,7 +1176,7 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
                 <br/>
-                <v-expansion-panels v-if="!checkRoleByIds([6, 101])" v-model="notesPanel" multiple>
+                <v-expansion-panels v-if="!$helpers.auth.checkPermissionByIds([36])" v-model="notesPanel" multiple>
                     <v-expansion-panel>
                         <v-expansion-panel-header
                             style="background:#F0F0F0;"
@@ -1212,7 +1240,7 @@
                                 <br/>
                             </div>
                             </span>
-                            <div v-for="noticeItem in ticket.notices"
+                            <div v-for="(noticeItem, index) in ticket.notices"
                                  :key="noticeItem.id"
                             >
                                 <v-card
@@ -1222,6 +1250,7 @@
                                 >
                                     <v-list-item three-line>
                                         <v-list-item-content class="custom-small-text">
+                                            <v-col :cols="index == 0 && currentUser.id == noticeItem.employee.user_data.id ? 11 : 12">
                                             <strong>
                                                 <v-avatar
                                                     v-if="noticeItem.employee.user_data.avatar_url || noticeItem.employee.user_data.full_name"
@@ -1242,8 +1271,16 @@
 
                                                 {{ noticeItem.employee.user_data.full_name }}
 
-                                                {{ noticeItem.created_at }}:
+                                                {{ noticeItem.created_at }}
+                                                {{ noticeItem.created_at != noticeItem.updated_at ? ', ' + langMap.main.updated + ' ' + noticeItem.updated_at : ''}}
+                                                :
                                             </strong>
+                                            </v-col>
+                                            <v-col v-if="index == 0 && currentUser.id == noticeItem.employee.user_data.id" cols="1">
+                                                <v-btn icon :color="themeBgColor" right @click="editNotice(noticeItem)" :title="langMap.ticket.edit_notice">
+                                                    <v-icon>mdi-pencil</v-icon>
+                                                </v-btn>
+                                            </v-col>
                                             <div v-html="noticeItem.notice"></div>
                                         </v-list-item-content>
 
@@ -1527,9 +1564,12 @@
                                                     <v-list-item-group :color="themeBgColor">
                                                         <v-list-item
                                                             v-for="(item, i) in tickets"
-                                                            :key="item.id"
+                                                            :key="i"
                                                             :color="themeBgColor"
-                                                            @click="showTicket(item.id)"
+                                                            @click="
+                                                            !mergeTicketForm.child_ticket_id.includes(item.id) ?
+                                                            mergeTicketForm.child_ticket_id.push(item.id) :
+                                                            mergeTicketForm.child_ticket_id.splice(mergeTicketForm.child_ticket_id.indexOf(item.id), 1)"
                                                         >
                                                             <v-list-item-title>
                                                 <span>
@@ -1543,6 +1583,10 @@
                                                         dense
                                                         hide-details
                                                         style="display: inline-block; margin-top: 0!important"
+                                                        @click="
+                                                            !mergeTicketForm.child_ticket_id.includes(item.id) ?
+                                                            mergeTicketForm.child_ticket_id.push(item.id) :
+                                                            mergeTicketForm.child_ticket_id.splice(mergeTicketForm.child_ticket_id.indexOf(item.id), 1)"
                                                     />
                                                     <v-tooltip bottom>
                                                     <template v-slot:activator="{ on, attrs }">
@@ -1725,6 +1769,7 @@ export default {
             linkParentTickets: [],
             ticketsSearch: '',
             searchLabel: '',
+            internalBillings: [],
             searchCategories: [
                 {
                     id: 1,
@@ -1750,8 +1795,8 @@ export default {
                 merge_comment: null
             },
             ticket: {
-                status_id: '',
-                to_company_user_id: '',
+                status_id: null,
+                to_company_user_id: null,
                 attachments: [{
                     name: '',
                     link: ''
@@ -1780,11 +1825,11 @@ export default {
                     name: ''
                 },
                 to_entity_type: '',
-                to_entity_id: '',
-                to_team_id: '',
-                contact_company_user_id: '',
-                to_product_id: '',
-                priority_id: '',
+                to_entity_id: null,
+                to_team_id: null,
+                contact_company_user_id: null,
+                to_product_id: null,
+                priority_id: null,
                 name: '',
                 description: '',
                 availability: '',
@@ -1845,16 +1890,21 @@ export default {
                 ],
             },
             ticketAnswer: {
+                id: '',
                 files: [],
                 answer: ''
             },
             ticketNotice: {
+                id: '',
                 notice: '',
             },
             onFileChange(form) {
                 this[form].files = null;
                 // console.log(event.target.files);
                 this[form].files = event.target.files;
+            },
+            currentUser: {
+                id: ''
             }
         }
     },
@@ -1874,24 +1924,20 @@ export default {
         this.getTeams()
         this.getTickets()
         this.getSignatures()
+        this.getCurrentUser()
         // if (localStorage.getticket('auth_token')) {
         //     this.$router.push('tickets')
         // }
         let that = this;
         EventBus.$on('update-theme-color', function (color) {
             that.themeBgColor = color;
-        })
+        });
+
+        let ticketId = this.$route.params.id;
+        window.history.replaceState({}, this.langMap.sidebar.ticket_list, '/tickets');
+        window.history.pushState({ticket_id: ticketId}, this.langMap.sidebar.ticket, `/ticket/${ticketId}`);
     },
     methods: {
-        checkRoleByIds(ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
-                }
-            });
-            return roleExists
-        },
         selectSearchCategory(item) {
             this.searchLabel = item.name
         },
@@ -1919,7 +1965,7 @@ export default {
                     if (this.ticket.notices.length > 0) {
                         this.notesPanel.push(0);
                     }
-
+                    this.getInternalBilling()
                 }
             });
         },
@@ -2113,45 +2159,89 @@ export default {
             // console.log(this.ticketAnswer);
             let formData = new FormData();
             for (let key in this.ticketAnswer) {
-                if (key !== 'files') {
-                    if (this.selectedSignature !== '') {
+                if (key !== 'files' && key !== 'id') {
+                    if (key =='answer' && this.selectedSignature !== '') {
                         this.ticketAnswer[key] += '<hr><br/>' + this.selectedSignature
                     }
                     formData.append(key, this.ticketAnswer[key]);
                 }
             }
             Array.from(this.ticketAnswer.files).forEach(file => formData.append('files[]', file));
-            axios.post(`/api/ticket/${this.$route.params.id}/answer`, formData, config).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.ticketAnswer.answer = ''
-                    this.ticketAnswer.files = []
-                    this.getTicket()
-                    this.answerDialog = false
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error'
-                    this.snackbar = true;
-                }
-            });
+
+            if (this.ticketAnswer.id) {
+                axios.post(`/api/ticket/${this.$route.params.id}/answer/${this.ticketAnswer.id}`, formData, config).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.ticketAnswer.id = null
+                        this.ticketAnswer.answer = ''
+                        this.ticketAnswer.files = []
+                        this.selectedSignature = ''
+                        this.getTicket()
+                        this.answerDialog = false
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            } else {
+                axios.post(`/api/ticket/${this.$route.params.id}/answer`, formData, config).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.ticketAnswer.id = null
+                        this.ticketAnswer.answer = ''
+                        this.ticketAnswer.files = []
+                        this.selectedSignature = ''
+                        this.getTicket()
+                        this.answerDialog = false
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            }
         },
         addTicketNotice() {
             if (this.selectedSignature !== '') {
                 this.ticketNotice.notice += '<hr><br/>' + this.selectedSignature
             }
 
-            axios.post(`/api/ticket/${this.$route.params.id}/notice`, this.ticketNotice).then(response => {
-                response = response.data
-                if (response.success === true) {
-                    this.ticketNotice.notice = ''
-                    this.getTicket()
-                    this.noteDialog = false
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error'
-                    this.snackbar = true;
-                }
-            });
+            if (this.ticketNotice.id) {
+                axios.post(`/api/ticket/${this.$route.params.id}/notice/${this.ticketNotice.id}`, {
+                    notice: this.ticketNotice.notice
+                }).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.ticketNotice.id = ''
+                        this.ticketNotice.notice = ''
+                        this.selectedSignature = ''
+                        this.getTicket()
+                        this.noteDialog = false
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            } else {
+                axios.post(`/api/ticket/${this.$route.params.id}/notice`, {
+                    notice: this.ticketNotice.notice
+                }).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.ticketNotice.id = ''
+                        this.ticketNotice.notice = ''
+                        this.selectedSignature = ''
+                        this.getTicket()
+                        this.noteDialog = false
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            }
         },
         makeCompanyLink(ticket) {
             let redirectToEntity = ticket.from_entity_type.substring(ticket.from_entity_type.lastIndexOf("\\") + 1).toLowerCase()
@@ -2283,6 +2373,61 @@ export default {
                 }
             });
         },
+        getInternalBilling() {
+            axios.get(`/api/billing/internal?${this.createAdditionalBillingIds()}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.internalBillings = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        createAdditionalBillingIds() {
+            let queryString = '';
+
+            if (this.ticket.from_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.creator.user_id}&`;
+            }
+            if (this.ticket.to_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.assigned_person.user_id}&`;
+            }
+            if (this.ticket.contact_company_user_id !== null) {
+                queryString += `additional_user_ids[]=${this.ticket.contact.user_id}&`;
+            }
+
+            if (this.ticket.internal_billing_id !== null) {
+                queryString += `internal_billing_id=${this.ticket.internal_billing_id}&`;
+            }
+
+            return queryString.slice(0, -1)
+        },
+        getCurrentUser() {
+            axios.get('/api/user').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.currentUser = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        editAnswer(answer) {
+            this.ticketAnswer.id = answer.id;
+            this.ticketAnswer.answer = answer.answer;
+            this.selectedSignature = '';
+            this.answerDialog = true;
+        },
+        editNotice(notice) {
+            this.ticketNotice.id = notice.id;
+            this.ticketNotice.notice = notice.notice;
+            this.selectedSignature = '';
+            this.noteDialog = true;
+        }
     },
     computed: {
         checkProgress: function () {

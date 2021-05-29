@@ -39,7 +39,7 @@
                                 outlined
                                 dense
                                 hide-details="auto"
-                                placeholder="What are you working on?"
+                                :placeholder="langMap.tracking.tracker.timer_panel_description"
                                 v-model="timerPanel.description"
                                 style="max-width: 1000px"
                             ></v-text-field>
@@ -63,6 +63,7 @@
                         </div>
                         <div class="mx-2 align-self-center">
                             <v-btn
+                                v-if="$helpers.auth.checkPermissionByIds([46])"
                                 fab
                                 :icon="!timerPanel.billable"
                                 x-small
@@ -99,6 +100,7 @@
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                        v-if="!$helpers.auth.checkPermissionByIds([47])"
                                         fab
                                         x-small
                                         :icon="!mode"
@@ -115,6 +117,7 @@
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                        v-if="!$helpers.auth.checkPermissionByIds([47])"
                                         fab
                                         x-small
                                         :icon="mode"
@@ -131,7 +134,7 @@
                         </div>
                     </div>
                     <!-- Manual mode-->
-                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!mode">
+                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!$helpers.auth.checkPermissionByIds([47]) && !mode">
                         <div class="mx-2 align-self-center">
                             <v-select
                                 :items="$store.getters['Services/getServices']"
@@ -173,6 +176,7 @@
                         </div>
                         <div class="mx-1 align-self-center">
                             <v-btn
+                                v-if="$helpers.auth.checkPermissionByIds([46])"
                                 :icon="!manualPanel.billable"
                                 x-small
                                 :color="themeBgColor"
@@ -200,6 +204,7 @@
                                 :label="langMap.tracking.tracker.to"
                                 placeholder="hh:mm"
                                 format="HH:mm"
+                                :min="manualPanel.date_from"
                             ></TimeField>
                         </div>
                         <div class="mx-1 align-self-center">
@@ -215,7 +220,7 @@
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
                                         dense
-                                        v-model="date"
+                                        v-model="manualFormattedDate"
                                         :label="langMap.tracking.tracker.date"
                                         placeholder="yyyy-mm-dd"
                                         prepend-icon="mdi-calendar"
@@ -224,12 +229,13 @@
                                         hide-details="auto"
                                         class="date-picker__without-line mt-1"
                                         style="min-width: 100px; max-width: 130px"
-                                        @blur="handlerSetDate()"
+                                        readonly
                                     ></v-text-field>
                                 </template>
                                 <v-date-picker
+                                    first-day-of-week="1"
                                     dense
-                                    v-model="date"
+                                    v-model="manualFormattedDate"
                                     @input="createDatePicker = false"
                                 ></v-date-picker>
                             </v-menu>
@@ -296,10 +302,39 @@
             </v-card>
         </template>
 
-<!--        dateRangePicker-->
+<!--        Team selector   -->
+<!--        dateRangePicker -->
         <template>
-            <div class="d-flex flex-row-reverse mr-16">
-                <v-menu
+            <div class="d-flex flex-row mr-16">
+                <div class="d-inline-flex flex-grow-0">
+                    <v-select
+                        v-if="hasPermission([42, 90])"
+                        placeholder="Choose team members"
+                        :items="teamEmployee"
+                        item-value="id"
+                        item-text="name"
+                        v-model="teamFilter"
+                        hide-details
+                        multiple
+                        clearable
+                        single-line
+                        style="min-width: 300px"
+                    >
+                        <template v-slot:item="{ parent, item, on, attrs }">
+                            <div class="d-flex">
+                                <div class="d-inline-flex">
+                                    <Avatar :user="item" :color="getUserColor(item.id)"></Avatar>
+                                </div>
+                                <div class="d-inline-flex mt-3 ma-4">
+                                    {{ item.full_name }}
+                                </div>
+                            </div>
+                        </template>
+                    </v-select>
+                </div>
+                <div class="d-inline-flex flex-grow-1" style="width: 100%;">&nbsp;</div>
+                <div class="d-inline-flex flex-grow-0">
+                    <v-menu
                         ref="dateRangePicker"
                         v-model="dateRangePicker"
                         :close-on-content-click="false"
@@ -323,9 +358,10 @@
                                     'border-color': themeBgColor,
                                     'border-width': '2px',
                                     'min-width': '280px',
-                                    'max-width': '300px'
+                                    'max-width': '300px',
+                                    'max-height': '36px',
                                 }"
-                                class="py-0 mt-3 mb-n3 dateRangePicker"
+                                class="py-0 mt-5 mb-n3 dateRangePicker"
                             ></v-text-field>
                         </template>
                         <v-card>
@@ -357,6 +393,7 @@
                             ></vc-date-picker>
                         </v-card>
                     </v-menu>
+                </div>
             </div>
         </template>
 
@@ -393,15 +430,19 @@
                                 >
                                     <template v-slot:body="props">
                                         <tr v-for="row in props.items">
+                                            <td class="pa-3" v-if="hasPermission([42])">
+                                                <Avatar :user="row.user" :color="getUserColor(row.user.id)"></Avatar>
+                                            </td>
                                             <td
                                                 class="pa-3"
                                                 :width="headers.find(i => i.value === 'description').width"
                                             >
                                                 <v-edit-dialog
-                                                    @save="save(row, 'description')"
+                                                    v-if="isEditable(row)"
+                                                    @save="debounceSave(row, 'description')"
                                                     @cancel="cancel"
                                                     @open="open"
-                                                    @close="save(row, 'description')"
+                                                    @close="debounceSave(row, 'description')"
                                                     :ref="`dialog${row.id}`"
                                                 >
                                                     <span v-if="row.service">
@@ -412,16 +453,17 @@
                                                         {{ langMap.tracking.tracker.add_description }}
                                                     </span>
                                                     <span v-else>
-                                                        {{ row.description }}
+                                                        {{ $helpers.string.shortenText(row.description, 100) }}
                                                     </span>
                                                     <template v-slot:input>
-                                                        <v-text-field
+                                                        <v-textarea
                                                             v-model="row.description"
                                                             :label="langMap.tracking.tracker.description"
                                                             :placeholder="langMap.tracking.tracker.description"
                                                             single-line
                                                             counter
-                                                        ></v-text-field>
+                                                            rows="2"
+                                                        ></v-textarea>
                                                         <v-select
                                                             :items="$store.getters['Services/getServices']"
                                                             :label="langMap.tracking.tracker.service_type"
@@ -442,6 +484,18 @@
                                                         </v-btn>
                                                     </template>
                                                 </v-edit-dialog>
+                                                <div v-else>
+                                                    <span v-if="row.service">
+                                                        {{ row.service.name }}
+                                                        <v-icon x-small>mdi-checkbox-blank-circle</v-icon>
+                                                    </span>
+                                                    <span class="text--secondary" v-if="!row.description">
+                                                        {{ langMap.tracking.tracker.add_description }}
+                                                    </span>
+                                                    <span v-else>
+                                                        {{ row.description }}
+                                                    </span>
+                                                </div>
                                             </td>
                                             <td
                                                 class="pa-3"
@@ -454,44 +508,57 @@
                                             </td>
                                             <td
                                                 class="pa-3"
+                                                align="center"
                                                 :width="headers.find(i => i.value === 'entity.name').width"
                                             >
                                                 <v-edit-dialog
-                                                    @save="save(row, 'entity', row.entity)"
+                                                    v-if="isEditable(row)"
+                                                    @save="debounceSave(row, 'entity', row.entity)"
                                                     @cancel="cancel"
                                                     @open="open"
-                                                    @close="save(row, 'entity', row.entity)"
+                                                    @close="debounceSave(row, 'entity', row.entity)"
                                                 >
                                                     <ProjectBtn
                                                         :key="row.id"
-                                                        :color="themeBgColor"
+                                                        :color="row.entity && row.entity.color ? row.entity.color : themeBgColor"
                                                         v-model="row.entity"
-                                                        @blur="save(row, 'entity', row.entity)"
-                                                        @input="save(row, 'entity', row.entity)"
+                                                        @blur="debounceSave(row, 'entity', row.entity)"
+                                                        @input="debounceSave(row, 'entity', row.entity)"
                                                     ></ProjectBtn>
                                                 </v-edit-dialog>
+                                                <div v-else>
+                                                    <div
+                                                        v-if="row.entity"
+                                                        :style="{color: row.entity && row.entity.color ? row.entity.color : themeBgColor}"
+                                                    >
+                                                        {{$helpers.string.shortenText(row.entity.name, 35)}}
+                                                    </div>
+                                                </div>
                                             </td>
                                             <td
                                                 class="pa-3"
                                                 :width="headers.find(i => i.value === 'tags').width"
                                             >
-                                                <TagBtn
+                                                <TagField
+                                                    :disabled="!isEditable(row)"
                                                     :key="row.id"
                                                     :color="themeBgColor"
                                                     v-model="row.tags"
-                                                    @blur="save(row, 'tags', row.tags)"
-                                                ></TagBtn>
+                                                    @blur="debounceSave(row, 'tags', row.tags)"
+                                                ></TagField>
                                             </td>
                                             <td
                                                 class="pa-3"
                                                 :width="headers.find(i => i.value === 'billable').width"
                                             >
                                                 <v-btn
+                                                    v-if="isEditable(row)"
+                                                    :disabled="!$helpers.auth.checkPermissionByIds([46])"
                                                     fab
                                                     :icon="!row.billable"
                                                     x-small
                                                     :color="themeBgColor"
-                                                    @click="row.billable = !row.billable; save(row, 'billable')"
+                                                    @click="row.billable = !row.billable; debounceSave(row, 'billable')"
                                                 >
                                                     <v-icon center v-bind:class="{ 'white--text': row.billable }">
                                                         mdi-currency-usd
@@ -504,38 +571,42 @@
                                             >
                                                 <div class="d-flex flex-row">
                                                     <div class="d-flex-inline">
-                                                        <v-edit-dialog>
-                                                            {{ moment(row.date_from).format(timeFormat) }}
-                                                            <template v-slot:input>
-                                                                <TimeField
-                                                                    v-model="row.date_from"
-                                                                    style="max-width: 100px; height: 40px"
-                                                                    placeholder="hh:mm"
-                                                                    format="HH:mm"
-                                                                    @input="save(row, 'date_from', row.date_from)"
-                                                                ></TimeField>
-                                                            </template>
-                                                        </v-edit-dialog>
-                                                    </div>
-                                                    <div class="d-flex-inline">&nbsp;&mdash;&nbsp;</div>
-                                                    <div class="d-flex-inline">
                                                         <v-edit-dialog
-                                                            :return-value.sync="row.date_to"
-                                                            v-if="row.status == 'stopped'"
+                                                            v-if="isEditable(row)"
+                                                            @save=""
+                                                            @cancel="cancel"
+                                                            @open="open"
+                                                            @close=""
                                                         >
-                                                    <span v-if="row.date_to && row.status == 'stopped'">
-                                                        {{ moment(row.date_to).format(timeFormat) }}
-                                                    </span>
+                                                            {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;{{moment(row.date_to).format(timeFormat)}}
                                                             <template v-slot:input>
-                                                                <TimeField
-                                                                    v-model="row.date_to"
-                                                                    style="max-width: 100px; height: 40px"
-                                                                    placeholder="hh:mm"
-                                                                    format="HH:mm"
-                                                                    @input="save(row, 'date_to', row.date_to)"
-                                                                ></TimeField>
+                                                                <div class="d-flex flex-row">
+                                                                    <div class="d-inline-flex">
+                                                                        <TimeField
+                                                                            v-model="row.date_from"
+                                                                            style="max-width: 100px; height: 40px"
+                                                                            placeholder="hh:mm"
+                                                                            format="HH:mm"
+                                                                            @input="correctionTime(row.date_from, row.date_to); debounceSave(row, 'date_from', row.date_from)"
+                                                                        ></TimeField>
+                                                                    </div>
+                                                                    <div class="d-inline-flex mt-2">&nbsp;&mdash;&nbsp;</div>
+                                                                    <div class="d-inline-flex">
+                                                                        <TimeField
+                                                                            v-model="row.date_to"
+                                                                            style="max-width: 100px; height: 40px"
+                                                                            placeholder="hh:mm"
+                                                                            format="HH:mm"
+                                                                            :min="row.date_from"
+                                                                            @input="correctionTime(row.date_from, row.date_to); debounceSave(row, 'date_to', row.date_to)"
+                                                                        ></TimeField>
+                                                                    </div>
+                                                                </div>
                                                             </template>
                                                         </v-edit-dialog>
+                                                        <span v-else>
+                                                            {{moment(row.date_from).format('HH:mm')}}&nbsp;&mdash;&nbsp;{{moment(row.date_to).format('HH:mm')}}
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -543,13 +614,14 @@
                                                 class="pa-3"
                                                 :width="headers.find(i => i.value === 'passed').width"
                                             >
-                                                <span v-text="helperConvertSecondsToTimeFormat(row.passed)"></span>
+                                                <span v-text="$helpers.time.convertSecToTime(row.passed)"></span>
                                             </td>
                                             <td
                                                 class="pa-3"
                                                 :width="headers.find(i => i.value === 'date').width"
                                             >
                                                 <v-menu
+                                                    :disabled="!isEditable(row)"
                                                     v-model="row.date_picker"
                                                     :close-on-content-click="false"
                                                     :nudge-right="40"
@@ -560,6 +632,7 @@
                                                 >
                                                     <template v-slot:activator="{ on, attrs }">
                                                         <v-btn
+                                                            :disabled="!isEditable(row)"
                                                             icon
                                                             v-bind="attrs"
                                                             v-on="on"
@@ -569,6 +642,8 @@
                                                         </v-btn>
                                                     </template>
                                                     <v-date-picker
+                                                        first-day-of-week="1"
+                                                        :disabled="!isEditable(row)"
                                                         dense
                                                         v-model="row.date"
                                                         @input="row.date_picker = false; handlerChangeDate(row)"
@@ -631,7 +706,7 @@
                                                                                 </v-list-item-title>
                                                                             </v-list-item-content>
                                                                         </v-list-item>
-                                                                        <v-list-item>
+                                                                        <v-list-item v-if="isEditable(row)">
                                                                             <v-list-item-content>
                                                                                 <v-list-item-title
                                                                                     @click="actionDeleteTracking(row.id)"
@@ -689,14 +764,17 @@ import moment from "moment-timezone";
 import _ from "lodash";
 import ProjectBtn from "./components/project-btn";
 import TagBtn from "./components/tag-btn";
+import TagField from "./components/tag-field";
 import TimeField from "./components/time-field";
-import * as Helper from "./helper";
+import Avatar from "../../components/Avatar";
 
 export default {
     components: {
         ProjectBtn,
         TagBtn,
-        TimeField
+        TagField,
+        TimeField,
+        Avatar
     },
     data() {
         return {
@@ -710,7 +788,7 @@ export default {
             timeFormat: 'HH:mm',
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
-themeBgColor: this.$store.state.themeBgColor,
+            themeBgColor: this.$store.state.themeBgColor,
             /* Snackbar */
             snackbarMessage: '',
             snackbar: false,
@@ -720,10 +798,6 @@ themeBgColor: this.$store.state.themeBgColor,
             loadingCreateTrack: false,
             loadingUpdateTrack: false,
             loadingDeleteTrack: false,
-            timeFromPicker: false,
-            timeToPicker: false,
-            timeFrom: null,
-            timeTo: null,
             date: null,
             menuProject: false,
             search: '',
@@ -737,7 +811,8 @@ themeBgColor: this.$store.state.themeBgColor,
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.description,
                     align: 'start',
-                    value: 'description'
+                    value: 'description',
+                    width: '80%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.company,
@@ -821,26 +896,31 @@ themeBgColor: this.$store.state.themeBgColor,
             },
             globalTimer: null,
             isLoadingTags: false,
-            isLoadingProject: false
+            isLoadingProject: false,
+            teamFilter: []
         }
     },
     created: function () {
+        moment.updateLocale(this.$store.state.lang.short_code, {
+            week: {
+                dow: 1,
+            },
+        });
         this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
-        if (Helper.getKey('dateRange')) {
-            this.dateRange = Helper.getKey('dateRange');
+        this.debounceSave = _.debounce(this.save, 500);
+        if (this.$helpers.localStorage.getKey('dateRange', 'tracking')) {
+            this.dateRange = this.$helpers.localStorage.getKey('dateRange', 'tracking');
             if (moment(this.dateRange.end).format(this.dateFormat) === moment().subtract(1, 'days').format(this.dateFormat)) {
                 this.dateRange.end = moment();
-                Helper.storeKey('dateRange', this.dateRange);
+                this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
             }
         } else {
             this.dateRange = {
                 start: moment().subtract(1, 'days').format(this.dateFormat),
                 end: moment().format(this.dateFormat)
             };
-            Helper.storeKey('dateRange', this.dateRange);
+            this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
         }
-        this.timeFrom = moment().format();
-        this.timeTo = moment().add(15, 'minutes').format();
         this.date = moment().format(this.dateFormat);
     },
     mounted() {
@@ -852,11 +932,14 @@ themeBgColor: this.$store.state.themeBgColor,
         this.$store.dispatch('Tags/getTagList');
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Tickets/getTicketList', { search: null });
+        this.$store.dispatch('Team/getManagedTeams', { withEmployee: true });
+        this.$store.dispatch('Team/getCoworkers', { search: null });
+        this.$store.dispatch('Team/getTeams', { search: null });
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
@@ -921,8 +1004,7 @@ themeBgColor: this.$store.state.themeBgColor,
                             this.debounceGetTracking();
                             this.resetManualPanel();
                             this.loadingUpdateTrack = false;
-                            const error = Object.keys(data.error)[0];
-                            this.snackbarMessage = data.error[error].pop();
+                            this.snackbarMessage = data.error;
                             this.actionColor = 'error'
                             this.snackbar = true;
                         }
@@ -1023,25 +1105,6 @@ themeBgColor: this.$store.state.themeBgColor,
                     }
                 });
         },
-        helperAddZeros(num, len) {
-            while((""+num).length < len) num = "0" + num;
-            return num.toString();
-        },
-        helperConvertSecondsToTimeFormat(seconds) {
-            if (!seconds) {
-                return `00:00:00`;
-            }
-            const h = Math.floor(seconds / 60 / 60);
-            const m = Math.floor((seconds - h * 60 * 60) / 60);
-            const s = seconds - (m * 60) - (h * 60 * 60);
-            return `${this.helperAddZeros(h,2)}:${this.helperAddZeros(m,2)}:${this.helperAddZeros(s,2)}`;
-        },
-        helperCalculatePassedTime(date_from, date_to) {
-            if (moment(date_from) > moment(date_to)) {
-                date_to = moment(date_to).add(1, 'day');
-            }
-            return moment(date_to).diff(moment(date_from), 'seconds');
-        },
         resetManualPanel() {
             this.manualPanel = {
                 ...this.manualPanel,
@@ -1075,47 +1138,9 @@ themeBgColor: this.$store.state.themeBgColor,
             };
         },
         handlerDateRange() {
-            Helper.storeKey('dateRange', this.dateRange);
+            this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
             this.dateRangePicker = false;
             this.debounceGetTracking();
-        },
-        // handlerSetTimeFrom() {
-        //     if (!this.timeFrom) {
-        //         this.timeFrom = moment().format(this.timeFormat);
-        //     }
-        //     if (/([0-9]{1,}:[0-9]{2})/.test(this.timeFrom)) {
-        //         return this.timeFrom;
-        //     }
-        //     if (/(\d{1,4})/.test(this.timeFrom)) {
-        //         let str = this.timeFrom.toString().slice(0,4);
-        //         str = this.helperAddZeros(str, 4);
-        //         this.timeFrom = str.slice(0,2) + ':' + str.slice(-2);
-        //         return this.timeFrom;
-        //     }
-        //     this.timeFrom = moment().format(this.timeFormat);
-        //     return this.timeFrom;
-        // },
-        // handlerSetTimeTo() {
-        //     if (!this.timeTo) {
-        //         this.timeTo = moment().format(this.timeFormat);
-        //     }
-        //     if (/([0-9]{1,}:[0-9]{2})/.test(this.timeTo)) {
-        //         return this.timeTo;
-        //     }
-        //     if (/(\d{1,4})/.test(this.timeTo)) {
-        //         let str = this.timeTo.toString().slice(0,4);
-        //         str = this.helperAddZeros(str, 4);
-        //         this.timeTo = str.slice(0,2) + ':' + str.slice(-2);
-        //         return this.timeTo;
-        //     }
-        //     this.timeTo = moment().format(this.timeFormat);
-        //     return this.timeTo;
-        // },
-        handlerSetDate() {
-            if (!this.date || ! /([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})/.test(this.date)) {
-                this.date = moment().format(this.dateFormat);
-            }
-            return this.date;
         },
         handlerProjectTimerPanel(data) {
             this.timerPanel.entity = data.project;
@@ -1131,13 +1156,20 @@ themeBgColor: this.$store.state.themeBgColor,
         },
         filterTracking(date) {
             const self = this;
-            return this.tracking.filter(function(item) {
+            return this.tracking
+                .filter(function(item) {
+                    if (self.teamFilter.length) {
+                        return self.teamFilter.indexOf(item.user_id) !== -1;
+                    }
+                    return true;
+                })
+                .filter(function(item) {
                 return moment(item.date_from).format(self.dateFormat) === date;
             });
         },
         save (item, fieldName, newValue = null) {
             if (['date_from', 'date_to'].indexOf(fieldName)) {
-                item.passed = this.helperCalculatePassedTime(item.date_from, item.date_to);
+                item.passed = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to, true);
             }
             if (newValue) {
                 item[fieldName] = newValue;
@@ -1145,6 +1177,13 @@ themeBgColor: this.$store.state.themeBgColor,
             if (fieldName === 'entity') {
                 item.entity_id = item.entity && item.entity.id ? item.entity.id : item.entity_id;
                 item.entity_type = item.entity && item.entity.from ? 'App\\Ticket' : 'App\\TrackingProject';
+            }
+            if (moment(item.date_to).isBefore(moment(item.date_from))) {
+                item.date_to = moment(item.date_to).set({
+                    date: moment(item.date_from).add(1, 'days').date(),
+                    year: moment(item.date_from).year(),
+                    month: moment(item.date_from).month(),
+                }).format();
             }
             this.__updateTrackingById(item.id, item);
         },
@@ -1163,10 +1202,42 @@ themeBgColor: this.$store.state.themeBgColor,
                 month: moment(item.date).month(),
                 year: moment(item.date).year()
             };
-            const seconds = this.helperCalculatePassedTime(item.date_from, item.date_to);
+            const seconds = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to, true);
             item.date_from = moment(item.date_from).set(date).format();
             item.date_to = moment(item.date_from).add(seconds, "seconds").format();
-            this.save(item, 'date_from');
+            this.debounceSave(item, 'date_from');
+        },
+        hasPermission(ids) {
+            return this.$helpers.auth.checkPermissionByIds(ids);
+        },
+        isEditable(tracker) {
+            if (!this.hasPermission([43, 44, 45])) {
+                return false;
+            }
+            const trackerDiff = moment().diff(tracker.date_from, 'seconds');
+            if (
+                (this.hasPermission([45]) &&  trackerDiff > 60 * 60 * 24 * 14)
+                || (this.hasPermission([44]) &&  trackerDiff > 60 * 60 * 24 * 7)
+            ) {
+                return false;
+            }
+            return true;
+        },
+        getUserColor(userId) {
+            const foundItem = this.teamEmployee.find(i => i.id === userId);
+            if (foundItem) {
+                return foundItem.color;
+            }
+            return null;
+        },
+        correctionTime(dateFrom, dateTo) {
+            if (moment(dateTo).isBefore(moment(dateFrom))) {
+                dateTo = moment(dateTo).set({
+                    date: moment(dateFrom).add(1, 'days').date(),
+                    year: moment(dateFrom).year(),
+                    month: moment(dateFrom).month(),
+                }).toISOString();
+            }
         }
     },
     computed: {
@@ -1174,18 +1245,25 @@ themeBgColor: this.$store.state.themeBgColor,
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
                 this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format();
             }
-            const seconds = this.helperCalculatePassedTime(this.manualPanel.date_from, this.manualPanel.date_to);
-            return this.helperConvertSecondsToTimeFormat(seconds);
+            const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to, true);
+            return this.$helpers.time.convertSecToTime(seconds);
         },
         dateRangeText () {
             const dateFormat = 'DD MMM YYYY';
             return `${moment(this.dateRange.start).format(dateFormat)} - ${moment(this.dateRange.end).format(dateFormat)}`;
         },
         getPanelDates () {
-            const items = this.tracking.reduce(function (acc, item) {
-                const date = moment(item.date_from).format('YYYY-MM-DD');
-                return [...acc, date.toString()];
-            }, []);
+            const self = this;
+            const items = this.tracking
+                .filter(function(item) {
+                    if (self.teamFilter.length) {
+                        return self.teamFilter.indexOf(item.user_id) !== -1;
+                    }
+                    return true;
+                }).reduce(function (acc, item) {
+                    const date = moment(item.date_from).format('YYYY-MM-DD');
+                    return [...acc, date.toString()];
+                }, []);
             const panels = [...new Set(items)].sort().reverse();
             this.panels = panels.map((i,k) => k);
             return panels;
@@ -1204,14 +1282,51 @@ themeBgColor: this.$store.state.themeBgColor,
         },
         periodEnd () {
             return moment(this.dateRange.end).format('DD/MM/YYYY');
-        }
+        },
+        teamEmployee () {
+            let empl = [];
+            if (this.hasPermission([90])) {
+                empl = this.$store.getters['Team/getCoworkers'];
+            } else if (this.hasPermission([42])) {
+                this.$store.getters['Team/getManagedTeams'].map(team => {
+                    team.employees.map(e => {
+                        empl.push({
+                            id: e.employee.user_data.id,
+                            name: e.employee.user_data.name,
+                            surname: e.employee.user_data.surname,
+                            middle_name: e.employee.user_data.middle_name,
+                            full_name: e.employee.user_data.full_name,
+                            avatar_url: e.employee.user_data.avatar_url,
+                            color: this.$helpers.color.genRandomColor(),
+                        });
+                    });
+                });
+                return _.sortBy(empl, item => {
+                    return item.full_name.toLowerCase();
+                });
+            }
+            return empl;
+        },
+        manualFormattedDate: {
+            get() {
+                return moment(this.manualPanel.date_from).format(this.dateFormat);
+            },
+            set(val) {
+                this.manualPanel.date = moment(val).format();
+                const date = {
+                    date: moment(val).date(),
+                    month: moment(val).month(),
+                    year: moment(val).year()
+                };
+                this.manualPanel.date_from = moment(this.manualPanel.date_from)
+                    .set(date).toISOString();
+                this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
+            }
+        },
     },
     watch: {
-        timeFrom: function () {
-            this.manualPanel.date_from = moment(this.timeFrom).format();
-        },
-        timeTo: function () {
-            this.manualPanel.date_to = moment(this.timeTo).format();
+        'manualPanel.date_from': function () {
+            this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
         },
         date: function () {
             this.manualPanel.date = moment(this.date).format();
@@ -1220,14 +1335,12 @@ themeBgColor: this.$store.state.themeBgColor,
                 month: moment(this.date).month(),
                 year: moment(this.date).year()
             };
-            this.timeFrom = moment(this.timeFrom).set(date).format();
-            this.timeTo = moment(this.timeTo).set(date).format();
-            this.manualPanel.date_from = moment(this.timeFrom).format();
+
             let dayToAdding = 0;
             if (moment(this.manualPanel.date_to).format(this.dateFormat) > moment(this.manualPanel.date_from).format(this.dateFormat)) {
                 dayToAdding = 1;
             }
-            this.manualPanel.date_to = moment(this.timeTo)
+            this.manualPanel.date_to = moment(this.manualPanel.date_to)
                 .add(dayToAdding, 'day')
                 .format();
         },
@@ -1240,13 +1353,13 @@ themeBgColor: this.$store.state.themeBgColor,
                 return i.status === 'started';
             }).forEach(i => {
                 const index = this.tracking.indexOf(i);
-                this.tracking[index].passed = this.helperCalculatePassedTime(i.date_from, moment());
+                this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment(), true);
                 this.tracking[index].date_picker = this.tracking[index].date_picker ?? false;
             });
             // Update timerPanel
             if (this.timerPanel.start) {
                 const seconds = moment().diff(moment(this.timerPanel.start), 'seconds');
-                this.timerPanel.passedSeconds = this.helperConvertSecondsToTimeFormat(seconds);
+                this.timerPanel.passedSeconds = this.$helpers.time.convertSecToTime(seconds);
             }
         },
         'timerPanel.entity': function () {

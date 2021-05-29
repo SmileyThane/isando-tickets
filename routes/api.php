@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\API\ClientGroupController;
+use App\Http\Controllers\API\InternalBillingController;
+use App\Http\Controllers\API\LimitationGroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,14 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
 Route::post('register', 'API\AuthController@register');
 Route::post('login', 'API\AuthController@login');
 Route::post('reset_password', 'API\AuthController@resetPassword');
-Route::get('plans', 'API\AuthController@plans');
+Route::get('plans/{groupedBy?}', 'API\AuthController@plans');
+Route::get('/currencies', 'API\CurrencyController@get');
 Route::get('time_zones', 'HomeController@getTimeZones');
 Route::get('/mail/receive/{type?}', 'HomeController@receiveMail')->name('receiveEmail');
 Route::get('version', 'API\AuthController@getAppVersion');
@@ -68,6 +68,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('main_company/settings', 'API\CompanyController@getSettings');
         Route::get('main_company/product_categories/tree', 'API\CompanyController@getProductCategoriesTree');
         Route::get('main_company/product_categories/flat', 'API\CompanyController@getProductCategoriesFlat');
+        Route::get('main_company/license', 'API\CompanyController@mainCompanyLicense');
 
         //employee management
         Route::get('employee', 'API\CompanyController@getIndividuals');
@@ -132,6 +133,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::patch('team/{id}', 'API\TeamController@update');
         Route::delete('team/{id}', 'API\TeamController@delete');
         Route::post('team/employee', 'API\TeamController@attach');
+        Route::post('team/employee/manager', 'API\TeamController@toggleAsManager');
         Route::delete('team/employee/{id}', 'API\TeamController@detach');
 
         //product management
@@ -155,9 +157,15 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('ticket/{id}/employee', 'API\TicketController@attachEmployee');
         Route::post('ticket/{id}/contact', 'API\TicketController@attachContact');
         Route::post('ticket/{id}/answer', 'API\TicketController@addAnswer');
+        Route::post('ticket/{id}/answer/{answer_id}', 'API\TicketController@editAnswer');
         Route::post('ticket/{id}/notice', 'API\TicketController@addNotice');
+        Route::post('ticket/{id}/notice/{notice_id}', 'API\TicketController@editNotice');
         Route::get('ticket_priorities', 'API\TicketController@priorities');
-        Route::get('ticket_types', 'API\TicketController@types');
+        Route::get('ticket_types', 'API\TicketController@getTypes');
+        Route::get('ticket_types/all', 'API\TicketController@getAllTypesInCompanyContext');
+        Route::post('ticket_type', 'API\TicketController@addType');
+        Route::patch('ticket_type/{id}', 'API\TicketController@updateType');
+        Route::delete('ticket_type/{id}', 'API\TicketController@deleteType');
         Route::get('ticket_categories', 'API\TicketController@categories');
         Route::post('merge/ticket', 'API\TicketController@addMerge');
         Route::delete('merge/ticket/{id}', 'API\TicketController@removeMerge');
@@ -198,11 +206,14 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::post('/projects', 'ProjectController@create');
                 Route::patch('/projects/{id}', 'ProjectController@update');
                 Route::delete('/projects/{id}', 'ProjectController@delete');
+                Route::patch('/projects/{id}/favorite', 'ProjectController@toggleFavorite');
+                Route::patch('/projects/{id}/archive', 'ProjectController@toggleArchive');
 
                 //Additional tracking routes
                 Route::get('/clients', 'BaseController@getClientList');
                 Route::get('/products', 'BaseController@getProductList');
                 Route::get('/coworkers', 'BaseController@getCoworkers');
+                Route::get('/managed_teams', 'BaseController@getManagedTeams');
                 Route::get('/tickets', 'BaseController@getTickets');
 
                 //Tracker
@@ -213,15 +224,26 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::delete('/tracker/{tracking}', 'TrackingController@delete');
 
                 // Reports
-                Route::post('/reports', 'ReportController@generate');
+                Route::post('/reports', 'ReportController@create');
+                Route::delete('/reports/{id}', 'ReportController@delete');
+                Route::get('/reports/{id}', 'ReportController@find');
+                Route::get('/reports', 'ReportController@get');
+                Route::post('/reports/generate', 'ReportController@generate');
 
                 // Settings
                 Route::get('/settings', 'SettingsController@get');
                 Route::patch('/settings', 'SettingsController@update');
+
+                // Timesheet
+                Route::get('/timesheet', 'TimesheetController@get');
+                Route::post('/timesheet', 'TimesheetController@create');
+                Route::get('/timesheet/{id}', 'TimesheetController@find');
+                Route::patch('/timesheet/submit', 'TimesheetController@submit');
+                Route::patch('/timesheet/{id}', 'TimesheetController@update');
+                Route::delete('/timesheet/{id}', 'TimesheetController@delete');
             });
 
         // Currencies
-        Route::get('/currencies', 'API\CurrencyController@get');
         Route::post('/currencies', 'API\CurrencyController@create');
         Route::patch('/currencies/{currency}', 'API\CurrencyController@update');
         Route::delete('/currencies/{currency}', 'API\CurrencyController@delete');
@@ -230,6 +252,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/tags', 'API\TagController@get');
         Route::post('/tags', 'API\TagController@create');
         Route::patch('/tags/{tag}', 'API\TagController@update');
+        Route::patch('/tags/{tag}/translate', 'API\TagController@createOrUpdateTranslation');
         Route::delete('/tags/{tag}', 'API\TagController@delete');
 
         // Services
@@ -264,6 +287,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('custom_license_unassigned', 'API\CustomLicenseController@unassignedIxarmaUsersList');
     Route::post('custom_license_unassigned/assign', 'API\CustomLicenseController@assignToIxarmaCompany');
     Route::get('custom_license/{id}/user/{remoteUserId}/{idLicensed}', 'API\CustomLicenseController@manageUser');
+    Route::post('custom_license_user/unassign', 'API\CustomLicenseController@unassignFromIxarmaCompany');
     Route::put('custom_license_user/{remoteUserId}/trial', 'API\CustomLicenseController@setUserTrial');
 
     // knowledge base
@@ -273,6 +297,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('kb/category/{id}', 'API\KbController@editCategory');
     Route::delete('kb/category/{id}', 'API\KbController@deleteCategory');
     Route::get('kb/articles', 'API\KbController@listArticles');
+    Route::get('kb/articles/all', 'API\KbController@allArticles');
     Route::get('kb/article/{id}', 'API\KbController@getArticle');
     Route::post('kb/article', 'API\KbController@addArticle');
     Route::put('kb/article/{id}', 'API\KbController@editArticle');
@@ -283,5 +308,18 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('file', 'API\FileController@add');
     Route::delete('file/{id}', 'API\FileController@delete');
 
+    Route::get('billing/internal', [InternalBillingController::class, 'index']);
+    Route::post('billing/internal', [InternalBillingController::class, 'create']);
+    Route::get('billing/internal/{id}', [InternalBillingController::class, 'find']);
+    Route::put('billing/internal/{id}', [InternalBillingController::class, 'update']);
+    Route::delete('billing/internal/{id}', [InternalBillingController::class, 'delete']);
+
+    Route::get('limit_group/types', [LimitationGroupController::class, 'types']);
+    Route::post('limit_group', [LimitationGroupController::class, 'create']);
+    Route::delete('limit_group/{id}', [LimitationGroupController::class, 'delete']);
+    Route::post('limit_group/client', [LimitationGroupController::class, 'addLimitationModel']);
+    Route::delete('limit_group/client/{id}', [LimitationGroupController::class, 'removeLimitationModel']);
+    Route::post('limit_group/employee', [LimitationGroupController::class, 'addCompanyUser']);
+    Route::delete('limit_group/employee/{id}', [LimitationGroupController::class, 'removeCompanyUser']);
 });
 

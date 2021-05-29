@@ -15,7 +15,7 @@ class FileRepository
         return $file;
     }
 
-    public function store($file, $model_id, $model_type)
+    public function store($file, $model_id, $model_type, $service_info = null)
     {
         if (is_string($file)) {
             $name = basename('/public/' . $file);
@@ -30,6 +30,7 @@ class FileRepository
         $newFile->filepath = $originalPath;
         $newFile->model_id = $model_id;
         $newFile->model_type = $model_type;
+        $newFile->service_info = $service_info;
         $newFile->save();
         return $originalPath;
     }

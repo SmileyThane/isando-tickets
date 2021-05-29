@@ -55,8 +55,8 @@
                                 </v-row>
                             </template>
                             <template v-slot:item.type="{item}">
-                                <v-icon v-if="item.type" left :title="localized(item.type)" v-text="item.type.icon"></v-icon>
-                                <span v-if="item.type">{{localized(item.type)}}</span>
+                                <v-icon v-if="item.type" left :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon"></v-icon>
+                                <span v-if="item.type">{{$helpers.i18n.localized(item.type)}}</span>
                             </template>
                             <template v-slot:item.action="{item}">
                                 <v-icon small :title="langMap.main.delete" @click.native.stop="removeNotification(item)">mdi-delete</v-icon>
@@ -148,10 +148,6 @@ themeBgColor: this.$store.state.themeBgColor,
         });
     },
     methods: {
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-        },
         getNotifications() {
             this.loading = this.themeBgColor
             // console.log(this.options);
@@ -205,7 +201,7 @@ themeBgColor: this.$store.state.themeBgColor,
             this.getNotifications();
         },
         showNotification(item) {
-            this.$router.push(`/notify/${item.id}`);
+            location.href = `/notify/${item.id}`;
         },
         updateItemsCount(value) {
             this.options.itemsPerPage = value

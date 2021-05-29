@@ -3,7 +3,6 @@
 
 namespace App\Repositories;
 
-
 class AuthRepository
 {
 

@@ -11,190 +11,290 @@
 
         <template>
             <v-tabs v-model="tab">
-                <v-tab :key="0">{{ langMap.tracking.settings.tags }}</v-tab>
-                <v-tab :key="1">{{ langMap.tracking.settings.services }}</v-tab>
-                <v-tab :key="2">{{ langMap.tracking.settings.company }}</v-tab>
-                <v-tab :key="3">{{ langMap.tracking.settings.currencies }}</v-tab>
+                <v-tab
+                    v-if="$helpers.auth.checkPermissionByIds([79])"
+                    :key="1"
+                >{{ langMap.tracking.settings.general }}</v-tab>
+                <v-tab
+                    v-if="$helpers.auth.checkPermissionByIds([75])"
+                    :key="2"
+                >{{ langMap.tracking.settings.services }}</v-tab>
             </v-tabs>
 
             <v-tabs-items v-model="tab">
-                <v-tab-item :key="0">
-                    <v-card flat>
-                        <v-toolbar flat>
-                            <v-dialog
-                                v-model="dialogTags"
-                                width="500"
-                            >
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn
-                                        :color="themeBgColor"
-                                        style="color: white"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    >
-                                        {{ langMap.tracking.settings.create_tag }}
-                                    </v-btn>
-                                </template>
+                <v-tab-item :key="1" v-if="$helpers.auth.checkPermissionByIds([79])">
+                    <div class="d-flex flex-row">
+                        <div class="d-inline-flex flex-grow-1 ma-4" style="width: 100%">
+                            <!--Column 1-->
+                            <div class="d-flex mb-auto flex-column" style="width: 100%">
+                                <div class="d-inline-flex">
+                                    <v-card class="elevation-12 without-bottom" style="width: 100%">
+                                        <v-toolbar :color="themeBgColor" dark dense flat>
+                                            <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.general }}</v-toolbar-title>
+                                        </v-toolbar>
+                                        <v-card-text>
+                                            <v-checkbox
+                                                :disabled="!$helpers.auth.checkPermissionByIds([80])"
+                                                v-model="enableTimesheet"
+                                                :label="langMap.tracking.settings.enable_timesheet"
+                                            ></v-checkbox>
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+                                <v-spacer>&nbsp;</v-spacer>
+                                <div class="d-inline-flex">
+                                    <v-card class="elevation-12 without-bottom" style="width: 100%">
+                                        <v-toolbar :color="themeBgColor" dark dense flat>
+                                            <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.custom_rounding }}</v-toolbar-title>
+                                        </v-toolbar>
+                                        <v-card-text>
 
-                                <v-card>
-                                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                                        {{ langMap.tracking.settings.create_tag_title }}
-                                    </v-card-title>
-
-                                    <v-card-text>
-                                        <v-text-field
-                                            :label="langMap.tracking.settings.name"
-                                            v-model="forms.tags.name"
-                                            required
-                                        ></v-text-field>
-                                        <v-text-field
-                                            v-model="forms.tags.color"
-                                            hide-details
-                                            class="ma-0 pa-0"
-                                            solo
-                                            :label="langMap.tracking.settings.color"
-                                            required
-                                        >
-                                            <template v-slot:append>
-                                                <v-menu
-                                                    v-model="colorMenuCreate"
-                                                    top
-                                                    nudge-bottom="105"
-                                                    nudge-left="16"
-                                                    :close-on-content-click="false"
+                                            <v-expansion-panels>
+                                                <v-expansion-panel
+                                                    v-for="item in this.$store.getters['Tracking/getSettings'].settings.customRounding"
+                                                    :key="item.key"
                                                 >
-                                                    <template v-slot:activator="{ on }">
-                                                        <div
-                                                            :style="{
-                                                                backgroundColor: forms.tags.color,
-                                                                cursor: 'pointer',
-                                                                height: '30px',
-                                                                width: '30px',
-                                                                borderRadius: colorMenuCreate ? '50%' : '4px',
-                                                                transition: 'border-radius 200ms ease-in-out'
-                                                            }"
-                                                            v-on="on"
-                                                        />
-                                                    </template>
-                                                    <v-card>
-                                                        <v-card-text
-                                                            class="pa-0"
-                                                        >
-                                                            <v-color-picker
-                                                                v-model="forms.tags.color"
-                                                                flat
-                                                            />
-                                                        </v-card-text>
-                                                    </v-card>
-                                                </v-menu>
-                                            </template>
-                                        </v-text-field>
-                                    </v-card-text>
+                                                    <v-expansion-panel-header v-slot="{ open }">
+                                                        <div class="d-flex flex-row">
+                                                            <div class="d-inline-flex" style="width: 40%">
+                                                                {{ item.name }}
+                                                            </div>
+                                                            <div class="d-inline-flex" style="width: 80%">
+                                                                <v-fade-transition leave-absolute>
+                                                                    <span v-if="open"></span>
+                                                                    <div class="d-flex flex-row"
+                                                                         v-else
+                                                                         style="width: 100%"
+                                                                    >
+                                                                        <div class="d-inline-flex mx-4">
 
-                                    <v-divider></v-divider>
+                                                                        </div>
+                                                                    </div>
+                                                                </v-fade-transition>
+                                                            </div>
+                                                        </div>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-text-field
+                                                            v-model="item.name"
+                                                            placeholder="Name"
+                                                        ></v-text-field>
+                                                        <v-text-field
+                                                            type="number"
+                                                            v-model="item.seconds"
+                                                            label="Time in minutes"
+                                                            step="1"
+                                                        ></v-text-field>
+                                                        <v-select
+                                                            v-model="item.direction"
+                                                            :items="availableDirections"
+                                                            item-text="text"
+                                                            item-value="value"
+                                                            label="Direction"
+                                                        ></v-select>
+                                                        <div class="d-flex flex-row-reverse">
+                                                            <v-btn
+                                                                right
+                                                                color="success"
+                                                                class="mx-2"
+                                                                @click="actionUpdateCustomRounding(item)"
+                                                            >
+                                                                Update
+                                                            </v-btn>
+                                                            <v-btn
+                                                                right
+                                                                color="error"
+                                                                class="mx-2"
+                                                                @click="actionDeleteCustomRounding(item)"
+                                                            >
+                                                                Remove
+                                                            </v-btn>
+                                                        </div>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
 
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn
-                                            color="error"
-                                            text
-                                            @click="resetForm(); dialogTags = false"
+                                                <v-spacer>&nbsp;</v-spacer>
+
+                                                <v-expansion-panel
+                                                    :key="0"
+                                                >
+                                                    <v-expansion-panel-header v-slot="{ open }">
+                                                        <div class="d-flex flex-row">
+                                                            <div class="d-inline-flex" style="width: 40%">
+                                                                Create new
+                                                            </div>
+                                                            <div class="d-inline-flex" style="width: 80%">
+                                                                <v-fade-transition leave-absolute>
+                                                                    <span v-if="open"></span>
+                                                                    <div class="d-flex flex-row"
+                                                                         v-else
+                                                                         style="width: 100%"
+                                                                    >
+                                                                        <div class="d-inline-flex mx-4">
+
+                                                                        </div>
+                                                                    </div>
+                                                                </v-fade-transition>
+                                                            </div>
+                                                        </div>
+                                                    </v-expansion-panel-header>
+                                                    <v-expansion-panel-content>
+                                                        <v-text-field
+                                                            v-model="forms.customRounding.name"
+                                                            placeholder="Name"
+                                                        ></v-text-field>
+                                                        <v-text-field
+                                                            type="number"
+                                                            v-model="forms.customRounding.seconds"
+                                                            label="Time in minutes"
+                                                            step="1"
+                                                        ></v-text-field>
+                                                        <v-select
+                                                            v-model="forms.customRounding.direction"
+                                                            :items="availableDirections"
+                                                            item-text="text"
+                                                            item-value="value"
+                                                            label="Direction"
+                                                        ></v-select>
+                                                        <div class="d-flex flex-row-reverse">
+                                                            <v-btn
+                                                                right
+                                                                color="success"
+                                                                class="mx-2"
+                                                                @click="actionCreateCustomRounding()"
+                                                            >
+                                                                Create
+                                                            </v-btn>
+                                                            <v-btn
+                                                                right
+                                                                color="error"
+                                                                class="mx-2"
+                                                                @click="resetForm"
+                                                            >
+                                                                Cancel
+                                                            </v-btn>
+                                                        </div>
+                                                    </v-expansion-panel-content>
+                                                </v-expansion-panel>
+                                            </v-expansion-panels>
+
+                                        </v-card-text>
+                                    </v-card>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-inline-flex flex-grow-1 ma-4" style="width: 100%">
+                            <!--Column 2-->
+                            <v-card class="elevation-12 without-bottom" style="width: 100%" v-if="enableTimesheet">
+                                <v-toolbar :color="themeBgColor" dark dense flat>
+                                    <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.timesheet }}</v-toolbar-title>
+                                </v-toolbar>
+                                <v-card-text>
+                                    <v-expansion-panels>
+                                        <v-expansion-panel
+                                            v-for="item in this.$store.getters['Tracking/getSettings'].settings.timesheetWeek"
+                                            :key="item.dayOfWeek"
                                         >
-                                            {{ langMap.tracking.settings.cancel }}
-                                        </v-btn>
-                                        <v-btn
-                                            color="success"
-                                            text
-                                            @click="createTag(); dialogTags = false"
-                                        >
-                                            {{ langMap.tracking.settings.create }}
-                                        </v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
-                        </v-toolbar>
-                        <v-card-text>
-                            <v-data-table
-                                dense
-                                :headers="headers.tags"
-                                :items="$store.getters['Tags/getTags']"
-                                :items-per-page="15"
-                                class="elevation-1"
-                            >
-                                <template v-slot:item.name="props">
-                                    <v-edit-dialog
-                                        @save="saveTag(props.item)"
-                                        @cancel="saveTag(props.item)"
-                                        @open="saveTag(props.item)"
-                                        @close="saveTag(props.item)"
-                                    >
-                                        {{ props.item.name }}
-                                        <template v-slot:input>
-                                            <v-text-field
-                                                v-model="props.item.name"
-                                                :label="langMap.tracking.settings.name"
-                                                :hint="langMap.tracking.settings.name"
-                                                single-line
-                                                counter
-                                            ></v-text-field>
-                                        </template>
-                                    </v-edit-dialog>
-                                </template>
-                                <template v-slot:item.color="props">
-                                    <v-menu
-                                        v-model="colorMenu[props.item.id]"
-                                        top
-                                        nudge-bottom="105"
-                                        nudge-left="16"
-                                        :close-on-content-click="false"
-                                    >
-                                        <template v-slot:activator="{ on }">
-                                            <div
-                                                v-on="on"
-                                                :style="{
-                                                    backgroundColor: props.item.color,
-                                                    cursor: 'pointer',
-                                                    height: '30px',
-                                                    width: '30px',
-                                                    borderRadius: colorMenu[props.item.id] ? '50%' : '4px',
-                                                    transition: 'border-radius 200ms ease-in-out'
-                                                }"
-                                            />
-                                        </template>
-                                        <v-card>
-                                            <v-card-text class="pa-0">
-                                                <v-color-picker
-                                                    v-model="props.item.color"
-                                                    flat
-                                                    @input="saveTag(props.item)"
-                                                />
-                                            </v-card-text>
-                                        </v-card>
-                                    </v-menu>
-
-                                </template>
-                                <template v-slot:item.actions="props">
-                                    <v-btn
-                                        icon
-                                        :color="themeBgColor"
-                                        @click="removeTag(props.item.id)"
-                                    >
-                                        <v-icon>mdi-delete</v-icon>
-                                    </v-btn>
-                                </template>
-                            </v-data-table>
-                        </v-card-text>
-                    </v-card>
+                                            <v-expansion-panel-header v-slot="{ open }">
+                                                <div class="d-flex flex-row">
+                                                    <div class="d-inline-flex" style="width: 40%">
+                                                        {{ daysOfWeekTitle[item.dayOfWeek] }}
+                                                    </div>
+                                                    <div class="d-inline-flex" style="width: 80%">
+                                                        <v-fade-transition leave-absolute>
+                                                            <span v-if="open">When do you want to work?</span>
+                                                            <div class="d-flex flex-row"
+                                                                v-else
+                                                                style="width: 100%"
+                                                            >
+                                                                <div class="d-inline-flex mx-4">
+                                                                    {{ moment(item.workTime.start).format('HH:mm') || 'Not set' }} - {{ moment(item.lunchTime.start).format('HH:mm') || 'Not set' }}
+                                                                </div>
+                                                                <div class="d-inline-flex mx-4">
+                                                                    {{ moment(item.lunchTime.end).format('HH:mm') || 'Not set' }} - {{ moment(item.workTime.end).format('HH:mm') || 'Not set' }}
+                                                                </div>
+                                                            </div>
+                                                        </v-fade-transition>
+                                                    </div>
+                                                </div>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <div class="d-flex flex-column">
+                                                    <div class="d-inline-flex d-flex flex-row">
+                                                        <div class="d-inline-flex flex-grow-0" style="width: 30%; font-weight: bold">Work time</div>
+                                                        <div class="d-inline-flex flex-grow-1 mx-4">
+                                                            <TimeField
+                                                                v-if="$helpers.auth.checkPermissionByIds([81])"
+                                                                style="max-width: 100px"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                                v-model="item.workTime.start"
+                                                                @input="debounceSaveSettings"
+                                                            ></TimeField>
+                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{moment(item.workTime.start).format('HH:mm')}}
+                                                            </span>
+                                                            <TimeField
+                                                                v-if="$helpers.auth.checkPermissionByIds([81])"
+                                                                style="max-width: 100px"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                                v-model="item.workTime.end"
+                                                                @input="debounceSaveSettings"
+                                                            ></TimeField>
+                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{moment(item.workTime.end).format('HH:mm')}}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-inline-flex d-flex flex-row">
+                                                        <div class="d-inline-flex flex-grow-0" style="width: 30%; font-weight: bold">Lunch time</div>
+                                                        <div class="d-inline-flex flex-grow-1 mx-4">
+                                                            <TimeField
+                                                                v-if="$helpers.auth.checkPermissionByIds([81])"
+                                                                style="max-width: 100px"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                                v-model="item.lunchTime.start"
+                                                                @input="debounceSaveSettings"
+                                                            ></TimeField>
+                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{moment(item.lunchTime.start).format('HH:mm')}}
+                                                            </span>
+                                                            <TimeField
+                                                                v-if="$helpers.auth.checkPermissionByIds([81])"
+                                                                style="max-width: 100px"
+                                                                placeholder="hh:mm"
+                                                                format="HH:mm"
+                                                                v-model="item.lunchTime.end"
+                                                                @input="debounceSaveSettings"
+                                                            ></TimeField>
+                                                            <span v-else style="max-width: 100px" class="d-inline-flex flex-grow-1 mx-4">
+                                                                {{moment(item.lunchTime.end).format('HH:mm')}}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-card-text>
+                            </v-card>
+                        </div>
+                    </div>
                 </v-tab-item>
-                <v-tab-item :key="1">
+
+                <v-tab-item :key="2" v-if="$helpers.auth.checkPermissionByIds([75])">
                     <v-card flat>
                         <v-toolbar flat>
                             <v-dialog
+                                v-if="$helpers.auth.checkPermissionByIds([76])"
                                 v-model="dialogServices"
                                 width="500"
                             >
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
+                                        v-if="$helpers.auth.checkPermissionByIds([76])"
                                         :color="themeBgColor"
                                         style="color: white"
                                         v-bind="attrs"
@@ -241,6 +341,7 @@
                         </v-toolbar>
                         <v-card-text>
                             <v-data-table
+                                v-if="$helpers.auth.checkPermissionByIds([75])"
                                 dense
                                 :headers="headers.services"
                                 :items="$store.getters['Services/getServices']"
@@ -249,6 +350,7 @@
                             >
                                 <template v-slot:item.name="props">
                                     <v-edit-dialog
+                                        v-if="$helpers.auth.checkPermissionByIds([77])"
                                         @save="saveService(props.item)"
                                         @cancel="saveService(props.item)"
                                         @open="saveService(props.item)"
@@ -265,183 +367,18 @@
                                             ></v-text-field>
                                         </template>
                                     </v-edit-dialog>
+                                    <span
+                                        v-else
+                                    >
+                                        {{props.item.name}}
+                                    </span>
                                 </template>
                                 <template v-slot:item.actions="props">
                                     <v-btn
+                                        v-if="$helpers.auth.checkPermissionByIds([78])"
                                         icon
                                         :color="themeBgColor"
                                         @click="removeService(props.item.id)"
-                                    >
-                                        <v-icon>mdi-delete</v-icon>
-                                    </v-btn>
-                                </template>
-                            </v-data-table>
-                        </v-card-text>
-                    </v-card>
-                </v-tab-item>
-                <v-tab-item :key="2">
-                    <v-card>
-                        <v-card-text>
-                            <div class="d-flex flex-row">
-                                <div class="d-flex-inline">
-<!--                                    column 1-->
-                                    <v-select
-                                        :items="$store.getters['Currencies/getCurrencies']"
-                                        item-value="id"
-                                        item-text="name"
-                                        :label="langMap.tracking.settings.currency"
-                                        :placeholder="langMap.tracking.settings.currency"
-                                        v-model="currentCurrency"
-                                        dense
-                                    >
-                                        <template v-slot:item="props">
-                                            <div class="d-flex flex-row" style="width: 100%">
-                                                <div class="d-flex-inline flex-grow-1" style="width: 100%">{{props.item.name}} ({{props.item.slug}})</div>
-                                                <div class="d-flex-inline text-right">{{props.item.symbol}}</div>
-                                            </div>
-                                        </template>
-                                    </v-select>
-                                </div>
-                                <div class="d-flex-inline">
-<!--                                    column 2-->
-                                </div>
-                            </div>
-                        </v-card-text>
-                    </v-card>
-                </v-tab-item>
-                <v-tab-item :key="3">
-                    <v-card flat>
-                        <v-toolbar flat>
-                            <v-dialog
-                                v-model="dialogCurrencies"
-                                width="500"
-                            >
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn
-                                        :color="themeBgColor"
-                                        style="color: white"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    >
-                                        {{ langMap.tracking.settings.create_currency }}
-                                    </v-btn>
-                                </template>
-
-                                <v-card>
-                                    <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
-                                        {{ langMap.tracking.settings.create_currency_title }}
-                                    </v-card-title>
-
-                                    <v-card-text>
-                                        <v-text-field
-                                            :label="langMap.tracking.settings.name"
-                                            v-model="forms.currency.name"
-                                            required
-                                        ></v-text-field>
-                                        <v-text-field
-                                            :label="langMap.tracking.settings.slug"
-                                            v-model="forms.currency.slug"
-                                            required
-                                        ></v-text-field>
-                                        <v-text-field
-                                            :label="langMap.tracking.settings.symbol"
-                                            v-model="forms.currency.symbol"
-                                            required
-                                        ></v-text-field>
-                                    </v-card-text>
-
-                                    <v-divider></v-divider>
-
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn
-                                            color="error"
-                                            text
-                                            @click="resetForm(); dialogCurrencies = false"
-                                        >
-                                            {{ langMap.tracking.settings.cancel }}
-                                        </v-btn>
-                                        <v-btn
-                                            color="success"
-                                            text
-                                            @click="createCurrency(); dialogCurrencies = false"
-                                        >
-                                            {{ langMap.tracking.settings.create }}
-                                        </v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
-                        </v-toolbar>
-                        <v-card-text>
-                            <v-data-table
-                                dense
-                                :headers="headers.currencies"
-                                :items="$store.getters['Currencies/getCurrencies']"
-                                :items-per-page="15"
-                                class="elevation-1"
-                            >
-                                <template v-slot:item.name="props">
-                                    <v-edit-dialog
-                                        @save="saveCurrency(props.item)"
-                                        @cancel="saveCurrency(props.item)"
-                                        @open="saveCurrency(props.item)"
-                                        @close="saveCurrency(props.item)"
-                                    >
-                                        {{ props.item.name }}
-                                        <template v-slot:input>
-                                            <v-text-field
-                                                v-model="props.item.name"
-                                                :label="langMap.tracking.settings.name"
-                                                :hint="langMap.tracking.settings.name"
-                                                single-line
-                                                counter
-                                            ></v-text-field>
-                                        </template>
-                                    </v-edit-dialog>
-                                </template>
-                                <template v-slot:item.slug="props">
-                                    <v-edit-dialog
-                                        @save="saveCurrency(props.item)"
-                                        @cancel="saveCurrency(props.item)"
-                                        @open="saveCurrency(props.item)"
-                                        @close="saveCurrency(props.item)"
-                                    >
-                                        {{ props.item.slug }}
-                                        <template v-slot:input>
-                                            <v-text-field
-                                                v-model="props.item.slug"
-                                                :label="langMap.tracking.settings.slug"
-                                                :hint="langMap.tracking.settings.slug"
-                                                single-line
-                                                counter
-                                            ></v-text-field>
-                                        </template>
-                                    </v-edit-dialog>
-                                </template>
-                                <template v-slot:item.symbol="props">
-                                    <v-edit-dialog
-                                        @save="saveCurrency(props.item)"
-                                        @cancel="saveCurrency(props.item)"
-                                        @open="saveCurrency(props.item)"
-                                        @close="saveCurrency(props.item)"
-                                    >
-                                        {{ props.item.symbol }}
-                                        <template v-slot:input>
-                                            <v-text-field
-                                                v-model="props.item.symbol"
-                                                :label="langMap.tracking.settings.symbol"
-                                                :hint="langMap.tracking.settings.symbol"
-                                                single-line
-                                                counter
-                                            ></v-text-field>
-                                        </template>
-                                    </v-edit-dialog>
-                                </template>
-                                <template v-slot:item.actions="props">
-                                    <v-btn
-                                        icon
-                                        :color="themeBgColor"
-                                        @click="removeCurrency(props.item.id)"
                                     >
                                         <v-icon>mdi-delete</v-icon>
                                     </v-btn>
@@ -459,12 +396,12 @@
 <script>
 import EventBus from "../../components/EventBus";
 import _ from 'lodash';
+import moment from 'moment-timezone';
 import TagBtn from './components/tag-btn';
-import * as Helper from './helper';
-import currencies from "../../modules/currencies";
+import TimeField from './components/time-field';
 
 export default {
-    components: {TagBtn},
+    components: {TagBtn, TimeField},
     data() {
         return {
             langMap: this.$store.state.lang.lang_map,
@@ -475,24 +412,6 @@ export default {
             actionColor: '',
             tab: 0,
             headers: {
-                tags: [
-                    {
-                        text: this.$store.state.lang.lang_map.tracking.settings.tag_name,
-                        align: 'start',
-                        sortable: true,
-                        value: 'name',
-                    },
-                    {
-                        text: this.$store.state.lang.lang_map.tracking.settings.color,
-                        sortable: false,
-                        value: 'color',
-                    },
-                    {
-                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
-                        sortable: false,
-                        value: 'actions',
-                    }
-                ],
                 services: [
                     {
                         text: this.$store.state.lang.lang_map.tracking.settings.service_name,
@@ -505,62 +424,54 @@ export default {
                         sortable: false,
                         value: 'actions',
                     }
-                ],
-                currencies: [
-                    {
-                        text: this.$store.state.lang.lang_map.tracking.settings.currency_name,
-                        align: 'start',
-                        sortable: true,
-                        value: 'name',
-                    },
-                    {
-                        text: this.$store.state.lang.lang_map.tracking.settings.currency_slug,
-                        align: 'start',
-                        sortable: true,
-                        value: 'slug',
-                    },
-                    {
-                        text: this.$store.state.lang.lang_map.tracking.settings.currency_symbol,
-                        align: 'start',
-                        sortable: true,
-                        value: 'symbol',
-                    },
-                    {
-                        text: this.$store.state.lang.lang_map.tracking.settings.actions,
-                        sortable: false,
-                        value: 'actions',
-                    }
                 ]
             },
-            searchTag: null,
-            dialogTags: false,
             dialogServices: false,
-            dialogCurrencies: false,
             forms: {
-                tags: {
-                    name: '',
-                    color: Helper.genRandomColor()
-                },
                 services: {
                     name: ''
                 },
-                currency: {
+                customRounding: {
                     name: '',
-                    slug: '',
-                    symbol: ''
-                }
+                    seconds: 1,
+                    direction: 'nearest'
+                },
             },
-            colorMenuCreate: false,
-            colorMenu: {},
+            availableDirections: [
+                {
+                    value: 'up',
+                    text: 'up',
+                },
+                {
+                    value: 'nearest',
+                    text: 'nearest',
+                },
+                {
+                    value: 'down',
+                    text: 'down',
+                },
+            ],
             searchService: null,
-            searchCurrency: null
+            daysOfWeekTitle: [
+                this.$store.state.lang.lang_map.tracking.timesheet.monday,
+                this.$store.state.lang.lang_map.tracking.timesheet.tuesday,
+                this.$store.state.lang.lang_map.tracking.timesheet.wednesday,
+                this.$store.state.lang.lang_map.tracking.timesheet.thursday,
+                this.$store.state.lang.lang_map.tracking.timesheet.friday,
+                this.$store.state.lang.lang_map.tracking.timesheet.saturday,
+                this.$store.state.lang.lang_map.tracking.timesheet.sunday
+            ]
         }
     },
     created() {
-        this.debounceGetTags = _.debounce(this.__getTags, 1000);
         this.debounceGetServices = _.debounce(this.__getServices, 1000);
-        this.debounceGetCurrencies = _.debounce(this.__getCurrencies, 1000);
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
+        this.debounceSaveSettings = _.debounce(this.__saveSettings, 1000);
+        moment.updateLocale(this.$store.state.lang.short_code, {
+            week: {
+                dow: 1,
+            },
+        });
     },
     mounted() {
         let that = this;
@@ -570,34 +481,15 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
-        this.debounceGetTags();
         this.debounceGetServices();
-        this.debounceGetCurrencies();
         this.debounceGetSettings();
     },
     methods: {
-        __getTags() {
-            this.$store.dispatch('Tags/getTagList', { search: this.searchTag });
-        },
         __getServices() {
             this.$store.dispatch('Services/getServicesList', { search: this.searchService });
         },
-        __getCurrencies() {
-            this.$store.dispatch('Currencies/getCurrencyList', { search: this.searchCurrency });
-        },
         __getSettings() {
             this.$store.dispatch('Tracking/getSettings');
-        },
-        createTag() {
-            this.$store.dispatch('Tags/createTag', this.forms.tags)
-                .then(tag => {
-                    if (tag) {
-                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_created_successfully;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetForm();
-                    }
-                });
         },
         createService() {
             this.$store.dispatch('Services/createService', this.forms.services)
@@ -610,44 +502,15 @@ export default {
                     }
                 });
         },
-        createCurrency() {
-            this.$store.dispatch('Currencies/createCurrency', this.forms.currency)
-                .then(currency => {
-                    if (currency) {
-                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_created_successfully;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                        this.resetForm();
-                    }
-                });
-        },
         resetForm() {
-            this.forms.tags = {
-                name: '',
-                color: Helper.genRandomColor()
-            };
             this.forms.services = {
                 name: ''
             };
-            this.forms.currency = {
+            this.forms.customRounding = {
                 name: '',
-                slug: '',
-                symbol: ''
+                seconds: 1,
+                direction: 'nearest'
             }
-        },
-        removeTag(tagId) {
-            this.$store.dispatch('Tags/deleteTag', tagId)
-                .then(result => {
-                    if (result) {
-                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_deleted_successfully;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    } else {
-                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.tag_removal_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
         },
         removeService(serviceId) {
             this.$store.dispatch('Services/deleteService', serviceId)
@@ -663,44 +526,37 @@ export default {
                     }
                 });
         },
-        removeCurrency(currencyId) {
-            this.$store.dispatch('Currencies/removeCurrency', currencyId)
-                .then(result => {
-                    console.log(result);
-                    if (result) {
-                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_deleted_successfully;
-                        this.actionColor = 'success'
-                        this.snackbar = true;
-                    } else {
-                        this.snackbarMessage = this.$store.state.lang.lang_map.tracking.settings.currency_removal_error;
-                        this.actionColor = 'error'
-                        this.snackbar = true;
-                    }
-                });
-        },
-        saveTag (item) {
-            this.$store.dispatch('Tags/updateTag', item);
-        },
         saveService (item) {
             this.$store.dispatch('Services/updateService', item);
         },
-        saveCurrency (item) {
-            this.$store.dispatch('Currencies/updateCurrency', item);
+        __saveSettings() {
+            this.$store.dispatch('Tracking/saveSettings');
         },
-        invertColor(hex, bw = true) {
-            return Helper.invertColor(hex, bw);
-        }
+        actionCreateCustomRounding() {
+            this.$store.dispatch('Tracking/createCustomRounding', this.forms.customRounding);
+            this.resetForm();
+        },
+        actionUpdateCustomRounding(item) {
+            this.$store.dispatch('Tracking/updateCustomRounding', item);
+        },
+        actionDeleteCustomRounding(item) {
+            this.$store.dispatch('Tracking/deleteCustomRounding', item);
+        },
     },
     computed: {
-        currentCurrency: {
-            get: function () {
-                const settings = this.$store.getters['Tracking/getSettings'];
-                return settings.currency ?? null;
+        enableTimesheet: {
+            get() {
+                const { settings } = this.$store.getters['Tracking/getSettings'];
+                return settings && settings.enableTimesheet ? settings.enableTimesheet : false;
             },
-            set: function (currency) {
-                this.$store.dispatch('Tracking/updateSettings', {currency});
+            async set(val) {
+                await this.$store.commit('Tracking/SET_TOGGLE_TIMESHEET', val);
+                await this.debounceSaveSettings();
             }
-        }
+        },
+    },
+    watch: {
+
     }
 }
 </script>

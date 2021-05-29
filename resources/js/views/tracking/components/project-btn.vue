@@ -1,5 +1,6 @@
 <template>
     <v-menu
+        v-if="$helpers.auth.checkPermissionByIds([48,49,50])"
         :close-on-content-click="false"
         :nudge-width="200"
         offset-y
@@ -7,6 +8,7 @@
     >
         <template v-slot:activator="{ on, attrs }">
             <v-btn
+                v-if="$helpers.auth.checkPermissionByIds([48,49,50])"
                 tile
                 small
                 text
@@ -21,25 +23,27 @@
                     &nbsp;&nbsp;{{langMap.tracking.project_btn.project_or_ticket}}
                 </span>
                 <span v-if="selectedProject">
-                    <span v-if="selectedProject && selectedProject.from">
-                        Ticket: {{ selectedProject.number }}.
+                    <span
+                        v-if="selectedProject && selectedProject.from">
+                        Ticket: {{ $helpers.string.shortenText(selectedProject.number, 15) }}.<br>
+                        {{ $helpers.string.shortenText(selectedProject.name, 20) }}
                     </span>
                     <span v-else>
-                        Project:
+                        Project:<br>{{ $helpers.string.shortenText(selectedProject.name, 35) }}
                     </span>
-                    {{ selectedProject.name }}
                 </span>
             </v-btn>
         </template>
         <v-card
-            max-width="400"
+            v-if="$helpers.auth.checkPermissionByIds([48,49,50])"
+            max-width="450"
             class="d-flex pa-2"
             style="overflow: hidden"
         >
             <v-expansion-panels
                 v-model="panels"
             >
-                <v-expansion-panel>
+                <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([49])">
                     <v-expansion-panel-header>
                         {{langMap.tracking.project_btn.choose_project}}
                     </v-expansion-panel-header>
@@ -82,15 +86,17 @@
                                         {{ item.name }}
                                     </span>
                                     <span v-else>
+                                        <v-icon v-if="item.is_favorite" @click.stop="toggleFavorite(item)">mdi-star</v-icon>
+                                        <v-icon v-else @click.stop="toggleFavorite(item)">mdi-star-outline</v-icon>
                                         {{ item.name }}
-                                        <small>({{ item.product.name }})</small>
+                                        <small v-if="item.product">({{ item.product.name }})</small>
                                     </span>
                                 </template>
                             </v-treeview>
                         </perfect-scrollbar>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel>
+                <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([48])">
                     <v-expansion-panel-header>
                         {{langMap.tracking.project_btn.create_new_project}}
                     </v-expansion-panel-header>
@@ -101,7 +107,7 @@
                             <v-list-item>
                                 <v-text-field
                                     v-model="form.name"
-                                    :label="langMap.tracking.project_btn.project_name"
+                                    :label="langMap.tracking.project_btn.project_name + '*'"
                                     :placeholder="langMap.tracking.project_btn.type_project_name_here"
                                     clearable
                                     required
@@ -121,7 +127,6 @@
                                     :placeholder="langMap.tracking.project_btn.start_typing_to_search"
                                     return-object
                                     clearable
-                                    required
                                 ></v-autocomplete>
                             </v-list-item>
                             <v-list-item>
@@ -133,11 +138,26 @@
                                     color="white"
                                     item-text="name"
                                     item-value="id"
-                                    :label="langMap.tracking.project_btn.client"
+                                    :label="langMap.tracking.project_btn.client+'*'"
                                     :placeholder="langMap.tracking.project_btn.start_typing_to_search"
                                     return-object
                                     clearable
                                     required
+                                ></v-autocomplete>
+                            </v-list-item>
+                            <v-list-item>
+                                <v-autocomplete
+                                    v-model="form.team"
+                                    :items="getFilteredTeams"
+                                    :loading="isLoadingSearchTeam"
+                                    :search-input.sync="searchTeam"
+                                    color="white"
+                                    item-text="name"
+                                    item-value="id"
+                                    :label="langMap.tracking.project_btn.team"
+                                    :placeholder="langMap.tracking.project_btn.start_typing_to_search"
+                                    return-object
+                                    clearable
                                 ></v-autocomplete>
                             </v-list-item>
                             <v-list-item>
@@ -185,7 +205,7 @@
                         </v-card-actions>
                     </v-expansion-panel-content>
                 </v-expansion-panel>
-                <v-expansion-panel>
+                <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([50]) && $store.getters['Tickets/getTreeTickets'].length">
                     <v-expansion-panel-header>
                         {{langMap.tracking.project_btn.choose_ticket}}
                     </v-expansion-panel-header>
@@ -262,7 +282,6 @@
 
 import _ from 'lodash';
 import { PerfectScrollbar } from 'vue2-perfect-scrollbar';
-import * as Helper from "../helper";
 
 export default {
     components: {
@@ -290,17 +309,20 @@ export default {
             isLoadingProject: false,
             isLoadingSearchProduct: false,
             isLoadingSearchClient: false,
+            isLoadingSearchTeam: false,
             nameLimit: 20,
             isCreatingProject: false,
             searchProduct: null,
             searchClient: null,
+            searchTeam: null,
             searchTicket: null,
             colorMenu: false,
             form: {
                 name: '',
                 product: null,
                 client: null,
-                color: Helper.genRandomColor()
+                team: null,
+                color: this.$helpers.color.genRandomColor()
             }
         };
     },
@@ -308,6 +330,7 @@ export default {
         this.debounceGetProjects = _.debounce(this.__getProjects, 1000);
         this.debounceGetProducts = _.debounce(this.__getProducts, 1000);
         this.debounceGetClients = _.debounce(this.__getClients, 1000);
+        this.debounceGetTeams = _.debounce(this.__getTeams, 1000);
         this.debounceGetTickets = _.debounce(this.__getTickets, 1000);
     },
     mounted() {
@@ -324,6 +347,9 @@ export default {
         __getClients() {
             this.$store.dispatch('Clients/getClientList', { search: this.searchClient });
         },
+        __getTeams() {
+            this.$store.dispatch('Team/getTeams', { search: null });
+        },
         __getTickets() {
             this.$store.dispatch('Tickets/getTicketList', { search: this.searchTicket });
         },
@@ -332,7 +358,8 @@ export default {
                 name: '',
                 product: null,
                 client: null,
-                color: Helper.genRandomColor()
+                team: null,
+                color: this.$helpers.color.genRandomColor()
             };
             this.panels = 0;
         },
@@ -351,6 +378,9 @@ export default {
         selectTicket(ticket) {
             this.selectedTicket = ticket.shift();
             this.shown = false;
+        },
+        toggleFavorite(project) {
+            this.$store.dispatch('Projects/toggleFavorite', project);
         }
     },
     computed: {
@@ -387,6 +417,18 @@ export default {
 
                 return Object.assign({}, entry, { name })
             })
+        },
+        getFilteredTeams() {
+            if (this.$store.getters['Team/getTeams'] && this.$store.getters['Team/getTeams'].data) {
+                return this.$store.getters['Team/getTeams'].data.map(entry => {
+                    const name = entry.name.length > this.nameLimit
+                        ? entry.name.slice(0, this.nameLimit) + '...'
+                        : entry.name
+
+                    return Object.assign({}, entry, { name })
+                })
+            }
+            return [];
         },
         switchColor() {
             const { form: { color }, colorMenu } = this

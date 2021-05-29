@@ -3,20 +3,20 @@
 
 namespace App\Repositories;
 
-
 use App\Client;
 use App\ClientCompanyUser;
+use App\LimitationGroup;
+use App\LimitationGroupHasModel;
 use App\Company;
 use App\CompanyUser;
 use App\Email;
 use App\Http\Controllers\Controller;
 use App\Notifications\RegularInviteEmail;
-use App\Role;
+use App\Permission;
 use App\Settings;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -26,7 +26,6 @@ class CompanyUserRepository
 {
 
     protected $userRepo;
-    protected $roleRepo;
 
     public function __construct(UserRepository $userRepository, RoleRepository $roleRepository)
     {
@@ -45,35 +44,60 @@ class CompanyUserRepository
         $request->sort_by = null;
 
         $employee = Auth::user()->employee;
-        $clientIds = $employee->hasRoleId(Role::COMPANY_CLIENT) ? null :
-            Client::where([
+        $clientIds = [];
+        if ($employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
+            $assignedClients = [];
+            $clientGroups = (new LimitationGroupRepository())->getAssignedLimitationGroupByModel(Client::class);
+            if ($clientGroups) {
+                $assignedClients = LimitationGroupHasModel::query()
+                    ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
+                    ->get();
+            }
+            $clientIds = Client::query()
+                ->whereIn('id', $assignedClients->pluck('model_id')->toArray())
+                ->get()
+                ->pluck('id')
+                ->toArray();
+            $freeCompanyUsers = [];
+        } elseif (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
+            $clientIds = Client::where([
                 'supplier_type' => Company::class,
                 'supplier_id' => $employee->company_id
             ])->get()->pluck('id')->toArray();
+            $freeCompanyUsers = CompanyUser::where([
+                ['company_id', $employee->company_id],
+                ['is_clientable', true]
+            ])->withTrashed($request->with_trashed)->get()->pluck('id')->toArray();
+        }
 
         $clientCompanyUsers = ClientCompanyUser::whereIn('client_id', $clientIds)->withTrashed($request->with_trashed);
-        $freeCompanyUsers = CompanyUser::where([['company_id', $employee->company_id], ['is_clientable', true]])->withTrashed($request->with_trashed);
-
-        $companyUsers = CompanyUser::whereIn('id', array_merge($clientCompanyUsers->get()->pluck('company_user_id')->toArray(), $freeCompanyUsers->get()->pluck('id')->toArray()))
+        $companyUsers = CompanyUser::whereIn(
+            'id',
+            array_merge(
+                $clientCompanyUsers->get()->pluck('company_user_id')->toArray(),
+                $freeCompanyUsers
+            )
+        )
             ->has('userData')
             ->with(['userData' => function ($query) use ($request) {
                 $query->withTrashed($request->with_trashed);
             }, 'assignedToClients.clients', 'userData.emails.type'])
             ->withTrashed($request->with_trashed);
 
+
+
         if ($request->search) {
             $request['page'] = 1;
             $companyUsers = $companyUsers->whereHas(
                 'userData',
                 function ($query) use ($request) {
-                    $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('surname', 'like', $request->search . '%')
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('surname', 'like', '%' . $request->search . '%')
                         ->withTrashed($request->with_trashed);
                 }
             );
         }
         $companyUsers = $companyUsers->get();
-
 
         $orderFunc = function ($item, $key) use ($orderBy) {
             switch ($orderBy) {
@@ -122,7 +146,7 @@ class CompanyUserRepository
     {
         $result = false;
         $companyUser = CompanyUser::find($id);
-        if ($companyUser && !$companyUser->hasRoleId(Role::LICENSE_OWNER)) {
+        if ($companyUser && $companyUser->hasPermissionId(Permission::EMPLOYEE_DELETE_ACCESS)) {
             User::where('id', $companyUser->user_id)->delete();
             ClientCompanyUser::where('company_user_id', $companyUser->id)->delete();
             $companyUser->delete();
@@ -167,7 +191,14 @@ class CompanyUserRepository
                 if ($isNew === true) {
                     try {
                         @$user->notify(
-                            new RegularInviteEmail($companyUser->companyData->title, $companyUser->companyData->name, $user->full_name, $request['role_id'], $request['email'], $request['password'], $user->language->short_code)
+                            new RegularInviteEmail(
+                                $companyUser->companyData->title,
+                                $companyUser->companyData->name,
+                                $user->full_name,
+                                $request['email'],
+                                $request['password'],
+                                $user->language->short_code
+                            )
                         );
                     } catch (Throwable $throwable) {
                         Log::error($throwable);
@@ -209,6 +240,4 @@ class CompanyUserRepository
         $companyUser->save();
         return $companyUser;
     }
-
-
 }

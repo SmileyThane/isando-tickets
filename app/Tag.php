@@ -7,15 +7,22 @@ use Illuminate\Support\Facades\DB;
 
 class Tag extends Model
 {
-    protected $fillable = ['id', 'name', 'color'];
+    protected $fillable = ['id', 'name', 'color', 'tag_id', 'lang'];
+
+    public function Translates() {
+        return $this->hasMany(Tag::class, 'tag_id', 'id');
+    }
 
     public static function boot() {
 
         parent::boot();
 
         static::deleted(function($tag) {
+            $tagIds = Tag::where('tag_id', '=', $tag->id)->pluck('id')->toArray();
+            Tag::whereIn('id', $tagIds)->delete();
+            array_push($tagIds, $tag->id);
             DB::table('taggables')
-                ->where('tag_id', '=', $tag->id)
+                ->whereIn('tag_id', $tagIds)
                 ->delete();
         });
     }

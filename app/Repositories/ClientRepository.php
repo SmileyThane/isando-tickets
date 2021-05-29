@@ -6,7 +6,9 @@ use App\Client;
 use App\ClientCompanyUser;
 use App\Company;
 use App\Email;
-use App\Role;
+use App\LimitationGroup;
+use App\LimitationGroupHasModel;
+use App\Permission;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,16 +24,17 @@ class ClientRepository
     {
         $params = [
             'client_name' => 'required',
+            'number' => 'unique:clients',
             // 'client_description' => 'required',
         ];
         if ($new === true) {
             $params['supplier_type'] = 'required';
             $params['supplier_id'] = [
                 'required',
-                Rule::unique('clients')->where(function ($query) use ($request) {
-                    return $query->where('name', $request['client_name'])
-                        ->where('supplier_type', $request['supplier_type']);
-                }),
+//                Rule::unique('clients')->where(function ($query) use ($request) {
+//                    return $query->where('name', $request['client_name'])
+//                        ->where('supplier_type', $request['supplier_type']);
+//                }),
             ];
         }
         $validator = Validator::make($request->all(), $params);
@@ -57,9 +60,18 @@ class ClientRepository
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
+        } elseif ($employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
+            $assignedClients = [];
+            $clientGroups = (new LimitationGroupRepository())->getAssignedLimitationGroupByModel(Client::class);
+            if ($clientGroups) {
+                $assignedClients = LimitationGroupHasModel::query()
+                    ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
+                    ->get();
+            }
+            $clients = Client::whereIn('id', $assignedClients->pluck('model_id'));
         } else {
             $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
         }
@@ -68,7 +80,7 @@ class ClientRepository
             $clients->where(
                 function ($query) use ($request) {
                     $query->where('name', 'like', '%' . $request->search . '%')
-                        ->orWhere('short_name', 'like', $request->search . '%')
+                        ->orWhere('short_name', 'like', '%' . $request->search . '%')
                         ->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
@@ -76,7 +88,7 @@ class ClientRepository
         return $clients;
     }
 
-    private function getRecursiveChildClientIds($clientsArray): array
+    public function getRecursiveChildClientIds($clientsArray): array
     {
         $clientIds = [];
         foreach ($clientsArray as $client) {
@@ -111,12 +123,17 @@ class ClientRepository
         $companyId = $employee->company_id;
         $company = Company::find($companyId);
         $suppliers[] = ['name' => $company->name, 'item' => [Company::class => $companyId]];
-        if (!$employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if (!$employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $childClientIds = $this->getRecursiveChildClientIds($company->clients);
-            $clients = Client::whereIn('id', $childClientIds)->get();
+            $clients = Client::query()->whereIn('id', $childClientIds)
+                ->orderBy('name', 'asc')
+                ->get();
         } else {
-            $clientsArray = ClientCompanyUser::where('company_user_id', $employee->id)->first()->clients();
-            $clients = $clientsArray->paginate($clientsArray->count());
+            $clientsArray = ClientCompanyUser::query()->where('company_user_id', $employee->id)->first()->clients();
+            $clients = $clientsArray
+                ->orderBy('name', 'asc')
+                ->paginate($clientsArray->count());
+
         }
         foreach ($clients as $client) {
             $suppliers[] = ['name' => $client->name, 'item' => [Client::class => $client->id]];
@@ -138,6 +155,7 @@ class ClientRepository
                 'products.productData',
                 'phones.type',
                 'addresses.type',
+                'billing',
                 'addresses.country',
                 'socials.type',
                 'emails.type'
@@ -151,6 +169,7 @@ class ClientRepository
         $client->name = $request->client_name;
         $client->description = $request->client_description;
         $client->photo = $request->photo;
+        $client->number = $request->number;
         $client->supplier_id = $request->supplier_id;
         $client->supplier_type = $request->supplier_type;
         $client->save();
@@ -162,6 +181,7 @@ class ClientRepository
         $client = Client::find($id);
         $client->name = $request->client_name;
         $client->description = $request->client_description;
+        $client->number = $request->number;
         $client->short_name = $request->short_name;
         $client->photo = $request->photo;
         $client->save();
@@ -176,32 +196,41 @@ class ClientRepository
             ClientCompanyUser::where('client_id', $id)->delete();
             $client->delete();
             $result = true;
+            if ($client->customLicense !== null) {
+                $users = (new CustomLicenseRepository())->getUsers($client->customLicense->remote_client_id);
+                foreach ($users->entities as $user) {
+                    (new CustomLicenseRepository())
+                        ->unassignFromIxarmaCompany($user->id);
+                }
+            }
         }
+
         return $result;
     }
 
-    public function attach(Request $request): bool
+    public function attach(Request $request)
     {
         Log::info('attached_c_cu_d:' . $request->client_id . '_' . $request->company_user_id . '_' . $request->description);
-        ClientCompanyUser::firstOrCreate(
+        return ClientCompanyUser::firstOrCreate(
             [
                 'client_id' => $request->client_id,
                 'company_user_id' => $request->company_user_id
             ],
             ['description' => $request->description]
         );
-        return true;
     }
 
-    public function updateDescription(Request $request): bool
+    public function updateDescription(Request $request)
     {
-        ClientCompanyUser::where(
+        $c = ClientCompanyUser::where(
             [
                 'client_id' => $request->client_id,
                 'company_user_id' => $request->company_user_id
             ]
-        )->update(['description' => $request->description]);
-        return true;
+        )->get();
+        $c->description = $request->description;
+        $c->save();
+        return $c;
     }
 
     public function detach($id): bool
@@ -223,9 +252,24 @@ class ClientRepository
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
         $clientIds = [];
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
+        } elseif ($employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
+            $assignedClients = [];
+            $clientGroups = LimitationGroup::query()
+                ->whereHas('employees', static function ($query) {
+                    $query->where('company_user_id', Auth::user()->employee->id);
+                })->whereHas('type', static function ($query) {
+                    $query->where('model', Client::class);
+                })->get();
+            if ($clientGroups) {
+                $assignedClients = LimitationGroupHasModel::query()
+                    ->whereIn('limitation_group_id', $clientGroups->pluck('id')->toArray())
+                    ->get();
+            }
+            $clients = Client::whereIn('id', $assignedClients->pluck('model_id'));
+            $clientIds = $assignedClients->pluck('model_id')->toArray();
         } else {
             $clients = Client::where(['supplier_type' => Company::class, 'supplier_id' => $companyId]);
             $clientIds = Client::where([
@@ -238,16 +282,16 @@ class ClientRepository
         if ($request->search) {
             $clients->where(
                 function ($query) use ($request) {
-                    $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('description', 'like', $request->search . '%');
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
 
             $clientCompanyUsers->whereHas(
                 'employee.userData',
                 function ($query) use ($request) {
-                    $query->where('name', 'like', $request->search . '%')
-                        ->orWhere('surname', 'like', $request->search . '%');
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                        ->orWhere('surname', 'like', '%' . $request->search . '%');
                 }
             );
         }
@@ -255,7 +299,7 @@ class ClientRepository
 
         $clientCompanyUsers = $clientCompanyUsers->with(['employee.userData' => function ($query) {
             $query->with(['phones', 'phones.type', 'addresses', 'addresses.type', 'addresses.country']);
-        }])->get();
+        }])->whereHas('employee.userData')->get();
 
         $result = $clients->merge($clientCompanyUsers);
         $result = $result->unique(function ($item) {
@@ -355,7 +399,7 @@ class ClientRepository
     {
         $employee = Auth::user()->employee;
         $companyId = $employee->company_id;
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $clients = Client::where('id', $clientCompanyUser->client_id);
             $company = $clientCompanyUser->clients()->with('employees.employee.userData');
@@ -368,7 +412,12 @@ class ClientRepository
 
         $company = $company->with(['employees' => function ($query) {
             $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
-            if (Auth::user()->employee->hasRoleId([Role::COMPANY_CLIENT, Role::USER])) {
+            if (Auth::user()->employee->hasPermissionId(
+                [
+                    Permission::EMPLOYEE_CLIENT_ACCESS,
+                    Permission::EMPLOYEE_USER_ACCESS
+                ]
+            )) {
                 $result->where('user_id', Auth::id());
             }
             return $result->get();
@@ -401,27 +450,30 @@ class ClientRepository
                 if ($employee->employee) {
                     $employee = $employee->employee;
                 }
-                $employeeData = [
-                    'id' => $clientData['id'] . '-' . $employee->userData->id,
-                    'entity_type' => User::class,
-                    'entity_id' => $employee->userData->id,
-                    'name' => $employee->userData->full_name,
-                    'children' => []
-                ];
-                foreach ($employee->userData->emails as $email) {
-                    if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
-                        array_push($employeeData['children'], [
-                            'id' => $employeeData['id'] . '-' . $email->id,
-                            'entity_type' => Email::class,
-                            'entity_id' => $email->id,
-                            'name' => $email->email,
-                            'type' => $email->type
-                        ]);
+                if ($employee->userData !== null) {
+                    $employeeData = [
+                        'id' => $clientData['id'] . '-' . $employee->userData->id,
+                        'entity_type' => User::class,
+                        'entity_id' => $employee->userData->id,
+                        'name' => $employee->userData->full_name,
+                        'children' => []
+                    ];
+                    foreach ($employee->userData->emails as $email) {
+                        if (filter_var($email->email, FILTER_VALIDATE_EMAIL)) {
+                            array_push($employeeData['children'], [
+                                'id' => $employeeData['id'] . '-' . $email->id,
+                                'entity_type' => Email::class,
+                                'entity_id' => $email->id,
+                                'name' => $email->email,
+                                'type' => $email->type
+                            ]);
+                        }
+                    }
+                    if ($employeeData['children']) {
+                        array_push($clientData['children'], $employeeData);
                     }
                 }
-                if ($employeeData['children']) {
-                    array_push($clientData['children'], $employeeData);
-                }
+
             }
 
             if ($clientData['children']) {

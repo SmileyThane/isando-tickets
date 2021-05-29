@@ -6,12 +6,12 @@ namespace App\Repositories;
 use App\Company;
 use App\NotificationTemplate;
 use App\NotificationType;
+use App\Permission;
 use App\SentNotification;
-use App\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
 
 class NotificationRepository
 {
@@ -144,13 +144,12 @@ class NotificationRepository
     {
         $companyUser = Auth::user()->employee;
         $companyId = $request['company_id'] ?? $companyUser->companyData->id;
-        $roles = $companyUser->roles->pluck('id')->toArray();
 
         $notifications = new Collection([]);
-        if ($companyUser->is_clientable || in_array(Role::COMPANY_CLIENT, $roles)) {
+        if ($companyUser->is_clientable || $companyUser->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
 //           $notifications = SentNotification::where('entity_type', Company::class)->where('entity_id', $companyId)->with(['type', 'sender'])->get();
             foreach (Auth::user()->emails as $email) {
-                $notifications = $notifications->merge(SentNotification::whereNotNull(DB::raw("JSON_SEARCH(recipients, 'one', '".$email->email."')"))->with(['type', 'sender'])->get());
+                $notifications = $notifications->merge(SentNotification::whereNotNull(DB::raw("JSON_SEARCH(recipients, 'one', '" . $email->email . "')"))->with(['type', 'sender'])->get());
             }
 
             $notifications = $notifications->unique();

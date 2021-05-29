@@ -25,27 +25,40 @@
                                 <v-expansion-panel-content>
                                     <v-form>
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
                                                 <v-text-field
                                                     :color="themeBgColor"
                                                     :label="langMap.main.name"
                                                     name="company_name"
                                                     type="text"
                                                     v-model="clientForm.client_name"
+                                                    :error-messages="errors.name"
                                                     required
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-2">
+                                                <v-text-field
+                                                    :color="themeBgColor"
+                                                    :label="langMap.company.company_number"
+                                                    name="number"
+                                                    type="text"
+                                                    prepend-icon="mdi-numeric"
+                                                    v-model="clientForm.number"
+                                                    :error-messages="errors.number"
+                                                ></v-text-field>
+                                            </div>
+                                            <div class="col-md-5">
                                                 <v-text-field
                                                     :color="themeBgColor"
                                                     :label="langMap.main.description"
                                                     name="company_description"
                                                     type="text"
                                                     v-model="clientForm.client_description"
+                                                    :error-messages="errors.description"
                                                     required
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <v-select
                                                     :label="langMap.customer.supplier"
                                                     :color="themeBgColor"
@@ -56,6 +69,7 @@
                                                     :items="suppliers"
                                                 />
                                             </div>
+
                                             <v-btn
                                                 dark
                                                 fab
@@ -89,7 +103,7 @@
                             <template v-slot:top>
                                 <v-row>
                                     <v-col sm="12" md="10">
-                                        <v-text-field @input="getClients" v-model="customersSearch" :color="themeBgColor"
+                                        <v-text-field @input="debounceGetClients" v-model="customersSearch" :color="themeBgColor"
                                                       :label="langMap.main.search" class="mx-4"></v-text-field>
                                     </v-col>
                                     <v-col sm="12" md="2">
@@ -110,14 +124,14 @@
                             </template>
                             <template v-slot:item.email="{item}">
                                 <span v-if="item.contact_email && item.contact_email.email">
-                                    <v-icon v-if="item.contact_email.type" x-small dense v-text="item.contact_email.type.icon" :title="localized(item.contact_email.type)"></v-icon>
+                                    <v-icon v-if="item.contact_email.type" x-small dense v-text="item.contact_email.type.icon" :title="$helpers.i18n.localized(item.contact_email.type)"></v-icon>
                                     {{item.contact_email.email}}
                                 </span>
                                 <span v-else>&nbsp;</span>
                             </template>
                             <template v-slot:item.phone="{item}">
                                 <span v-if="item.contact_phone && item.contact_phone.phone">
-                                    <v-icon v-if="item.contact_phone.type" x-small dense v-text="item.contact_phone.type.icon" :title="localized(item.contact_phone.type)"></v-icon>
+                                    <v-icon v-if="item.contact_phone.type" x-small dense v-text="item.contact_phone.type.icon" :title="$helpers.i18n.localized(item.contact_phone.type)"></v-icon>
                                     {{item.contact_phone.phone}}
                                 </span>
                                 <span v-else>&nbsp;</span>
@@ -223,7 +237,7 @@
                 options: {
                     page: 1,
                     sortDesc: [false],
-                    sortBy: ['id'],
+                    sortBy: ['name'],
                     itemsPerPage: localStorage.itemsPerPage ? parseInt(localStorage.itemsPerPage) : 10
                 },
                 footerProps: {
@@ -239,6 +253,7 @@
                     },
                     {text: `${this.$store.state.lang.lang_map.company.logo}`, value: 'logo', align: 'center', sortable: false},
                     {text: `${this.$store.state.lang.lang_map.main.name}`, value: 'name'},
+                    {text: `${this.$store.state.lang.lang_map.company.company_number}`, value: 'number'},
                     {text: this.$store.state.lang.lang_map.main.email, value: 'email', sortable: false},
                     {text: this.$store.state.lang.lang_map.main.phone, value: 'phone', sortable: false},
                     {text: `${this.$store.state.lang.lang_map.main.description}`, value: 'description'},
@@ -255,8 +270,12 @@
                     supplier_type: '',
                     supplier_id: ''
                 },
-                suppliers: []
+                suppliers: [],
+                errors: {}
             }
+        },
+        created() {
+            this.debounceGetClients = _.debounce(this.getClients, 1000);
         },
         mounted() {
             this.getSuppliers();
@@ -266,10 +285,6 @@
             });
         },
         methods: {
-            localized(item, field = 'name') {
-                let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-                return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-            },
             getClients() {
                 this.loading = this.themeBgColor
                 // console.log(this.options);
@@ -313,6 +328,7 @@
                         this.getSuppliers()
                         this.clientForm = {}
                     } else {
+                        this.errors = response.error
                         this.snackbarMessage = this.langMap.main.generic_error;
                         this.actionColor = 'error'
                         this.snackbar = true;

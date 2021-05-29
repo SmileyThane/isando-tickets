@@ -3,16 +3,41 @@
 
 namespace App\Repositories;
 
-
 use App\ModelHasRole;
 use App\Permission;
 use App\Role;
 use App\RoleHasPermission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use stdClass;
 
 class RoleRepository
 {
+    public function replicate($roleId, $companyId): bool
+    {
+        $role = Role::find($roleId);
+        if ($role->is_public === 1 &&
+            !Role::query()->where(['name' => $role->name, 'company_id' => $companyId])->exists()
+        ) {
+            $newRole = $role->replicate()->fill([
+                'company_id' => $companyId
+            ]);
+            $newRole->save();
+
+            $roleHasPermission = RoleHasPermission::query()->where(['role_id' => $role->id])->get();
+
+            $roleHasPermission->each(static function ($item, $key) use ($newRole) {
+                $copy = $item->replicate();
+                $copy->role_id = $newRole->id;
+                $copy->save();
+            });
+
+            return true;
+        }
+
+        return false;
+    }
+
     public function attach($modelId, $class, $roleId): bool
     {
         $newRole = new ModelHasRole();
@@ -70,7 +95,7 @@ class RoleRepository
     public function getRolesWithPermissions(): array
     {
         $result = [];
-        $roles = Role::all();
+        $roles = Role::query()->where(['company_id' => Auth::user()->employee->company_id])->get();
         $permissions = Permission::all();
 
         foreach ($permissions as $key => $permission) {
@@ -82,5 +107,4 @@ class RoleRepository
         }
         return $result;
     }
-
 }

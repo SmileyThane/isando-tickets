@@ -7,8 +7,8 @@ use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyUser;
 use App\Notifications\ChangedTicketStatus;
+use App\Permission;
 use App\ProductCompanyUser;
-use App\Role;
 use App\TeamCompanyUser;
 use App\Ticket;
 use App\TicketAnswer;
@@ -33,7 +33,8 @@ class TicketRepository
         FileRepository $fileRepository,
         TicketUpdateRepository $ticketUpdateRepository,
         TicketSelectRepository $ticketSelectRepository
-    ) {
+    )
+    {
         $this->fileRepo = $fileRepository;
         $this->ticketUpdateRepo = $ticketUpdateRepository;
         $this->ticketSelectRepo = $ticketSelectRepository;
@@ -62,7 +63,7 @@ class TicketRepository
         $ticketIds = [];
         $companyUser = Auth::user()->employee;
         $tickets = Ticket::query();
-        $tickets = $this->ticketRoleFilter($companyUser, $tickets);
+        $tickets = $this->ticketAccessFilter($companyUser, $tickets);
         $tickets->orWhere('from_company_user_id', $companyUser->id);
         $tickets->orWhere(static function ($ticketsQuery) use ($companyUser) {
             $ticketsQuery->where('to_company_user_id', $companyUser->id)
@@ -119,6 +120,9 @@ class TicketRepository
         if ($request->with_spam === "true") {
             $ticketResult->where('is_spam', 1);
         }
+        if ($request->only_for_user === "true") {
+            $ticketResult->where('to_company_user_id', Auth::user()->employee->id);
+        }
         if ($request->minified && $request->minified === "true") {
             return $ticketResult
                 ->with('creator.userData')
@@ -143,7 +147,8 @@ class TicketRepository
                 'product',
                 'priority',
                 'status',
-                'category'
+                'category',
+                'billedBy'
             );
         $orderedField = $request->sort_by ?? 'id';
         $orderedDirection = $request->sort_val === 'false' ? 'asc' : 'desc';
@@ -175,10 +180,10 @@ class TicketRepository
         return $ticketResult->paginate($request->per_page ?? count($ticketIds));
     }
 
-    private function ticketRoleFilter($companyUser, $tickets)
+    private function ticketAccessFilter($companyUser, $tickets)
     {
-        $roleIds = $companyUser->roleIds();
-        if (!in_array(Role::COMPANY_CLIENT, $roleIds, true)) {
+        $permissionIds = $companyUser->getPermissionIds();
+        if (!in_array(Permission::EMPLOYEE_CLIENT_ACCESS, $permissionIds, true)) {
             $tickets->orWhere([['to_entity_type', Company::class], ['to_entity_id', $companyUser->company_id]]);
             $tickets->orWhere([['from_entity_type', Company::class], ['from_entity_id', $companyUser->company_id]]);
         } else {
@@ -196,7 +201,7 @@ class TicketRepository
                     ->whereIn('to_entity_id', $clientIds);
             });
         }
-        if (in_array([Role::LICENSE_OWNER, Role::ADMIN], $roleIds, true)) {
+        if (in_array(Permission::EMPLOYEE_TICKET_ADMIN_ACCESS, $permissionIds, true)) {
             $products = ProductCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($products) {
                 $productsIds = $products->pluck('id')->toArray();
@@ -205,7 +210,7 @@ class TicketRepository
                 }
             }
         }
-        if (in_array(Role::MANAGER, $roleIds, true)) {
+        if (in_array(Permission::EMPLOYEE_TICKET_MANAGER_ACCESS, $permissionIds, true)) {
             $teams = TeamCompanyUser::where('company_user_id', $companyUser->id)->get();
             if ($teams) {
                 $teamsIds = $teams->pluck('id')->toArray();
@@ -214,7 +219,7 @@ class TicketRepository
                 }
             }
         }
-        if (in_array(Role::COMPANY_CLIENT, $roleIds, true)) {
+        if (in_array(Permission::EMPLOYEE_CLIENT_ACCESS, $permissionIds, true)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', Auth::user()->employee->id)->first();
             if ($clientCompanyUser) {
                 $tickets->orWhere(static function ($query) use ($clientCompanyUser) {
@@ -248,12 +253,14 @@ class TicketRepository
                 'answers.attachments',
                 'mergedChild',
                 'childTickets.answers.employee.userData',
+                'childTickets.attachments',
                 'childTickets.notices.employee.userData',
                 'childTickets.answers.attachments',
                 'histories.employee.userData',
                 'notices.employee.userData',
                 'attachments',
-                'mergedParent'
+                'mergedParent',
+                'billedBy'
             )->first()->makeVisible(['to']);
     }
 
@@ -313,6 +320,7 @@ class TicketRepository
             $ticket->name = $request->name;
             $ticket->from_entity_id = $request->from_entity_id;
             $ticket->from_entity_type = $request->from_entity_type;
+            $ticket->internal_billing_id = $request->internal_billing_id;
             $ticket->to_team_id = $this->ticketUpdateRepo->setTeamId($ticket->to_team_id, $request->to_team_id, $ticket->id);
             $ticket->due_date = $this->ticketUpdateRepo->setDueDate($ticket->due_date, $request->due_date, $ticket->id);
             $ticket->priority_id = $this->ticketUpdateRepo->setPriorityId($ticket->priority_id, $request->priority_id, $ticket->id);
@@ -436,13 +444,35 @@ class TicketRepository
             $this->fileRepo->store($file, $ticketAnswer->id, TicketAnswer::class);
         }
         $employee = $employeeId !== null ? CompanyUser::find($employeeId) : Auth::user()->employee;
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $request->status_id = 3;
         } else {
             $request->status_id = 4;
         }
         $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_added');
+        $this->ticketUpdateRepo->addHistoryItem($ticketAnswer->ticket_id, null, $historyDescription);
+        return true;
+    }
+
+    public function editAnswer(Request $request, $id, $employeeId = null): bool
+    {
+        $ticketAnswer = TicketAnswer::find($request->answer_id);
+        $ticketAnswer->answer = $request->answer;
+        $ticketAnswer->save();
+
+        $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
+        foreach ($files as $file) {
+            $this->fileRepo->store($file, $ticketAnswer->id, TicketAnswer::class);
+        }
+        $employee = $employeeId !== null ? CompanyUser::find($employeeId) : Auth::user()->employee;
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
+            $request->status_id = 3;
+        } else {
+            $request->status_id = 4;
+        }
+        $this->updateStatus($request, $ticketAnswer->ticket_id, $employeeId, false);
+        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('answer_updated');
         $this->ticketUpdateRepo->addHistoryItem($ticketAnswer->ticket_id, null, $historyDescription);
         return true;
     }
@@ -455,6 +485,16 @@ class TicketRepository
         $ticketNotice->ticket_id = $id;
         $ticketNotice->save();
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('notice_added');
+        $this->ticketUpdateRepo->addHistoryItem($ticketNotice->ticket_id, null, $historyDescription);
+        return true;
+    }
+
+    public function editNotice(Request $request, $id): bool
+    {
+        $ticketNotice = TicketNotice::find($request->notice_id);
+        $ticketNotice->notice = $request->notice;
+        $ticketNotice->save();
+        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('notice_updated');
         $this->ticketUpdateRepo->addHistoryItem($ticketNotice->ticket_id, null, $historyDescription);
         return true;
     }
@@ -543,13 +583,16 @@ class TicketRepository
         return true;
     }
 
-    public function filterEmployeesByRoles($employees, $roles)
-    {
-        return $employees->filter(static function ($item) use ($roles) {
-            if ($item && $item->hasRoleId($roles)) {
-                return $item;
-            }
-            return null;
-        });
-    }
+//    deprecated method
+//    public function filterEmployeesByRoles($employees, $roles)
+//    {
+//        return $employees->filter(static function ($item) use ($roles) {
+//            if ($item && $item->hasRoleId($roles)) {
+//                return $item;
+//            }
+//            return null;
+//        });
+//    }
+
+
 }

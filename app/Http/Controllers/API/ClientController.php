@@ -9,8 +9,10 @@ use App\Http\Controllers\Controller;
 use App\Permission;
 use App\Repositories\ClientRepository;
 use App\Repositories\CompanyUserRepository;
+use App\Repositories\LimitationGroupRepository;
 use App\Repositories\UserRepository;
 use App\Role;
+use App\RoleHasPermission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -83,12 +85,13 @@ class ClientController extends Controller
     {
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
         $isValid = $this->clientRepo->validate($request);
-
-        if ($isValid && $hasAccess) {
-            return self::showResponse(true, $this->clientRepo->create($request));
+        if ($isValid === true && $hasAccess) {
+            $client = $this->clientRepo->create($request);
+            (new LimitationGroupRepository())->limitationAutoAssignProcess($client);
+            return self::showResponse(true, $client);
         }
 
-        return self::showResponse(true);
+        return self::showResponse(false, $isValid);
     }
 
     public function update(Request $request, $id)
@@ -96,7 +99,7 @@ class ClientController extends Controller
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS);
         $isValid = $this->clientRepo->validate($request, false);
 
-        if ($isValid && $hasAccess) {
+        if ($isValid === true && $hasAccess) {
             return self::showResponse(true, $this->clientRepo->update($request, $id));
         }
 
@@ -115,8 +118,17 @@ class ClientController extends Controller
     public function attach(Request $request)
     {
         $result = false;
+        $clientRole = null;
+        $companyUser = null;
         if (Auth::user()->employee->hasPermissionId(Permission::CLIENT_WRITE_ACCESS)) {
-            $request['role_id'] = Role::COMPANY_CLIENT;
+            $roles = Role::query()->where('company_id', Auth::user()->employee->company_id)->get();
+            if ($roles) {
+                $clientRole = RoleHasPermission::query()
+                    ->whereIn('role_id', $roles->pluck('id')->toArray())
+                    ->where('permission_id', Permission::EMPLOYEE_CLIENT_ACCESS)
+                    ->first();
+            }
+            $request['role_id'] = $clientRole ? $clientRole->role_id : Role::COMPANY_CLIENT;
             $request['company_id'] = Auth::user()->employee->company_id;
             $request['is_clientable'] = true;
 
@@ -134,12 +146,13 @@ class ClientController extends Controller
                 'company_user_id' => $request->company_user_id
             ])->exists();
 
-            $result = $existingClient ?
+            $companyUser = $existingClient ?
                 $this->clientRepo->updateDescription($request) :
                 $this->clientRepo->attach($request);
+            $result = !is_null($companyUser);
         }
 
-        return self::showResponse($result);
+        return self::showResponse($result, $companyUser);
     }
 
     public function detach($id)

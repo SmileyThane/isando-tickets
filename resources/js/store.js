@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import EventBus from "./components/EventBus";
-import {Clients, Products, Projects, Tags, Services, Tracking, Team, Tickets, Currencies} from './modules';
+import {
+    Clients, Products, Projects, Tags, Services, Tracking, Team, Tickets, Currencies, Languages,
+    Timesheet
+} from './modules';
 
 Vue.use(Vuex);
 
@@ -15,7 +18,9 @@ export default new Vuex.Store({
         Tracking,
         Team,
         Tickets,
-        Currencies
+        Currencies,
+        Languages,
+        Timesheet
     },
     state: {
         roles: {},
@@ -24,12 +29,20 @@ export default new Vuex.Store({
         pageName: '',
         themeFgColor: '#FFFFFF',
         themeBgColor: '#6AA75D',
-        appVersion: ''
+        appVersion: '',
+        mainCompany: null,
+        userId: null
     },
     getters: {
-        roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion]
+        roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion],
+        getLang: state => state.lang,
+        getPermissions: state => state.permissions,
+        getMainCompany: state => state.mainCompany
     },
     mutations: {
+        setMainCompany(state, mainCompany) {
+            state.mainCompany = mainCompany;
+        },
         setRoles(state, roles) {
             state.roles = roles;
         },
@@ -55,6 +68,16 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        getMainCompany({commit}) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/main_company/license').then(result => {
+                    commit('setMainCompany', result.data.data);
+                    resolve();
+                }).catch(error => {
+                    reject(error.response && error.response.data.message || 'Error.');
+                });
+            });
+        },
         getRoles({commit}) {
             return new Promise((resolve, reject) => {
                 axios.get('/api/user/roles/id').then(result => {
@@ -92,72 +115,44 @@ export default new Vuex.Store({
         getThemeBgColor({commit}) {
             return new Promise((resolve, reject) => {
                 let override = false;
+                let themeFgColor = '#FFFFFF';
+                let themeBbgColor = '#6AA75D';
                 let fgColor = '#FFFFFF';
                 let bgColor = '#6AA75D';
-
-                let colorIsSet = true;
-                if (localStorage.themeFgColor) {
-                    commit('setThemeFgColor', localStorage.themeFgColor);
-                } else {
-                    colorIsSet = false;
-                }
-                if (localStorage.themeBgColor) {
-                    commit('setThemeBgColor', localStorage.themeBgColor);
-                } else {
-                    if (localStorage.themeBgColor) {
-                        commit('setThemeBgColor', localStorage.themeBgColor);
-                    } else {
-                        colorIsSet = false;
-                    }
-                }
-
-                if (colorIsSet) {
-                    return resolve();
-                }
 
                 axios.get('/api/main_company/settings').then(response => {
                     response = response.data;
                     if (response.success === true && response.data.theme_color) {
                         if (response.data.hasOwnProperty('theme_fg_color')) {
-                            fgColor = response.data.theme_fg_color;
+                            themeFgColor = response.data.theme_fg_color;
                         }
                         if (response.data.hasOwnProperty('theme_bg_color')) {
-                            bgColor = response.data.theme_bg_color;
+                            themeBbgColor = response.data.theme_bg_color;
                         } else if (response.data.hasOwnProperty('theme_color')) {
-                            bgColor = response.data.theme_color;
+                            themeBbgColor = response.data.theme_color;
                         }
 
                         override = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
-
-                        if (override) {
-                            localStorage.themeFgColor = fgColor;
-                            commit('setThemeFgColor', fgColor);
-
-                            localStorage.themeBgColor = bgColor;
-                            commit('setThemeBgColor', bgColor);
-
-                            localStorage.themeColorDlg = 1;
-
-                            return resolve();
-                        }
 
                         axios.get('/api/user/settings').then(response => {
                             response = response.data;
                             if (response.success === true) {
                                 if (response.data.hasOwnProperty('theme_fg_color')) {
                                     fgColor = response.data.theme_fg_color;
+                                } else if (override) {
+                                    fgColor = themeFgColor;
                                 }
+
                                 if (response.data.hasOwnProperty('theme_bg_color')) {
                                     bgColor = response.data.theme_bg_color;
                                 } else if (response.data.hasOwnProperty('theme_color')) {
                                     bgColor = response.data.theme_color;
+                                } else if (override) {
+                                    fgColor = themeBgColor;
                                 }
                             }
 
-                            localStorage.themeFgColor = fgColor;
                             commit('setThemeFgColor', fgColor);
-
-                            localStorage.themeBgColor = bgColor;
                             commit('setThemeBgColor', bgColor);
 
                             return resolve();
@@ -173,14 +168,14 @@ export default new Vuex.Store({
         getAppVersion({commit}) {
             return new Promise((resolve, reject) => {
                 axios.get('/api/version').then(result => {
-                        if (result.data.success === true)
-                            localStorage.appVersion = result.data.data;
-                        commit('setAppVersion', result.data.data);
-                        resolve();
+                        if (result.data.success === true) {
+                            commit('setAppVersion', result.data.data);
+                            resolve();
+                        }
                     }).catch(error => {
                         reject(error.response && error.response.data.message || 'Error.');
                     });
             });
-        },
+        }
     }
 })

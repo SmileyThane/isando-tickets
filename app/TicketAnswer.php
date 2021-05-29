@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Auth;
 class TicketAnswer extends Model
 {
 //    use SoftDeletes;
-    protected $appends = ['created_at_time'];
+    protected $fillable = ['answer'];
+
+    protected $appends = ['created_at_time', 'updated_at_time'];
 
     public function getCreatedAtAttribute()
     {
@@ -27,6 +29,23 @@ class TicketAnswer extends Model
         $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
         return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
     }
+
+    public function getUpdatedAtAttribute()
+    {
+        $locale = Language::find(Auth::user()->language_id)->locale;
+        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+        return Carbon::parse($this->attributes['updated_at'])->addHours($timeZoneDiff)->locale($locale)->calendar();
+    }
+
+    public function getUpdatedAtTimeAttribute()
+    {
+        $locale = Language::find(Auth::user()->language_id)->locale;
+        $createdAt = Carbon::parse($this->attributes['updated_at']);
+        $timeZoneDiff = TimeZone::find(Auth::user()->timezone_id)->offset;
+        return $createdAt->diffInDays(now()) <= 1 ? $createdAt->locale($locale)->diffForHumans() : '';
+    }
+
+
 
     public function employee(): HasOne
     {

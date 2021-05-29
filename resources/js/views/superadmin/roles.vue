@@ -23,7 +23,7 @@
                                 }}
                             </v-toolbar-title>
                             <v-spacer></v-spacer>
-                            <v-icon v-if="!canBeEdited && checkRoleByIds([1])" :color="themeFgColor" @click="canBeEdited = true">mdi-pencil
+                            <v-icon v-if="!canBeEdited && $helpers.auth.checkPermissionByIds([35])" :color="themeFgColor" @click="canBeEdited = true">mdi-pencil
                             </v-icon>
                             <v-btn v-if="canBeEdited" color="white" style="color: black; margin-right: 10px"
                                    @click="canBeEdited = false">
@@ -40,12 +40,12 @@
                         <v-data-table
                             :headers="headers"
                             :items="items"
-                            :items-per-page="100"
+                            :items-per-page="10"
                             :loading="loading"
+                            :footer-props="footerProps"
                             :loading-text="langMap.main.loading"
                             class="elevation-1"
                             dense
-                            hide-default-footer
                         >
                             <template v-slot:body="props">
                                 <tr v-for="index in props.items">
@@ -69,9 +69,9 @@
                                     </td>
                                 </tr>
                             </template>
-                            <template v-slot:footer>
-                            </template>
+
                         </v-data-table>
+
                     </div>
                 </div>
             </div>
@@ -96,6 +96,10 @@ export default {
             langMap: this.$store.state.lang.lang_map,
             headers: [],
             items: [],
+            footerProps: {
+                showFirstLastPage: true,
+                itemsPerPageOptions: [5, 10],
+            },
             canBeEdited: false
         }
     },
@@ -157,16 +161,7 @@ export default {
                 }
             });
             this.canBeEdited = false;
-        },
-        checkRoleByIds(ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
-                }
-            });
-            return roleExists
-        },
+        }
     },
     watch: {},
 }

@@ -136,14 +136,14 @@
                                     <v-col md="6" sm="12">
                                         <v-text-field v-model="employeesSearch" :color="themeBgColor"
                                                       :label="langMap.main.search"
-                                                      class="mx-4" @input="getEmployees"></v-text-field>
+                                                      class="mx-4" @input="debounceGetEmployees"></v-text-field>
                                     </v-col>
                                     <v-col md="4" sm="12">
                                         <v-checkbox v-model="withTrashed"  :color="themeBgColor"
                                                     value="1"
                                                     dense
                                                     :label="langMap.individuals.with_trashed"
-                                                    class="mx-4" @change="getEmployees"/>
+                                                    class="mx-4" @change="debounceGetEmployees"/>
                                     </v-col>
                                     <v-col md="2" sm="12">
                                         <v-select
@@ -190,7 +190,7 @@
                             <template v-slot:item.user_data.emails="{item}">
                                 <span v-for="email in item.user_data.emails" v-if="item.user_data.emails.length > 0">
                                     <v-icon v-if="email.type"
-                                            :title="localized(email.type)" dense
+                                            :title="$helpers.i18n.localized(email.type)" dense
                                             x-small
                                             v-text="email.type.icon"></v-icon>
                                     {{ email.email }}
@@ -309,8 +309,10 @@ themeBgColor: this.$store.state.themeBgColor,
             suppliers: []
         }
     },
+    created() {
+        this.debounceGetEmployees = _.debounce(this.getEmployees, 1000);
+    },
     mounted() {
-        this.getEmployees();
         this.getClients();
         this.getLanguages();
         let that = this;
@@ -322,10 +324,6 @@ themeBgColor: this.$store.state.themeBgColor,
         });
     },
     methods: {
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-        },
         getEmployees() {
             this.loading = this.themeBgColor
             // console.log(this.options);

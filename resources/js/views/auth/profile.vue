@@ -51,7 +51,7 @@
 
                                 <div v-if="userData.emails && userData.emails.length > 0" class="mb-3">
                                     <p v-for="(item, i) in userData.emails"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.email }}
                                     </p>
                                 </div>
@@ -59,7 +59,7 @@
                                 <div v-if="userData.phones && userData.phones.length > 0">
                                     <hr/>
                                     <p v-for="(item, i) in userData.phones"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.phone }}
                                     </p>
                                 </div>
@@ -67,20 +67,20 @@
                             <v-col cols="6">
                                 <div v-if="userData.addresses && userData.addresses.length > 0" class="mb-3">
                                     <p v-for="(item, i) in userData.addresses"  :key="item.id" class="mb-1">
-                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2 mb-2" />
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2 mb-2" />
 
                                         <span v-if="item.street">{{ item.street }}</span>
                                         <span v-if="item.street2">, {{ item.street2 }}</span>
                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                         <br/>{{ item.postal_code }} {{ item.city }}
-                                        <br/><span v-if="item.country">{{ localized(item.country) }}</span>
+                                        <br/><span v-if="item.country">{{ $helpers.i18n.localized(item.country) }}</span>
                                     </p>
                                 </div>
 
                                 <div v-if="userData.socials && userData.socials.length > 0">
                                     <hr/>
                                     <p v-for="(item, i) in userData.socials"  :key="item.id" class="mb-0">
-                                        <v-icon v-if="item.type" :title="localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small class="mr-2" />
                                         {{ item.social_link }}
                                     </p>
                                 </div>
@@ -138,29 +138,29 @@
                         </v-row>
 
                         <v-row>
-                            <v-col cols="6">
+                            <v-col cols="12">
                                 <hr/>
 
-                                <p class="mb-0" v-if="langs && langs.length > 0">
+                                <p class="mb-0" v-if="langs && langs[userData.language_id]">
                                     <v-icon left small dense :color="themeBgColor">mdi-web</v-icon>
                                     {{ langs[userData.language_id].name }}
                                 </p>
                             </v-col>
-                            <v-col cols="6">
-                                <hr/>
+<!--                            <v-col cols="6">-->
+<!--                                <hr/>-->
 
-                                <p class="mb-0">
-                                    <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>
-                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
-                                    {{ langMap.individuals.active }}
-                                </p>
+<!--                                <p class="mb-0">-->
+<!--                                    <v-icon v-if="userData.status" small dense left color="success">mdi-check-circle</v-icon>-->
+<!--                                    <v-icon v-else small dense left>mdi-cancel</v-icon>-->
+<!--                                    {{ langMap.individuals.active }}-->
+<!--                                </p>-->
 
-                                <p class="mb-0">
-                                    <v-icon v-if="userData.is_active" small dense left color="success">mdi-check-circle</v-icon>
-                                    <v-icon v-else small dense left>mdi-cancel</v-icon>
-                                    {{ langMap.main.give_access }}
-                                </p>
-                            </v-col>
+<!--                                <p class="mb-0">-->
+<!--                                    <v-icon v-if="userData.is_active" small dense left color="success">mdi-check-circle</v-icon>-->
+<!--                                    <v-icon v-else small dense left>mdi-cancel</v-icon>-->
+<!--                                    {{ langMap.main.give_access }}-->
+<!--                                </p>-->
+<!--                            </v-col>-->
                         </v-row>
 
                     </v-card-text>
@@ -316,7 +316,7 @@
                                                 </v-list-item-icon>
                                                 <v-list-item-content class="mr-2">
                                                     <v-list-item-title v-text="item.email"></v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
+                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editEmail(item)">mdi-pencil</v-icon>
@@ -336,7 +336,7 @@
                                                 </v-list-item-icon>
                                                 <v-list-item-content class="mr-2">
                                                     <v-list-item-title v-text="item.phone"></v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
+                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editPhone(item)">mdi-pencil</v-icon>
@@ -378,10 +378,10 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
 
                                                                     </v-select>
@@ -433,10 +433,10 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -470,9 +470,9 @@
                                                         <span v-if="item.street2">, {{ item.street2 }}</span>
                                                         <span v-if="item.street3">, {{ item.street3 }}</span>
                                                         <br/>{{ item.postal_code }}&nbsp;&nbsp;{{ item.city }}
-                                                        <br/><span v-if="item.country">{{ localized(item.country) }}</span>
+                                                        <br/><span v-if="item.country">{{ $helpers.i18n.localized(item.country) }}</span>
                                                     </v-list-item-title>
-                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
+                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
                                                 </v-list-item-content>
                                                 <v-list-item-action>
                                                     <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
@@ -489,13 +489,13 @@
                                                 </v-list-item-icon>
                                                 <v-list-item-content>
                                                     <v-list-item-title v-text="item.social_link" />
-                                                    <v-list-item-subtitle v-if="item.type" v-text="localized(item.type)" />
+                                                    <v-list-item-subtitle v-if="item.type" v-text="$helpers.i18n.localized(item.type)" />
                                                 </v-list-item-content>
                                                 <v-list-item-action>
-                                                    <v-icon small @click="editAddress(item)">mdi-pencil</v-icon>
+                                                    <v-icon small @click="editSocial(item)">mdi-pencil</v-icon>
                                                 </v-list-item-action>
                                                 <v-list-item-action>
-                                                    <v-icon small @click="deleteAddress(item.id)">mdi-delete</v-icon>
+                                                    <v-icon small @click="deleteSocial(item.id)">mdi-delete</v-icon>
                                                 </v-list-item-action>
                                             </v-list-item>
                                         </v-col>
@@ -511,7 +511,7 @@
                                                         </template>
                                                     </v-expansion-panel-header>
                                                     <v-expansion-panel-content>
-                                                        <v-form>
+                                                        <v-form ref="addressFormNew" lazy-validation>
                                                             <v-row>
                                                                 <v-col cols="12">
                                                                     <v-text-field
@@ -520,6 +520,8 @@
                                                                         :item-color="themeBgColor"
                                                                         :label="langMap.main.address_line1"
                                                                         dense
+                                                                        required
+                                                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.address_line1)]"
                                                                     />
                                                                     <v-text-field
                                                                         v-model="addressForm.address.street2"
@@ -548,7 +550,6 @@
                                                                         :color="themeBgColor"
                                                                         :item-color="themeBgColor"
                                                                         :label="langMap.main.city"
-                                                                        dense
                                                                     />
                                                                     <v-select
                                                                         v-model="addressForm.address.country_id"
@@ -558,12 +559,14 @@
                                                                         :label="langMap.main.country"
                                                                         dense
                                                                         item-value="id"
+                                                                        required
+                                                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.country)]"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                                                            ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                                                            ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                     <v-select
@@ -574,12 +577,14 @@
                                                                         :label="langMap.main.type"
                                                                         dense
                                                                         item-value="id"
+                                                                        required
+                                                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.type)]"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -630,10 +635,10 @@
                                                                         item-value="id"
                                                                     >
                                                                         <template slot="selection" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                         <template slot="item" slot-scope="data">
-                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                                                            <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                                                         </template>
                                                                     </v-select>
                                                                 </v-col>
@@ -751,16 +756,16 @@
 <!--                                                @change="updateStatus"-->
 <!--                                            />-->
 <!--                                        </v-col>-->
-                                        <v-col cols="12">
-                                            <v-checkbox
-                                                v-model="userData.is_active"
-                                                :label="langMap.main.give_access"
-                                                :color="themeBgColor"
-                                                dense
-                                                hide-details
-                                                @change="showIsAccessedModal(userData)"
-                                            />
-                                        </v-col>
+<!--                                        <v-col cols="12">-->
+<!--                                            <v-checkbox-->
+<!--                                                v-model="userData.is_active"-->
+<!--                                                :label="langMap.main.give_access"-->
+<!--                                                :color="themeBgColor"-->
+<!--                                                dense-->
+<!--                                                hide-details-->
+<!--                                                @change="showIsAccessedModal(userData)"-->
+<!--                                            />-->
+<!--                                        </v-col>-->
                                     </v-row>
                                 </v-form>
                             </v-card-text>
@@ -783,6 +788,100 @@
                             </v-card-actions>
                         </v-card>
                     </v-expand-transition>
+                </v-card>
+                <br>
+                <v-card>
+                    <v-toolbar
+                        dark
+                        dense
+                        flat
+                        :color="themeBgColor"
+                    >
+                        <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.profile.internal_billing }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                    </v-toolbar>
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12">
+                                <v-list-item v-for="(item, i) in userData.billing" :key="item.id">
+                                    <v-list-item-content>
+                                        <v-list-item-title v-text="item.name"></v-list-item-title>
+                                        <v-list-item-subtitle v-text="item.cost"></v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-icon small @click="editInternalBilling(item)">
+                                            mdi-pencil
+                                        </v-icon>
+                                    </v-list-item-action>
+                                    <v-list-item-action>
+                                        <v-icon small @click="deleteInternalBilling(item.id)">
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-list-item-action>
+                                </v-list-item>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-expansion-panels multiple v-model="internalBillingEditor" accordion>
+                                    <v-expansion-panel>
+                                        <v-expansion-panel-header>
+                                            {{langMap.main.add}}
+                                            <template v-slot:actions>
+                                                <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                            </template>
+                                        </v-expansion-panel-header>
+                                        <v-expansion-panel-content>
+                                            <v-form>
+                                                <v-row>
+                                                    <v-col cols="12">
+                                                        <v-text-field
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            v-model="internalBillingForm.name"
+                                                            :label="langMap.main.name"
+                                                            dense
+                                                        />
+                                                    </v-col>
+                                                    <v-col cols="12">
+                                                        <v-text-field
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            v-model="internalBillingForm.cost"
+                                                            :label="langMap.main.cost"
+                                                            dense
+                                                        />
+                                                    </v-col>
+                                                    <v-btn
+                                                        v-if="!internalBillingForm.id"
+                                                        dark
+                                                        fab
+                                                        right
+                                                        bottom
+                                                        small
+                                                        :color="themeBgColor"
+                                                        @click="createInternalBilling"
+                                                    >
+                                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                    </v-btn>
+                                                    <v-btn
+                                                        v-if="internalBillingForm.id"
+                                                        dark
+                                                        fab
+                                                        right
+                                                        bottom
+                                                        small
+                                                        :color="themeBgColor"
+                                                        @click="updateInternalBilling(internalBillingForm.id)"
+                                                    >
+                                                        <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-update</v-icon>
+                                                    </v-btn>
+                                                </v-row>
+                                            </v-form>
+                                        </v-expansion-panel-content>
+                                    </v-expansion-panel>
+                                </v-expansion-panels>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
                 </v-card>
             </v-col>
             <v-col cols="6">
@@ -840,7 +939,6 @@
                                                         </v-col>
                                                         <v-col cols="12">
                                                             <Tinymce
-                                                                ref="body"
                                                                 aria-rowcount="7"
                                                                 :color="themeBgColor"
                                                                 v-model="emailSignatureForm.signature"
@@ -922,14 +1020,11 @@
                                         :color="themeBgColor"
                                         :readonly="!enableToEditColor"
                                         v-model="resetThemeBgColorFlag"
+                                        :label="langMap.profile.revert_to_company_theme_colors"
                                         :value="1"
                                         @change="resetThemeBgColor()"
-                                    >
-                                        <template v-slot:label>
-                                            {{ langMap.profile.revert_to_company_theme_color }} <v-icon x-large right :color="companySettings.theme_color">mdi-checkbox-blank</v-icon>
-                                        </template>
-                                    </v-checkbox>
-
+                                    />
+                                    <v-btn :color="companySettings.theme_bg_color" :style="`color: ${companySettings.theme_fg_color};`">{{langMap.main.example}}</v-btn>
                                     <v-spacer>&nbsp;</v-spacer>
 
                                     <v-checkbox
@@ -953,7 +1048,8 @@
                         </v-btn>
                         <v-btn
                             text
-                            :color="themeBgColor"
+                            :color="themeFgColor"
+                            :style="`color: ${themeBgColor};`"
                             @click="updateUserDataSettings"
                         >
                             {{ langMap.main.save}}
@@ -980,10 +1076,10 @@
                                               v-model="phoneForm.phone_type" :items="phoneTypes" item-value="id"
                                               dense :label="langMap.main.type">
                                         <template slot="selection" slot-scope="data">
-                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1000,6 +1096,7 @@
 
             <v-dialog v-model="updateAddressDlg" persistent max-width="600px">
                 <v-card>
+                    <v-form ref="addressFormUpd" lazy-validation>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                         {{langMap.company.update_address}}
                     </v-card-title>
@@ -1016,6 +1113,8 @@
                                         :label="langMap.main.address_line1"
                                         placeholder=""
                                         dense
+                                        required
+                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.address_line1)]"
                                     />
                                     <v-text-field
                                         no-resize
@@ -1058,7 +1157,6 @@
                                 </v-col>
                                 <v-col cols="md-6" class="pa-1">
                                     <v-select
-                                        :rules="['Required']"
                                         :color="themeBgColor"
                                         :item-color="themeBgColor"
                                         item-value="id"
@@ -1066,12 +1164,14 @@
                                         :items="countries"
                                         :label="langMap.main.country"
                                         dense
+                                        required
+                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.country)]"
                                     >
                                         <template slot="selection" slot-scope="data">
-                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                            ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            ({{ data.item.iso_3166_2 }}) {{ localized(data.item) }}
+                                            ({{ data.item.iso_3166_2 }}) {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1084,12 +1184,14 @@
                                         :items="addressTypes"
                                         :label="langMap.main.type"
                                         dense
+                                        required
+                                        :rules="[v => !!v || $helpers.i18n.required(langMap.main.type)]"
                                     >
                                         <template slot="selection" slot-scope="data">
-                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1099,8 +1201,9 @@
                     <v-card-actions>
 
                         <v-btn color="red" text @click="updateAddressDlg=false; resetAddress()">{{langMap.main.cancel}}</v-btn>
-                        <v-btn :color="themeBgColor" text @click="updateAddressDlg=false; updateAddress()">{{langMap.main.save}}</v-btn>
+                        <v-btn :color="themeBgColor" text @click="updateAddress()">{{langMap.main.save}}</v-btn>
                     </v-card-actions>
+                    </v-form>
                 </v-card>
             </v-dialog>
 
@@ -1120,20 +1223,20 @@
                                               v-model="emailForm.email_type" :items="emailTypes" item-value="id"
                                               dense :label="langMap.main.type">
                                         <template slot="selection" slot-scope="data">
-                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                     <v-select v-else :color="themeBgColor" :item-color="themeBgColor"
                                               v-model="emailForm.email_type" :items="emailTypes" item-value="id"
                                               dense :label="langMap.main.type">
                                         <template slot="selection" slot-scope="data">
-                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                         <template slot="item" slot-scope="data">
-                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ localized(data.item) }}
+                                            <v-icon small left v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
                                         </template>
                                     </v-select>
                                 </v-col>
@@ -1148,7 +1251,7 @@
                 </v-card>
             </v-dialog>
 
-            <v-dialog v-model="updateEmailSignatureDlg" persistent max-width="600px">
+            <v-dialog v-model="updateEmailSignatureDlg" persistent max-width="600px" :retain-focus="false" :eager="true">
                 <v-card>
                     <v-card-title class="mb-5" :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`">
                         {{langMap.profile.update_email_signature}}
@@ -1166,7 +1269,6 @@
                                     />                                </v-col>
                                 <v-col cols="12" class="pa-1">
                                     <Tinymce
-                                        ref="body"
                                         aria-rowcount="7"
                                         v-model="emailSignatureForm.signature"
                                         :placeholder="langMap.profile.signature"
@@ -1277,9 +1379,13 @@ export default {
             themeFgColorNew: this.$store.state.themeFgColor,
             themeBgColorNew: this.$store.state.themeBgColor,
             themeBgColorDlg: localStorage.themeBgColorDlg == 1 ? 0 : 1,
+            internalBillings: [],
+            internalBillingEditor: null,
+            internalBillingForm: {},
             autoFgColor: false,
             companySettings: {
-                theme_color: '',
+                theme_bg_color: '#6AA75D',
+                theme_fg_color: '#FFFFFF',
                 override_user_theme: false
             },
             resetThemeBgColorFlag: 0,
@@ -1305,6 +1411,7 @@ export default {
         this.getTimeZones();
         this.getCountries();
         this.getCompanySettings();
+        // this.getInternalBilling();
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -1321,10 +1428,6 @@ export default {
         }
     },
     methods: {
-        localized(item, field = 'name') {
-            let locale = this.$store.state.lang.locale.replace(/^([^_]+).*$/, '$1');
-            return item[field + '_' + locale] ? item[field + '_' + locale] : item[field];
-        },
         getUser() {
             axios.get('/api/user').then(response => {
                 response = response.data
@@ -1374,6 +1477,81 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.timezones = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        getInternalBilling() {
+            axios.get('/api/billing/internal').then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.internalBillings = response.data
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        editInternalBilling(item) {
+
+            console.log(this.internalBillingForm);
+            if (this.internalBillingEditor === null) {
+
+                this.internalBillingEditor = [0]
+                this.internalBillingForm.id = item.id
+                this.internalBillingForm.name = item.name
+                this.internalBillingForm.cost = item.cost
+            } else {
+                this.internalBillingEditor = null
+                this.internalBillingForm = {}
+            }
+        },
+        deleteInternalBilling(id) {
+            axios.delete(`/api/billing/internal/${id}`).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.getUser()
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        updateInternalBilling(id) {
+            axios.put(`/api/billing/internal/${id}`, this.internalBillingForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.internalBillingEditor = null
+                    this.internalBillingForm = {}
+                    this.getUser()
+                } else {
+                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.actionColor = 'error';
+                    this.snackbar = true;
+                }
+            });
+        },
+        createInternalBilling() {
+            axios.post(`/api/billing/internal`, this.internalBillingForm).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.snackbarMessage = this.langMap.main.update_successful;
+                    this.actionColor = 'success'
+                    this.snackbar = true
+                    this.internalBillingEditor = null
+                    this.internalBillingForm = {}
+                    this.getUser()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1569,6 +1747,9 @@ export default {
             }
         },
         addAddress() {
+            if (!this.$refs.addressFormNew.validate()) {
+                return;
+            }
             this.addressForm.entity_id = this.userData.id
 
             axios.post('/api/address', this.addressForm).then(response => {
@@ -1589,9 +1770,14 @@ export default {
             });
         },
         updateAddress() {
+            if (!this.$refs.addressFormUpd.validate()) {
+                return;
+            }
             axios.patch(`/api/address/${this.addressForm.id}`, this.addressForm).then(response => {
                 response = response.data
                 if (response.success === true) {
+                    this.updateAddressDlg=false;
+
                     this.resetAddress();
 
                     this.getUser()
@@ -1638,39 +1824,23 @@ export default {
                 opened: null
             }
         },
-        getUserSettings() {
-            this.snackbar = false;
-
-            axios.get('/api/user/settings').then(response => {
-                response = response.data;
-                if (response.success === true) {
-                    if (this.companySettings.override_user_theme !== true) {
-                        this.themeBgColor = response.data.theme_color;
-                        this.$store.state.themeBgColor = response.data.theme_color;
-                        localStorage.themeBgColor = response.data.theme_color;
-                        EventBus.$emit('update-theme-color', response.data.theme_color);
-                    }
-                    this.enableToEdit = false;
-                } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
-                    this.actionColor = 'error';
-                    this.snackbar = true;
-                }
-                return true;
-            });
-        },
         updateUserDataSettings() {
             this.snackbar = false;
 
-            axios.post('/api/user/settings', {theme_color: this.themeBgColorNew}).then(response => {
+            axios.post('/api/user/settings', {
+                theme_bg_color: this.themeBgColorNew,
+                theme_fg_color: this.themeFgColorNew
+            }).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    if (this.companySettings.override_user_theme !== true) {
-                        this.themeBgColor = this.themeBgColorNew;
-                        this.$store.state.themeBgColor = this.themeBgColorNew;
-                        localStorage.themeBgColor = this.themeBgColorNew;
-                        EventBus.$emit('update-theme-color', this.themeBgColorNew);
-                    }
+                    this.themeBgColor = this.themeBgColorNew;
+                    this.$store.state.themeBgColor = this.themeBgColorNew;
+                    EventBus.$emit('update-theme-bg-color', this.themeBgColorNew);
+
+                    this.themeFgColor = this.themeFgColorNew;
+                    this.$store.state.themeFgColor = this.themeFgColorNew;
+                    EventBus.$emit('update-theme-fg-color', this.themeFgColorNew);
+
                     localStorage.themeBgColorDlg = this.themeBgColorDlg == 1 ? 0 : 1;
                     this.enableToEditColor = false;
                 } else {
@@ -1685,16 +1855,56 @@ export default {
             this.enableToEditColor = false;
             this.getUser();
             this.getCompanySettings();
-            if (!this.companySettings.override_user_theme) {
-                this.getUserSettings();
-            }
         },
         getCompanySettings() {
+            this.snackbar = false;
+
             axios.get(`/api/main_company/settings`).then(response => {
                 response = response.data;
                 if (response.success === true) {
-                    this.companySettings['theme_color'] = response.data.hasOwnProperty('theme_color') ? response.data.theme_color : '#4caf50';
+                    this.companySettings['theme_fg_color'] = response.data.hasOwnProperty('theme_fg_color') ? response.data.theme_fg_color : '#FFFFFF';
+
+                    if (response.data.hasOwnProperty('theme_bg_color')) {
+                        this.companySettings['theme_bg_color'] = response.data.theme_bg_color;
+                    } else if (response.data.hasOwnProperty('theme_color')) {
+                        this.companySettings['theme_bg_color'] = response.data.theme_color;
+                    } else {
+                        this.companySettings['theme_bg_color'] = '#6AA75D';
+                    }
+
                     this.companySettings['override_user_theme'] = response.data.hasOwnProperty('override_user_theme') ? response.data.override_user_theme : false;
+
+                    axios.get('/api/user/settings').then(response => {
+                        response = response.data;
+                        if (response.success === true) {
+                            if (response.data.hasOwnProperty('theme_bg_color')) {
+                                this.themeBgColorNew = response.data.theme_bg_color;
+                            } else if (response.data.hasOwnProperty('theme_color')) {
+                                this.themeBgColorNew = response.data.theme_color;
+                            } else if (this.companySettings.override_user_theme) {
+                                this.themeBgColorNew = this.companySettings.theme_bg_color
+                            } else {
+                                this.themeBgColorNew = '#6AA75D';
+                            }
+                            this.themeBgColor = this.themeBgColorNew;
+
+                            if (response.data.hasOwnProperty('theme_fg_color')) {
+                                this.themeFgColorNew = response.data.theme_fg_color;
+                            } else if (this.companySettings.override_user_theme) {
+                                this.themeFgColorNew = this.companySettings.theme_fg_color
+                            } else {
+                                this.themeFgColorNew = '#FFFFFF';
+                            }
+
+                            this.themeFgColor = this.themeFgColorNew;
+
+                            this.enableToEdit = false;
+                        } else {
+                            this.snackbarMessage = this.langMap.main.generic_error;
+                            this.actionColor = 'error';
+                            this.snackbar = true;
+                        }
+                    });
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
@@ -1703,16 +1913,17 @@ export default {
             });
         },
         resetThemeBgColor() {
-            let resetThemeBgColorFlag = this.resetThemeBgColorFlag;
-            if (resetThemeBgColorFlag === 1) {
-                this.themeBgColorNew = this.companySettings.theme_color;
+            if (this.resetThemeBgColorFlag === 1) {
+                this.themeFgColorNew = this.companySettings.theme_fg_color;
+                this.themeBgColorNew = this.companySettings.theme_bg_color;
             } else {
-                this.themeBgColorNew = this.$store.state.themeBgColor;
+                this.themeBgColorNew = this.themeBgColor;
+                this.themeFgColorNew = this.themeFgColor;
             }
         },
         setThemeFgColor() {
             if (this.autoFgColor) {
-                this.themeFgColorNew = this.invertColor(this.themeBgColorNew);
+                this.themeFgColorNew = this.$helpers.color.invertColor(this.themeBgColorNew);
             } else {
                 this.themeFgColorNew = this.themeFgColor;
             }
@@ -1725,6 +1936,9 @@ export default {
             this.phoneForm.phone_type = item.type ? item.type.id : 0;
         },
         editAddress(item) {
+            if (this.$refs.addressFormUpd) {
+                this.$refs.addressFormUpd.resetValidation();
+            }
             this.updateAddressDlg = true;
 
             this.addressForm.id = item.id;
@@ -1734,6 +1948,7 @@ export default {
             this.addressForm.address.postal_code = item.postal_code;
             this.addressForm.address.city = item.city;
             this.addressForm.address.country_id = item.country ? item.country.id : 0;
+            this.addressForm.address_type = item.type ? item.type.id : 0;
         },
         addSocial() {
             this.socialForm.entity_id = this.userData.id
@@ -1954,30 +2169,6 @@ export default {
                 signature: '',
                 opened: null
             };
-        },
-        invertColor(hex) {
-            if (hex.indexOf('#') === 0) {
-                hex = hex.slice(1);
-            }
-            if (hex.length === 3) {
-                hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-            }
-            if (hex.length !== 6) {
-                this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
-                this.errorType = 'error';
-                this.alert = true;
-
-                return hex;
-            }
-            let r = (255 - parseInt(hex.slice(0, 2), 16)).toString(16),
-                g = (255 - parseInt(hex.slice(2, 4), 16)).toString(16),
-                b = (255 - parseInt(hex.slice(4, 6), 16)).toString(16);
-            return '#' + this.padZero(r) + this.padZero(g) + this.padZero(b);
-        },
-        padZero(str, len) {
-            len = len || 2;
-            let zeros = new Array(len).join('0');
-            return (zeros + str).slice(-len);
         }
     }
 }

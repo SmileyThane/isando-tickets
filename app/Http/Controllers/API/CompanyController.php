@@ -20,25 +20,31 @@ class CompanyController extends Controller
     public function __construct(
         CompanyRepository $companyRepository,
         CompanyUserRepository $companyUserRepository
-    )
-    {
+    ) {
         $this->companyRepo = $companyRepository;
         $this->companyUserRepo = $companyUserRepository;
     }
 
     public function mainCompanyName(): JsonResponse
     {
-        return self::showResponse(true,
+        return self::showResponse(
+            true,
             [
                 'id' => Auth::user()->employee->companyData->id,
                 'first_alias' => Auth::user()->employee->companyData->first_alias,
                 'second_alias' => Auth::user()->employee->companyData->second_alias
-            ]);
+            ]
+        );
     }
 
     public function mainCompanyLogo(): JsonResponse
     {
         return self::showResponse(true, Auth::user()->employee->companyData->logo_url);
+    }
+
+    public function mainCompanyLicense(): JsonResponse
+    {
+        return self::showResponse(true, $this->companyRepo->getCompanyLicense(Auth::user()->employee->companyData->id));
     }
 
     public function find(Request $request, $id = null): JsonResponse
@@ -103,7 +109,9 @@ class CompanyController extends Controller
     {
         if (Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS)) {
             return self::showResponse($this->companyRepo->attachProductCategory(
-                $request->name, $request->company_id, $request->parent_id
+                $request->name,
+                $request->company_id,
+                $request->parent_id
             ));
         }
 
@@ -138,10 +146,7 @@ class CompanyController extends Controller
 
     public function getSettings(Request $request, $id = null): JsonResponse
     {
-        if (Auth::user()->employee->hasPermissionId(Permission::SETTINGS_READ_ACCESS)) {
-            return self::showResponse(true, $this->companyRepo->getSettings($id));
-        }
-        return self::showResponse(false);
+        return self::showResponse(true, $this->companyRepo->getSettings($id));
     }
 
     public function updateSettings(Request $request, $id = null): JsonResponse

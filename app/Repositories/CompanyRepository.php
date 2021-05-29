@@ -1,24 +1,18 @@
 <?php
 
-
 namespace App\Repositories;
-
 
 use App\ClientCompanyUser;
 use App\Company;
 use App\CompanyProduct;
-use App\CompanyUser;
 use App\CompanyUserNotification;
+use App\Permission;
 use App\ProductCategory;
-use App\Role;
 use App\Settings;
-use App\UserNotificationStatus;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
 
 class CompanyRepository
 {
@@ -39,30 +33,40 @@ class CompanyRepository
     public function find($request, $id)
     {
         $employee = Auth::user()->employee;
-        if ($employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $clientCompanyUser = ClientCompanyUser::where('company_user_id', $employee->id)->first();
             $company = $clientCompanyUser->clients()->with('employees.employee.userData');
         } else {
             $company = Company::where('id', $id ?? $employee->company_id);
+            $company->with('currency');
         }
         if ($request->search !== '') {
             $company->where(
                 function ($query) use ($request) {
-                    $query->where('name', 'like', $request->search . '%')
+                    $query->where('name', 'like', '%' . $request->search . '%')
                         ->orWhere('name', 'like', ' %' . $request->search . '%');
                     $query->orWhere('description', 'like', '%' . $request->search . '%');
                 }
             );
         }
+
         return $id ? $company->with(['employees' => function ($query) {
             $result = $query->whereDoesntHave('assignedToClients')->where('is_clientable', false);
-            if (Auth::user()->employee->hasRoleId([Role::COMPANY_CLIENT, Role::USER])) {
+            if (Auth::user()->employee->hasPermissionId([
+                Permission::EMPLOYEE_CLIENT_ACCESS,
+                Permission::EMPLOYEE_USER_ACCESS
+            ])) {
                 $result->where('user_id', Auth::id());
             }
             return $result->get();
-        }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type', 'employees.userData.emails.type', 'clients',
-            'products.productData', 'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type', 'emails', 'emails.type'])
-            ->first() : $company->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')->paginate($request->per_page ?? $company->count());
+        }, 'employees.userData', 'employees.userData.phones.type', 'employees.userData.addresses.type',
+            'employees.userData.emails.type', 'clients', 'limitationGroups.limitationModels',
+            'limitationGroups.employees', 'limitationGroups.type',
+            'products.productData', 'teams', 'phones.type', 'addresses.type', 'addresses.country', 'socials.type',
+            'emails', 'billing', 'emails.type'])
+            ->first() :
+            $company->orderBy($request->sort_by ?? 'id', $request->sort_val === 'false' ? 'asc' : 'desc')
+                ->paginate($request->per_page ?? $company->count());
     }
 
     public function create(Request $request)
@@ -82,10 +86,12 @@ class CompanyRepository
                 Storage::makeDirectory('public/logos');
             }
 
-            $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
+            $file = $request->file('logo')->storeAs(
+                'public/logos',
+                $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension()
+            );
             $company->logo_url = Storage::url($file);
             $company->save();
-
         }
         return $company;
     }
@@ -98,6 +104,10 @@ class CompanyRepository
         $company->description = $request->description ?? $company->description;
         $company->registration_date = $request->registration_date ?? now();
 
+        if ($request->has('currency_id')) {
+            $company->currency_id = $request->get('currency_id');
+        }
+
         //aliases
         $company->first_alias = $request->first_alias ?? $company->first_alias;
         $company->second_alias = $request->second_alias ?? $company->second_alias;
@@ -107,7 +117,10 @@ class CompanyRepository
                 Storage::makeDirectory('public/logos');
             }
 
-            $file = $request->file('logo')->storeAs('public/logos', $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension());
+            $file = $request->file('logo')->storeAs(
+                'public/logos',
+                $company->id . '-' . time() . '.' . $extension = $request->file('logo')->extension()
+            );
             $company->logo_url = Storage::url($file);
         }
 
@@ -149,6 +162,10 @@ class CompanyRepository
         return $result;
     }
 
+    public function getCompanyLicense($companyId)
+    {
+        return Company::with('license')->where('id', '=', $companyId)->first();
+    }
 
     public function attachProductCategory($name, $companyId = null, $parentId = null)
     {

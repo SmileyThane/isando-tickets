@@ -75,7 +75,8 @@ class Client extends Model
         return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 
-    public function Projects() {
+    public function Projects()
+    {
         return $this->hasMany(TrackingProject::class, 'client_id', 'id');
     }
 
@@ -92,5 +93,10 @@ class Client extends Model
     public function customLicense(): HasOne
     {
         return $this->hasOne(CustomLicense::class, 'client_id', 'id');
+    }
+
+    public function billing(): MorphMany
+    {
+        return $this->morphMany(InternalBilling::class, 'entity');
     }
 }

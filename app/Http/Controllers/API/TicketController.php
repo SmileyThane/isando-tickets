@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Notifications\NewTicket;
 use App\Permission;
 use App\Repositories\TicketRepository;
-use App\Role;
+use App\Company;
 use App\Team;
 use App\Ticket;
 use App\TicketCategory;
@@ -15,6 +15,7 @@ use App\TicketPriority;
 use App\TicketType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
 class TicketController extends Controller
 {
@@ -45,15 +46,62 @@ class TicketController extends Controller
 
     }
 
-    public function types()
+    public function getTypes()
     {
-        $types = TicketType::where('name', '!=', null);
+        $types = TicketType::where('name', '!=', null)
+            ->where('entity_type', Company::class)
+            ->where('entity_id', Auth::user()->employee->companyData->id);
 
-        if ($companyUser = Auth::user()->employee->hasRoleId(Role::COMPANY_CLIENT)) {
+        if ($companyUser = Auth::user()->employee->hasPermissionId(Permission::EMPLOYEE_CLIENT_ACCESS)) {
             $types->where('id', '!=', TicketType::INTERNAL);
         }
 
         return self::showResponse(true, $types->get());
+    }
+
+    public function getAllTypesInCompanyContext()
+    {
+        $types = TicketType::where('entity_type', Company::class)->where('entity_id', Auth::user()->employee->companyData->id);
+        return self::showResponse(true, $types->get());
+    }
+
+    public function addType(Request $request): JsonResponse
+    {
+        $companyId = $request->company_id ?? Auth::user()->employee->companyData->id;
+
+        return self::showResponse(true, TicketType::firstOrCreate([
+            'entity_type' => Company::class,
+            'entity_id' => $companyId,
+            'name' => $request->name,
+            'name_de' => $request->name_de,
+            'icon' => $request->icon
+        ]));
+    }
+
+    public function updateType(Request $request, $id): JsonResponse
+    {
+        $type = TicketType::findOrFail($id);
+        if ($id !== 1) {
+            $type->update([
+                'name' => $request->name,
+                'name_de' => $request->name_de,
+                'icon' => $request->icon
+            ]);
+            $type->save();
+        }
+        return self::showResponse(true, $type);
+    }
+
+    public function deleteType($id): ?bool
+    {
+        try {
+            if ($id !== 1) {
+                TicketType::where('id', $id)->delete();
+            }
+            return true;
+        } catch (Throwable $throwable) {
+            return false;
+        }
     }
 
     public function find($id)
@@ -73,8 +121,7 @@ class TicketController extends Controller
 
         if ($result && $hasAccess) {
             $result = $this->ticketRepo->create($request);
-            $employees = $this->ticketRepo->filterEmployeesByRoles($result->to->employees, [Role::LICENSE_OWNER, Role::ADMIN, Role::MANAGER, Role::USER, Role::COMPANY_CLIENT]);
-            $this->ticketRepo->emailEmployees($employees, $result, NewTicket::class);
+            $this->ticketRepo->emailEmployees($result->to->employees, $result, NewTicket::class);
             $success = true;
         }
 
@@ -151,10 +198,29 @@ class TicketController extends Controller
         return self::showResponse(false);
     }
 
+    public function editAnswer(Request $request, $id)
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->editAnswer($request, $id));
+        }
+
+        return self::showResponse(false);
+    }
+
     public function addNotice(Request $request, $id)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
             return self::showResponse($this->ticketRepo->addNotice($request, $id));
+        }
+
+        return self::showResponse(false);
+    }
+
+
+    public function editNotice(Request $request, $id)
+    {
+        if (Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS)) {
+            return self::showResponse($this->ticketRepo->editNotice($request, $id));
         }
 
         return self::showResponse(false);

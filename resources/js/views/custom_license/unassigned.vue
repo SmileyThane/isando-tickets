@@ -70,22 +70,6 @@
                 </div>
             </div>
         </div>
-            <v-dialog v-model="removeCustomerDialog" max-width="480" persistent>
-                <v-card>
-                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
-                        {{ langMap.main.delete_selected }}?
-                    </v-card-title>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="grey darken-1" text @click="removeCustomerDialog = false">
-                            {{ langMap.main.cancel }}
-                        </v-btn>
-                        <v-btn color="red darken-1" text @click="deleteCustomer(selectedCustomerId)">
-                            {{ langMap.main.delete }}
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
         <v-dialog v-model="assignCompanyDialog" max-width="480" persistent>
             <v-card>
                 <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
@@ -144,14 +128,14 @@ export default {
             },
             headers: [
                 {text: 'ID', value: 'id'},
-                {text: `username`, value: 'username'},
-                {text: `phone`, value: 'phoneNumber', sortable: false},
-                {text: `IP address`, value: 'serverIp'},
-                {text: `Organisation`, value: 'orgPath'},
-                {text: `platform`, value: 'platform', sortable: false},
-                {text: `licensed`, value: 'licensed', sortable: false},
-                {text: `active`, value: 'active', sortable: false},
-                {text: `expired_at`, value: 'trialExpirationAtString', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.custom_license.username}`, value: 'username'},
+                {text: `${this.$store.state.lang.lang_map.main.phone}`, value: 'phoneNumber', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.ticket.ip_address}`, value: 'serverIp'},
+                {text: `${this.$store.state.lang.lang_map.custom_license.organisation}`, value: 'orgPath'},
+                {text: `${this.$store.state.lang.lang_map.custom_license.platform}`, value: 'platform', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.custom_license.licensed}`, value: 'licensed', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.custom_license.active}`, value: 'active', sortable: false},
+                {text: `${this.$store.state.lang.lang_map.custom_license.expired_at}`, value: 'trialExpirationAtString', sortable: false},
             ],
             customersSearch: '',
             customers: [],
@@ -249,8 +233,9 @@ export default {
                     this.snackbarMessage = this.langMap.main.update_successful;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.getUnassignedUsers()
                 } else {
-                    this.snackbarMessage = this.langMap.main.generic_error;
+                    this.snackbarMessage = response.error ?? this.langMap.main.generic_error;
                     this.actionColor = 'error'
                     this.snackbar = true;
                 }

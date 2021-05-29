@@ -88,6 +88,7 @@
             <v-divider></v-divider>
             <v-list dense>
                 <v-list-item
+                    v-if="$helpers.auth.checkPermissionByIds([25])"
                     style="background-color: white;"
                     dense
                     link
@@ -102,6 +103,7 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-list-item
+                    v-if="$helpers.auth.checkPermissionByIds([25])"
                     style="background-color: white;"
                     dense
                     link
@@ -111,15 +113,17 @@
                     </v-list-item-action>
                     <v-list-item-content>
                         <v-list-item-title>
-                            {{ langMap.sidebar.custom_licenses }}
+                            {{ langMap.sidebar.custom_license_unassigned }}
                         </v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
-            <v-divider></v-divider>
+            <v-divider
+                v-if="$helpers.auth.checkPermissionByIds([25])"
+            ></v-divider>
             <v-list dense>
                 <v-list-group
-                    v-if="checkRoleByIds([1,2,3,4,5])"
+                    v-if="$helpers.auth.checkPermissionByIds([7])"
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
@@ -134,6 +138,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
+                        v-if="$helpers.auth.checkPermissionByIds([7, 10])"
                         color="#757575"
                         link
                         style="background-color:white;"
@@ -147,7 +152,8 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,3,4,5])" color="#757575"
+                        v-if="$helpers.auth.checkPermissionByIds([7])"
+                        color="#757575"
                         link
                         style="background-color:white;"
                         to="/customer"
@@ -160,7 +166,8 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,3,4,5])" color="#757575"
+                        v-if="$helpers.auth.checkPermissionByIds([10])"
+                        color="#757575"
                         link
                         style="background-color:white;"
                         to="/employee"
@@ -173,7 +180,8 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,3,4,5])" color="#757575"
+                        v-if="$helpers.auth.checkPermissionByIds([19])"
+                        color="#757575"
                         link
                         style="background-color:white;"
                         to="/product"
@@ -188,11 +196,12 @@
                 </v-list-group>
             </v-list>
             <v-divider
-                v-if="checkRoleByIds([1,2,3,4,5])"
+                v-if="$helpers.auth.checkPermissionByIds([1])"
             >&nbsp;
             </v-divider>
             <v-list dense>
                 <v-list-group
+                    v-if="$helpers.auth.checkPermissionByIds([1])"
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
@@ -207,6 +216,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
+                        v-if="$helpers.auth.checkPermissionByIds([1])"
                         color="#757575" link
                         style="background-color:white;"
                         to="/tickets"
@@ -221,6 +231,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
+                        v-if="$helpers.auth.checkPermissionByIds([2])"
                         color="#757575" link
                         style="background-color:white;"
                         to="/ticket_create"
@@ -236,9 +247,9 @@
                 </v-list-group>
             </v-list>
             <v-divider></v-divider>
-            <v-list dense v-if="checkRoleByIds([1,2,4,7])">
+            <v-list dense v-if="hasLicense && $helpers.auth.checkPermissionByIds([40,41,42,51,52,54,55,61,66])">
                 <v-list-group
-                    v-if="checkRoleByIds([1,2,4,7])"
+                    v-if="hasLicense"
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
@@ -253,7 +264,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([51])"
                         link
                         style="background-color:white;"
                         to="/tracking/dashboard"
@@ -267,7 +278,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([40,41,42])"
                         link
                         style="background-color:white;"
                         to="/tracking/tracker"
@@ -281,7 +292,21 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense && enableTimesheet"
+                        link
+                        style="background-color:white;"
+                        to="/tracking/timesheet"
+                    >
+                        <v-list-item-action>
+                            <v-icon>mdi-file-clock-outline</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>{{ langMap.sidebar.tracking_timesheet }}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-list-item
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([52])"
                         link
                         style="background-color:white;"
                         to="/tracking/calendar"
@@ -295,7 +320,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([54,55])"
                         link
                         style="background-color:white;"
                         to="/tracking/projects"
@@ -309,7 +334,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([61,66])"
                         link
                         style="background-color:white;"
                         to="/tracking/reports"
@@ -323,7 +348,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,4,7])"
+                        v-if="hasLicense && $helpers.auth.checkPermissionByIds([75,79])"
                         link
                         style="background-color:white;"
                         to="/tracking/settings"
@@ -342,6 +367,7 @@
             <v-list dense>
                 <v-list-group
                     :style="'background-color: ' + 'white' + ';'"
+                    v-if="$helpers.auth.checkPermissionByIds([22])"
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
@@ -355,7 +381,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
-                        v-if="!checkRoleByIds([6, 101])"
+                        v-if="$helpers.auth.checkPermissionByIds([23])"
                         link
                         style="background-color:white;"
                         to="/notify"
@@ -383,13 +409,16 @@
                     </v-list-item>
                 </v-list-group>
             </v-list>
-            <v-divider>&nbsp;</v-divider>
+            <v-divider
+                v-if="$helpers.auth.checkPermissionByIds([22])"
+            >&nbsp;</v-divider>
             <v-list dense>
                 <v-list-group
                     :style="'background-color: ' + 'white' + ';'"
                     :value="sidebarGroups"
                     color="#757575"
                     multiple
+                    v-if="$helpers.auth.checkPermissionByIds([13, 28, 31])"
                     prepend-icon="mdi-cog"
 
                 >
@@ -403,6 +432,7 @@
                         </v-list-item-content>
                     </template>
                     <v-list-item
+                        v-if="$helpers.auth.checkPermissionByIds([13])"
                         link
                         style="background-color:white;"
                         to="/company">
@@ -414,7 +444,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,3,4,5])"
+                        v-if="$helpers.auth.checkPermissionByIds([31])"
                         link
                         style="background-color:white;"
                         to="/team"
@@ -427,7 +457,7 @@
                         </v-list-item-content>
                     </v-list-item>
                     <v-list-item
-                        v-if="checkRoleByIds([1,2,3])"
+                        v-if="$helpers.auth.checkPermissionByIds([28])"
                         link
                         style="background-color:white;"
                         to="/settings/system"
@@ -494,6 +524,7 @@ export default {
         this.getCompanyName();
         this.getCompanyLogo();
         this.getCompanySettings();
+        this.getTrackingSettings();
 
         this.ticket = this.langMap.sidebar.ticket;
         this.customers = this.langMap.sidebar.customers
@@ -516,24 +547,6 @@ export default {
         });
     },
     methods: {
-        checkRoleByIds(ids) {
-            let roleExists = false;
-            ids.forEach(id => {
-                if (roleExists === false) {
-                    roleExists = this.$store.state.roles.includes(id)
-                }
-            });
-            return roleExists
-        },
-        checkPermissionByIds(ids) {
-            let permissionExists = false;
-            ids.forEach(id => {
-                if (permissionExists === false) {
-                    permissionExists = this.$store.state.permissions.includes(id)
-                }
-            });
-            return permissionExists
-        },
         getCompanyName() {
             axios.get(`/api/main_company/name`)
                 .then(
@@ -562,6 +575,18 @@ export default {
         changeAppTitle() {
             this.$store.state.pageName = this.langMap.sidebar[this.$route.name]
             document.title = this.firstAlias + ' | ' + this.langMap.sidebar[this.$route.name]
+        },
+        getTrackingSettings() {
+            return this.$store.dispatch('Tracking/getSettings');
+        }
+    },
+    computed: {
+        hasLicense() {
+            const company = this.$store.getters['getMainCompany'];
+            return company ? company.license : null;
+        },
+        enableTimesheet() {
+            return this.$store.getters['Tracking/getSettings'].settings && this.$store.getters['Tracking/getSettings'].settings.enableTimesheet;
         }
     }
 }
