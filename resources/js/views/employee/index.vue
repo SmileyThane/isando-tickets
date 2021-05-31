@@ -130,6 +130,7 @@
                             class="elevation-1"
                             hide-default-footer
                             @click:row="showItem"
+                            fixed-header
                         >
                             <template v-slot:top>
                                 <v-row>
@@ -250,6 +251,18 @@
     </v-container>
 </template>
 
+<style scoped>
+.v-data-table /deep/ .sticky-header {
+    position: sticky;
+}
+
+.v-data-table /deep/ .v-data-table__wrapper {
+    overflow: unset;
+    z-index: 5;
+    position: relative;
+    background: #fff;
+}
+</style>
 
 <script>
 import EventBus from "../../components/EventBus";

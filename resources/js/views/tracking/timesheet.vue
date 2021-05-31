@@ -185,7 +185,7 @@
                     </td>
                 </tr>
             </template>
-            <template v-slot:body.append="{ headers }">
+            <template v-slot:body.append="{ headers }" v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) === -1">
                 <tr>
                     <td v-for="header in headers" :style="{
                         width: header.width,
@@ -1072,6 +1072,9 @@ export default {
                 + moment(this.form.sat).diff(moment(this.form.sat).startOf('day'), 'seconds')
                 + moment(this.form.sun).diff(moment(this.form.sun).startOf('day'), 'seconds');
 
+        },
+        isManager() {
+            return !!this.$store.getters['Team/getManagedTeams'].length;
         }
     },
 }
