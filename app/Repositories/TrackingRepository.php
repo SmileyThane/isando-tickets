@@ -207,7 +207,8 @@ class TrackingRepository
         }
 
         TrackingTimesheetRepository::recalculate($tracking);
-        return $tracking;
+        return Tracking::where('id', '=', $tracking->id)->with('Tags.Translates')
+            ->with('User:id,name,surname,middle_name,number,avatar_url')->first();
     }
 
     public function update(Request $request, Tracking $tracking)
@@ -282,7 +283,8 @@ class TrackingRepository
         }
         TrackingTimesheetRepository::recalculate($oldTracking);
         TrackingTimesheetRepository::recalculate($tracking);
-        return $tracking;
+        return Tracking::where('id', '=', $tracking->id)->with('Tags.Translates')
+            ->with('User:id,name,surname,middle_name,number,avatar_url')->first();;
     }
 
     public function delete(Tracking $tracking)

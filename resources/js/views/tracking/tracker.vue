@@ -980,6 +980,9 @@ export default {
             this.loadingCreateTrack = true;
             return axios.post('/api/tracking/tracker', data)
                 .then(({ data }) => {
+                    // if (data.success) {
+                    //     this.tracking.splice(0, 0, data.data);
+                    // }
                     if (!data.success) {
                         if (data.error) {
                             this.debounceGetTracking();
@@ -1002,6 +1005,9 @@ export default {
             this.loadingUpdateTrack = true;
             return axios.patch(`/api/tracking/tracker/${id}`, data)
                 .then(({ data }) => {
+                    if (data.success) {
+                        this.tracking.splice(this.tracking.findIndex(i => i.id === id), 1, data.data);
+                    }
                     if (!data.success) {
                         if (data.error) {
                             this.debounceGetTracking();
