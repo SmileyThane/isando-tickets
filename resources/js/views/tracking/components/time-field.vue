@@ -43,6 +43,7 @@
                                 small
                                 v-bind="attrs"
                                 v-on="on"
+                                v-if="!hideCalendar"
                             >
                                 <v-icon>mdi-clock-outline</v-icon>
                             </v-btn>
@@ -82,7 +83,15 @@ import VInput from 'vuetify/lib/components/VInput/VInput';
 export default {
     name: "time-field",
     extends: VInput,
-    props: ['format', 'value', 'prependIcon', 'label', 'dense', 'min'],
+    props: [
+        'format',
+        'value',
+        'prependIcon',
+        'label',
+        'dense',
+        'min',
+        'hideCalendar'
+    ],
     data: () => {
         return {
             isFocused: false,
@@ -177,7 +186,7 @@ export default {
                     year: moment(this.date).year(),
                     month: moment(this.date).month(),
                     date: moment(this.date).date(),
-                }).toISOString();
+                }).format('YYYY-MM-DDTHH:mm:ss');
                 this.$emit('input', val);
             }
         },

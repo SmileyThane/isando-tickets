@@ -21,23 +21,25 @@
                 >
                     {{ langMap.tracking.timesheet.time_tracked }}
                 </v-btn>
-
                 <v-btn
                     @click="selected = []"
                 >
                     {{ langMap.tracking.timesheet.approval_pending }}
                 </v-btn>
-
                 <v-btn
                     @click="selected = []"
                 >
                     {{ langMap.tracking.timesheet.rejected }}
                 </v-btn>
-
                 <v-btn
                     @click="selected = []"
                 >
                     {{ langMap.tracking.timesheet.archived }}
+                </v-btn>
+                <v-btn
+                    @click="selected = []"
+                >
+                    {{ langMap.tracking.timesheet.approval_requests }}
                 </v-btn>
             </v-btn-toggle>
 
@@ -61,7 +63,16 @@
                     dense
                     style="max-width: 200px"
                     clearable
-                ></v-select>
+                >
+                    <template v-slot:item="{ item }">
+                        <div class="d-flex" style="width: 100%">
+                            <div class="d-inline-flex flex-grow-1">{{ item.name }}</div>
+                            <div class="d-inline-flex flex-grow-0">
+                                <v-icon v-if="item.is_favorite">mdi-star</v-icon>
+                            </div>
+                        </div>
+                    </template>
+                </v-select>
             </div>
             <div class="d-inline-flex flex-grow-1 mx-4">
                 <div class="d-flex flex-row">
@@ -136,6 +147,7 @@
             </div>
         </div>
 
+        <!-- DAILY VIEW. TIME TRACKED -->
         <v-data-table
             v-if="viewType === 'daily'"
             :headers="dailyHeaders"
@@ -146,14 +158,15 @@
             v-model="selected"
         >
             <template v-slot:footer>
-                213
+                Daily view
             </template>
         </v-data-table>
 
+        <!-- WEEKLY VIEW. TIME TRACKED -->
         <v-data-table
             v-if="viewType === 'weekly'"
             :headers="weeklyHeaders"
-            :show-select="[0,1,2].indexOf(typeOfItems) !== -1"
+            :show-select="[STATUS_TRACKED,STATUS_APPROVAL_PENDING,STATUS_REJECTED].indexOf(typeOfItems) !== -1"
             :single-select="singleSelect"
             :items="getTimesheet"
             :loading="loading"
@@ -168,7 +181,7 @@
                         maxWidth: header.width,
                         minWidth: header.width
                     }">
-                        <span v-if="header.time >= 0">{{$helpers.time.convertSecToTime(header.time, false)}}</span>
+                        <span v-if="header.time >= 0">{{ $helpers.time.convertSecToTime(header.time, false) }}</span>
                     </td>
                 </tr>
             </template>
@@ -207,6 +220,7 @@
                                     placeholder="hh:mm"
                                     format="HH:mm"
                                     class="time-field__small"
+                                    hide-calendar="false"
                                 ></TimeField>
                             </div>
                         </template>
@@ -218,6 +232,7 @@
                                     placeholder="hh:mm"
                                     format="HH:mm"
                                     class="time-field__small"
+                                    hide-calendar="false"
                                 ></TimeField>
                             </div>
                         </template>
@@ -229,6 +244,7 @@
                                     placeholder="hh:mm"
                                     format="HH:mm"
                                     class="time-field__small"
+                                    hide-calendar="false"
                                 ></TimeField>
                             </div>
                         </template>
@@ -240,6 +256,7 @@
                                     placeholder="hh:mm"
                                     format="HH:mm"
                                     class="time-field__small"
+                                    hide-calendar="false"
                                 ></TimeField>
                             </div>
                         </template>
@@ -251,6 +268,7 @@
                                     placeholder="hh:mm"
                                     format="HH:mm"
                                     class="time-field__small"
+                                    hide-calendar="false"
                                 ></TimeField>
                             </div>
                         </template>
@@ -262,6 +280,7 @@
                                     placeholder="hh:mm"
                                     format="HH:mm"
                                     class="time-field__small"
+                                    hide-calendar="false"
                                 ></TimeField>
                             </div>
                         </template>
@@ -273,7 +292,13 @@
                                     placeholder="hh:mm"
                                     format="HH:mm"
                                     class="time-field__small"
+                                    hide-calendar="false"
                                 ></TimeField>
+                            </div>
+                        </template>
+                        <template v-if="header.value === 'total'">
+                            <div class="" style="width: 100%">
+                                {{ $helpers.time.convertSecToTime(formTotalTime, false) }}
                             </div>
                         </template>
                     </td>
@@ -281,37 +306,37 @@
             </template>
             <template v-slot:header.data-table-select="{ header }"></template>
             <template v-slot:header.mon="{ header }">
-                {{header.text}}<br>
-                {{header.date}}
+                {{ header.text }}<br>
+                {{ header.date }}
             </template>
             <template v-slot:header.tue="{ header }">
-                {{header.text}}<br>
-                {{header.date}}
+                {{ header.text }}<br>
+                {{ header.date }}
             </template>
             <template v-slot:header.wed="{ header }">
-                {{header.text}}<br>
-                {{header.date}}
+                {{ header.text }}<br>
+                {{ header.date }}
             </template>
             <template v-slot:header.thu="{ header }">
-                {{header.text}}<br>
-                {{header.date}}
+                {{ header.text }}<br>
+                {{ header.date }}
             </template>
             <template v-slot:header.fri="{ header }">
-                {{header.text}}<br>
-                {{header.date}}
+                {{ header.text }}<br>
+                {{ header.date }}
             </template>
             <template v-slot:header.sat="{ header }">
-                {{header.text}}<br>
-                {{header.date}}
+                {{ header.text }}<br>
+                {{ header.date }}
             </template>
             <template v-slot:header.sun="{ header }">
-                {{header.text}}<br>
-                {{header.date}}
+                {{ header.text }}<br>
+                {{ header.date }}
             </template>
 
             <template v-slot:item.data-table-select="{ item }">
                 <v-simple-checkbox
-                    v-if="[0,2].indexOf(typeOfItems) !== -1 || ([1].indexOf(typeOfItems) !== -1 && canApproval(item))"
+                    v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 || ([STATUS_APPROVAL_PENDING].indexOf(typeOfItems) !== -1 && canApproval(item))"
                     :value="!!selected.find(i => i.id === item.id)"
                     @click="toggleTableItem(item)"
                 ></v-simple-checkbox>
@@ -329,7 +354,7 @@
             </template>
             <template v-slot:item.billable="{ isMobile, item, header, value }">
                 <v-btn
-                    v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually"
+                    v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually"
                     fab
                     :icon="!item.billable"
                     x-small
@@ -356,7 +381,7 @@
                 <span v-else>00:00</span>
             </template>
             <template v-slot:item.mon="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
+                <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[0]">
                     <TimeField
                         v-model="moment(item.times[0].dateTime).format()"
@@ -365,6 +390,7 @@
                         format="HH:mm"
                         @input="saveChanges(item, 0, $event)"
                         class="time-field__small"
+                        hide-calendar="false"
                     ></TimeField>
                 </span>
                 </template>
@@ -373,7 +399,7 @@
                 </template>
             </template>
             <template v-slot:item.tue="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
+                <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[1]">
                     <TimeField
                         v-model="moment(item.times[1].dateTime).format()"
@@ -382,6 +408,7 @@
                         format="HH:mm"
                         @input="saveChanges(item, 1, $event)"
                         class="time-field__small"
+                        hide-calendar="false"
                     ></TimeField>
                 </span>
                 </template>
@@ -390,7 +417,7 @@
                 </template>
             </template>
             <template v-slot:item.wed="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
+                <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[2]">
                     <TimeField
                         v-model="moment(item.times[2].dateTime).format()"
@@ -399,6 +426,7 @@
                         format="HH:mm"
                         @input="saveChanges(item, 2, $event)"
                         class="time-field__small"
+                        hide-calendar="false"
                     ></TimeField>
                 </span>
                 </template>
@@ -407,7 +435,7 @@
                 </template>
             </template>
             <template v-slot:item.thu="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
+                <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[3]">
                         <TimeField
                             v-model="moment(item.times[3].dateTime).format()"
@@ -416,6 +444,7 @@
                             format="HH:mm"
                             @input="saveChanges(item, 3, $event)"
                             class="time-field__small"
+                            hide-calendar="false"
                         ></TimeField>
                     </span>
                 </template>
@@ -424,7 +453,7 @@
                 </template>
             </template>
             <template v-slot:item.fri="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
+                <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[4]">
                         <TimeField
                             v-model="moment(item.times[4].dateTime).format()"
@@ -433,6 +462,7 @@
                             format="HH:mm"
                             @input="saveChanges(item, 4, $event)"
                             class="time-field__small"
+                            hide-calendar="false"
                         ></TimeField>
                     </span>
                 </template>
@@ -441,7 +471,7 @@
                 </template>
             </template>
             <template v-slot:item.sat="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
+                <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[5]">
                     <TimeField
                         v-model="moment(item.times[5].dateTime).format()"
@@ -450,6 +480,7 @@
                         format="HH:mm"
                         @input="saveChanges(item, 5, $event)"
                         class="time-field__small"
+                        hide-calendar="false"
                     ></TimeField>
                 </span>
                 </template>
@@ -458,7 +489,7 @@
                 </template>
             </template>
             <template v-slot:item.sun="{ isMobile, item, header, value }">
-                <template v-if="[0,2].indexOf(typeOfItems) !== -1 && item.is_manually">
+                <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[6]">
                         <TimeField
                             v-model="moment(item.times[6].dateTime).format()"
@@ -467,6 +498,7 @@
                             format="HH:mm"
                             @input="saveChanges(item, 6, $event)"
                             class="time-field__small"
+                            hide-calendar="false"
                         ></TimeField>
                     </span>
                 </template>
@@ -476,10 +508,19 @@
             </template>
         </v-data-table>
 
-        <v-toolbar dense flat style="background-color: #f0f0f0;
-    border-color: #f0f0f0;">
+        <v-toolbar dense flat style="background-color: #f0f0f0; border-color: #f0f0f0;">
             <v-btn
-                v-if="selected.length && [0,2].indexOf(typeOfItems) !== -1"
+                v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1"
+                class="mx-2"
+                :color="themeBgColor"
+                :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                @click="selected.length ? selected = [] : selected = getTimesheet"
+            >
+                <span v-if="selected.length">Unselect all</span>
+                <span v-else>Select all</span>
+            </v-btn>
+            <v-btn
+                v-if="selected.length && [STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1"
                 class="mx-2"
                 color="error"
                 @click="removeTimesheet"
@@ -490,19 +531,19 @@
             <v-dialog
                 v-model="sendingApprovalDialog"
                 width="500"
-                v-if="selected.length && [0, 2].indexOf(typeOfItems) !== -1"
+                v-if="selected.length && [STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1"
             >
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
                         :color="themeBgColor"
                         :style="{ color: $helpers.color.invertColor(themeBgColor)}"
-                        v-if="selected.length && [0, 2].indexOf(typeOfItems) !== -1"
+                        v-if="selected.length && [STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1"
                         v-bind="attrs"
                         v-on="on"
                         class="mx-2"
                     >
-                        <span v-if="typeOfItems === 0">{{langMap.tracking.timesheet.submit_for_approval}}</span>
-                        <span v-else>{{langMap.tracking.timesheet.resubmit_for_approval}}</span>
+                        <span v-if="typeOfItems === STATUS_TRACKED">{{ langMap.tracking.timesheet.submit_for_approval }}</span>
+                        <span v-else>{{ langMap.tracking.timesheet.resubmit_for_approval }}</span>
                     </v-btn>
                 </template>
 
@@ -513,7 +554,12 @@
 
                     <v-card-text>
                         <br>
-                        Submit timesheet for approval?
+                        <v-select
+                            :items="$store.getters['Team/getTeamManagers']"
+                            item-text="full_name"
+                            item-value="id"
+                            label="Select approver"
+                        ></v-select>
                     </v-card-text>
 
                     <v-divider></v-divider>
@@ -551,7 +597,7 @@
                         v-on="on"
                         class="mx-2"
                     >
-                        {{langMap.tracking.timesheet.approve_selected}}
+                        {{ langMap.tracking.timesheet.approve_selected }}
                     </v-btn>
                 </template>
 
@@ -600,7 +646,7 @@
                         v-on="on"
                         class="mx-2"
                     >
-                        {{langMap.tracking.timesheet.reject_selected}}
+                        {{ langMap.tracking.timesheet.reject_selected }}
                     </v-btn>
                 </template>
 
@@ -647,9 +693,11 @@ tr.highlight {
     background-color: #f0f0f0;
     border-color: #f0f0f0;
 }
+
 >>> .time-field__small input {
     font-size: 14px;
 }
+
 >>> .time-field__small button .v-icon {
     font-size: 14px;
     width: 14px;
@@ -658,7 +706,7 @@ tr.highlight {
 </style>
 
 <script>
-import EventBus from "../../components/EventBus";
+import EventBus from '../../components/EventBus';
 import moment from 'moment-timezone';
 import _ from 'lodash';
 import ProjectBtn from './components/project-btn';
@@ -667,21 +715,26 @@ import TimeField from './components/time-field';
 export default {
     components: {
         ProjectBtn,
-        TimeField
+        TimeField,
     },
-    data() {
+    data () {
         return {
             dateFormat: 'YYYY-MM-DD',
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
+            STATUS_TRACKED: 0,
+            STATUS_APPROVAL_PENDING: 1,
+            STATUS_REJECTED: 2,
+            STATUS_ARCHIVED: 3,
+            STATUS_APPROVAL_REQUESTS: 4,
             snackbarMessage: '',
             snackbar: false,
             actionColor: '',
             dateRangePicker: false,
             dateRange: {
                 start: null,
-                end: null
+                end: null,
             },
             typeOfItems: 0,
             viewType: 'weekly',
@@ -696,14 +749,14 @@ export default {
                 thu: moment().startOf('days').format(),
                 fri: moment().startOf('days').format(),
                 sat: moment().startOf('days').format(),
-                sun: moment().startOf('days').format()
+                sun: moment().startOf('days').format(),
             },
             loading: false,
             selected: [],
             singleSelect: false,
             sendingApprovalDialog: false,
             approvalDialog: false,
-            rejectDialog: false
+            rejectDialog: false,
         }
     },
     created () {
@@ -715,9 +768,10 @@ export default {
         this.debounceGetTimesheet = _.debounce(this._getTimesheet, 1000);
         this.debounceGetProjects = _.debounce(this._getProjects, 1000);
         this.debounceGetManagedTeams = _.debounce(this._getManagedTeams, 1000);
+        this.debounceGetTeamManagers = _.debounce(this._getTeamManagers, 1000);
         this.date = moment().format(this.dateFormat);
     },
-    mounted() {
+    mounted () {
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -729,26 +783,30 @@ export default {
         this.debounceGetProjects();
         this.debounceGetManagedTeams();
         this.resetTimesheet();
+        this.debounceGetTeamManagers();
     },
     methods: {
-        async _getTimesheet() {
+        async _getTimesheet () {
             this.loading = true;
             await this.$store.dispatch('Timesheet/getTimesheet', {
-                ...this.dateRange
+                ...this.dateRange,
             });
             this.loading = false;
             this.resetTimesheet();
         },
-        async _getManagedTeams() {
+        async _getManagedTeams () {
             this.loading = true;
             await this.$store.dispatch('Team/getManagedTeams', { withEmployee: false });
             this.loading = false;
             this.resetTimesheet();
         },
-        _getProjects() {
+        _getTeamManagers() {
+            this.$store.dispatch('Team/getTeamManagers');
+        },
+        _getProjects () {
             this.$store.dispatch('Projects/getProjectList', { search: null });
         },
-        createTimesheet() {
+        createTimesheet () {
             if (this.form.project) {
                 return this.$store.dispatch('Timesheet/createTimesheet', this.form)
                     .then(result => {
@@ -766,7 +824,7 @@ export default {
             }
             this.selected = [];
         },
-        resetTimesheet() {
+        resetTimesheet () {
             this.selected = [];
             this.form = {
                 project: null,
@@ -776,14 +834,14 @@ export default {
                 thu: moment(this.periodStart).add(3, 'days').startOf('days').format(),
                 fri: moment(this.periodStart).add(4, 'days').startOf('days').format(),
                 sat: moment(this.periodStart).add(5, 'days').startOf('days').format(),
-                sun: moment(this.periodStart).add(6, 'days').startOf('days').format()
+                sun: moment(this.periodStart).add(6, 'days').startOf('days').format(),
             };
         },
-        timeBetween(end) {
+        timeBetween (end) {
             const start = moment(end).startOf('days')
             return this.$helpers.time.getSecBetweenDates(start, end);
         },
-        removeTimesheet() {
+        removeTimesheet () {
             if (this.selected.length) {
                 this.selected.map(({ id }) => {
                     this.$store.dispatch('Timesheet/removeTimesheet', id);
@@ -791,7 +849,7 @@ export default {
             }
             this.selected = [];
         },
-        saveTimesheet(item) {
+        saveTimesheet (item) {
             return this.$store.dispatch('Timesheet/updateTimesheet', { id: item.id, timesheet: item })
                 .then(res => {
                     if (!res) {
@@ -801,28 +859,28 @@ export default {
                     }
                 });
         },
-        saveChanges(item, index, newValue) {
+        saveChanges (item, index, newValue) {
             item.times[index].dateTime = newValue;
             item.times[index].time = moment(newValue).format('hh:mm:ss');
             return this.saveTimesheet(item);
         },
-        submitItems(status) {
+        submitItems (status) {
             if (this.selected.length) {
                 this.$store.dispatch('Timesheet/submitTimesheetByIds', {
                     ids: this.selected.map(i => i.id),
-                    status
+                    status,
                 });
             }
             this.selected = [];
         },
-        canApproval(item) {
+        canApproval (item) {
             return item.team_id && this.$store.getters['Team/getManagedTeams'].find(i => i.id === item.team_id);
         },
-        toggleTableItem(item) {
+        toggleTableItem (item) {
             this.selected.find(i => i.id === item.id)
                 ? this.selected.splice(this.selected.findIndex(i => i.id === item.id), 1)
                 : this.selected.push(item);
-        }
+        },
     },
     watch: {
         date () {
@@ -837,7 +895,7 @@ export default {
         },
         'dateRange.start' () {
             this.debounceGetTimesheet();
-        }
+        },
     },
     computed: {
         periodStart () {
@@ -863,7 +921,7 @@ export default {
             return [];
         },
         weeklyHeaders () {
-            let days = [0,0,0,0,0,0,0];
+            let days = [0, 0, 0, 0, 0, 0, 0];
             this.getTimesheet.map(timesheet => {
                 for (let i = 0; i < 7; i++) {
                     days[i] += this.timeBetween(timesheet.times[i].dateTime);
@@ -878,13 +936,13 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.projects,
                     align: 'start',
                     value: 'project.name',
-                    width: '20%'
+                    width: '20%',
                 },
                 {
                     text: '',
                     align: 'start',
                     value: 'is_manually',
-                    width: '3%'
+                    width: '3%',
                 },
                 // {
                 //     text: '',
@@ -899,7 +957,7 @@ export default {
                     width: '10%',
                     sortable: false,
                     time: days[0],
-                    date: dates[0]
+                    date: dates[0],
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.tue,
@@ -908,7 +966,7 @@ export default {
                     width: '10%',
                     sortable: false,
                     time: days[1],
-                    date: dates[1]
+                    date: dates[1],
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.wed,
@@ -917,7 +975,7 @@ export default {
                     width: '10%',
                     sortable: false,
                     time: days[2],
-                    date: dates[2]
+                    date: dates[2],
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.thu,
@@ -926,7 +984,7 @@ export default {
                     width: '10%',
                     sortable: false,
                     time: days[3],
-                    date: dates[3]
+                    date: dates[3],
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.fri,
@@ -935,7 +993,7 @@ export default {
                     width: '10%',
                     sortable: false,
                     time: days[4],
-                    date: dates[4]
+                    date: dates[4],
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.sat,
@@ -944,7 +1002,7 @@ export default {
                     width: '10%',
                     sortable: false,
                     time: days[5],
-                    date: dates[5]
+                    date: dates[5],
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.sun,
@@ -953,7 +1011,7 @@ export default {
                     width: '10%',
                     sortable: false,
                     time: days[6],
-                    date: dates[6]
+                    date: dates[6],
                 },
                 {
                     text: 'Total',
@@ -964,22 +1022,33 @@ export default {
                 },
             ];
         },
-        getTimesheet() {
+        getTimesheet () {
             if (this.filterProject) {
                 return this.$store.getters['Timesheet/getTimesheet']
                     .filter(i => i.project && i.project.id === this.filterProject);
             }
             let status = 'tracked';
             switch (this.typeOfItems) {
-                case 0: status = 'tracked'; break;
-                case 1: status = 'pending'; break;
-                case 2: status = 'rejected'; break;
-                case 3: status = 'archived'; break;
+                case this.STATUS_TRACKED:
+                    status = 'tracked';
+                    break;
+                case this.STATUS_APPROVAL_PENDING:
+                    status = 'pending';
+                    break;
+                case this.STATUS_REJECTED:
+                    status = 'rejected';
+                    break;
+                case this.STATUS_ARCHIVED:
+                    status = 'archived';
+                    break;
+                case this.STATUS_APPROVAL_REQUESTS:
+                    status = 'request';
+                    break;
             }
             return this.$store.getters['Timesheet/getTimesheet']
-                .filter(i => i.status === status );
+                .filter(i => i.status === status);
         },
-        totalTime() {
+        totalTime () {
             let totalTime = 0;
             this.getTimesheet.map(timesheet => {
                 for (let i = 0; i < 7; i++) {
@@ -988,12 +1057,22 @@ export default {
             });
             return totalTime;
         },
-        canApprove() {
+        canApprove () {
             if (this.selected.length && this.$store.getters['Team/getManagedTeams'].find(t => this.selected.find(i => i.team_id === t.id))) {
-                return this.selected.length && [1].indexOf(this.typeOfItems) !== -1;
+                return this.selected.length && [this.STATUS_APPROVAL_PENDING].indexOf(this.typeOfItems) !== -1;
             }
             return false;
+        },
+        formTotalTime () {
+            return moment(this.form.mon).diff(moment(this.form.mon).startOf('day'), 'seconds')
+                + moment(this.form.tue).diff(moment(this.form.tue).startOf('day'), 'seconds')
+                + moment(this.form.wed).diff(moment(this.form.wed).startOf('day'), 'seconds')
+                + moment(this.form.thu).diff(moment(this.form.thu).startOf('day'), 'seconds')
+                + moment(this.form.fri).diff(moment(this.form.fri).startOf('day'), 'seconds')
+                + moment(this.form.sat).diff(moment(this.form.sat).startOf('day'), 'seconds')
+                + moment(this.form.sun).diff(moment(this.form.sun).startOf('day'), 'seconds');
+
         }
-    }
+    },
 }
 </script>

@@ -274,6 +274,7 @@ class LanguageSeeder extends Seeder
                                 'unsubmitted' => 'Unsubmitted',
                                 'rejected' => 'Rejected',
                                 'archived' => 'Archived',
+                                'approval_requests' => 'Approval requests',
                                 'period_from' => 'Period from',
                                 'period_to' => 'Period to',
                                 'filter' => 'Filter',
@@ -296,7 +297,7 @@ class LanguageSeeder extends Seeder
                                 'submit_for_approval' => 'Submit selected for approval',
                                 'resubmit_for_approval' => 'Re-submit selected for approval',
                                 'approve_selected' => 'Approve selected',
-                                'reject_selected' => 'Reject selected'
+                                'reject_selected' => 'Reject selected',
                             ]
                         ],
                     'ticket_statuses' =>
@@ -1189,6 +1190,7 @@ class LanguageSeeder extends Seeder
                                 'unsubmitted' => 'Unsubmitted',
                                 'rejected' => 'Rejected',
                                 'archived' => 'Archived',
+                                'approval_requests' => 'Approval requests',
                                 'period_from' => 'Period from',
                                 'period_to' => 'Period to',
                                 'filter' => 'Filter',

@@ -214,6 +214,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::get('/products', 'BaseController@getProductList');
                 Route::get('/coworkers', 'BaseController@getCoworkers');
                 Route::get('/managed_teams', 'BaseController@getManagedTeams');
+                Route::get('/team_managers', 'BaseController@getManagersOfTeams');
                 Route::get('/tickets', 'BaseController@getTickets');
 
                 //Tracker
