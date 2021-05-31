@@ -11,6 +11,8 @@ class Tracking extends Model
 {
     protected $table = 'tracking';
 
+    static $DATETIME_FORMAT = 'Y-m-d\TH:i:s';
+
     static $STATUS_STARTED = 'started';
     static $STATUS_PAUSED = 'paused';
     static $STATUS_STOPPED = 'stopped';
@@ -82,11 +84,14 @@ class Tracking extends Model
     }
 
     public function getDateFromAttribute() {
-        return Carbon::parse($this->attributes['date_from'])->utc()->format('Y-m-d\TH:i:s.uP');
+        return Carbon::parse($this->attributes['date_from'])->format(self::$DATETIME_FORMAT);
     }
 
     public function getDateToAttribute() {
-        return Carbon::parse($this->attributes['date_to'])->utc()->format('Y-m-d\TH:i:s.uP');
+        if ($this->attributes['date_to']) {
+            return Carbon::parse($this->attributes['date_to'])->format(self::$DATETIME_FORMAT);
+        }
+        return null;
     }
 
     public function getRevenueAttribute() {
