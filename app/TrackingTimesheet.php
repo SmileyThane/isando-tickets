@@ -31,6 +31,18 @@ class TrackingTimesheet extends Model
         return $this->hasMany(TrackingTimesheetTime::class, 'timesheet_id', 'id');
     }
 
+    public function User() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function Approver() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function Trackers() {
+        return $this->hasMany(Tracking::class);
+    }
+
     public function getTotalTimeAttribute() {
         $items = $this->Times()->get();
         $total = 0;
@@ -47,6 +59,7 @@ class TrackingTimesheet extends Model
         parent::boot();
 
         static::deleting(function($trackingTimesheet) {
+            Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->update(['timesheet_id' => null]);
             $trackingTimesheet->Times()->delete();
         });
 

@@ -40,6 +40,17 @@ class TimesheetController extends BaseController
         return self::showResponse($success, $result);
     }
 
+    public function remind(Request $request)
+    {
+        $success = false;
+        $result = $this->timesheetRepo->validate($request);
+        if ($result === true) {
+            $result = $this->timesheetRepo->remind($request);
+            $success = true;
+        }
+        return self::showResponse($success, $result);
+    }
+
     public function submit(Request $request)
     {
         $success = false;

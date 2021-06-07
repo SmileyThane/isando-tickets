@@ -46,13 +46,22 @@ export default {
                     return success;
                 })
         },
-        submitTimesheetByIds({ commit }, { ids, status }) {
-            return axios.patch('/api/tracking/timesheet/submit', { ids, status }, { retry: 5, retryDelay: 1000 })
+        submitTimesheetByIds({ commit }, { ids, status, approver_id, note }) {
+            return axios.patch('/api/tracking/timesheet/submit', { ids, status, approver_id, note }, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         data.map(i => {
                             commit('UPDATE_ITEM', i);
                         });
+                    }
+                    return success;
+                })
+        },
+        remindTimesheet ({ commit }, { ids }) {
+            return axios.post('/api/tracking/timesheet/remind', { ids })
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        return data;
                     }
                     return success;
                 })

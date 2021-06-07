@@ -24,7 +24,7 @@ class Tracking extends Model
     ];
 
     protected $appends = [
-        'passed', 'service', 'entity', 'passed_decimal', 'revenue'
+        'passed', 'service', 'entity', 'passed_decimal', 'revenue', 'timesheet_status', 'readonly'
     ];
 
     public function User() {
@@ -60,6 +60,24 @@ class Tracking extends Model
             'serviceable_id',
             'service_id'
         );
+    }
+
+    public function Timesheet() {
+        return $this->belongsTo(TrackingTimesheet::class, 'timesheet_id', 'id');
+    }
+
+    public function getTimesheetStatusAttribute() {
+        if ($this->Timesheet()->first()) {
+            return $this->Timesheet()->first()->status;
+        }
+        return null;
+    }
+
+    public function getReadonlyAttribute() {
+        if (is_null($this->timesheet_status) || in_array($this->timesheet_status, [TrackingTimesheet::STATUS_TRACKED, TrackingTimesheet::STATUS_REJECTED])) {
+            return false;
+        }
+        return true;
     }
 
     public function getServiceAttribute() {
