@@ -189,26 +189,26 @@
                 show-expand
             >
                 <template v-slot:item.user.full_name="{ item }">
-                    <span v-if="item.items[0] && item.items[0].user">{{ item.items[0].user.full_name }}</span>
+                    <span v-if="item && item.user">{{ item.user.full_name }}</span>
                 </template>
                 <template v-slot:item.number="{ item }">
-                    {{ item.items[0].number }}
+                    {{ item.number }}
                 </template>
                 <template v-slot:item.weekNumber="{ item }">
-                    {{ moment(item.items[0].from).isoWeek() }}
+                    {{ moment(item.from).isoWeek() }}
                 </template>
                 <template v-slot:item.from="{ item }">
-                    {{ moment(item.items[0].from).format('DD/MM/YYYY') }}
+                    {{ moment(item.from).format('DD/MM/YYYY') }}
                 </template>
                 <template v-slot:item.to="{ item }">
-                    {{ moment(item.items[0].to).format('DD/MM/YYYY') }}
+                    {{ moment(item.to).format('DD/MM/YYYY') }}
                 </template>
                 <template v-slot:item.submitted_on="{ item }">
-                    <span v-if="item.items[0].submitted_on">{{ moment(item.items[0].submitted_on).format(dateFormat) }}</span>
+                    <span v-if="item.submitted_on">{{ moment(item.submitted_on).format(dateFormat) }}</span>
                 </template>
                 <template v-slot:item.approver="{ item }">
-                    <span v-if="item.items[0] && item.items[0].approver">
-                        {{ item.items[0].approver.full_name }}
+                    <span v-if="item && item.approver">
+                        {{ item.approver.full_name }}
                     </span>
                 </template>
                 <template v-slot:item.total_time="{ item }">
@@ -1480,14 +1480,8 @@ export default {
                             && (i.approver_id === null || i.approver_id === this.currentUser.id);
                     }
                 });
-            timesheet = _.groupBy(timesheet, i => i.number);
-            timesheet = Object.keys(timesheet).map(k => {
-               return {
-                   key: k,
-                   items: timesheet[k]
-               };
-            });
-            return timesheet;
+            return _.uniqBy(timesheet, 'number')
+                .map(i => ({ ...i, items: timesheet.filter(t => t.number === i.number) }));
         },
         totalTime () {
             let totalTime = 0;
