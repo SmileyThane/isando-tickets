@@ -131,6 +131,7 @@
                                             item-value="id"
                                             placeholder="Start typing to Search"
                                             return-object
+                                            clearable
                                             @change="actionSave()"
                                         ></v-autocomplete>
                                         <div class="mt-3" v-else>{{project.team.name}}</div>
