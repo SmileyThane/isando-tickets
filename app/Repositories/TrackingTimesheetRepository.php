@@ -25,6 +25,7 @@ class TrackingTimesheetRepository
     public function all(Request $request) {
         $query = TrackingTimesheet::with('Project.Client')
             ->with('User')
+            ->with('Service')
             ->with('Approver')
             ->with(['Times' => function ($q) {
                 $q->orderBy('date', 'asc');
@@ -73,6 +74,7 @@ class TrackingTimesheetRepository
         })->first();
         $timesheet->team_id = $team ? $team->id : null;
         $timesheet->company_id = Auth::user()->employee->companyData->id;
+        $timesheet->service_id = $request->get('service', null);
         $project = $request->get('project');
         $timesheet->project_id = $project['id'];
         $timesheet->is_manually = true;
@@ -96,6 +98,7 @@ class TrackingTimesheetRepository
 
         return TrackingTimesheet::with('User')
             ->with('Approver')
+            ->with('Service')
             ->where('id', '=', $timesheet->id)->with('Project.Client')
             ->with(['Times' => function ($q) {
                 $q->orderBy('date', 'asc');
@@ -116,6 +119,7 @@ class TrackingTimesheetRepository
         }
         return TrackingTimesheet::with('User')
             ->with('Approver')
+            ->with('Service')
             ->where('id', '=', $id)->with('Project.Client')
             ->with(['Times' => function ($q) {
                 $q->orderBy('date', 'asc');
@@ -180,6 +184,7 @@ class TrackingTimesheetRepository
             $tt = TrackingTimesheet::where('id', '=', $id)
                 ->with('User')
                 ->with('Approver')
+                ->with('Service')
                 ->with('Project.Client')
                 ->with(['Times' => function ($q) {
                     $q->orderBy('date', 'asc');

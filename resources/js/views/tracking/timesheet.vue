@@ -50,6 +50,14 @@
         <v-spacer>&nbsp;</v-spacer>
 
         <div class="d-flex flex-row">
+            <div class="d-inline-flex flex-grow-0 mx-4">
+                <v-checkbox
+                    class="mt-1"
+                    label="View and Edit services"
+                    v-model="showEditServices"
+                    hide-details
+                ></v-checkbox>
+            </div>
             <div class="d-inline-flex flex-grow-1 mt-2 mx-4">
                 {{ dateRangeText }}
             </div>
@@ -415,6 +423,19 @@
                                     ></ProjectBtn>
                                 </div>
                             </template>
+                            <template v-if="header.value === 'service' && showEditServices">
+                                <div class="mt-1 px-4" style="width: 100%">
+                                    <v-select
+                                        v-model="form.service"
+                                        :items="$store.getters['Services/getServices']"
+                                        item-value="id"
+                                        item-text="name"
+                                        placeholder="Service"
+                                        dense
+                                        clearable
+                                    ></v-select>
+                                </div>
+                            </template>
                             <template v-if="header.value === 'mon'">
                                 <div class="" style="width: 100%">
                                     <TimeField
@@ -547,6 +568,11 @@
                 <template v-slot:item.project.name="{ isMobile, item, header, value }">
                 <span v-if="item.project">
                     <span>{{ item.project.name }}</span> / <span>{{ item.project.client.name }}</span>
+                </span>
+                </template>
+                <template v-slot:item.service="{ isMobile, item, header, value }">
+                <span v-if="item.service">
+                    <span>{{ item.service.name }}</span>
                 </span>
                 </template>
                 <template v-slot:item.is_manually="{ isMobile, item, header, value }">
@@ -978,6 +1004,7 @@ export default {
             filterProject: 0,
             form: {
                 project: null,
+                service: null,
                 mon: moment().startOf('days').format(),
                 tue: moment().startOf('days').format(),
                 wed: moment().startOf('days').format(),
@@ -997,6 +1024,7 @@ export default {
             selectedApprover: null,
             rejectReason: '',
             dialogNotes: {},
+            showEditServices: false,
         }
     },
     created () {
@@ -1010,6 +1038,7 @@ export default {
         this.debounceGetManagedTeams = _.debounce(this._getManagedTeams, 1000);
         this.debounceGetTeamManagers = _.debounce(this._getTeamManagers, 1000);
         this.debounceGetCurrentUser = _.debounce(this._getCurrentUser, 1000);
+        this.debounceGetServices = _.debounce(this._getServices, 1000);
         this.date = moment().format(this.dateFormat);
     },
     mounted () {
@@ -1026,6 +1055,7 @@ export default {
         this.debounceGetManagedTeams();
         this.resetTimesheet();
         this.debounceGetTeamManagers();
+        this.debounceGetServices();
     },
     methods: {
         async _getTimesheet () {
@@ -1051,6 +1081,9 @@ export default {
         _getCurrentUser () {
             this.$store.dispatch('getCurrentUser');
         },
+        _getServices() {
+            this.$store.dispatch('Services/getServicesList', { search: '' });
+        },
         createTimesheet () {
             if (this.form.project) {
                 return this.$store.dispatch('Timesheet/createTimesheet', this.form)
@@ -1073,6 +1106,7 @@ export default {
             this.selected = [];
             this.form = {
                 project: null,
+                service: null,
                 mon: moment(this.periodStart).startOf('days').format(),
                 tue: moment(this.periodStart).add(1, 'days').startOf('days').format(),
                 wed: moment(this.periodStart).add(2, 'days').startOf('days').format(),
@@ -1146,25 +1180,28 @@ export default {
             for (let i = moment(this.dateRange.start); moment(i).diff(moment(this.dateRange.end)) <= 0; i.add(1, 'day')) {
                 dates.push(i.format('MMM DD'));
             }
-            const headers = [
+            let headers = [
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.projects,
                     align: 'start',
                     value: 'project.name',
                     width: '20%',
-                },
-                {
+                }
+            ];
+            if (this.showEditServices) {
+                headers.push({
+                    text: '',
+                    align: 'start',
+                    value: 'service',
+                    width: '5%',
+                });
+            }
+            headers = headers.concat([{
                     text: '',
                     align: 'start',
                     value: 'is_manually',
                     width: '3%',
                 },
-                // {
-                //     text: '',
-                //     align: 'start',
-                //     value: 'billable',
-                //     width: '3%'
-                // },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.mon,
                     align: 'end',
@@ -1235,7 +1272,7 @@ export default {
                     width: '3%',
                     time: days.reduce((acc, val) => acc + val, 0),
                 },
-            ];
+            ]);
             if ([this.STATUS_REJECTED].indexOf(this.typeOfItems) !== -1) {
                 headers.push({ text: 'Note', align: 'start', value: 'note', width: '10%' });
                 return headers;

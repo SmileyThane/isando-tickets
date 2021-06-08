@@ -19,8 +19,8 @@ export default {
                     return success;
                 });
         },
-        createTimesheet({ dispatch, state }, { project, mon, tue, wed, thu, fri, sat, sun }) {
-            return axios.post('/api/tracking/timesheet', { project, mon, tue, wed, thu, fri, sat, sun }, { retry: 5, retryDelay: 1000 })
+        createTimesheet({ dispatch, state }, { project, service, mon, tue, wed, thu, fri, sat, sun }) {
+            return axios.post('/api/tracking/timesheet', { project, service, mon, tue, wed, thu, fri, sat, sun }, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);

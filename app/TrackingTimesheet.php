@@ -43,6 +43,10 @@ class TrackingTimesheet extends Model
         return $this->hasMany(Tracking::class);
     }
 
+    public function Service() {
+        return $this->belongsTo(Service::class);
+    }
+
     public function getTotalTimeAttribute() {
         $items = $this->Times()->get();
         $total = 0;
