@@ -50,7 +50,9 @@
         <v-spacer>&nbsp;</v-spacer>
 
         <div class="d-flex flex-row">
-            <div class="d-inline-flex flex-grow-0 mx-4">
+            <div class="d-inline-flex flex-grow-0 mx-4"
+                 v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+             >
                 <v-checkbox
                     class="mt-1"
                     label="View and Edit services"
@@ -190,7 +192,7 @@
                     <span v-if="item.items[0] && item.items[0].user">{{ item.items[0].user.full_name }}</span>
                 </template>
                 <template v-slot:item.number="{ item }">
-                    {{ item.items[0].id }}
+                    {{ item.items[0].number }}
                 </template>
                 <template v-slot:item.weekNumber="{ item }">
                     {{ moment(item.items[0].from).isoWeek() }}
@@ -281,6 +283,7 @@
                                 v-on="on"
                                 small
                                 @click="remindTimesheet(item)"
+                                :loading="loadingBtn"
                             >
                                 <v-icon>mdi-bell</v-icon>
                             </v-btn>
@@ -315,6 +318,7 @@
                         dark
                         @click="approveTimesheet(item)"
                         small
+                        :loading="loadingBtn"
                     >
                         Approve
                     </v-btn>
@@ -332,6 +336,7 @@
                                 v-bind="attrs"
                                 v-on="on"
                                 small
+                                :loading="loadingBtn"
                             >
                                 Reject
                             </v-btn>
@@ -1025,6 +1030,7 @@ export default {
             rejectReason: '',
             dialogNotes: {},
             showEditServices: false,
+            loadingBtn: false,
         }
     },
     created () {
@@ -1280,20 +1286,30 @@ export default {
             return headers;
         },
         rejectTimesheet(item) {
+            this.loadingBtn = true;
             this.$store.dispatch('Timesheet/submitTimesheetByIds', {
                 ids: item.items.map(i => i.id),
                 status: 'rejected',
                 approver_id: this.currentUser.id,
                 note: this.rejectReason,
-            });
+            })
+                .then(() => {
+                    this.loadingBtn = false;
+                    return null;
+                });
             this.rejectReason = '';
         },
         approveTimesheet(item) {
+            this.loadingBtn = true;
             this.$store.dispatch('Timesheet/submitTimesheetByIds', {
                 ids: item.items.map(i => i.id),
                 status: 'archived',
                 approver_id: this.currentUser.id,
-            });
+            })
+                .then(() => {
+                    this.loadingBtn = false;
+                    return null;
+                });
             this.rejectReason = '';
         },
         cancelTimesheet(item) {
@@ -1304,7 +1320,12 @@ export default {
             this.rejectReason = '';
         },
         remindTimesheet(item) {
-            this.$store.dispatch('Timesheet/remindTimesheet', { ids: item.items.map(i => i.id) });
+            this.loadingBtn = true;
+            this.$store.dispatch('Timesheet/remindTimesheet', { ids: item.items.map(i => i.id) })
+                .then(() => {
+                    this.loadingBtn = false;
+                    return null;
+                });
             this.snackbarMessage = 'Success';
             this.actionColor = 'success'
             this.snackbar = true;
@@ -1459,13 +1480,7 @@ export default {
                             && (i.approver_id === null || i.approver_id === this.currentUser.id);
                     }
                 });
-            timesheet = _.groupBy(timesheet, i =>
-                    i.user_id
-                + moment(i.from).format(this.dateFormat)
-                + (i.to ? moment(i.to).format(this.dateFormat) : null)
-                + (i.submitted_on ? moment(i.submitted_on).format(this.dateFormat) : null)
-                + i.approver_id
-            );
+            timesheet = _.groupBy(timesheet, i => i.number);
             timesheet = Object.keys(timesheet).map(k => {
                return {
                    key: k,

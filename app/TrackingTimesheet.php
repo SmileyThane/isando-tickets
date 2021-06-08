@@ -69,4 +69,16 @@ class TrackingTimesheet extends Model
 
     }
 
+    public function genNumber() {
+        $maxNumber = TrackingTimesheet::where([
+            ['company_id', '=', $this->company_id]
+        ])->max('number');
+        if (!$maxNumber) {
+            $maxNumber = 10000;
+        } else {
+            $maxNumber++;
+        }
+        return $maxNumber;
+    }
+
 }

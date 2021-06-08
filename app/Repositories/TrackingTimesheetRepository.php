@@ -155,11 +155,19 @@ class TrackingTimesheetRepository
     {
         $ids = $request->get('ids');
         $updatedTimesheet = [];
+        $number = null;
         foreach ($ids as $id) {
-
+            $trackingTimesheet = TrackingTimesheet::where('id', '=', $id)->first();
             $approverId = null;
             if (in_array($request->get('status'), [TrackingTimesheet::STATUS_PENDING])) {
                 $approverId = $request->get('approver_id', null);
+                if (!$number && !$trackingTimesheet->number) {
+                    $number = $trackingTimesheet->genNumber();
+                }
+                if ($number && !$trackingTimesheet->number) {
+                    $trackingTimesheet->number = $number;
+                    $trackingTimesheet->save();
+                }
             } else {
                 $approverId = null;
             }
