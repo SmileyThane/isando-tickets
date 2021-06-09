@@ -14,12 +14,7 @@ trait Team
     {
         $teams = $this->teamRepo->all($request);
         $coworkers = [];
-        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS)) {
-            foreach ($teams as $team) {
-                $users = $team->employees()->first()->employee()->first()->userData()->get();
-                $coworkers = array_merge($coworkers, $users->toArray());
-            }
-        } else {
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS)) {
             $coworkers = Auth::user()->employee->companyData()->first()
                 ->employees()->whereDoesntHave('assignedToClients')
                 ->where('is_clientable', false)
@@ -28,6 +23,13 @@ trait Team
                     $user->userData->name = $user->userData->name . ' ' . $user->userData->surname;
                     return $user->userData;
                 });
+        } elseif (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS)) {
+            foreach ($teams as $team) {
+                $users = $team->employees()->first()->employee()->first()->userData()->get();
+                $coworkers = array_merge($coworkers, $users->toArray());
+            }
+        } else {
+            $coworkers[] = Auth::user()->employee->userData;
         }
         return self::showResponse((bool)COUNT($coworkers), $coworkers);
     }
