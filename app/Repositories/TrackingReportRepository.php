@@ -99,7 +99,7 @@ class TrackingReportRepository
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS)) {
             // Company Admin
             $tracking = $tracking->CompanyAdmin();
-        } elseif (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+        } elseif (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS)) {
             // Manager
             $tracking = $tracking->TeamManager();
         } else {
