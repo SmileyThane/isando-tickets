@@ -1300,6 +1300,7 @@ export default {
         this.$store.dispatch('Projects/getProjectList', { search: null });
         this.$store.dispatch('Team/getCoworkers', { search: null });
         this.$store.dispatch('Tags/getTagList', { search: null });
+        this.$store.dispatch('Languages/getLanguageList');
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
         this.debounceGetReports = _.debounce(this.__getReports, 1000);
     },
