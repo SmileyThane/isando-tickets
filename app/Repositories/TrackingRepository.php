@@ -129,6 +129,7 @@ class TrackingRepository
                 Carbon::parse($request->date_from)->startOfDay(),
                 Carbon::parse($request->date_to)->endOfDay()
             ])
+            ->with('Timesheet')
             ->with('Tags.Translates')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
             ->orderBy('id', 'desc');
@@ -151,13 +152,13 @@ class TrackingRepository
         $tracking = new Tracking();
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) { $tracking->description = $request->description; }
-        $tracking->date_from = Carbon::parse($request->date_from)->utc();
+        $tracking->date_from = Carbon::parse($request->date_from)->format(Tracking::$DATETIME_FORMAT);
         if ($request->has('date_from') && $request->has('date_to') && !is_null($request->date_to)) {
             if (Carbon::parse($request->date_from)->gt(Carbon::parse($request->date_to))) {
                 throw new \Exception('The date from must be a date before date to.');
             }
         }
-        $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->utc() : null;
+        $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->format(Tracking::$DATETIME_FORMAT) : null;
         $tracking->status = $request->status;
         if ($request->has('billable')) {
             $tracking->billable = $request->billable;
@@ -207,7 +208,8 @@ class TrackingRepository
         }
 
         TrackingTimesheetRepository::recalculate($tracking);
-        return $tracking;
+        return Tracking::where('id', '=', $tracking->id)->with('Tags.Translates')
+            ->with('User:id,name,surname,middle_name,number,avatar_url')->first();
     }
 
     public function update(Request $request, Tracking $tracking)
@@ -237,13 +239,13 @@ class TrackingRepository
             if (!$request->has('date_to') && Carbon::parse($request->date_from)->gt(Carbon::parse($tracking->date_to))) {
                 throw new \Exception('The date from must be a date before date to.');
             }
-            $tracking->date_from = Carbon::parse($request->date_from)->utc();
+            $tracking->date_from = Carbon::parse($request->date_from)->format(Tracking::$DATETIME_FORMAT);
         }
         if ($request->has('date_to')) {
             if (!is_null($request->date_to) && Carbon::parse($tracking->date_from)->gt(Carbon::parse($request->date_to))) {
                 throw new \Exception('The date to must be a date after date from.');
             }
-            $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->utc() : null;
+            $tracking->date_to = $request->has('date_to') && !is_null($request->date_to) ? Carbon::parse($request->date_to)->format(Tracking::$DATETIME_FORMAT) : null;
         }
         if ($request->has('status')) {
             $tracking->status = $request->status;
@@ -282,7 +284,8 @@ class TrackingRepository
         }
         TrackingTimesheetRepository::recalculate($oldTracking);
         TrackingTimesheetRepository::recalculate($tracking);
-        return $tracking;
+        return Tracking::where('id', '=', $tracking->id)->with('Tags.Translates')
+            ->with('User:id,name,surname,middle_name,number,avatar_url')->first();;
     }
 
     public function delete(Tracking $tracking)
@@ -316,6 +319,8 @@ class TrackingRepository
     {
         if ($tracking->user_id === Auth::user()->id) {
             $newTracking = $tracking->replicate();
+            $newTracking->date_from = Carbon::parse($newTracking->date_from)->setSeconds(0)->format(Tracking::$DATETIME_FORMAT);
+            $newTracking->date_to = Carbon::parse($newTracking->date_to)->setSeconds(0)->format(Tracking::$DATETIME_FORMAT);
             $newTracking->save();
             if ($tracking->service) {
                 $newTracking->Services()->attach($tracking->service->id);

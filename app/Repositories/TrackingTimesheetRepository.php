@@ -3,6 +3,9 @@
 
 namespace App\Repositories;
 
+use App\Notifications\TimesheetAppovalRequest;
+use App\Notifications\TimesheetApproved;
+use App\Notifications\TimesheetRejected;
 use App\Team;
 use App\Tracking;
 use App\TrackingProject;
@@ -11,6 +14,7 @@ use App\TrackingTimesheetTime;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TrackingTimesheetRepository
 {
@@ -20,6 +24,9 @@ class TrackingTimesheetRepository
 
     public function all(Request $request) {
         $query = TrackingTimesheet::with('Project.Client')
+            ->with('User')
+            ->with('Service')
+            ->with('Approver')
             ->with(['Times' => function ($q) {
                 $q->orderBy('date', 'asc');
             }]);
@@ -35,8 +42,19 @@ class TrackingTimesheetRepository
 //            }
 //        }
 //        dd($query->toSql(), $query->getBindings());
+        $teams = \App\Team::whereHas('employees', function ($query) {
+            return $query->where('company_user_id', '=', Auth::user()->employee->id)
+                ->where('is_manager', '=', true);
+        })->pluck('id');
+        if ($teams->count()) {
+            $query->where(function($q) use ($teams) {
+                $q->where('user_id', '=', Auth::user()->id)
+                    ->orWhereIn('team_id', $teams);
+            });
+        } else {
+            $query->where('user_id', '=', Auth::user()->id);
+        }
         return $query
-            ->where('user_id', '=', Auth::user()->id)
             ->where(function ($q) use ($request) {
                 $q->whereBetween('from', [Carbon::parse($request->start), Carbon::parse($request->end)])
                     ->orWhereBetween('to', [Carbon::parse($request->start), Carbon::parse($request->end)]);
@@ -56,6 +74,7 @@ class TrackingTimesheetRepository
         })->first();
         $timesheet->team_id = $team ? $team->id : null;
         $timesheet->company_id = Auth::user()->employee->companyData->id;
+        $timesheet->service_id = $request->get('service', null);
         $project = $request->get('project');
         $timesheet->project_id = $project['id'];
         $timesheet->is_manually = true;
@@ -77,7 +96,10 @@ class TrackingTimesheetRepository
             }
         }
 
-        return TrackingTimesheet::where('id', '=', $timesheet->id)->with('Project.Client')
+        return TrackingTimesheet::with('User')
+            ->with('Approver')
+            ->with('Service')
+            ->where('id', '=', $timesheet->id)->with('Project.Client')
             ->with(['Times' => function ($q) {
                 $q->orderBy('date', 'asc');
             }])->first();
@@ -95,7 +117,10 @@ class TrackingTimesheetRepository
                 ['date' => $item['date'], 'time' => $item['time']]
             );
         }
-        return TrackingTimesheet::where('id', '=', $id)->with('Project.Client')
+        return TrackingTimesheet::with('User')
+            ->with('Approver')
+            ->with('Service')
+            ->where('id', '=', $id)->with('Project.Client')
             ->with(['Times' => function ($q) {
                 $q->orderBy('date', 'asc');
             }])->first();
@@ -105,15 +130,91 @@ class TrackingTimesheetRepository
         return TrackingTimesheet::where('id', '=', $id)->delete();
     }
 
-    public function submit(Request $request) {
+    public function remind(Request $request)
+    {
+        $ids = $request->get('ids');
+        $timesheets = TrackingTimesheet::whereIn('id', $ids)->get();
+        try {
+            foreach ($timesheets as $timesheet) {
+                if ($timesheet->approver && (
+                    is_null($timesheet->notification_date)
+                    || Carbon::parse($timesheet->notification_date)->diffInHours(Carbon::now()) > 6
+                )) {
+                    $timesheet->notification_date = Carbon::now();
+                    $timesheet->save();
+                    $timesheet->approver->notify(new TimesheetAppovalRequest());
+                }
+            }
+        } catch (\Exception $e) {
+            Log::debug($e);
+        }
+        return true;
+    }
+
+    public function submit(Request $request)
+    {
         $ids = $request->get('ids');
         $updatedTimesheet = [];
+        $number = null;
         foreach ($ids as $id) {
-            TrackingTimesheet::where('id', '=', $id)->update(['status' => $request->get('status')]);
-            $updatedTimesheet[] = TrackingTimesheet::where('id', '=', $id)->with('Project.Client')
+            $trackingTimesheet = TrackingTimesheet::where('id', '=', $id)->first();
+            $approverId = null;
+            if (in_array($request->get('status'), [TrackingTimesheet::STATUS_PENDING])) {
+                $approverId = $request->get('approver_id', null);
+                if (!$number && !$trackingTimesheet->number) {
+                    $number = $trackingTimesheet->genNumber();
+                }
+                if ($number && !$trackingTimesheet->number) {
+                    $trackingTimesheet->number = $number;
+                    $trackingTimesheet->save();
+                }
+            } else {
+                $approverId = null;
+            }
+            if (in_array($request->get('status'), [
+                TrackingTimesheet::STATUS_ARCHIVED, TrackingTimesheet::STATUS_APPROVED,
+                TrackingTimesheet::STATUS_REJECTED
+            ])) {
+                $approverId = Auth::user()->id;
+            }
+
+            TrackingTimesheet::where('id', '=', $id)->update([
+                'status' => $request->get('status'),
+                'approver_id' => $approverId,
+                'submitted_on' => in_array($request->get('status'), [
+                    TrackingTimesheet::STATUS_PENDING, TrackingTimesheet::STATUS_ARCHIVED,
+                    TrackingTimesheet::STATUS_APPROVED, TrackingTimesheet::STATUS_REJECTED
+                ])
+                    ? Carbon::now()
+                    : null,
+                'note' => $request->get('note', null),
+            ]);
+            $tt = TrackingTimesheet::where('id', '=', $id)
+                ->with('User')
+                ->with('Approver')
+                ->with('Service')
+                ->with('Project.Client')
                 ->with(['Times' => function ($q) {
                     $q->orderBy('date', 'asc');
                 }])->first();
+            $tt->notification_date = null;
+            $tt->save();
+            try {
+                if ($tt->status === TrackingTimesheet::STATUS_REJECTED && $tt->approver) {
+                    $tt->user->notify(new TimesheetRejected($tt));
+                }
+                if ($tt->status === TrackingTimesheet::STATUS_ARCHIVED && $tt->approver) {
+                    $tt->user->notify(new TimesheetApproved($tt));
+                }
+                if ($tt->status === TrackingTimesheet::STATUS_PENDING && $tt->approver) {
+                    $tt->notification_date = Carbon::now();
+                    $tt->save();
+                    $tt->approver->notify(new TimesheetAppovalRequest());
+                }
+            } catch (\Exception $e) {
+                Log::debug($e);
+            }
+            $updatedTimesheet[] = $tt;
         }
         return $updatedTimesheet;
     }
@@ -164,6 +265,7 @@ class TrackingTimesheetRepository
                 }
             }
             TrackingTimesheetTime::where('timesheet_id', '=', $timesheet->id)->update(['time' => '00:00:00']);
+            Tracking::where('id', '=', $tracker->id)->update(['timesheet_id' => $timesheet->id]);
             $date = Carbon::parse($tracker->date_from)->format('Y-m-d');
             $items[$timesheet->id][$date][] = $tracker;
         }

@@ -413,7 +413,7 @@
                         :color="themeBgColor"
                         style="color: white"
                     >
-                        <span v-if="moment(panelDate).format() === moment().format()">{{langMap.tracking.tracker.today}}</span>
+                        <span v-if="moment(panelDate).format(dateTimeFormat) === moment().format(dateTimeFormat)">{{langMap.tracking.tracker.today}}</span>
                         <span v-else>{{ moment(panelDate).format('ddd, DD MMM YYYY')}}</span>
                     </v-expansion-panel-header>
                     <v-expansion-panel-content>
@@ -578,7 +578,8 @@
                                                             @open="open"
                                                             @close=""
                                                         >
-                                                            {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;{{moment(row.date_to).format(timeFormat)}}
+                                                            {{ moment(row.date_from).format(timeFormat) }}&nbsp;&mdash;&nbsp;<span v-if="row.date_to && row.date_to !== null">{{moment(row.date_to).format(timeFormat)}}</span>
+                                                            <span v-else>{{moment().format(timeFormat)}}</span>
                                                             <template v-slot:input>
                                                                 <div class="d-flex flex-row">
                                                                     <div class="d-inline-flex">
@@ -605,7 +606,8 @@
                                                             </template>
                                                         </v-edit-dialog>
                                                         <span v-else>
-                                                            {{moment(row.date_from).format('HH:mm')}}&nbsp;&mdash;&nbsp;{{moment(row.date_to).format('HH:mm')}}
+                                                            <span>{{moment(row.date_from).format(timeFormat)}}</span>&nbsp;&mdash;&nbsp;<span v-if="row.date_to && row.date_to !== null">{{moment(row.date_to).format(timeFormat)}}</span>
+                                                            <span v-else>{{moment().format(timeFormat)}}</span>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -786,6 +788,7 @@ export default {
             },
             dateFormat: 'YYYY-MM-DD',
             timeFormat: 'HH:mm',
+            dateTimeFormat: 'YYYY-MM-DDTHH:mm:ss',
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
@@ -872,9 +875,9 @@ export default {
                 entity_type: null,
                 tags: [],
                 billable: false,
-                date_from: moment().format(),
-                date_to: moment().add(15, 'minutes').format(),
-                date: moment().format(),
+                date_from: moment().format('YYYY-MM-DDTHH:mm:ss'),
+                date_to: moment().add(15, 'minutes').format('YYYY-MM-DDTHH:mm:ss'),
+                date: moment().format('YYYY-MM-DDTHH:mm:ss'),
                 status: 'started',
                 timeStart: '00:00:00'
             },
@@ -977,6 +980,9 @@ export default {
             this.loadingCreateTrack = true;
             return axios.post('/api/tracking/tracker', data)
                 .then(({ data }) => {
+                    // if (data.success) {
+                    //     this.tracking.splice(0, 0, data.data);
+                    // }
                     if (!data.success) {
                         if (data.error) {
                             this.debounceGetTracking();
@@ -999,6 +1005,9 @@ export default {
             this.loadingUpdateTrack = true;
             return axios.patch(`/api/tracking/tracker/${id}`, data)
                 .then(({ data }) => {
+                    if (data.success) {
+                        this.tracking.splice(this.tracking.findIndex(i => i.id === id), 1, data.data);
+                    }
                     if (!data.success) {
                         if (data.error) {
                             this.debounceGetTracking();
@@ -1034,9 +1043,9 @@ export default {
         actionCreateTrack() {
             this.manualPanel.status = 'stopped';
             let data = this.manualPanel;
-            data.date = moment(data.date_from).format();
-            data.date_from = moment(data.date_from).utc().format();
-            data.date_to = moment(data.date_to).utc().format();
+            data.date = moment(data.date_from).format(this.dateTimeFormat);
+            data.date_from = moment(data.date_from).format(this.dateTimeFormat);
+            data.date_to = moment(data.date_to).format(this.dateTimeFormat);
             this.__createTracking(data);
         },
         actionStartNewTrack() {
@@ -1044,9 +1053,9 @@ export default {
             if (!this.timerPanel.start) {
                 this.timerPanel.trackId = null;
                 this.timerPanel.status = 'started';
-                this.timerPanel.start = moment().utc().format();
-                this.timerPanel.date = moment().utc().format();
-                this.timerPanel.date_from = moment().utc().format();
+                this.timerPanel.start = moment().format(this.dateTimeFormat);
+                this.timerPanel.date = moment().format(this.dateTimeFormat);
+                this.timerPanel.date_from = moment().format(this.dateTimeFormat);
                 this.timerPanel.date_to = null;
                 this.timerPanel.timeStart = this.timerPanel.start;
                 this.loadingCreateTrack = true;
@@ -1058,9 +1067,9 @@ export default {
                     });
             } else {
                 // stop
-                this.timerPanel.date = moment(this.timerPanel.start).format();
-                this.timerPanel.date_from = moment(this.timerPanel.start).format();
-                this.timerPanel.date_to = moment().utc().format();
+                this.timerPanel.date = moment(this.timerPanel.start).format(this.dateTimeFormat);
+                this.timerPanel.date_from = moment(this.timerPanel.start).format(this.dateTimeFormat);
+                this.timerPanel.date_to = moment().format(this.dateTimeFormat);
                 this.timerPanel.timeStart = this.timerPanel.start;
                 this.timerPanel.start = null;
                 this.timerPanel.status = 'stopped';
@@ -1086,11 +1095,11 @@ export default {
                 this.resetTimerPanel();
                 const index = this.tracking.findIndex(i => i.id === trackerId);
                 this.tracking[index].status = 'stopped';
-                this.tracking[index].date_to = moment().format();
+                this.tracking[index].date_to = moment().format(this.dateTimeFormat);
             }
             this.__updateTrackingById(trackerId, {
                 status: 'stopped',
-                date_to: moment().format()
+                date_to: moment().format(this.dateTimeFormat)
             });
         },
         actionStartTrackingAsId(trackerId) {
@@ -1098,7 +1107,7 @@ export default {
                 .then(data => {
                     if (data.success) {
                         this.__updateTrackingById(data.data.id, {
-                            date_from: moment().format(),
+                            date_from: moment().format(this.dateTimeFormat),
                             date_to: null,
                             status: 'started'
                         });
@@ -1113,11 +1122,11 @@ export default {
                 projectId: null,
                 tags: [],
                 billable: false,
-                // date_from: moment().format(),
-                // date_to: moment().add(15, 'minutes').format(),
+                // date_from: moment().format(this.dateTimeFormat),
+                // date_to: moment().add(15, 'minutes').format(this.dateTimeFormat),
                 // date: moment().format(this.dateFormat),
                 // status: 'started',
-                // timeStart: this.helperConvertSecondsToTimeFormat(this.helperCalculatePassedTime(moment().format(), moment().add(15, 'minutes').format()))
+                // timeStart: this.helperConvertSecondsToTimeFormat(this.helperCalculatePassedTime(moment().format(this.dateTimeFormat), moment().add(15, 'minutes').format(this.dateTimeFormat)))
             };
         },
         resetTimerPanel() {
@@ -1183,7 +1192,7 @@ export default {
                     date: moment(item.date_from).add(1, 'days').date(),
                     year: moment(item.date_from).year(),
                     month: moment(item.date_from).month(),
-                }).format();
+                }).format(this.dateTimeFormat);
             }
             this.__updateTrackingById(item.id, item);
         },
@@ -1203,8 +1212,8 @@ export default {
                 year: moment(item.date).year()
             };
             const seconds = this.$helpers.time.getSecBetweenDates(item.date_from, item.date_to, true);
-            item.date_from = moment(item.date_from).set(date).format();
-            item.date_to = moment(item.date_from).add(seconds, "seconds").format();
+            item.date_from = moment(item.date_from).set(date).format(this.dateTimeFormat);
+            item.date_to = moment(item.date_from).add(seconds, "seconds").format(this.dateTimeFormat);
             this.debounceSave(item, 'date_from');
         },
         hasPermission(ids) {
@@ -1236,14 +1245,14 @@ export default {
                     date: moment(dateFrom).add(1, 'days').date(),
                     year: moment(dateFrom).year(),
                     month: moment(dateFrom).month(),
-                }).toISOString();
+                }).format(this.dateTimeFormat);
             }
         }
     },
     computed: {
         timeAdd () {
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
-                this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format();
+                this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format(this.dateTimeFormat);
             }
             const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to, true);
             return this.$helpers.time.convertSecToTime(seconds);
@@ -1312,14 +1321,14 @@ export default {
                 return moment(this.manualPanel.date_from).format(this.dateFormat);
             },
             set(val) {
-                this.manualPanel.date = moment(val).format();
+                this.manualPanel.date = moment(val).format(this.dateTimeFormat);
                 const date = {
                     date: moment(val).date(),
                     month: moment(val).month(),
                     year: moment(val).year()
                 };
                 this.manualPanel.date_from = moment(this.manualPanel.date_from)
-                    .set(date).toISOString();
+                    .set(date).format(this.dateTimeFormat);
                 this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
             }
         },
@@ -1329,7 +1338,7 @@ export default {
             this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
         },
         date: function () {
-            this.manualPanel.date = moment(this.date).format();
+            this.manualPanel.date = moment(this.date).format(this.dateTimeFormat);
             const date = {
                 date: moment(this.date).date(),
                 month: moment(this.date).month(),
@@ -1342,7 +1351,7 @@ export default {
             }
             this.manualPanel.date_to = moment(this.manualPanel.date_to)
                 .add(dayToAdding, 'day')
-                .format();
+                .format(this.dateTimeFormat);
         },
         search () {
             this.$store.dispatch('Projects/getProjectList', { search: this.search });

@@ -43,4 +43,28 @@ trait Team
         }
         return self::showResponse((bool)$teams, $teams->get());
     }
+
+    public function getManagersOfTeams(Request $request)
+    {
+        $teams = \App\Team::whereHas('employees', function ($query) {
+            return $query->where('company_user_id', '=', Auth::user()->employee->id);
+        })
+            ->with('employees.employee.userData')
+            ->get();
+        $teamManagers = collect();
+        foreach ($teams as $team) {
+            $managers = $team->employees->filter(function($item) {
+                return $item->is_manager;
+            });
+            if ($managers->count()) {
+
+                $items = $team->employees->filter(function($item) {
+                        return $item->is_manager;
+                    })
+                        ->map(function($item) { return $item->employee->userData; });
+                $teamManagers = $teamManagers->merge($items);
+            }
+        }
+        return self::showResponse((bool)$teams, $teamManagers->unique()->all());
+    }
 }

@@ -31,13 +31,15 @@ export default new Vuex.Store({
         themeBgColor: '#6AA75D',
         appVersion: '',
         mainCompany: null,
-        userId: null
+        userId: null,
+        currentUser: null,
     },
     getters: {
         roles: state => [state.roles, state.permissions, state.lang, state.pageName, state.themeFgColor, state.themeBgColor, state.appVersion],
         getLang: state => state.lang,
         getPermissions: state => state.permissions,
-        getMainCompany: state => state.mainCompany
+        getMainCompany: state => state.mainCompany,
+        getCurrentUser: state => state.currentUser,
     },
     mutations: {
         setMainCompany(state, mainCompany) {
@@ -65,7 +67,10 @@ export default new Vuex.Store({
         },
         setAppVersion(state, version) {
             state.appVersion = version;
-        }
+        },
+        setCurrentUser(state, user) {
+            state.currentUser = user;
+        },
     },
     actions: {
         getMainCompany({commit}) {
@@ -176,6 +181,18 @@ export default new Vuex.Store({
                         reject(error.response && error.response.data.message || 'Error.');
                     });
             });
-        }
+        },
+        getCurrentUser({commit}) {
+            return new Promise((resolve, reject) => {
+                axios.get('/api/user').then(result => {
+                    if (result.data.success === true) {
+                        commit('setCurrentUser', result.data.data);
+                        resolve();
+                    }
+                }).catch(error => {
+                    reject(error.response && error.response.data.message || 'Error.');
+                });
+            });
+        },
     }
 })

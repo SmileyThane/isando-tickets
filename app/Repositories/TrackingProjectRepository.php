@@ -162,7 +162,11 @@ class TrackingProjectRepository
             $trackingProject->client_id = $request->client['id'];
         }
         if ($request->has('team')) {
-            $trackingProject->team_id = $request->team['id'];
+            if (is_null($request->team)) {
+                $trackingProject->team_id = null;
+            } else {
+                $trackingProject->team_id = $request->team['id'];
+            }
         }
         if ($request->has('color')) {
             $trackingProject->color = $request->color;

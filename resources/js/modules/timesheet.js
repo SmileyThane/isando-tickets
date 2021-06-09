@@ -19,8 +19,8 @@ export default {
                     return success;
                 });
         },
-        createTimesheet({ dispatch, state }, { project, mon, tue, wed, thu, fri, sat, sun }) {
-            return axios.post('/api/tracking/timesheet', { project, mon, tue, wed, thu, fri, sat, sun }, { retry: 5, retryDelay: 1000 })
+        createTimesheet({ dispatch, state }, { project, service, mon, tue, wed, thu, fri, sat, sun }) {
+            return axios.post('/api/tracking/timesheet', { project, service, mon, tue, wed, thu, fri, sat, sun }, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);
@@ -46,13 +46,22 @@ export default {
                     return success;
                 })
         },
-        submitTimesheetByIds({ commit }, { ids, status }) {
-            return axios.patch('/api/tracking/timesheet/submit', { ids, status }, { retry: 5, retryDelay: 1000 })
+        submitTimesheetByIds({ commit }, { ids, status, approver_id, note }) {
+            return axios.patch('/api/tracking/timesheet/submit', { ids, status, approver_id, note }, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         data.map(i => {
                             commit('UPDATE_ITEM', i);
                         });
+                    }
+                    return success;
+                })
+        },
+        remindTimesheet ({ commit }, { ids }) {
+            return axios.post('/api/tracking/timesheet/remind', { ids })
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        return data;
                     }
                     return success;
                 })

@@ -11,6 +11,8 @@ class Tracking extends Model
 {
     protected $table = 'tracking';
 
+    static $DATETIME_FORMAT = 'Y-m-d\TH:i:s';
+
     static $STATUS_STARTED = 'started';
     static $STATUS_PAUSED = 'paused';
     static $STATUS_STOPPED = 'stopped';
@@ -22,7 +24,7 @@ class Tracking extends Model
     ];
 
     protected $appends = [
-        'passed', 'service', 'entity', 'passed_decimal', 'revenue'
+        'passed', 'service', 'entity', 'passed_decimal', 'revenue', 'timesheet_status', 'readonly'
     ];
 
     public function User() {
@@ -60,6 +62,24 @@ class Tracking extends Model
         );
     }
 
+    public function Timesheet() {
+        return $this->belongsTo(TrackingTimesheet::class, 'timesheet_id', 'id');
+    }
+
+    public function getTimesheetStatusAttribute() {
+        if ($this->Timesheet()->first()) {
+            return $this->Timesheet()->first()->status;
+        }
+        return null;
+    }
+
+    public function getReadonlyAttribute() {
+        if (is_null($this->timesheet_status) || in_array($this->timesheet_status, [TrackingTimesheet::STATUS_TRACKED, TrackingTimesheet::STATUS_REJECTED])) {
+            return false;
+        }
+        return true;
+    }
+
     public function getServiceAttribute() {
         return $this->Services()->first();
     }
@@ -82,11 +102,14 @@ class Tracking extends Model
     }
 
     public function getDateFromAttribute() {
-        return Carbon::parse($this->attributes['date_from'])->utc()->format('Y-m-d\TH:i:s.uP');
+        return Carbon::parse($this->attributes['date_from'])->format(self::$DATETIME_FORMAT);
     }
 
     public function getDateToAttribute() {
-        return Carbon::parse($this->attributes['date_to'])->utc()->format('Y-m-d\TH:i:s.uP');
+        if ($this->attributes['date_to']) {
+            return Carbon::parse($this->attributes['date_to'])->format(self::$DATETIME_FORMAT);
+        }
+        return null;
     }
 
     public function getRevenueAttribute() {

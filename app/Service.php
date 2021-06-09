@@ -25,6 +25,10 @@ class Service extends Model
         return $this->Serviceable()->first()->Tracking();
     }
 
+    public function Timesheets() {
+        return $this->hasMany(TrackingTimesheet::class);
+    }
+
     public function scopeMyCompany($query) {
         $company = Auth::user()->employee->companyData()->with('employees.userData')->first();
         return $query->where('company_id', '=', $company->id);

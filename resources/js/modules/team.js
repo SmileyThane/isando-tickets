@@ -7,7 +7,8 @@ export default {
         coworkers: [],
         params: {},
         teams: [],
-        managedTeams: []
+        managedTeams: [],
+        teamManagers: [],
     },
     actions: {
         getTeams({ commit }, { search, sort_by, sort_val, per_page, page }) {
@@ -47,6 +48,15 @@ export default {
                     }
                     return success;
                 });
+        },
+        getTeamManagers({ commit }) {
+            return axios.get(`/api/tracking/team_managers`)
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        commit('SET_TEAM_MANAGERS', data);
+                    }
+                    return success;
+                });
         }
     },
     mutations: {
@@ -61,6 +71,9 @@ export default {
         },
         SET_PARAMS(state, params) {
             state.params = params
+        },
+        SET_TEAM_MANAGERS(state, params) {
+            state.teamManagers = params;
         }
     },
     getters: {
@@ -75,6 +88,9 @@ export default {
         },
         getManagedTeams(state) {
             return state.managedTeams
+        },
+        getTeamManagers(state) {
+            return state.teamManagers;
         }
     }
 }
