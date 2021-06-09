@@ -107,15 +107,25 @@ class TrackingTimesheetRepository
 
     public function update(Request $request, $id) {
         $timesheet = TrackingTimesheet::findOrFail($id);
-        $timesheet->project_id = $request->get('project_id', null);
-        $timesheet->billable = $request->get('billable', false);
+        if ($request->has('project_id')) {
+            $timesheet->project_id = $request->get('project_id', null);
+        }
+        if ($request->has('billable')) {
+            $timesheet->billable = $request->get('billable', false);
+        }
+        if ($request->has('service')) {
+            $service = $request->get('service');
+            $timesheet->service_id = $service && isset($service['id']) ? $service['id'] : $service;
+        }
         $timesheet->save();
-        $items = $request->get('times');
-        foreach ($items as $item) {
-            TrackingTimesheetTime::updateOrCreate(
-                ['id' => $item['id'], 'timesheet_id' => $item['timesheet_id']],
-                ['date' => $item['date'], 'time' => $item['time']]
-            );
+        if ($request->has('times')) {
+            $items = $request->get('times');
+            foreach ($items as $item) {
+                TrackingTimesheetTime::updateOrCreate(
+                    ['id' => $item['id'], 'timesheet_id' => $item['timesheet_id']],
+                    ['date' => $item['date'], 'time' => $item['time']]
+                );
+            }
         }
         return TrackingTimesheet::with('User')
             ->with('Approver')
