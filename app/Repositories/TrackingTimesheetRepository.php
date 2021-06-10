@@ -127,6 +127,8 @@ class TrackingTimesheetRepository
                 );
             }
         }
+        $this->genTrackersByTimesheet($timesheet);
+
         return TrackingTimesheet::with('User')
             ->with('Approver')
             ->with('Service')
@@ -238,6 +240,7 @@ class TrackingTimesheetRepository
             ['user_id', '=', $tracking->user_id],
             ['team_id', '=', $tracking->team_id],
             ['company_id', '=', $tracking->company_id],
+            ['is_manual', '=', $tracking->is_manual],
             ['entity_id', '=', $tracking->entity_id],
             ['entity_type', '=', $tracking->entity_type],
             ['date_from', '>=', Carbon::parse($tracking->date_from)->startOf('weeks')->format('Y-m-d')],
@@ -251,7 +254,7 @@ class TrackingTimesheetRepository
                 ['company_id', '=', $tracker->company_id],
                 ['team_id', '=', $tracker->team_id],
                 ['project_id', '=', $tracker->entity_id],
-                ['is_manually', '=', false],
+                ['is_manually', '=', !$tracker->is_manual],
                 ['from', '>=', Carbon::parse($tracker->date_from)->startOf('weeks')],
                 ['to', '<=', Carbon::parse($tracker->date_to)->endOf('weeks')]
             ])->first();
@@ -269,7 +272,7 @@ class TrackingTimesheetRepository
                     $trackingTimesheetTime = new TrackingTimesheetTime();
                     $trackingTimesheetTime->timesheet_id = $timesheet->id;
                     $trackingTimesheetTime->type = TrackingTimesheetTime::TYPE_WORK;
-                    $trackingTimesheetTime->date = Carbon::parse($timesheet->from)->add($i, 'days')->format('Y-m-d');
+                    $trackingTimesheetTime->date = Carbon::parse($timesheet->from)->addDays($i)->format('Y-m-d');
                     $trackingTimesheetTime->time = self::convertSecondsToTimeFormat(0, true);
                     $trackingTimesheetTime->save();
                 }
@@ -308,6 +311,72 @@ class TrackingTimesheetRepository
             return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
         }
         return sprintf("%02d", $h) . ":" . sprintf("%02d", $m);
+    }
+
+    public function increaseTimes(TrackingTimesheet $timesheet, TrackingTimesheetTime $time, int $timeToInc) {
+        $trackingProject = TrackingProject::where('id', '=', $timesheet->project_id)->first();
+
+        $tracker = new Tracking();
+        $tracker->timesheet_id = $timesheet->id;
+        $tracker->user_id = $timesheet->user_id;
+        $tracker->team_id = $timesheet->team_id;
+        $tracker->company_id = $timesheet->company_id;
+        $tracker->entity_id = $timesheet->project_id;
+        $tracker->entity_type = TrackingProject::class;
+        $tracker->is_manual = false;
+        $tracker->date_from = Carbon::parse($time->date)->hours(8)->format(Tracking::$DATETIME_FORMAT);
+        $tracker->date_to = Carbon::parse($tracker->date_from)->addSeconds($timeToInc)->format(Tracking::$DATETIME_FORMAT);
+        $tracker->status = Tracking::$STATUS_STOPPED;
+        $tracker->billable = $trackingProject ? $trackingProject->billable_by_default : false;
+        $tracker->rate = $trackingProject ? $trackingProject->rate : 0;
+        $tracker->save();
+    }
+
+    public function decreaseTimes($trackers, $timeToDec = 0) {
+        if ($timeToDec <= 0 || empty($trackers)) return;
+        $tracker = $trackers->shift();
+        if ($tracker->passed > $timeToDec) {
+            $tracker->date_to = Carbon::parse($tracker->date_to)->subSeconds($timeToDec)->format(Tracking::$DATETIME_FORMAT);
+            $tracker->save();
+        } elseif ($tracker->passed <= $timeToDec) {
+            $timeToDec = $timeToDec - $tracker->passed;
+            $tracker->delete();
+            $this->decreaseTimes($trackers, $timeToDec);
+        }
+        return;
+    }
+
+    public function genTrackersByTimesheet(TrackingTimesheet $timesheet) {
+        $projectId = $timesheet->project_id;
+        $userId = $timesheet->user_id;
+        $teamId = $timesheet->team_id;
+        $companyId = $timesheet->company_id;
+        foreach ($timesheet->times as $time) {
+            $from = Carbon::parse($time->date)->startOfDay()->format(Tracking::$DATETIME_FORMAT);
+            $to = Carbon::parse($time->date)->endOfDay()->format(Tracking::$DATETIME_FORMAT);
+            $trackers = Tracking::where([
+                ['team_id', '=', $teamId],
+                ['company_id', '=', $companyId],
+                ['user_id', '=', $userId],
+                ['entity_id', '=', $projectId],
+                ['entity_type', '=', TrackingProject::class],
+                ['timesheet_id', '=', $timesheet->id],
+                ['is_manual', '=', 'false'],
+            ])
+                ->where(function ($query) use ($from, $to) {
+                    $query->where('date_from', '<=', $to)
+                        ->where('date_to', '>=', $from);
+                })
+                ->orderBy('id', 'desc')
+                ->get();
+            $totalTime = $time->timeInSec;
+            $trackersTotalPassed = $trackers->sum('passed');
+            if ($trackersTotalPassed > $totalTime) {
+                $this->decreaseTimes($trackers, $trackersTotalPassed - $totalTime);
+            } elseif ($trackersTotalPassed < $totalTime) {
+                $this->increaseTimes($timesheet, $time, $totalTime - $trackersTotalPassed);
+            }
+        }
     }
 
 }

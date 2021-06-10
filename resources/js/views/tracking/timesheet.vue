@@ -1177,7 +1177,7 @@ export default {
         },
         saveChanges (item, index, newValue) {
             item.times[index].dateTime = newValue;
-            item.times[index].time = moment(newValue).format('hh:mm:ss');
+            item.times[index].time = moment(newValue).format('HH:mm:ss');
             return this.saveTimesheet(item);
         },
         submitItems (status) {

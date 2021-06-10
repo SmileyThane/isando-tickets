@@ -19,7 +19,8 @@ class TrackingTimesheetTime extends Model
 
     protected $appends = [
         'dayOfWeek',
-        'dateTime'
+        'dateTime',
+        'timeInSec',
     ];
 
     public function Timesheet() {
@@ -32,5 +33,13 @@ class TrackingTimesheetTime extends Model
 
     public function getDateTimeAttribute() {
         return $this->date . ' ' . $this->time;
+    }
+
+    public function getTimeInSecAttribute() {
+        $time = explode(':', $this->time);
+        $hour = $time[0];
+        $minutes = $time[1];
+        $seconds = $time[2];
+        return ($hour * 60 * 60) + ($minutes * 60) + $seconds;
     }
 }

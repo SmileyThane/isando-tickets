@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Repositories;
 
 use App\Permission;
@@ -11,6 +10,7 @@ use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
 use App\TrackingLogger;
+use App\TrackingTimesheet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -321,6 +321,16 @@ class TrackingRepository
             $newTracking = $tracking->replicate();
             $newTracking->date_from = Carbon::parse($newTracking->date_from)->setSeconds(0)->format(Tracking::$DATETIME_FORMAT);
             $newTracking->date_to = Carbon::parse($newTracking->date_to)->setSeconds(0)->format(Tracking::$DATETIME_FORMAT);
+            $newTracking->is_manual = true;
+            $timesheet = TrackingTimesheet::find($tracking->timesheet_id);
+            $newTimesheet = TrackingTimesheet::where([
+                ['project_id', '=', $timesheet->project_id],
+                ['user_id', '=', $timesheet->user_id],
+                ['team_id', '=', $timesheet->team_id],
+                ['company_id', '=', $timesheet->company_id],
+                ['is_manually', '=', !$timesheet->is_manually],
+            ])->first();
+            $newTracking->timesheet_id = $newTimesheet ? $newTimesheet->id : null;
             $newTracking->save();
             if ($tracking->service) {
                 $newTracking->Services()->attach($tracking->service->id);

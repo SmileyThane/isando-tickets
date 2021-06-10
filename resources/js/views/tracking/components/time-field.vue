@@ -100,6 +100,13 @@ export default {
             date: null,
         };
     },
+    created () {
+        moment.updateLocale(this.$store.state.lang.short_code, {
+            week: {
+                dow: 1,
+            },
+        });
+    },
     mounted() {
         this.time = moment(this.value).format(this.format);
         this.date = moment(this.value).format('YYYY-MM-DD');
