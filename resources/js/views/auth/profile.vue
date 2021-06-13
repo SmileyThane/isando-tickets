@@ -2011,8 +2011,8 @@ export default {
 
                             this.enableToEdit = false;
                         } else {
-                            this.snackbarMessage = this.langMap.main.generic_error;
-                            this.actionColor = 'error';
+                            this.snackbarMessage = this.langMap.main.user_permissions_warning;
+                            this.actionColor = 'warinng';
                             this.snackbar = true;
                         }
                     });
