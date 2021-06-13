@@ -3,19 +3,19 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Company;
 use App\Http\Controllers\Controller;
 use App\Notifications\NewTicket;
 use App\Permission;
 use App\Repositories\TicketRepository;
-use App\Company;
 use App\Team;
 use App\Ticket;
 use App\TicketCategory;
 use App\TicketPriority;
 use App\TicketType;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\JsonResponse;
 
 class TicketController extends Controller
 {

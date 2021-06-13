@@ -663,6 +663,7 @@
                                                             color="error"
                                                             v-if="row.status == 'started'"
                                                             @click="actionStopTracking(row.id)"
+                                                            :disabled="row.readonly"
                                                         >
                                                             <v-icon class="white--text">mdi-pause</v-icon>
                                                         </v-btn>
@@ -671,6 +672,7 @@
                                                             :color="themeBgColor"
                                                             v-if="row.status == 'stopped'"
                                                             @click="actionStartTrackingAsId(row.id)"
+                                                            :disabled="row.readonly"
                                                         >
                                                             <v-icon class="white--text">mdi-play-outline</v-icon>
                                                         </v-btn>
@@ -679,6 +681,7 @@
                                                         <v-menu
                                                             bottom
                                                             left
+                                                            :disabled="row.readonly"
                                                         >
                                                             <template v-slot:activator="{ on, attrs }">
                                                                 <v-btn
@@ -686,6 +689,7 @@
                                                                     icon
                                                                     v-bind="attrs"
                                                                     v-on="on"
+                                                                    :disabled="row.readonly"
                                                                 >
                                                                     <v-icon>mdi-dots-vertical</v-icon>
                                                                 </v-btn>
@@ -698,6 +702,7 @@
                                                                 <v-list dense>
                                                                     <v-list-item-group
                                                                         color="primary"
+                                                                        :disabled="row.readonly"
                                                                     >
                                                                         <v-list-item>
                                                                             <v-list-item-content>
@@ -1220,7 +1225,7 @@ export default {
             return this.$helpers.auth.checkPermissionByIds(ids);
         },
         isEditable(tracker) {
-            if (!this.hasPermission([43, 44, 45])) {
+            if (tracker.readonly || !this.hasPermission([43, 44, 45])) {
                 return false;
             }
             const trackerDiff = moment().diff(tracker.date_from, 'seconds');

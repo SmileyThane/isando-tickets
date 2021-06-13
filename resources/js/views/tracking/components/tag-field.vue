@@ -166,7 +166,7 @@ export default {
     },
     mounted() {
         // this.debounceGetTags();
-        this.debounceGetLanguages();
+        // this.debounceGetLanguages();
     },
     methods: {
         __getTags() {

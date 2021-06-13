@@ -397,7 +397,9 @@
                         </td>
                     </tr>
                 </template>
-                <template v-slot:body.append="{ headers }" v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) === -1">
+                <template v-slot:body.append="{ headers }"
+                          v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) === -1"
+                >
                     <tr>
                         <td
                             :class="{ 'text-end': ['data-table-select', 'project.name'].indexOf(header.value) === -1}"
@@ -429,16 +431,27 @@
                                 </div>
                             </template>
                             <template v-if="header.value === 'service' && showEditServices">
-                                <div class="mt-1 px-4" style="width: 100%">
-                                    <v-select
-                                        v-model="form.service"
-                                        :items="$store.getters['Services/getServices']"
-                                        item-value="id"
-                                        item-text="name"
-                                        placeholder="Service"
-                                        dense
-                                        clearable
-                                    ></v-select>
+                                <div class="mt-1 pl-4" style="width: 100%">
+                                    <v-edit-dialog
+                                        :return-value="form.service"
+                                        :ref="`editDialogService`"
+                                    >
+                                        <span v-if="form.service">
+                                            {{ $store.getters['Services/getServices'].find(i => i.id === form.service).name }}
+                                        </span>
+                                        <span v-else class="text--secondary">Add service</span>
+                                        <template v-slot:input>
+                                            <v-select
+                                                :items="$store.getters['Services/getServices']"
+                                                item-value="id"
+                                                item-text="name"
+                                                v-model="form.service"
+                                                clearable
+                                                @input="$refs[`editDialogService`][0].isActive = false"
+                                            >
+                                            </v-select>
+                                        </template>
+                                    </v-edit-dialog>
                                 </div>
                             </template>
                             <template v-if="header.value === 'mon'">
@@ -576,9 +589,26 @@
                 </span>
                 </template>
                 <template v-slot:item.service="{ isMobile, item, header, value }">
-                <span v-if="item.service">
-                    <span>{{ item.service.name }}</span>
-                </span>
+                    <v-edit-dialog
+                        :return-value="item.service"
+                        @save="updateService(item)"
+                        @close="updateService(item)"
+                        :ref="`editDialog${item.id}`"
+                    >
+                        <span v-if="item.service">{{ item.service.name }}</span>
+                        <span v-else class="text--secondary">Add service</span>
+                        <template v-slot:input>
+                            <v-select
+                                :items="$store.getters['Services/getServices']"
+                                item-value="id"
+                                item-text="name"
+                                v-model="item.service"
+                                clearable
+                                return-object
+                                @input="$refs[`editDialog${item.id}`].isActive = false"
+                            ></v-select>
+                        </template>
+                    </v-edit-dialog>
                 </template>
                 <template v-slot:item.is_manually="{ isMobile, item, header, value }">
                     <span v-if="item.is_manually">
@@ -1147,7 +1177,7 @@ export default {
         },
         saveChanges (item, index, newValue) {
             item.times[index].dateTime = newValue;
-            item.times[index].time = moment(newValue).format('hh:mm:ss');
+            item.times[index].time = moment(newValue).format('HH:mm:ss');
             return this.saveTimesheet(item);
         },
         submitItems (status) {
@@ -1197,9 +1227,9 @@ export default {
             if (this.showEditServices) {
                 headers.push({
                     text: '',
-                    align: 'start',
+                    align: 'end',
                     value: 'service',
-                    width: '5%',
+                    width: '10%',
                 });
             }
             headers = headers.concat([{
@@ -1329,6 +1359,16 @@ export default {
             this.snackbarMessage = 'Success';
             this.actionColor = 'success'
             this.snackbar = true;
+        },
+        updateService(item) {
+            item.service_id = item.service ? item.service.id : null;
+            this.$store.dispatch('Timesheet/updateTimesheet', {
+                id: item.id,
+                timesheet: {
+                    service: item.service
+                }
+            });
+
         },
     },
     watch: {
