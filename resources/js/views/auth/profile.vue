@@ -790,7 +790,7 @@
                     </v-expand-transition>
                 </v-card>
                 <br>
-                <v-card>
+                <v-card v-if="$helpers.auth.checkPermissionByIds([88])">
                     <v-toolbar
                         dark
                         dense
