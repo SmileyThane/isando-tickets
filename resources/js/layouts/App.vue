@@ -11,8 +11,8 @@
                style="font-weight: 900; text-shadow: 2px 2px #000000">
             Unlesh your creativity without limitations
           </div>
-          <v-btn class="btn-lg green" dark href="/register?plan_price_id=1" large>
-            Try it free
+          <v-btn class="btn-lg green" dark href="/login" large>
+            Login
           </v-btn>
           <br/>
           <h1 class="white--text mb-2 display-1 text-xs-center"
