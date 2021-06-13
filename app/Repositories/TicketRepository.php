@@ -73,8 +73,7 @@ class TicketRepository
             $ticketIds = $tickets->pluck('id')->toArray();
         }
         $ticketResult = Ticket::whereIn('id', $ticketIds);
-        if (
-            ($request->has('search') && !empty($request->search)) ||
+        if (($request->has('search') && !empty($request->search)) ||
             ($request->has('filter_id') && $request->filter_id !== null)
         ) {
             $ticketResult->where(
@@ -338,10 +337,14 @@ class TicketRepository
 
     public function updateStatus(Request $request, $id, $employeeId = null, $withHistory = true): bool
     {
-        $ticket = Ticket::find($id);
+        $ticket = Ticket::query()->find($id);
         $ticket->status_id = $request->status_id;
         $ticket->save();
-        $this->emailEmployees([$ticket->creator, $ticket->contact, $ticket->assigned_person], $ticket, ChangedTicketStatus::class);
+        $this->emailEmployees(
+            [$ticket->creator, $ticket->contact, $ticket->assigned_person],
+            $ticket,
+            ChangedTicketStatus::class
+        );
         if ($withHistory === true) {
             if ($request->status_id === TicketStatus::CLOSED) {
                 $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_closed');
@@ -366,7 +369,16 @@ class TicketRepository
                 $company = $companyUser->companyData;
                 if ($user->is_active) {
                     try {
-                        $user->notify(new $notificationClass($company->name, $user->title, $user->full_name, $ticket->name, $ticket->id, $user->language->short_code));
+                        $user->notify(
+                            new $notificationClass(
+                                $company->name,
+                                $user->title,
+                                $user->full_name,
+                                $ticket->name,
+                                $ticket->id,
+                                $user->language->short_code
+                            )
+                        );
                     } catch (Throwable $throwable) {
                         Log::error($throwable);
                         //hack for broken notification system
@@ -374,6 +386,7 @@ class TicketRepository
                 }
             }
         }
+
         return true;
     }
 
@@ -388,6 +401,7 @@ class TicketRepository
         }
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_deleted');
         $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
+
         return $result;
     }
 
@@ -418,7 +432,11 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->to_company_user_id = $request->to_company_user_id;
         $ticket->save();
-        $this->ticketUpdateRepo->setCompanyUserId($ticket->to_company_user_id, $request->to_company_user_id, $ticket->id);
+        $this->ticketUpdateRepo->setCompanyUserId(
+            $ticket->to_company_user_id,
+            $request->to_company_user_id,
+            $ticket->id
+        );
         return true;
     }
 
@@ -427,7 +445,11 @@ class TicketRepository
         $ticket = Ticket::find($id);
         $ticket->contact_company_user_id = $request->contact_company_user_id;
         $ticket->save();
-        $this->ticketUpdateRepo->setContactCompanyUserId($ticket->contact_company_user_id, $request->contact_company_user_id, $ticket->id);
+        $this->ticketUpdateRepo->setContactCompanyUserId(
+            $ticket->contact_company_user_id,
+            $request->contact_company_user_id,
+            $ticket->id
+        );
         return true;
     }
 
@@ -490,7 +512,7 @@ class TicketRepository
 
     public function editNotice(Request $request, $id): bool
     {
-        $ticketNotice = TicketNotice::find($request->notice_id);
+        $ticketNotice = TicketNotice::query()->find($request->notice_id);
         $ticketNotice->notice = $request->notice;
         $ticketNotice->save();
         $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('notice_updated');
@@ -512,7 +534,10 @@ class TicketRepository
                 $ticket->save();
                 $request->status_id = 5;
                 $this->updateStatus($request, $ticketId, null, false);
-                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_merged', $parentTicket->number);
+                $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription(
+                    'ticket_merged',
+                    $parentTicket->number
+                );
                 $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
                 $childNumbers .= $ticket->number . ' ';
             }
