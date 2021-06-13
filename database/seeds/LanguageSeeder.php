@@ -719,6 +719,7 @@ class LanguageSeeder extends Seeder
                             'unmark_as_manager' => 'Unmark as manager',
                             'team_manager' => 'Team manager',
                             'example' => 'Example',
+                            'user_permissions_warning' => 'You have limited access to system settings!',
                         ],
                     'system_settings' =>
                         [
@@ -1613,6 +1614,7 @@ class LanguageSeeder extends Seeder
                             'unmark_as_manager' => 'Markierung als Manager aufheben',
                             'team_manager' => 'Team-Manager',
                             'example' => 'Exempel',
+                            'user_permissions_warning' => 'Sie haben eingeschränkten Zugriff auf die Systemeinstellungen!',
                         ],
                         'system_settings' => [
                             'title' => 'Systemeinstellungen',
