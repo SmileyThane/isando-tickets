@@ -582,17 +582,4 @@ class TicketRepository
         $ticket->save();
         return true;
     }
-
-//    deprecated method
-//    public function filterEmployeesByRoles($employees, $roles)
-//    {
-//        return $employees->filter(static function ($item) use ($roles) {
-//            if ($item && $item->hasRoleId($roles)) {
-//                return $item;
-//            }
-//            return null;
-//        });
-//    }
-
-
 }
