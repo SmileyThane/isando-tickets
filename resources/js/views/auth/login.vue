@@ -69,7 +69,7 @@
                                                 v-bind="attrs"
                                                 v-on="on"
                                                 :color="themeBgColor"
-                                  na.              dark
+                                                dark na.
                                             >
                                                 mdi-two-factor-authentication
                                             </v-icon>
@@ -83,7 +83,7 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-list>
-                                <v-list-item to="/reset-password">Forgot your password? </v-list-item>
+                                <v-list-item to="/reset-password">Forgot your password?</v-list-item>
                             </v-list>
                             <v-spacer></v-spacer>
                             <v-btn :color="themeBgColor" style="color: white;" @click="handleSubmit">Login</v-btn>
@@ -118,7 +118,7 @@ export default {
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
         });
-       EventBus.$on('update-theme-bg-color', function (color) {
+        EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
     },
