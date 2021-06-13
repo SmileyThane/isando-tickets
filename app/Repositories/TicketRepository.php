@@ -400,8 +400,7 @@ class TicketRepository
             $ticket->save();
             $result = $ticket->is_spam;
         }
-//        $historyDescription = $this->ticketUpdateRepo->makeHistoryDescription('ticket_spam');
-//        $this->ticketUpdateRepo->addHistoryItem($ticket->id, null, $historyDescription);
+
         return $result;
     }
 
