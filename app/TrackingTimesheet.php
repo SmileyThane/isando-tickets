@@ -51,10 +51,14 @@ class TrackingTimesheet extends Model
         $items = $this->Times()->get();
         $total = 0;
         foreach ($items as $item) {
-            $dateTime = $item->date . ' ' . $item->time;
-            $start = Carbon::parse($dateTime)->startOfDay();
-            $end = Carbon::parse($dateTime);
-            $total += Carbon::parse($start)->diffInSeconds($end);
+//            $dateTime = $item->date . ' ' . $item->time;
+//            $start = Carbon::parse($dateTime)->startOfDay();
+//            $end = Carbon::parse($dateTime);
+//            $total += Carbon::parse($start)->diffInSeconds($end);
+            if ($item->time) {
+                $time = explode(':', $item->time);
+                $total += $time[0] * 60 * 60 + $time[1] * 60 + $time[2];
+            }
         }
         return $total; // in seconds
     }
