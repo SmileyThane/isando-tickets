@@ -5,6 +5,7 @@
  * @returns {string}
  */
 export const addZeroBefore = (str, len = 2) => {
+    if (str.toString().length >= len) return str;
     let zeros = new Array(len).join('0');
     return (zeros + str).slice(-len);
 }
