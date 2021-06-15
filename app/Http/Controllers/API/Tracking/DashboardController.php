@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\Tracking;
 
 use App\Tracking;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class DashboardController extends BaseController
@@ -40,13 +39,14 @@ class DashboardController extends BaseController
         $services = $this->trackingReportRepo->getTotalTimeByServices($from, $to);
         $projects = $this->trackingReportRepo->getTotalTimeByProjects($from, $to);
         $reports = $this->trackingReportRepo->getUserReports();
+        $currentTrackings = $this->trackingRepo->getCurrentUserTracking();
 
         $period = null;
         return [
             'services' => $services,
             'projects' => $projects,
             'reports' => $reports,
-            'tracking' => [],
+            'tracking' => $currentTrackings,
         ];
     }
 }

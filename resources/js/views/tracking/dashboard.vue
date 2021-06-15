@@ -81,7 +81,26 @@
                     style="width: 100%"
                     outlined
                 >
-                    <v-data-table style="width: 100%"></v-data-table>
+                    <v-data-table
+                        style="width: 100%"
+                        :items="getCurrentUserTracking"
+                        :headers="headers.tracking"
+                    >
+                        <template v-slot:item.project="{item}">
+                            <span v-if="item.entity">{{ item.entity.name }}</span>
+                        </template>
+                        <template v-slot:item.description="{item}">
+                            {{ item.description }}
+                        </template>
+                        <template v-slot:item.date_from="{item}">
+                            {{ moment(item.date_from).format('DD.MM.YYYY HH:mm:ss') }}
+                        </template>
+                        <template v-slot:item.date_to="{item}">
+                            <span v-if="item.date_to">
+                                {{ moment(item.date_to).format('DD.MM.YYYY HH:mm:ss') }}
+                            </span>
+                        </template>
+                    </v-data-table>
                 </v-card>
             </div>
         </div>
@@ -193,7 +212,29 @@ export default {
                         text: 'Name',
                         value: 'name',
                     },
-                ]
+                ],
+                tracking: [
+                    {
+                        text: 'ID',
+                        value: 'id',
+                    },
+                    {
+                        text: 'Description',
+                        value: 'description',
+                    },
+                    {
+                        text: 'Project',
+                        value: 'entity.name',
+                    },
+                    {
+                        text: 'From',
+                        value: 'date_from',
+                    },
+                    {
+                        text: 'To',
+                        value: 'date_to',
+                    },
+                ],
             },
         }
     },
@@ -271,6 +312,9 @@ export default {
         },
         getReports() {
             return this.data.reports ?? [];
+        },
+        getCurrentUserTracking() {
+            return this.data.tracking ?? [];
         },
     }
 }
