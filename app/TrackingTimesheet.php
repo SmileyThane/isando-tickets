@@ -71,6 +71,15 @@ class TrackingTimesheet extends Model
             $trackingTimesheet->Times()->delete();
         });
 
+        static::updating(function($trackingTimesheet) {
+            $service = Service::where('id', '=', $trackingTimesheet->service_id)->first();
+            if ($service) {
+                $trackings = Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->get();
+                foreach ($trackings as $tracking) {
+                    $tracking->Services()->sync([$service->id]);
+                }
+            }
+        });
     }
 
     public function genNumber() {

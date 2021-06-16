@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Notifications\TimesheetAppovalRequest;
 use App\Notifications\TimesheetApproved;
 use App\Notifications\TimesheetRejected;
+use App\Service;
 use App\Team;
 use App\Tracking;
 use App\TrackingProject;
@@ -95,6 +96,8 @@ class TrackingTimesheetRepository
                 $time->save();
             }
         }
+
+        $this->genTrackersByTimesheet($timesheet);
 
         return TrackingTimesheet::with('User')
             ->with('Approver')
@@ -330,6 +333,11 @@ class TrackingTimesheetRepository
         $tracker->billable = $trackingProject ? $trackingProject->billable_by_default : false;
         $tracker->rate = $trackingProject ? $trackingProject->rate : 0;
         $tracker->save();
+
+        $service = Service::where('id', '=', $timesheet->service_id)->first();
+        if ($service) {
+            $tracker->Services()->sync([$service->id]);
+        }
     }
 
     public function decreaseTimes($trackers, $timeToDec = 0) {

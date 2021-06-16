@@ -38,7 +38,7 @@ export default {
                 })
         },
         updateTimesheet({ state, commit, dispatch }, { id, timesheet: { project_id, billable, status, times, service } }) {
-            return axios.patch(`/api/tracking/timesheet/${id}`, { id, project_id, billable, status, times, service: service.id }, { retry: 5, retryDelay: 1000 })
+            return axios.patch(`/api/tracking/timesheet/${id}`, { id, project_id, billable, status, times, service: service ? service.id : null }, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
                         commit('UPDATE_ITEM', data);
