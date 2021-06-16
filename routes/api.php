@@ -243,6 +243,9 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::post('/timesheet/remind', 'TimesheetController@remind');
                 Route::patch('/timesheet/{id}', 'TimesheetController@update');
                 Route::delete('/timesheet/{id}', 'TimesheetController@delete');
+
+                // Dashboard
+                Route::get('/dashboard', 'DashboardController@index');
             });
 
         // Currencies

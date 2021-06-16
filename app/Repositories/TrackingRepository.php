@@ -358,4 +358,9 @@ class TrackingRepository
             dd($e->getMessage());
         }
     }
+
+    public function getCurrentUserTracking() {
+        $user = Auth::user();
+        return $user->tracking()->where('status', '=', 'started')->get();
+    }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\API\Tracking\PDF;
 use App\Notifications\SendTrackingReportByEmail;
 use App\Permission;
 use App\Role;
+use App\Team;
 use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
@@ -15,6 +16,7 @@ use App\TrackingReport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
@@ -32,7 +34,7 @@ class TrackingReportRepository
         if (!Auth::user()->employee->hasPermissionId(61)) {
             throw new \Exception('Access denied');
         }
-        return Auth::user()->trackingReports()->orderBy('id', 'desc')->get();
+        return $this->getUserReports();
     }
 
     public function find($reportId) {
@@ -666,5 +668,112 @@ class TrackingReportRepository
         }
 
         return $this->getHeaderCSV() . implode("\n", $result);
+    }
+
+    public function getTotalTimeByServices($from, $to) {
+        $user = Auth::user();
+
+        if (!Auth::user()->employee->hasPermissionId([
+            Permission::TRACKER_REPORT_VIEW_OWN_TIME_ACCESS,
+            Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS,
+            Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS
+        ])) {
+            throw new \Exception('Access denied');
+        }
+
+        $tracking = DB::table('tracking');
+
+        if ($user->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS)) {
+            // Company Admin
+            $company = $user->employee()
+                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+                ->with('userData')
+                ->first();
+            $tracking->where(function($query) use ($company, $user) {
+                $query->where('tracking.user_id', '=', $user->id)
+                    ->orWhere('tracking.company_id', '=', $company->company_id);
+            });
+        } elseif ($user->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS)) {
+            // Manager
+            $teams = $teams = Team::whereHas('employees', function ($query) use ($user) {
+                return $query
+                    ->where('company_user_id', '=', $user->employee->id)
+                    ->where('is_manager', '=', true);
+            })->get()->pluck('id')->toArray();
+            $tracking->whereIn('tracking.team_id', $teams);
+        } else {
+            // User
+            $tracking->where('tracking.user_id', '=', $user->id);
+        }
+
+        $tracking
+            ->leftJoin('serviceable', function($join) {
+                $join->on('tracking.id', '=', 'serviceable.serviceable_id')
+                    ->where('serviceable.serviceable_type', '=', Tracking::class);
+            })
+            ->leftJoin('services', 'services.id', '=', 'serviceable.service_id')
+            ->where(function($query) use ($from, $to) {
+                $query->where('date_to', '>=', $from)
+                    ->where('date_from', '<=', $to);
+            })
+            ->groupBy('services.id', 'services.name')
+            ->select(['services.name', 'services.id', DB::raw("SUM(date_to - date_from) as duration")]);
+//        dd($tracking->toSql(), $tracking->getBindings(), $tracking->get());
+        return $tracking->get();
+    }
+
+    public function getTotalTimeByProjects($from, $to) {
+        $user = Auth::user();
+
+        if (!Auth::user()->employee->hasPermissionId([
+            Permission::TRACKER_REPORT_VIEW_OWN_TIME_ACCESS,
+            Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS,
+            Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS
+        ])) {
+            throw new \Exception('Access denied');
+        }
+
+        $tracking = DB::table('tracking');
+
+        if ($user->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS)) {
+            // Company Admin
+            $company = $user->employee()
+                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+                ->with('userData')
+                ->first();
+            $tracking->where(function($query) use ($company, $user) {
+                $query->where('tracking.user_id', '=', $user->id)
+                    ->orWhere('tracking.company_id', '=', $company->company_id);
+            });
+        } elseif ($user->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS)) {
+            // Manager
+            $teams = $teams = Team::whereHas('employees', function ($query) use ($user) {
+                return $query
+                    ->where('company_user_id', '=', $user->employee->id)
+                    ->where('is_manager', '=', true);
+            })->get()->pluck('id')->toArray();
+            $tracking->whereIn('tracking.team_id', $teams);
+        } else {
+            // User
+            $tracking->where('tracking.user_id', '=', $user->id);
+        }
+
+        $tracking
+            ->leftJoin('tracking_projects', function($join) {
+                $join->on('tracking.entity_id', '=', 'tracking_projects.id')
+                    ->where('tracking.entity_type', '=', TrackingProject::class);
+            })
+            ->where(function($query) use ($from, $to) {
+                $query->where('date_to', '>=', $from)
+                    ->where('date_from', '<=', $to);
+            })
+            ->groupBy('tracking_projects.id', 'tracking_projects.name')
+            ->select(['tracking_projects.name', 'tracking_projects.id', DB::raw("SUM(tracking.date_to - tracking.date_from) as duration")]);
+//        dd($tracking->toSql(), $tracking->getBindings(), $tracking->get());
+        return $tracking->get();
+    }
+
+    public function getUserReports() {
+        return Auth::user()->trackingReports()->orderBy('id', 'desc')->get();
     }
 }
