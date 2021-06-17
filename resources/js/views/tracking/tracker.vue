@@ -32,6 +32,8 @@
                                 v-model="timerPanel.service"
                                 return-object
                                 style="max-width: 150px;"
+                                outlined
+                                dense
                             ></v-select>
                         </div>
                         <div class="flex-grow-1 align-self-center">
@@ -145,6 +147,8 @@
                                 v-model="manualPanel.service"
                                 return-object
                                 style="max-width: 150px;"
+                                outlined
+                                dense
                             ></v-select>
                         </div>
                         <div class="flex-grow-1 align-self-center">
@@ -317,8 +321,11 @@
                         hide-details
                         multiple
                         clearable
+                        outlined
+                        dense
                         single-line
                         style="min-width: 300px"
+                        class="mt-4"
                     >
                         <template v-slot:item="{ parent, item, on, attrs }">
                             <div class="d-flex">
@@ -361,7 +368,7 @@
                                     'max-width': '300px',
                                     'max-height': '36px',
                                 }"
-                                class="py-0 mt-5 mb-n3 dateRangePicker"
+                                class="py-0 mt-4 mb-n3 dateRangePicker"
                             ></v-text-field>
                         </template>
                         <v-card>
