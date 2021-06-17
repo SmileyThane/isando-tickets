@@ -388,11 +388,14 @@
             >
                 <template v-slot:body.prepend="{ headers }">
                     <tr class="highlight">
-                        <td class="text-end" v-for="header in headers" :style="{
+                        <td :class="{'text-end': header.time >= 0}" v-for="header in headers" :style="{
                         width: header.width,
                         maxWidth: header.width,
                         minWidth: header.width
                     }">
+                            <template v-if="header.value === 'project.name'">
+                                Total time
+                            </template>
                             <span v-if="header.time >= 0">{{ $helpers.time.convertSecToTime(header.time, false) }}</span>
                         </td>
                     </tr>
