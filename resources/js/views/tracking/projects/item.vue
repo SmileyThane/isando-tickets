@@ -86,6 +86,7 @@
                                             placeholder="Start typing to Search"
                                             return-object
                                             @change="actionSave()"
+                                            clearable
                                         ></v-autocomplete>
                                         <div class="mt-3" v-else>{{project.product.name}}</div>
                                     </template>
