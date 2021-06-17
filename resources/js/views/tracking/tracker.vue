@@ -950,6 +950,13 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
+        this.$store.dispatch('getCurrentUser')
+            .then(() => {
+                const currentUser = this.$store.getters['getCurrentUser'];
+                if (currentUser) {
+                    this.teamFilter.push(currentUser.id);
+                }
+            });
     },
     methods: {
         __globalTimer() {
