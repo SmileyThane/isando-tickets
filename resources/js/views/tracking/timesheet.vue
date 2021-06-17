@@ -401,7 +401,7 @@
                     </tr>
                 </template>
                 <template v-slot:body.append="{ headers }"
-                          v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) === -1"
+                          v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_REQUESTS, STATUS_REJECTED].indexOf(typeOfItems) === -1"
                 >
                     <tr>
                         <td
@@ -818,6 +818,16 @@
                 Remove selected
             </v-btn>
             <v-spacer></v-spacer>
+            <v-btn
+                :color="themeBgColor"
+                :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                v-if="selected.length && [STATUS_REJECTED].indexOf(typeOfItems) !== -1"
+                class="mx-2"
+                small
+                @click="submitItems('tracked')"
+            >
+                <span>Back to edit</span>
+            </v-btn>
             <v-dialog
                 v-model="sendingApprovalDialog"
                 width="500"

@@ -174,6 +174,12 @@ class TrackingTimesheetRepository
         foreach ($ids as $id) {
             $trackingTimesheet = TrackingTimesheet::where('id', '=', $id)->first();
             $approverId = null;
+
+            if (in_array($request->get('status'), [TrackingTimesheet::STATUS_TRACKED])) {
+                $trackingTimesheet->number = null;
+                $trackingTimesheet->save();
+            }
+
             if (in_array($request->get('status'), [TrackingTimesheet::STATUS_PENDING])) {
                 $approverId = $request->get('approver_id', null);
                 if (!$number && !$trackingTimesheet->number) {
