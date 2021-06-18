@@ -451,6 +451,10 @@ class TrackingTimesheetRepository
             })->get()->pluck('id')->toArray();
             $timesheet = TrackingTimesheet::where('status', '=', TrackingTimesheet::STATUS_PENDING)
                 ->whereIn('team_id', $teams)
+                ->where(function ($query) {
+                    $query->whereNull('approver_id')
+                        ->orWhere('approver_id', '=', Auth::user()->id);
+                })
                 ->groupBy('number')
                 ->select('number')
                 ->get()->count();
@@ -462,6 +466,10 @@ class TrackingTimesheetRepository
                 ->with('userData')->first();
             $timesheet = TrackingTimesheet::where('status', '=', TrackingTimesheet::STATUS_PENDING)
                 ->where('company_id', '=', $company->company_id)
+                ->where(function ($query) {
+                    $query->whereNull('approver_id')
+                        ->orWhere('approver_id', '=', Auth::user()->id);
+                })
                 ->groupBy('number')
                 ->select('number')
                 ->get()->count();
