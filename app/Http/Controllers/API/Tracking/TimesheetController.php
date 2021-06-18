@@ -68,4 +68,11 @@ class TimesheetController extends BaseController
         return self::showResponse($result);
     }
 
+    public function getCountTimesheetForApproval() {
+        $count = $this->timesheetRepo->getCountTimesheetForApproval();
+        return self::showResponse(true, [
+            'count' => $count,
+        ]);
+    }
+
 }

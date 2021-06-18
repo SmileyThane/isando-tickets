@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Notifications\TimesheetAppovalRequest;
 use App\Notifications\TimesheetApproved;
 use App\Notifications\TimesheetRejected;
+use App\Permission;
 use App\Service;
 use App\Team;
 use App\Ticket;
@@ -430,6 +431,42 @@ class TrackingTimesheetRepository
                 $this->increaseTimes($timesheet, $time, $totalTime - $trackersTotalPassed);
             }
         }
+    }
+
+    public function getCountTimesheetForApproval() {
+        if (!Auth::user()->employee->hasPermissionId([
+            Permission::TRACKER_VIEW_OWN_TIME_ACCESS,
+            Permission::TRACKER_VIEW_TEAM_TIME_ACCESS,
+            Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS,
+        ])) {
+            throw new \Exception('Access denied');
+        }
+        $timesheet = null;
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+            // Manager
+            $teams = $teams = Team::whereHas('employees', function ($query) {
+                return $query
+                    ->where('company_user_id', '=', Auth::user()->employee->id)
+                    ->where('is_manager', '=', true);
+            })->get()->pluck('id')->toArray();
+            $timesheet = TrackingTimesheet::where('status', '=', TrackingTimesheet::STATUS_PENDING)
+                ->whereIn('team_id', $teams)
+                ->groupBy('number')
+                ->select('number')
+                ->get()->count();
+        }
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+            // Company Admin
+            $company = Auth::user()->employee()
+                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+                ->with('userData')->first();
+            $timesheet = TrackingTimesheet::where('status', '=', TrackingTimesheet::STATUS_PENDING)
+                ->where('company_id', '=', $company->company_id)
+                ->groupBy('number')
+                ->select('number')
+                ->get()->count();
+        }
+        return $timesheet;
     }
 
 }

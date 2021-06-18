@@ -301,7 +301,17 @@
                             <v-icon>mdi-file-clock-outline</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.tracking_timesheet }}
+                            <v-list-item-title>
+                                <v-badge
+                                    v-if="countTimesheetForApproval !== null"
+                                    :color="themeBgColor"
+                                    class="mt-0"
+                                    :content="countTimesheetForApproval"
+                                    inline
+                                >
+                                    {{ langMap.sidebar.tracking_timesheet }}
+                                </v-badge>
+                                <span v-else>{{ langMap.sidebar.tracking_timesheet }}</span>
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
@@ -506,7 +516,8 @@ export default {
             settings: '',
             notifications: '',
             timeTracking: '',
-            sidebarGroups: []
+            sidebarGroups: [],
+            countTimesheetForApproval: null,
         }
     },
     watch: {
@@ -525,6 +536,7 @@ export default {
         this.getCompanyLogo();
         this.getCompanySettings();
         this.getTrackingSettings();
+        this.getCountTimesheetForApproval();
 
         this.ticket = this.langMap.sidebar.ticket;
         this.customers = this.langMap.sidebar.customers
@@ -578,7 +590,15 @@ export default {
         },
         getTrackingSettings() {
             return this.$store.dispatch('Tracking/getSettings');
-        }
+        },
+        getCountTimesheetForApproval() {
+            axios.get('/api/tracking/timesheet/approval')
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        this.countTimesheetForApproval = data.count;
+                    }
+                });
+        },
     },
     computed: {
         hasLicense() {

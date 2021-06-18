@@ -238,6 +238,7 @@ Route::group(['middleware' => 'auth:api'], function () {
                 // Timesheet
                 Route::get('/timesheet', 'TimesheetController@get');
                 Route::post('/timesheet', 'TimesheetController@create');
+                Route::get('/timesheet/approval', 'TimesheetController@getCountTimesheetForApproval');
                 Route::get('/timesheet/{id}', 'TimesheetController@find');
                 Route::patch('/timesheet/submit', 'TimesheetController@submit');
                 Route::post('/timesheet/remind', 'TimesheetController@remind');
