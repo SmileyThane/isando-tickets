@@ -2,7 +2,8 @@ export default {
     namespaced: true,
     state: {
         timesheet: [],
-        params: {}
+        params: {},
+        countForApproval: 0,
     },
     actions: {
         getTimesheet({ commit }, { start, end }) {
@@ -65,6 +66,14 @@ export default {
                     }
                     return success;
                 })
+        },
+        getCountTimesheetForApproval({ commit }) {
+            axios.get('/api/tracking/timesheet/approval')
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        commit('SET_COUNT_FOR_APPROVAL', data.count);
+                    }
+                });
         }
     },
     mutations: {
@@ -77,11 +86,17 @@ export default {
         },
         SET_PARAMS(state, params) {
             state.params = params;
+        },
+        SET_COUNT_FOR_APPROVAL(state, params) {
+            state.countForApproval = params;
         }
     },
     getters: {
         getTimesheet(state) {
             return state.timesheet;
+        },
+        getCountTimesheetForApproval(state) {
+            return state.countForApproval;
         }
     }
 }

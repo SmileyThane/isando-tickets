@@ -1353,6 +1353,7 @@ export default {
             })
                 .then(() => {
                     this.loadingBtn = false;
+                    this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
                     return null;
                 });
             this.rejectReason = '';
@@ -1366,6 +1367,7 @@ export default {
             })
                 .then(() => {
                     this.loadingBtn = false;
+                    this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
                     return null;
                 });
             this.rejectReason = '';

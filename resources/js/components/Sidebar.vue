@@ -303,10 +303,10 @@
                         <v-list-item-content>
                             <v-list-item-title>
                                 <v-badge
-                                    v-if="countTimesheetForApproval >= 1"
+                                    v-if="this.$store.getters['Timesheet/getCountTimesheetForApproval'] > 0"
                                     :color="themeBgColor"
                                     class="mt-0"
-                                    :content="countTimesheetForApproval"
+                                    :content="this.$store.getters['Timesheet/getCountTimesheetForApproval']"
                                     inline
                                 >
                                     {{ langMap.sidebar.tracking_timesheet }}
@@ -517,7 +517,7 @@ export default {
             notifications: '',
             timeTracking: '',
             sidebarGroups: [],
-            countTimesheetForApproval: null,
+            countTimesheetForApproval: 0,
         }
     },
     watch: {
@@ -536,7 +536,7 @@ export default {
         this.getCompanyLogo();
         this.getCompanySettings();
         this.getTrackingSettings();
-        this.getCountTimesheetForApproval();
+        this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
 
         this.ticket = this.langMap.sidebar.ticket;
         this.customers = this.langMap.sidebar.customers
@@ -590,14 +590,6 @@ export default {
         },
         getTrackingSettings() {
             return this.$store.dispatch('Tracking/getSettings');
-        },
-        getCountTimesheetForApproval() {
-            axios.get('/api/tracking/timesheet/approval')
-                .then(({ data: { success, data } }) => {
-                    if (success) {
-                        this.countTimesheetForApproval = data.count;
-                    }
-                });
         },
     },
     computed: {

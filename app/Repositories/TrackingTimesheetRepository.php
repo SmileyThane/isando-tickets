@@ -441,7 +441,7 @@ class TrackingTimesheetRepository
         ])) {
             throw new \Exception('Access denied');
         }
-        $timesheet = null;
+        $timesheet = 0;
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
             // Manager
             $teams = $teams = Team::whereHas('employees', function ($query) {
