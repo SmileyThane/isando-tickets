@@ -303,7 +303,7 @@
                         <v-list-item-content>
                             <v-list-item-title>
                                 <v-badge
-                                    v-if="countTimesheetForApproval !== null"
+                                    v-if="countTimesheetForApproval >= 1"
                                     :color="themeBgColor"
                                     class="mt-0"
                                     :content="countTimesheetForApproval"
