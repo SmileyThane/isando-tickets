@@ -388,21 +388,24 @@
             >
                 <template v-slot:body.prepend="{ headers }">
                     <tr class="highlight">
-                        <td class="text-end" v-for="header in headers" :style="{
+                        <td :class="{'text-end': header.time >= 0}" v-for="header in headers" :style="{
                         width: header.width,
                         maxWidth: header.width,
                         minWidth: header.width
                     }">
+                            <template v-if="header.value === 'entity.name'">
+                                Total time
+                            </template>
                             <span v-if="header.time >= 0">{{ $helpers.time.convertSecToTime(header.time, false) }}</span>
                         </td>
                     </tr>
                 </template>
                 <template v-slot:body.append="{ headers }"
-                          v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) === -1"
+                          v-if="[STATUS_ARCHIVED, STATUS_APPROVAL_REQUESTS, STATUS_REJECTED].indexOf(typeOfItems) === -1"
                 >
                     <tr>
                         <td
-                            :class="{ 'text-end': ['data-table-select', 'project.name'].indexOf(header.value) === -1}"
+                            :class="{ 'text-end': ['data-table-select', 'entity.name'].indexOf(header.value) === -1}"
                             v-for="header in headers"
                             :style="{
                                 width: header.width,
@@ -422,11 +425,11 @@
                                     </v-btn>
                                 </div>
                             </template>
-                            <template v-if="header.value === 'project.name'">
+                            <template v-if="header.value === 'entity.name'">
                                 <div class="mt-1 px-4" style="width: 100%">
                                     <ProjectBtn
                                         :color="themeBgColor"
-                                        v-model="form.project"
+                                        v-model="form.entity"
                                     ></ProjectBtn>
                                 </div>
                             </template>
@@ -583,9 +586,11 @@
                         @click="toggleTableItem(item)"
                     ></v-simple-checkbox>
                 </template>
-                <template v-slot:item.project.name="{ isMobile, item, header, value }">
-                <span v-if="item.project">
-                    <span>{{ item.project.name }}</span> / <span>{{ item.project.client.name }}</span>
+                <template v-slot:item.entity.name="{ isMobile, item, header, value }">
+                <span v-if="item.entity">
+                    <span v-if="item.entity.from">Ticket: {{ item.entity.number }}</span>
+                    <span v-else>Project:</span>
+                    <span>{{ item.entity.name }}</span><span v-if="item.entity && item.entity.client"> / {{ item.entity.client.name }}</span>
                 </span>
                 </template>
                 <template v-slot:item.service="{ isMobile, item, header, value }">
@@ -815,6 +820,16 @@
                 Remove selected
             </v-btn>
             <v-spacer></v-spacer>
+            <v-btn
+                :color="themeBgColor"
+                :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                v-if="selected.length && [STATUS_REJECTED].indexOf(typeOfItems) !== -1"
+                class="mx-2"
+                small
+                @click="submitItems('tracked')"
+            >
+                <span>Back to edit</span>
+            </v-btn>
             <v-dialog
                 v-model="sendingApprovalDialog"
                 width="500"
@@ -1038,7 +1053,9 @@ export default {
             menuDate: false,
             filterProject: 0,
             form: {
-                project: null,
+                entity: null,
+                entity_id: null,
+                entity_type: null,
                 service: null,
                 mon: moment().startOf('days').format(),
                 tue: moment().startOf('days').format(),
@@ -1071,6 +1088,7 @@ export default {
         });
         this.debounceGetTimesheet = _.debounce(this._getTimesheet, 1000);
         this.debounceGetProjects = _.debounce(this._getProjects, 1000);
+        this.debounceGetTickets = _.debounce(this._getTickets, 1000);
         this.debounceGetManagedTeams = _.debounce(this._getManagedTeams, 1000);
         this.debounceGetTeamManagers = _.debounce(this._getTeamManagers, 1000);
         this.debounceGetCurrentUser = _.debounce(this._getCurrentUser, 1000);
@@ -1088,6 +1106,7 @@ export default {
         this.debounceGetCurrentUser();
         this.debounceGetTimesheet();
         this.debounceGetProjects();
+        this.debounceGetTickets();
         this.debounceGetManagedTeams();
         this.resetTimesheet();
         this.debounceGetTeamManagers();
@@ -1114,6 +1133,9 @@ export default {
         _getProjects () {
             this.$store.dispatch('Projects/getProjectList', { search: null });
         },
+        _getTickets () {
+            this.$store.dispatch('Tickets/getTicketList', { search: null });
+        },
         _getCurrentUser () {
             this.$store.dispatch('getCurrentUser');
         },
@@ -1121,7 +1143,11 @@ export default {
             this.$store.dispatch('Services/getServicesList', { search: '' });
         },
         createTimesheet () {
-            if (this.form.project) {
+            if (this.form.entity) {
+                this.form.entity_id = this.form.entity.id;
+                this.form.entity_type = this.form.entity.from ? 'App\\Ticket' : 'App\\TrackingProject';
+            }
+            if (this.form.entity && this.form.entity_id && this.form.entity_type) {
                 return this.$store.dispatch('Timesheet/createTimesheet', this.form)
                     .then(result => {
                         if (result) {
@@ -1141,7 +1167,9 @@ export default {
         resetTimesheet () {
             this.selected = [];
             this.form = {
-                project: null,
+                entity: null,
+                entity_id: null,
+                entity_type: null,
                 service: null,
                 mon: moment(this.periodStart).startOf('days').format(),
                 tue: moment(this.periodStart).add(1, 'days').startOf('days').format(),
@@ -1220,7 +1248,7 @@ export default {
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.projects,
                     align: 'start',
-                    value: 'project.name',
+                    value: 'entity.name',
                     width: '20%',
                 }
             ];
@@ -1325,6 +1353,7 @@ export default {
             })
                 .then(() => {
                     this.loadingBtn = false;
+                    this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
                     return null;
                 });
             this.rejectReason = '';
@@ -1338,6 +1367,7 @@ export default {
             })
                 .then(() => {
                     this.loadingBtn = false;
+                    this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
                     return null;
                 });
             this.rejectReason = '';
@@ -1370,6 +1400,11 @@ export default {
             });
 
         },
+        chooseProjectHandler(data) {
+            console.log(data);
+            this.form.entity_id = data.project && data.project.id ? data.project.id : null;
+            this.form.entity_type = data.project && data.project.from ? 'App\\Ticket' : 'App\\TrackingProject';
+        }
     },
     watch: {
         date () {
@@ -1500,7 +1535,7 @@ export default {
             if (this.filterProject) {
                 return timesheet
                     .filter(i => i.user_id === user.id)
-                    .filter(i => i.project && i.project.id === this.filterProject);
+                    .filter(i => i.entity_id && i.entity.id === this.filterProject);
             }
             return timesheet
                 .filter(i => i.user_id === user.id)

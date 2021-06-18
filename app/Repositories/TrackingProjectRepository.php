@@ -156,7 +156,11 @@ class TrackingProjectRepository
             $trackingProject->name = $request->name;
         }
         if ($request->has('product')) {
-            $trackingProject->product_id = $request->product['id'];
+            if (is_null($request->product)) {
+                $trackingProject->product_id = null;
+            } else {
+                $trackingProject->product_id = $request->product['id'];
+            }
         }
         if ($request->has('client')) {
             $trackingProject->client_id = $request->client['id'];

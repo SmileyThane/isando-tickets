@@ -2,7 +2,8 @@ export default {
     namespaced: true,
     state: {
         timesheet: [],
-        params: {}
+        params: {},
+        countForApproval: 0,
     },
     actions: {
         getTimesheet({ commit }, { start, end }) {
@@ -19,8 +20,8 @@ export default {
                     return success;
                 });
         },
-        createTimesheet({ dispatch, state }, { project, service, mon, tue, wed, thu, fri, sat, sun }) {
-            return axios.post('/api/tracking/timesheet', { project, service, mon, tue, wed, thu, fri, sat, sun }, { retry: 5, retryDelay: 1000 })
+        createTimesheet({ dispatch, state }, { entity_id, entity_type, service, mon, tue, wed, thu, fri, sat, sun }) {
+            return axios.post('/api/tracking/timesheet', { entity_id, entity_type, service, mon, tue, wed, thu, fri, sat, sun }, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);
@@ -37,8 +38,8 @@ export default {
                     return success;
                 })
         },
-        updateTimesheet({ state, commit, dispatch }, { id, timesheet: { project_id, billable, status, times, service } }) {
-            return axios.patch(`/api/tracking/timesheet/${id}`, { id, project_id, billable, status, times, service: service ? service.id : null }, { retry: 5, retryDelay: 1000 })
+        updateTimesheet({ state, commit, dispatch }, { id, timesheet: { entity_id, entity_type, billable, status, times, service } }) {
+            return axios.patch(`/api/tracking/timesheet/${id}`, { id, entity_id, entity_type, billable, status, times, service: service ? service.id : null }, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success }}) => {
                     if (success) {
                         commit('UPDATE_ITEM', data);
@@ -65,6 +66,14 @@ export default {
                     }
                     return success;
                 })
+        },
+        getCountTimesheetForApproval({ commit }) {
+            axios.get('/api/tracking/timesheet/approval')
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        commit('SET_COUNT_FOR_APPROVAL', data.count);
+                    }
+                });
         }
     },
     mutations: {
@@ -77,11 +86,17 @@ export default {
         },
         SET_PARAMS(state, params) {
             state.params = params;
+        },
+        SET_COUNT_FOR_APPROVAL(state, params) {
+            state.countForApproval = params;
         }
     },
     getters: {
         getTimesheet(state) {
             return state.timesheet;
+        },
+        getCountTimesheetForApproval(state) {
+            return state.countForApproval;
         }
     }
 }
