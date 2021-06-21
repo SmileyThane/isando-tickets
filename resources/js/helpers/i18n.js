@@ -6,7 +6,8 @@ import store from './../store';
  * @returns {string} - en
  */
 export const getCurrentLocale = () => {
-    return store.getters['getLang'];
+    let locale = store.getters['getLang'].locale;
+    return locale.substring(0, locale.indexOf('_')).toLowerCase();
 }
 
 /**
