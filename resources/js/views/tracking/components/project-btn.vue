@@ -101,7 +101,7 @@
                         {{langMap.tracking.project_btn.create_new_project}}
                     </v-expansion-panel-header>
                     <v-expansion-panel-content
-                        style="min-height: 380px; max-height: 380px;"
+                        style="min-height: 380px;"
                     >
                         <v-list>
                             <v-list-item>
@@ -372,11 +372,17 @@ export default {
             }
         },
         selectProject(project) {
-            this.selectedProject = project.shift();
+            project = project.shift();
+            if (project && project.id) {
+                this.selectedProject = this.$store.getters['Projects/getProjects'].find(p => p.id === project.id);
+            }
             this.shown = false;
         },
         selectTicket(ticket) {
-            this.selectedTicket = ticket.shift();
+            ticket = ticket.shift();
+            if (ticket && ticket.id) {
+                this.selectedTicket = this.$store.getters['Tickets/getTickets'].find(t => t.id === ticket.id);
+            }
             this.shown = false;
         },
         toggleFavorite(project) {
@@ -442,7 +448,7 @@ export default {
             }
         },
         createProjectValid() {
-            return this.form.name && this.form.product && this.form.client && this.form.color;
+            return this.form.name && this.form.client && this.form.color;
         }
     },
     watch: {

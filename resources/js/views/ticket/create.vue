@@ -299,6 +299,15 @@
                                     {{ langMap.ticket.company_from }}:
                                     {{ getSupplierName() }}
                                 </v-col>
+                                <v-col cols="12">
+                                    <v-text-field
+                                    v-model="createContactForm.description"
+                                    :color="themeBgColor"
+                                    :label="langMap.main.description"
+                                    name="description"
+                                    type="text"
+                                />
+                                </v-col>
                                 <v-col cols="4">
                                     <v-text-field
                                         v-model="createContactForm.name"
@@ -330,6 +339,78 @@
                                     />
                                 </v-col>
                                 <v-col cols="6">
+                                    <v-text-field
+                                        v-model="createContactForm.email"
+                                        :color="themeBgColor"
+                                        :label="langMap.main.email"
+                                        name="email"
+                                        prepend-icon="mdi-mail"
+                                        required
+                                        type="text"
+                                    />
+                                </v-col>
+                                <v-col cols="6">
+                                    <p v-for="(item, i) in createContactForm.phones"  :key="item.id" class="mb-2">
+                                        <v-icon v-if="item.type" :title="$helpers.i18n.localized(item.type)" v-text="item.type.icon" dense small left />
+                                        {{ item.phone }}
+
+                                        <v-icon small right :color="themeBgColor" :title="langMap.main.delete" @click="deletePhone(i)">mdi-trash-can</v-icon>
+                                    </p>
+
+                                    <v-expansion-panels accordion>
+                                        <v-expansion-panel>
+                                            <v-expansion-panel-header>
+                                                {{ langMap.main.new_phone }}
+                                                <template v-slot:actions>
+                                                    <v-icon :color="themeBgColor">mdi-plus</v-icon>
+                                                </template>
+                                            </v-expansion-panel-header>
+                                            <v-expansion-panel-content>
+                                                <v-form>
+                                                    <v-row>
+                                                        <v-col cols="12">
+                                                            <v-text-field
+                                                                v-model="phoneForm.phone"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :label="langMap.main.phone"
+                                                                dense
+                                                            />
+                                                            <v-select
+                                                                v-model="phoneForm.phone_type"
+                                                                :color="themeBgColor"
+                                                                :item-color="themeBgColor"
+                                                                :items="phoneTypes"
+                                                                :label="langMap.main.type"
+                                                                dense
+                                                                item-value="id"
+                                                            >
+                                                                <template slot="selection" slot-scope="data">
+                                                                    <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                </template>
+                                                                <template slot="item" slot-scope="data">
+                                                                    <v-icon left small v-text="data.item.icon"></v-icon> {{ $helpers.i18n.localized(data.item) }}
+                                                                </template>
+                                                            </v-select>
+                                                        </v-col>
+                                                        <v-btn
+                                                            :color="themeBgColor"
+                                                            bottom
+                                                            dark
+                                                            fab
+                                                            right
+                                                            small
+                                                            @click="addPhone"
+                                                        >
+                                                            <v-icon :color="themeBgColor" :style="`color: ${themeFgColor};`">mdi-plus</v-icon>
+                                                        </v-btn>
+                                                    </v-row>
+                                                </v-form>
+                                            </v-expansion-panel-content>
+                                        </v-expansion-panel>
+                                    </v-expansion-panels>
+                                </v-col>
+                                <v-col cols="6">
                                     <v-autocomplete
                                         v-model="createContactForm.language_id"
                                         :color="themeBgColor"
@@ -343,15 +424,6 @@
                                     />
                                 </v-col>
                                 <v-col cols="6">
-                                    <v-text-field
-                                        v-model="createContactForm.email"
-                                        :color="themeBgColor"
-                                        :label="langMap.main.email"
-                                        name="email"
-                                        prepend-icon="mdi-mail"
-                                        required
-                                        type="text"
-                                    />
                                     <v-checkbox
                                         v-model="createContactForm.is_active"
                                         :disabled="$helpers.auth.checkPermissionByIds(['36,37'])"
@@ -435,8 +507,15 @@
                     surname: '',
                     language_id: '',
                     email: '',
-                    is_active: 0
+                    is_active: 0,
+                    description: '',
+                    phones: []
                 },
+                phoneForm: {
+                    phone: '',
+                    phone_type: '',
+                },
+                phoneTypes: [],
                 languages: []
             }
         },
@@ -459,6 +538,7 @@
             this.getCategories()
             this.getLanguages()
             // this.getCompany()
+            this.getPhoneTypes()
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
                 that.themeBgColor = color;
@@ -625,7 +705,9 @@
                             surname: '',
                             language_id: '',
                             email: '',
-                            is_active: 0
+                            is_active: 0,
+                            phones: [],
+                            description: ''
                         };
                         this.snackbarMessage = this.langMap.company.employee_created;
                         this.actionColor = 'success'
@@ -653,6 +735,33 @@
             getSupplierName() {
                 let index = this.suppliers.findIndex(supplier => supplier.item === this.ticketForm.from);
                 return index > -1 ? this.suppliers[index].name : '';
+            },
+            addPhone() {
+                if (this.phoneForm.phone_type) {
+                    this.phoneForm.type = this.phoneTypes.find(x => x.id === this.phoneForm.phone_type);
+                }
+                this.createContactForm.phones.push(this.phoneForm);
+                this.phoneForm = {
+                    phone: '',
+                    phone_type: '',
+                    type: null
+                }
+                this.$forceUpdate();
+            },
+            deletePhone(index) {
+                this.createContactForm.phones.splice(index, 1);
+            },
+            getPhoneTypes() {
+                axios.get(`/api/phone_types`).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.phoneTypes = response.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error';
+                        this.snackbar = true;
+                    }
+                });
             }
         }
     }

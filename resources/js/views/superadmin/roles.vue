@@ -154,6 +154,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.items = response.data
+                    window.location.reload()
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';

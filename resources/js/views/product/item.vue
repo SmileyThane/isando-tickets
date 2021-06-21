@@ -330,7 +330,9 @@ export default {
                     formData.append(key, this.product[key]);
                 }
             }
-            Array.from(this.product.files).forEach(file => formData.append('files[]', file));
+            if (this.product.files) {
+                Array.from(this.product.files).forEach(file => formData.append('files[]', file));
+            }
             axios.post(`/api/product/${this.$route.params.id}`, formData, config).then(response => {
                 response = response.data
                 if (response.success === true) {

@@ -15,6 +15,7 @@ use App\Notifications\RegularInviteEmail;
 use App\Permission;
 use App\Settings;
 use App\User;
+use App\Phone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -185,7 +186,7 @@ class CompanyUserRepository
                 $user->timezone_id = $companySettings->data['timezone'];
                 $user->save();
             }
-            $companyUser = $this->create($request['company_id'], $request['user_id'], $isClientable);
+            $companyUser = $this->create($request['company_id'], $request['user_id'], $isClientable, $request['description']);
             if ($user->is_active) {
                 $this->roleRepo->attach($companyUser->id, CompanyUser::class, $request['role_id']);
                 if ($isNew === true) {
@@ -206,6 +207,19 @@ class CompanyUserRepository
                     }
                 }
             }
+
+            if ($request['phones']) {
+                foreach ($request['phones'] as $phone) {
+                    Phone::firstOrCreate([
+                            'entity_id' => $user->id,
+                            'entity_type' => User::class,
+                            'phone' => $phone['phone'],
+                            'phone_type' => $phone['phone_type']
+                    ]);
+
+                }
+            }
+
             return $companyUser;
         }
         return $isValid;
