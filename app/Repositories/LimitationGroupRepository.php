@@ -12,12 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class LimitationGroupRepository
 {
-    public function create($name, $companyId, $limitationTypeId): bool
+    public function create($name, $companyId, $limitationTypeId, $autoAssign): bool
     {
         LimitationGroup::query()->create([
             'name' => $name,
             'company_id' => $companyId,
-            'limitation_type_id' => $limitationTypeId
+            'limitation_type_id' => $limitationTypeId,
+            'is_auto_assign_new_entities' => $autoAssign
         ]);
 
         return true;
