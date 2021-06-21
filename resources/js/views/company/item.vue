@@ -1302,7 +1302,7 @@
                                                     type="text"
                                                 ></v-text-field>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 <v-select
                                                     v-model="limitationGroupForm.limitation_type_id"
                                                     :color="themeBgColor"
@@ -1313,7 +1313,7 @@
                                                     item-text="short_code"
                                                 />
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 <v-checkbox
                                                     v-model="limitationGroupForm.auto_assign"
                                                     :color="themeBgColor"
@@ -2670,6 +2670,8 @@ export default {
                     this.snackbarMessage = this.langMap.limitation_group.created;
                     this.actionColor = 'success'
                     this.snackbar = true;
+                    this.limitationGroupForm.name = ''
+                    this.limitationGroupForm.auto_assign = 0
                 } else {
                     this.snackbarMessage = this.langMap.main.generic_error;
                     this.actionColor = 'error';
