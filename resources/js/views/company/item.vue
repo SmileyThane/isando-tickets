@@ -1313,6 +1313,15 @@
                                                     item-text="short_code"
                                                 />
                                             </div>
+                                            <div class="col-md-6">
+                                                <v-checkbox
+                                                    v-model="limitationGroupForm.auto_assign"
+                                                    :color="themeBgColor"
+                                                    :item-color="themeBgColor"
+                                                    :label="'Auto assign'"
+                                                    item-value="id"
+                                                />
+                                            </div>
                                             <v-btn
                                                 :color="themeBgColor"
                                                 bottom
@@ -2259,7 +2268,8 @@ export default {
             limitationGroupForm: {
                 name: '',
                 company_id: null,
-                limitation_type_id: null
+                limitation_type_id: null,
+                auto_assign: 0
             },
             productHeaders: [
                 {
