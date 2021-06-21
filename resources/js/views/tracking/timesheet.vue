@@ -1110,6 +1110,8 @@ export default {
         this.resetTimesheet();
         this.debounceGetTeamManagers();
         this.debounceGetServices();
+        this.$store.dispatch('Clients/getClientList', { search: null });
+        this.$store.dispatch('Products/getProductList', { search: null });
     },
     methods: {
         async _getTimesheet () {

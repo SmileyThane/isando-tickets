@@ -442,7 +442,7 @@ export default {
             }
         },
         createProjectValid() {
-            return this.form.name && this.form.product && this.form.client && this.form.color;
+            return this.form.name && this.form.client && this.form.color;
         }
     },
     watch: {
