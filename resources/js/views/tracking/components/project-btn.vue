@@ -101,7 +101,7 @@
                         {{langMap.tracking.project_btn.create_new_project}}
                     </v-expansion-panel-header>
                     <v-expansion-panel-content
-                        style="min-height: 380px; max-height: 380px;"
+                        style="min-height: 380px;"
                     >
                         <v-list>
                             <v-list-item>
