@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class LimitationGroup extends Model
 {
-    protected $fillable = ['name', 'company_id', 'limitation_type_id'];
+    protected $fillable = ['name', 'company_id', 'limitation_type_id', 'is_auto_assign_new_entities'];
 
     public function employees(): HasMany
     {
