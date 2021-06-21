@@ -372,11 +372,17 @@ export default {
             }
         },
         selectProject(project) {
-            this.selectedProject = project.shift();
+            project = project.shift();
+            if (project && project.id) {
+                this.selectedProject = this.$store.getters['Projects/getProjects'].find(p => p.id === project.id);
+            }
             this.shown = false;
         },
         selectTicket(ticket) {
-            this.selectedTicket = ticket.shift();
+            ticket = ticket.shift();
+            if (ticket && ticket.id) {
+                this.selectedTicket = this.$store.getters['Tickets/getTickets'].find(t => t.id === ticket.id);
+            }
             this.shown = false;
         },
         toggleFavorite(project) {
