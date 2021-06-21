@@ -23,7 +23,7 @@ class LimitationGroupController extends Controller
     {
         if (Auth::user()->employee->hasPermissionId(Permission::COMPANY_WRITE_ACCESS)) {
             return self::showResponse(
-                $this->limitationGroupRepo->create($request->name, $request->company_id, $request->limitation_type_id)
+                $this->limitationGroupRepo->create($request->name, $request->company_id, $request->limitation_type_id, $request->auto_assign)
             );
         }
 
