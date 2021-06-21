@@ -588,8 +588,7 @@
                 </template>
                 <template v-slot:item.entity.name="{ isMobile, item, header, value }">
                 <span v-if="item.entity">
-                    <span v-if="item.entity.from">Ticket: {{ item.entity.number }}</span>
-                    <span v-else>Project:</span>
+                    <span v-if="item.entity.from">{{ item.entity.number }}</span>
                     <span>{{ item.entity.name }}</span><span v-if="item.entity && item.entity.client"> / {{ item.entity.client.name }}</span>
                 </span>
                 </template>
