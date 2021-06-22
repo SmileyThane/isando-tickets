@@ -222,15 +222,15 @@ class ClientRepository
 
     public function updateDescription(Request $request)
     {
-        $c = ClientCompanyUser::where(
-            [
-                'client_id' => $request->client_id,
-                'company_user_id' => $request->company_user_id
-            ]
-        )->get();
-        $c->description = $request->description;
-        $c->save();
-        return $c;
+        $clientUser = ClientCompanyUser::where([
+            'client_id' => $request->client_id,
+            'company_user_id' => $request->company_user_id
+        ])->first();
+        if ($clientUser) {
+            $clientUser->description = $request->description;
+            $clientUser->save();
+        }
+        return $clientUser;
     }
 
     public function detach($id): bool

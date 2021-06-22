@@ -773,7 +773,7 @@
                                                         <v-icon small>mdi-email-alert</v-icon>
                                                     </v-btn>
                                                 </template>
-                                                <span>{{ langMap.company.resend_password }}</span>
+                                                <span>{{ langMap.company.reset_password }}</span>
                                             </v-tooltip>
                                             <v-tooltip top>
                                                 <template v-slot:activator="{ on, attrs }">
