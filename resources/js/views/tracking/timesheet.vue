@@ -175,7 +175,7 @@
         </v-data-table>
 
         <!-- WEEKLY VIEW. TIME TRACKED -->
-        <template v-if="[STATUS_APPROVAL_PENDING,STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1
+        <template v-if="[STATUS_APPROVAL_PENDING, STATUS_REJECTED, STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1
             || [STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1 && isManager">
             <v-data-table
                 :headers="weeklyManagerHeaders"
@@ -269,6 +269,26 @@
                             <template v-slot:item.total="{ isMobile, item, header, value }">
                                 {{ $helpers.time.convertSecToTime(item.total_time, false) }}
                             </template>
+                            <template v-slot:item.note="{ isMobile, item, header, value }">
+                                <v-edit-dialog
+                                    v-if="item.note"
+                                    large
+                                    save-text="OK"
+                                >
+                                    <v-btn
+                                        color="primary"
+                                        icon
+                                        v-if="item.note"
+                                    >
+                                        <v-icon>mdi-information-outline</v-icon>
+                                    </v-btn>
+                                    <template v-slot:input>
+                                        <div class="mt-4" style="max-width: 500px; min-width: 500px; min-height: 100px; overflow-y: auto;">
+                                            {{ item.note }}
+                                        </div>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
                         </v-data-table>
                     </td>
                 </template>
@@ -292,7 +312,7 @@
                         <div>(Resend request for approval)</div>
                     </v-tooltip>
                 </template>
-                <template v-slot:item.edit="{ item }" v-if="[STATUS_APPROVAL_PENDING].indexOf(typeOfItems) !== -1">
+                <template v-slot:item.edit="{ item }" v-if="[STATUS_APPROVAL_PENDING, STATUS_REJECTED].indexOf(typeOfItems) !== -1">
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
@@ -799,7 +819,7 @@
 
         <v-toolbar dense flat style="background-color: #f0f0f0; border-color: #f0f0f0;">
             <v-btn
-                v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1"
+                v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
                 small
                 class="mx-2"
                 :color="themeBgColor"
@@ -1567,6 +1587,8 @@ export default {
             ];
             if (this.typeOfItems === this.STATUS_APPROVAL_PENDING) {
                 headers.push({ text: '', value: 'remind', width: '3%' });
+            }
+            if ([this.STATUS_APPROVAL_PENDING, this.STATUS_REJECTED].indexOf(this.typeOfItems) !== -1) {
                 headers.push({ text: '', value: 'edit', width: '3%' });
             }
             if (this.typeOfItems === this.STATUS_APPROVAL_REQUESTS) {
@@ -1599,14 +1621,18 @@ export default {
             const user = this.currentUser;
             let timesheet = this.$store.getters['Timesheet/getTimesheet']
                 .filter(i => !this.deletedItems.includes(i.id))
-                .filter(i => i.user_id === user.id)
+                .filter(i => i.user_id === user.id || i.approver_id === user.id)
                 .filter(i => {
                     if (this.currentStatus === 'pending') {
-                        return i.status === this.currentStatus;
+                        return i.status === this.currentStatus && i.user_id === user.id;
+                    }
+                    if (this.currentStatus === 'rejected') {
+                        return i.status === this.currentStatus && i.user_id === user.id;
                     }
                     if (this.currentStatus === 'request') {
+                        console.log(i);
                         return i.status === 'pending'
-                            && this.$store.getters['Team/getManagedTeams'].map(t => t.id).indexOf(i.team_id) !== -1
+                            // && this.$store.getters['Team/getManagedTeams'].map(t => t.id).indexOf(i.team_id) !== -1
                             && (i.approver_id === null || i.approver_id === this.currentUser.id);
                     }
                 });
