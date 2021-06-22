@@ -1630,7 +1630,6 @@ export default {
                         return i.status === this.currentStatus && i.user_id === user.id;
                     }
                     if (this.currentStatus === 'request') {
-                        console.log(i);
                         return i.status === 'pending'
                             // && this.$store.getters['Team/getManagedTeams'].map(t => t.id).indexOf(i.team_id) !== -1
                             && (i.approver_id === null || i.approver_id === this.currentUser.id);
