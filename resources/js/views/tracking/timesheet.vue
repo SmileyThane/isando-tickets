@@ -992,6 +992,26 @@
                 Total time: {{ $helpers.time.convertSecToTime(totalTime, false) }} hrs
             </span>
         </v-toolbar>
+
+        <v-snackbar
+            v-for="undo in undoStack"
+            :key="undo.id"
+            v-model="undo.id"
+            timeout="-1"
+        >
+            Will be deleted after {{undo.countdown}} sec
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    :color="themeBgColor"
+                    text
+                    v-bind="attrs"
+                    @click="undoDeleting(undo.id)"
+                >
+                    Undo
+                </v-btn>
+            </template>
+        </v-snackbar>
+
     </v-container>
 </template>
 
@@ -999,6 +1019,7 @@
 tr.highlight {
     background-color: #f0f0f0;
     border-color: #f0f0f0;
+    font-weight: bold;
 }
 
 >>> .time-field__small input {
@@ -1077,6 +1098,8 @@ export default {
             dialogNotes: {},
             showEditServices: false,
             loadingBtn: false,
+            undoStack: [],
+            deletedItems: [],
         }
     },
     created () {
@@ -1187,11 +1210,37 @@ export default {
         },
         removeTimesheet () {
             if (this.selected.length) {
-                this.selected.map(({ id }) => {
-                    this.$store.dispatch('Timesheet/removeTimesheet', id);
+                const self = this;
+                const id = Date.now();
+                this.undoStack.push({
+                    id,
+                    timer: setInterval(() => {
+                        const index = self.undoStack.findIndex(i => i.id === id);
+                        if (!self.undoStack[index]) return;
+                        if (self.undoStack[index].countdown <= 1) {
+                            clearInterval(self.undoStack[index].timer);
+                            this.removeTimesheetConfirm(self.undoStack[index].items);
+                            self.undoStack.splice(index, 1);
+                        } else {
+                            self.undoStack[index].countdown--;
+                        }
+                    }, 1000),
+                    items: this.selected.map(i => i.id),
+                    countdown: 10,
                 });
             }
             this.selected = [];
+        },
+        removeTimesheetConfirm (items) {
+            items.map(id => {
+                this.$store.dispatch('Timesheet/removeTimesheet', id);
+            });
+        },
+        undoDeleting(id) {
+            const index = this.undoStack.findIndex(i => i.id === id);
+            if (!this.undoStack[index]) return;
+            clearInterval(this.undoStack[index].timer);
+            this.undoStack.splice(index, 1);
         },
         saveTimesheet (item) {
             return this.$store.dispatch('Timesheet/updateTimesheet', { id: item.id, timesheet: item })
@@ -1405,7 +1454,7 @@ export default {
             console.log(data);
             this.form.entity_id = data.project && data.project.id ? data.project.id : null;
             this.form.entity_type = data.project && data.project.from ? 'App\\Ticket' : 'App\\TrackingProject';
-        }
+        },
     },
     watch: {
         date () {
@@ -1420,6 +1469,9 @@ export default {
         },
         'dateRange.start' () {
             this.debounceGetTimesheet();
+        },
+        undoStack () {
+            this.deletedItems = this.undoStack.reduce((acc, curr) => acc.concat(curr.items), []);
         },
     },
     computed: {
@@ -1528,7 +1580,8 @@ export default {
         },
         getTimesheet () {
             const user = this.currentUser;
-            const timesheet = this.$store.getters['Timesheet/getTimesheet'];
+            const timesheet = this.$store.getters['Timesheet/getTimesheet']
+                .filter(i => !this.deletedItems.includes(i.id));
             const self = this;
             timesheet.map(i => {
                 self.dialogNotes[i.id] = false;
@@ -1545,6 +1598,7 @@ export default {
         getTimesheetForManager() {
             const user = this.currentUser;
             let timesheet = this.$store.getters['Timesheet/getTimesheet']
+                .filter(i => !this.deletedItems.includes(i.id))
                 .filter(i => i.user_id === user.id)
                 .filter(i => {
                     if (this.currentStatus === 'pending') {
@@ -1586,7 +1640,7 @@ export default {
         },
         isManager() {
             return !!this.$store.getters['Team/getManagedTeams'].length;
-        }
+        },
     },
 }
 </script>
