@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Permission;
+use App\Repositories\LimitationGroupRepository;
 use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +43,10 @@ class ProductController extends Controller
         $hasAccess = Auth::user()->employee->hasPermissionId(Permission::PRODUCT_WRITE_ACCESS);
 
         if ($isValid === true && $hasAccess) {
-            return self::showResponse(true, $this->productRepo->create($request));
+            $product = $this->productRepo->create($request);
+            (new LimitationGroupRepository())->limitationAutoAssignProcess($product);
+
+            return self::showResponse(true, $product);
         }
 
         return self::showResponse(false);
