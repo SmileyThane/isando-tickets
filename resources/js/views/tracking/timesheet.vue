@@ -49,7 +49,7 @@
 
         <v-spacer>&nbsp;</v-spacer>
 
-        <div class="d-flex flex-row">
+        <div class="d-flex flex-row" v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1">
             <div class="d-inline-flex flex-grow-0 mx-4"
                  v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
              >
@@ -175,7 +175,7 @@
         </v-data-table>
 
         <!-- WEEKLY VIEW. TIME TRACKED -->
-        <template v-if="[STATUS_APPROVAL_PENDING, STATUS_REJECTED, STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1
+        <template v-if="[STATUS_APPROVAL_PENDING, STATUS_REJECTED, STATUS_APPROVAL_REQUESTS, STATUS_ARCHIVED].indexOf(typeOfItems) !== -1
             || [STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1 && isManager">
             <v-data-table
                 :headers="weeklyManagerHeaders"
@@ -1162,6 +1162,7 @@ export default {
             await this.$store.dispatch('Timesheet/getTimesheet', {
                 ...this.dateRange,
             });
+            await this.$store.dispatch('Timesheet/getAllGroupedByStatus', { userId: this.currentUser.id });
             this.loading = false;
             this.resetTimesheet();
         },
@@ -1270,7 +1271,7 @@ export default {
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }
-                    this._getTimesheet();
+                    this.debounceGetTimesheet();
                 });
         },
         saveChanges (item, index, newValue) {
@@ -1284,7 +1285,8 @@ export default {
                     ids: this.selected.map(i => i.id),
                     status,
                     approver_id: this.selectedApprover,
-                });
+                })
+                    .then(() => this.debounceGetTimesheet());
             }
             this.selected = [];
         },
@@ -1424,6 +1426,7 @@ export default {
                 .then(() => {
                     this.loadingBtn = false;
                     this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
+                    this.debounceGetTimesheet();
                     return null;
                 });
             this.rejectReason = '';
@@ -1438,6 +1441,7 @@ export default {
                 .then(() => {
                     this.loadingBtn = false;
                     this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
+                    this.debounceGetTimesheet();
                     return null;
                 });
             this.rejectReason = '';
@@ -1446,7 +1450,8 @@ export default {
             this.$store.dispatch('Timesheet/submitTimesheetByIds', {
                 ids: item.items.map(i => i.id),
                 status: 'tracked',
-            });
+            })
+                .then(() => this.debounceGetTimesheet());
             this.rejectReason = '';
         },
         remindTimesheet(item) {
@@ -1619,22 +1624,38 @@ export default {
         },
         getTimesheetForManager() {
             const user = this.currentUser;
-            let timesheet = this.$store.getters['Timesheet/getTimesheet']
-                .filter(i => !this.deletedItems.includes(i.id))
-                .filter(i => i.user_id === user.id || i.approver_id === user.id)
-                .filter(i => {
-                    if (this.currentStatus === 'pending') {
-                        return i.status === this.currentStatus && i.user_id === user.id;
-                    }
-                    if (this.currentStatus === 'rejected') {
-                        return i.status === this.currentStatus && i.user_id === user.id;
-                    }
-                    if (this.currentStatus === 'request') {
-                        return i.status === 'pending'
-                            // && this.$store.getters['Team/getManagedTeams'].map(t => t.id).indexOf(i.team_id) !== -1
-                            && (i.approver_id === null || i.approver_id === this.currentUser.id);
-                    }
-                });
+            let timesheet = [];
+            if (this.currentStatus === 'pending') {
+                timesheet = this.$store.getters['Timesheet/getPendingTimesheet']
+                    .filter(i => !this.deletedItems.includes(i.id));
+            }
+            if (this.currentStatus === 'rejected') {
+                timesheet = this.$store.getters['Timesheet/getRejectedTimesheet']
+                    .filter(i => !this.deletedItems.includes(i.id));
+            }
+            if (this.currentStatus === 'request') {
+                timesheet = this.$store.getters['Timesheet/getRequestTimesheet']
+                    .filter(i => !this.deletedItems.includes(i.id));
+            }
+            if (this.currentStatus === 'archived') {
+                timesheet = this.$store.getters['Timesheet/getArchivedTimesheet'];
+            }
+            // timesheet = this.$store.getters['Timesheet/getTimesheet']
+            //     .filter(i => !this.deletedItems.includes(i.id))
+            //     .filter(i => i.user_id === user.id || i.approver_id === user.id)
+            //     .filter(i => {
+            //         if (this.currentStatus === 'pending') {
+            //             return i.status === this.currentStatus && i.user_id === user.id;
+            //         }
+            //         if (this.currentStatus === 'rejected') {
+            //             return i.status === this.currentStatus && i.user_id === user.id;
+            //         }
+            //         if (this.currentStatus === 'request') {
+            //             return i.status === 'pending'
+            //                 // && this.$store.getters['Team/getManagedTeams'].map(t => t.id).indexOf(i.team_id) !== -1
+            //                 && (i.approver_id === null || i.approver_id === this.currentUser.id);
+            //         }
+            //     });
             return _.uniqBy(timesheet, 'number')
                 .map(i => ({ ...i, items: timesheet.filter(t => t.number === i.number) }));
         },

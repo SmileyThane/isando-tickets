@@ -2,6 +2,10 @@ export default {
     namespaced: true,
     state: {
         timesheet: [],
+        timesheetPending: [],
+        timesheetRejected: [],
+        timesheetArchived: [],
+        timesheetRequest: [],
         params: {},
         countForApproval: 0,
     },
@@ -74,7 +78,16 @@ export default {
                         commit('SET_COUNT_FOR_APPROVAL', data.count);
                     }
                 });
-        }
+        },
+        getAllGroupedByStatus({ commit }, { userId }) {
+            console.log(userId);
+            axios.get('/api/tracking/timesheet/status')
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        commit('SET_GROUPED_TIMESHEET', { data, userId });
+                    }
+                });
+        },
     },
     mutations: {
         UPDATE_ITEM(state, item) {
@@ -89,7 +102,13 @@ export default {
         },
         SET_COUNT_FOR_APPROVAL(state, params) {
             state.countForApproval = params;
-        }
+        },
+        SET_GROUPED_TIMESHEET(state, { data, userId }) {
+            state.timesheetArchived = data.filter(i => i.user_id === userId && i.status === 'archived');
+            state.timesheetPending = data.filter(i => i.user_id === userId && i.status === 'pending');
+            state.timesheetRejected = data.filter(i => i.user_id === userId && i.status === 'rejected');
+            state.timesheetRequest = data.filter(i => (i.approver_id === null || i.approver_id === userId) && i.status === 'pending');
+        },
     },
     getters: {
         getTimesheet(state) {
@@ -97,6 +116,18 @@ export default {
         },
         getCountTimesheetForApproval(state) {
             return state.countForApproval;
+        },
+        getPendingTimesheet(state) {
+            return state.timesheetPending;
+        },
+        getRejectedTimesheet(state) {
+            return state.timesheetRejected;
+        },
+        getRequestTimesheet(state) {
+            return state.timesheetRequest;
+        },
+        getArchivedTimesheet(state) {
+            return state.timesheetArchived;
         }
     }
 }

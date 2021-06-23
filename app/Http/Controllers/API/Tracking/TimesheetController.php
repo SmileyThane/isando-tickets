@@ -12,6 +12,11 @@ class TimesheetController extends BaseController
         return self::showResponse(true, $trackingProjects);
     }
 
+    public function getAllGroupedByStatus(Request $request) {
+        $trackingProjects = $this->timesheetRepo->getAllGroupedByStatus($request);
+        return self::showResponse(true, $trackingProjects);
+    }
+
     public function find($id)
     {
         $trackingProjects = $this->timesheetRepo->find($id);
