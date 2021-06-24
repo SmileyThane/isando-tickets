@@ -32,18 +32,6 @@ class TrackingTimesheetRepository
             ->with(['Times' => function ($q) {
                 $q->orderBy('date', 'asc');
             }]);
-//        if ($request->has('project') && !in_array($request->get('project', "0"), ["0", "null"])) {
-//            $query->where('project_id', '=', $request->get('project', null));
-//        }
-//        if ($request->has('type')) {
-//            switch ($request->get('type', '0')) {
-//                case '0': $query->where('status', '=', TrackingTimesheet::STATUS_TRACKED); break;
-//                case '1': $query->where('status', '=', TrackingTimesheet::STATUS_PENDING); break;
-//                case '2': $query->where('status', '=', TrackingTimesheet::STATUS_UNSUBMITTED); break;
-//                case '3': $query->where('status', '=', TrackingTimesheet::STATUS_ARCHIVED); break;
-//            }
-//        }
-//        dd($query->toSql(), $query->getBindings());
         $teams = \App\Team::whereHas('employees', function ($query) {
             return $query->where('company_user_id', '=', Auth::user()->employee->id)
                 ->where('is_manager', '=', true);
@@ -51,10 +39,12 @@ class TrackingTimesheetRepository
         if ($teams->count()) {
             $query->where(function($q) use ($teams) {
                 $q->where('user_id', '=', Auth::user()->id)
-                    ->orWhereIn('team_id', $teams);
+                    ->orWhereIn('team_id', $teams)
+                    ->orWhere('approver_id', Auth::user()->id);
             });
         } else {
-            $query->where('user_id', '=', Auth::user()->id);
+            $query->where('user_id', '=', Auth::user()->id)
+                ->orWhere('approver_id', Auth::user()->id);
         }
         return $query
             ->where(function ($q) use ($request) {
@@ -62,6 +52,51 @@ class TrackingTimesheetRepository
                     ->orWhereBetween('to', [Carbon::parse($request->start), Carbon::parse($request->end)]);
             })
             ->get();
+    }
+
+    public function getAllGroupedByStatus(Request $request) {
+        $query = TrackingTimesheet::with('User')
+            ->with('Service')
+            ->with('Approver')
+            ->with(['Times' => function ($q) {
+                $q->orderBy('date', 'asc');
+            }])
+            ->whereIn('status', [
+                TrackingTimesheet::STATUS_PENDING,
+                TrackingTimesheet::STATUS_REJECTED,
+                TrackingTimesheet::STATUS_APPROVED,
+                TrackingTimesheet::STATUS_ARCHIVED,
+            ]);
+
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+            // Manager
+            $teams = $teams = Team::whereHas('employees', function ($q) {
+                return $q
+                    ->where('company_user_id', '=', Auth::user()->employee->id)
+                    ->where('is_manager', '=', true);
+            })->get()->pluck('id')->toArray();
+            $query->orWhereIn('team_id', $teams)
+                ->where(function ($query) {
+                    $query->whereNull('approver_id')
+                        ->orWhere('approver_id', '=', Auth::user()->id);
+                });
+        } else if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+            // Company Admin
+            $company = Auth::user()->employee()
+                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+                ->with('userData')->first();
+            $query->where('company_id', '=', $company->company_id)
+                ->where(function ($query) {
+                    $query->whereNull('approver_id')
+                        ->orWhere('approver_id', '=', Auth::user()->id);
+                });
+        } else {
+            $query->where(function($q) {
+                $q->where('user_id', '=', Auth::user()->id)
+                    ->orWhere('approver_id', '=', Auth::user()->id);
+            });
+        }
+        return $query->get();
     }
 
     public function find($id) {

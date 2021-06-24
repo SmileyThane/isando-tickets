@@ -49,7 +49,7 @@
 
         <v-spacer>&nbsp;</v-spacer>
 
-        <div class="d-flex flex-row">
+        <div class="d-flex flex-row" v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1">
             <div class="d-inline-flex flex-grow-0 mx-4"
                  v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
              >
@@ -175,7 +175,7 @@
         </v-data-table>
 
         <!-- WEEKLY VIEW. TIME TRACKED -->
-        <template v-if="[STATUS_APPROVAL_PENDING,STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1
+        <template v-if="[STATUS_APPROVAL_PENDING, STATUS_REJECTED, STATUS_APPROVAL_REQUESTS, STATUS_ARCHIVED].indexOf(typeOfItems) !== -1
             || [STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1 && isManager">
             <v-data-table
                 :headers="weeklyManagerHeaders"
@@ -269,6 +269,26 @@
                             <template v-slot:item.total="{ isMobile, item, header, value }">
                                 {{ $helpers.time.convertSecToTime(item.total_time, false) }}
                             </template>
+                            <template v-slot:item.note="{ isMobile, item, header, value }">
+                                <v-edit-dialog
+                                    v-if="item.note"
+                                    large
+                                    save-text="OK"
+                                >
+                                    <v-btn
+                                        color="primary"
+                                        icon
+                                        v-if="item.note"
+                                    >
+                                        <v-icon>mdi-information-outline</v-icon>
+                                    </v-btn>
+                                    <template v-slot:input>
+                                        <div class="mt-4" style="max-width: 500px; min-width: 500px; min-height: 100px; overflow-y: auto;">
+                                            {{ item.note }}
+                                        </div>
+                                    </template>
+                                </v-edit-dialog>
+                            </template>
                         </v-data-table>
                     </td>
                 </template>
@@ -292,7 +312,7 @@
                         <div>(Resend request for approval)</div>
                     </v-tooltip>
                 </template>
-                <template v-slot:item.edit="{ item }" v-if="[STATUS_APPROVAL_PENDING].indexOf(typeOfItems) !== -1">
+                <template v-slot:item.edit="{ item }" v-if="[STATUS_APPROVAL_PENDING, STATUS_REJECTED].indexOf(typeOfItems) !== -1">
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
@@ -799,7 +819,7 @@
 
         <v-toolbar dense flat style="background-color: #f0f0f0; border-color: #f0f0f0;">
             <v-btn
-                v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1"
+                v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
                 small
                 class="mx-2"
                 :color="themeBgColor"
@@ -992,6 +1012,26 @@
                 Total time: {{ $helpers.time.convertSecToTime(totalTime, false) }} hrs
             </span>
         </v-toolbar>
+
+        <v-snackbar
+            v-for="undo in undoStack"
+            :key="undo.id"
+            v-model="undo.id"
+            timeout="-1"
+        >
+            Will be deleted after {{undo.countdown}} sec
+            <template v-slot:action="{ attrs }">
+                <v-btn
+                    :color="themeBgColor"
+                    text
+                    v-bind="attrs"
+                    @click="undoDeleting(undo.id)"
+                >
+                    Undo
+                </v-btn>
+            </template>
+        </v-snackbar>
+
     </v-container>
 </template>
 
@@ -999,6 +1039,7 @@
 tr.highlight {
     background-color: #f0f0f0;
     border-color: #f0f0f0;
+    font-weight: bold;
 }
 
 >>> .time-field__small input {
@@ -1077,6 +1118,8 @@ export default {
             dialogNotes: {},
             showEditServices: false,
             loadingBtn: false,
+            undoStack: [],
+            deletedItems: [],
         }
     },
     created () {
@@ -1119,6 +1162,7 @@ export default {
             await this.$store.dispatch('Timesheet/getTimesheet', {
                 ...this.dateRange,
             });
+            await this.$store.dispatch('Timesheet/getAllGroupedByStatus', { userId: this.currentUser.id });
             this.loading = false;
             this.resetTimesheet();
         },
@@ -1187,11 +1231,37 @@ export default {
         },
         removeTimesheet () {
             if (this.selected.length) {
-                this.selected.map(({ id }) => {
-                    this.$store.dispatch('Timesheet/removeTimesheet', id);
+                const self = this;
+                const id = Date.now();
+                this.undoStack.push({
+                    id,
+                    timer: setInterval(() => {
+                        const index = self.undoStack.findIndex(i => i.id === id);
+                        if (!self.undoStack[index]) return;
+                        if (self.undoStack[index].countdown <= 1) {
+                            clearInterval(self.undoStack[index].timer);
+                            this.removeTimesheetConfirm(self.undoStack[index].items);
+                            self.undoStack.splice(index, 1);
+                        } else {
+                            self.undoStack[index].countdown--;
+                        }
+                    }, 1000),
+                    items: this.selected.map(i => i.id),
+                    countdown: 10,
                 });
             }
             this.selected = [];
+        },
+        removeTimesheetConfirm (items) {
+            items.map(id => {
+                this.$store.dispatch('Timesheet/removeTimesheet', id);
+            });
+        },
+        undoDeleting(id) {
+            const index = this.undoStack.findIndex(i => i.id === id);
+            if (!this.undoStack[index]) return;
+            clearInterval(this.undoStack[index].timer);
+            this.undoStack.splice(index, 1);
         },
         saveTimesheet (item) {
             return this.$store.dispatch('Timesheet/updateTimesheet', { id: item.id, timesheet: item })
@@ -1201,7 +1271,7 @@ export default {
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }
-                    this._getTimesheet();
+                    this.debounceGetTimesheet();
                 });
         },
         saveChanges (item, index, newValue) {
@@ -1215,7 +1285,8 @@ export default {
                     ids: this.selected.map(i => i.id),
                     status,
                     approver_id: this.selectedApprover,
-                });
+                })
+                    .then(() => this.debounceGetTimesheet());
             }
             this.selected = [];
         },
@@ -1355,6 +1426,7 @@ export default {
                 .then(() => {
                     this.loadingBtn = false;
                     this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
+                    this.debounceGetTimesheet();
                     return null;
                 });
             this.rejectReason = '';
@@ -1369,6 +1441,7 @@ export default {
                 .then(() => {
                     this.loadingBtn = false;
                     this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
+                    this.debounceGetTimesheet();
                     return null;
                 });
             this.rejectReason = '';
@@ -1377,7 +1450,8 @@ export default {
             this.$store.dispatch('Timesheet/submitTimesheetByIds', {
                 ids: item.items.map(i => i.id),
                 status: 'tracked',
-            });
+            })
+                .then(() => this.debounceGetTimesheet());
             this.rejectReason = '';
         },
         remindTimesheet(item) {
@@ -1405,7 +1479,7 @@ export default {
             console.log(data);
             this.form.entity_id = data.project && data.project.id ? data.project.id : null;
             this.form.entity_type = data.project && data.project.from ? 'App\\Ticket' : 'App\\TrackingProject';
-        }
+        },
     },
     watch: {
         date () {
@@ -1420,6 +1494,9 @@ export default {
         },
         'dateRange.start' () {
             this.debounceGetTimesheet();
+        },
+        undoStack () {
+            this.deletedItems = this.undoStack.reduce((acc, curr) => acc.concat(curr.items), []);
         },
     },
     computed: {
@@ -1515,6 +1592,8 @@ export default {
             ];
             if (this.typeOfItems === this.STATUS_APPROVAL_PENDING) {
                 headers.push({ text: '', value: 'remind', width: '3%' });
+            }
+            if ([this.STATUS_APPROVAL_PENDING, this.STATUS_REJECTED].indexOf(this.typeOfItems) !== -1) {
                 headers.push({ text: '', value: 'edit', width: '3%' });
             }
             if (this.typeOfItems === this.STATUS_APPROVAL_REQUESTS) {
@@ -1528,7 +1607,8 @@ export default {
         },
         getTimesheet () {
             const user = this.currentUser;
-            const timesheet = this.$store.getters['Timesheet/getTimesheet'];
+            const timesheet = this.$store.getters['Timesheet/getTimesheet']
+                .filter(i => !this.deletedItems.includes(i.id));
             const self = this;
             timesheet.map(i => {
                 self.dialogNotes[i.id] = false;
@@ -1544,18 +1624,38 @@ export default {
         },
         getTimesheetForManager() {
             const user = this.currentUser;
-            let timesheet = this.$store.getters['Timesheet/getTimesheet']
-                .filter(i => i.user_id === user.id)
-                .filter(i => {
-                    if (this.currentStatus === 'pending') {
-                        return i.status === this.currentStatus;
-                    }
-                    if (this.currentStatus === 'request') {
-                        return i.status === 'pending'
-                            && this.$store.getters['Team/getManagedTeams'].map(t => t.id).indexOf(i.team_id) !== -1
-                            && (i.approver_id === null || i.approver_id === this.currentUser.id);
-                    }
-                });
+            let timesheet = [];
+            if (this.currentStatus === 'pending') {
+                timesheet = this.$store.getters['Timesheet/getPendingTimesheet']
+                    .filter(i => !this.deletedItems.includes(i.id));
+            }
+            if (this.currentStatus === 'rejected') {
+                timesheet = this.$store.getters['Timesheet/getRejectedTimesheet']
+                    .filter(i => !this.deletedItems.includes(i.id));
+            }
+            if (this.currentStatus === 'request') {
+                timesheet = this.$store.getters['Timesheet/getRequestTimesheet']
+                    .filter(i => !this.deletedItems.includes(i.id));
+            }
+            if (this.currentStatus === 'archived') {
+                timesheet = this.$store.getters['Timesheet/getArchivedTimesheet'];
+            }
+            // timesheet = this.$store.getters['Timesheet/getTimesheet']
+            //     .filter(i => !this.deletedItems.includes(i.id))
+            //     .filter(i => i.user_id === user.id || i.approver_id === user.id)
+            //     .filter(i => {
+            //         if (this.currentStatus === 'pending') {
+            //             return i.status === this.currentStatus && i.user_id === user.id;
+            //         }
+            //         if (this.currentStatus === 'rejected') {
+            //             return i.status === this.currentStatus && i.user_id === user.id;
+            //         }
+            //         if (this.currentStatus === 'request') {
+            //             return i.status === 'pending'
+            //                 // && this.$store.getters['Team/getManagedTeams'].map(t => t.id).indexOf(i.team_id) !== -1
+            //                 && (i.approver_id === null || i.approver_id === this.currentUser.id);
+            //         }
+            //     });
             return _.uniqBy(timesheet, 'number')
                 .map(i => ({ ...i, items: timesheet.filter(t => t.number === i.number) }));
         },
@@ -1586,7 +1686,7 @@ export default {
         },
         isManager() {
             return !!this.$store.getters['Team/getManagedTeams'].length;
-        }
+        },
     },
 }
 </script>
