@@ -52,8 +52,14 @@
                             first-day-of-week="1"
                             v-model="date"
                             :min="min"
-                            @input="calendarMenu = false; setTimeHandler()"
                         ></v-date-picker>
+                        <v-time-picker
+                            format="24hr"
+                            scrollable
+                            v-model="time"
+                            @click:minute="calendarMenu = false; setTimeHandler()"
+                            @change="calendarMenu = false; setTimeHandler()"
+                        ></v-time-picker>
                     </v-menu>
                 </div>
             </div>
@@ -207,6 +213,10 @@ export default {
             return ['v-input', 'v-input--hide-details', 'v-input--is-label-active',
                 'v-input--is-dirty', 'theme--light', 'v-text-field',
                 'v-text-field--is-booted', 'v-text-field--placeholder', 'v-input--dense', 'time-field__flat'];
+        },
+        minTime: () => {
+            console.log(this.min);
+            return undefined;
         },
     },
     watch: {
