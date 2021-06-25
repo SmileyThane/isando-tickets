@@ -367,7 +367,7 @@ class TicketRepository
             if ($companyUser !== null) {
                 $user = $companyUser->userData;
                 $company = $companyUser->companyData;
-                if ($user->is_active) {
+                if ($user && $user->is_active) {
                     try {
                         $user->notify(
                             new $notificationClass(

@@ -274,6 +274,15 @@
                             v-text="n !== steps ? langMap.main.continue : langMap.main.create"
                         >
                         </v-btn>
+
+                        <v-btn
+                            class="ml-2"
+                            v-if="n == steps"
+                            style="color: white;"
+                            color="#4caf50"
+                            @click="assignDlg = true"
+                            v-text="langMap.ticket.create_and_assign"
+                        />
                         <v-btn
                             text
                             @click="previousStep(n)"
@@ -443,6 +452,72 @@
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+
+            <v-dialog v-model="assignDlg" max-width="600px" persistent>
+                <v-card>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.ticket.assign_to }}
+                    </v-card-title>
+                    <v-card-text>
+                        <v-form>
+                            <v-autocomplete
+                                v-model="ticketForm.to_team_id"
+                                :color="themeBgColor"
+                                :disabled="selectionDisabled"
+                                :item-color="themeBgColor"
+                                :items="tTeams"
+                                :label="langMap.sidebar.team"
+                                dense
+                                item-text="name"
+                                item-value="id"
+                                @change="selectTeam(); ticketForm.to_company_user_id = null;"
+                            />
+                            <v-autocomplete
+                                v-model="ticketForm.to_company_user_id"
+                                :color="themeBgColor"
+                                :disabled="selectionDisabled"
+                                :item-color="themeBgColor"
+                                :items="tEmployees"
+                                :label="langMap.team.members"
+                                dense
+                                item-value="employee.id"
+                            >
+                                <template v-slot:selection="data">
+                                    {{ data.item.employee.user_data.full_name }}
+                                    <!--                                        ({{ data.item.employee.user_data.email }})-->
+                                </template>
+                                <template v-slot:item="data">
+                                    {{ data.item.employee.user_data.full_name }}
+                                    <!--                                        ({{ data.item.employee.user_data.email }})-->
+                                </template>
+                            </v-autocomplete>
+                            <v-btn :color="themeBgColor"
+                                   :disabled="selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
+                                   class="ma-2"
+                                   small
+                                   style="color: white;"
+                                   @click.native.stop="assignDlg = false; submit()"
+                                   v-text="langMap.ticket.create_and_assign"
+                            />
+                            <v-btn :color="themeBgColor"
+                                   :disabled="!ticketForm.to_company_user_id || selectionDisabled || $helpers.auth.checkPermissionByIds([36])"
+                                   class="ma-2"
+                                   small
+                                   color="grey"
+                                   style="color: white;"
+                                   @click.native.stop="ticketForm.to_company_user_id = null"
+                                   v-text="langMap.ticket.clear_agent"
+                            />
+                            <v-btn class="ma-2"
+                                   color="white" small
+                                   style="color: black;"
+                                   @click="assignDlg = false; ticketForm.to_team_id = null; ticketForm.to_company_user_id= null;"
+                                   v-text="langMap.main.cancel"
+                            />
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+            </v-dialog>
         </v-row>
 
     </v-container>
@@ -486,7 +561,10 @@
                     availability: '',
                     connection_details: '',
                     access_details: '',
-                    files: []
+                    files: [],
+                    to_team_id: null,
+                    to_company_user_id: null,
+                    can_be_edited: true
                 },
                 suppliers: [],
                 products: [],
@@ -516,7 +594,11 @@
                     phone_type: '',
                 },
                 phoneTypes: [],
-                languages: []
+                languages: [],
+                assignDlg: false,
+                selectionDisabled: false,
+                tTeams: [],
+                tEmployees: [],
             }
         },
         watch: {
@@ -539,6 +621,8 @@
             this.getLanguages()
             // this.getCompany()
             this.getPhoneTypes()
+            this.getTeams()
+
             let that = this;
             EventBus.$on('update-theme-color', function (color) {
                 that.themeBgColor = color;
@@ -673,15 +757,25 @@
                 }
                 let formData = new FormData();
                 for (let key in this.ticketForm) {
-                    if (key !== 'files') {
-                        formData.append(key, this.ticketForm[key]);
+                    switch (key) {
+                        case 'to_team_id':
+                        case 'to_company_user_id':
+                            if (this.ticketForm[key]) {
+                                formData.append(key, this.ticketForm[key]);
+                            }
+                            break;
+                        case 'files':
+                            break;
+                        default:
+                            formData.append(key, this.ticketForm[key]);
                     }
                 }
+
                 Array.from(this.ticketForm.files).forEach(file => formData.append('files[]', file));
                 axios.post('/api/ticket', formData, config).then(response => {
                     response = response.data
                     if (response.success === true) {
-                        window.open('/tickets', '_self')
+                        window.open('/ticket/' + response.data.id, '_self')
                     } else {
                         this.overlay = false;
                         this.snackbarMessage = 'Check ticket problems and try again, please!'
@@ -762,7 +856,34 @@
                         this.snackbar = true;
                     }
                 });
-            }
+            },
+            getTeams() {
+                axios.get(`/api/team`
+                ).then(response => {
+                    response = response.data
+                    if (response.success === true) {
+                        this.tTeams = response.data.data
+                    } else {
+                        this.snackbarMessage = this.langMap.main.generic_error;
+                        this.actionColor = 'error'
+                        this.snackbar = true;
+                    }
+                });
+            },
+            selectTeam() {
+                if (this.ticketForm.can_be_edited === false) {
+                    this.selectionDisabled = true
+                }
+                if (this.ticketForm.to_team_id !== null) {
+                    this.assignPanel = [0];
+                    axios.get(`/api/team/${this.ticketForm.to_team_id}`).then(response => {
+                        response = response.data
+                        if (response.success === true) {
+                            this.tEmployees = response.data.employees
+                        }
+                    });
+                }
+            },
         }
     }
 </script>

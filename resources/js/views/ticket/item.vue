@@ -1168,8 +1168,8 @@
                                        color="white" small
                                        style="color: black;"
                                        @click="teamAssignPanel = []"
+                                       v-text="langMap.main.cancel"
                                 >
-                                    Cancel
                                 </v-btn>
                             </v-form>
                         </v-expansion-panel-content>
