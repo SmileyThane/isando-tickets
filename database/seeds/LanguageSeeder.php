@@ -982,7 +982,7 @@ class LanguageSeeder extends Seeder
                         'tracking' => [
                             'name' => 'Name',
                             'client' => 'Kunde',
-                            'team' => 'Mannschaft',
+                            'team' => 'Team',
                             'tracked' => 'Erfasste Zeit',
                             'revenue' => 'Umsatz',
                             'progress' => 'Progress',
@@ -995,7 +995,7 @@ class LanguageSeeder extends Seeder
                                 'modal_title' => 'Neues Projekt erstellen',
                                 'name' => 'Projektname',
                                 'client' => 'Kunde',
-                                'team' => 'Mannschaft',
+                                'team' => 'Team',
                                 'cancel' => 'Stornieren',
                                 'create' => 'Erstellen',
                                 'product' => 'Produkt',
@@ -1081,7 +1081,7 @@ class LanguageSeeder extends Seeder
                             'project_btn' => [
                                 'project' => 'Projekt',
                                 'ticket' => 'Ticket',
-                                'team' => 'Mannschaft',
+                                'team' => 'Team',
                                 'project_or_ticket' => 'Projekt/Ticket',
                                 'choose_project' => 'Projekt wählen',
                                 'choose_ticket' => 'Ticket wählen',
