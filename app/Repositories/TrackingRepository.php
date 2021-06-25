@@ -324,7 +324,8 @@ class TrackingRepository
             $newTracking->is_manual = true;
             $timesheet = TrackingTimesheet::find($tracking->timesheet_id);
             $newTimesheet = TrackingTimesheet::where([
-                ['project_id', '=', $timesheet->project_id],
+                ['entity_id', '=', $timesheet->entity_id],
+                ['entity_type', '=', $timesheet->entity_type],
                 ['user_id', '=', $timesheet->user_id],
                 ['team_id', '=', $timesheet->team_id],
                 ['company_id', '=', $timesheet->company_id],

@@ -530,7 +530,7 @@
                                 <v-list-item v-for="(item, i) in company.billing" :key="item.id">
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.name"></v-list-item-title>
-                                        <v-list-item-subtitle v-text="item.cost"></v-list-item-subtitle>
+                                        <v-list-item-subtitle v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
                                         <v-icon small @click="editInternalBilling(item)">
@@ -558,7 +558,7 @@
                                         <v-expansion-panel-content>
                                             <v-form>
                                                 <v-row>
-                                                    <v-col cols="12">
+                                                    <v-col cols="8">
                                                         <v-text-field
                                                             v-model="internalBillingForm.name"
                                                             :color="themeBgColor"
@@ -567,12 +567,22 @@
                                                             dense
                                                         />
                                                     </v-col>
-                                                    <v-col cols="12">
+                                                    <v-col cols="3">
                                                         <v-text-field
                                                             v-model="internalBillingForm.cost"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
                                                             :label="langMap.main.cost"
+                                                            dense
+                                                        />
+                                                    </v-col>
+                                                    <v-col cols="1">
+                                                        <v-text-field
+                                                            v-model="currency.symbol"
+                                                            readonly
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            :label="langMap.tracking.settings.currency"
                                                             dense
                                                         />
                                                     </v-col>
@@ -2435,7 +2445,10 @@ export default {
             removeEmployeeDlg: false,
             selectedEmployee: null,
             internalBillingEditor: null,
-            internalBillingForm: {}
+            internalBillingForm: {},
+            currency: {
+                symbol: ''
+            }
         }
     },
     created() {
@@ -3332,6 +3345,9 @@ export default {
             if (this.singleUserForm.user) {
                 this.singleUserForm.user = this.company.employees.find(x => x.user_id === this.singleUserForm.user.id).user_data;
             }
+            this.currency = this.$store.getters['Currencies/getCurrencies'].find(obj => {
+                return obj.id === this.company.currency_id;
+            })
         }
     },
     computed: {
