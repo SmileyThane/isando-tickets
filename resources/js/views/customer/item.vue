@@ -1159,7 +1159,7 @@
                                 <v-list-item v-for="(item, i) in client.billing" :key="item.id">
                                     <v-list-item-content>
                                         <v-list-item-title v-text="item.name"></v-list-item-title>
-                                        <v-list-item-subtitle v-text="item.cost"></v-list-item-subtitle>
+                                        <v-list-item-subtitle v-text="item.cost + ' ' + currency.symbol"></v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
                                         <v-icon small @click="editInternalBilling(item)">
@@ -1187,7 +1187,7 @@
                                         <v-expansion-panel-content>
                                             <v-form>
                                                 <v-row>
-                                                    <v-col cols="12">
+                                                    <v-col cols="8">
                                                         <v-text-field
                                                             v-model="internalBillingForm.name"
                                                             :color="themeBgColor"
@@ -1196,12 +1196,22 @@
                                                             dense
                                                         />
                                                     </v-col>
-                                                    <v-col cols="12">
+                                                    <v-col cols="3">
                                                         <v-text-field
                                                             v-model="internalBillingForm.cost"
                                                             :color="themeBgColor"
                                                             :item-color="themeBgColor"
                                                             :label="langMap.main.cost"
+                                                            dense
+                                                        />
+                                                    </v-col>
+                                                    <v-col cols="1">
+                                                        <v-text-field
+                                                            v-model="currency.symbol"
+                                                            readonly
+                                                            :color="themeBgColor"
+                                                            :item-color="themeBgColor"
+                                                            :label="langMap.tracking.settings.currency"
                                                             dense
                                                         />
                                                     </v-col>
@@ -1511,6 +1521,7 @@
 
 <script>
 import EventBus from "../../components/EventBus";
+import _ from "lodash";
 
 export default {
 
@@ -1664,7 +1675,10 @@ export default {
             logo: '',
             newLogo: '',
             internalBillingEditor: null,
-            internalBillingForm: {}
+            internalBillingForm: {},
+            currency: {
+                symbol: ''
+            }
         }
     },
     mounted() {
@@ -1678,7 +1692,9 @@ export default {
         this.getCountries();
         this.getProducts();
         this.getEmployees();
+
         this.employeeForm.client_id = parseInt(this.$route.params.id);
+
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
             that.themeFgColor = color;
@@ -2444,12 +2460,18 @@ export default {
             if (this.newLogo !== null) {
                 this.logo = URL.createObjectURL(this.newLogo)
             }
-        }
+        },
+        mainCompany() {
+            this.currency = this.$store.state.mainCompany.currency;
+        },
     },
     computed: {
         clientUpdates: function () {
             return this.client
         },
+        mainCompany: function () {
+            return this.$store.state.mainCompany;
+        }
     }
 }
 </script>

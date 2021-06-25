@@ -231,6 +231,7 @@
 
 <script>
     import EventBus from "../../components/EventBus";
+    import _ from "lodash";
 
     export default {
 
@@ -284,7 +285,10 @@
                     supplier_id: ''
                 },
                 suppliers: [],
-                errors: {}
+                errors: {},
+                currency: {
+                    symbol: ''
+                }
             }
         },
         created() {
@@ -300,7 +304,6 @@
         methods: {
             getClients() {
                 this.loading = this.themeBgColor
-                // console.log(this.options);
                 if (this.options.sortDesc.length <= 0) {
                     this.options.sortBy[0] = 'id'
                     this.options.sortDesc[0] = false
@@ -394,7 +397,7 @@
         watch: {
             options: {
                 handler() {
-                    this.getClients()
+                    this.getClients();
                 },
                 deep: true,
             },

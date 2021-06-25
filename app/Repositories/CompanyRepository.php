@@ -164,7 +164,7 @@ class CompanyRepository
 
     public function getCompanyLicense($companyId)
     {
-        return Company::with('license')->where('id', '=', $companyId)->first();
+        return Company::with(['currency', 'license'])->where('id', '=', $companyId)->first();
     }
 
     public function attachProductCategory($name, $companyId = null, $parentId = null)
