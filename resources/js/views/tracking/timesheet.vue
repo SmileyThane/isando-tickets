@@ -183,7 +183,6 @@
                 :items="getTimesheetForManager"
                 :loading="loading"
                 loading-text="Loading... Please wait"
-                v-model="selected"
                 :expanded="expandedManagerData"
                 hide-default-footer
                 show-expand
@@ -238,6 +237,9 @@
                             :items="item.items"
                             hide-default-footer
                             class="grey lighten-4"
+                            :single-select="singleSelect"
+                            :show-select="[STATUS_REJECTED].indexOf(typeOfItems) !== -1"
+                            v-model="selected"
                         >
                             <template v-slot:item.is_manually="{ isMobile, item, header, value }">
                                 <span v-if="item.is_manually">
@@ -329,6 +331,25 @@
                         </template>
                         <div style="width: 100%; text-align: center">Edit</div>
                         <div>(Take back request and edit)</div>
+                    </v-tooltip>
+                </template>
+                <template v-slot:item.resubmit="{ item }" v-if="[STATUS_REJECTED].indexOf(typeOfItems) !== -1">
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                :color="themeBgColor"
+                                dark
+                                icon
+                                v-bind="attrs"
+                                v-on="on"
+                                @click="selected = item.items; sendingApprovalDialog = true"
+                                small
+                            >
+                                <v-icon>mdi-send</v-icon>
+                            </v-btn>
+                        </template>
+                        <div style="width: 100%; text-align: center">Re-submit</div>
+                        <div>(Re-submit for approval)</div>
                     </v-tooltip>
                 </template>
 
@@ -853,6 +874,8 @@
                 v-model="sendingApprovalDialog"
                 width="500"
                 v-if="selected.length && [STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1"
+                @click:outside="closeSendingApprovalDialog"
+                @keydown="closeSendingApprovalDialog"
             >
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -893,7 +916,7 @@
                         <v-btn
                             color="error"
                             text
-                            @click="sendingApprovalDialog = false"
+                            @click="selected=[]; sendingApprovalDialog = false"
                         >
                             Cancel
                         </v-btn>
@@ -1253,9 +1276,12 @@ export default {
             this.selected = [];
         },
         removeTimesheetConfirm (items) {
-            items.map(id => {
+            Promise.all(items.map(id => {
                 this.$store.dispatch('Timesheet/removeTimesheet', id);
-            });
+            }))
+                .then( () => {
+                    this.$store.dispatch('Timesheet/getAllGroupedByStatus', { userId: this.currentUser.id });
+                });
         },
         undoDeleting(id) {
             const index = this.undoStack.findIndex(i => i.id === id);
@@ -1480,6 +1506,13 @@ export default {
             this.form.entity_id = data.project && data.project.id ? data.project.id : null;
             this.form.entity_type = data.project && data.project.from ? 'App\\Ticket' : 'App\\TrackingProject';
         },
+        closeSendingApprovalDialog(e) {
+            if (e.key && e.key === 'Escape') {
+                this.selected = [];
+            } else if (!e.key) {
+                this.selected = [];
+            }
+        }
     },
     watch: {
         date () {
@@ -1595,6 +1628,9 @@ export default {
             }
             if ([this.STATUS_APPROVAL_PENDING, this.STATUS_REJECTED].indexOf(this.typeOfItems) !== -1) {
                 headers.push({ text: '', value: 'edit', width: '3%' });
+            }
+            if ([this.STATUS_REJECTED].indexOf(this.typeOfItems) !== -1) {
+                headers.push({ text: '', value: 'resubmit', width: '3%' });
             }
             if (this.typeOfItems === this.STATUS_APPROVAL_REQUESTS) {
                 headers.push({ text: '', value: 'approve', width: '3%' });
