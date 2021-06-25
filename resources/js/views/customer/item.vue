@@ -1694,6 +1694,7 @@ export default {
         this.getEmployees();
 
         this.employeeForm.client_id = parseInt(this.$route.params.id);
+        this.$store.dispatch('getMainCompany');
 
         let that = this;
         EventBus.$on('update-theme-fg-color', function (color) {
