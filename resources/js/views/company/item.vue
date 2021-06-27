@@ -2162,6 +2162,24 @@
                     <v-card-text>
                         <v-row>
                             <v-col md="6">
+                                <v-card outlined class="pb-4 pr-4">
+                                    <v-subheader>{{ langMap.limitation_group.limitation_items }}</v-subheader>
+                                    <perfect-scrollbar style="max-height: 30em;">
+                                        <v-list dense subheader>
+                                            <v-list-item-group :color="themeBgColor">
+                                                <v-list-item v-for="(item, i) in groupModelItems" :key="item.id">
+                                                    <v-list-item-action>
+                                                        <v-checkbox v-model="selectedGroupModelItems" :color="themeBgColor" :value="item.id"/>
+                                                    </v-list-item-action>
+                                                    <v-list-item-content>
+                                                        <v-list-item-title v-text="item.name"></v-list-item-title>
+                                                    </v-list-item-content>
+                                                </v-list-item>
+                                            </v-list-item-group>
+                                        </v-list>
+                                    </perfect-scrollbar>
+                                </v-card>
+                                <!--
                                 <v-select
                                     v-model="selectedGroupModelItems"
                                     :color="themeBgColor"
@@ -2179,8 +2197,27 @@
                                         <v-chip label>{{ item.name }}</v-chip>
                                     </template>
                                 </v-select>
+                                -->
                             </v-col>
                             <v-col md="6">
+                                <v-card outlined class="pb-4 pr-4">
+                                    <v-subheader>{{ langMap.customer.customer }}</v-subheader>
+                                    <perfect-scrollbar style="max-height: 30em;">
+                                        <v-list dense subheader>
+                                            <v-list-item-group :color="themeBgColor">
+                                                <v-list-item v-for="(item, i) in company.employees" :key="item.id">
+                                                    <v-list-item-action>
+                                                        <v-checkbox v-model="selectedGroupEmployees" :color="themeBgColor" :value="item.id"/>
+                                                    </v-list-item-action>
+                                                    <v-list-item-content>
+                                                        <v-list-item-title v-text="item.user_data.full_name"></v-list-item-title>
+                                                    </v-list-item-content>
+                                                </v-list-item>
+                                            </v-list-item-group>
+                                        </v-list>
+                                    </perfect-scrollbar>
+                                </v-card>
+                                <!--
                                 <v-select
                                     v-model="selectedGroupEmployees"
                                     :color="themeBgColor"
@@ -2198,6 +2235,7 @@
                                         <v-chip label>{{ item.user_data.full_name }}</v-chip>
                                     </template>
                                 </v-select>
+                                -->
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -2324,6 +2362,7 @@ export default {
                         company_id: '',
                         roles: [],
                         user_data: {
+                            full_name: '',
                             phones: [],
                             addresses: [],
                         }
@@ -2723,9 +2762,11 @@ export default {
             }
             if (item.type.model === "App\\Product") {
                 this.groupModelItems = this.company.products.map((i) => i.product_data);
-
             }
-            console.log(this.groupModelItems);
+
+            this.groupModelItems.sort((a,b) => (a.name.toLocaleUpperCase() > b.name.toLocaleUpperCase()) ? 1 : ((b.name.toLocaleUpperCase() > a.name.toLocaleUpperCase()) ? -1 : 0));
+            this.company.employees.sort((a,b) => (a.user_data.full_name.toLocaleUpperCase() > b.user_data.full_name.toLocaleUpperCase()) ? 1 : ((b.user_data.full_name.toLocaleUpperCase() > a.user_data.full_name.toLocaleUpperCase()) ? -1 : 0));
+
             if (item.limitation_models !== null) {
                 this.selectedGroupModelItems = item.limitation_models.map((i) => i.model_id);
             }
