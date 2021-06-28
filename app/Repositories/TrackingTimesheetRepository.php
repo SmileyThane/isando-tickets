@@ -150,9 +150,11 @@ class TrackingTimesheetRepository
 
     public function update(Request $request, $id) {
         $timesheet = TrackingTimesheet::findOrFail($id);
-        if ($request->has('entity') && $request->entity && $request->entity_type) {
-            $timesheet->entity_id = $request->entity['id'];
+        if ($request->has('entity_id') && $request->entity_id && $request->entity_type) {
+            $timesheet->entity_id = $request->entity_id;
             $timesheet->entity_type = $request->entity_type ?? TrackingProject::class;
+            Tracking::where('timesheet_id', '=', $timesheet->id)
+                ->update(['entity_id' => $timesheet->entity_id, 'entity_type' => $timesheet->entity_type]);
         }
         if ($request->has('billable')) {
             $timesheet->billable = $request->get('billable', false);
@@ -560,13 +562,52 @@ class TrackingTimesheetRepository
         return $template;
     }
 
-    public function loadTemplate($template_id) {
+    public function loadTemplate($template_id, $dateStart, $dateEnd) {
         $template = TrackingTimesheetTemplate::where([
             ['id', '=', $template_id],
             ['user_id', '=', Auth::user()->id]
         ])->first();
         if ($template) {
-            // TODO
+            foreach ($template->data as $item) {
+                $parent = $item['parent'];
+                $service = $item['service'] ?? null;
+                $hours = $item['hours'] ?? null;
+                $entity = $item['entity'] ?? null;
+                $timesheet = new TrackingTimesheet();
+                $timesheet->from = $dateStart;
+                $timesheet->to = $dateEnd;
+                $timesheet->user_id = $parent['user_id'];
+                $timesheet->team_id = $parent['team_id'];
+                $timesheet->company_id = $parent['company_id'];
+                $timesheet->is_manually = $parent['is_manually'];
+                $timesheet->billable = $parent['billable'];
+                $timesheet->status = TrackingTimesheet::STATUS_TRACKED;
+                $timesheet->approver_id = null;
+                if ($entity) {
+                    $timesheet->entity_id = $parent['entity_id'];
+                    $timesheet->entity_type = $parent['entity_type'];
+                } else {
+                    $timesheet->entity_id = null;
+                    $timesheet->entity_type = null;
+                }
+                if ($service) {
+                    $timesheet->service_id = $parent['service_id'];
+                }
+                $timesheet->save();
+                if ($hours) {
+                    foreach (collect($hours)->sortBy('dayOfWeek') as $hour) {
+                        $time = new TrackingTimesheetTime();
+                        $time->timesheet_id = $timesheet->id;
+                        $time->date = Carbon::parse($dateStart)->addDays($hour['dayOfWeek'] - 1)->format('Y-m-d');
+                        $time->time = $hour['time'];
+                        $time->type = $hour['type'];
+                        $time->description = $hour['description'];
+                        $time->save();
+                    }
+                }
+
+            }
+            return true;
         }
         return false;
     }

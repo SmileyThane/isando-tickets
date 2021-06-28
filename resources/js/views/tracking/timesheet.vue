@@ -628,10 +628,12 @@
                     ></v-simple-checkbox>
                 </template>
                 <template v-slot:item.entity.name="{ isMobile, item, header, value }">
-                <span v-if="item.entity">
-                    <span v-if="item.entity.from">{{ item.entity.number }}</span>
-                    <span>{{ item.entity.name }}</span><span v-if="item.entity && item.entity.client"> / {{ item.entity.client.name }}</span>
-                </span>
+                    <ProjectBtn
+                        :key="item.id"
+                        :color="item.entity && item.entity.color ? item.entity.color : themeBgColor"
+                        v-model="item.entity"
+                        @input="updateProject(item)"
+                    ></ProjectBtn>
                 </template>
                 <template v-slot:item.service="{ isMobile, item, header, value }">
                     <v-edit-dialog
@@ -860,156 +862,158 @@
                 Remove selected
             </v-btn>
             <v-spacer></v-spacer>
-            <v-dialog
-                v-model="saveTemplateDialog"
-                width="500"
-                v-if="selected.length && [STATUS_TRACKED].indexOf(typeOfItems) !== -1"
-            >
-                <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                        :color="themeBgColor"
-                        :style="{ color: $helpers.color.invertColor(themeBgColor)}"
-                        v-if="selected.length && [STATUS_TRACKED].indexOf(typeOfItems) !== -1"
-                        v-bind="attrs"
-                        v-on="on"
-                        class="mx-2"
-                        small
-                    >
-                        Save as template
-                    </v-btn>
-                </template>
-
-                <v-card>
-                    <v-card-title class="grey lighten-2">
-                        Save as template
-                    </v-card-title>
-
-                    <v-card-text>
-                        <br>
-                        <v-text-field
-                            label="Template name"
-                            v-model="newTemplate.name"
-                        ></v-text-field>
-                        <v-switch
-                            v-model="newTemplate.components"
-                            label="Projects"
-                            value="projects"
-                        ></v-switch>
-                        <v-switch
-                            v-model="newTemplate.components"
-                            label="Services"
-                            value="services"
-                        ></v-switch>
-                        <v-switch
-                            v-model="newTemplate.components"
-                            label="Hours"
-                            value="hours"
-                        ></v-switch>
-                    </v-card-text>
-
-                    <v-divider></v-divider>
-
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
+            <div>
+                <v-dialog
+                    v-model="saveTemplateDialog"
+                    width="500"
+                    v-if="selected.length && [STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+                >
+                    <template v-slot:activator="{ on, attrs }">
                         <v-btn
-                            color="error"
-                            text
-                            @click="saveTemplateDialog = false; resetSaveAsTemplate()"
+                            :color="themeBgColor"
+                            :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                            v-if="selected.length && [STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+                            v-bind="attrs"
+                            v-on="on"
+                            class="mx-2"
+                            small
                         >
-                            Cancel
+                            Save as template
                         </v-btn>
+                    </template>
+
+                    <v-card>
+                        <v-card-title class="grey lighten-2">
+                            Save as template
+                        </v-card-title>
+
+                        <v-card-text>
+                            <br>
+                            <v-text-field
+                                label="Template name"
+                                v-model="newTemplate.name"
+                            ></v-text-field>
+                            <v-switch
+                                v-model="newTemplate.components"
+                                label="Projects"
+                                value="projects"
+                            ></v-switch>
+                            <v-switch
+                                v-model="newTemplate.components"
+                                label="Services"
+                                value="services"
+                            ></v-switch>
+                            <v-switch
+                                v-model="newTemplate.components"
+                                label="Hours"
+                                value="hours"
+                            ></v-switch>
+                        </v-card-text>
+
+                        <v-divider></v-divider>
+
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="error"
+                                text
+                                @click="saveTemplateDialog = false; resetSaveAsTemplate()"
+                            >
+                                Cancel
+                            </v-btn>
+                            <v-btn
+                                color="success"
+                                text
+                                @click="saveTemplateDialog = false; saveAsTemplate()"
+                            >
+                                Save
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-dialog
+                    v-model="loadTemplateDialog"
+                    width="500"
+                    v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+                >
+                    <template v-slot:activator="{ on, attrs }">
                         <v-btn
-                            color="success"
-                            text
-                            @click="saveTemplateDialog = false; saveAsTemplate()"
+                            :color="themeBgColor"
+                            :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                            v-bind="attrs"
+                            v-on="on"
+                            class="mx-2"
+                            small
+                            v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
                         >
-                            Save
+                            Load template
                         </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-            <v-dialog
-                v-model="loadTemplateDialog"
-                width="500"
-                v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
-            >
-                <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                        :color="themeBgColor"
-                        :style="{ color: $helpers.color.invertColor(themeBgColor)}"
-                        v-bind="attrs"
-                        v-on="on"
-                        class="mx-2"
-                        small
-                        v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
-                    >
-                        Load template
-                    </v-btn>
-                </template>
+                    </template>
 
-                <v-card>
-                    <v-card-title class="grey lighten-2">
-                        Load template
-                    </v-card-title>
+                    <v-card>
+                        <v-card-title class="grey lighten-2">
+                            Load template
+                        </v-card-title>
 
-                    <v-card-text>
-                        <br>
-                        <perfect-scrollbar>
-                            <v-list dense style="max-height: 400px">
-                                <v-list-item-group
-                                    v-model="selectedTemplate"
-                                    color="primary"
-                                >
-                                    <v-list-item
-                                        v-for="(item, i) in $store.getters['Timesheet/getTimesheetTemplates']"
-                                        :key="i"
+                        <v-card-text>
+                            <br>
+                            <perfect-scrollbar>
+                                <v-list dense style="max-height: 400px">
+                                    <v-list-item-group
+                                        v-model="selectedTemplate"
+                                        color="primary"
                                     >
-                                        <v-list-item-content>
-                                            <v-list-item-title>
-                                                #{{item.id}}. {{item.name}}
-                                            </v-list-item-title>
-                                        </v-list-item-content>
-                                        <v-list-item-action @click="removeTemplate(item.id)">
-                                            <v-icon color="error">mdi-trash-can-outline</v-icon>
-                                        </v-list-item-action>
-                                    </v-list-item>
-                                </v-list-item-group>
-                            </v-list>
-                        </perfect-scrollbar>
-                    </v-card-text>
+                                        <v-list-item
+                                            v-for="(item, i) in $store.getters['Timesheet/getTimesheetTemplates']"
+                                            :key="i"
+                                        >
+                                            <v-list-item-content>
+                                                <v-list-item-title>
+                                                    #{{item.id}}. {{item.name}}
+                                                </v-list-item-title>
+                                            </v-list-item-content>
+                                            <v-list-item-action @click="removeTemplate(item.id)">
+                                                <v-icon color="error">mdi-trash-can-outline</v-icon>
+                                            </v-list-item-action>
+                                        </v-list-item>
+                                    </v-list-item-group>
+                                </v-list>
+                            </perfect-scrollbar>
+                        </v-card-text>
 
-                    <v-divider></v-divider>
+                        <v-divider></v-divider>
 
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="error"
-                            text
-                            @click="loadTemplateDialog = false"
-                        >
-                            Cancel
-                        </v-btn>
-                        <v-btn
-                            color="success"
-                            text
-                            :disabled="selectedTemplate === undefined"
-                            @click="loadTemplateDialog = false; loadTemplate()"
-                        >
-                            Load
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
-            <v-btn
-                v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
-                class="mx-2"
-                small
-                :style="{ color: $helpers.color.invertColor(themeBgColor)}"
-                :color="themeBgColor"
-                @click="copyLastWeek"
-            >
-                Copy last week
-            </v-btn>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="error"
+                                text
+                                @click="loadTemplateDialog = false"
+                            >
+                                Cancel
+                            </v-btn>
+                            <v-btn
+                                color="success"
+                                text
+                                :disabled="selectedTemplate === undefined"
+                                @click="loadTemplateDialog = false; loadTemplate()"
+                            >
+                                Load
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-btn
+                    v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+                    class="mx-2"
+                    small
+                    :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                    :color="themeBgColor"
+                    @click="copyLastWeek"
+                >
+                    Copy last week
+                </v-btn>
+            </div>
             <v-spacer></v-spacer>
             <v-btn
                 :color="themeBgColor"
@@ -1664,6 +1668,16 @@ export default {
             });
 
         },
+        updateProject(item) {
+            this.$store.dispatch('Timesheet/updateTimesheet', {
+                id: item.id,
+                timesheet: {
+                    entity_id: item.entity.id,
+                    entity_type: item.entity.from ? 'App\\Ticket' : 'App\\TrackingProject',
+                }
+            });
+
+        },
         chooseProjectHandler(data) {
             console.log(data);
             this.form.entity_id = data.project && data.project.id ? data.project.id : null;
@@ -1694,7 +1708,11 @@ export default {
             const templates = this.$store.getters['Timesheet/getTimesheetTemplates'];
             if (templates[this.selectedTemplate]) {
                 const id = templates[this.selectedTemplate].id;
-                this.$store.dispatch('Timesheet/loadTemplate', id);
+                this.$store.dispatch('Timesheet/loadTemplate', {
+                    id,
+                    start: this.dateRange.start,
+                    end: this.dateRange.end
+                });
             }
         },
         removeTemplate(id) {
