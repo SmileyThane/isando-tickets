@@ -123,6 +123,7 @@ class TrackingTimesheet extends Model
             $newTime->timesheet_id = $new->id;
             $newTime->save();
         }
+        return $new;
     }
 
 }

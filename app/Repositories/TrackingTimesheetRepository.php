@@ -13,6 +13,7 @@ use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
 use App\TrackingTimesheet;
+use App\TrackingTimesheetTemplate;
 use App\TrackingTimesheetTime;
 use App\User;
 use Carbon\Carbon;
@@ -521,8 +522,41 @@ class TrackingTimesheetRepository
             ['is_manually', '=', true],
         ])->get();
         foreach ($timesheets as $timesheet) {
-            $timesheet->duplicate();
+            $newTimesheet = $timesheet->duplicate();
+            $this->genTrackersByTimesheet($newTimesheet);
         }
+    }
+
+    public function getUserTemplates() {
+        return TrackingTimesheetTemplate::where('user_id', '=', Auth::user()->id)->get();
+    }
+
+    public function saveAsTemplate($items, $config) {
+        $data = [];
+        foreach ($items as $item) {
+            $timesheet = TrackingTimesheet::find($item);
+            $dataItem = [];
+            $dataItem['parent'] = $timesheet;
+            if (in_array('projects', $config['components'])) {
+                $dataItem['entity'] = $timesheet->entity;
+            }
+            if (in_array('services', $config['components'])) {
+                $dataItem['service'] = null;
+                if ($timesheet->Service()->first()) {
+                    $dataItem['service'] = $timesheet->Service()->first();
+                }
+            }
+            if (in_array('hours', $config['components'])) {
+                $dataItem['hours'] = $timesheet->Times;
+            }
+            array_push($data, $dataItem);
+        }
+        $template = new TrackingTimesheetTemplate();
+        $template->name = $config['name'];
+        $template->user_id = Auth::user()->id;
+        $template->data = $data;
+        $template->save();
+        return $template;
     }
 
 }

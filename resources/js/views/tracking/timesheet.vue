@@ -860,6 +860,83 @@
                 Remove selected
             </v-btn>
             <v-spacer></v-spacer>
+            <v-dialog
+                v-model="saveTemplateDialog"
+                width="500"
+                v-if="selected.length"
+            >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        :color="themeBgColor"
+                        :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                        v-if="selected.length"
+                        v-bind="attrs"
+                        v-on="on"
+                        class="mx-2"
+                        small
+                    >
+                        Save as template
+                    </v-btn>
+                </template>
+
+                <v-card>
+                    <v-card-title class="grey lighten-2">
+                        Save as template
+                    </v-card-title>
+
+                    <v-card-text>
+                        <br>
+                        <v-text-field
+                            label="Template name"
+                            v-model="newTemplate.name"
+                        ></v-text-field>
+                        <v-switch
+                            v-model="newTemplate.components"
+                            label="Projects"
+                            value="projects"
+                        ></v-switch>
+                        <v-switch
+                            v-model="newTemplate.components"
+                            label="Services"
+                            value="services"
+                        ></v-switch>
+                        <v-switch
+                            v-model="newTemplate.components"
+                            label="Hours"
+                            value="hours"
+                        ></v-switch>
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="error"
+                            text
+                            @click="saveTemplateDialog = false; resetSaveAsTemplate()"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            color="success"
+                            text
+                            @click="saveTemplateDialog = false; saveAsTemplate()"
+                        >
+                            Save
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-btn
+                v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+                class="mx-2"
+                small
+                :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                :color="themeBgColor"
+            >
+                Load as template
+            </v-btn>
             <v-btn
                 v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
                 class="mx-2"
@@ -1154,6 +1231,11 @@ export default {
             loadingBtn: false,
             undoStack: [],
             deletedItems: [],
+            newTemplate: {
+                name: '',
+                components: [],
+            },
+            saveTemplateDialog: false,
         }
     },
     created () {
@@ -1526,6 +1608,17 @@ export default {
         },
         copyLastWeek() {
             this.$store.dispatch('Timesheet/copyLastWeek');
+        },
+        resetSaveAsTemplate() {
+            this.newTemplate.name = '';
+            this.newTemplate.components = [];
+            this.selected = [];
+        },
+        saveAsTemplate() {
+            if (this.selected.length) {
+                this.$store.dispatch('Timesheet/saveAsTemplate', { items: this.selected.map(i => i.id), data: this.newTemplate })
+                    .then(() => this.resetSaveAsTemplate());
+            }
         }
     },
     watch: {
