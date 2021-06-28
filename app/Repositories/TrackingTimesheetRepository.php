@@ -605,7 +605,7 @@ class TrackingTimesheetRepository
                         $time->save();
                     }
                 }
-
+                $this->genTrackersByTimesheet($timesheet);
             }
             return true;
         }
