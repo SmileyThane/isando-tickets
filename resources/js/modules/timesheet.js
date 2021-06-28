@@ -113,6 +113,14 @@ export default {
                     }
                 });
         },
+        loadTemplate({ state, dispatch }, id) {
+            axios.post(`/api/tracking/timesheet/templates/${id}`)
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        dispatch('getTimesheet', state.params);
+                    }
+                });
+        },
     },
     mutations: {
         UPDATE_ITEM(state, item) {

@@ -528,7 +528,8 @@ class TrackingTimesheetRepository
     }
 
     public function getUserTemplates() {
-        return TrackingTimesheetTemplate::where('user_id', '=', Auth::user()->id)->get();
+        return TrackingTimesheetTemplate::where('user_id', '=', Auth::user()->id)
+            ->orderBy('id', 'desc')->get();
     }
 
     public function saveAsTemplate($items, $config) {
