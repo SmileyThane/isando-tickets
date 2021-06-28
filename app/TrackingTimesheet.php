@@ -110,4 +110,19 @@ class TrackingTimesheet extends Model
         return $maxNumber;
     }
 
+    public function duplicate() {
+        $new = $this->replicate();
+        $new->from = Carbon::parse($new->from)->addWeek()->format('Y-m-d');
+        $new->from = $new->to ? Carbon::parse($new->to)->addWeek()->format('Y-m-d') : null;
+        $new->status = TrackingTimesheet::STATUS_TRACKED;
+        $new->push();
+        $times = $this->times()->get();
+        foreach ($times as $time) {
+            $newTime = $time->replicate();
+            $newTime->date = Carbon::parse($newTime->date)->addWeek()->format('Y-m-d');
+            $newTime->timesheet_id = $new->id;
+            $newTime->save();
+        }
+    }
+
 }

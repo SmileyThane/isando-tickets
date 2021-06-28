@@ -861,6 +861,17 @@
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
+                v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+                class="mx-2"
+                small
+                :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                :color="themeBgColor"
+                @click="copyLastWeek"
+            >
+                Copy last week
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
                 :color="themeBgColor"
                 :style="{ color: $helpers.color.invertColor(themeBgColor)}"
                 v-if="selected.length && [STATUS_REJECTED].indexOf(typeOfItems) !== -1"
@@ -1512,6 +1523,9 @@ export default {
             } else if (!e.key) {
                 this.selected = [];
             }
+        },
+        copyLastWeek() {
+            this.$store.dispatch('Timesheet/copyLastWeek');
         }
     },
     watch: {

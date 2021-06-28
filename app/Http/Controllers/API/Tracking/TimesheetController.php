@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\Tracking;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TimesheetController extends BaseController
 {
@@ -80,4 +81,8 @@ class TimesheetController extends BaseController
         ]);
     }
 
+    public function copyLastWeek(Request $request) {
+        $this->timesheetRepo->copyLastWeek(Auth::user());
+        return self::showResponse(true, []);
+    }
 }

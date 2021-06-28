@@ -14,6 +14,7 @@ use App\Tracking;
 use App\TrackingProject;
 use App\TrackingTimesheet;
 use App\TrackingTimesheetTime;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -510,6 +511,18 @@ class TrackingTimesheetRepository
                 ->get()->count();
         }
         return $timesheet;
+    }
+
+    public function copyLastWeek(User $user) {
+        $timesheets = TrackingTimesheet::where([
+            ['user_id', '=', $user->id],
+            ['from', '<=', Carbon::now()->subWeek()->endOf('week')],
+            ['to', '>=', Carbon::now()->subWeek()->startOf('week')],
+            ['is_manually', '=', true],
+        ])->get();
+        foreach ($timesheets as $timesheet) {
+            $timesheet->duplicate();
+        }
     }
 
 }

@@ -88,6 +88,14 @@ export default {
                     }
                 });
         },
+        copyLastWeek({ state, dispatch }) {
+            axios.post('/api/tracking/timesheet/copy_last_week')
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        dispatch('getTimesheet', state.params);
+                    }
+                });
+        },
     },
     mutations: {
         UPDATE_ITEM(state, item) {
