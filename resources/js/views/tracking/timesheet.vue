@@ -860,6 +860,157 @@
                 Remove selected
             </v-btn>
             <v-spacer></v-spacer>
+            <v-dialog
+                v-model="saveTemplateDialog"
+                width="500"
+                v-if="selected.length && [STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+            >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        :color="themeBgColor"
+                        :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                        v-if="selected.length && [STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+                        v-bind="attrs"
+                        v-on="on"
+                        class="mx-2"
+                        small
+                    >
+                        Save as template
+                    </v-btn>
+                </template>
+
+                <v-card>
+                    <v-card-title class="grey lighten-2">
+                        Save as template
+                    </v-card-title>
+
+                    <v-card-text>
+                        <br>
+                        <v-text-field
+                            label="Template name"
+                            v-model="newTemplate.name"
+                        ></v-text-field>
+                        <v-switch
+                            v-model="newTemplate.components"
+                            label="Projects"
+                            value="projects"
+                        ></v-switch>
+                        <v-switch
+                            v-model="newTemplate.components"
+                            label="Services"
+                            value="services"
+                        ></v-switch>
+                        <v-switch
+                            v-model="newTemplate.components"
+                            label="Hours"
+                            value="hours"
+                        ></v-switch>
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="error"
+                            text
+                            @click="saveTemplateDialog = false; resetSaveAsTemplate()"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            color="success"
+                            text
+                            @click="saveTemplateDialog = false; saveAsTemplate()"
+                        >
+                            Save
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-dialog
+                v-model="loadTemplateDialog"
+                width="500"
+                v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+            >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        :color="themeBgColor"
+                        :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                        v-bind="attrs"
+                        v-on="on"
+                        class="mx-2"
+                        small
+                        v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+                    >
+                        Load template
+                    </v-btn>
+                </template>
+
+                <v-card>
+                    <v-card-title class="grey lighten-2">
+                        Load template
+                    </v-card-title>
+
+                    <v-card-text>
+                        <br>
+                        <perfect-scrollbar>
+                            <v-list dense style="max-height: 400px">
+                                <v-list-item-group
+                                    v-model="selectedTemplate"
+                                    color="primary"
+                                >
+                                    <v-list-item
+                                        v-for="(item, i) in $store.getters['Timesheet/getTimesheetTemplates']"
+                                        :key="i"
+                                    >
+                                        <v-list-item-content>
+                                            <v-list-item-title>
+                                                #{{item.id}}. {{item.name}}
+                                            </v-list-item-title>
+                                        </v-list-item-content>
+                                        <v-list-item-action @click="removeTemplate(item.id)">
+                                            <v-icon color="error">mdi-trash-can-outline</v-icon>
+                                        </v-list-item-action>
+                                    </v-list-item>
+                                </v-list-item-group>
+                            </v-list>
+                        </perfect-scrollbar>
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="error"
+                            text
+                            @click="loadTemplateDialog = false"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            color="success"
+                            text
+                            :disabled="selectedTemplate === undefined"
+                            @click="loadTemplateDialog = false; loadTemplate()"
+                        >
+                            Load
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+            <v-btn
+                v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
+                class="mx-2"
+                small
+                :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                :color="themeBgColor"
+                @click="copyLastWeek"
+            >
+                Copy last week
+            </v-btn>
+            <v-spacer></v-spacer>
             <v-btn
                 :color="themeBgColor"
                 :style="{ color: $helpers.color.invertColor(themeBgColor)}"
@@ -1143,6 +1294,13 @@ export default {
             loadingBtn: false,
             undoStack: [],
             deletedItems: [],
+            newTemplate: {
+                name: '',
+                components: [],
+            },
+            saveTemplateDialog: false,
+            loadTemplateDialog: false,
+            selectedTemplate: undefined,
         }
     },
     created () {
@@ -1158,6 +1316,7 @@ export default {
         this.debounceGetTeamManagers = _.debounce(this._getTeamManagers, 1000);
         this.debounceGetCurrentUser = _.debounce(this._getCurrentUser, 1000);
         this.debounceGetServices = _.debounce(this._getServices, 1000);
+        this.debounceGetTimesheetTemplates = _.debounce(this._getTimesheetTemplates, 1000);
         this.date = moment().format(this.dateFormat);
     },
     mounted () {
@@ -1176,6 +1335,7 @@ export default {
         this.resetTimesheet();
         this.debounceGetTeamManagers();
         this.debounceGetServices();
+        this.debounceGetTimesheetTemplates();
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Products/getProductList', { search: null });
     },
@@ -1209,6 +1369,9 @@ export default {
         },
         _getServices() {
             this.$store.dispatch('Services/getServicesList', { search: '' });
+        },
+        _getTimesheetTemplates() {
+            this.$store.dispatch('Timesheet/getTimesheetTemplates');
         },
         createTimesheet () {
             if (this.form.entity) {
@@ -1512,6 +1675,30 @@ export default {
             } else if (!e.key) {
                 this.selected = [];
             }
+        },
+        copyLastWeek() {
+            this.$store.dispatch('Timesheet/copyLastWeek');
+        },
+        resetSaveAsTemplate() {
+            this.newTemplate.name = '';
+            this.newTemplate.components = [];
+            this.selected = [];
+        },
+        saveAsTemplate() {
+            if (this.selected.length) {
+                this.$store.dispatch('Timesheet/saveAsTemplate', { items: this.selected.map(i => i.id), data: this.newTemplate })
+                    .then(() => this.resetSaveAsTemplate());
+            }
+        },
+        loadTemplate() {
+            const templates = this.$store.getters['Timesheet/getTimesheetTemplates'];
+            if (templates[this.selectedTemplate]) {
+                const id = templates[this.selectedTemplate].id;
+                this.$store.dispatch('Timesheet/loadTemplate', id);
+            }
+        },
+        removeTemplate(id) {
+            this.$store.dispatch('Timesheet/removeTemplate', id);
         }
     },
     watch: {

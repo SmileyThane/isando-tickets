@@ -13,7 +13,9 @@ use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
 use App\TrackingTimesheet;
+use App\TrackingTimesheetTemplate;
 use App\TrackingTimesheetTime;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -512,4 +514,67 @@ class TrackingTimesheetRepository
         return $timesheet;
     }
 
+    public function copyLastWeek(User $user) {
+        $timesheets = TrackingTimesheet::where([
+            ['user_id', '=', $user->id],
+            ['from', '<=', Carbon::now()->subWeek()->endOf('week')],
+            ['to', '>=', Carbon::now()->subWeek()->startOf('week')],
+            ['is_manually', '=', true],
+        ])->get();
+        foreach ($timesheets as $timesheet) {
+            $newTimesheet = $timesheet->duplicate();
+            $this->genTrackersByTimesheet($newTimesheet);
+        }
+    }
+
+    public function getUserTemplates() {
+        return TrackingTimesheetTemplate::where('user_id', '=', Auth::user()->id)
+            ->orderBy('id', 'desc')->get();
+    }
+
+    public function saveAsTemplate($items, $config) {
+        $data = [];
+        foreach ($items as $item) {
+            $timesheet = TrackingTimesheet::find($item);
+            $dataItem = [];
+            $dataItem['parent'] = $timesheet;
+            if (in_array('projects', $config['components'])) {
+                $dataItem['entity'] = $timesheet->entity;
+            }
+            if (in_array('services', $config['components'])) {
+                $dataItem['service'] = null;
+                if ($timesheet->Service()->first()) {
+                    $dataItem['service'] = $timesheet->Service()->first();
+                }
+            }
+            if (in_array('hours', $config['components'])) {
+                $dataItem['hours'] = $timesheet->Times;
+            }
+            array_push($data, $dataItem);
+        }
+        $template = new TrackingTimesheetTemplate();
+        $template->name = $config['name'];
+        $template->user_id = Auth::user()->id;
+        $template->data = $data;
+        $template->save();
+        return $template;
+    }
+
+    public function loadTemplate($template_id) {
+        $template = TrackingTimesheetTemplate::where([
+            ['id', '=', $template_id],
+            ['user_id', '=', Auth::user()->id]
+        ])->first();
+        if ($template) {
+            // TODO
+        }
+        return false;
+    }
+
+    public function removeTemplate($template_id) {
+        return TrackingTimesheetTemplate::where([
+            ['id', '=', $template_id],
+            ['user_id', '=', Auth::user()->id]
+        ])->delete();
+    }
 }

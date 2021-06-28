@@ -8,6 +8,7 @@ export default {
         timesheetRequest: [],
         params: {},
         countForApproval: 0,
+        timesheet_templates: [],
     },
     actions: {
         getTimesheet({ commit }, { start, end }) {
@@ -88,6 +89,46 @@ export default {
                     }
                 });
         },
+        copyLastWeek({ state, dispatch }) {
+            axios.post('/api/tracking/timesheet/copy_last_week')
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        dispatch('getTimesheet', state.params);
+                    }
+                });
+        },
+        getTimesheetTemplates({commit}) {
+            axios.get('/api/tracking/timesheet/templates')
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        commit('SET_TIMESHEET_TEMPLATES', data);
+                    }
+                });
+        },
+        saveAsTemplate({ state, dispatch }, { items, data }) {
+            axios.post('/api/tracking/timesheet/templates', { items, data })
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        dispatch('getTimesheetTemplates');
+                    }
+                });
+        },
+        loadTemplate({ state, dispatch }, id) {
+            axios.post(`/api/tracking/timesheet/templates/${id}`)
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        dispatch('getTimesheet', state.params);
+                    }
+                });
+        },
+        removeTemplate({ state, dispatch }, id) {
+            axios.delete(`/api/tracking/timesheet/templates/${id}`)
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        dispatch('getTimesheetTemplates', state.params);
+                    }
+                });
+        },
     },
     mutations: {
         UPDATE_ITEM(state, item) {
@@ -109,6 +150,9 @@ export default {
             state.timesheetRejected = data.filter(i => i.user_id === userId && i.status === 'rejected');
             state.timesheetRequest = data.filter(i => (i.approver_id === null || i.approver_id === userId) && i.status === 'pending');
         },
+        SET_TIMESHEET_TEMPLATES(state, data) {
+            state.timesheet_templates = data;
+        },
     },
     getters: {
         getTimesheet(state) {
@@ -128,6 +172,9 @@ export default {
         },
         getArchivedTimesheet(state) {
             return state.timesheetArchived;
+        },
+        getTimesheetTemplates (state) {
+            return state.timesheet_templates;
         }
     }
 }
