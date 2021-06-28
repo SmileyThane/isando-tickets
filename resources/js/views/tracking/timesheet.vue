@@ -863,13 +863,13 @@
             <v-dialog
                 v-model="saveTemplateDialog"
                 width="500"
-                v-if="selected.length"
+                v-if="selected.length && [STATUS_TRACKED].indexOf(typeOfItems) !== -1"
             >
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
                         :color="themeBgColor"
                         :style="{ color: $helpers.color.invertColor(themeBgColor)}"
-                        v-if="selected.length"
+                        v-if="selected.length && [STATUS_TRACKED].indexOf(typeOfItems) !== -1"
                         v-bind="attrs"
                         v-on="on"
                         class="mx-2"
@@ -931,6 +931,7 @@
             <v-dialog
                 v-model="loadTemplateDialog"
                 width="500"
+                v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
             >
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -940,6 +941,7 @@
                         v-on="on"
                         class="mx-2"
                         small
+                        v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
                     >
                         Load template
                     </v-btn>
@@ -967,7 +969,7 @@
                                                 #{{item.id}}. {{item.name}}
                                             </v-list-item-title>
                                         </v-list-item-content>
-                                        <v-list-item-action>
+                                        <v-list-item-action @click="removeTemplate(item.id)">
                                             <v-icon color="error">mdi-trash-can-outline</v-icon>
                                         </v-list-item-action>
                                     </v-list-item>
@@ -990,7 +992,7 @@
                         <v-btn
                             color="success"
                             text
-                            :disabled="!selectedTemplate"
+                            :disabled="selectedTemplate === undefined"
                             @click="loadTemplateDialog = false; loadTemplate()"
                         >
                             Load
@@ -1298,7 +1300,7 @@ export default {
             },
             saveTemplateDialog: false,
             loadTemplateDialog: false,
-            selectedTemplate: null,
+            selectedTemplate: undefined,
         }
     },
     created () {
@@ -1695,6 +1697,9 @@ export default {
                 this.$store.dispatch('Timesheet/loadTemplate', id);
             }
         },
+        removeTemplate(id) {
+            this.$store.dispatch('Timesheet/removeTemplate', id);
+        }
     },
     watch: {
         date () {

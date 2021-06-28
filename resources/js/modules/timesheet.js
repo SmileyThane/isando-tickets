@@ -121,6 +121,14 @@ export default {
                     }
                 });
         },
+        removeTemplate({ state, dispatch }, id) {
+            axios.delete(`/api/tracking/timesheet/templates/${id}`)
+                .then(({ data: { success, data } }) => {
+                    if (success) {
+                        dispatch('getTimesheetTemplates', state.params);
+                    }
+                });
+        },
     },
     mutations: {
         UPDATE_ITEM(state, item) {

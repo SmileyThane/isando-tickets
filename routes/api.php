@@ -241,6 +241,8 @@ Route::group(['middleware' => 'auth:api'], function () {
                 Route::post('/timesheet/copy_last_week', 'TimesheetController@copyLastWeek');
                 Route::get('/timesheet/templates', 'TimesheetController@getUserTemplates');
                 Route::post('/timesheet/templates', 'TimesheetController@saveAsTemplate');
+                Route::post('/timesheet/templates/{template_id}', 'TimesheetController@loadTemplate');
+                Route::delete('/timesheet/templates/{template_id}', 'TimesheetController@removeTemplate');
                 Route::post('/timesheet', 'TimesheetController@create');
                 Route::get('/timesheet/approval', 'TimesheetController@getCountTimesheetForApproval');
                 Route::get('/timesheet/{id}', 'TimesheetController@find');

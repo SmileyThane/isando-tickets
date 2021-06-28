@@ -560,4 +560,21 @@ class TrackingTimesheetRepository
         return $template;
     }
 
+    public function loadTemplate($template_id) {
+        $template = TrackingTimesheetTemplate::where([
+            ['id', '=', $template_id],
+            ['user_id', '=', Auth::user()->id]
+        ])->first();
+        if ($template) {
+            // TODO
+        }
+        return false;
+    }
+
+    public function removeTemplate($template_id) {
+        return TrackingTimesheetTemplate::where([
+            ['id', '=', $template_id],
+            ['user_id', '=', Auth::user()->id]
+        ])->delete();
+    }
 }
