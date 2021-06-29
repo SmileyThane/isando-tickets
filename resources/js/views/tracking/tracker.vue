@@ -326,7 +326,6 @@
                         single-line
                         style="min-width: 300px"
                         class="mt-4"
-                        @blur="debounceGetTracking()"
                     >
                         <template v-slot:item="{ parent, item, on, attrs }">
                             <div class="d-flex">
@@ -941,6 +940,7 @@ export default {
     },
     mounted() {
         this.__globalTimer();
+        this.debounceGetTracking();
         this.$store.dispatch('Projects/getProjectList', { search: null });
         this.$store.dispatch('Products/getProductList', { search: null });
         this.$store.dispatch('Clients/getClientList', { search: null });
@@ -962,7 +962,6 @@ export default {
                 const currentUser = this.$store.getters['getCurrentUser'];
                 if (currentUser) {
                     this.teamFilter.push(currentUser.id);
-                    this.debounceGetTracking();
                 }
             });
     },
@@ -978,8 +977,7 @@ export default {
             this.loading = true;
             const queryParams = new URLSearchParams({
                 date_from: moment(this.dateRange.start).format(this.dateFormat) || null,
-                date_to: moment(this.dateRange.end).format(this.dateFormat) || null,
-                team: this.teamFilter.join(','),
+                date_to: moment(this.dateRange.end).format(this.dateFormat) || null
             });
             return axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
                 .then(({ data }) => {
@@ -1188,8 +1186,14 @@ export default {
             const self = this;
             return this.tracking
                 .filter(function(item) {
-                    return moment(item.date_from).format(self.dateFormat) === date;
-                });
+                    if (self.teamFilter.length) {
+                        return self.teamFilter.indexOf(item.user_id) !== -1;
+                    }
+                    return true;
+                })
+                .filter(function(item) {
+                return moment(item.date_from).format(self.dateFormat) === date;
+            });
         },
         save (item, fieldName, newValue = null) {
             if (['date_from', 'date_to'].indexOf(fieldName)) {
