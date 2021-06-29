@@ -763,12 +763,13 @@ class TrackingReportRepository
                 $join->on('tracking.entity_id', '=', 'tracking_projects.id')
                     ->where('tracking.entity_type', '=', TrackingProject::class);
             })
+            ->leftJoin('clients', 'clients.id', '=', 'tracking_projects.client_id')
             ->where(function($query) use ($from, $to) {
                 $query->where('date_to', '>=', $from)
                     ->where('date_from', '<=', $to);
             })
-            ->groupBy('tracking_projects.id', 'tracking_projects.name')
-            ->select(['tracking_projects.name', 'tracking_projects.id', DB::raw("SUM(tracking.date_to - tracking.date_from) as duration")]);
+            ->groupBy('tracking_projects.client_id', 'clients.name', 'tracking_projects.id', 'tracking_projects.name')
+            ->select(['tracking_projects.client_id', 'clients.name as client_name', 'tracking_projects.name', 'tracking_projects.id', DB::raw("SUM(tracking.date_to - tracking.date_from) as duration")]);
 //        dd($tracking->toSql(), $tracking->getBindings(), $tracking->get());
         return $tracking->get();
     }
