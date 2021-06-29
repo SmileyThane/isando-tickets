@@ -45,7 +45,7 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'number', 'full_name', 'contact_phone', 'contact_email', 'email', 'email_id', 'avatar_url'
+        'number', 'full_name', 'contact_phone', 'contact_email', 'email', 'email_id', 'avatar_url', 'color'
     ];
 
     public function employee(): HasOne
@@ -208,5 +208,16 @@ class User extends Authenticatable
     public function Timesheet() {
         return $this->hasMany(TrackingTimesheet::class, 'user_id', 'id')
             ->with('Timesheet.Times');
+    }
+
+    public function getColorAttribute() {
+        $settings = Settings::where([
+            ['entity_id', '=', $this->id],
+            ['entity_type', '=', User::class]
+        ])->first();
+        if ($settings && $settings->data) {
+            return $settings->data['theme_bg_color'] ?? $settings->data['theme_color'] ?? 'grey darken-1';
+        }
+        return '';
     }
 }

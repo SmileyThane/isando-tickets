@@ -330,7 +330,7 @@
                         <template v-slot:item="{ parent, item, on, attrs }">
                             <div class="d-flex">
                                 <div class="d-inline-flex">
-                                    <Avatar :user="item" :color="getUserColor(item.id)"></Avatar>
+                                    <Avatar :user="item" :color="item.color"></Avatar>
                                 </div>
                                 <div class="d-inline-flex mt-3 ma-4">
                                     {{ item.full_name }}
@@ -438,7 +438,7 @@
                                     <template v-slot:body="props">
                                         <tr v-for="row in props.items">
                                             <td class="pa-3" v-if="hasPermission([42])">
-                                                <Avatar :user="row.user" :color="getUserColor(row.user.id)"></Avatar>
+                                                <Avatar :user="row.user" :color="row.user.color"></Avatar>
                                             </td>
                                             <td
                                                 class="pa-3"
@@ -1251,13 +1251,6 @@ export default {
             }
             return true;
         },
-        getUserColor(userId) {
-            const foundItem = this.teamEmployee.find(i => i.id === userId);
-            if (foundItem) {
-                return foundItem.color;
-            }
-            return null;
-        },
         correctionTime(dateFrom, dateTo) {
             if (moment(dateTo).isBefore(moment(dateFrom))) {
                 dateTo = moment(dateTo).set({
@@ -1318,15 +1311,7 @@ export default {
             } else if (this.hasPermission([42])) {
                 this.$store.getters['Team/getManagedTeams'].map(team => {
                     team.employees.map(e => {
-                        empl.push({
-                            id: e.employee.user_data.id,
-                            name: e.employee.user_data.name,
-                            surname: e.employee.user_data.surname,
-                            middle_name: e.employee.user_data.middle_name,
-                            full_name: e.employee.user_data.full_name,
-                            avatar_url: e.employee.user_data.avatar_url,
-                            color: this.$helpers.color.genRandomColor(),
-                        });
+                        empl.push(e.employee.user_data);
                     });
                 });
                 return _.sortBy(empl, item => {
