@@ -88,6 +88,16 @@ export default {
         getManagedTeams(state) {
             return state.managedTeams
         },
+        getEmployeesManagedTeams(state) {
+            const empl = state.managedTeams.map(team => {
+                team.employees.map(e => {
+                    empl.push(e.employee.user_data);
+                });
+            });
+            return _.sortBy(empl, item => {
+                return item.full_name.toLowerCase();
+            })
+        },
         getTeamManagers(state) {
             return state.teamManagers;
         }

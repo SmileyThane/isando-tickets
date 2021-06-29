@@ -326,6 +326,7 @@
                         single-line
                         style="min-width: 300px"
                         class="mt-4"
+                        @blur="debounceGetTracking()"
                     >
                         <template v-slot:item="{ parent, item, on, attrs }">
                             <div class="d-flex">
@@ -940,7 +941,6 @@ export default {
     },
     mounted() {
         this.__globalTimer();
-        this.debounceGetTracking();
         this.$store.dispatch('Projects/getProjectList', { search: null });
         this.$store.dispatch('Products/getProductList', { search: null });
         this.$store.dispatch('Clients/getClientList', { search: null });
@@ -962,6 +962,7 @@ export default {
                 const currentUser = this.$store.getters['getCurrentUser'];
                 if (currentUser) {
                     this.teamFilter.push(currentUser.id);
+                    this.debounceGetTracking();
                 }
             });
     },
@@ -977,7 +978,8 @@ export default {
             this.loading = true;
             const queryParams = new URLSearchParams({
                 date_from: moment(this.dateRange.start).format(this.dateFormat) || null,
-                date_to: moment(this.dateRange.end).format(this.dateFormat) || null
+                date_to: moment(this.dateRange.end).format(this.dateFormat) || null,
+                team: this.teamFilter.join(','),
             });
             return axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
                 .then(({ data }) => {
@@ -1186,14 +1188,8 @@ export default {
             const self = this;
             return this.tracking
                 .filter(function(item) {
-                    if (self.teamFilter.length) {
-                        return self.teamFilter.indexOf(item.user_id) !== -1;
-                    }
-                    return true;
-                })
-                .filter(function(item) {
-                return moment(item.date_from).format(self.dateFormat) === date;
-            });
+                    return moment(item.date_from).format(self.dateFormat) === date;
+                });
         },
         save (item, fieldName, newValue = null) {
             if (['date_from', 'date_to'].indexOf(fieldName)) {
@@ -1305,20 +1301,12 @@ export default {
             return moment(this.dateRange.end).format('DD/MM/YYYY');
         },
         teamEmployee () {
-            let empl = [];
             if (this.hasPermission([90])) {
-                empl = this.$store.getters['Team/getCoworkers'];
+                return this.$store.getters['Team/getCoworkers'];
             } else if (this.hasPermission([42])) {
-                this.$store.getters['Team/getManagedTeams'].map(team => {
-                    team.employees.map(e => {
-                        empl.push(e.employee.user_data);
-                    });
-                });
-                return _.sortBy(empl, item => {
-                    return item.full_name.toLowerCase();
-                });
+                return this.$store.getters['Team/getEmployeesManagedTeams'];
             }
-            return empl;
+            return [];
         },
         manualFormattedDate: {
             get() {

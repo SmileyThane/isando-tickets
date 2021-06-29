@@ -120,6 +120,10 @@ class TrackingRepository
             $tracking = Tracking::CompanyAdmin();
         }
 
+        if (!empty($request->get('team'))) {
+            $tracking->whereIn('user_id', explode(',', $request->get('team')));
+        }
+
         $tracking
             ->where(function($query) {
                 $query->where('status', '!=', Tracking::$STATUS_ARCHIVED)

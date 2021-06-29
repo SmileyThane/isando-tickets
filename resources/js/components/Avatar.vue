@@ -1,10 +1,10 @@
 <template>
-    <v-avatar
-        :color="getColor"
-        v-if="user.avatar_url || user.full_name"
-    >
-        <v-tooltip top>
-            <template v-slot:activator="{ on, attrs }">
+
+    <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+            <v-avatar
+                :color="getColor"
+            >
                 <img
                     v-bind="attrs"
                     v-on="on"
@@ -13,23 +13,23 @@
                     :alt="user.full_name"
                 >
                 <span
-                    v-else
+                    v-else-if="user.full_name"
                     v-bind="attrs"
                     v-on="on"
                     class="white--text headline text-uppercase"
                 >
                     {{ user.full_name.split(/\s/).reduce((response, word) => response += word.slice(0, 1), '').substr(0, 2).toLocaleUpperCase() }}
                 </span>
-            </template>
-            <span>{{user.full_name}}</span>
-        </v-tooltip>
-    </v-avatar>
-    <v-icon
-        v-else
-        large
-    >
-        mdi-account-circle
-    </v-icon>
+                <v-icon
+                    v-else
+                    large
+                >
+                    mdi-account-circle
+                </v-icon>
+            </v-avatar>
+        </template>
+        <span>{{user.full_name}}</span>
+    </v-tooltip>
 </template>
 
 <script>
