@@ -19,8 +19,12 @@ class TrackingController extends BaseController
         $success = false;
         $result = $this->trackingRepo->validate($request, true);
         if ($result === true) {
-            $result = $this->trackingRepo->create($request);
-            $success = true;
+            try {
+                $result = $this->trackingRepo->create($request);
+                $success = true;
+            } catch (\Exception $exception) {
+                return self::showResponse(false, $exception->getMessage());
+            }
         }
         return self::showResponse($success, $result);
     }

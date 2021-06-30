@@ -1208,7 +1208,7 @@ export default {
             }
             if (moment(item.date_to).isBefore(moment(item.date_from))) {
                 item.date_to = moment(item.date_to).set({
-                    date: moment(item.date_from).add(1, 'days').date(),
+                    date: moment(item.date_from).date(),
                     year: moment(item.date_from).year(),
                     month: moment(item.date_from).month(),
                 }).format(this.dateTimeFormat);
@@ -1254,7 +1254,7 @@ export default {
         correctionTime(dateFrom, dateTo) {
             if (moment(dateTo).isBefore(moment(dateFrom))) {
                 dateTo = moment(dateTo).set({
-                    date: moment(dateFrom).add(1, 'days').date(),
+                    date: moment(dateFrom).date(),
                     year: moment(dateFrom).year(),
                     month: moment(dateFrom).month(),
                 }).format(this.dateTimeFormat);
@@ -1264,7 +1264,7 @@ export default {
     computed: {
         timeAdd () {
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
-                this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format(this.dateTimeFormat);
+                this.manualPanel.date_to = moment(this.manualPanel.date_to).format(this.dateTimeFormat);
             }
             const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to, true);
             return this.$helpers.time.convertSecToTime(seconds);
@@ -1325,6 +1325,8 @@ export default {
                 };
                 this.manualPanel.date_from = moment(this.manualPanel.date_from)
                     .set(date).format(this.dateTimeFormat);
+                this.manualPanel.date_to = moment(this.manualPanel.date_to)
+                    .set(date).format(this.dateTimeFormat);
                 this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
             }
         },
@@ -1340,14 +1342,16 @@ export default {
                 month: moment(this.date).month(),
                 year: moment(this.date).year()
             };
+            this.manualPanel.date_from = moment(this.manualPanel.date_from).set(date);
+            this.manualPanel.date_to = moment(this.manualPanel.date_to).set(date);
 
-            let dayToAdding = 0;
             if (moment(this.manualPanel.date_to).format(this.dateFormat) > moment(this.manualPanel.date_from).format(this.dateFormat)) {
-                dayToAdding = 1;
+                this.manualPanel.date_to = moment(this.manualPanel.date_from)
+                    .format(this.dateTimeFormat);
+            } else {
+                this.manualPanel.date_to = moment(this.manualPanel.date_to)
+                    .format(this.dateTimeFormat);
             }
-            this.manualPanel.date_to = moment(this.manualPanel.date_to)
-                .add(dayToAdding, 'day')
-                .format(this.dateTimeFormat);
         },
         search () {
             this.$store.dispatch('Projects/getProjectList', { search: this.search });
