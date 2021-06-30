@@ -600,23 +600,27 @@ class TrackingReportRepository
         return $items;
     }
 
+    private function fixCharacters($text) {
+        return iconv('utf-8', 'windows-1252', $text);
+    }
+
     protected function getDataCSV($tracking) {
         try {
             $row = [];
-            $row[] = $tracking['user'] ? $tracking['user']['full_name'] : '';
+            $row[] = $tracking['user'] ? $this->fixCharacters($tracking['user']['full_name']) : '';
             $row[] = $tracking['user'] ? $tracking['user']['id'] : '';
             if ($tracking['entity'] && isset($tracking['entity']['from'])) {
-                $row[] = $tracking['entity'] && $tracking['entity']['from_company_name'] ? $tracking['entity']['from_company_name'] : '';
+                $row[] = $tracking['entity'] && $tracking['entity']['from_company_name'] ? $this->fixCharacters($tracking['entity']['from_company_name']) : '';
                 $row[] = $tracking['entity'] && $tracking['entity']['from']['id'] ? $tracking['entity']['from']['id'] : '';
             } else {
-                $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['name'] : '';
+                $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $this->fixCharacters($tracking['entity']['client']['name']) : '';
                 $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['id'] : '';
             }
-            $row[] = $tracking['entity'] ? $tracking['entity']['name'] : '';
+            $row[] = $tracking['entity'] ? $this->fixCharacters($tracking['entity']['name']) : '';
             $row[] = $tracking['entity'] ? $tracking['entity']['id'] : '';
-            $row[] = $tracking['service'] ? $tracking['service']['name'] : '';
+            $row[] = $tracking['service'] ? $this->fixCharacters($tracking['service']['name']) : '';
             $row[] = $tracking['service'] ? $tracking['service']['id'] : '';
-            $row[] = $tracking['description'];
+            $row[] = $this->fixCharacters($tracking['description']);
             $row[] = $tracking['billable'] ? 1 : 0;
             $row[] = round($tracking['rate'], 2);
             $row[] = Carbon::parse($tracking['date_from'])->format('d/m/Y');
