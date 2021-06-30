@@ -1333,6 +1333,9 @@ export default {
     },
     watch: {
         'manualPanel.date_from': function () {
+            if (moment(this.manualPanel.date_to).isBefore(moment(this.manualPanel.date_from))) {
+                this.manualPanel.date_to = this.manualPanel.date_from;
+            }
             this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
         },
         date: function () {
