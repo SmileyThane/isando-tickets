@@ -601,7 +601,8 @@ class TrackingReportRepository
     }
 
     private function fixCharacters($text) {
-        return iconv('utf-8', 'windows-1252', $text);
+        return $text;
+//        return iconv('utf-8', 'windows-1252', $text);
     }
 
     protected function getDataCSV($tracking) {
@@ -628,14 +629,14 @@ class TrackingReportRepository
             $row[] = $this->timeInDecimal ? $this->convertTimeToDecimal($tracking['date_to']) : Carbon::parse($tracking['date_to'])->format('H:i');
             $row[] = $this->timeInDecimal ? $this->convertSecondsToDecimal($tracking['passed']) : $this->convertSecondsToTimeFormat($tracking['passed'], false);
             $row[] = $tracking['revenue'];
-            return implode(';', $row);
+            return $row;
         } catch (\Exception $exception) {
             dd($exception->getMessage(), $exception->getLine(), $tracking);
         }
     }
 
     protected function getHeaderCSV() {
-        return implode(';', [
+        return [
             'Co-worker',
             'Personnel number',
             'Customer',
@@ -652,7 +653,7 @@ class TrackingReportRepository
             'End',
             'Total time',
             'Revenue in ' . $this->currency
-        ]) . "\n";
+        ];
     }
 
     public function genCSV($request) {
@@ -666,12 +667,16 @@ class TrackingReportRepository
             }
         }
 
+        $out = fopen('php://output', 'w');
+        fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
+        fputcsv($out, $this->getHeaderCSV(), ';');
+
         $result = $this->prepareDataForCSV($data);
         foreach ($result as $key => $item) {
-            $result[$key] = $this->getDataCSV($item);
+//            $result[$key] = $this->getDataCSV($item);
+            fputcsv($out, $this->getDataCSV($item), ';');
         }
-
-        return $this->getHeaderCSV() . implode("\n", $result);
+        return stream_get_contents($out);
     }
 
     public function getTotalTimeByServices($from, $to) {
