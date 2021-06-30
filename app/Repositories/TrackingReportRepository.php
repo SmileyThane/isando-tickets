@@ -359,7 +359,13 @@ class TrackingReportRepository
                 'end' => $this->timeInDecimal ? $this->convertTimeToDecimal($end) : $end,
                 'total' => $this->timeInDecimal ? $entity['passed_decimal'] : $total,
                 'coworker' => $entity['user']['full_name'],
-                'customer' => isset($entity['entity']) && isset($entity['entity']['client']) ? $entity['entity']['client']['name'] : '',
+                'customer' => isset($entity['entity']) && isset($entity['entity']['client'])
+                    ? $entity['entity']['client']['name']
+                    : (
+                        isset($entity['entity']['from_company_name'])
+                            ? $entity['entity']['from_company_name']
+                            : ''
+                    ),
                 'project' => isset($entity['entity']) ? $entity['entity']['name'] : '',
                 'service' => isset($entity['service']) ? $entity['service']['name'] : '',
                 'description' => isset($entity['description']) ? $entity['description'] : '',
