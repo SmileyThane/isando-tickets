@@ -15,7 +15,7 @@ class CompanyUser extends Model
 
     protected $table = 'company_users';
 
-    protected $appends = ['roles', 'role_names'];
+    protected $appends = ['roles', 'role_names', 'color'];
 
     public function getRoleNamesAttribute()
     {
@@ -101,6 +101,10 @@ class CompanyUser extends Model
     public function companyData(): HasOne
     {
         return $this->hasOne(Company::class, 'id', 'company_id');
+    }
+
+    public function getColorAttribute() {
+        return $this->userData->color;
     }
 
 }

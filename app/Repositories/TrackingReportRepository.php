@@ -359,7 +359,13 @@ class TrackingReportRepository
                 'end' => $this->timeInDecimal ? $this->convertTimeToDecimal($end) : $end,
                 'total' => $this->timeInDecimal ? $entity['passed_decimal'] : $total,
                 'coworker' => $entity['user']['full_name'],
-                'customer' => isset($entity['entity']) && isset($entity['entity']['client']) ? $entity['entity']['client']['name'] : '',
+                'customer' => isset($entity['entity']) && isset($entity['entity']['client'])
+                    ? $entity['entity']['client']['name']
+                    : (
+                        isset($entity['entity']['from_company_name'])
+                            ? $entity['entity']['from_company_name']
+                            : ''
+                    ),
                 'project' => isset($entity['entity']) ? $entity['entity']['name'] : '',
                 'service' => isset($entity['service']) ? $entity['service']['name'] : '',
                 'description' => isset($entity['description']) ? $entity['description'] : '',
@@ -600,23 +606,28 @@ class TrackingReportRepository
         return $items;
     }
 
+    private function fixCharacters($text) {
+        return $text;
+//        return iconv('utf-8', 'windows-1252', $text);
+    }
+
     protected function getDataCSV($tracking) {
         try {
             $row = [];
-            $row[] = $tracking['user'] ? $tracking['user']['full_name'] : '';
+            $row[] = $tracking['user'] ? $this->fixCharacters($tracking['user']['full_name']) : '';
             $row[] = $tracking['user'] ? $tracking['user']['id'] : '';
             if ($tracking['entity'] && isset($tracking['entity']['from'])) {
-                $row[] = $tracking['entity'] && $tracking['entity']['from_company_name'] ? $tracking['entity']['from_company_name'] : '';
+                $row[] = $tracking['entity'] && $tracking['entity']['from_company_name'] ? $this->fixCharacters($tracking['entity']['from_company_name']) : '';
                 $row[] = $tracking['entity'] && $tracking['entity']['from']['id'] ? $tracking['entity']['from']['id'] : '';
             } else {
-                $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['name'] : '';
+                $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $this->fixCharacters($tracking['entity']['client']['name']) : '';
                 $row[] = isset($tracking['entity']) && isset($tracking['entity']['client']) ? $tracking['entity']['client']['id'] : '';
             }
-            $row[] = $tracking['entity'] ? $tracking['entity']['name'] : '';
+            $row[] = $tracking['entity'] ? $this->fixCharacters($tracking['entity']['name']) : '';
             $row[] = $tracking['entity'] ? $tracking['entity']['id'] : '';
-            $row[] = $tracking['service'] ? $tracking['service']['name'] : '';
+            $row[] = $tracking['service'] ? $this->fixCharacters($tracking['service']['name']) : '';
             $row[] = $tracking['service'] ? $tracking['service']['id'] : '';
-            $row[] = $tracking['description'];
+            $row[] = $this->fixCharacters($tracking['description']);
             $row[] = $tracking['billable'] ? 1 : 0;
             $row[] = round($tracking['rate'], 2);
             $row[] = Carbon::parse($tracking['date_from'])->format('d/m/Y');
@@ -624,14 +635,14 @@ class TrackingReportRepository
             $row[] = $this->timeInDecimal ? $this->convertTimeToDecimal($tracking['date_to']) : Carbon::parse($tracking['date_to'])->format('H:i');
             $row[] = $this->timeInDecimal ? $this->convertSecondsToDecimal($tracking['passed']) : $this->convertSecondsToTimeFormat($tracking['passed'], false);
             $row[] = $tracking['revenue'];
-            return implode(';', $row);
+            return $row;
         } catch (\Exception $exception) {
             dd($exception->getMessage(), $exception->getLine(), $tracking);
         }
     }
 
     protected function getHeaderCSV() {
-        return implode(';', [
+        return [
             'Co-worker',
             'Personnel number',
             'Customer',
@@ -648,7 +659,7 @@ class TrackingReportRepository
             'End',
             'Total time',
             'Revenue in ' . $this->currency
-        ]) . "\n";
+        ];
     }
 
     public function genCSV($request) {
@@ -662,12 +673,16 @@ class TrackingReportRepository
             }
         }
 
+        $out = fopen('php://output', 'w');
+        fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
+        fputcsv($out, $this->getHeaderCSV(), ';');
+
         $result = $this->prepareDataForCSV($data);
         foreach ($result as $key => $item) {
-            $result[$key] = $this->getDataCSV($item);
+//            $result[$key] = $this->getDataCSV($item);
+            fputcsv($out, $this->getDataCSV($item), ';');
         }
-
-        return $this->getHeaderCSV() . implode("\n", $result);
+        return stream_get_contents($out);
     }
 
     public function getTotalTimeByServices($from, $to) {
@@ -763,12 +778,13 @@ class TrackingReportRepository
                 $join->on('tracking.entity_id', '=', 'tracking_projects.id')
                     ->where('tracking.entity_type', '=', TrackingProject::class);
             })
+            ->leftJoin('clients', 'clients.id', '=', 'tracking_projects.client_id')
             ->where(function($query) use ($from, $to) {
                 $query->where('date_to', '>=', $from)
                     ->where('date_from', '<=', $to);
             })
-            ->groupBy('tracking_projects.id', 'tracking_projects.name')
-            ->select(['tracking_projects.name', 'tracking_projects.id', DB::raw("SUM(tracking.date_to - tracking.date_from) as duration")]);
+            ->groupBy('tracking_projects.client_id', 'clients.name', 'tracking_projects.id', 'tracking_projects.name')
+            ->select(['tracking_projects.client_id', 'clients.name as client_name', 'tracking_projects.name', 'tracking_projects.id', DB::raw("SUM(tracking.date_to - tracking.date_from) as duration")]);
 //        dd($tracking->toSql(), $tracking->getBindings(), $tracking->get());
         return $tracking->get();
     }

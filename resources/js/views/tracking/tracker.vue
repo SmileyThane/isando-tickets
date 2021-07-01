@@ -330,7 +330,7 @@
                         <template v-slot:item="{ parent, item, on, attrs }">
                             <div class="d-flex">
                                 <div class="d-inline-flex">
-                                    <Avatar :user="item" :color="getUserColor(item.id)"></Avatar>
+                                    <Avatar :user="item" :color="item.color"></Avatar>
                                 </div>
                                 <div class="d-inline-flex mt-3 ma-4">
                                     {{ item.full_name }}
@@ -438,7 +438,7 @@
                                     <template v-slot:body="props">
                                         <tr v-for="row in props.items">
                                             <td class="pa-3" v-if="hasPermission([42])">
-                                                <Avatar :user="row.user" :color="getUserColor(row.user.id)"></Avatar>
+                                                <Avatar :user="row.user" :color="row.user.color"></Avatar>
                                             </td>
                                             <td
                                                 class="pa-3"
@@ -1208,7 +1208,7 @@ export default {
             }
             if (moment(item.date_to).isBefore(moment(item.date_from))) {
                 item.date_to = moment(item.date_to).set({
-                    date: moment(item.date_from).add(1, 'days').date(),
+                    date: moment(item.date_from).date(),
                     year: moment(item.date_from).year(),
                     month: moment(item.date_from).month(),
                 }).format(this.dateTimeFormat);
@@ -1251,17 +1251,10 @@ export default {
             }
             return true;
         },
-        getUserColor(userId) {
-            const foundItem = this.teamEmployee.find(i => i.id === userId);
-            if (foundItem) {
-                return foundItem.color;
-            }
-            return null;
-        },
         correctionTime(dateFrom, dateTo) {
             if (moment(dateTo).isBefore(moment(dateFrom))) {
                 dateTo = moment(dateTo).set({
-                    date: moment(dateFrom).add(1, 'days').date(),
+                    date: moment(dateFrom).date(),
                     year: moment(dateFrom).year(),
                     month: moment(dateFrom).month(),
                 }).format(this.dateTimeFormat);
@@ -1271,7 +1264,7 @@ export default {
     computed: {
         timeAdd () {
             if (moment(this.manualPanel.date_from) > moment(this.manualPanel.date_to)) {
-                this.manualPanel.date_to = moment(this.manualPanel.date_to).add(1, 'day').format(this.dateTimeFormat);
+                this.manualPanel.date_to = moment(this.manualPanel.date_to).format(this.dateTimeFormat);
             }
             const seconds = this.$helpers.time.getSecBetweenDates(this.manualPanel.date_from, this.manualPanel.date_to, true);
             return this.$helpers.time.convertSecToTime(seconds);
@@ -1312,28 +1305,12 @@ export default {
             return moment(this.dateRange.end).format('DD/MM/YYYY');
         },
         teamEmployee () {
-            let empl = [];
             if (this.hasPermission([90])) {
-                empl = this.$store.getters['Team/getCoworkers'];
+                return this.$store.getters['Team/getCoworkers'];
             } else if (this.hasPermission([42])) {
-                this.$store.getters['Team/getManagedTeams'].map(team => {
-                    team.employees.map(e => {
-                        empl.push({
-                            id: e.employee.user_data.id,
-                            name: e.employee.user_data.name,
-                            surname: e.employee.user_data.surname,
-                            middle_name: e.employee.user_data.middle_name,
-                            full_name: e.employee.user_data.full_name,
-                            avatar_url: e.employee.user_data.avatar_url,
-                            color: this.$helpers.color.genRandomColor(),
-                        });
-                    });
-                });
-                return _.sortBy(empl, item => {
-                    return item.full_name.toLowerCase();
-                });
+                return this.$store.getters['Team/getEmployeesManagedTeams'];
             }
-            return empl;
+            return [];
         },
         manualFormattedDate: {
             get() {
@@ -1348,12 +1325,17 @@ export default {
                 };
                 this.manualPanel.date_from = moment(this.manualPanel.date_from)
                     .set(date).format(this.dateTimeFormat);
+                this.manualPanel.date_to = moment(this.manualPanel.date_to)
+                    .set(date).format(this.dateTimeFormat);
                 this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
             }
         },
     },
     watch: {
         'manualPanel.date_from': function () {
+            if (moment(this.manualPanel.date_to).isBefore(moment(this.manualPanel.date_from))) {
+                this.manualPanel.date_to = this.manualPanel.date_from;
+            }
             this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
         },
         date: function () {
@@ -1363,14 +1345,16 @@ export default {
                 month: moment(this.date).month(),
                 year: moment(this.date).year()
             };
+            this.manualPanel.date_from = moment(this.manualPanel.date_from).set(date);
+            this.manualPanel.date_to = moment(this.manualPanel.date_to).set(date);
 
-            let dayToAdding = 0;
             if (moment(this.manualPanel.date_to).format(this.dateFormat) > moment(this.manualPanel.date_from).format(this.dateFormat)) {
-                dayToAdding = 1;
+                this.manualPanel.date_to = moment(this.manualPanel.date_from)
+                    .format(this.dateTimeFormat);
+            } else {
+                this.manualPanel.date_to = moment(this.manualPanel.date_to)
+                    .format(this.dateTimeFormat);
             }
-            this.manualPanel.date_to = moment(this.manualPanel.date_to)
-                .add(dayToAdding, 'day')
-                .format(this.dateTimeFormat);
         },
         search () {
             this.$store.dispatch('Projects/getProjectList', { search: this.search });

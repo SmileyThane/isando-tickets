@@ -113,8 +113,8 @@ export default {
                     }
                 });
         },
-        loadTemplate({ state, dispatch }, id) {
-            axios.post(`/api/tracking/timesheet/templates/${id}`)
+        loadTemplate({ state, dispatch }, { id, start, end }) {
+            axios.post(`/api/tracking/timesheet/templates/${id}`, { start, end })
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);

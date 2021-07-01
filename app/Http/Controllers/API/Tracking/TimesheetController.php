@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\Tracking;
 
 use App\TrackingTimesheet;
 use App\TrackingTimesheetTemplate;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -105,7 +106,9 @@ class TimesheetController extends BaseController
 
     public function loadTemplate(Request $request, $template_id) {
         try {
-            $result = $this->timesheetRepo->loadTemplate($template_id);
+            $dateStart = Carbon::parse($request->get('start'))->format('Y-m-d');
+            $dateEnd = Carbon::parse($request->get('end'))->format('Y-m-d');
+            $result = $this->timesheetRepo->loadTemplate($template_id, $dateStart, $dateEnd);
             return self::showResponse(true, $result);
         } catch (\Exception $exception) {
             return self::showResponse(false, $exception->getMessage());

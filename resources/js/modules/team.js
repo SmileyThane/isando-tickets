@@ -80,14 +80,23 @@ export default {
         getCoworkers(state) {
             return _.sortBy(state.coworkers, item => {
                 return item.full_name.toLowerCase();
-            })
-                .map(item => ({ ...item, color: ColorHelper.genRandomColor() }));
+            });
         },
         getTeams(state) {
             return state.teams
         },
         getManagedTeams(state) {
             return state.managedTeams
+        },
+        getEmployeesManagedTeams(state) {
+            const empl = state.managedTeams.map(team => {
+                team.employees.map(e => {
+                    empl.push(e.employee.user_data);
+                });
+            });
+            return _.sortBy(empl, item => {
+                return item.full_name.toLowerCase();
+            })
         },
         getTeamManagers(state) {
             return state.teamManagers;

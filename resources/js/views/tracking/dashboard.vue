@@ -295,7 +295,7 @@ export default {
             const labels = [];
             const colors = [];
             this.data.projects.map(i => {
-                labels.push(i.name ?? 'Without project');
+                labels.push((i.client_name ?? 'Unknown client') + "\r\n" + (i.name ?? 'Without project'));
                 values.push((i.duration / 60 / 60).toFixed(2));
             });
             for (let i = 0; i <= values.length - 1; i++) {
