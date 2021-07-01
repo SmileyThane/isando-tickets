@@ -340,6 +340,8 @@ class TicketRepository
     public function updateDescription(Request $request, $id) {
         $ticket = Ticket::find($id);
         $ticket->description = $request->description;
+        $ticket->save();
+
         $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
         foreach ($files as $file) {
             $this->fileRepo->store($file, $ticket->id, Ticket::class);
