@@ -69,7 +69,7 @@
                             height="100%"
                             outlined
                         >
-                            <v-card-title>TOP 5 projects</v-card-title>
+                            <v-card-title>Top project</v-card-title>
                             <div
                                 v-for="(item, index) in data.topProjects"
                                 :key="item.id"
