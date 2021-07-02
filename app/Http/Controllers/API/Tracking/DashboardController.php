@@ -40,6 +40,7 @@ class DashboardController extends BaseController
         $projects = $this->trackingReportRepo->getTotalTimeByProjects($from, $to);
         $reports = $this->trackingReportRepo->getUserReports();
         $currentTrackings = $this->trackingRepo->getCurrentUserTracking();
+        $topProjects = $this->trackingReportRepo->getTopProjects($from, $to, 5);
 
         $period = null;
         return [
@@ -47,6 +48,7 @@ class DashboardController extends BaseController
             'projects' => $projects,
             'reports' => $reports,
             'tracking' => $currentTrackings,
+            'topProjects' => $topProjects,
         ];
     }
 }

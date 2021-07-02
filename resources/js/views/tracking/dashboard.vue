@@ -58,6 +58,45 @@
                     </template>
                 </v-skeleton-loader>
             </div>
+            <div class="d-inline-flex flex-grow-1 px-4">
+                <v-skeleton-loader
+                    max-width="500"
+                    type="card"
+                >
+                    <template v-slot:default>
+                        <v-card
+                            width="100%"
+                            height="100%"
+                            outlined
+                        >
+                            <v-card-title>TOP 5 projects</v-card-title>
+                            <div
+                                v-for="(item, index) in data.topProjects"
+                                :key="item.id"
+                                class="d-flex flex-grow-1 flex-column mb-4 mx-4 mt-0"
+                                style="min-width: 400px;"
+                            >
+                                <div class="flex-grow-1 text-left" style="width: 100%; overflow: hidden">
+                                    <strong>{{index+1}}. {{item.project_name}}</strong> / <strong>{{item.client_name}}</strong>
+                                </div>
+                                <div class="d-flex flex-row" style="width: 100%">
+                                    <div class="d-inline-flex flex-grow-1 text-left" style="width: 50%">
+                                        Total time: {{$helpers.time.convertSecToTime(item.duration, false)}} h
+                                    </div>
+                                    <div
+                                        class="d-inline-flex flex-row-reverse flex-grow-1 text-right"
+                                        style="width: 50%"
+                                        v-if="$helpers.auth.checkPermissionByIds([59])"
+                                    >
+                                        <span v-if="currentCurrency">{{currentCurrency.symbol}}</span>
+                                        <span>Revenue:&nbsp;{{$helpers.numbers.numberFormat(item.revenue, 2)}}&nbsp;</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </v-card>
+                    </template>
+                </v-skeleton-loader>
+            </div>
         </div>
         <v-spacer>&nbsp;</v-spacer>
         <div class="d-flex">
@@ -201,7 +240,13 @@ export default {
                     text: 'This year',
                 },
             ],
-            data: {},
+            data: {
+                projects: [],
+                reports: [],
+                services: [],
+                topProjects: [],
+                tracking: [],
+            },
             headers: {
                 reports: [
                     {
@@ -247,6 +292,7 @@ export default {
             that.themeBgColor = color;
         });
         this.getData();
+        this.$store.dispatch('Tracking/getSettings');
     },
     methods: {
         getData() {
@@ -316,6 +362,10 @@ export default {
         getCurrentUserTracking() {
             return this.data.tracking ?? [];
         },
+        currentCurrency() {
+            const settings = this.$store.getters['Tracking/getSettings'];
+            return settings.currency ?? null;
+        }
     }
 }
 </script>
