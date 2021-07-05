@@ -16,6 +16,7 @@
                     item-value="value"
                     v-model="period"
                     @change="getData"
+                    dense
                 ></v-select>
             </div>
         </div>
@@ -77,7 +78,12 @@
                                 style="min-width: 400px;"
                             >
                                 <div class="flex-grow-1 text-left" style="width: 100%; overflow: hidden">
-                                    <strong>{{index+1}}. {{item.project_name}}</strong> / <strong>{{item.client_name}}</strong>
+                                    <strong>{{index+1}}.</strong>
+                                    <strong v-if="!item.project_name">Without project</strong>
+                                    <strong v-else>
+                                        <span v-if="item.project_name">{{item.project_name}}</span>
+                                        / <span v-if="item.client_name">{{item.client_name}}</span>
+                                    </strong>
                                 </div>
                                 <div class="d-flex flex-row" style="width: 100%">
                                     <div class="d-inline-flex flex-grow-1 text-left" style="width: 50%">
@@ -107,37 +113,51 @@
                 >
                     <v-data-table
                         style="width: 100%"
-                        :items="getReports"
-                        :headers="headers.reports"
-                    ></v-data-table>
-                </v-card>
-            </div>
-        </div>
-        <v-spacer>&nbsp;</v-spacer>
-        <div class="d-flex">
-            <div class="d-inline-flex flex-grow-1" style="width: 100%">
-                <v-card
-                    style="width: 100%"
-                    outlined
-                >
-                    <v-data-table
-                        style="width: 100%"
-                        :items="getCurrentUserTracking"
-                        :headers="headers.tracking"
+                        :headers="headers.lastActivity"
+                        :items="data.lastActivity"
                     >
-                        <template v-slot:item.project="{item}">
-                            <span v-if="item.entity">{{ item.entity.name }}</span>
+                        <template v-slot:item.team="{ item }">
+                            <span v-if="item.name">{{item.name}}</span>
+                            <span v-else>No team</span>
                         </template>
-                        <template v-slot:item.description="{item}">
-                            {{ item.description }}
+                        <template v-slot:item.tracker="{ item }">
+                            <span v-if="item.tracker && item.tracker.entity">{{item.tracker.entity.name}}</span>
+                            <span v-else>No project</span>
                         </template>
-                        <template v-slot:item.date_from="{item}">
-                            {{ moment(item.date_from).format('DD.MM.YYYY HH:mm:ss') }}
+                        <template v-slot:item.recently_duration="{ item }">
+                            <span v-if="item.tracker">{{$helpers.time.convertSecToTime(item.tracker.passed, false)}}</span>
                         </template>
-                        <template v-slot:item.date_to="{item}">
-                            <span v-if="item.date_to">
-                                {{ moment(item.date_to).format('DD.MM.YYYY HH:mm:ss') }}
+                        <template v-slot:item.recently_time="{ item }">
+                            <span v-if="item.tracker && item.tracker.date_from">
+                                {{$helpers.dates.someXAgo(item.tracker.date_from)}}
                             </span>
+                        </template>
+                        <template v-slot:item.total_time="{ item }">
+                            <div class="fullProgress d-flex">
+                                <div
+                                    class="part d-inline-flex"
+                                    v-for="(user, index) in calculateProgressPart(item.users)"
+                                    :key="index"
+                                    :style="{ width: `${user.percent}%`, backgroundColor: getColor() }"
+                                >
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-spacer
+                                                v-bind="attrs"
+                                                v-on="on"
+                                            >&nbsp;</v-spacer>
+                                        </template>
+                                        <div>{{user.name}} {{user.surname}} ({{user.percent}}%)</div>
+                                        <hr>
+                                        <div
+                                            v-for="(line, ind) in user.lines"
+                                            :key="ind"
+                                        >
+                                            {{$helpers.time.convertSecToTime(line.seconds, false)}}h {{line.entity}}
+                                        </div>
+                                    </v-tooltip>
+                                </div>
+                            </div>
                         </template>
                     </v-data-table>
                 </v-card>
@@ -246,38 +266,29 @@ export default {
                 services: [],
                 topProjects: [],
                 tracking: [],
+                lastActivity: [],
             },
             headers: {
-                reports: [
+                lastActivity: [
                     {
-                        text: 'ID',
-                        value: 'id',
+                        text: 'Team',
+                        value: 'team',
                     },
                     {
-                        text: 'Name',
-                        value: 'name',
-                    },
-                ],
-                tracking: [
-                    {
-                        text: 'ID',
-                        value: 'id',
+                        text: 'Ticket/Project',
+                        value: 'tracker',
                     },
                     {
-                        text: 'Description',
-                        value: 'description',
+                        text: 'Tracked recently',
+                        value: 'recently_duration',
                     },
                     {
-                        text: 'Project',
-                        value: 'entity.name',
+                        text: '',
+                        value: 'recently_time',
                     },
                     {
-                        text: 'From',
-                        value: 'date_from',
-                    },
-                    {
-                        text: 'To',
-                        value: 'date_to',
+                        text: 'Total time per team groupped by person',
+                        value: 'total_time',
                     },
                 ],
             },
@@ -302,6 +313,28 @@ export default {
                     this.data = data;
                 }
             })
+        },
+        calculateProgressPart(users) {
+            let items = {}; let totalTime = 0;
+            users.map(user => {
+                if (!items[user.user_id]) {
+                    items[user.user_id] = {
+                        count: 0,
+                        lines: [],
+                        name: '',
+                        surname: '',
+                    };
+                }
+                totalTime += parseInt(user.seconds);
+                items[user.user_id].count += parseInt(user.seconds);
+                items[user.user_id].lines.push(user);
+                items[user.user_id].name = user.name;
+                items[user.user_id].surname = user.surname;
+            });
+            return Object.values(items).map(i => ({ ...i, percent: (i.count / totalTime * 100).toFixed(2) }));
+        },
+        getColor() {
+            return this.$helpers.color.genRandomColor();
         }
     },
     watch: {
@@ -355,9 +388,6 @@ export default {
                     data: values
                 }]
             };
-        },
-        getReports() {
-            return this.data.reports ?? [];
         },
         getCurrentUserTracking() {
             return this.data.tracking ?? [];

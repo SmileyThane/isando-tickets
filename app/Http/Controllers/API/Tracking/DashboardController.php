@@ -35,12 +35,12 @@ class DashboardController extends BaseController
                 $to = Carbon::now()->endOfDay()->format(Tracking::$DATETIME_FORMAT);
                 break;
         }
-
         $services = $this->trackingReportRepo->getTotalTimeByServices($from, $to);
         $projects = $this->trackingReportRepo->getTotalTimeByProjects($from, $to);
         $reports = $this->trackingReportRepo->getUserReports();
         $currentTrackings = $this->trackingRepo->getCurrentUserTracking();
         $topProjects = $this->trackingReportRepo->getTopProjects($from, $to, 5);
+        $lastActivity = $this->trackingReportRepo->getLastActivity($from, $to);
 
         $period = null;
         return [
@@ -49,6 +49,7 @@ class DashboardController extends BaseController
             'reports' => $reports,
             'tracking' => $currentTrackings,
             'topProjects' => $topProjects,
+            'lastActivity' => $lastActivity,
         ];
     }
 }
