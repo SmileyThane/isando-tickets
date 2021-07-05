@@ -839,6 +839,7 @@ class TrackingReportRepository
                 $query->where('date_to', '>=', $from)
                     ->where('date_from', '<=', $to);
             })
+            ->where('tracking.billable', '=', true)
             ->groupBy(
                 'tracking_projects.client_id',
                 'clients.name',
