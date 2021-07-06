@@ -11,30 +11,9 @@ class DashboardController extends BaseController
 {
     public function index(Request $request) {
 
-        $period = $request->get('period', 'lastWeek');
+        $from = Carbon::parse($request->get('periodStart', Carbon::now()))->format(Tracking::$DATETIME_FORMAT);
+        $to = Carbon::parse($request->get('periodEnd', Carbon::now()))->format(Tracking::$DATETIME_FORMAT);
 
-        switch ($period) {
-            case 'thisWeek':
-                $from = Carbon::now()->startOf('weeks')->format(Tracking::$DATETIME_FORMAT);
-                $to = Carbon::now()->endOf('weeks')->format(Tracking::$DATETIME_FORMAT);
-                break;
-            case 'thisMonth':
-                $from = Carbon::now()->startOf('month')->format(Tracking::$DATETIME_FORMAT);
-                $to = Carbon::now()->endOf('month')->format(Tracking::$DATETIME_FORMAT);
-                break;
-            case 'thisQuarter':
-                $from = Carbon::now()->startOf('quarter')->format(Tracking::$DATETIME_FORMAT);
-                $to = Carbon::now()->endOf('quarter')->format(Tracking::$DATETIME_FORMAT);
-                break;
-            case 'thisYear':
-                $from = Carbon::now()->startOf('year')->format(Tracking::$DATETIME_FORMAT);
-                $to = Carbon::now()->endOf('year')->format(Tracking::$DATETIME_FORMAT);
-                break;
-            default:
-                $from = Carbon::now()->startOfDay()->format(Tracking::$DATETIME_FORMAT);
-                $to = Carbon::now()->endOfDay()->format(Tracking::$DATETIME_FORMAT);
-                break;
-        }
         $services = $this->trackingReportRepo->getTotalTimeByServices($from, $to);
         $projects = $this->trackingReportRepo->getTotalTimeByProjects($from, $to);
         $reports = $this->trackingReportRepo->getUserReports();
