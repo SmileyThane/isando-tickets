@@ -39,7 +39,7 @@ export default {
                     }
                 })
         },
-        getManagedTeams({ commit }, { withEmployee }) {
+        getManagedTeams({ commit }, { withEmployee = false }) {
             if (!withEmployee) withEmployee = false;
             return axios.get(`/api/tracking/managed_teams?withEmployee=${withEmployee}`)
                 .then(({ data: { success, data } }) => {

@@ -86,7 +86,16 @@
                 </v-expansion-panels>
             </div>
             <div class="d-inline-flex flex-grow-1">
-                
+                <v-select
+                    :items="getTeams"
+                    item-value="id"
+                    item-text="name"
+                    outlined
+                    clearable
+                    placeholder="Choose team"
+                    v-model="selectedTeam"
+                    @change="getData()"
+                ></v-select>
             </div>
         </div>
         <div class="d-flex">
@@ -251,6 +260,9 @@
     padding: 0 50px;
     width: 335px;
 }
+.v-expansion-panel:not(.v-expansion-panel--active.v-item--active) {
+    max-height: 55px;
+}
 </style>
 
 <script>
@@ -332,6 +344,7 @@ export default {
                 end: moment().format('YYYY-MM-DD')
             },
             activePeriod: null,
+            selectedTeam: null,
             data: {
                 projects: [],
                 reports: [],
@@ -383,6 +396,8 @@ export default {
         });
         this.getData();
         this.$store.dispatch('Tracking/getSettings');
+        this.$store.dispatch('Team/getManagedTeams', { withEmployee: false });
+        this.$store.dispatch('Team/getTeams', { search: null });
     },
     methods: {
         onClickOutsideHandler() {
@@ -460,7 +475,12 @@ export default {
             this.activePeriod = null;
         },
         getData() {
-            axios.get(`/api/tracking/dashboard?periodStart=${moment(this.periodDate.start).format('YYYY-MM-DD')}&periodEnd=${moment(this.periodDate.end).format('YYYY-MM-DD')}`)
+            const query = new URLSearchParams({
+                periodStart: moment(this.periodDate.start).format('YYYY-MM-DD'),
+                periodEnd: moment(this.periodDate.end).format('YYYY-MM-DD'),
+                team: this.selectedTeam,
+            });
+            axios.get(`/api/tracking/dashboard?${query.toString()}`)
             .then(({ data }) => {
                 if (data) {
                     this.data = data;
@@ -552,6 +572,15 @@ export default {
         currentCurrency() {
             const settings = this.$store.getters['Tracking/getSettings'];
             return settings.currency ?? null;
+        },
+        getTeams() {
+            if (this.$helpers.auth.checkPermissionByIds([91])) {
+                return this.$store.getters['Team/getTeams'].data;
+            }
+            if (this.$helpers.auth.checkPermissionByIds([66])) {
+                return this.$store.getters['Team/getManagedTeams'];
+            }
+            return this.$store.getters['Team/getTeams'].data;
         }
     }
 }

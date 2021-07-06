@@ -685,7 +685,7 @@ class TrackingReportRepository
         return stream_get_contents($out);
     }
 
-    public function getTotalTimeByServices($from, $to) {
+    public function getTotalTimeByServices($from, $to, $team = null) {
         $user = Auth::user();
 
         if (!Auth::user()->employee->hasPermissionId([
@@ -719,6 +719,10 @@ class TrackingReportRepository
         } else {
             // User
             $tracking->where('tracking.user_id', '=', $user->id);
+        }
+
+        if ($team !== 'null') {
+            $tracking->where('tracking.team_id', '=', $team);
         }
 
         $tracking
@@ -737,7 +741,7 @@ class TrackingReportRepository
         return $tracking->get();
     }
 
-    public function getTotalTimeByProjects($from, $to) {
+    public function getTotalTimeByProjects($from, $to, $team = null) {
         $user = Auth::user();
 
         if (!Auth::user()->employee->hasPermissionId([
@@ -771,6 +775,10 @@ class TrackingReportRepository
         } else {
             // User
             $tracking->where('tracking.user_id', '=', $user->id);
+        }
+
+        if ($team !== 'null') {
+            $tracking->where('tracking.team_id', '=', $team);
         }
 
         $tracking
@@ -793,7 +801,7 @@ class TrackingReportRepository
         return Auth::user()->trackingReports()->orderBy('id', 'desc')->get();
     }
 
-    public function getTopProjects($from, $to, int $numberOfProjects = 10) {
+    public function getTopProjects($from, $to, int $numberOfProjects = 10, $team = null) {
         $user = Auth::user();
 
         if (!Auth::user()->employee->hasPermissionId([
@@ -827,6 +835,10 @@ class TrackingReportRepository
         } else {
             // User
             $tracking->where('tracking.user_id', '=', $user->id);
+        }
+
+        if ($team !== 'null') {
+            $tracking->where('tracking.team_id', '=', $team);
         }
 
         $tracking
@@ -861,7 +873,7 @@ class TrackingReportRepository
         return $tracking->get();
     }
 
-    public function getLastActivity($from, $to) {
+    public function getLastActivity($from, $to, $team = null) {
         $user = Auth::user();
 
         if (!Auth::user()->employee->hasPermissionId([
@@ -894,6 +906,10 @@ class TrackingReportRepository
         } else {
             // User
             $tracking->where('tracking.user_id', '=', $user->id);
+        }
+
+        if ($team !== 'null') {
+            $tracking->where('tracking.team_id', '=', $team);
         }
 
         $tracking
