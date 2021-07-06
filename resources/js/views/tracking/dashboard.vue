@@ -158,7 +158,7 @@
                                         <div>{{user.name}} {{user.surname}} ({{user.percent}}%)</div>
                                         <hr>
                                         <div
-                                            v-for="(line, ind) in user.lines"
+                                            v-for="(line, ind) in user.sortedLines"
                                             :key="ind"
                                         >
                                             {{$helpers.time.convertSecToTime(line.seconds, false)}}h {{line.entity}}
@@ -188,6 +188,7 @@
 import EventBus from "../../components/EventBus";
 import BarChart from "./components/bar-chart";
 import DoughnutChart from "./components/doughnut-chart";
+import * as _ from "lodash";
 
 export default {
     components: {
@@ -349,7 +350,11 @@ export default {
                 items[user.user_id].name = user.name;
                 items[user.user_id].surname = user.surname;
             });
-            return Object.values(items).map(i => ({ ...i, percent: (i.count / totalTime * 100).toFixed(2) }));
+            return Object.values(items).map(i => ({
+                ...i,
+                percent: (i.count / totalTime * 100).toFixed(2),
+                sortedLines: _.orderBy(i.lines, [function (o) { return parseInt(o.seconds); }], ['desc']),
+            }));
         },
         getColor() {
             return '#' + Math.floor(Math.random()*16777215).toString(16).substr(0, 6);
