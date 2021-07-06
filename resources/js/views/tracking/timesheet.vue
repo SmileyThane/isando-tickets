@@ -248,25 +248,130 @@
                                 <span v-else>tracked</span>
                             </template>
                             <template v-slot:item.mon="{ isMobile, item, header, value }">
-                                {{ moment(item.times[0].dateTime).format('HH:mm') }}
+                                <template v-if="[STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                                    <span v-if="item.times && item.times[0]">
+                                        <TimeField
+                                            v-model="moment(item.times[0].dateTime).format()"
+                                            style="max-width: 100px"
+                                            placeholder="hh:mm"
+                                            format="HH:mm"
+                                            @input="saveChanges(item, 0, $event)"
+                                            class="time-field__small"
+                                            hide-calendar="false"
+                                        ></TimeField>
+                                    </span>
+                                </template>
+                                <template v-else>
+                                    {{ moment(item.times[0].dateTime).format('HH:mm') }}
+                                </template>
                             </template>
                             <template v-slot:item.tue="{ isMobile, item, header, value }">
-                                {{ moment(item.times[1].dateTime).format('HH:mm') }}
+                                <template v-if="[STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                                    <span v-if="item.times && item.times[1]">
+                                        <TimeField
+                                            v-model="moment(item.times[1].dateTime).format()"
+                                            style="max-width: 100px"
+                                            placeholder="hh:mm"
+                                            format="HH:mm"
+                                            @input="saveChanges(item, 1, $event)"
+                                            class="time-field__small"
+                                            hide-calendar="false"
+                                        ></TimeField>
+                                    </span>
+                                </template>
+                                <template v-else>
+                                    {{ moment(item.times[1].dateTime).format('HH:mm') }}
+                                </template>
                             </template>
                             <template v-slot:item.wed="{ isMobile, item, header, value }">
-                                {{ moment(item.times[2].dateTime).format('HH:mm') }}
+                                <template v-if="[STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                                    <span v-if="item.times && item.times[2]">
+                                        <TimeField
+                                            v-model="moment(item.times[2].dateTime).format()"
+                                            style="max-width: 100px"
+                                            placeholder="hh:mm"
+                                            format="HH:mm"
+                                            @input="saveChanges(item, 2, $event)"
+                                            class="time-field__small"
+                                            hide-calendar="false"
+                                        ></TimeField>
+                                    </span>
+                                </template>
+                                <template v-else>
+                                    {{ moment(item.times[2].dateTime).format('HH:mm') }}
+                                </template>
                             </template>
                             <template v-slot:item.thu="{ isMobile, item, header, value }">
-                                {{ moment(item.times[3].dateTime).format('HH:mm') }}
+                                <template v-if="[STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                                    <span v-if="item.times && item.times[3]">
+                                        <TimeField
+                                            v-model="moment(item.times[3].dateTime).format()"
+                                            style="max-width: 100px"
+                                            placeholder="hh:mm"
+                                            format="HH:mm"
+                                            @input="saveChanges(item, 3, $event)"
+                                            class="time-field__small"
+                                            hide-calendar="false"
+                                        ></TimeField>
+                                    </span>
+                                </template>
+                                <template v-else>
+                                    {{ moment(item.times[3].dateTime).format('HH:mm') }}
+                                </template>
                             </template>
                             <template v-slot:item.fri="{ isMobile, item, header, value }">
-                                {{ moment(item.times[4].dateTime).format('HH:mm') }}
+                                <template v-if="[STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                                    <span v-if="item.times && item.times[4]">
+                                        <TimeField
+                                            v-model="moment(item.times[4].dateTime).format()"
+                                            style="max-width: 100px"
+                                            placeholder="hh:mm"
+                                            format="HH:mm"
+                                            @input="saveChanges(item, 4, $event)"
+                                            class="time-field__small"
+                                            hide-calendar="false"
+                                        ></TimeField>
+                                    </span>
+                                </template>
+                                <template v-else>
+                                    {{ moment(item.times[4].dateTime).format('HH:mm') }}
+                                </template>
                             </template>
                             <template v-slot:item.sat="{ isMobile, item, header, value }">
-                                {{ moment(item.times[5].dateTime).format('HH:mm') }}
+                                <template v-if="[STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                                    <span v-if="item.times && item.times[5]">
+                                        <TimeField
+                                            v-model="moment(item.times[5].dateTime).format()"
+                                            style="max-width: 100px"
+                                            placeholder="hh:mm"
+                                            format="HH:mm"
+                                            @input="saveChanges(item, 5, $event)"
+                                            class="time-field__small"
+                                            hide-calendar="false"
+                                        ></TimeField>
+                                    </span>
+                                </template>
+                                <template v-else>
+                                    {{ moment(item.times[5].dateTime).format('HH:mm') }}
+                                </template>
                             </template>
                             <template v-slot:item.sun="{ isMobile, item, header, value }">
-                                {{ moment(item.times[6].dateTime).format('HH:mm') }}
+                                <template v-if="[STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                                    <span v-if="item.times && item.times[6]">
+                                        <TimeField
+                                            v-model="moment(item.times[6].dateTime).format()"
+                                            style="max-width: 100px"
+                                            placeholder="hh:mm"
+                                            format="HH:mm"
+                                            @input="saveChanges(item, 6, $event)"
+                                            class="time-field__small"
+                                            hide-calendar="false"
+                                        ></TimeField>
+                                    </span>
+                                </template>
+                                <template v-else>
+                                    {{ moment(item.times[6].dateTime).format('HH:mm') }}
+                                </template>
                             </template>
                             <template v-slot:item.total="{ isMobile, item, header, value }">
                                 {{ $helpers.time.convertSecToTime(item.total_time, false) }}
@@ -694,16 +799,16 @@
                 <template v-slot:item.mon="{ isMobile, item, header, value }">
                     <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
                     <span v-if="item.times && item.times[0]">
-                    <TimeField
-                        v-model="moment(item.times[0].dateTime).format()"
-                        style="max-width: 100px"
-                        placeholder="hh:mm"
-                        format="HH:mm"
-                        @input="saveChanges(item, 0, $event)"
-                        class="time-field__small"
-                        hide-calendar="false"
-                    ></TimeField>
-                </span>
+                        <TimeField
+                            v-model="moment(item.times[0].dateTime).format()"
+                            style="max-width: 100px"
+                            placeholder="hh:mm"
+                            format="HH:mm"
+                            @input="saveChanges(item, 0, $event)"
+                            class="time-field__small"
+                            hide-calendar="false"
+                        ></TimeField>
+                    </span>
                     </template>
                     <template v-else>
                         {{ moment(item.times[0].dateTime).format('HH:mm') }}
