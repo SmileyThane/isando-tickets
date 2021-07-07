@@ -793,6 +793,14 @@
                                         label="Grouped times"
                                     ></v-select>
                                 </div>
+                                <div class="d-inline-block">
+                                    <v-checkbox
+                                        class="my-0"
+                                        hide-details
+                                        v-model="report.csv.timeInDecimal"
+                                        :label="langMap.tracking.report.display_time_with_decimal"
+                                    ></v-checkbox>
+                                </div>
 <!--                                <div class="d-inline-block">-->
 <!--                                    <v-select-->
 <!--                                        :items="csvForm.timeFormatItems"-->
@@ -816,7 +824,7 @@
                                 text
                                 @click="dialogExportCSV = false"
                             >
-                                {{ langMap.tracking.report.сancel }}
+                                Cancel
                             </v-btn>
                             <v-btn
                                 color="success"
@@ -1189,6 +1197,7 @@ export default {
                         text: this.$store.state.lang.lang_map.tracking.report.all_entries_sorted_based_grouping,
                         items: []
                     },
+                    timeInDecimal: false,
                     timeFormat: 4,
                     dateFormat: 2
                 },

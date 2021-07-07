@@ -145,12 +145,14 @@
                     v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
                 >
                     <v-radio
+                        v-if="false"
                         class="d-inline-flex"
                         value="daily"
                         disabled
                         :label="langMap.tracking.timesheet.daily"
                     ></v-radio>
                     <v-radio
+                        v-if="false"
                         class="d-inline-flex"
                         value="weekly"
                         :label="langMap.tracking.timesheet.weekly"

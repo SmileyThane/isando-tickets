@@ -631,8 +631,8 @@ class TrackingReportRepository
             $row[] = $tracking['billable'] ? 1 : 0;
             $row[] = round($tracking['rate'], 2);
             $row[] = Carbon::parse($tracking['date_from'])->format('d/m/Y');
-            $row[] = $this->timeInDecimal ? $this->convertTimeToDecimal($tracking['date_from']) : Carbon::parse($tracking['date_from'])->format('H:i');
-            $row[] = $this->timeInDecimal ? $this->convertTimeToDecimal($tracking['date_to']) : Carbon::parse($tracking['date_to'])->format('H:i');
+            $row[] = Carbon::parse($tracking['date_from'])->format('H:i');
+            $row[] = Carbon::parse($tracking['date_to'])->format('H:i');
             $row[] = $this->timeInDecimal ? $this->convertSecondsToDecimal($tracking['passed']) : $this->convertSecondsToTimeFormat($tracking['passed'], false);
             $row[] = $tracking['revenue'];
             return $row;
@@ -671,6 +671,10 @@ class TrackingReportRepository
             } else {
                 $data = $this->getData($request)['tracks']->toArray();
             }
+        }
+
+        if ($request->has('timeInDecimal') && $request->get('timeInDecimal') === true) {
+            $this->timeInDecimal = $request->get('timeInDecimal');
         }
 
         $out = fopen('php://output', 'w');
