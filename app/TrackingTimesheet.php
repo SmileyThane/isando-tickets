@@ -113,7 +113,7 @@ class TrackingTimesheet extends Model
     public function duplicate() {
         $new = $this->replicate();
         $new->from = Carbon::parse($new->from)->addWeek()->format('Y-m-d');
-        $new->to = $new->to ? Carbon::parse($new->to)->addWeek()->format('Y-m-d') : null;
+        $new->to = Carbon::parse($new->to)->addWeek()->format('Y-m-d');
         $new->status = TrackingTimesheet::STATUS_TRACKED;
         $new->push();
         $times = $this->times()->get();
