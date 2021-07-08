@@ -83,7 +83,7 @@ class TrackingTimesheet extends Model
         parent::boot();
 
         static::retrieved(function($trackingTimesheet) {
-            if (!$trackingTimesheet->Times()->count() < 7) {
+            if ($trackingTimesheet->Times()->count() < 7) {
 //                $trackingTimesheet->Times()->delete();
                 $daysOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
                 foreach ($daysOfWeek as $index => $dayOfWeek) {
