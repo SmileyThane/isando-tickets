@@ -45,8 +45,10 @@ class TrackingTimesheetRepository
                     ->orWhere('approver_id', Auth::user()->id);
             });
         } else {
-            $query->where('user_id', '=', Auth::user()->id)
-                ->orWhere('approver_id', Auth::user()->id);
+            $query->where(function($q) {
+                $q->where('user_id', '=', Auth::user()->id)
+                    ->orWhere('approver_id', Auth::user()->id);
+            });
         }
         return $query
             ->where(function ($q) use ($request) {
