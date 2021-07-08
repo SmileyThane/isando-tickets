@@ -148,7 +148,7 @@ export default {
             state.timesheetArchived = data.filter(i => i.user_id === userId && i.status === 'archived');
             state.timesheetPending = data.filter(i => i.user_id === userId && i.status === 'pending');
             state.timesheetRejected = data.filter(i => i.user_id === userId && i.status === 'rejected');
-            state.timesheetRequest = data.filter(i => (i.approver_id === null || i.approver_id === userId) && i.status === 'pending');
+            state.timesheetRequest = data.filter(i => ((i.approver_id === null || i.approver_id === userId) && i.status !== 'tracked'));
         },
         SET_TIMESHEET_TEMPLATES(state, data) {
             state.timesheet_templates = data;

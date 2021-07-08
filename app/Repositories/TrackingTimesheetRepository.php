@@ -98,6 +98,7 @@ class TrackingTimesheetRepository
                     ->orWhere('approver_id', '=', Auth::user()->id);
             });
         }
+        $query->orderBy('id', 'desc');
         return $query->get();
     }
 

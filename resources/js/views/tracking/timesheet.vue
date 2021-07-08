@@ -44,6 +44,17 @@
                 </v-btn>
             </v-btn-toggle>
 
+            <div class="d-flex" v-if="[STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1">
+                <v-select
+                    label="Filter by status"
+                    class="d-inline-flex mt-4 ml-16"
+                    v-model="approvalRequestFilter"
+                    :items="approvalRequestFilterItems"
+                    item-text="text"
+                    item-value="value"
+                    clearable
+                ></v-select>
+            </div>
             <v-spacer></v-spacer>
         </v-toolbar>
 
@@ -462,6 +473,7 @@
 
                 <template v-slot:item.approve="{ item }" v-if="[STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1">
                     <v-btn
+                        v-if="item.status === 'pending'"
                         color="success"
                         dark
                         @click="approveTimesheet(item)"
@@ -470,15 +482,19 @@
                     >
                         Approve
                     </v-btn>
+                    <v-chip color="success" outlined v-if="item.status==='archived'">Approved</v-chip>
+                    <v-chip color="error" outlined v-if="item.status==='rejected'">Rejected</v-chip>
                 </template>
                 <template v-slot:item.reject="{ item }" v-if="[STATUS_APPROVAL_REQUESTS].indexOf(typeOfItems) !== -1">
                     <v-dialog
+                        v-if="item.status === 'pending'"
                         v-model="rejectManagerDialog"
                         persistent
                         max-width="490"
                     >
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn
+                                v-if="item.status === 'pending'"
                                 color="error"
                                 dark
                                 v-bind="attrs"
@@ -518,7 +534,6 @@
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
-
                 </template>
             </v-data-table>
         </template>
@@ -1412,6 +1427,21 @@ export default {
             saveTemplateDialog: false,
             loadTemplateDialog: false,
             selectedTemplate: undefined,
+            approvalRequestFilterItems: [
+                {
+                    text: 'Requests',
+                    value: 'pending'
+                },
+                {
+                    text: 'Approved',
+                    value: 'archived'
+                },
+                {
+                    text: 'Rejected',
+                    value: 'rejected'
+                },
+            ],
+            approvalRequestFilter: 'pending',
         }
     },
     created () {
@@ -1983,7 +2013,13 @@ export default {
             }
             if (this.currentStatus === 'request') {
                 timesheet = this.$store.getters['Timesheet/getRequestTimesheet']
-                    .filter(i => !this.deletedItems.includes(i.id));
+                    .filter(i => !this.deletedItems.includes(i.id))
+                    .filter(i => {
+                        if (this.approvalRequestFilter) {
+                            return i.status === this.approvalRequestFilter;
+                        }
+                        return true;
+                    });
             }
             if (this.currentStatus === 'archived') {
                 timesheet = this.$store.getters['Timesheet/getArchivedTimesheet'];
