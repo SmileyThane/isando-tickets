@@ -50,8 +50,8 @@ class TrackingTimesheetRepository
         }
         return $query
             ->where(function ($q) use ($request) {
-                $q->whereBetween('from', [Carbon::parse($request->start), Carbon::parse($request->end)])
-                    ->orWhereBetween('to', [Carbon::parse($request->start), Carbon::parse($request->end)]);
+                $q->where('from', '<=', Carbon::parse($request->end)->endOf('week'))
+                    ->where('to', '>=', Carbon::parse($request->start)->startOf('week'));
             })
             ->get();
     }
