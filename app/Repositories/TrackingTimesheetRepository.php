@@ -45,13 +45,15 @@ class TrackingTimesheetRepository
                     ->orWhere('approver_id', Auth::user()->id);
             });
         } else {
-            $query->where('user_id', '=', Auth::user()->id)
-                ->orWhere('approver_id', Auth::user()->id);
+            $query->where(function($q) {
+                $q->where('user_id', '=', Auth::user()->id)
+                    ->orWhere('approver_id', Auth::user()->id);
+            });
         }
         return $query
             ->where(function ($q) use ($request) {
-                $q->whereBetween('from', [Carbon::parse($request->start), Carbon::parse($request->end)])
-                    ->orWhereBetween('to', [Carbon::parse($request->start), Carbon::parse($request->end)]);
+                $q->where('from', '<=', Carbon::parse($request->end)->endOf('week'))
+                    ->where('to', '>=', Carbon::parse($request->start)->startOf('week'));
             })
             ->get();
     }
@@ -98,6 +100,7 @@ class TrackingTimesheetRepository
                     ->orWhere('approver_id', '=', Auth::user()->id);
             });
         }
+        $query->orderBy('id', 'desc');
         return $query->get();
     }
 

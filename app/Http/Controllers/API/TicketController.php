@@ -139,6 +139,16 @@ class TicketController extends Controller
         return self::showResponse(false);
     }
 
+    public function updateDescription(Request $request, $id)
+    {
+        $hasAccess = Auth::user()->employee->hasPermissionId(Permission::TICKET_WRITE_ACCESS);
+        if ($hasAccess) {
+            return self::showResponse(true, $this->ticketRepo->updateDescription($request, $id));
+        }
+
+        return self::showResponse(false);
+    }
+
     public function delete($id)
     {
         if (Auth::user()->employee->hasPermissionId(Permission::TICKET_DELETE_ACCESS)) {

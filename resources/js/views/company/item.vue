@@ -3388,7 +3388,7 @@ export default {
             }
             this.currency = this.$store.getters['Currencies/getCurrencies'].find(obj => {
                 return obj.id === this.company.currency_id;
-            })
+            }) ?? ''
         }
     },
     computed: {

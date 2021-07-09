@@ -317,6 +317,7 @@ class TicketRepository
                 $ticket->id
             );
             $ticket->name = $request->name;
+            $ticket->description = $request->description;
             $ticket->from_entity_id = $request->from_entity_id;
             $ticket->from_entity_type = $request->from_entity_type;
             $ticket->internal_billing_id = $request->internal_billing_id;
@@ -332,6 +333,20 @@ class TicketRepository
             $request->status_id = 2;
             $this->updateStatus($request, $id, null, false);
         }
+
+        return $ticket;
+    }
+
+    public function updateDescription(Request $request, $id) {
+        $ticket = Ticket::find($id);
+        $ticket->description = $request->description;
+        $ticket->save();
+
+        $files = array_key_exists('files', $request->all()) ? $request['files'] : [];
+        foreach ($files as $file) {
+            $this->fileRepo->store($file, $ticket->id, Ticket::class);
+        }
+
         return $ticket;
     }
 

@@ -220,6 +220,55 @@
             </v-dialog>
         </template>
         <template>
+            <v-dialog v-model="descriptionDialog" max-width="50%" :retain-focus="false" :eager="true">
+                <v-card dense outlined>
+                    <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
+                        {{ langMap.main.edit }}
+                    </v-card-title>
+                    <v-card-text>
+                        <v-form>
+                            <div class="row">
+                                <div class="col-md-12 mt-2">
+                                    <Tinymce
+                                        v-model="ticket.description"
+                                        :placeholder="langMap.main.description"
+                                    />
+                                </div>
+                                <div class="col-md-12">
+                                    <v-file-input
+                                        :color="themeBgColor"
+                                        :item-color="themeBgColor"
+                                        :label="langMap.ticket.add_attachments"
+                                        :show-size="1000"
+                                        chips
+                                        dense
+                                        multiple
+                                        prepend-icon="mdi-paperclip"
+                                        v-on:change="onFileChange('ticket')"
+                                    >
+                                        <template v-slot:selection="{ index, text }">
+                                            <v-chip
+                                                :color="themeBgColor"
+                                                :text-color="themeFgColor"
+                                                class="ma-2">
+                                                {{ text }}
+                                            </v-chip>
+                                        </template>
+                                    </v-file-input>
+                                </div>
+                            </div>
+                        </v-form>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="grey darken-1" text @click="descriptionDialog = false">{{ langMap.main.cancel }}
+                        </v-btn>
+                        <v-btn :color="themeBgColor" dark @click="descriptionDialog = false; updateTicketDescription()">{{ langMap.main.update }}
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </template>
+        <template>
             <v-dialog v-model="noteDialog" max-width="50%" :retain-focus="false" :eager="true">
                 <v-card dense outlined>
                     <v-card-title :style="`color: ${themeFgColor}; background-color: ${themeBgColor};`" class="mb-5">
@@ -757,6 +806,7 @@
                                                 ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at
                                             }} - {{ ticket.name }}:
                                         </span>
+
                                         <div v-html="child_ticket.description"></div>
                                         <v-col v-if="child_ticket.attachments && child_ticket.attachments.length > 0 "
                                                cols="12">
@@ -889,6 +939,7 @@
                             <v-list-item>
                                 <v-list-item-content>
                                     <!--                                    <span v-text="ticket.merge_comment"></span>-->
+                                    <v-col :cols="currentUser.id == ticket.creator.user_data.id ? 11 : 12">
                                     <span class="text-left" style="font-weight: bold;">
                                         <v-avatar
                                             v-if="ticket.creator.user_data.avatar_url || ticket.creator.user_data.full_name"
@@ -912,6 +963,13 @@
                                             ticket.created_at_time !== '' ? ticket.created_at_time : ticket.created_at
                                         }} - {{ ticket.name }}:
                                     </span>
+                                    </v-col>
+
+                                    <v-col v-if="currentUser.id == ticket.creator.user_data.id"  cols="1">
+                                        <v-btn right icon :color="themeBgColor" :title="langMap.main.edit" @click="descriptionDialog = true;">
+                                           <v-icon>mdi-pencil</v-icon>
+                                        </v-btn>
+                                    </v-col>
                                     <div v-html="ticket.description"></div>
                                     <v-col v-if="ticket.attachments && ticket.attachments.length > 0 " cols="12">
                                         <h4>{{ langMap.main.attachments }}</h4>
@@ -1742,6 +1800,7 @@ export default {
             serverAccessDialog: false,
             updateDialog: false,
             answerDialog: false,
+            descriptionDialog: false,
             noteDialog: false,
             removeTicketDialog: false,
             alert: false,
@@ -1800,8 +1859,9 @@ export default {
                 attachments: [{
                     name: '',
                     link: ''
-                }
+                },
                 ],
+                files: [],
                 from: {
                     name: ''
                 },
@@ -1954,6 +2014,7 @@ export default {
                 response = response.data
                 if (response.success === true) {
                     this.ticket = response.data
+                    this.ticket.files = [];
                     this.from = {[this.ticket.from_entity_type]: this.ticket.from_entity_id}
                     this.progressBuffer = this.progressBuffer + 40;
                     this.$store.state.pageName = '#' + this.ticket.id + ' | ' + this.ticket.number + ' | ' + this.ticket.name
@@ -2242,6 +2303,28 @@ export default {
                     }
                 });
             }
+        },
+        updateTicketDescription() {
+            const config = {
+                headers: {'content-type': 'multipart/form-data'}
+            }
+            let formData = new FormData();
+            formData.append('description', this.ticket.description)
+
+            Array.from(this.ticket.files).forEach(file => formData.append('files[]', file));
+            axios.post(`/api/ticket/${this.$route.params.id}`, formData, config).then(response => {
+                response = response.data
+                if (response.success === true) {
+                    this.getTicket();
+                    this.$forceUpdate();
+               } else {
+                    this.overlay = false;
+                    this.snackbarMessage = 'Check ticket problems and try again, please!'
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                    console.log('error')
+                }
+            });
         },
         makeCompanyLink(ticket) {
             let redirectToEntity = ticket.from_entity_type.substring(ticket.from_entity_type.lastIndexOf("\\") + 1).toLowerCase()

@@ -152,6 +152,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('ticket', 'API\TicketController@create');
         Route::get('ticket/{id}', 'API\TicketController@find');
         Route::patch('ticket/{id}', 'API\TicketController@update');
+        Route::post('ticket/{id}', 'API\TicketController@updateDescription');
         Route::delete('ticket/{id}', 'API\TicketController@delete');
         Route::post('ticket/{id}/team', 'API\TicketController@attachTeam');
         Route::post('ticket/{id}/employee', 'API\TicketController@attachEmployee');
