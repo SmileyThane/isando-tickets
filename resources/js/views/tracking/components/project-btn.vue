@@ -106,12 +106,34 @@
                         <v-list>
                             <v-list-item>
                                 <v-text-field
-                                    v-model="form.name"
+                                    v-model="form.project"
                                     :label="langMap.tracking.project_btn.project_name + '*'"
                                     :placeholder="langMap.tracking.project_btn.type_project_name_here"
                                     clearable
                                     required
                                     full-width
+                                ></v-text-field>
+                            </v-list-item>
+                            <v-list-item>
+                                <v-text-field
+                                    v-model="form.department"
+                                    label="Department"
+                                    placeholder="Type text here"
+                                    clearable
+                                    required
+                                    full-width
+                                    class="my-n2 py-0"
+                                ></v-text-field>
+                            </v-list-item>
+                            <v-list-item>
+                                <v-text-field
+                                    v-model="form.profit_center"
+                                    label="Profit center"
+                                    placeholder="Type text here"
+                                    clearable
+                                    required
+                                    full-width
+                                    class="my-n2 py-0"
                                 ></v-text-field>
                             </v-list-item>
                             <v-list-item>
@@ -318,7 +340,9 @@ export default {
             searchTicket: null,
             colorMenu: false,
             form: {
-                name: '',
+                project: '',
+                department: '',
+                profit_center: '',
                 product: null,
                 client: null,
                 team: null,
@@ -355,7 +379,9 @@ export default {
         },
         resetNewProjectForm() {
             this.form = {
-                name: '',
+                project: '',
+                department: '',
+                profit_center: '',
                 product: null,
                 client: null,
                 team: null,

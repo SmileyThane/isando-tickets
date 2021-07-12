@@ -32,12 +32,33 @@
                                         <v-toolbar :color="themeBgColor" dark dense flat>
                                             <v-toolbar-title :style="`color: ${themeFgColor};`">{{ langMap.tracking.settings.general }}</v-toolbar-title>
                                         </v-toolbar>
-                                        <v-card-text>
+                                        <v-card-text class="mb-4">
                                             <v-checkbox
                                                 :disabled="!$helpers.auth.checkPermissionByIds([80])"
                                                 v-model="enableTimesheet"
                                                 :label="langMap.tracking.settings.enable_timesheet"
                                             ></v-checkbox>
+                                            <div>
+                                                Use one of the three options below for description of the time tracked:
+                                                <br>
+                                                <v-btn-toggle
+                                                    v-model="toggleProjectType"
+                                                    mandatory
+                                                    dense
+                                                >
+                                                    <v-btn small>
+                                                        Projects
+                                                    </v-btn>
+
+                                                    <v-btn small>
+                                                        Departments
+                                                    </v-btn>
+
+                                                    <v-btn small>
+                                                        Profit centres
+                                                    </v-btn>
+                                                </v-btn-toggle>
+                                            </div>
                                         </v-card-text>
                                     </v-card>
                                 </div>
@@ -551,6 +572,16 @@ export default {
             },
             async set(val) {
                 await this.$store.commit('Tracking/SET_TOGGLE_TIMESHEET', val);
+                await this.debounceSaveSettings();
+            }
+        },
+        toggleProjectType: {
+            get() {
+                const { settings } = this.$store.getters['Tracking/getSettings'];
+                return settings && settings.projectType ? settings.projectType : 0;
+            },
+            async set(val) {
+                await this.$store.commit('Tracking/SET_PROJECT_TYPE', val);
                 await this.debounceSaveSettings();
             }
         },

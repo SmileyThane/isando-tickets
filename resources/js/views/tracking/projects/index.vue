@@ -124,8 +124,20 @@
                             <v-text-field
                                 :color="themeBgColor"
                                 :item-color="themeBgColor"
-                                :label="langMap.tracking.create_project.name + '*'"
-                                v-model="project.name"
+                                label="Project name*"
+                                v-model="project.project"
+                            ></v-text-field>
+                            <v-text-field
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                label="Department*"
+                                v-model="project.department"
+                            ></v-text-field>
+                            <v-text-field
+                                :color="themeBgColor"
+                                :item-color="themeBgColor"
+                                label="Profit center*"
+                                v-model="project.profit_center"
                             ></v-text-field>
                             <v-select
                                 :items="$store.getters['Products/getProducts']"
@@ -226,7 +238,9 @@ export default {
                 {text: ``, value: 'actions'}
             ],
             project: {
-                name: '',
+                project: '',
+                department: '',
+                profit_center: '',
                 clientId: null,
                 client: null,
                 teamId: null,
@@ -313,7 +327,9 @@ export default {
         },
         resetProject() {
             this.project = {
-                name: '',
+                project: '',
+                department: '',
+                profit_center: '',
                 clientId: null,
                 teamId: null,
                 color: '#000000'

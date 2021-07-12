@@ -57,15 +57,41 @@
                         <v-container fluid>
                             <v-row>
                                 <v-col cols="2" lg="1">
-                                    <v-subheader class="float-right">Name</v-subheader>
+                                    <v-subheader class="float-right">Project name</v-subheader>
                                 </v-col>
                                 <v-col cols="10" lg="4" md="6">
                                     <v-text-field
                                         v-if="$helpers.auth.checkPermissionByIds([57])"
-                                        v-model="project.name"
+                                        v-model="project.project"
                                         @blur="actionSave()"
                                     ></v-text-field>
-                                    <div class="mt-3" v-else>{{project.name}}</div>
+                                    <div class="mt-3" v-else>{{project.project}}</div>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="2" lg="1">
+                                    <v-subheader class="float-right">Department name</v-subheader>
+                                </v-col>
+                                <v-col cols="10" lg="4" md="6">
+                                    <v-text-field
+                                        v-if="$helpers.auth.checkPermissionByIds([57])"
+                                        v-model="project.department"
+                                        @blur="actionSave()"
+                                    ></v-text-field>
+                                    <div class="mt-3" v-else>{{project.department}}</div>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="2" lg="1">
+                                    <v-subheader class="float-right">Profit center</v-subheader>
+                                </v-col>
+                                <v-col cols="10" lg="4" md="6">
+                                    <v-text-field
+                                        v-if="$helpers.auth.checkPermissionByIds([57])"
+                                        v-model="project.profit_center"
+                                        @blur="actionSave()"
+                                    ></v-text-field>
+                                    <div class="mt-3" v-else>{{project.profit_center}}</div>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -386,7 +412,9 @@ export default {
             tab: 1,
             project: {
                 id: null,
-                name: '',
+                project: '',
+                department: '',
+                profit_center: '',
                 color: '',
                 client: {
                     id: null,
