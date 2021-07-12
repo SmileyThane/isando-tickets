@@ -238,6 +238,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
                 // Timesheet
                 Route::get('/timesheet', 'TimesheetController@get');
+                Route::post('/timesheet/export', 'TimesheetController@exportPdf');
                 Route::get('/timesheet/status', 'TimesheetController@getAllGroupedByStatus');
                 Route::post('/timesheet/copy_last_week', 'TimesheetController@copyLastWeek');
                 Route::get('/timesheet/templates', 'TimesheetController@getUserTemplates');

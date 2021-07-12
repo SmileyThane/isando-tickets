@@ -123,4 +123,12 @@ class TimesheetController extends BaseController
             return self::showResponse(false, $exception->getMessage());
         }
     }
+
+    public function exportPdf(Request $request) {
+        try {
+            return $this->timesheetRepo->exportPdf($request);
+        } catch (\Exception $exception) {
+            return self::showResponse(false, $exception->getMessage());
+        }
+    }
 }

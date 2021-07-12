@@ -56,6 +56,131 @@
                 ></v-select>
             </div>
             <v-spacer></v-spacer>
+            <v-dialog
+                v-model="exportDialog"
+                width="500"
+            >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        :color="themeBgColor"
+                        :style="{ color: $helpers.color.invertColor(themeBgColor)}"
+                        v-bind="attrs"
+                        v-on="on"
+                        class="mx-2"
+                        small
+                    >
+                        Export
+                    </v-btn>
+                </template>
+
+                <v-card>
+                    <v-card-title class="grey lighten-2">
+                        Export to PDF
+                    </v-card-title>
+
+                    <v-card-text>
+                        <br>
+                        <p>Choose period:</p>
+                        <div class="d-flex">
+                            <v-menu class="d-inline-flex flex-grow-1"
+                                    v-model="exportDialogFrom"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="auto"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                        v-model="exportParams.from"
+                                        label="From"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    ></v-text-field>
+                                </template>
+                                <v-date-picker
+                                    v-model="exportParams.from"
+                                    @input="exportDialogFrom = false"
+                                ></v-date-picker>
+                            </v-menu>
+                            <v-menu class="d-inline-flex flex-grow-1"
+                                    v-model="exportDialogTo"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="auto"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                        v-model="exportParams.to"
+                                        label="To"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    ></v-text-field>
+                                </template>
+                                <v-date-picker
+                                    v-model="exportParams.to"
+                                    @input="exportDialogTo = false"
+                                ></v-date-picker>
+                            </v-menu>
+                        </div>
+                        <p>Select a types of timesheet to export:</p>
+                        <v-checkbox
+                            class="my-0"
+                            dense
+                            v-model="exportParams.tracked"
+                            value="tracked"
+                            label="Tracked"
+                        ></v-checkbox>
+                        <v-checkbox
+                            class="my-0"
+                            dense
+                            v-model="exportParams.pending"
+                            value="pending"
+                            label="Pending/Request"
+                        ></v-checkbox>
+                        <v-checkbox
+                            class="my-0"
+                            dense
+                            v-model="exportParams.rejected"
+                            value="rejected"
+                            label="Rejected"
+                        ></v-checkbox>
+                        <v-checkbox
+                            class="my-0"
+                            dense
+                            v-model="exportParams.archived"
+                            value="archived"
+                            label="Archived/Approved"
+                        ></v-checkbox>
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="error"
+                            text
+                            @click="exportDialog = false"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            color="success"
+                            text
+                            @click="exportDialog = false; exportTimesheet()"
+                        >
+                            Export
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-toolbar>
 
         <v-spacer>&nbsp;</v-spacer>
@@ -1442,6 +1567,17 @@ export default {
                 },
             ],
             approvalRequestFilter: 'pending',
+            exportDialog: false,
+            exportDialogFrom: false,
+            exportDialogTo: false,
+            exportParams: {
+                from: moment().startOf('week').format('YYYY-MM-DD'),
+                to: moment().endOf('week').format('YYYY-MM-DD'),
+                tracked: null,
+                pending: 'pending',
+                rejected: 'rejected',
+                archived: 'archived',
+            },
         }
     },
     created () {
@@ -1854,6 +1990,27 @@ export default {
         },
         removeTemplate(id) {
             this.$store.dispatch('Timesheet/removeTemplate', id);
+        },
+        exportTimesheet() {
+            console.log(this.exportParams);
+            axios.post(`/api/tracking/timesheet/export?format=pdf`, this.exportParams, {
+                responseType: 'blob'
+            })
+                .then(res => {
+                    const url = window.URL.createObjectURL(new Blob([res.data]));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('download', `Report.pdf`);
+                    document.body.appendChild(link);
+                    link.click();
+                    this.exportDialog = false;
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.snackbarMessage = this.$store.state.lang.lang_map.main.generic_error;
+                    this.actionColor = 'error'
+                    this.snackbar = true;
+                })
         }
     },
     watch: {

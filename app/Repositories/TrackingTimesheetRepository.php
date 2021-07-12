@@ -3,13 +3,13 @@
 
 namespace App\Repositories;
 
+use App\Http\Controllers\API\Tracking\PDF;
 use App\Notifications\TimesheetAppovalRequest;
 use App\Notifications\TimesheetApproved;
 use App\Notifications\TimesheetRejected;
 use App\Permission;
 use App\Service;
 use App\Team;
-use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
 use App\TrackingTimesheet;
@@ -19,6 +19,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class TrackingTimesheetRepository
@@ -620,5 +621,128 @@ class TrackingTimesheetRepository
             ['id', '=', $template_id],
             ['user_id', '=', Auth::user()->id]
         ])->delete();
+    }
+
+    private function getData(Request $request) {
+        $statusesForFilter = [];
+        if ($request->has('pending') && !is_null($request->pending)) {
+            $statusesForFilter[] = TrackingTimesheet::STATUS_PENDING;
+        }
+        if ($request->has('rejected') && !is_null($request->rejected)) {
+            $statusesForFilter[] = TrackingTimesheet::STATUS_REJECTED;
+        }
+        if ($request->has('archived') && !is_null($request->archived)) {
+            $statusesForFilter[] = TrackingTimesheet::STATUS_ARCHIVED;
+        }
+        if ($request->has('tracked') && !is_null($request->tracked)) {
+            $statusesForFilter[] = TrackingTimesheet::STATUS_TRACKED;
+        }
+        $query = TrackingTimesheet::with('User')
+            ->with('Service')
+            ->with('Approver')
+            ->with(['Times' => function ($q) {
+                $q->orderBy('date', 'asc');
+            }])
+            ->whereIn('status', $statusesForFilter);
+
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+            // Manager
+            $teams = $teams = Team::whereHas('employees', function ($q) {
+                return $q
+                    ->where('company_user_id', '=', Auth::user()->employee->id)
+                    ->where('is_manager', '=', true);
+            })->get()->pluck('id')->toArray();
+            $query->where(function ($query) use ($teams) {
+                    $query
+                        ->whereIn('team_id', $teams)
+                        ->whereNull('approver_id')
+                        ->orWhere('approver_id', '=', Auth::user()->id);
+                });
+        } else if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+            // Company Admin
+            $company = Auth::user()->employee()
+                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+                ->with('userData')->first();
+            $query->where('company_id', '=', $company->company_id)
+                ->where(function ($query) {
+                    $query->whereNull('approver_id')
+                        ->orWhere('approver_id', '=', Auth::user()->id);
+                });
+        } else {
+            $query->where(function($q) {
+                $q->where('user_id', '=', Auth::user()->id)
+                    ->orWhere('approver_id', '=', Auth::user()->id);
+            });
+        }
+        $query->where(function($q) use ($request) {
+            $q->where('from', '<=', $request->to)
+                ->where('to', '>=', $request->from);
+        });
+        $query->orderBy('id', 'desc');
+//        dd($query->toSql(), $query->getBindings());
+        return $query->get();
+    }
+
+    protected function prepareDataForPDF($entities) {
+        $items = [];
+        foreach ($entities as $key => $entity) {
+            $item = [
+                'number' => $entity->number ?? '',
+                'name' => $entity->entity ? $entity->entity->name : '',
+                'start' => Carbon::parse($entity['from'])->format('d.m.Y'),
+                'end' => Carbon::parse($entity['to'])->format('d.m.Y'),
+                'service' => $entity->service ? $entity->service->name : '',
+                'status' => $entity->status,
+            ];
+            foreach ($entity->times as $time) {
+                $item[Carbon::parse($time->date)->shortEnglishDayOfWeek] = Carbon::parse($time->time)->format('H:i');
+            }
+            array_push($items, $item);
+        }
+        return $items;
+    }
+
+    public function exportPdf(Request $request) {
+        $headers = [
+            ['slug' => 'number', 'text' => 'Number', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => false],
+            ['slug' => 'name', 'text' => 'Name', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 20, 'resizable' => true],
+            ['slug' => 'start', 'text' => 'Start', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 10, 'resizable' => false],
+            ['slug' => 'end', 'text' => 'End', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 10, 'resizable' => false],
+            ['slug' => 'service', 'text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 10, 'resizable' => true],
+            ['slug' => 'status', 'text' => 'Status', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 10, 'resizable' => true],
+            ['slug' => 'mon', 'text' => 'Mon', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => true],
+            ['slug' => 'tue', 'text' => 'Tue', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => true],
+            ['slug' => 'wed', 'text' => 'Wed', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => true],
+            ['slug' => 'thu', 'text' => 'Thu', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => true],
+            ['slug' => 'fri', 'text' => 'Fri', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => true],
+            ['slug' => 'sat', 'text' => 'Sat', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => true],
+            ['slug' => 'sun', 'text' => 'Sun', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => true],
+        ];
+        $entities = $this->getData($request);
+        $data = $this->prepareDataForPDF($entities);
+
+        $pdf = new PDF();
+        $pdf->setFirstPage(0);
+        $pdf->SetOptions([
+            'title' => 'Timesheet report',
+            'user' => '',
+            'period' => Carbon::parse($request->from)->format('d.m.Y') . ' - ' . Carbon::parse($request->to)->format('d.m.Y'),
+        ]);
+        $pdf->AliasNbPages();
+
+        $pdf->AddPage('L', 'A4');
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->EasyTable($headers, $data);
+        // GENERATE FILE
+        try {
+            $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';
+            File::put($tmpFileName, $pdf->Output('S', $tmpFileName, true));
+            if (File::exists($tmpFileName)) {
+                return response()->file($tmpFileName)->deleteFileAfterSend();
+            }
+        } catch (\Exception $exception) {
+            throw new \Exception($exception->getMessage());
+        }
+        throw new \Exception('Error generating file');
     }
 }
