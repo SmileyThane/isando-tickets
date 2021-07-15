@@ -19,114 +19,115 @@
                     </v-toolbar>
 
                     <v-card-text>
-                        <v-form>
-                            <v-row>
-                                <v-col class="col-md-12">
-                                    <v-label>{{ langMap.system_settings.navbar_style }}</v-label>
-                                    <v-radio-group v-model="companySettings.navbar_style" :readonly="!enableToEdit" dense>
-                                        <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_no_logo" :value="1"></v-radio>
-                                        <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_logo" :value="2"></v-radio>
-                                        <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_logo_2" :value="3"></v-radio>
-                                        <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_only_logo" :value="4"></v-radio>
-                                    </v-radio-group>
-                                </v-col>
-                            </v-row>
-                        </v-form>
-                        <v-spacer v-if="companySettings.navbar_style !== 1">&nbsp;</v-spacer>
-                        <v-form>
+                        <template v-if="$helpers.auth.checkPermissionByIds([94])">
+                            <v-form>
+                                <v-row>
+                                    <v-col class="col-md-12">
+                                        <v-label>{{ langMap.system_settings.navbar_style }}</v-label>
+                                        <v-radio-group v-model="companySettings.navbar_style" :readonly="!enableToEdit" dense>
+                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_no_logo" :value="1"></v-radio>
+                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_logo" :value="2"></v-radio>
+                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_logo_2" :value="3"></v-radio>
+                                            <v-radio :color="themeBgColor" :label="langMap.system_settings.navbar_only_logo" :value="4"></v-radio>
+                                        </v-radio-group>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
+                            <v-spacer v-if="companySettings.navbar_style !== 1">&nbsp;</v-spacer>
+                            <v-form>
 
-                            <v-row>
-                                <v-col v-show="companySettings.navbar_style !== 1"
-                                       :class="companySettings.navbar_style === 4 ? 'col-md-12' : 'col-md-4'">
-                                    <v-img
-                                        v-if="companyLogo"
-                                        :src="companyLogo"
-                                        contain
-                                        max-height="15em"
-                                        style="z-index: 0"
-                                    >
-                                        <v-file-input
-                                            v-show="companySettings.navbar_style !== 1"
-                                            v-model="companyNewLogo"
-                                            :color="themeBgColor"
-                                            :disabled="!enableToEdit"
-                                            accept="image/*"
-                                            dense
-                                            prepend-icon="mdi-camera"
-                                            style="z-index: 2; max-width: 1em;"
+                                <v-row>
+                                    <v-col v-show="companySettings.navbar_style !== 1"
+                                           :class="companySettings.navbar_style === 4 ? 'col-md-12' : 'col-md-4'">
+                                        <v-img
+                                            v-if="companyLogo"
+                                            :src="companyLogo"
+                                            contain
+                                            max-height="15em"
+                                            style="z-index: 0"
                                         >
-                                        </v-file-input>
-                                    </v-img>
-                                    <v-label v-else>{{ langMap.company.logo }}</v-label>
-                                </v-col>
-                                <v-col v-show="companySettings.navbar_style !== 4" class="col-md-4">
-                                    <span v-if="companySettings.navbar_style !== 1">
-                                        <br>
-                                        <br>
-                                    </span>
-                                    <v-text-field
-                                        v-model="company.first_alias"
-                                        :color="themeBgColor"
-                                        :label="langMap.system_settings.text"
-                                        :readonly="!enableToEdit"
-                                        counter="25"
-                                        dense
-                                        maxlength="30"
-                                    ></v-text-field>
-                                    <v-text-field
-                                        v-show="companySettings.navbar_style === 3"
-                                        v-model="company.second_alias"
-                                        :color="themeBgColor"
-                                        :label="langMap.system_settings.text + ' 2'"
-                                        :readonly="!enableToEdit"
-                                        counter="25"
-                                        dense
-                                        maxlength="30"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-                        </v-form>
+                                            <v-file-input
+                                                v-show="companySettings.navbar_style !== 1"
+                                                v-model="companyNewLogo"
+                                                :color="themeBgColor"
+                                                :disabled="!enableToEdit"
+                                                accept="image/*"
+                                                dense
+                                                prepend-icon="mdi-camera"
+                                                style="z-index: 2; max-width: 1em;"
+                                            >
+                                            </v-file-input>
+                                        </v-img>
+                                        <v-label v-else>{{ langMap.company.logo }}</v-label>
+                                    </v-col>
+                                    <v-col v-show="companySettings.navbar_style !== 4" class="col-md-4">
+                                        <span v-if="companySettings.navbar_style !== 1">
+                                            <br>
+                                            <br>
+                                        </span>
+                                        <v-text-field
+                                            v-model="company.first_alias"
+                                            :color="themeBgColor"
+                                            :label="langMap.system_settings.text"
+                                            :readonly="!enableToEdit"
+                                            counter="25"
+                                            dense
+                                            maxlength="30"
+                                        ></v-text-field>
+                                        <v-text-field
+                                            v-show="companySettings.navbar_style === 3"
+                                            v-model="company.second_alias"
+                                            :color="themeBgColor"
+                                            :label="langMap.system_settings.text + ' 2'"
+                                            :readonly="!enableToEdit"
+                                            counter="25"
+                                            dense
+                                            maxlength="30"
+                                        ></v-text-field>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
 
-                        <v-spacer>&nbsp;</v-spacer>
+                            <v-spacer>&nbsp;</v-spacer>
 
-                        <v-form>
-                            <v-row>
-                                <v-col cols="6">
-                                    <label>{{langMap.system_settings.company_theme_fg_color}}</label>
-                                    <v-color-picker
-                                        dot-size="25"
-                                        mode="hexa"
-                                        v-model="companySettings.theme_fg_color"
-                                        :disabled="!enableToEdit"
-                                    />
-                                    <v-checkbox
-                                        :color="themeBgColor"
-                                        :readonly="!enableToEdit"
-                                        :label="langMap.system_settings.automate_theme_fg_color"
-                                        :value="true"
-                                        v-model="autoFgColor"
-                                        @change="setThemeFgColor"
-                                    />
-                                    <p>{{ langMap.system_settings.automate_theme_fg_color_hint }}</p>
+                            <v-form>
+                                <v-row>
+                                    <v-col cols="6">
+                                        <label>{{langMap.system_settings.company_theme_fg_color}}</label>
+                                        <v-color-picker
+                                            dot-size="25"
+                                            mode="hexa"
+                                            v-model="companySettings.theme_fg_color"
+                                            :disabled="!enableToEdit"
+                                        />
+                                        <v-checkbox
+                                            :color="themeBgColor"
+                                            :readonly="!enableToEdit"
+                                            :label="langMap.system_settings.automate_theme_fg_color"
+                                            :value="true"
+                                            v-model="autoFgColor"
+                                            @change="setThemeFgColor"
+                                        />
+                                        <p>{{ langMap.system_settings.automate_theme_fg_color_hint }}</p>
 
-                                </v-col>
-                                <v-col cols="6">
-                                    <label>{{langMap.system_settings.company_theme_bg_color}}</label>
-                                    <v-color-picker
-                                        dot-size="25"
-                                        mode="hexa"
-                                        v-model="companySettings.theme_bg_color"
-                                        :disabled="!enableToEdit"
-                                    />
+                                    </v-col>
+                                    <v-col cols="6">
+                                        <label>{{langMap.system_settings.company_theme_bg_color}}</label>
+                                        <v-color-picker
+                                            dot-size="25"
+                                            mode="hexa"
+                                            v-model="companySettings.theme_bg_color"
+                                            :disabled="!enableToEdit"
+                                        />
 
-                                    <p>{{ langMap.system_settings.override_user_theme_color_hint }}</p>
+                                        <p>{{ langMap.system_settings.override_user_theme_color_hint }}</p>
 
-                                </v-col>
-                            </v-row>
-                        </v-form>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
 
-                        <v-spacer>&nbsp;</v-spacer>
-
+                            <v-spacer>&nbsp;</v-spacer>
+                        </template>
                         <v-form>
                             <v-row>
                                 <v-col class="col-md-12">

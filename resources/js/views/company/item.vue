@@ -33,7 +33,7 @@
                     </v-toolbar>
                     <v-card-text>
                         <v-form>
-                            <v-img v-if="companyLogo"
+                            <v-img v-if="$helpers.auth.checkPermissionByIds([95]) && companyLogo"
                                    :src="companyLogo"
                                    contain
                                    max-height="7em"
