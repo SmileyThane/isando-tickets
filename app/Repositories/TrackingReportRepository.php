@@ -795,8 +795,8 @@ class TrackingReportRepository
                 $query->where('date_to', '>=', $from)
                     ->where('date_from', '<=', $to);
             })
-            ->groupBy('tracking_projects.client_id', 'clients.name', 'tracking_projects.id', 'tracking_projects.name')
-            ->select(['tracking_projects.client_id', 'clients.name as client_name', 'tracking_projects.name', 'tracking_projects.id', DB::raw("SUM(tracking.date_to - tracking.date_from) as duration")]);
+            ->groupBy('tracking_projects.client_id', 'clients.name', 'tracking_projects.id', 'tracking_projects.project')
+            ->select(['tracking_projects.client_id', 'clients.name as client_name', 'tracking_projects.project', 'tracking_projects.id', DB::raw("SUM(tracking.date_to - tracking.date_from) as duration")]);
 //        dd($tracking->toSql(), $tracking->getBindings(), $tracking->get());
         return $tracking->get();
     }
@@ -860,13 +860,13 @@ class TrackingReportRepository
                 'tracking_projects.client_id',
                 'clients.name',
                 'tracking_projects.id',
-                'tracking_projects.name',
+                'tracking_projects.project',
                 'tracking_projects.rate'
             )
             ->select([
                 'tracking_projects.client_id',
                 'clients.name as client_name',
-                'tracking_projects.name as project_name',
+                'tracking_projects.project as project_name',
                 'tracking_projects.id',
                 DB::raw("SUM(tracking.date_to - tracking.date_from) as duration"),
                 DB::raw("(`tracking_projects`.rate * (SUM(tracking.date_to - tracking.date_from) / 60 / 60)) as revenue")
@@ -935,7 +935,7 @@ class TrackingReportRepository
                 'tracking.entity_type',
                 'tracking.entity_id',
                 DB::raw("IF(tracking.entity_type = 'App\\TrackingProject',
-           (SELECT tracking_projects.name FROM tracking_projects WHERE tracking_projects.id = tracking.entity_id),
+           (SELECT tracking_projects.project FROM tracking_projects WHERE tracking_projects.id = tracking.entity_id),
            (SELECT ti.name FROM tickets ti WHERE ti.id = tracking.entity_id)
        ) as entity"),
                 DB::raw("SUM(TIMESTAMPDIFF(SECOND, TIMESTAMP(`tracking`.`date_from`), TIMESTAMP(`tracking`.`date_to`))) as seconds"),
