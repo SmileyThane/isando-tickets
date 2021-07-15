@@ -429,19 +429,24 @@
                                 <v-data-table
                                     :headers="headers"
                                     :items="filterTracking(panelDate)"
-                                    :items-per-page="15"
+                                    :items-per-page="50"
                                     class="elevation-1"
                                     style="width: 100%"
                                     calculate-widths
                                     hide-default-header
+                                    hide-default-footer
+                                    :footer-props="{
+                                      'disable-pagination': true,
+                                      'disable-items-per-page': true,
+                                    }"
                                 >
                                     <template v-slot:body="props">
                                         <tr v-for="row in props.items">
-                                            <td class="pa-3" v-if="hasPermission([42])">
+                                            <td class="px-3 py-0" v-if="hasPermission([42])">
                                                 <Avatar :user="row.user" :color="row.user.color"></Avatar>
                                             </td>
                                             <td
-                                                class="pa-3"
+                                                class="px-3 py-0"
                                                 :width="headers.find(i => i.value === 'description').width"
                                             >
                                                 <v-edit-dialog
@@ -505,7 +510,7 @@
                                                 </div>
                                             </td>
                                             <td
-                                                class="pa-3"
+                                                class="px-3 py-0"
                                                 :width="headers.find(i => i.value === 'entity').width"
                                             >
                                                 <span v-if="row.entity && row.entity.client">
@@ -514,7 +519,7 @@
                                                 <span v-else-if="row.entity">{{ row.entity.from_company_name }}</span>
                                             </td>
                                             <td
-                                                class="pa-3"
+                                                class="px-3 py-0"
                                                 align="center"
                                                 :width="headers.find(i => i.value === 'entity.name').width"
                                             >
@@ -543,7 +548,7 @@
                                                 </div>
                                             </td>
                                             <td
-                                                class="pa-3"
+                                                class="px-3 py-0"
                                                 :width="headers.find(i => i.value === 'tags').width"
                                             >
                                                 <TagField
@@ -555,7 +560,7 @@
                                                 ></TagField>
                                             </td>
                                             <td
-                                                class="pa-3"
+                                                class="px-3 py-0"
                                                 :width="headers.find(i => i.value === 'billable').width"
                                             >
                                                 <v-btn
@@ -573,7 +578,7 @@
                                                 </v-btn>
                                             </td>
                                             <td
-                                                class="pa-3"
+                                                class="px-3 py-0"
                                                 :width="headers.find(i => i.value === 'date_from').width"
                                             >
                                                 <div class="d-flex flex-row">
@@ -620,13 +625,13 @@
                                                 </div>
                                             </td>
                                             <td
-                                                class="pa-3"
+                                                class="px-3 py-0"
                                                 :width="headers.find(i => i.value === 'passed').width"
                                             >
                                                 <span v-text="$helpers.time.convertSecToTime(row.passed)"></span>
                                             </td>
                                             <td
-                                                class="pa-3"
+                                                class="px-3 py-0"
                                                 :width="headers.find(i => i.value === 'date').width"
                                             >
                                                 <v-menu
@@ -660,7 +665,7 @@
                                                 </v-menu>
                                             </td>
                                             <td
-                                                class="pa-3"
+                                                class="px-3 py-0"
                                                 :width="headers.find(i => i.value === 'actions').width"
                                             >
                                                 <div class="d-flex flex-row">
