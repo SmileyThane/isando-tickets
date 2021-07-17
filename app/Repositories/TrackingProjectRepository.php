@@ -22,7 +22,9 @@ class TrackingProjectRepository
     public function validate($request, $new = true)
     {
         $params = [
-            'name' => 'required',
+            'project' => 'required|string',
+            'department' => 'required|string',
+            'profit_center' => 'required|string',
 //            'productId' => 'required_without:product.id|exists:App\Product,id',
 //            'product.id' => 'required_without:productId|exists:App\Product,id',
             'clientId' => 'required_without:client.id|exists:App\Client,id',
@@ -75,7 +77,7 @@ class TrackingProjectRepository
                         if ((string)$request->direction === 'false') {
                             $request->direction = 'asc';
                         }
-                        return $query->orderBy('name', $request->direction);
+                        return $query->orderBy('project', $request->direction);
                     }
                 }]);
 
@@ -90,7 +92,7 @@ class TrackingProjectRepository
             }
 
             if ($request->has('search')) {
-                $trackingProjects->where('name', 'LIKE', "%{$request->get('search')}%");
+                $trackingProjects->where('project', 'LIKE', "%{$request->get('search')}%");
             }
             if ($request->has('column') && $request->get('name') === 'name' && $request->has('direction')) {
                 if ((string)$request->direction === 'true') {
@@ -119,7 +121,9 @@ class TrackingProjectRepository
             throw new AccessDeniedException();
         }
         $trackingProject = new TrackingProject();
-        $trackingProject->name = $request->name;
+        $trackingProject->project = $request->project;
+        $trackingProject->department = $request->department;
+        $trackingProject->profit_center = $request->profit_center;
         $trackingProject->product_id = $request->product['id'] ?? $request->productId;
         $trackingProject->client_id = $request->client['id'] ?? $request->clientId;
         $trackingProject->color = $request->color ?? $this->genHexColor();
@@ -152,8 +156,14 @@ class TrackingProjectRepository
             throw new AccessDeniedException();
         }
         $trackingProject = TrackingProject::find($id);
-        if ($request->has('name')) {
-            $trackingProject->name = $request->name;
+        if ($request->has('project')) {
+            $trackingProject->project = $request->project;
+        }
+        if ($request->has('department')) {
+            $trackingProject->department = $request->department;
+        }
+        if ($request->has('profit_center')) {
+            $trackingProject->profit_center = $request->profit_center;
         }
         if ($request->has('product')) {
             if (is_null($request->product)) {

@@ -60,7 +60,7 @@ export default {
             })
             clients = clients.map(client => {
                 client.projects = projects.filter(i => i.client.id === client.id)
-                    .sort((a,b) => a.name.toLowerCase() - b.name.toLowerCase())
+                    .sort((a,b) => (a.name ? a.name.toLowerCase() : a.name) - (b.name ? b.name.toLowerCase() : b.name))
                     .sort((a,b) => b.is_favorite - a.is_favorite);
                 return client;
             })

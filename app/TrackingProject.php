@@ -10,7 +10,8 @@ class TrackingProject extends Model
     protected $appends = [
         'tracked',
         'revenue',
-        'is_favorite'
+        'is_favorite',
+        'name'
     ];
 
     protected $casts = [
@@ -41,6 +42,21 @@ class TrackingProject extends Model
 
     public function Timesheet() {
         return $this->hasMany(TrackingTimesheet::class, 'project_id', 'id');
+    }
+
+    public function getNameAttribute() {
+        $settings = TrackingSettings::where('entity_id', '=', Auth::user()->id)
+            ->where('entity_type', '=', User::class)
+            ->pluck('data')
+            ->first();
+        if (isset($settings['projectType'])) {
+            switch ($settings['projectType']) {
+                case 1: return $this->department ?? $this->project;
+                case 2: return $this->profit_center ?? $this->project;
+                default: return $this->project;
+            }
+        }
+        return $this->project;
     }
 
     // passed time in seconds by project

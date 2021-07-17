@@ -12,6 +12,12 @@ class PDF extends FPDF {
         'period'    => 'Period'
     ];
 
+    private $firstPage = 1;
+
+    public function setFirstPage(int $number) {
+        $this->firstPage = $number;
+    }
+
     public function SetOptions($options) {
         $this->options = $options;
     }
@@ -34,7 +40,7 @@ class PDF extends FPDF {
 
     public function Header()
     {
-        if ($this->PageNo() > 1) {
+        if ($this->PageNo() > $this->firstPage) {
             // Select Arial bold 15
             $this->SetFont('Arial','',10);
             // Framed title
@@ -52,7 +58,7 @@ class PDF extends FPDF {
 
     public function Footer()
     {
-        if ($this->PageNo() > 1) {
+        if ($this->PageNo() > $this->firstPage) {
             // Go to 1.5 cm from bottom
             $this->SetY(-20);
             // Select Arial italic 8

@@ -11,6 +11,7 @@ export default {
                 enableTimesheet: false,
                 timesheetWeek: [],
                 customRounding: [],
+                projectType: 0,
             }
         },
         reports: [],
@@ -27,7 +28,9 @@ export default {
                             if (!data.settings) {
                                 data.settings = {
                                     enableTimesheet: false,
-                                    timesheetWeek: []
+                                    timesheetWeek: [],
+                                    customRounding: [],
+                                    projectType: 0,
                                 };
                             }
                             data.settings.timesheetWeek = [];
@@ -135,6 +138,9 @@ export default {
     mutations: {
         SET_TOGGLE_TIMESHEET (state, timesheet) {
             state.settings.settings.enableTimesheet = timesheet;
+        },
+        SET_PROJECT_TYPE (state, type) {
+            state.settings.settings.projectType = type;
         },
         SET_TIMESHEET_WEEK (state, timesheet) {
             state.settings.settings.timesheetWeek = timesheet;
