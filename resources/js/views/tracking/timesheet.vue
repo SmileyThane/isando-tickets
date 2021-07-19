@@ -2006,7 +2006,8 @@ export default {
             const selected = (this.selected.length ? this.selected : this.expandedManagerData).map(i => i.id);
             if (selected.length) {
                 axios.post(`/api/tracking/timesheet/export?format=pdf`, {
-                    selected
+                    selected,
+                    status: this.typeOfItems,
                 }, {
                     responseType: 'blob'
                 })

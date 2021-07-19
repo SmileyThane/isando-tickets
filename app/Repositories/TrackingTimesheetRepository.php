@@ -389,17 +389,26 @@ class TrackingTimesheetRepository
 //    }
 
     static function convertTimeToSeconds($time) {
-        $time = explode(':', $time);
-        return $time[0] * 60 * 60 + $time[1] * 60 + $time[2];
+        try {
+            $time = explode(':', $time);
+            return $time[0] * 60 * 60 + $time[1] * 60 + (isset($time[2]) ? $time[2] : 0);
+        } catch (\Exception $exception) {
+            return 0;
+        }
     }
 
     static function convertSecondsToTimeFormat($value, $withSeconds = true) {
-        $h = floor($value / 60 / 60);
-        $m = floor(($value - ($h * 60 * 60)) / 60);
-        if ($withSeconds) {
-            return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
+        try {
+            $h = floor($value / 60 / 60);
+            $m = floor(($value - ($h * 60 * 60)) / 60);
+            if ($withSeconds) {
+                return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
+            }
+            return sprintf("%02d", $h) . ":" . sprintf("%02d", $m);
+        } catch (\Exception $exception) {
+            dd($exception);
         }
-        return sprintf("%02d", $h) . ":" . sprintf("%02d", $m);
+
     }
 
     public function increaseTimes(TrackingTimesheet $timesheet, TrackingTimesheetTime $time, int $timeToInc) {
@@ -633,7 +642,11 @@ class TrackingTimesheetRepository
                 ->with(['Times' => function ($q) {
                     $q->orderBy('date', 'asc');
                 }]);
-            $query->whereIn('number', TrackingTimesheet::whereIn('id', $selected)->pluck('number')->all());
+            if ($request->status > 0) {
+                $query->whereIn('number', TrackingTimesheet::whereIn('id', $selected)->pluck('number')->all());
+            } else {
+                $query->whereIn('id', TrackingTimesheet::whereIn('id', $selected)->pluck('id')->all());
+            }
             return $query->get();
         }
         return [];
@@ -698,6 +711,7 @@ class TrackingTimesheetRepository
 
     protected function prepareDataForPDF($entities) {
         $items = [];
+        $dayOfWeekTime = [];
         foreach ($entities as $key => $entity) {
             $item = [
                 'number' => $entity->number ?? '',
@@ -708,10 +722,41 @@ class TrackingTimesheetRepository
                 'status' => $entity->status,
             ];
             foreach ($entity->times as $time) {
+                if (!isset($dayOfWeekTime[Carbon::parse($time->date)->shortEnglishDayOfWeek])) {
+                    $dayOfWeekTime[Carbon::parse($time->date)->shortEnglishDayOfWeek] = "00:00:00";
+                }
+                $dayOfWeekTime[Carbon::parse($time->date)->shortEnglishDayOfWeek] =
+                    self::convertSecondsToTimeFormat(
+                        self::convertTimeToSeconds($dayOfWeekTime[Carbon::parse($time->date)->shortEnglishDayOfWeek])
+                        + self::convertTimeToSeconds($time->time), false
+                    );
                 $item[Carbon::parse($time->date)->shortEnglishDayOfWeek] = Carbon::parse($time->time)->format('H:i');
             }
             array_push($items, $item);
         }
+        $items[] = array_merge([
+            'number' => '',
+            'name' => 'Totals',
+            'start' => '',
+            'end' => '',
+            'service' => '',
+            'status' => '',
+        ], $dayOfWeekTime);
+        $items[] = [
+            'number' => '',
+            'name' => 'Total time per timesheet',
+            'start' => '',
+            'end' => '',
+            'service' => '',
+            'status' => '',
+            'mon' => '',
+            'tue' => '',
+            'wed' => '',
+            'thu' => '',
+            'fri' => '',
+            'sat' => '',
+            'sun' => self::convertSecondsToTimeFormat(collect($dayOfWeekTime)->map(function($item) { return self::convertTimeToSeconds($item); })->sum(), false)
+        ];
         return $items;
     }
 
@@ -740,14 +785,17 @@ class TrackingTimesheetRepository
         $pdf->setFirstPage(0);
         $pdf->SetOptions([
             'title' => 'Timesheet report #' . $ts->number,
-            'user' => $ts->user->full_name . ($ts->approver ? " (Approver: {$ts->approver->full_name})" : ''),
+            'user' => $ts->user->full_name,
             'period' => Carbon::parse($ts->from)->format('d.m.Y') . ' - ' . Carbon::parse($ts->to)->format('d.m.Y'),
+            'status' => 'Status of timesheet: ' . $ts->status,
+            'approver' => "Approver: " . ($ts->approver ? $ts->approver->full_name : ''),
         ]);
         $pdf->AliasNbPages();
 
         $pdf->AddPage('L', 'A4');
         $pdf->SetFont('Arial', '', 10);
         $pdf->EasyTable($headers, $data);
+
         // GENERATE FILE
         try {
             $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';

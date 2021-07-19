@@ -44,13 +44,9 @@ class PDF extends FPDF {
             // Select Arial bold 15
             $this->SetFont('Arial','',10);
             // Framed title
-            $this->Cell(30,5,$this->options['title'],'L',1,'L');
-
-            $this->SetFont('Arial','B',10);
-            $this->Cell(30,5,$this->options['user'],'L',1,'L');
-
-            $this->SetFont('Arial','',10);
-            $this->Cell(30,5,$this->options['period'],'L',1,'L');
+            foreach ($this->options as $key => $option) {
+                $this->Cell(30,5,$option,'L',1,'L');
+            }
             // Line break
             $this->Ln(10);
         }
