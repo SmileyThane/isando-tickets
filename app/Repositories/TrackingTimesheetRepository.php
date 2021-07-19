@@ -189,7 +189,8 @@ class TrackingTimesheetRepository
     }
 
     public function delete($id) {
-        return TrackingTimesheet::where('id', '=', $id)->delete();
+        $timesheet = TrackingTimesheet::find($id);
+        $timesheet->delete();
     }
 
     public function remind(Request $request)

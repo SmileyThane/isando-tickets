@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class TrackingTimesheet extends Model
 {
@@ -99,7 +100,11 @@ class TrackingTimesheet extends Model
         });
 
         static::deleting(function($trackingTimesheet) {
-            Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->update(['timesheet_id' => null]);
+            if (!$trackingTimesheet->is_manually) {
+                Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->update(['timesheet_id' => null]);
+            } else {
+                Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->delete();
+            }
             $trackingTimesheet->Times()->delete();
         });
 

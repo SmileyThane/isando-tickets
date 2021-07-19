@@ -73,8 +73,8 @@ class TimesheetController extends BaseController
 
     public function delete($id)
     {
-        $result = $this->timesheetRepo->delete($id);
-        return self::showResponse((bool)$result, (bool)$result);
+        $this->timesheetRepo->delete($id);
+        return self::showResponse(true, true);
     }
 
     public function getCountTimesheetForApproval() {
