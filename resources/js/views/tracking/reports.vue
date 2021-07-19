@@ -1114,6 +1114,19 @@ export default {
             ],
             chart: {
                 options: {
+                    scaleShowValues: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                autoSkip: false
+                            }
+                        }]
+                    },
                     responsive: true,
                     maintainAspectRatio: true,
                     percentageInnerCutout : 90,
