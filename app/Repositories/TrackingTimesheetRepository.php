@@ -624,63 +624,75 @@ class TrackingTimesheetRepository
     }
 
     private function getData(Request $request) {
-        $statusesForFilter = [];
-        if ($request->has('pending') && !is_null($request->pending)) {
-            $statusesForFilter[] = TrackingTimesheet::STATUS_PENDING;
+        $selected = $request->selected;
+        if (count($selected)) {
+            $query = TrackingTimesheet::with('User')
+                ->with('Service')
+                ->with('Approver')
+                ->with(['Times' => function ($q) {
+                    $q->orderBy('date', 'asc');
+                }]);
+            $query->whereIn('number', TrackingTimesheet::whereIn('id', $selected)->pluck('number')->all());
+            return $query->get();
         }
-        if ($request->has('rejected') && !is_null($request->rejected)) {
-            $statusesForFilter[] = TrackingTimesheet::STATUS_REJECTED;
-        }
-        if ($request->has('archived') && !is_null($request->archived)) {
-            $statusesForFilter[] = TrackingTimesheet::STATUS_ARCHIVED;
-        }
-        if ($request->has('tracked') && !is_null($request->tracked)) {
-            $statusesForFilter[] = TrackingTimesheet::STATUS_TRACKED;
-        }
-        $query = TrackingTimesheet::with('User')
-            ->with('Service')
-            ->with('Approver')
-            ->with(['Times' => function ($q) {
-                $q->orderBy('date', 'asc');
-            }])
-            ->whereIn('status', $statusesForFilter);
-
-        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
-            // Manager
-            $teams = $teams = Team::whereHas('employees', function ($q) {
-                return $q
-                    ->where('company_user_id', '=', Auth::user()->employee->id)
-                    ->where('is_manager', '=', true);
-            })->get()->pluck('id')->toArray();
-            $query->where(function ($query) use ($teams) {
-                    $query
-                        ->whereIn('team_id', $teams)
-                        ->whereNull('approver_id')
-                        ->orWhere('approver_id', '=', Auth::user()->id);
-                });
-        } else if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
-            // Company Admin
-            $company = Auth::user()->employee()
-                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
-                ->with('userData')->first();
-            $query->where('company_id', '=', $company->company_id)
-                ->where(function ($query) {
-                    $query->whereNull('approver_id')
-                        ->orWhere('approver_id', '=', Auth::user()->id);
-                });
-        } else {
-            $query->where(function($q) {
-                $q->where('user_id', '=', Auth::user()->id)
-                    ->orWhere('approver_id', '=', Auth::user()->id);
-            });
-        }
-        $query->where(function($q) use ($request) {
-            $q->where('from', '<=', $request->to)
-                ->where('to', '>=', $request->from);
-        });
-        $query->orderBy('id', 'desc');
-//        dd($query->toSql(), $query->getBindings());
-        return $query->get();
+        return [];
+//        $statusesForFilter = [];
+//        if ($request->has('pending') && !is_null($request->pending)) {
+//            $statusesForFilter[] = TrackingTimesheet::STATUS_PENDING;
+//        }
+//        if ($request->has('rejected') && !is_null($request->rejected)) {
+//            $statusesForFilter[] = TrackingTimesheet::STATUS_REJECTED;
+//        }
+//        if ($request->has('archived') && !is_null($request->archived)) {
+//            $statusesForFilter[] = TrackingTimesheet::STATUS_ARCHIVED;
+//        }
+//        if ($request->has('tracked') && !is_null($request->tracked)) {
+//            $statusesForFilter[] = TrackingTimesheet::STATUS_TRACKED;
+//        }
+//        $query = TrackingTimesheet::with('User')
+//            ->with('Service')
+//            ->with('Approver')
+//            ->with(['Times' => function ($q) {
+//                $q->orderBy('date', 'asc');
+//            }])
+//            ->whereIn('status', $statusesForFilter);
+//
+//        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+//            // Manager
+//            $teams = $teams = Team::whereHas('employees', function ($q) {
+//                return $q
+//                    ->where('company_user_id', '=', Auth::user()->employee->id)
+//                    ->where('is_manager', '=', true);
+//            })->get()->pluck('id')->toArray();
+//            $query->where(function ($query) use ($teams) {
+//                    $query
+//                        ->whereIn('team_id', $teams)
+//                        ->whereNull('approver_id')
+//                        ->orWhere('approver_id', '=', Auth::user()->id);
+//                });
+//        } else if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+//            // Company Admin
+//            $company = Auth::user()->employee()
+//                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+//                ->with('userData')->first();
+//            $query->where('company_id', '=', $company->company_id)
+//                ->where(function ($query) {
+//                    $query->whereNull('approver_id')
+//                        ->orWhere('approver_id', '=', Auth::user()->id);
+//                });
+//        } else {
+//            $query->where(function($q) {
+//                $q->where('user_id', '=', Auth::user()->id)
+//                    ->orWhere('approver_id', '=', Auth::user()->id);
+//            });
+//        }
+//        $query->where(function($q) use ($request) {
+//            $q->where('from', '<=', $request->to)
+//                ->where('to', '>=', $request->from);
+//        });
+//        $query->orderBy('id', 'desc');
+////        dd($query->toSql(), $query->getBindings());
+//        return $query->get();
     }
 
     protected function prepareDataForPDF($entities) {
@@ -721,12 +733,14 @@ class TrackingTimesheetRepository
         $entities = $this->getData($request);
         $data = $this->prepareDataForPDF($entities);
 
+        $ts = $entities[0];
+
         $pdf = new PDF();
         $pdf->setFirstPage(0);
         $pdf->SetOptions([
-            'title' => 'Timesheet report',
-            'user' => '',
-            'period' => Carbon::parse($request->from)->format('d.m.Y') . ' - ' . Carbon::parse($request->to)->format('d.m.Y'),
+            'title' => 'Timesheet report #' . $ts->number,
+            'user' => $ts->user->full_name . ($ts->approver ? " (Approver: {$ts->approver->full_name})" : ''),
+            'period' => Carbon::parse($ts->from)->format('d.m.Y') . ' - ' . Carbon::parse($ts->to)->format('d.m.Y'),
         ]);
         $pdf->AliasNbPages();
 
