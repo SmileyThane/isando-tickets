@@ -535,10 +535,11 @@ class TrackingTimesheetRepository
             ['user_id', '=', $user->id],
             ['from', '<=', Carbon::now()->subWeek()->endOf('week')],
             ['to', '>=', Carbon::now()->subWeek()->startOf('week')],
-            ['is_manually', '=', true],
         ])->get();
         foreach ($timesheets as $timesheet) {
             $newTimesheet = $timesheet->duplicate();
+            $newTimesheet->is_manually = true;
+            $newTimesheet->save();
             $this->genTrackersByTimesheet($newTimesheet);
         }
     }
