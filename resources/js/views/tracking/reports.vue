@@ -1606,9 +1606,9 @@ export default {
                 let labels = [];
                 this.reportData.entities.map(i => {
                     let client = '';
-                    if (i.client) {
-                        client = i.client + ": ";
-                    }
+                    // if (i.client) {
+                    //     client = i.client + ": ";
+                    // }
                     data.labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
                         labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
@@ -1644,9 +1644,9 @@ export default {
                 let colors = [];
                 this.reportData.entities.map(i => {
                     let client = '';
-                    if (i.client) {
-                        client = i.client + ": ";
-                    }
+                    // if (i.client) {
+                    //     client = i.client + ": ";
+                    // }
                     data.labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
                         labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
