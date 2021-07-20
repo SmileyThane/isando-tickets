@@ -950,6 +950,43 @@ export default {
                 ],
                 filters: []
             },
+            groupItemsAvailable: [
+                {
+                    icon: "mdi-calendar-today",
+                    text: this.$store.state.lang.lang_map.tracking.report.day,
+                    value: "day"
+                },
+                {
+                    icon: "mdi-folder-account-outline",
+                    text: this.getTrackingProjectsLabel,
+                    value: "project"
+                },
+                {
+                    icon: "mdi-calendar-week",
+                    text: this.$store.state.lang.lang_map.tracking.report.week,
+                    value: "week"
+                },
+                {
+                    icon: "mdi-currency-usd",
+                    text: this.$store.state.lang.lang_map.tracking.report.billability,
+                    value: "billability"
+                },
+                {
+                    icon: "mdi-account",
+                    text: this.$store.state.lang.lang_map.tracking.report.clients,
+                    value: "client"
+                },
+                {
+                    icon: "mdi-calendar-month",
+                    text: this.$store.state.lang.lang_map.tracking.report.month,
+                    value: "month"
+                },
+                {
+                    icon: "mdi-account-multiple",
+                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
+                    value: "coworker"
+                },
+            ],
             roundingItems: [
                 {
                     value: 0,
@@ -1732,44 +1769,15 @@ export default {
                 }
             ];
         },
-        groupItems() {
-            return [
-                {
-                    icon: "mdi-calendar-today",
-                    text: this.$store.state.lang.lang_map.tracking.report.day,
-                    value: "day"
-                },
-                {
-                    icon: "mdi-folder-account-outline",
-                    text: this.getTrackingProjectsLabel,
-                    value: "project"
-                },
-                {
-                    icon: "mdi-calendar-week",
-                    text: this.$store.state.lang.lang_map.tracking.report.week,
-                    value: "week"
-                },
-                {
-                    icon: "mdi-currency-usd",
-                    text: this.$store.state.lang.lang_map.tracking.report.billability,
-                    value: "billability"
-                },
-                {
-                    icon: "mdi-account",
-                    text: this.$store.state.lang.lang_map.tracking.report.clients,
-                    value: "client"
-                },
-                {
-                    icon: "mdi-calendar-month",
-                    text: this.$store.state.lang.lang_map.tracking.report.month,
-                    value: "month"
-                },
-                {
-                    icon: "mdi-account-multiple",
-                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
-                    value: "coworker"
-                },
-            ];
+        groupItems: {
+            get: function() {
+                const foundItem = this.groupItemsAvailable.find(i => i.value === 'project');
+                if (foundItem) foundItem.text = this.getTrackingProjectsLabel;
+                return this.groupItemsAvailable;
+            },
+            set: function(value) {
+                this.groupItemsAvailable = value;
+            },
         },
         getTrackingProjectLabel() {
             const { settings } = this.$store.getters['Tracking/getSettings'];
