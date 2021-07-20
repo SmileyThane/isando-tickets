@@ -53,6 +53,7 @@
                     item-text="text"
                     item-value="value"
                     clearable
+                    multiple
                 ></v-select>
             </div>
             <v-spacer></v-spacer>
@@ -1577,7 +1578,7 @@ export default {
                     value: 'rejected'
                 },
             ],
-            approvalRequestFilter: 'pending',
+            approvalRequestFilter: ['pending'],
             exportDialog: false,
             exportDialogFrom: false,
             exportDialogTo: false,
@@ -2191,8 +2192,8 @@ export default {
                 timesheet = this.$store.getters['Timesheet/getRequestTimesheet']
                     .filter(i => !this.deletedItems.includes(i.id))
                     .filter(i => {
-                        if (this.approvalRequestFilter) {
-                            return i.status === this.approvalRequestFilter;
+                        if (this.approvalRequestFilter.length) {
+                            return this.approvalRequestFilter.indexOf(i.status) !== -1;
                         }
                         return true;
                     });
