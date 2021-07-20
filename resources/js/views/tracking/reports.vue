@@ -1607,7 +1607,7 @@ export default {
                 this.reportData.entities.map(i => {
                     let client = '';
                     if (i.client) {
-                        client = i.client + "\n";
+                        client = i.client + ":\n";
                     }
                     data.labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
@@ -1645,7 +1645,7 @@ export default {
                 this.reportData.entities.map(i => {
                     let client = '';
                     if (i.client) {
-                        client = i.client + "\n";
+                        client = i.client + ":\n";
                     }
                     data.labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
