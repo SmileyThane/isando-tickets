@@ -20,7 +20,7 @@
                     <v-icon>
                         mdi-plus-circle-outline
                     </v-icon>
-                    &nbsp;&nbsp;{{langMap.tracking.project_btn.project_or_ticket}}
+                    &nbsp;{{getTrackingProjectLabel}}/{{langMap.tracking.project_btn.ticket}}
                 </span>
                 <span v-if="selectedProject">
                     <span
@@ -29,7 +29,7 @@
                         {{ $helpers.string.shortenText(selectedProject.name, 20) }}
                     </span>
                     <span v-else>
-                        Project:<br>{{ $helpers.string.shortenText(selectedProject.name, 35) }}
+                        {{getTrackingProjectLabel}}:<br>{{ $helpers.string.shortenText(selectedProject.name, 35) }}
                     </span>
                 </span>
             </v-btn>
@@ -45,13 +45,13 @@
             >
                 <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([49])">
                     <v-expansion-panel-header>
-                        {{langMap.tracking.project_btn.choose_project}}
+                        {{langMap.tracking.project_btn.choose}} {{getTrackingProjectLabel}}
                     </v-expansion-panel-header>
                     <v-expansion-panel-content
                         style="min-height: 380px; max-height: 380px"
                     >
                         <v-text-field
-                            :label="langMap.tracking.project_btn.project"
+                            :label="getTrackingProjectLabel"
                             :placeholder="langMap.tracking.project_btn.start_typing_to_search"
                             autofocus
                             clearable
@@ -98,7 +98,7 @@
                 </v-expansion-panel>
                 <v-expansion-panel v-if="$helpers.auth.checkPermissionByIds([48])">
                     <v-expansion-panel-header>
-                        {{langMap.tracking.project_btn.create_new_project}}
+                        {{langMap.tracking.project_btn.create_new}} {{getTrackingProjectLabel}}
                     </v-expansion-panel-header>
                     <v-expansion-panel-content
                         style="min-height: 380px;"
@@ -107,35 +107,35 @@
                             <v-list-item>
                                 <v-text-field
                                     v-model="form.project"
-                                    :label="langMap.tracking.project_btn.project_name + '*'"
-                                    :placeholder="langMap.tracking.project_btn.type_project_name_here"
+                                    :label="getTrackingProjectLabel + ' ' + langMap.tracking.project_btn.name + '*'"
+                                    :placeholder="langMap.tracking.project_btn.type_name_here"
                                     clearable
                                     required
                                     full-width
                                 ></v-text-field>
                             </v-list-item>
-                            <v-list-item>
-                                <v-text-field
-                                    v-model="form.department"
-                                    label="Department"
-                                    placeholder="Type text here"
-                                    clearable
-                                    required
-                                    full-width
-                                    class="my-n2 py-0"
-                                ></v-text-field>
-                            </v-list-item>
-                            <v-list-item>
-                                <v-text-field
-                                    v-model="form.profit_center"
-                                    label="Profit center"
-                                    placeholder="Type text here"
-                                    clearable
-                                    required
-                                    full-width
-                                    class="my-n2 py-0"
-                                ></v-text-field>
-                            </v-list-item>
+<!--                            <v-list-item>-->
+<!--                                <v-text-field-->
+<!--                                    v-model="form.department"-->
+<!--                                    label="Department"-->
+<!--                                    placeholder="Type text here"-->
+<!--                                    clearable-->
+<!--                                    required-->
+<!--                                    full-width-->
+<!--                                    class="my-n2 py-0"-->
+<!--                                ></v-text-field>-->
+<!--                            </v-list-item>-->
+<!--                            <v-list-item>-->
+<!--                                <v-text-field-->
+<!--                                    v-model="form.profit_center"-->
+<!--                                    label="Profit center"-->
+<!--                                    placeholder="Type text here"-->
+<!--                                    clearable-->
+<!--                                    required-->
+<!--                                    full-width-->
+<!--                                    class="my-n2 py-0"-->
+<!--                                ></v-text-field>-->
+<!--                            </v-list-item>-->
                             <v-list-item>
                                 <v-autocomplete
                                     v-model="form.product"
@@ -356,6 +356,7 @@ export default {
         this.debounceGetClients = _.debounce(this.__getClients, 1000);
         this.debounceGetTeams = _.debounce(this.__getTeams, 1000);
         this.debounceGetTickets = _.debounce(this.__getTickets, 1000);
+        this.$store.dispatch('Tracking/getSettings');
     },
     mounted() {
         // this.debounceGetProducts();
@@ -475,7 +476,25 @@ export default {
         },
         createProjectValid() {
             return this.form.name && this.form.client && this.form.color;
-        }
+        },
+        getTrackingProjectLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.department;
+                case 2: return this.langMap.tracking.profit_center;
+                default: return this.langMap.tracking.project;
+            }
+        },
+        getTrackingProjectsLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.departments;
+                case 2: return this.langMap.tracking.profit_centres;
+                default: return this.langMap.tracking.projects;
+            }
+        },
     },
     watch: {
         search() {

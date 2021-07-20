@@ -45,17 +45,17 @@ class TrackingProject extends Model
     }
 
     public function getNameAttribute() {
-        $settings = TrackingSettings::where('entity_id', '=', Auth::user()->id)
-            ->where('entity_type', '=', User::class)
-            ->pluck('data')
-            ->first();
-        if (isset($settings['projectType'])) {
-            switch ($settings['projectType']) {
-                case 1: return $this->department ?? $this->project;
-                case 2: return $this->profit_center ?? $this->project;
-                default: return $this->project;
-            }
-        }
+//        $settings = TrackingSettings::where('entity_id', '=', Auth::user()->id)
+//            ->where('entity_type', '=', User::class)
+//            ->pluck('data')
+//            ->first();
+//        if (isset($settings['projectType'])) {
+//            switch ($settings['projectType']) {
+//                case 1: return $this->department ?? $this->project;
+//                case 2: return $this->profit_center ?? $this->project;
+//                default: return $this->project;
+//            }
+//        }
         return $this->project;
     }
 

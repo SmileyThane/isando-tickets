@@ -437,7 +437,7 @@
                                             v-if="item.entity"
                                             :style="{ color: item.entity && item.entity.color ? item.entity.color : themeBgColor }"
                                         >
-                                            <span v-if="item.entity_type === 'App\\TrackingProject'">{{ langMap.tracking.report.project }}: </span>
+                                            <span v-if="item.entity_type === 'App\\TrackingProject'">{{ getTrackingProjectLabel }}: </span>
                                             <span v-if="item.entity_type === 'App\\Ticket'">{{ langMap.tracking.report.ticket }}: </span>
                                             {{ item.entity.name }}
                                         </span>
@@ -1015,102 +1015,6 @@ export default {
                 //     value: 'revenue-asc',
                 //     text: 'Revenue, ascending'
                 // },
-            ],
-            groupItems: [
-                {
-                    icon: "mdi-calendar-today",
-                    text: this.$store.state.lang.lang_map.tracking.report.day,
-                    value: "day"
-                },
-                {
-                    icon: "mdi-folder-account-outline",
-                    text: this.$store.state.lang.lang_map.tracking.report.projects,
-                    value: "project"
-                },
-                {
-                    icon: "mdi-calendar-week",
-                    text: this.$store.state.lang.lang_map.tracking.report.week,
-                    value: "week"
-                },
-                {
-                    icon: "mdi-currency-usd",
-                    text: this.$store.state.lang.lang_map.tracking.report.billability,
-                    value: "billability"
-                },
-                {
-                    icon: "mdi-account",
-                    text: this.$store.state.lang.lang_map.tracking.report.clients,
-                    value: "client"
-                },
-                {
-                    icon: "mdi-calendar-month",
-                    text: this.$store.state.lang.lang_map.tracking.report.month,
-                    value: "month"
-                },
-                {
-                    icon: "mdi-account-multiple",
-                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
-                    value: "coworker"
-                },
-            ],
-            availableFilters: [
-                {
-                    value: 'coworkers',
-                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
-                    store: 'Team/getCoworkers',
-                    items: [],
-                    selected: [],
-                    multiply: true
-                },
-                {
-                    value: 'projects',
-                    text: this.$store.state.lang.lang_map.tracking.report.projects,
-                    store: 'Projects/getProjects',
-                    items: [],
-                    selected: [],
-                    multiply: true
-                },
-                {
-                    value: 'clients',
-                    text: this.$store.state.lang.lang_map.tracking.report.clients,
-                    store: 'Clients/getClients',
-                    items: [],
-                    selected: [],
-                    multiply: true
-                },
-                {
-                    value: 'services',
-                    text: this.$store.state.lang.lang_map.tracking.report.services,
-                    store: 'Services/getServices',
-                    items: [],
-                    selected: [],
-                    multiply: true
-                },
-                {
-                    value: 'billable',
-                    text: this.$store.state.lang.lang_map.tracking.report.billable,
-                    store: null,
-                    items: [
-                        {
-                            id: 1,
-                            name: this.$store.state.lang.lang_map.tracking.report.billable
-                        },
-                        {
-                            id: 0,
-                            name: this.$store.state.lang.lang_map.tracking.report.non_billable
-                        }
-                    ],
-                    selected: null,
-                    multiply: false
-                },
-                {
-                    value: 'tag',
-                    text: this.$store.state.lang.lang_map.tracking.report.tags,
-                    store: 'Tags/getTags',
-                    items: [],
-                    selected: [],
-                    multiply: true
-                }
             ],
             chart: {
                 options: {
@@ -1758,6 +1662,124 @@ export default {
                 })))
             }
             return roundingItems;
+        },
+        availableFilters () {
+            return [
+                {
+                    value: 'coworkers',
+                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
+                    store: 'Team/getCoworkers',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'projects',
+                    text: this.getTrackingProjectsLabel,
+                    store: 'Projects/getProjects',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'clients',
+                    text: this.$store.state.lang.lang_map.tracking.report.clients,
+                    store: 'Clients/getClients',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'services',
+                    text: this.$store.state.lang.lang_map.tracking.report.services,
+                    store: 'Services/getServices',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'billable',
+                    text: this.$store.state.lang.lang_map.tracking.report.billable,
+                    store: null,
+                    items: [
+                        {
+                            id: 1,
+                            name: this.$store.state.lang.lang_map.tracking.report.billable
+                        },
+                        {
+                            id: 0,
+                            name: this.$store.state.lang.lang_map.tracking.report.non_billable
+                        }
+                    ],
+                    selected: null,
+                    multiply: false
+                },
+                {
+                    value: 'tag',
+                    text: this.$store.state.lang.lang_map.tracking.report.tags,
+                    store: 'Tags/getTags',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                }
+            ];
+        },
+        groupItems() {
+            return [
+                {
+                    icon: "mdi-calendar-today",
+                    text: this.$store.state.lang.lang_map.tracking.report.day,
+                    value: "day"
+                },
+                {
+                    icon: "mdi-folder-account-outline",
+                    text: this.getTrackingProjectsLabel,
+                    value: "project"
+                },
+                {
+                    icon: "mdi-calendar-week",
+                    text: this.$store.state.lang.lang_map.tracking.report.week,
+                    value: "week"
+                },
+                {
+                    icon: "mdi-currency-usd",
+                    text: this.$store.state.lang.lang_map.tracking.report.billability,
+                    value: "billability"
+                },
+                {
+                    icon: "mdi-account",
+                    text: this.$store.state.lang.lang_map.tracking.report.clients,
+                    value: "client"
+                },
+                {
+                    icon: "mdi-calendar-month",
+                    text: this.$store.state.lang.lang_map.tracking.report.month,
+                    value: "month"
+                },
+                {
+                    icon: "mdi-account-multiple",
+                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
+                    value: "coworker"
+                },
+            ];
+        },
+        getTrackingProjectLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.department;
+                case 2: return this.langMap.tracking.profit_center;
+                default: return this.langMap.tracking.project;
+            }
+        },
+        getTrackingProjectsLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.departments;
+                case 2: return this.langMap.tracking.profit_centres;
+                default: return this.langMap.tracking.projects;
+            }
         },
     },
     watch: {

@@ -946,6 +946,7 @@ export default {
     mounted() {
         this.__globalTimer();
         this.debounceGetTracking();
+        this.$store.dispatch('Tracking/getSettings');
         this.$store.dispatch('Projects/getProjectList', { search: null });
         this.$store.dispatch('Products/getProductList', { search: null });
         this.$store.dispatch('Clients/getClientList', { search: null });
@@ -1333,6 +1334,24 @@ export default {
                 this.manualPanel.date_to = moment(this.manualPanel.date_to)
                     .set(date).format(this.dateTimeFormat);
                 this.correctionTime(this.manualPanel.date_from, this.manualPanel.date_to);
+            }
+        },
+        getTrackingProjectLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.department;
+                case 2: return this.langMap.tracking.profit_center;
+                default: return this.langMap.tracking.project;
+            }
+        },
+        getTrackingProjectsLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.departments;
+                case 2: return this.langMap.tracking.profit_centres;
+                default: return this.langMap.tracking.projects;
             }
         },
     },

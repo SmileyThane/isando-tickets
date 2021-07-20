@@ -84,19 +84,19 @@ class TrackingTimesheet extends Model
         parent::boot();
 
         static::retrieved(function($trackingTimesheet) {
-            if ($trackingTimesheet->Times()->count() < 7) {
-//                $trackingTimesheet->Times()->delete();
-                $daysOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
-                foreach ($daysOfWeek as $index => $dayOfWeek) {
-                    $time = new TrackingTimesheetTime();
-                    $time->type = TrackingTimesheetTime::TYPE_WORK;
-                    $time->date = Carbon::parse($trackingTimesheet->from)->addDays($index)->format('Y-m-d');
-                    $time->time = '00:00:00';
-                    $time->description = '';
-                    $time->timesheet_id = $trackingTimesheet->id;
-                    $time->save();
-                }
-            }
+//            if ($trackingTimesheet->Times()->count() < 7) {
+////                $trackingTimesheet->Times()->delete();
+//                $daysOfWeek = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+//                foreach ($daysOfWeek as $index => $dayOfWeek) {
+//                    $time = new TrackingTimesheetTime();
+//                    $time->type = TrackingTimesheetTime::TYPE_WORK;
+//                    $time->date = Carbon::parse($trackingTimesheet->from)->addDays($index)->format('Y-m-d');
+//                    $time->time = '00:00:00';
+//                    $time->description = '';
+//                    $time->timesheet_id = $trackingTimesheet->id;
+//                    $time->save();
+//                }
+//            }
         });
 
         static::deleting(function($trackingTimesheet) {

@@ -13,6 +13,8 @@ use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
 use App\TrackingReport;
+use App\TrackingSettings;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -448,6 +450,23 @@ class TrackingReportRepository
         return $headers;
     }
 
+    private function getProjectLabel() {
+        $settings = TrackingSettings::where([
+            ['entity_id', '=', Auth::user()->id],
+            ['entity_type', '=', User::class]
+        ])->first();
+
+        $projectLabel = 'Project';
+        if (isset($settings->data['projectType'])) {
+            switch ($settings->data['projectType']) {
+                case 1: $projectLabel = 'Department'; break;
+                case 2: $projectLabel = 'Profit center'; break;
+                default: $projectLabel = 'Project'; break;
+            }
+        }
+        return $projectLabel;
+    }
+
     public function genPDF($request) {
 
         // Pre-define some variables
@@ -459,7 +478,7 @@ class TrackingReportRepository
             ['slug' => 'total', 'text' => 'Total', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
             ['slug' => 'coworker', 'text' => 'Co-worker', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 11, 'resizable' => true],
             ['slug' => 'client', 'text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 16, 'resizable' => true],
-            ['slug' => 'project', 'text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 17, 'resizable' => true],
+            ['slug' => 'project', 'text' => $this->getProjectLabel(), 'style' => 'border:B;border-width:1;font-style:B', 'width' => 17, 'resizable' => true],
             ['slug' => 'service', 'text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 9, 'resizable' => true],
             ['slug' => 'description', 'text' => 'Description', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 15, 'resizable' => true],
             ['slug' => 'billable', 'text' => 'Billable', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => false],
@@ -647,8 +666,8 @@ class TrackingReportRepository
             'Personnel number',
             'Customer',
             'Customer number',
-            'Project',
-            'Project number',
+            $this->getProjectLabel(),
+            $this->getProjectLabel() . " number",
             'Service',
             'Service number',
             'Description',

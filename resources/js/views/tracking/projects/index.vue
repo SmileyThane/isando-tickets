@@ -56,7 +56,7 @@
                             :item-color="themeBgColor"
                             elevation="2"
                             @click="dialog=true"
-                        >{{ langMap.tracking.create_project.btn_title }}</v-btn>
+                        >{{ langMap.tracking.create_project.btn_title }} {{ getTrackingProjectLabel }}</v-btn>
                     </v-col>
                 </v-row>
             </template>
@@ -124,21 +124,21 @@
                             <v-text-field
                                 :color="themeBgColor"
                                 :item-color="themeBgColor"
-                                label="Project name*"
+                                :label="`${getTrackingProjectLabel} name*`"
                                 v-model="project.project"
                             ></v-text-field>
-                            <v-text-field
-                                :color="themeBgColor"
-                                :item-color="themeBgColor"
-                                label="Department*"
-                                v-model="project.department"
-                            ></v-text-field>
-                            <v-text-field
-                                :color="themeBgColor"
-                                :item-color="themeBgColor"
-                                label="Profit center*"
-                                v-model="project.profit_center"
-                            ></v-text-field>
+<!--                            <v-text-field-->
+<!--                                :color="themeBgColor"-->
+<!--                                :item-color="themeBgColor"-->
+<!--                                label="Department*"-->
+<!--                                v-model="project.department"-->
+<!--                            ></v-text-field>-->
+<!--                            <v-text-field-->
+<!--                                :color="themeBgColor"-->
+<!--                                :item-color="themeBgColor"-->
+<!--                                label="Profit center*"-->
+<!--                                v-model="project.profit_center"-->
+<!--                            ></v-text-field>-->
                             <v-select
                                 :items="$store.getters['Products/getProducts']"
                                 item-text="name"
@@ -394,6 +394,24 @@ export default {
                 return this.$store.getters['Team/getTeams'].data;
             }
             return [];
+        },
+        getTrackingProjectLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.department;
+                case 2: return this.langMap.tracking.profit_center;
+                default: return this.langMap.tracking.project;
+            }
+        },
+        getTrackingProjectsLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.departments;
+                case 2: return this.langMap.tracking.profit_centres;
+                default: return this.langMap.tracking.projects;
+            }
         },
     }
 }

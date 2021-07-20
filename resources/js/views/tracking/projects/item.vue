@@ -19,7 +19,7 @@
                 <v-list-item three-line>
                     <v-list-item-content>
                         <div class="overline mb-4">
-                            {{ langMap.tracking.create_project.project }}
+                            {{ getTrackingProjectLabel }}
                         </div>
                         <v-list-item-title class="headline mb-1">
                             <span v-if="project">
@@ -57,7 +57,7 @@
                         <v-container fluid>
                             <v-row>
                                 <v-col cols="2" lg="1">
-                                    <v-subheader class="float-right">Project name</v-subheader>
+                                    <v-subheader class="float-right">{{ getTrackingProjectLabel }} name</v-subheader>
                                 </v-col>
                                 <v-col cols="10" lg="4" md="6">
                                     <v-text-field
@@ -68,32 +68,32 @@
                                     <div class="mt-3" v-else>{{project.project}}</div>
                                 </v-col>
                             </v-row>
-                            <v-row>
-                                <v-col cols="2" lg="1">
-                                    <v-subheader class="float-right">Department name</v-subheader>
-                                </v-col>
-                                <v-col cols="10" lg="4" md="6">
-                                    <v-text-field
-                                        v-if="$helpers.auth.checkPermissionByIds([57])"
-                                        v-model="project.department"
-                                        @blur="actionSave()"
-                                    ></v-text-field>
-                                    <div class="mt-3" v-else>{{project.department}}</div>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col cols="2" lg="1">
-                                    <v-subheader class="float-right">Profit center</v-subheader>
-                                </v-col>
-                                <v-col cols="10" lg="4" md="6">
-                                    <v-text-field
-                                        v-if="$helpers.auth.checkPermissionByIds([57])"
-                                        v-model="project.profit_center"
-                                        @blur="actionSave()"
-                                    ></v-text-field>
-                                    <div class="mt-3" v-else>{{project.profit_center}}</div>
-                                </v-col>
-                            </v-row>
+<!--                            <v-row>-->
+<!--                                <v-col cols="2" lg="1">-->
+<!--                                    <v-subheader class="float-right">Department name</v-subheader>-->
+<!--                                </v-col>-->
+<!--                                <v-col cols="10" lg="4" md="6">-->
+<!--                                    <v-text-field-->
+<!--                                        v-if="$helpers.auth.checkPermissionByIds([57])"-->
+<!--                                        v-model="project.department"-->
+<!--                                        @blur="actionSave()"-->
+<!--                                    ></v-text-field>-->
+<!--                                    <div class="mt-3" v-else>{{project.department}}</div>-->
+<!--                                </v-col>-->
+<!--                            </v-row>-->
+<!--                            <v-row>-->
+<!--                                <v-col cols="2" lg="1">-->
+<!--                                    <v-subheader class="float-right">Profit center</v-subheader>-->
+<!--                                </v-col>-->
+<!--                                <v-col cols="10" lg="4" md="6">-->
+<!--                                    <v-text-field-->
+<!--                                        v-if="$helpers.auth.checkPermissionByIds([57])"-->
+<!--                                        v-model="project.profit_center"-->
+<!--                                        @blur="actionSave()"-->
+<!--                                    ></v-text-field>-->
+<!--                                    <div class="mt-3" v-else>{{project.profit_center}}</div>-->
+<!--                                </v-col>-->
+<!--                            </v-row>-->
                             <v-row>
                                 <v-col cols="2" lg="1">
                                     <v-subheader class="float-right">Product</v-subheader>
@@ -585,7 +585,25 @@ export default {
             if (this.project.rate_from_date)
                 return moment(this.project.rate_from_date).format('YYYY-MM-DD');
             return moment().add(1, 'days').format('YYYY-MM-DD');
-        }
+        },
+        getTrackingProjectLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.department;
+                case 2: return this.langMap.tracking.profit_center;
+                default: return this.langMap.tracking.project;
+            }
+        },
+        getTrackingProjectsLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.departments;
+                case 2: return this.langMap.tracking.profit_centres;
+                default: return this.langMap.tracking.projects;
+            }
+        },
 
     }
 }
