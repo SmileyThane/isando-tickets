@@ -333,6 +333,9 @@ class TrackingReportRepository
         foreach ($trackings as $tracking) {
             $data = $this->getFieldData($tracking, $group);
             $items[$data]['name'] = $data;
+            if ($group === 'project') {
+                $items[$data]['client'] = $this->getFieldData($tracking, 'client');
+            }
             $items[$data]['children'][] = $tracking;
         }
         return $items;

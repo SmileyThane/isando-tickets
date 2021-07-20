@@ -420,7 +420,7 @@
             >
                 <template v-slot:label="{ item, selected, active, open }">
                     <div v-if="item.children" style="font-size: small">
-                        {{ item.name }}
+                        {{ item.name }} <span v-if="item.client">({{ item.client }})</span>
                     </div>
                     <div v-else class="d-flex flex-row">
                         <table class="v-data-table" :class="item.status === 'started' ? 'success lighten-5' : ''" border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
@@ -1568,9 +1568,13 @@ export default {
                 let values = [];
                 let labels = [];
                 this.reportData.entities.map(i => {
-                    data.labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    let client = '';
+                    if (i.client) {
+                        client = i.client + "\n";
+                    }
+                    data.labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
-                        labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
@@ -1602,9 +1606,13 @@ export default {
                 let labels = [];
                 let colors = [];
                 this.reportData.entities.map(i => {
-                    data.labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    let client = '';
+                    if (i.client) {
+                        client = i.client + "\n";
+                    }
+                    data.labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
-                        labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push(
