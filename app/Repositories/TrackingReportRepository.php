@@ -956,10 +956,10 @@ class TrackingReportRepository
                 'tracking.user_id', 'users.name', 'users.surname',
                 'tracking.entity_type',
                 'tracking.entity_id',
-                DB::raw("IF(tracking.entity_type = 'App\\TrackingProject',
-           (SELECT tracking_projects.project FROM tracking_projects WHERE tracking_projects.id = tracking.entity_id),
-           (SELECT ti.name FROM tickets ti WHERE ti.id = tracking.entity_id)
-       ) as entity"),
+                DB::raw("CASE
+                    WHEN `tracking`.`entity_type` LIKE 'App%TrackingProject' THEN (SELECT tracking_projects.project as name FROM tracking_projects WHERE tracking_projects.id = tracking.entity_id)
+                    WHEN `tracking`.`entity_type` LIKE 'App%Ticket' THEN (SELECT tickets.name FROM tickets WHERE tickets.id = tracking.entity_id)
+                    ELSE 'None' END entity"),
                 DB::raw("SUM(TIMESTAMPDIFF(SECOND, TIMESTAMP(`tracking`.`date_from`), TIMESTAMP(`tracking`.`date_to`))) as seconds"),
             ])
             ->having('seconds', '>', 0)
