@@ -372,7 +372,6 @@ export default {
             that.themeBgColor = color;
         });
         this.getData();
-
         this.$store.dispatch('Team/getManagedTeams', { withEmployee: false });
         this.$store.dispatch('Team/getTeams', { search: null });
     },
@@ -528,7 +527,7 @@ export default {
             const labels = [];
             const colors = [];
             this.data.projects.map(i => {
-                labels.push((i.client_name ?? 'Unknown client') + "\r\n" + (i.name ?? 'Without project'));
+                labels.push((i.client_name ?? 'Unknown client') + "\r\n" + (i.project ?? `Without ${this.getTrackingProjectLabel}`));
                 values.push((i.duration / 60 / 60).toFixed(2));
             });
             for (let i = 0; i <= values.length - 1; i++) {
