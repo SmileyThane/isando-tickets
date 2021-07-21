@@ -1586,6 +1586,12 @@ export default {
                 return false;
             }
             return true;
+        },
+        substr(str, maxLength) {
+            if (str.length >= maxLength - 3) {
+                return str.substring(0, maxLength - 3) + '...';
+            }
+            return str;
         }
     },
     computed: {
@@ -1606,12 +1612,12 @@ export default {
                 let labels = [];
                 this.reportData.entities.map(i => {
                     let client = '';
-                    // if (i.client) {
-                    //     client = i.client + ": ";
-                    // }
-                    data.labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    if (i.client) {
+                        client = this.substr(i.client, 20) + ": ";
+                    }
+                    data.labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
-                        labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
@@ -1644,12 +1650,12 @@ export default {
                 let colors = [];
                 this.reportData.entities.map(i => {
                     let client = '';
-                    // if (i.client) {
-                    //     client = i.client + ": ";
-                    // }
-                    data.labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    if (i.client) {
+                        client = this.substr(i.client, 20) + ": ";
+                    }
+                    data.labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
-                        labels.push(client + i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push(
