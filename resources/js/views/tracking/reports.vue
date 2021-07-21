@@ -1613,7 +1613,7 @@ export default {
                 this.reportData.entities.map(i => {
                     let client = '';
                     if (i.client) {
-                        client = this.substr(i.client, 20) + ": ";
+                        client = this.substr(i.client, 20) + ": \n";
                     }
                     data.labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
@@ -1651,7 +1651,7 @@ export default {
                 this.reportData.entities.map(i => {
                     let client = '';
                     if (i.client) {
-                        client = this.substr(i.client, 20) + ": ";
+                        client = this.substr(i.client, 20) + ": \n";
                     }
                     data.labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
