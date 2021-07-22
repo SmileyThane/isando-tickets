@@ -492,7 +492,7 @@ class TrackingTimesheetRepository
             Permission::TRACKER_VIEW_TEAM_TIME_ACCESS,
             Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS,
         ])) {
-            throw new \Exception('Access denied');
+            return 0;
         }
         $timesheet = 0;
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
