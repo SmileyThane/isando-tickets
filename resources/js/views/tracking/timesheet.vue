@@ -1983,6 +1983,9 @@ export default {
             this.$store.dispatch('Timesheet/copyLastWeek', {
                 from: this.dateRange.start,
                 to: this.dateRange.end,
+            })
+            .then(() => {
+                this.date = moment().format(this.dateFormat);
             });
         },
         resetSaveAsTemplate() {
