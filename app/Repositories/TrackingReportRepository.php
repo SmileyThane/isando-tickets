@@ -762,7 +762,7 @@ class TrackingReportRepository
                     ->where('date_from', '<=', $to);
             })
             ->groupBy('services.id', 'services.name')
-            ->select(['services.name', 'services.id', DB::raw("SUM(date_to - date_from) as duration")]);
+            ->select(['services.name', 'services.id', DB::raw("SUM(TIMESTAMPDIFF(SECOND, date_from, date_to)) as duration")]);
 //        dd($tracking->toSql(), $tracking->getBindings(), $tracking->get());
         return $tracking->get();
     }
@@ -818,7 +818,8 @@ class TrackingReportRepository
                     ->where('date_from', '<=', $to);
             })
             ->groupBy('tracking_projects.client_id', 'clients.name', 'tracking_projects.id', 'tracking_projects.project')
-            ->select(['tracking_projects.client_id', 'clients.name as client_name', 'tracking_projects.project', 'tracking_projects.id', DB::raw("SUM(tracking.date_to - tracking.date_from) as duration")]);
+            ->select(['tracking_projects.client_id', 'clients.name as client_name', 'tracking_projects.project', 'tracking_projects.id',
+                DB::raw("SUM(TIMESTAMPDIFF(SECOND, tracking.date_from, tracking.date_to)) as duration")]);
 //        dd($tracking->toSql(), $tracking->getBindings(), $tracking->get());
         return $tracking->get();
     }
@@ -890,8 +891,8 @@ class TrackingReportRepository
                 'clients.name as client_name',
                 'tracking_projects.project as project_name',
                 'tracking_projects.id',
-                DB::raw("SUM(tracking.date_to - tracking.date_from) as duration"),
-                DB::raw("(`tracking_projects`.rate * (SUM(tracking.date_to - tracking.date_from) / 60 / 60)) as revenue")
+                DB::raw("SUM(TIMESTAMPDIFF(SECOND, tracking.date_from, tracking.date_to)) as duration"),
+                DB::raw("(`tracking_projects`.rate * (SUM(TIMESTAMPDIFF(SECOND, tracking.date_from, tracking.date_to)) / 60 / 60)) as revenue")
             ])
             ->orderBy('revenue', 'desc')
             ->limit($numberOfProjects);

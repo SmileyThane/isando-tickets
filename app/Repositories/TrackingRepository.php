@@ -326,17 +326,24 @@ class TrackingRepository
             $newTracking->date_from = Carbon::parse($newTracking->date_from)->setSeconds(0)->format(Tracking::$DATETIME_FORMAT);
             $newTracking->date_to = Carbon::parse($newTracking->date_to)->setSeconds(0)->format(Tracking::$DATETIME_FORMAT);
             $newTracking->is_manual = true;
-            $timesheet = TrackingTimesheet::find($tracking->timesheet_id);
-            $newTimesheet = TrackingTimesheet::where([
-                ['entity_id', '=', $timesheet->entity_id],
-                ['entity_type', '=', $timesheet->entity_type],
-                ['user_id', '=', $timesheet->user_id],
-                ['team_id', '=', $timesheet->team_id],
-                ['company_id', '=', $timesheet->company_id],
-                ['is_manually', '=', !$timesheet->is_manually],
-            ])->first();
-            $newTracking->timesheet_id = $newTimesheet ? $newTimesheet->id : null;
+            if ($newTracking->entity_type === TrackingProject::class) {
+                $newTracking->team_id = $newTracking->entity->team_id;
+            }
+            if ($newTracking->entity_type === Ticket::class) {
+                $newTracking->team_id = $newTracking->entity->to_team_id;
+            }
+//            $timesheet = TrackingTimesheet::find($tracking->timesheet_id);
+//            $newTimesheet = TrackingTimesheet::where([
+//                ['entity_id', '=', $timesheet->entity_id],
+//                ['entity_type', '=', $timesheet->entity_type],
+//                ['user_id', '=', $timesheet->user_id],
+//                ['team_id', '=', $timesheet->team_id],
+//                ['company_id', '=', $timesheet->company_id],
+//                ['is_manually', '=', !$timesheet->is_manually],
+//            ])->first();
+//            $newTracking->timesheet_id = $newTimesheet ? $newTimesheet->id : null;
             $newTracking->save();
+            TrackingTimesheetRepository::recalculate($newTracking);
             if ($tracking->service) {
                 $newTracking->Services()->attach($tracking->service->id);
             }

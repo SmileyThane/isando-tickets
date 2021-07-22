@@ -356,13 +356,16 @@ export default {
         this.debounceGetClients = _.debounce(this.__getClients, 1000);
         this.debounceGetTeams = _.debounce(this.__getTeams, 1000);
         this.debounceGetTickets = _.debounce(this.__getTickets, 1000);
-        this.$store.dispatch('Tracking/getSettings');
+        this.debounceGetSettings = _.debounce(this.__getSettings, 3000);
     },
     mounted() {
         // this.debounceGetProducts();
         // this.debounceGetProjects()
     },
     methods: {
+        __getSettings() {
+            this.$store.dispatch('Tracking/getSettings');
+        },
         __getProjects() {
             this.$store.dispatch('Projects/getProjectList', { search: this.search });
         },
