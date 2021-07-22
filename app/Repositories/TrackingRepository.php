@@ -203,11 +203,13 @@ class TrackingRepository
 
         if ($tracking->entity_type === TrackingProject::class) {
             $tracking->rate = $tracking->entity->rate;
+            $tracking->team_id = $tracking->entity->team_id;
             $tracking->save();
         }
 
         if ($tracking->entity_type === Ticket::class) {
             $tracking->rate = $tracking->entity->billedBy ? $tracking->entity->billedBy->cost : 0;
+            $tracking->team_id = $tracking->entity->to_team_id;
             $tracking->save();
         }
 
@@ -264,9 +266,11 @@ class TrackingRepository
             if ($tracking->entity_type === TrackingProject::class) {
                 $project = TrackingProject::find($request->entity['id']);
                 $tracking->rate = $project->rate;
+                $tracking->team_id = $tracking->entity->team_id;
             }
             if ($tracking->entity_type === Ticket::class) {
                 $tracking->rate = $tracking->entity->billedBy ? $tracking->entity->billedBy->cost : 0;
+                $tracking->team_id = $tracking->entity->to_team_id;
             }
         }
         if ($request->has('service')) {
