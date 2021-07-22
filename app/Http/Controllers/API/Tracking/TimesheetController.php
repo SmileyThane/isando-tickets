@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\Tracking;
 
+use App\Tracking;
 use App\TrackingTimesheet;
 use App\TrackingTimesheetTemplate;
 use Carbon\Carbon;
@@ -84,8 +85,12 @@ class TimesheetController extends BaseController
         ]);
     }
 
-    public function copyLastWeek(Request $request) {
-        $this->timesheetRepo->copyLastWeek(Auth::user());
+    public function copyPreviousWeek(Request $request) {
+        $this->timesheetRepo->copyPreviousWeek(
+            Auth::user(),
+            Carbon::parse($request->from)->format('Y-m-d'),
+            Carbon::parse($request->to)->format('Y-m-d')
+        );
         return self::showResponse(true, []);
     }
 

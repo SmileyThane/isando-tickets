@@ -89,8 +89,11 @@ export default {
                     }
                 });
         },
-        copyLastWeek({ state, dispatch }) {
-            axios.post('/api/tracking/timesheet/copy_last_week')
+        copyLastWeek({ state, dispatch }, {from, to}) {
+            const query = new URLSearchParams({
+                from, to
+            });
+            axios.post('/api/tracking/timesheet/copy_last_week?' + query.toString())
                 .then(({ data: { success, data } }) => {
                     if (success) {
                         dispatch('getTimesheet', state.params);

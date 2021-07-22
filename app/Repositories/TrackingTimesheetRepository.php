@@ -530,15 +530,18 @@ class TrackingTimesheetRepository
         return $timesheet;
     }
 
-    public function copyLastWeek(User $user) {
+    public function copyPreviousWeek(User $user, $from, $to) {
         $timesheets = TrackingTimesheet::where([
             ['user_id', '=', $user->id],
-            ['from', '<=', Carbon::now()->subWeek()->endOf('week')],
-            ['to', '>=', Carbon::now()->subWeek()->startOf('week')],
+            ['from', '<=', $from],
+            ['to', '>=', $to],
+            ['number', '=', null],
         ])->get();
         foreach ($timesheets as $timesheet) {
             $newTimesheet = $timesheet->duplicate();
             $newTimesheet->is_manually = true;
+            $newTimesheet->from = Carbon::now()->startOf('week');
+            $newTimesheet->to = Carbon::now()->endOf('week');
             $newTimesheet->save();
             $this->genTrackersByTimesheet($newTimesheet);
         }

@@ -1274,7 +1274,7 @@
                     :color="themeBgColor"
                     @click="copyLastWeek"
                 >
-                    Copy last week
+                    Copy previous week
                 </v-btn>
             </div>
             <v-spacer></v-spacer>
@@ -1980,7 +1980,10 @@ export default {
             }
         },
         copyLastWeek() {
-            this.$store.dispatch('Timesheet/copyLastWeek');
+            this.$store.dispatch('Timesheet/copyLastWeek', {
+                from: this.dateRange.start,
+                to: this.dateRange.end,
+            });
         },
         resetSaveAsTemplate() {
             this.newTemplate.name = '';
