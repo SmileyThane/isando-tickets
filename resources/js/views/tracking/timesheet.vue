@@ -318,6 +318,7 @@
             :loading="loading"
             loading-text="Loading... Please wait"
             v-model="selected"
+            items-per-page="300"
         >
             <template v-slot:footer>
                 Daily view
@@ -336,6 +337,7 @@
                 :expanded="expandedManagerData"
                 hide-default-footer
                 show-expand
+                items-per-page="300"
             >
                 <template v-slot:item.user.full_name="{ item }">
                     <span v-if="item && item.user">{{ item.user.full_name }}</span>
@@ -390,6 +392,7 @@
                             :single-select="singleSelect"
                             :show-select="[STATUS_REJECTED].indexOf(typeOfItems) !== -1"
                             v-model="selected"
+                            items-per-page="300"
                         >
                             <template v-slot:item.is_manually="{ isMobile, item, header, value }">
                                 <span v-if="item.is_manually">
@@ -685,6 +688,7 @@
                 loading-text="Loading... Please wait"
                 v-model="selected"
                 hide-default-footer
+                items-per-page="300"
             >
                 <template v-slot:body.prepend="{ headers }">
                     <tr class="highlight">
