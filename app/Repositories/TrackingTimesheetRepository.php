@@ -189,7 +189,8 @@ class TrackingTimesheetRepository
     }
 
     public function delete($id) {
-        return TrackingTimesheet::where('id', '=', $id)->delete();
+        $timesheet = TrackingTimesheet::find($id);
+        $timesheet->delete();
     }
 
     public function remind(Request $request)
@@ -388,17 +389,26 @@ class TrackingTimesheetRepository
 //    }
 
     static function convertTimeToSeconds($time) {
-        $time = explode(':', $time);
-        return $time[0] * 60 * 60 + $time[1] * 60 + $time[2];
+        try {
+            $time = explode(':', $time);
+            return $time[0] * 60 * 60 + $time[1] * 60 + (isset($time[2]) ? $time[2] : 0);
+        } catch (\Exception $exception) {
+            return 0;
+        }
     }
 
     static function convertSecondsToTimeFormat($value, $withSeconds = true) {
-        $h = floor($value / 60 / 60);
-        $m = floor(($value - ($h * 60 * 60)) / 60);
-        if ($withSeconds) {
-            return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
+        try {
+            $h = floor($value / 60 / 60);
+            $m = floor(($value - ($h * 60 * 60)) / 60);
+            if ($withSeconds) {
+                return sprintf("%02d", $h) . ":" . sprintf("%02d", $m) . ":" . sprintf("%02d", $value % 60);
+            }
+            return sprintf("%02d", $h) . ":" . sprintf("%02d", $m);
+        } catch (\Exception $exception) {
+            dd($exception);
         }
-        return sprintf("%02d", $h) . ":" . sprintf("%02d", $m);
+
     }
 
     public function increaseTimes(TrackingTimesheet $timesheet, TrackingTimesheetTime $time, int $timeToInc) {
@@ -482,7 +492,7 @@ class TrackingTimesheetRepository
             Permission::TRACKER_VIEW_TEAM_TIME_ACCESS,
             Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS,
         ])) {
-            throw new \Exception('Access denied');
+            return 0;
         }
         $timesheet = 0;
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
@@ -520,15 +530,19 @@ class TrackingTimesheetRepository
         return $timesheet;
     }
 
-    public function copyLastWeek(User $user) {
+    public function copyPreviousWeek(User $user, $from, $to) {
         $timesheets = TrackingTimesheet::where([
             ['user_id', '=', $user->id],
-            ['from', '<=', Carbon::now()->subWeek()->endOf('week')],
-            ['to', '>=', Carbon::now()->subWeek()->startOf('week')],
-            ['is_manually', '=', true],
+            ['from', '<=', $from],
+            ['to', '>=', $to],
+            ['number', '=', null],
         ])->get();
         foreach ($timesheets as $timesheet) {
             $newTimesheet = $timesheet->duplicate();
+            $newTimesheet->is_manually = true;
+            $newTimesheet->from = Carbon::now()->startOf('week');
+            $newTimesheet->to = Carbon::now()->endOf('week');
+            $newTimesheet->save();
             $this->genTrackersByTimesheet($newTimesheet);
         }
     }
@@ -624,67 +638,84 @@ class TrackingTimesheetRepository
     }
 
     private function getData(Request $request) {
-        $statusesForFilter = [];
-        if ($request->has('pending') && !is_null($request->pending)) {
-            $statusesForFilter[] = TrackingTimesheet::STATUS_PENDING;
+        $selected = $request->selected;
+        if (count($selected)) {
+            $query = TrackingTimesheet::with('User')
+                ->with('Service')
+                ->with('Approver')
+                ->with(['Times' => function ($q) {
+                    $q->orderBy('date', 'asc');
+                }]);
+            if ($request->status > 0) {
+                $query->whereIn('number', TrackingTimesheet::whereIn('id', $selected)->pluck('number')->all());
+            } else {
+                $query->whereIn('id', TrackingTimesheet::whereIn('id', $selected)->pluck('id')->all());
+            }
+            return $query->get();
         }
-        if ($request->has('rejected') && !is_null($request->rejected)) {
-            $statusesForFilter[] = TrackingTimesheet::STATUS_REJECTED;
-        }
-        if ($request->has('archived') && !is_null($request->archived)) {
-            $statusesForFilter[] = TrackingTimesheet::STATUS_ARCHIVED;
-        }
-        if ($request->has('tracked') && !is_null($request->tracked)) {
-            $statusesForFilter[] = TrackingTimesheet::STATUS_TRACKED;
-        }
-        $query = TrackingTimesheet::with('User')
-            ->with('Service')
-            ->with('Approver')
-            ->with(['Times' => function ($q) {
-                $q->orderBy('date', 'asc');
-            }])
-            ->whereIn('status', $statusesForFilter);
-
-        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
-            // Manager
-            $teams = $teams = Team::whereHas('employees', function ($q) {
-                return $q
-                    ->where('company_user_id', '=', Auth::user()->employee->id)
-                    ->where('is_manager', '=', true);
-            })->get()->pluck('id')->toArray();
-            $query->where(function ($query) use ($teams) {
-                    $query
-                        ->whereIn('team_id', $teams)
-                        ->whereNull('approver_id')
-                        ->orWhere('approver_id', '=', Auth::user()->id);
-                });
-        } else if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
-            // Company Admin
-            $company = Auth::user()->employee()
-                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
-                ->with('userData')->first();
-            $query->where('company_id', '=', $company->company_id)
-                ->where(function ($query) {
-                    $query->whereNull('approver_id')
-                        ->orWhere('approver_id', '=', Auth::user()->id);
-                });
-        } else {
-            $query->where(function($q) {
-                $q->where('user_id', '=', Auth::user()->id)
-                    ->orWhere('approver_id', '=', Auth::user()->id);
-            });
-        }
-        $query->where(function($q) use ($request) {
-            $q->where('from', '<=', $request->to)
-                ->where('to', '>=', $request->from);
-        });
-        $query->orderBy('id', 'desc');
-//        dd($query->toSql(), $query->getBindings());
-        return $query->get();
+        return [];
+//        $statusesForFilter = [];
+//        if ($request->has('pending') && !is_null($request->pending)) {
+//            $statusesForFilter[] = TrackingTimesheet::STATUS_PENDING;
+//        }
+//        if ($request->has('rejected') && !is_null($request->rejected)) {
+//            $statusesForFilter[] = TrackingTimesheet::STATUS_REJECTED;
+//        }
+//        if ($request->has('archived') && !is_null($request->archived)) {
+//            $statusesForFilter[] = TrackingTimesheet::STATUS_ARCHIVED;
+//        }
+//        if ($request->has('tracked') && !is_null($request->tracked)) {
+//            $statusesForFilter[] = TrackingTimesheet::STATUS_TRACKED;
+//        }
+//        $query = TrackingTimesheet::with('User')
+//            ->with('Service')
+//            ->with('Approver')
+//            ->with(['Times' => function ($q) {
+//                $q->orderBy('date', 'asc');
+//            }])
+//            ->whereIn('status', $statusesForFilter);
+//
+//        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+//            // Manager
+//            $teams = $teams = Team::whereHas('employees', function ($q) {
+//                return $q
+//                    ->where('company_user_id', '=', Auth::user()->employee->id)
+//                    ->where('is_manager', '=', true);
+//            })->get()->pluck('id')->toArray();
+//            $query->where(function ($query) use ($teams) {
+//                    $query
+//                        ->whereIn('team_id', $teams)
+//                        ->whereNull('approver_id')
+//                        ->orWhere('approver_id', '=', Auth::user()->id);
+//                });
+//        } else if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+//            // Company Admin
+//            $company = Auth::user()->employee()
+//                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+//                ->with('userData')->first();
+//            $query->where('company_id', '=', $company->company_id)
+//                ->where(function ($query) {
+//                    $query->whereNull('approver_id')
+//                        ->orWhere('approver_id', '=', Auth::user()->id);
+//                });
+//        } else {
+//            $query->where(function($q) {
+//                $q->where('user_id', '=', Auth::user()->id)
+//                    ->orWhere('approver_id', '=', Auth::user()->id);
+//            });
+//        }
+//        $query->where(function($q) use ($request) {
+//            $q->where('from', '<=', $request->to)
+//                ->where('to', '>=', $request->from);
+//        });
+//        $query->orderBy('id', 'desc');
+////        dd($query->toSql(), $query->getBindings());
+//        return $query->get();
     }
 
     protected function prepareDataForPDF($entities) {
         $items = [];
+        $dayOfWeekTime = [];
         foreach ($entities as $key => $entity) {
             $item = [
                 'number' => $entity->number ?? '',
@@ -695,10 +726,41 @@ class TrackingTimesheetRepository
                 'status' => $entity->status,
             ];
             foreach ($entity->times as $time) {
+                if (!isset($dayOfWeekTime[Carbon::parse($time->date)->shortEnglishDayOfWeek])) {
+                    $dayOfWeekTime[Carbon::parse($time->date)->shortEnglishDayOfWeek] = "00:00:00";
+                }
+                $dayOfWeekTime[Carbon::parse($time->date)->shortEnglishDayOfWeek] =
+                    self::convertSecondsToTimeFormat(
+                        self::convertTimeToSeconds($dayOfWeekTime[Carbon::parse($time->date)->shortEnglishDayOfWeek])
+                        + self::convertTimeToSeconds($time->time), false
+                    );
                 $item[Carbon::parse($time->date)->shortEnglishDayOfWeek] = Carbon::parse($time->time)->format('H:i');
             }
             array_push($items, $item);
         }
+        $items[] = array_merge([
+            'number' => '',
+            'name' => 'Totals',
+            'start' => '',
+            'end' => '',
+            'service' => '',
+            'status' => '',
+        ], $dayOfWeekTime);
+        $items[] = [
+            'number' => '',
+            'name' => 'Total time per timesheet',
+            'start' => '',
+            'end' => '',
+            'service' => '',
+            'status' => '',
+            'mon' => '',
+            'tue' => '',
+            'wed' => '',
+            'thu' => '',
+            'fri' => '',
+            'sat' => '',
+            'sun' => self::convertSecondsToTimeFormat(collect($dayOfWeekTime)->map(function($item) { return self::convertTimeToSeconds($item); })->sum(), false)
+        ];
         return $items;
     }
 
@@ -721,18 +783,23 @@ class TrackingTimesheetRepository
         $entities = $this->getData($request);
         $data = $this->prepareDataForPDF($entities);
 
+        $ts = $entities[0];
+
         $pdf = new PDF();
         $pdf->setFirstPage(0);
         $pdf->SetOptions([
-            'title' => 'Timesheet report',
-            'user' => '',
-            'period' => Carbon::parse($request->from)->format('d.m.Y') . ' - ' . Carbon::parse($request->to)->format('d.m.Y'),
+            'title' => 'Timesheet report #' . $ts->number,
+            'user' => $ts->user->full_name,
+            'period' => Carbon::parse($ts->from)->format('d.m.Y') . ' - ' . Carbon::parse($ts->to)->format('d.m.Y'),
+            'status' => 'Status of timesheet: ' . $ts->status,
+            'approver' => "Approver: " . ($ts->approver ? $ts->approver->full_name : ''),
         ]);
         $pdf->AliasNbPages();
 
         $pdf->AddPage('L', 'A4');
         $pdf->SetFont('Arial', '', 10);
         $pdf->EasyTable($headers, $data);
+
         // GENERATE FILE
         try {
             $tmpFileName = storage_path('app') . Auth::id() . '-' . time() . '.pdf';

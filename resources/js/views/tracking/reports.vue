@@ -420,7 +420,7 @@
             >
                 <template v-slot:label="{ item, selected, active, open }">
                     <div v-if="item.children" style="font-size: small">
-                        {{ item.name }}
+                        {{ item.name }} <span v-if="item.client">({{ item.client }})</span>
                     </div>
                     <div v-else class="d-flex flex-row">
                         <table class="v-data-table" :class="item.status === 'started' ? 'success lighten-5' : ''" border="0" cellspacing="0" cellpadding="5" width="100%" style="font-size: small">
@@ -437,7 +437,7 @@
                                             v-if="item.entity"
                                             :style="{ color: item.entity && item.entity.color ? item.entity.color : themeBgColor }"
                                         >
-                                            <span v-if="item.entity_type === 'App\\TrackingProject'">{{ langMap.tracking.report.project }}: </span>
+                                            <span v-if="item.entity_type === 'App\\TrackingProject'">{{ getTrackingProjectLabel }}: </span>
                                             <span v-if="item.entity_type === 'App\\Ticket'">{{ langMap.tracking.report.ticket }}: </span>
                                             {{ item.entity.name }}
                                         </span>
@@ -950,6 +950,43 @@ export default {
                 ],
                 filters: []
             },
+            groupItemsAvailable: [
+                {
+                    icon: "mdi-calendar-today",
+                    text: this.$store.state.lang.lang_map.tracking.report.day,
+                    value: "day"
+                },
+                {
+                    icon: "mdi-folder-account-outline",
+                    text: this.getTrackingProjectsLabel,
+                    value: "project"
+                },
+                {
+                    icon: "mdi-calendar-week",
+                    text: this.$store.state.lang.lang_map.tracking.report.week,
+                    value: "week"
+                },
+                {
+                    icon: "mdi-currency-usd",
+                    text: this.$store.state.lang.lang_map.tracking.report.billability,
+                    value: "billability"
+                },
+                {
+                    icon: "mdi-account",
+                    text: this.$store.state.lang.lang_map.tracking.report.clients,
+                    value: "client"
+                },
+                {
+                    icon: "mdi-calendar-month",
+                    text: this.$store.state.lang.lang_map.tracking.report.month,
+                    value: "month"
+                },
+                {
+                    icon: "mdi-account-multiple",
+                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
+                    value: "coworker"
+                },
+            ],
             roundingItems: [
                 {
                     value: 0,
@@ -1016,104 +1053,21 @@ export default {
                 //     text: 'Revenue, ascending'
                 // },
             ],
-            groupItems: [
-                {
-                    icon: "mdi-calendar-today",
-                    text: this.$store.state.lang.lang_map.tracking.report.day,
-                    value: "day"
-                },
-                {
-                    icon: "mdi-folder-account-outline",
-                    text: this.$store.state.lang.lang_map.tracking.report.projects,
-                    value: "project"
-                },
-                {
-                    icon: "mdi-calendar-week",
-                    text: this.$store.state.lang.lang_map.tracking.report.week,
-                    value: "week"
-                },
-                {
-                    icon: "mdi-currency-usd",
-                    text: this.$store.state.lang.lang_map.tracking.report.billability,
-                    value: "billability"
-                },
-                {
-                    icon: "mdi-account",
-                    text: this.$store.state.lang.lang_map.tracking.report.clients,
-                    value: "client"
-                },
-                {
-                    icon: "mdi-calendar-month",
-                    text: this.$store.state.lang.lang_map.tracking.report.month,
-                    value: "month"
-                },
-                {
-                    icon: "mdi-account-multiple",
-                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
-                    value: "coworker"
-                },
-            ],
-            availableFilters: [
-                {
-                    value: 'coworkers',
-                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
-                    store: 'Team/getCoworkers',
-                    items: [],
-                    selected: [],
-                    multiply: true
-                },
-                {
-                    value: 'projects',
-                    text: this.$store.state.lang.lang_map.tracking.report.projects,
-                    store: 'Projects/getProjects',
-                    items: [],
-                    selected: [],
-                    multiply: true
-                },
-                {
-                    value: 'clients',
-                    text: this.$store.state.lang.lang_map.tracking.report.clients,
-                    store: 'Clients/getClients',
-                    items: [],
-                    selected: [],
-                    multiply: true
-                },
-                {
-                    value: 'services',
-                    text: this.$store.state.lang.lang_map.tracking.report.services,
-                    store: 'Services/getServices',
-                    items: [],
-                    selected: [],
-                    multiply: true
-                },
-                {
-                    value: 'billable',
-                    text: this.$store.state.lang.lang_map.tracking.report.billable,
-                    store: null,
-                    items: [
-                        {
-                            id: 1,
-                            name: this.$store.state.lang.lang_map.tracking.report.billable
-                        },
-                        {
-                            id: 0,
-                            name: this.$store.state.lang.lang_map.tracking.report.non_billable
-                        }
-                    ],
-                    selected: null,
-                    multiply: false
-                },
-                {
-                    value: 'tag',
-                    text: this.$store.state.lang.lang_map.tracking.report.tags,
-                    store: 'Tags/getTags',
-                    items: [],
-                    selected: [],
-                    multiply: true
-                }
-            ],
             chart: {
                 options: {
+                    scaleShowValues: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                autoSkip: false
+                            }
+                        }]
+                    },
                     responsive: true,
                     maintainAspectRatio: true,
                     percentageInnerCutout : 90,
@@ -1632,6 +1586,12 @@ export default {
                 return false;
             }
             return true;
+        },
+        substr(str, maxLength) {
+            if (str.length >= maxLength - 3) {
+                return str.substring(0, maxLength - 3) + '...';
+            }
+            return str;
         }
     },
     computed: {
@@ -1651,9 +1611,13 @@ export default {
                 let values = [];
                 let labels = [];
                 this.reportData.entities.map(i => {
-                    data.labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    let client = '';
+                    if (i.client) {
+                        client = this.substr(i.client, 20) + ": \n";
+                    }
+                    data.labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
-                        labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
@@ -1685,9 +1649,13 @@ export default {
                 let labels = [];
                 let colors = [];
                 this.reportData.entities.map(i => {
-                    data.labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    let client = '';
+                    if (i.client) {
+                        client = this.substr(i.client, 20) + ": \n";
+                    }
+                    data.labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
-                        labels.push(i.name ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push(
@@ -1745,6 +1713,95 @@ export default {
                 })))
             }
             return roundingItems;
+        },
+        availableFilters () {
+            return [
+                {
+                    value: 'coworkers',
+                    text: this.$store.state.lang.lang_map.tracking.report.co_worker,
+                    store: 'Team/getCoworkers',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'projects',
+                    text: this.getTrackingProjectsLabel,
+                    store: 'Projects/getProjects',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'clients',
+                    text: this.$store.state.lang.lang_map.tracking.report.clients,
+                    store: 'Clients/getClients',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'services',
+                    text: this.$store.state.lang.lang_map.tracking.report.services,
+                    store: 'Services/getServices',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                },
+                {
+                    value: 'billable',
+                    text: this.$store.state.lang.lang_map.tracking.report.billable,
+                    store: null,
+                    items: [
+                        {
+                            id: 1,
+                            name: this.$store.state.lang.lang_map.tracking.report.billable
+                        },
+                        {
+                            id: 0,
+                            name: this.$store.state.lang.lang_map.tracking.report.non_billable
+                        }
+                    ],
+                    selected: null,
+                    multiply: false
+                },
+                {
+                    value: 'tag',
+                    text: this.$store.state.lang.lang_map.tracking.report.tags,
+                    store: 'Tags/getTags',
+                    items: [],
+                    selected: [],
+                    multiply: true
+                }
+            ];
+        },
+        groupItems: {
+            get: function() {
+                const foundItem = this.groupItemsAvailable.find(i => i.value === 'project');
+                if (foundItem) foundItem.text = this.getTrackingProjectsLabel;
+                return this.groupItemsAvailable;
+            },
+            set: function(value) {
+                this.groupItemsAvailable = value;
+            },
+        },
+        getTrackingProjectLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.department;
+                case 2: return this.langMap.tracking.profit_center;
+                default: return this.langMap.tracking.project;
+            }
+        },
+        getTrackingProjectsLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.departments;
+                case 2: return this.langMap.tracking.profit_centres;
+                default: return this.langMap.tracking.projects;
+            }
         },
     },
     watch: {

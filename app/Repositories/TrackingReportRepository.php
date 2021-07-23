@@ -13,6 +13,8 @@ use App\Ticket;
 use App\Tracking;
 use App\TrackingProject;
 use App\TrackingReport;
+use App\TrackingSettings;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -331,6 +333,9 @@ class TrackingReportRepository
         foreach ($trackings as $tracking) {
             $data = $this->getFieldData($tracking, $group);
             $items[$data]['name'] = $data;
+            if ($group === 'project') {
+                $items[$data]['client'] = $this->getFieldData($tracking, 'client');
+            }
             $items[$data]['children'][] = $tracking;
         }
         return $items;
@@ -448,6 +453,23 @@ class TrackingReportRepository
         return $headers;
     }
 
+    private function getProjectLabel() {
+        $settings = TrackingSettings::where([
+            ['entity_id', '=', Auth::user()->id],
+            ['entity_type', '=', User::class]
+        ])->first();
+
+        $projectLabel = 'Project';
+        if (isset($settings->data['projectType'])) {
+            switch ($settings->data['projectType']) {
+                case 1: $projectLabel = 'Department'; break;
+                case 2: $projectLabel = 'Profit center'; break;
+                default: $projectLabel = 'Project'; break;
+            }
+        }
+        return $projectLabel;
+    }
+
     public function genPDF($request) {
 
         // Pre-define some variables
@@ -459,7 +481,7 @@ class TrackingReportRepository
             ['slug' => 'total', 'text' => 'Total', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
             ['slug' => 'coworker', 'text' => 'Co-worker', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 11, 'resizable' => true],
             ['slug' => 'client', 'text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 16, 'resizable' => true],
-            ['slug' => 'project', 'text' => 'Project', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 17, 'resizable' => true],
+            ['slug' => 'project', 'text' => $this->getProjectLabel(), 'style' => 'border:B;border-width:1;font-style:B', 'width' => 17, 'resizable' => true],
             ['slug' => 'service', 'text' => 'Service', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 9, 'resizable' => true],
             ['slug' => 'description', 'text' => 'Description', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 15, 'resizable' => true],
             ['slug' => 'billable', 'text' => 'Billable', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 5, 'resizable' => false],
@@ -647,8 +669,8 @@ class TrackingReportRepository
             'Personnel number',
             'Customer',
             'Customer number',
-            'Project',
-            'Project number',
+            $this->getProjectLabel(),
+            $this->getProjectLabel() . " number",
             'Service',
             'Service number',
             'Description',
@@ -740,7 +762,7 @@ class TrackingReportRepository
                     ->where('date_from', '<=', $to);
             })
             ->groupBy('services.id', 'services.name')
-            ->select(['services.name', 'services.id', DB::raw("SUM(date_to - date_from) as duration")]);
+            ->select(['services.name', 'services.id', DB::raw("SUM(TIMESTAMPDIFF(SECOND, date_from, date_to)) as duration")]);
 //        dd($tracking->toSql(), $tracking->getBindings(), $tracking->get());
         return $tracking->get();
     }
@@ -796,7 +818,8 @@ class TrackingReportRepository
                     ->where('date_from', '<=', $to);
             })
             ->groupBy('tracking_projects.client_id', 'clients.name', 'tracking_projects.id', 'tracking_projects.project')
-            ->select(['tracking_projects.client_id', 'clients.name as client_name', 'tracking_projects.project', 'tracking_projects.id', DB::raw("SUM(tracking.date_to - tracking.date_from) as duration")]);
+            ->select(['tracking_projects.client_id', 'clients.name as client_name', 'tracking_projects.project', 'tracking_projects.id',
+                DB::raw("SUM(TIMESTAMPDIFF(SECOND, tracking.date_from, tracking.date_to)) as duration")]);
 //        dd($tracking->toSql(), $tracking->getBindings(), $tracking->get());
         return $tracking->get();
     }
@@ -868,8 +891,8 @@ class TrackingReportRepository
                 'clients.name as client_name',
                 'tracking_projects.project as project_name',
                 'tracking_projects.id',
-                DB::raw("SUM(tracking.date_to - tracking.date_from) as duration"),
-                DB::raw("(`tracking_projects`.rate * (SUM(tracking.date_to - tracking.date_from) / 60 / 60)) as revenue")
+                DB::raw("SUM(TIMESTAMPDIFF(SECOND, tracking.date_from, tracking.date_to)) as duration"),
+                DB::raw("(`tracking_projects`.rate * (SUM(TIMESTAMPDIFF(SECOND, tracking.date_from, tracking.date_to)) / 60 / 60)) as revenue")
             ])
             ->orderBy('revenue', 'desc')
             ->limit($numberOfProjects);
@@ -934,10 +957,10 @@ class TrackingReportRepository
                 'tracking.user_id', 'users.name', 'users.surname',
                 'tracking.entity_type',
                 'tracking.entity_id',
-                DB::raw("IF(tracking.entity_type = 'App\\TrackingProject',
-           (SELECT tracking_projects.project FROM tracking_projects WHERE tracking_projects.id = tracking.entity_id),
-           (SELECT ti.name FROM tickets ti WHERE ti.id = tracking.entity_id)
-       ) as entity"),
+                DB::raw("CASE
+                    WHEN `tracking`.`entity_type` LIKE 'App%TrackingProject' THEN (SELECT tracking_projects.project as name FROM tracking_projects WHERE tracking_projects.id = tracking.entity_id)
+                    WHEN `tracking`.`entity_type` LIKE 'App%Ticket' THEN (SELECT tickets.name FROM tickets WHERE tickets.id = tracking.entity_id)
+                    ELSE 'None' END entity"),
                 DB::raw("SUM(TIMESTAMPDIFF(SECOND, TIMESTAMP(`tracking`.`date_from`), TIMESTAMP(`tracking`.`date_to`))) as seconds"),
             ])
             ->having('seconds', '>', 0)

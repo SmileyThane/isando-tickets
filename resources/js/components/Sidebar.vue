@@ -339,7 +339,7 @@
                             <v-icon>mdi-folder-account-outline</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
-                            <v-list-item-title>{{ langMap.sidebar.tracking_projects }}
+                            <v-list-item-title>{{ getTrackingProjectLabel }}
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
@@ -599,6 +599,15 @@ export default {
         },
         enableTimesheet() {
             return this.$store.getters['Tracking/getSettings'].settings && this.$store.getters['Tracking/getSettings'].settings.enableTimesheet;
+        },
+        getTrackingProjectLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.departments;
+                case 2: return this.langMap.tracking.profit_centres;
+                default: return this.langMap.tracking.projects;
+            }
         }
     }
 }

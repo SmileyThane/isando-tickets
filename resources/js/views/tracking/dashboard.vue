@@ -128,7 +128,7 @@
                             width="100%"
                             outlined
                         >
-                            <v-card-title>Total time per project</v-card-title>
+                            <v-card-title>Total time per {{getTrackingProjectLabel}}</v-card-title>
                             <DoughnutChart
                                 :data="totalTimeByProjects"
                                 :options="charts.options.projects"
@@ -148,7 +148,7 @@
                             height="100%"
                             outlined
                         >
-                            <v-card-title>Top project</v-card-title>
+                            <v-card-title>Top {{ getTrackingProjectsLabel }}</v-card-title>
                             <template v-if="data.topProjects.length">
                                 <div
                                     v-for="(item, index) in data.topProjects"
@@ -158,7 +158,7 @@
                                 >
                                     <div class="flex-grow-1 text-left" style="width: 100%; overflow: hidden">
                                         <strong>{{index+1}}.</strong>
-                                        <strong v-if="!item.project_name">Without project</strong>
+                                        <strong v-if="!item.project_name">Without {{ getTrackingProjectLabel }}</strong>
                                         <strong v-else>
                                             <span v-if="item.project_name">{{item.project_name}}</span>
                                             / <span v-if="item.client_name">{{item.client_name}}</span>
@@ -183,7 +183,7 @@
                                 v-else
                                 class="font-italic top-projects__info"
                             >
-                                No billable projects were tracked in the selected period.
+                                No billable {{getTrackingProjectLabel}}s were tracked in the selected period.
                             </div>
                         </v-card>
                     </template>
@@ -208,7 +208,7 @@
                         </template>
                         <template v-slot:item.tracker="{ item }">
                             <span v-if="item.tracker && item.tracker.entity">{{item.tracker.entity.name}}</span>
-                            <span v-else>No project</span>
+                            <span v-else>No {{ getTrackingProjectLabel }}</span>
                         </template>
                         <template v-slot:item.recently_duration="{ item }">
                             <span v-if="item.tracker">{{$helpers.time.convertSecToTime(item.tracker.passed, false)}}</span>
@@ -353,30 +353,6 @@ export default {
                 tracking: [],
                 lastActivity: [],
             },
-            headers: {
-                lastActivity: [
-                    {
-                        text: 'Team',
-                        value: 'team',
-                    },
-                    {
-                        text: 'Ticket/Project',
-                        value: 'tracker',
-                    },
-                    {
-                        text: 'Tracked recently',
-                        value: 'recently_duration',
-                    },
-                    {
-                        text: '',
-                        value: 'recently_time',
-                    },
-                    {
-                        text: 'Total time per team groupped by person',
-                        value: 'total_time',
-                    },
-                ],
-            },
         }
     },
     created () {
@@ -385,6 +361,7 @@ export default {
                 dow: 1,
             },
         });
+        this.$store.dispatch('Tracking/getSettings');
     },
     mounted() {
         let that = this;
@@ -395,7 +372,6 @@ export default {
             that.themeBgColor = color;
         });
         this.getData();
-        this.$store.dispatch('Tracking/getSettings');
         this.$store.dispatch('Team/getManagedTeams', { withEmployee: false });
         this.$store.dispatch('Team/getTeams', { search: null });
     },
@@ -551,7 +527,7 @@ export default {
             const labels = [];
             const colors = [];
             this.data.projects.map(i => {
-                labels.push((i.client_name ?? 'Unknown client') + "\r\n" + (i.name ?? 'Without project'));
+                labels.push((i.client_name ?? 'Unknown client') + "\r\n" + (i.project ?? `Without ${this.getTrackingProjectLabel}`));
                 values.push((i.duration / 60 / 60).toFixed(2));
             });
             for (let i = 0; i <= values.length - 1; i++) {
@@ -581,7 +557,51 @@ export default {
                 return this.$store.getters['Team/getManagedTeams'];
             }
             return this.$store.getters['Team/getTeams'].data;
-        }
+        },
+        getTrackingProjectLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.department;
+                case 2: return this.langMap.tracking.profit_center;
+                default: return this.langMap.tracking.project;
+            }
+        },
+        getTrackingProjectsLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.departments;
+                case 2: return this.langMap.tracking.profit_centres;
+                default: return this.langMap.tracking.projects;
+            }
+        },
+        headers() {
+            return {
+                lastActivity: [
+                    {
+                        text: 'Team',
+                        value: 'team',
+                    },
+                    {
+                        text: 'Ticket/' + this.getTrackingProjectLabel,
+                        value: 'tracker',
+                    },
+                    {
+                        text: 'Tracked recently',
+                        value: 'recently_duration',
+                    },
+                    {
+                        text: '',
+                        value: 'recently_time',
+                    },
+                    {
+                        text: 'Total time per team groupped by person',
+                        value: 'total_time',
+                    },
+                ],
+            };
+        },
     }
 }
 </script>
