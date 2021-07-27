@@ -34,7 +34,7 @@
                 <v-btn
                     @click="selected = []; expandedManagerData = []"
                 >
-                    {{ langMap.tracking.timesheet.archived }}
+                    {{ langMap.tracking.timesheet.approved }}
                 </v-btn>
                 <v-btn
                     v-if="isManager"
@@ -233,6 +233,21 @@
                     </template>
                 </v-select>
             </div>
+            <div class="d-inline-flex flex-grow-1">
+                <v-select
+                    class="mx-4"
+                    v-model="filterStatus"
+                    :items="getStatuses()"
+                    item-value="value"
+                    item-text="text"
+                    :label="langMap.tracking.timesheet.filter + ' by status'"
+                    dense
+                    style="max-width: 200px"
+                    clearable
+                    multiple
+                >
+                </v-select>
+            </div>
             <div class="d-inline-flex flex-grow-1 mx-4">
                 <div class="d-flex flex-row">
                     <div class="d-inline-flex">
@@ -318,7 +333,7 @@
             :loading="loading"
             loading-text="Loading... Please wait"
             v-model="selected"
-            items-per-page="300"
+            :items-per-page="countRecordsOnTable"
         >
             <template v-slot:footer>
                 Daily view
@@ -337,7 +352,7 @@
                 :expanded="expandedManagerData"
                 hide-default-footer
                 show-expand
-                items-per-page="300"
+                :items-per-page="countRecordsOnTable"
             >
                 <template v-slot:item.user.full_name="{ item }">
                     <span v-if="item && item.user">{{ item.user.full_name }}</span>
@@ -392,7 +407,7 @@
                             :single-select="singleSelect"
                             :show-select="[STATUS_REJECTED].indexOf(typeOfItems) !== -1"
                             v-model="selected"
-                            items-per-page="300"
+                            :items-per-page="countRecordsOnTable"
                         >
                             <template v-slot:item.is_manually="{ isMobile, item, header, value }">
                                 <span v-if="item.is_manually">
@@ -688,7 +703,7 @@
                 loading-text="Loading... Please wait"
                 v-model="selected"
                 hide-default-footer
-                items-per-page="300"
+                :items-per-page="countRecordsOnTable"
             >
                 <template v-slot:body.prepend="{ headers }">
                     <tr class="highlight">
@@ -897,6 +912,17 @@
                         v-model="item.entity"
                         @input="updateProject(item)"
                     ></ProjectBtn>
+                </template>
+                <template v-slot:item.status="{ isMobile, item, header, value }">
+                    <v-chip v-if="value === 'archived'" small color="success">{{ langMap.tracking.timesheet.approved }}</v-chip>
+                    <v-chip v-if="value === 'rejected'" small color="error">{{ langMap.tracking.timesheet.rejected }}</v-chip>
+                    <v-chip v-if="value === 'pending'" small color="primary">{{ langMap.tracking.timesheet.approval_pending }}</v-chip>
+                    <v-chip v-if="value === 'tracked'" small>{{ langMap.tracking.timesheet.tracked }}</v-chip>
+                </template>
+                <template v-slot:item.number="{ isMobile, item, header, value }">
+                    <template v-if="value">
+                        #{{ value }}
+                    </template>
                 </template>
                 <template v-slot:item.service="{ isMobile, item, header, value }">
                     <v-edit-dialog
@@ -1121,6 +1147,7 @@
                 small
                 color="error"
                 @click="removeTimesheet"
+                :disabled="blockActions"
             >
                 Remove selected
             </v-btn>
@@ -1304,6 +1331,7 @@
                         v-on="on"
                         class="mx-2"
                         small
+                        :disabled="blockActions"
                     >
                         <span v-if="typeOfItems === STATUS_TRACKED">{{ langMap.tracking.timesheet.submit_for_approval }}</span>
                         <span v-else>{{ langMap.tracking.timesheet.resubmit_for_approval }}</span>
@@ -1511,6 +1539,7 @@ export default {
     },
     data () {
         return {
+            countRecordsOnTable: 1000,
             dateFormat: 'YYYY-MM-DD',
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
@@ -1533,6 +1562,7 @@ export default {
             date: null,
             menuDate: false,
             filterProject: 0,
+            filterStatus: [],
             form: {
                 entity: null,
                 entity_id: null,
@@ -1806,6 +1836,20 @@ export default {
                     width: '20%',
                 }
             ];
+            if ([this.STATUS_TRACKED].indexOf(this.typeOfItems) !== -1) {
+                headers.push({
+                        text: '',
+                        align: 'start',
+                        value: 'status',
+                        width: '3%',
+                    },
+                    {
+                        text: '',
+                        align: 'start',
+                        value: 'number',
+                        width: '3%',
+                    });
+            }
             if (this.showEditServices) {
                 headers.push({
                     text: '',
@@ -2038,6 +2082,26 @@ export default {
                         this.snackbar = true;
                     })
             }
+        },
+        getStatuses() {
+            return [
+                {
+                    value: 'tracked',
+                    text: this.langMap.tracking.timesheet.tracked,
+                },
+                {
+                    value: 'pending',
+                    text: this.langMap.tracking.timesheet.approval_pending,
+                },
+                {
+                    value: 'rejected',
+                    text: this.langMap.tracking.timesheet.rejected,
+                },
+                {
+                    value: 'archived',
+                    text: this.langMap.tracking.timesheet.approved,
+                },
+            ];
         }
     },
     watch: {
@@ -2185,7 +2249,12 @@ export default {
             }
             return timesheet
                 .filter(i => i.user_id === user.id)
-                .filter(i => i.status === this.currentStatus);
+                .filter(i => {
+                    if (self.filterStatus && self.filterStatus.length) {
+                        return self.filterStatus.indexOf(i.status) !== -1;
+                    }
+                    return true;
+                });
         },
         getTimesheetForManager() {
             const user = this.currentUser;
@@ -2258,6 +2327,22 @@ export default {
         isManager() {
             return !!this.$store.getters['Team/getManagedTeams'].length;
         },
+        blockActions() {
+            if (this.selected.length) {
+                let hasFinished = false;
+                Promise.all(this.selected.map(i => {
+                    if (['archived'].indexOf(i.status) !== -1) {
+                        hasFinished = true;
+                        return true;
+                    }
+                }));
+                return hasFinished;
+            }
+            return false;
+        },
     },
+    beforeDestroy () {
+        alert('destroy')
+    }
 }
 </script>

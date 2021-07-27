@@ -34,29 +34,54 @@ class TrackingTimesheetRepository
             ->with('Approver')
             ->with(['Times' => function ($q) {
                 $q->orderBy('date', 'asc');
-            }]);
-        $teams = \App\Team::whereHas('employees', function ($query) {
-            return $query->where('company_user_id', '=', Auth::user()->employee->id)
-                ->where('is_manager', '=', true);
-        })->pluck('id');
-        if ($teams->count()) {
-            $query->where(function($q) use ($teams) {
-                $q->where('user_id', '=', Auth::user()->id)
-                    ->orWhereIn('team_id', $teams)
-                    ->orWhere('approver_id', Auth::user()->id);
+            }])
+            ->whereIn('status', [
+                TrackingTimesheet::STATUS_TRACKED,
+                TrackingTimesheet::STATUS_PENDING,
+                TrackingTimesheet::STATUS_REJECTED,
+                TrackingTimesheet::STATUS_APPROVED,
+                TrackingTimesheet::STATUS_ARCHIVED,
+                TrackingTimesheet::STATUS_UNSUBMITTED,
+            ])
+            ->where(function ($q) use ($request) {
+                $q->where('from', '<=', Carbon::parse($request->end))
+                    ->where('to', '>=', Carbon::parse($request->start));
             });
+
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+            // Manager
+            $teams = $teams = Team::whereHas('employees', function ($q) {
+                return $q
+                    ->where('company_user_id', '=', Auth::user()->employee->id)
+                    ->where('is_manager', '=', true);
+            })->get()->pluck('id')->toArray();
+            $query->where(function ($query) use ($teams) {
+                    $query->whereIn('team_id', $teams)
+                        ->where(function($q) {
+                           $q->whereNull('approver_id')
+                               ->orWhere('approver_id', '=', Auth::user()->id);
+                        })
+                        ->orWhere('user_id', '=', Auth::user()->id);
+                });
+        } else if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+            // Company Admin
+            $company = Auth::user()->employee()
+                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+                ->with('userData')->first();
+            $query->where('company_id', '=', $company->company_id)
+                ->where(function ($query) {
+                    $query->whereNull('approver_id')
+                        ->orWhere('approver_id', '=', Auth::user()->id);
+                });
         } else {
             $query->where(function($q) {
                 $q->where('user_id', '=', Auth::user()->id)
-                    ->orWhere('approver_id', Auth::user()->id);
+                    ->orWhere('approver_id', '=', Auth::user()->id);
             });
         }
-        return $query
-            ->where(function ($q) use ($request) {
-                $q->where('from', '<=', Carbon::parse($request->end)->endOf('week'))
-                    ->where('to', '>=', Carbon::parse($request->start)->startOf('week'));
-            })
-            ->get();
+        $query->orderBy('id', 'desc');
+//        dd($query->toSql(), $query->getBindings(), $query->get());
+        return $query->get();
     }
 
     public function getAllGroupedByStatus(Request $request) {
