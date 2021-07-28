@@ -1783,7 +1783,7 @@ export default {
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }
-                    this.debounceGetTimesheet();
+                    // this.debounceGetTimesheet();
                 });
         },
         saveChanges (item, index, newValue) {
@@ -2116,7 +2116,7 @@ export default {
                     : moment(this.date).endOf('days').format(this.dateFormat);
         },
         'dateRange.start' () {
-            this.debounceGetTimesheet();
+            this._getTimesheet();
         },
         undoStack () {
             this.deletedItems = this.undoStack.reduce((acc, curr) => acc.concat(curr.items), []);
