@@ -1668,7 +1668,7 @@ export default {
             await this.$store.dispatch('Timesheet/getTimesheet', {
                 ...this.dateRange,
             });
-            await this.$store.dispatch('Timesheet/getAllGroupedByStatus', { userId: this.currentUser.id });
+            await this.$store.dispatch('Timesheet/getAllGroupedByStatus', { userId: this.currentUser ? this.currentUser.id : null });
             this.loading = false;
             this.resetTimesheet();
         },
@@ -2248,7 +2248,12 @@ export default {
                     .filter(i => i.entity_id && i.entity.id === this.filterProject);
             }
             return timesheet
-                .filter(i => i.user_id === user.id)
+                .filter(i => {
+                    if (user) {
+                        return i.user_id === user.id;
+                    }
+                    return true;
+                })
                 .filter(i => {
                     if (self.filterStatus && self.filterStatus.length) {
                         return self.filterStatus.indexOf(i.status) !== -1;
