@@ -2340,9 +2340,6 @@ export default {
             }
             return false;
         },
-    },
-    beforeDestroy () {
-        alert('destroy')
     }
 }
 </script>
