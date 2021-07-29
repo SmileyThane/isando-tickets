@@ -981,7 +981,7 @@
                     <span v-else>00:00</span>
                 </template>
                 <template v-slot:item.mon="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
                     <span v-if="item.times && item.times[0]">
                         <TimeField
                             v-model="moment(item.times[0].dateTime).format()"
@@ -999,7 +999,7 @@
                     </template>
                 </template>
                 <template v-slot:item.tue="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
                     <span v-if="item.times && item.times[1]">
                     <TimeField
                         v-model="moment(item.times[1].dateTime).format()"
@@ -1017,7 +1017,7 @@
                     </template>
                 </template>
                 <template v-slot:item.wed="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
                     <span v-if="item.times && item.times[2]">
                     <TimeField
                         v-model="moment(item.times[2].dateTime).format()"
@@ -1035,7 +1035,7 @@
                     </template>
                 </template>
                 <template v-slot:item.thu="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
                     <span v-if="item.times && item.times[3]">
                         <TimeField
                             v-model="moment(item.times[3].dateTime).format()"
@@ -1053,7 +1053,7 @@
                     </template>
                 </template>
                 <template v-slot:item.fri="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
                     <span v-if="item.times && item.times[4]">
                         <TimeField
                             v-model="moment(item.times[4].dateTime).format()"
@@ -1071,7 +1071,7 @@
                     </template>
                 </template>
                 <template v-slot:item.sat="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
                     <span v-if="item.times && item.times[5]">
                     <TimeField
                         v-model="moment(item.times[5].dateTime).format()"
@@ -1089,7 +1089,7 @@
                     </template>
                 </template>
                 <template v-slot:item.sun="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
                     <span v-if="item.times && item.times[6]">
                         <TimeField
                             v-model="moment(item.times[6].dateTime).format()"
