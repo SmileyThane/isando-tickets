@@ -906,12 +906,34 @@
                     ></v-simple-checkbox>
                 </template>
                 <template v-slot:item.entity.name="{ isMobile, item, header, value }">
-                    <ProjectBtn
-                        :key="item.id"
-                        :color="item.entity && item.entity.color ? item.entity.color : themeBgColor"
-                        v-model="item.entity"
-                        @input="updateProject(item)"
-                    ></ProjectBtn>
+                    <template v-if="['archived', 'pending'].indexOf(item.status) !== -1">
+                        <v-btn
+                            tile
+                            small
+                            text
+                            disabled
+                            v-if="item.entity && item.entity.from">
+                            Ticket: {{ $helpers.string.shortenText(item.entity.number, 15) }}.<br>
+                            {{ $helpers.string.shortenText(item.entity.name, 20) }}
+                        </v-btn>
+                        <v-btn
+                            tile
+                            small
+                            text
+                            v-else
+                            disabled
+                        >
+                            {{getTrackingProjectLabel}}:<br>{{ $helpers.string.shortenText(item.entity.name, 35) }}
+                        </v-btn>
+                    </template>
+                    <template v-else>
+                        <ProjectBtn
+                            :key="item.id"
+                            :color="item.entity && item.entity.color ? item.entity.color : themeBgColor"
+                            v-model="item.entity"
+                            @input="updateProject(item)"
+                        ></ProjectBtn>
+                    </template>
                 </template>
                 <template v-slot:item.status="{ isMobile, item, header, value }">
                     <v-chip v-if="value === 'archived'" small color="success">{{ langMap.tracking.timesheet.approved }}</v-chip>
@@ -925,26 +947,31 @@
                     </template>
                 </template>
                 <template v-slot:item.service="{ isMobile, item, header, value }">
-                    <v-edit-dialog
-                        :return-value="item.service"
-                        @save="updateService(item)"
-                        @close="updateService(item)"
-                        :ref="`editDialog${item.id}`"
-                    >
+                    <template v-if="['archived', 'pending'].indexOf(item.status) !== -1">
                         <span v-if="item.service">{{ item.service.name }}</span>
-                        <span v-else class="text--secondary">Add service</span>
-                        <template v-slot:input>
-                            <v-select
-                                :items="$store.getters['Services/getServices']"
-                                item-value="id"
-                                item-text="name"
-                                v-model="item.service"
-                                clearable
-                                return-object
-                                @input="$refs[`editDialog${item.id}`].isActive = false"
-                            ></v-select>
-                        </template>
-                    </v-edit-dialog>
+                    </template>
+                    <template v-else>
+                        <v-edit-dialog
+                            :return-value="item.service"
+                            @save="updateService(item)"
+                            @close="updateService(item)"
+                            :ref="`editDialog${item.id}`"
+                        >
+                            <span v-if="item.service">{{ item.service.name }}</span>
+                            <span v-else class="text--secondary">Add service</span>
+                            <template v-slot:input>
+                                <v-select
+                                    :items="$store.getters['Services/getServices']"
+                                    item-value="id"
+                                    item-text="name"
+                                    v-model="item.service"
+                                    clearable
+                                    return-object
+                                    @input="$refs[`editDialog${item.id}`].isActive = false"
+                                ></v-select>
+                            </template>
+                        </v-edit-dialog>
+                    </template>
                 </template>
                 <template v-slot:item.is_manually="{ isMobile, item, header, value }">
                     <span v-if="item.is_manually">
@@ -981,7 +1008,7 @@
                     <span v-else>00:00</span>
                 </template>
                 <template v-slot:item.mon="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[0]">
                         <TimeField
                             v-model="moment(item.times[0].dateTime).format()"
@@ -999,7 +1026,7 @@
                     </template>
                 </template>
                 <template v-slot:item.tue="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[1]">
                     <TimeField
                         v-model="moment(item.times[1].dateTime).format()"
@@ -1017,7 +1044,7 @@
                     </template>
                 </template>
                 <template v-slot:item.wed="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[2]">
                     <TimeField
                         v-model="moment(item.times[2].dateTime).format()"
@@ -1035,7 +1062,7 @@
                     </template>
                 </template>
                 <template v-slot:item.thu="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[3]">
                         <TimeField
                             v-model="moment(item.times[3].dateTime).format()"
@@ -1053,7 +1080,7 @@
                     </template>
                 </template>
                 <template v-slot:item.fri="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[4]">
                         <TimeField
                             v-model="moment(item.times[4].dateTime).format()"
@@ -1071,7 +1098,7 @@
                     </template>
                 </template>
                 <template v-slot:item.sat="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[5]">
                     <TimeField
                         v-model="moment(item.times[5].dateTime).format()"
@@ -1089,7 +1116,7 @@
                     </template>
                 </template>
                 <template v-slot:item.sun="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && item.status !== 'archived'">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[6]">
                         <TimeField
                             v-model="moment(item.times[6].dateTime).format()"
@@ -2344,6 +2371,24 @@ export default {
                 return hasFinished;
             }
             return false;
+        },
+        getTrackingProjectLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.department;
+                case 2: return this.langMap.tracking.profit_center;
+                default: return this.langMap.tracking.project;
+            }
+        },
+        getTrackingProjectsLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.departments;
+                case 2: return this.langMap.tracking.profit_centres;
+                default: return this.langMap.tracking.projects;
+            }
         },
     }
 }
