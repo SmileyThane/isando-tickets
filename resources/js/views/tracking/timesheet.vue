@@ -1632,7 +1632,7 @@ export default {
                 dow: 1,
             },
         });
-        this.debounceGetTimesheet = _.debounce(this._getTimesheet, 3000);
+        this.debounceGetTimesheet = _.debounce(this._getTimesheet, 1000);
         this.debounceGetProjects = _.debounce(this._getProjects, 1000);
         this.debounceGetTickets = _.debounce(this._getTickets, 1000);
         this.debounceGetManagedTeams = _.debounce(this._getManagedTeams, 1000);
