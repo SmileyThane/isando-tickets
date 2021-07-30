@@ -11,8 +11,8 @@ class DashboardController extends BaseController
 {
     public function index(Request $request) {
 
-        $from = Carbon::parse($request->get('periodStart', Carbon::now()))->format(Tracking::$DATETIME_FORMAT);
-        $to = Carbon::parse($request->get('periodEnd', Carbon::now()))->format(Tracking::$DATETIME_FORMAT);
+        $from = Carbon::parse($request->get('periodStart', Carbon::now()))->startOf('day')->format(Tracking::$DATETIME_FORMAT);
+        $to = Carbon::parse($request->get('periodEnd', Carbon::now()))->endOf('day')->format(Tracking::$DATETIME_FORMAT);
         $team = $request->get('team', null);
 
         $services = $this->trackingReportRepo->getTotalTimeByServices($from, $to, $team);
