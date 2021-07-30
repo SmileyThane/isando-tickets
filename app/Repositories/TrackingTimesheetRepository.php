@@ -647,6 +647,16 @@ class TrackingTimesheetRepository
                         $time->description = $hour['description'];
                         $time->save();
                     }
+                } else {
+                    for ($i = 0; $i < 7; $i++) {
+                        $time = new TrackingTimesheetTime();
+                        $time->timesheet_id = $timesheet->id;
+                        $time->date = Carbon::parse($dateStart)->addDays($i)->format('Y-m-d');
+                        $time->time = '00:00:00';
+                        $time->type = 'work';
+                        $time->description = null;
+                        $time->save();
+                    }
                 }
                 $this->genTrackersByTimesheet($timesheet);
             }
