@@ -109,12 +109,9 @@ class TrackingTimesheet extends Model
         });
 
         static::updating(function($trackingTimesheet) {
-            $service = Service::where('id', '=', $trackingTimesheet->service_id)->first();
-            if ($service) {
-                $trackings = Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->get();
-                foreach ($trackings as $tracking) {
-                    $tracking->Services()->sync([$service->id]);
-                }
+            $trackings = Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->get();
+            foreach ($trackings as $tracking) {
+                $tracking->Services()->sync([$trackingTimesheet->service_id]);
             }
         });
     }
