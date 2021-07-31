@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Repositories\TrackingTimesheetRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -142,6 +143,17 @@ class TrackingTimesheet extends Model
             $newTime->save();
         }
         return $new;
+    }
+
+    public function genTimes() {
+        for ($i = 0; $i <= 6; $i++) {
+            $trackingTimesheetTime = new TrackingTimesheetTime();
+            $trackingTimesheetTime->timesheet_id = $this->id;
+            $trackingTimesheetTime->type = TrackingTimesheetTime::TYPE_WORK;
+            $trackingTimesheetTime->date = Carbon::parse($this->from)->addDays($i)->format('Y-m-d');
+            $trackingTimesheetTime->time = TrackingTimesheetRepository::convertSecondsToTimeFormat(0, true);
+            $trackingTimesheetTime->save();
+        }
     }
 
 }
