@@ -1044,7 +1044,7 @@ export default {
                         }
                         return false;
                     }
-                    this.debounceGetTracking();
+                    // this.debounceGetTracking();
                     this.resetManualPanel();
                     this.loadingUpdateTrack = false;
                     return data;

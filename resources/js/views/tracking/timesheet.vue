@@ -34,7 +34,7 @@
                 <v-btn
                     @click="selected = []; expandedManagerData = []"
                 >
-                    {{ langMap.tracking.timesheet.archived }}
+                    {{ langMap.tracking.timesheet.approved }}
                 </v-btn>
                 <v-btn
                     v-if="isManager"
@@ -233,6 +233,21 @@
                     </template>
                 </v-select>
             </div>
+            <div class="d-inline-flex flex-grow-1">
+                <v-select
+                    class="mx-4"
+                    v-model="filterStatus"
+                    :items="getStatuses()"
+                    item-value="value"
+                    item-text="text"
+                    :label="langMap.tracking.timesheet.filter + ' by status'"
+                    dense
+                    style="max-width: 200px"
+                    clearable
+                    multiple
+                >
+                </v-select>
+            </div>
             <div class="d-inline-flex flex-grow-1 mx-4">
                 <div class="d-flex flex-row">
                     <div class="d-inline-flex">
@@ -318,7 +333,7 @@
             :loading="loading"
             loading-text="Loading... Please wait"
             v-model="selected"
-            items-per-page="300"
+            :items-per-page="countRecordsOnTable"
         >
             <template v-slot:footer>
                 Daily view
@@ -337,7 +352,7 @@
                 :expanded="expandedManagerData"
                 hide-default-footer
                 show-expand
-                items-per-page="300"
+                :items-per-page="countRecordsOnTable"
             >
                 <template v-slot:item.user.full_name="{ item }">
                     <span v-if="item && item.user">{{ item.user.full_name }}</span>
@@ -392,7 +407,7 @@
                             :single-select="singleSelect"
                             :show-select="[STATUS_REJECTED].indexOf(typeOfItems) !== -1"
                             v-model="selected"
-                            items-per-page="300"
+                            :items-per-page="countRecordsOnTable"
                         >
                             <template v-slot:item.is_manually="{ isMobile, item, header, value }">
                                 <span v-if="item.is_manually">
@@ -688,7 +703,7 @@
                 loading-text="Loading... Please wait"
                 v-model="selected"
                 hide-default-footer
-                items-per-page="300"
+                :items-per-page="countRecordsOnTable"
             >
                 <template v-slot:body.prepend="{ headers }">
                     <tr class="highlight">
@@ -891,34 +906,72 @@
                     ></v-simple-checkbox>
                 </template>
                 <template v-slot:item.entity.name="{ isMobile, item, header, value }">
-                    <ProjectBtn
-                        :key="item.id"
-                        :color="item.entity && item.entity.color ? item.entity.color : themeBgColor"
-                        v-model="item.entity"
-                        @input="updateProject(item)"
-                    ></ProjectBtn>
+                    <template v-if="['archived', 'pending'].indexOf(item.status) !== -1">
+                        <v-btn
+                            tile
+                            small
+                            text
+                            disabled
+                            v-if="item.entity && item.entity.from">
+                            Ticket: {{ $helpers.string.shortenText(item.entity.number, 15) }}.<br>
+                            {{ $helpers.string.shortenText(item.entity.name, 20) }}
+                        </v-btn>
+                        <v-btn
+                            tile
+                            small
+                            text
+                            v-else
+                            disabled
+                        >
+                            {{getTrackingProjectLabel}}:<br>{{ $helpers.string.shortenText(item.entity.name, 35) }}
+                        </v-btn>
+                    </template>
+                    <template v-else>
+                        <ProjectBtn
+                            :key="item.id"
+                            :color="item.entity && item.entity.color ? item.entity.color : themeBgColor"
+                            v-model="item.entity"
+                            @input="updateProject(item)"
+                        ></ProjectBtn>
+                    </template>
+                </template>
+                <template v-slot:item.status="{ isMobile, item, header, value }">
+                    <v-chip v-if="value === 'archived'" small color="success">{{ langMap.tracking.timesheet.approved }}</v-chip>
+                    <v-chip v-if="value === 'rejected'" small color="error">{{ langMap.tracking.timesheet.rejected }}</v-chip>
+                    <v-chip v-if="value === 'pending'" small color="primary">{{ langMap.tracking.timesheet.approval_pending }}</v-chip>
+                    <v-chip v-if="value === 'tracked'" small>{{ langMap.tracking.timesheet.tracked }}</v-chip>
+                </template>
+                <template v-slot:item.number="{ isMobile, item, header, value }">
+                    <template v-if="value">
+                        #{{ value }}
+                    </template>
                 </template>
                 <template v-slot:item.service="{ isMobile, item, header, value }">
-                    <v-edit-dialog
-                        :return-value="item.service"
-                        @save="updateService(item)"
-                        @close="updateService(item)"
-                        :ref="`editDialog${item.id}`"
-                    >
+                    <template v-if="['archived', 'pending'].indexOf(item.status) !== -1">
                         <span v-if="item.service">{{ item.service.name }}</span>
-                        <span v-else class="text--secondary">Add service</span>
-                        <template v-slot:input>
-                            <v-select
-                                :items="$store.getters['Services/getServices']"
-                                item-value="id"
-                                item-text="name"
-                                v-model="item.service"
-                                clearable
-                                return-object
-                                @input="$refs[`editDialog${item.id}`].isActive = false"
-                            ></v-select>
-                        </template>
-                    </v-edit-dialog>
+                    </template>
+                    <template v-else>
+                        <v-edit-dialog
+                            :return-value="item.service"
+                            @save="updateService(item)"
+                            @close="updateService(item)"
+                            :ref="`editDialog${item.id}`"
+                        >
+                            <span v-if="item.service">{{ item.service.name }}</span>
+                            <span v-else class="text--secondary">Add service</span>
+                            <template v-slot:input>
+                                <v-select
+                                    :items="$store.getters['Services/getServices']"
+                                    item-value="id"
+                                    item-text="name"
+                                    v-model="item.service"
+                                    clearable
+                                    return-object
+                                    @input="$refs[`editDialog${item.id}`].isActive = false"
+                                ></v-select>
+                            </template>
+                        </v-edit-dialog>
+                    </template>
                 </template>
                 <template v-slot:item.is_manually="{ isMobile, item, header, value }">
                     <span v-if="item.is_manually">
@@ -955,7 +1008,7 @@
                     <span v-else>00:00</span>
                 </template>
                 <template v-slot:item.mon="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[0]">
                         <TimeField
                             v-model="moment(item.times[0].dateTime).format()"
@@ -973,7 +1026,7 @@
                     </template>
                 </template>
                 <template v-slot:item.tue="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[1]">
                     <TimeField
                         v-model="moment(item.times[1].dateTime).format()"
@@ -991,7 +1044,7 @@
                     </template>
                 </template>
                 <template v-slot:item.wed="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[2]">
                     <TimeField
                         v-model="moment(item.times[2].dateTime).format()"
@@ -1009,7 +1062,7 @@
                     </template>
                 </template>
                 <template v-slot:item.thu="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[3]">
                         <TimeField
                             v-model="moment(item.times[3].dateTime).format()"
@@ -1027,7 +1080,7 @@
                     </template>
                 </template>
                 <template v-slot:item.fri="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[4]">
                         <TimeField
                             v-model="moment(item.times[4].dateTime).format()"
@@ -1045,7 +1098,7 @@
                     </template>
                 </template>
                 <template v-slot:item.sat="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[5]">
                     <TimeField
                         v-model="moment(item.times[5].dateTime).format()"
@@ -1063,7 +1116,7 @@
                     </template>
                 </template>
                 <template v-slot:item.sun="{ isMobile, item, header, value }">
-                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually">
+                    <template v-if="[STATUS_TRACKED,STATUS_REJECTED].indexOf(typeOfItems) !== -1 && item.is_manually && ['archived', 'pending'].indexOf(item.status) === -1">
                     <span v-if="item.times && item.times[6]">
                         <TimeField
                             v-model="moment(item.times[6].dateTime).format()"
@@ -1121,6 +1174,7 @@
                 small
                 color="error"
                 @click="removeTimesheet"
+                :disabled="blockActions"
             >
                 Remove selected
             </v-btn>
@@ -1304,6 +1358,7 @@
                         v-on="on"
                         class="mx-2"
                         small
+                        :disabled="blockActions"
                     >
                         <span v-if="typeOfItems === STATUS_TRACKED">{{ langMap.tracking.timesheet.submit_for_approval }}</span>
                         <span v-else>{{ langMap.tracking.timesheet.resubmit_for_approval }}</span>
@@ -1511,6 +1566,7 @@ export default {
     },
     data () {
         return {
+            countRecordsOnTable: 1000,
             dateFormat: 'YYYY-MM-DD',
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
@@ -1533,6 +1589,7 @@ export default {
             date: null,
             menuDate: false,
             filterProject: 0,
+            filterStatus: [],
             form: {
                 entity: null,
                 entity_id: null,
@@ -1638,7 +1695,7 @@ export default {
             await this.$store.dispatch('Timesheet/getTimesheet', {
                 ...this.dateRange,
             });
-            await this.$store.dispatch('Timesheet/getAllGroupedByStatus', { userId: this.currentUser.id });
+            await this.$store.dispatch('Timesheet/getAllGroupedByStatus', { userId: this.currentUser ? this.currentUser.id : null });
             this.loading = false;
             this.resetTimesheet();
         },
@@ -1753,7 +1810,7 @@ export default {
                         this.actionColor = 'error'
                         this.snackbar = true;
                     }
-                    this.debounceGetTimesheet();
+                    // this.debounceGetTimesheet();
                 });
         },
         saveChanges (item, index, newValue) {
@@ -1806,6 +1863,20 @@ export default {
                     width: '20%',
                 }
             ];
+            if ([this.STATUS_TRACKED].indexOf(this.typeOfItems) !== -1) {
+                headers.push({
+                        text: '',
+                        align: 'start',
+                        value: 'status',
+                        width: '3%',
+                    },
+                    {
+                        text: '',
+                        align: 'start',
+                        value: 'number',
+                        width: '3%',
+                    });
+            }
             if (this.showEditServices) {
                 headers.push({
                     text: '',
@@ -2038,6 +2109,26 @@ export default {
                         this.snackbar = true;
                     })
             }
+        },
+        getStatuses() {
+            return [
+                {
+                    value: 'tracked',
+                    text: this.langMap.tracking.timesheet.tracked,
+                },
+                {
+                    value: 'pending',
+                    text: this.langMap.tracking.timesheet.approval_pending,
+                },
+                {
+                    value: 'rejected',
+                    text: this.langMap.tracking.timesheet.rejected,
+                },
+                {
+                    value: 'archived',
+                    text: this.langMap.tracking.timesheet.approved,
+                },
+            ];
         }
     },
     watch: {
@@ -2052,7 +2143,7 @@ export default {
                     : moment(this.date).endOf('days').format(this.dateFormat);
         },
         'dateRange.start' () {
-            this.debounceGetTimesheet();
+            this._getTimesheet();
         },
         undoStack () {
             this.deletedItems = this.undoStack.reduce((acc, curr) => acc.concat(curr.items), []);
@@ -2184,8 +2275,18 @@ export default {
                     .filter(i => i.entity_id && i.entity.id === this.filterProject);
             }
             return timesheet
-                .filter(i => i.user_id === user.id)
-                .filter(i => i.status === this.currentStatus);
+                .filter(i => {
+                    if (user) {
+                        return i.user_id === user.id;
+                    }
+                    return true;
+                })
+                .filter(i => {
+                    if (self.filterStatus && self.filterStatus.length) {
+                        return self.filterStatus.indexOf(i.status) !== -1;
+                    }
+                    return true;
+                });
         },
         getTimesheetForManager() {
             const user = this.currentUser;
@@ -2258,6 +2359,37 @@ export default {
         isManager() {
             return !!this.$store.getters['Team/getManagedTeams'].length;
         },
-    },
+        blockActions() {
+            if (this.selected.length) {
+                let hasFinished = false;
+                Promise.all(this.selected.map(i => {
+                    if (['archived'].indexOf(i.status) !== -1) {
+                        hasFinished = true;
+                        return true;
+                    }
+                }));
+                return hasFinished;
+            }
+            return false;
+        },
+        getTrackingProjectLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.department;
+                case 2: return this.langMap.tracking.profit_center;
+                default: return this.langMap.tracking.project;
+            }
+        },
+        getTrackingProjectsLabel() {
+            const { settings } = this.$store.getters['Tracking/getSettings'];
+            const projectType = settings && settings.projectType ? settings.projectType : 0;
+            switch (projectType) {
+                case 1: return this.langMap.tracking.departments;
+                case 2: return this.langMap.tracking.profit_centres;
+                default: return this.langMap.tracking.projects;
+            }
+        },
+    }
 }
 </script>

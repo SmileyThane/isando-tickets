@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Repositories\TrackingTimesheetRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
@@ -109,12 +110,9 @@ class TrackingTimesheet extends Model
         });
 
         static::updating(function($trackingTimesheet) {
-            $service = Service::where('id', '=', $trackingTimesheet->service_id)->first();
-            if ($service) {
-                $trackings = Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->get();
-                foreach ($trackings as $tracking) {
-                    $tracking->Services()->sync([$service->id]);
-                }
+            $trackings = Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->get();
+            foreach ($trackings as $tracking) {
+                $tracking->Services()->sync([$trackingTimesheet->service_id]);
             }
         });
     }
@@ -145,6 +143,17 @@ class TrackingTimesheet extends Model
             $newTime->save();
         }
         return $new;
+    }
+
+    public function genTimes() {
+        for ($i = 0; $i <= 6; $i++) {
+            $trackingTimesheetTime = new TrackingTimesheetTime();
+            $trackingTimesheetTime->timesheet_id = $this->id;
+            $trackingTimesheetTime->type = TrackingTimesheetTime::TYPE_WORK;
+            $trackingTimesheetTime->date = Carbon::parse($this->from)->addDays($i)->format('Y-m-d');
+            $trackingTimesheetTime->time = TrackingTimesheetRepository::convertSecondsToTimeFormat(0, true);
+            $trackingTimesheetTime->save();
+        }
     }
 
 }

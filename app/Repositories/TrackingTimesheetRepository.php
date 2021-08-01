@@ -34,29 +34,54 @@ class TrackingTimesheetRepository
             ->with('Approver')
             ->with(['Times' => function ($q) {
                 $q->orderBy('date', 'asc');
-            }]);
-        $teams = \App\Team::whereHas('employees', function ($query) {
-            return $query->where('company_user_id', '=', Auth::user()->employee->id)
-                ->where('is_manager', '=', true);
-        })->pluck('id');
-        if ($teams->count()) {
-            $query->where(function($q) use ($teams) {
-                $q->where('user_id', '=', Auth::user()->id)
-                    ->orWhereIn('team_id', $teams)
-                    ->orWhere('approver_id', Auth::user()->id);
+            }])
+            ->whereIn('status', [
+                TrackingTimesheet::STATUS_TRACKED,
+                TrackingTimesheet::STATUS_PENDING,
+                TrackingTimesheet::STATUS_REJECTED,
+                TrackingTimesheet::STATUS_APPROVED,
+                TrackingTimesheet::STATUS_ARCHIVED,
+                TrackingTimesheet::STATUS_UNSUBMITTED,
+            ])
+            ->where(function ($q) use ($request) {
+                $q->where('from', '<=', Carbon::parse($request->end))
+                    ->where('to', '>=', Carbon::parse($request->start));
             });
+
+        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+            // Manager
+            $teams = $teams = Team::whereHas('employees', function ($q) {
+                return $q
+                    ->where('company_user_id', '=', Auth::user()->employee->id)
+                    ->where('is_manager', '=', true);
+            })->get()->pluck('id')->toArray();
+            $query->where(function ($query) use ($teams) {
+                    $query->whereIn('team_id', $teams)
+                        ->where(function($q) {
+                           $q->whereNull('approver_id')
+                               ->orWhere('approver_id', '=', Auth::user()->id);
+                        })
+                        ->orWhere('user_id', '=', Auth::user()->id);
+                });
+        } else if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+            // Company Admin
+            $company = Auth::user()->employee()
+                ->whereDoesntHave('assignedToClients')->where('is_clientable', false)
+                ->with('userData')->first();
+            $query->where('company_id', '=', $company->company_id)
+                ->where(function ($query) {
+                    $query->whereNull('approver_id')
+                        ->orWhere('approver_id', '=', Auth::user()->id);
+                });
         } else {
             $query->where(function($q) {
                 $q->where('user_id', '=', Auth::user()->id)
-                    ->orWhere('approver_id', Auth::user()->id);
+                    ->orWhere('approver_id', '=', Auth::user()->id);
             });
         }
-        return $query
-            ->where(function ($q) use ($request) {
-                $q->where('from', '<=', Carbon::parse($request->end)->endOf('week'))
-                    ->where('to', '>=', Carbon::parse($request->start)->startOf('week'));
-            })
-            ->get();
+        $query->orderBy('id', 'desc');
+//        dd($query->toSql(), $query->getBindings(), $query->get());
+        return $query->get();
     }
 
     public function getAllGroupedByStatus(Request $request) {
@@ -287,86 +312,178 @@ class TrackingTimesheetRepository
         return $updatedTimesheet;
     }
 
-    public static function recalculate($tracking) {
+    public static function calcTimeByTrackers($trackers) {
+        $time = [0,0,0,0,0,0,0];
 
-        $trackers = Tracking::where([
-            ['status', '<>', Tracking::$STATUS_ARCHIVED],
-            ['user_id', '=', $tracking->user_id],
-            ['team_id', '=', $tracking->team_id],
-            ['company_id', '=', $tracking->company_id],
-            ['is_manual', '=', $tracking->is_manual],
-            ['entity_id', '=', $tracking->entity_id],
-            ['entity_type', '=', $tracking->entity_type],
-            ['date_from', '>=', Carbon::parse($tracking->date_from)->startOf('weeks')->format('Y-m-d')],
-            ['date_to', '<=', Carbon::parse($tracking->date_to)->endOf('weeks')->format('Y-m-d')],
-        ])->get();
-
-        $items = [];
-        if ($trackers->count()) {
-            foreach ($trackers as $tracker) {
-                $timesheet = TrackingTimesheet::where([
-                    ['user_id', '=', $tracker->user_id],
-                    ['company_id', '=', $tracker->company_id],
-                    ['team_id', '=', $tracker->team_id],
-                    ['entity_id', '=', $tracker->entity_id],
-                    ['entity_type', '=', $tracker->entity_type],
-                    ['is_manually', '=', !$tracker->is_manual],
-                    ['from', '>=', Carbon::parse($tracker->date_from)->startOf('weeks')],
-                    ['to', '<=', Carbon::parse($tracker->date_to)->endOf('weeks')]
-                ])->first();
-                if (!$timesheet) {
-                    $timesheet = new TrackingTimesheet();
-                    $timesheet->user_id = $tracker->user_id;
-                    $timesheet->company_id = $tracker->company_id;
-                    $timesheet->team_id = $tracker->team_id;
-                    $timesheet->entity_id = $tracker->entity_id;
-                    $timesheet->entity_type = $tracker->entity_type;
-                    $timesheet->is_manually = false;
-                    $timesheet->from = Carbon::parse($tracker->date_from)->startOf('weeks')->format('Y-m-d');
-                    $timesheet->to = Carbon::parse($tracker->date_to)->endOf('weeks')->format('Y-m-d');
-                    $timesheet->save();
-                    for ($i = 0; $i <= 6; $i++) {
-                        $trackingTimesheetTime = new TrackingTimesheetTime();
-                        $trackingTimesheetTime->timesheet_id = $timesheet->id;
-                        $trackingTimesheetTime->type = TrackingTimesheetTime::TYPE_WORK;
-                        $trackingTimesheetTime->date = Carbon::parse($timesheet->from)->addDays($i)->format('Y-m-d');
-                        $trackingTimesheetTime->time = self::convertSecondsToTimeFormat(0, true);
-                        $trackingTimesheetTime->save();
-                    }
-                }
-                TrackingTimesheetTime::where('timesheet_id', '=', $timesheet->id)->update(['time' => '00:00:00']);
-                Tracking::where('id', '=', $tracker->id)->update(['timesheet_id' => $timesheet->id]);
-                $date = Carbon::parse($tracker->date_from)->format('Y-m-d');
-                $items[$timesheet->id][$date][] = $tracker;
-            }
-        } else {
-            if ($tracking->timesheet_id) {
-                TrackingTimesheetTime::where([
-                    ['timesheet_id', '=', $tracking->timesheet_id],
-                    ['date', '=', Carbon::parse($tracking->date_from)->format('Y-m-d')]
-                ])->update(['time' => '00:00:00']);
-            }
+        foreach ($trackers as $tracker) {
+            // dayOfWeekIso returns a number between 1 (monday) and 7 (sunday)
+            $dayOfWeek = Carbon::parse($tracker->date_from)->dayOfWeekIso;
+            $time[$dayOfWeek - 1] += $tracker->passed;
         }
+        return $time;
+    }
 
-        foreach ($items as $timesheet_id => $timesheetItems) {
-            foreach ($timesheetItems as $date => $trackers) {
-                $seconds = 0;
-                foreach ($trackers as $tracker) {
-                    $seconds += $tracker->passed;
+    public static function setTimesheetTime($timesheet_id, $timeByDay) {
+        $trackingTimesheetTime = TrackingTimesheetTime::where('timesheet_id', '=', $timesheet_id)
+            ->orderBy('date')->get();
+        foreach ($trackingTimesheetTime as $time) {
+            // dayOfWeekIso returns a number between 1 (monday) and 7 (sunday)
+            $dayOfWeek = Carbon::parse($time->date)->dayOfWeekIso;
+            if (isset($timeByDay[$dayOfWeek-1])) {
+                $time->time = self::convertSecondsToTimeFormat($timeByDay[$dayOfWeek - 1], true);
+            } else {
+                $time->time = self::convertSecondsToTimeFormat(0, true);
+            }
+            $time->save();
+        }
+    }
+
+    public static function recalculate($tracker) {
+
+        /*
+         * TODO Two points for solve that problem
+         * 1) if tracker has timesheet then recalculate this timesheet with all available trackers
+         * 2) if tracker hasn't timesheet then search the same tracker, calculate and create timesheet
+         */
+        if ($tracker->timesheet_id) {
+            $sameTrackers = Tracking::where([
+                ['timesheet_id', '=', $tracker->timesheet_id],
+                ['user_id', '=', $tracker->user_id]
+            ])->get();
+            $timeByDay = self::calcTimeByTrackers($sameTrackers);
+            self::setTimesheetTime($tracker->timesheet_id, $timeByDay);
+        } else {
+            $sameTrackers = Tracking::where([
+                ['status', '<>', Tracking::$STATUS_ARCHIVED],
+                ['user_id', '=', $tracker->user_id],
+                ['team_id', '=', $tracker->team_id],
+                ['company_id', '=', $tracker->company_id],
+//                ['is_manual', '=', $tracker->is_manual],
+                ['entity_id', '=', $tracker->entity_id],
+                ['entity_type', '=', $tracker->entity_type],
+                ['date_from', '>=', Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATE_FORMAT)],
+                ['date_to', '<=', Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATE_FORMAT)],
+            ])->get();
+            $timeByDay = self::calcTimeByTrackers($sameTrackers);
+            // search timesheet
+            $timesheet = TrackingTimesheet::where([
+                ['user_id', '=', $tracker->user_id],
+                ['company_id', '=', $tracker->company_id],
+                ['team_id', '=', $tracker->team_id],
+                ['entity_id', '=', $tracker->entity_id],
+                ['entity_type', '=', $tracker->entity_type],
+                ['is_manually', '<>', $tracker->is_manual],
+                ['from', '=', Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATE_FORMAT)],
+                ['to', '=', Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATE_FORMAT)]
+            ])->first();
+            if (!$timesheet) {
+                // create new timesheet
+                $timesheet = new TrackingTimesheet();
+                $timesheet->user_id = $tracker->user_id;
+                $timesheet->company_id = $tracker->company_id;
+                $timesheet->team_id = $tracker->team_id;
+                $timesheet->entity_id = $tracker->entity_id;
+                $timesheet->entity_type = $tracker->entity_type;
+                $timesheet->is_manually = false;
+                $timesheet->service_id = $tracker->service ? $tracker->service->id : null;
+                $timesheet->from = Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATE_FORMAT);
+                $timesheet->to = Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATE_FORMAT);
+                $timesheet->save();
+                $timesheet->genTimes(); // to generating empty time fields
+                foreach ($sameTrackers as $track) {
+                    $track->timesheet_id = $timesheet->id;
+                    $track->save();
                 }
-                TrackingTimesheetTime::updateOrCreate([
-                    'timesheet_id' => $timesheet_id,
-                    'type' => TrackingTimesheetTime::TYPE_WORK,
-                    'date' => $date
-                ], [
-                    'time' => self::convertSecondsToTimeFormat($seconds, true),
-                    'timesheet_id' => $timesheet_id,
-                    'type' => TrackingTimesheetTime::TYPE_WORK,
-                    'date' => $date
-                ]);
+                self::setTimesheetTime($timesheet->id, $timeByDay);
+            } else {
+                // update exists timesheet
+                foreach ($sameTrackers as $track) {
+                    $track->timesheet_id = $timesheet->id;
+                    $track->save();
+                }
+                self::setTimesheetTime($timesheet->id, $timeByDay);
             }
         }
         return true;
+//        $tracking = $tracker;
+//        $trackers = Tracking::where([
+//            ['status', '<>', Tracking::$STATUS_ARCHIVED],
+//            ['user_id', '=', $tracking->user_id],
+//            ['team_id', '=', $tracking->team_id],
+//            ['company_id', '=', $tracking->company_id],
+//            ['is_manual', '=', $tracking->is_manual],
+//            ['entity_id', '=', $tracking->entity_id],
+//            ['entity_type', '=', $tracking->entity_type],
+//            ['date_from', '>=', Carbon::parse($tracking->date_from)->startOf('weeks')->format('Y-m-d')],
+//            ['date_to', '<=', Carbon::parse($tracking->date_to)->endOf('weeks')->format('Y-m-d')],
+//        ])->get();
+//
+//        $items = [];
+//        if ($trackers->count()) {
+//            foreach ($trackers as $tracker) {
+//                $timesheet = TrackingTimesheet::where([
+//                    ['user_id', '=', $tracker->user_id],
+//                    ['company_id', '=', $tracker->company_id],
+//                    ['team_id', '=', $tracker->team_id],
+//                    ['entity_id', '=', $tracker->entity_id],
+//                    ['entity_type', '=', $tracker->entity_type],
+//                    ['is_manually', '=', !$tracker->is_manual],
+//                    ['from', '>=', Carbon::parse($tracker->date_from)->startOf('weeks')],
+//                    ['to', '<=', Carbon::parse($tracker->date_to)->endOf('weeks')]
+//                ])->first();
+//                if (!$timesheet) {
+//                    $timesheet = new TrackingTimesheet();
+//                    $timesheet->user_id = $tracker->user_id;
+//                    $timesheet->company_id = $tracker->company_id;
+//                    $timesheet->team_id = $tracker->team_id;
+//                    $timesheet->entity_id = $tracker->entity_id;
+//                    $timesheet->entity_type = $tracker->entity_type;
+//                    $timesheet->is_manually = false;
+//                    $timesheet->from = Carbon::parse($tracker->date_from)->startOf('weeks')->format('Y-m-d');
+//                    $timesheet->to = Carbon::parse($tracker->date_to)->endOf('weeks')->format('Y-m-d');
+//                    $timesheet->save();
+//                    for ($i = 0; $i <= 6; $i++) {
+//                        $trackingTimesheetTime = new TrackingTimesheetTime();
+//                        $trackingTimesheetTime->timesheet_id = $timesheet->id;
+//                        $trackingTimesheetTime->type = TrackingTimesheetTime::TYPE_WORK;
+//                        $trackingTimesheetTime->date = Carbon::parse($timesheet->from)->addDays($i)->format('Y-m-d');
+//                        $trackingTimesheetTime->time = self::convertSecondsToTimeFormat(0, true);
+//                        $trackingTimesheetTime->save();
+//                    }
+//                }
+//                TrackingTimesheetTime::where('timesheet_id', '=', $timesheet->id)->update(['time' => '00:00:00']);
+//                Tracking::where('id', '=', $tracker->id)->update(['timesheet_id' => $timesheet->id]);
+//                $date = Carbon::parse($tracker->date_from)->format('Y-m-d');
+//                $items[$timesheet->id][$date][] = $tracker;
+//            }
+//        } else {
+//            if ($tracking->timesheet_id) {
+//                TrackingTimesheetTime::where([
+//                    ['timesheet_id', '=', $tracking->timesheet_id],
+//                    ['date', '=', Carbon::parse($tracking->date_from)->format('Y-m-d')]
+//                ])->update(['time' => '00:00:00']);
+//            }
+//        }
+//
+//        foreach ($items as $timesheet_id => $timesheetItems) {
+//            foreach ($timesheetItems as $date => $trackers) {
+//                $seconds = 0;
+//                foreach ($trackers as $tracker) {
+//                    $seconds += $tracker->passed;
+//                }
+//                TrackingTimesheetTime::updateOrCreate([
+//                    'timesheet_id' => $timesheet_id,
+//                    'type' => TrackingTimesheetTime::TYPE_WORK,
+//                    'date' => $date
+//                ], [
+//                    'time' => self::convertSecondsToTimeFormat($seconds, true),
+//                    'timesheet_id' => $timesheet_id,
+//                    'type' => TrackingTimesheetTime::TYPE_WORK,
+//                    'date' => $date
+//                ]);
+//            }
+//        }
+//        return true;
     }
 
 //    public static function recalculateTimesheet(int $timesheetId) {
@@ -476,6 +593,7 @@ class TrackingTimesheetRepository
                 })
                 ->orderBy('id', 'desc')
                 ->get();
+//            dd($timesheet, $from, $to, $trackers);
             $totalTime = $time->timeInSec;
             $trackersTotalPassed = $trackers->sum('passed');
             if ($trackersTotalPassed > $totalTime) {
@@ -620,6 +738,16 @@ class TrackingTimesheetRepository
                         $time->time = $hour['time'];
                         $time->type = $hour['type'];
                         $time->description = $hour['description'];
+                        $time->save();
+                    }
+                } else {
+                    for ($i = 0; $i < 7; $i++) {
+                        $time = new TrackingTimesheetTime();
+                        $time->timesheet_id = $timesheet->id;
+                        $time->date = Carbon::parse($dateStart)->addDays($i)->format('Y-m-d');
+                        $time->time = '00:00:00';
+                        $time->type = 'work';
+                        $time->description = null;
                         $time->save();
                     }
                 }
