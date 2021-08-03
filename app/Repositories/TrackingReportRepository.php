@@ -139,12 +139,12 @@ class TrackingReportRepository
             });
 
         if ($request->has('period') && isset($request->period['start'])) {
-            $tracking->where('tracking.date_from', '>=', $request->period['start']);
+            $tracking->where('tracking.date_from', '>=', Carbon::parse($request->period['start'])->startOf('day'));
         }
         if ($request->has('period') && isset($request->period['end'])) {
             $tracking->where(function($query) use ($request) {
                 $query
-                    ->where('tracking.date_to', '<=', $request->period['end'])
+                    ->where('tracking.date_to', '<=', Carbon::parse($request->period['end'])->endOf('day'))
                     ->orWhereNull('tracking.date_to');
             });
         }
