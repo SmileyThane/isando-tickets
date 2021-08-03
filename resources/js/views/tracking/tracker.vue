@@ -1172,6 +1172,8 @@ export default {
             };
         },
         handlerDateRange() {
+            this.dateRange.start = moment(this.dateRange.start).format(this.dateFormat);
+            this.dateRange.end = moment(this.dateRange.end).format(this.dateFormat);
             this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
             this.dateRangePicker = false;
             this.debounceGetTracking();
