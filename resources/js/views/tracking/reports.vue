@@ -444,7 +444,17 @@
                                         <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
                                         <span v-if="item.service">{{ item.service.name }}</span>
                                         <v-icon v-if="(item.service && item.description) || (item.entity && item.description)" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
-                                        <span v-if="item.description">{{ item.description }}</span>
+                                        <span v-if="item.description">
+                                            <v-tooltip top>
+                                              <template v-slot:activator="{ on, attrs }">
+                                                <span
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                >{{ $helpers.string.shortenText(item.description, 60) }}</span>
+                                              </template>
+                                              <span>{{ item.description }}</span>
+                                            </v-tooltip>
+                                        </span>
                                     </td>
                                     <td class="pa-2" align="right" width="10%">
                                         <TagField
@@ -921,6 +931,7 @@ export default {
     data() {
         const self = this;
         return {
+            dateFormat: 'YYYY-MM-DD',
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
@@ -932,8 +943,8 @@ export default {
             builder: {
                 reportName: 'Report',
                 period: {
-                    start: moment().subtract(1, 'months').format('YYYY-MM-DD'),
-                    end: moment().format('YYYY-MM-DD')
+                    start: moment().subtract(1, 'months').format('YYYY-MM-DDTHH:mm:ss'),
+                    end: moment().format('YYYY-MM-DDTHH:mm:ss')
                 },
                 round: 0,
                 sort: {
@@ -1258,6 +1269,7 @@ export default {
                 dow: 1,
             },
         });
+        moment.tz.setDefault('Etc/UTC');
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Projects/getProjectList', { search: null });
@@ -1347,13 +1359,14 @@ export default {
                     start = null;
                     end = moment().endOf('years');
             }
-            this.builder.period.start = start ? moment(start).toDate() : start;
-            this.builder.period.end = moment(end).toDate();
+            this.builder.period.start = start ? moment(start).format(this.dateFormat) : start;
+            this.builder.period.end = moment(end).format(this.dateFormat);
+            console.log(this.builder.period);
             const calendar = this.$refs.calendar;
             if (calendar) {
                 await calendar.updateValue({
-                    start: this.builder.period.start ? moment(this.builder.period.start).toDate() : moment('2020-01-01').toDate(),
-                    end: moment(this.builder.period.end).toDate()
+                    start: this.builder.period.start ? moment(this.builder.period.start).format(this.dateFormat) : moment('2020-01-01').format(this.dateFormat),
+                    end: moment(this.builder.period.end).format(this.dateFormat)
                 }, {
                     formatInput: true,
                     hidePopover: false
@@ -1831,13 +1844,13 @@ export default {
             if (calendar) {
                 if (moment(this.builder.period.start).format('YYYY-MM') !== moment(this.builder.period.end).format('YYYY-MM')) {
                     calendar.$refs.calendar.showPageRange({
-                        from: moment(this.builder.period.start).toDate(),
-                        to: moment(this.builder.period.end).toDate()
+                        from: moment(this.builder.period.start).format(this.dateFormat),
+                        to: moment(this.builder.period.end).format(this.dateFormat)
                     });
                 } else {
                     calendar.$refs.calendar.showPageRange({
-                        from: moment(this.builder.period.start).subtract(1, 'months').toDate(),
-                        to: moment(this.builder.period.end).toDate()
+                        from: moment(this.builder.period.start).subtract(1, 'months').format(this.dateFormat),
+                        to: moment(this.builder.period.end).format(this.dateFormat)
                     });
                 }
             }
