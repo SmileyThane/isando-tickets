@@ -23,8 +23,8 @@ class TrackingProjectRepository
     {
         $params = [
             'project' => 'required|string',
-            'department' => 'required|string',
-            'profit_center' => 'required|string',
+//            'department' => 'required|string',
+//            'profit_center' => 'required|string',
 //            'productId' => 'required_without:product.id|exists:App\Product,id',
 //            'product.id' => 'required_without:productId|exists:App\Product,id',
             'clientId' => 'required_without:client.id|exists:App\Client,id',
@@ -122,8 +122,8 @@ class TrackingProjectRepository
         }
         $trackingProject = new TrackingProject();
         $trackingProject->project = $request->project;
-        $trackingProject->department = $request->department;
-        $trackingProject->profit_center = $request->profit_center;
+//        $trackingProject->department = $request->department;
+//        $trackingProject->profit_center = $request->profit_center;
         $trackingProject->product_id = $request->product['id'] ?? $request->productId;
         $trackingProject->client_id = $request->client['id'] ?? $request->clientId;
         $trackingProject->color = $request->color ?? $this->genHexColor();
