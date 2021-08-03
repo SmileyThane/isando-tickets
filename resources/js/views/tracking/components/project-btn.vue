@@ -478,7 +478,7 @@ export default {
             }
         },
         createProjectValid() {
-            return this.form.name && this.form.client && this.form.color;
+            return this.form.project && this.form.client && this.form.color;
         },
         getTrackingProjectLabel() {
             const { settings } = this.$store.getters['Tracking/getSettings'];
