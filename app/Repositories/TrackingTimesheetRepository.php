@@ -526,13 +526,13 @@ class TrackingTimesheetRepository
             $from = Carbon::parse($time->date)->startOfDay()->format(Tracking::$DATETIME_FORMAT);
             $to = Carbon::parse($time->date)->endOfDay()->format(Tracking::$DATETIME_FORMAT);
             $trackers = Tracking::where([
+                ['timesheet_id', '=', $timesheet->id],
+                ['user_id', '=', $userId],
                 ['team_id', '=', $teamId],
                 ['company_id', '=', $companyId],
-                ['user_id', '=', $userId],
                 ['entity_id', '=', $entityId],
                 ['entity_type', '=', $entityType],
-                ['timesheet_id', '=', $timesheet->id],
-                ['is_manual', '=', 'false'],
+                ['is_manual', '=', false],
             ])
                 ->where(function ($query) use ($from, $to) {
                     $query->where('date_from', '<=', $to)

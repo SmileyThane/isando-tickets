@@ -906,7 +906,7 @@
                     ></v-simple-checkbox>
                 </template>
                 <template v-slot:item.entity.name="{ isMobile, item, header, value }">
-                    <template v-if="['archived', 'pending'].indexOf(item.status) !== -1">
+                    <template v-if="['archived', 'pending'].indexOf(item.status) !== -1 || !item.is_manually">
                         <v-btn
                             tile
                             small
@@ -947,7 +947,7 @@
                     </template>
                 </template>
                 <template v-slot:item.service="{ isMobile, item, header, value }">
-                    <template v-if="['archived', 'pending'].indexOf(item.status) !== -1">
+                    <template v-if="['archived', 'pending'].indexOf(item.status) !== -1 || !item.is_manually">
                         <span v-if="item.service">{{ item.service.name }}</span>
                     </template>
                     <template v-else>
