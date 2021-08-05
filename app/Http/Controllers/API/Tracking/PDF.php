@@ -417,7 +417,7 @@ class PDF extends FPDF {
     }
 
     private function fixCharacters($text) {
-        return iconv('utf-8', 'windows-1252//TRANSLIT', $text);
+        return iconv(mb_detect_encoding($text, 'auto'), 'CP1252//IGNORE', $text);
     }
 
     function Write($h, $txt, $link='') {
