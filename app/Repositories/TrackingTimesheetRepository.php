@@ -338,20 +338,26 @@ class TrackingTimesheetRepository
         }
     }
 
-    public static function recalculate($tracker, $service = null, $entity_id = null, $entity_type = null) {
+    public static function recalculate($tracker, $allowCreating = true, $service = null, $entity_id = null, $entity_type = null, $team_id = null, $company_id = null) {
+        Log::debug($tracker);
+        Log::debug($service);
+        Log::debug($entity_id);
+        Log::debug($entity_type);
         $entity_id = $entity_id ?? $tracker->entity_id;
         $entity_type = $entity_type ?? $tracker->entity_type;
+        $team_id = $team_id ?? ($tracker->entity ? $tracker->entity->team_id ? $tracker->entity->team_id : $tracker->entity->to_team_id : null);
+        $company_id = $company_id ?? $tracker->company_id;
         $sameTrackers = Tracking::where([
             ['user_id', '=', $tracker->user_id],
-            ['team_id', '=', $tracker->team_id],
-            ['company_id', '=', $tracker->company_id],
+            ['team_id', '=', $team_id],
+            ['company_id', '=', $company_id],
             ['entity_id', '=', $entity_id],
             ['entity_type', '=', $entity_type],
             ['is_manual', '=', $tracker->is_manual],
             ['date_from', '>=', Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATETIME_FORMAT)],
             ['date_to', '<=', Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATETIME_FORMAT)],
             ['status', '<>', Tracking::$STATUS_ARCHIVED],
-            ['billable', '=', $tracker->billable],
+//            ['billable', '=', $tracker->billable],
         ]);
         $service = $service ?? $tracker->service;
         if ($service) {
@@ -361,18 +367,20 @@ class TrackingTimesheetRepository
         } else {
             $sameTrackers->whereDoesntHave('Services');
         }
-//            dd($sameTrackers->toSql(), $sameTrackers->getBindings(), $sameTrackers->get());
+        Log::debug($sameTrackers->toSql());
+        Log::debug($sameTrackers->getBindings());
         $sameTrackers = $sameTrackers->get();
+        Log::debug($sameTrackers->count());
         $timeByDay = self::calcTimeByTrackers($sameTrackers);
         // search timesheet
         $timesheet = TrackingTimesheet::where([
             ['entity_id', '=', $entity_id],
             ['entity_type', '=', $entity_type],
             ['user_id', '=', $tracker->user_id],
-            ['team_id', '=', $tracker->team_id],
-            ['company_id', '=', $tracker->company_id],
+            ['team_id', '=', $team_id],
+            ['company_id', '=', $company_id],
             ['is_manually', '=', !$tracker->is_manual],
-            ['billable', '=', $tracker->billable],
+//            ['billable', '=', $tracker->billable],
             ['from', '=', Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATE_FORMAT)],
             ['to', '=', Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATE_FORMAT)],
             ['status', '<>', TrackingTimesheet::STATUS_APPROVED],
@@ -385,27 +393,33 @@ class TrackingTimesheetRepository
                 }
             });
 //            dd($timesheet->toSql(), $timesheet->getBindings(), $timesheet->get());
+        Log::debug($timesheet->toSql());
+        Log::debug($timesheet->getBindings());
         $timesheet = $timesheet->first();
         if (!$timesheet) {
-            // create new timesheet
-            $timesheet = new TrackingTimesheet();
-            $timesheet->user_id = $tracker->user_id;
-            $timesheet->company_id = $tracker->company_id;
-            $timesheet->team_id = $tracker->team_id;
-            $timesheet->entity_id = $entity_id;
-            $timesheet->entity_type = $entity_type;
-            $timesheet->is_manually = false;
-            $timesheet->service_id = $service ? $service->id : null;
-            $timesheet->from = Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATE_FORMAT);
-            $timesheet->to = Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATE_FORMAT);
-            $timesheet->save();
-            $timesheet->genTimes(); // to generating empty time fields
-            foreach ($sameTrackers as $track) {
-                $track->timesheet_id = $timesheet->id;
-                $track->save();
+            if ($allowCreating) {
+                Log::debug('Create a new timesheet');
+                // create new timesheet
+                $timesheet = new TrackingTimesheet();
+                $timesheet->user_id = $tracker->user_id;
+                $timesheet->company_id = $company_id;
+                $timesheet->team_id = $team_id;
+                $timesheet->entity_id = $entity_id;
+                $timesheet->entity_type = $entity_type;
+                $timesheet->is_manually = false;
+                $timesheet->service_id = $service ? $service->id : null;
+                $timesheet->from = Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATE_FORMAT);
+                $timesheet->to = Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATE_FORMAT);
+                $timesheet->save();
+                $timesheet->genTimes(); // to generating empty time fields
+                foreach ($sameTrackers as $track) {
+                    $track->timesheet_id = $timesheet->id;
+                    $track->save();
+                }
+                self::setTimesheetTime($timesheet->id, $timeByDay);
             }
-            self::setTimesheetTime($timesheet->id, $timeByDay);
         } else {
+            Log::debug('Update a exists timesheet');
             // update exists timesheet
             foreach ($sameTrackers as $track) {
                 $track->timesheet_id = $timesheet->id;
@@ -413,7 +427,7 @@ class TrackingTimesheetRepository
             }
             self::setTimesheetTime($timesheet->id, $timeByDay);
         }
-        if ($timesheet->is_empty) {
+        if ($timesheet && $timesheet->is_empty) {
             $timesheet->delete();
         }
         return true;

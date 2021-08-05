@@ -222,7 +222,6 @@ class TrackingRepository
     public function update(Request $request, Tracking $tracking)
     {
         $trackingDiff = Carbon::parse($tracking->date_from)->diffInSeconds(Carbon::now());
-        $oldTimesheetId = $tracking->timesheet_id;
         if (
             !Auth::user()->employee->hasPermissionId([Permission::TRACKER_EDIT_DELETE_OWN_TIME_UNLIMITED_ACCESS])
             && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS)
@@ -244,6 +243,8 @@ class TrackingRepository
         $oldService = $tracking->service;
         $oldEntityId = $tracking->entity_id;
         $oldEntityType = $tracking->entity_type;
+        $oldTeamId = $tracking->team_id;
+        $oldCompanyId = $tracking->company_id;
         if ($request->has('description')) { $tracking->description = $request->description; }
         if ($request->has('date_from')) {
             if (!$request->has('date_to') && Carbon::parse($request->date_from)->gt(Carbon::parse($tracking->date_to))) {
@@ -295,10 +296,13 @@ class TrackingRepository
             }
         }
 //        dd($oldTracking, $oldTracking->service, $tracking, $tracking->service);
-        TrackingTimesheetRepository::recalculate($oldTracking, $oldService, $oldEntityId, $oldEntityType);
+        Log::debug('==========================================================================================');
+        TrackingTimesheetRepository::recalculate($oldTracking, false, $oldService, $oldEntityId, $oldEntityType, $oldTeamId, $oldCompanyId);
         TrackingTimesheetRepository::recalculate($tracking);
-        return Tracking::where('id', '=', $tracking->id)->with('Tags.Translates')
-            ->with('User:id,name,surname,middle_name,number,avatar_url')->first();
+        return Tracking::where('id', '=', $tracking->id)
+            ->with('Tags.Translates')
+            ->with('User:id,name,surname,middle_name,number,avatar_url')
+            ->first();
     }
 
     public function delete(Tracking $tracking)
@@ -325,7 +329,7 @@ class TrackingRepository
         $oldService = $oldTracking->service;
         $this->logTracking($tracking->id, TrackingLogger::DELETE, $tracking, null);
         $tracking->delete();
-        TrackingTimesheetRepository::recalculate($oldTracking, $oldService);
+        TrackingTimesheetRepository::recalculate($oldTracking, false, $oldService);
         return true;
     }
 
