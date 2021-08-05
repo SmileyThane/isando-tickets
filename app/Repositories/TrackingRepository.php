@@ -14,6 +14,7 @@ use App\TrackingTimesheet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class TrackingRepository
@@ -221,7 +222,7 @@ class TrackingRepository
     public function update(Request $request, Tracking $tracking)
     {
         $trackingDiff = Carbon::parse($tracking->date_from)->diffInSeconds(Carbon::now());
-
+        $oldTimesheetId = $tracking->timesheet_id;
         if (
             !Auth::user()->employee->hasPermissionId([Permission::TRACKER_EDIT_DELETE_OWN_TIME_UNLIMITED_ACCESS])
             && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS)
@@ -240,6 +241,9 @@ class TrackingRepository
         }
 
         $oldTracking = $tracking;
+        $oldService = $tracking->service;
+        $oldEntityId = $tracking->entity_id;
+        $oldEntityType = $tracking->entity_type;
         if ($request->has('description')) { $tracking->description = $request->description; }
         if ($request->has('date_from')) {
             if (!$request->has('date_to') && Carbon::parse($request->date_from)->gt(Carbon::parse($tracking->date_to))) {
@@ -290,10 +294,11 @@ class TrackingRepository
                 $tracking->Tags()->attach($tag['id']);
             }
         }
-        TrackingTimesheetRepository::recalculate($oldTracking);
+//        dd($oldTracking, $oldTracking->service, $tracking, $tracking->service);
+        TrackingTimesheetRepository::recalculate($oldTracking, $oldService, $oldEntityId, $oldEntityType);
         TrackingTimesheetRepository::recalculate($tracking);
         return Tracking::where('id', '=', $tracking->id)->with('Tags.Translates')
-            ->with('User:id,name,surname,middle_name,number,avatar_url')->first();;
+            ->with('User:id,name,surname,middle_name,number,avatar_url')->first();
     }
 
     public function delete(Tracking $tracking)
@@ -317,9 +322,10 @@ class TrackingRepository
             throw new \Exception('Access denied');
         }
         $oldTracking = $tracking;
+        $oldService = $oldTracking->service;
         $this->logTracking($tracking->id, TrackingLogger::DELETE, $tracking, null);
         $tracking->delete();
-        TrackingTimesheetRepository::recalculate($oldTracking);
+        TrackingTimesheetRepository::recalculate($oldTracking, $oldService);
         return true;
     }
 

@@ -23,7 +23,8 @@ class TrackingTimesheet extends Model
 
     protected $appends = [
         'total_time',
-        'entity'
+        'entity',
+        'is_empty'
     ];
 
     protected $casts = [
@@ -79,6 +80,10 @@ class TrackingTimesheet extends Model
             }
         }
         return $total; // in seconds
+    }
+
+    public function getIsEmptyAttribute() {
+        return $this->total_time === 0;
     }
 
     public static function boot() {
