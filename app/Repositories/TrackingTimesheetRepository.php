@@ -600,10 +600,15 @@ class TrackingTimesheetRepository
             ['user_id', '=', $user->id],
             ['from', '<=', $from],
             ['to', '>=', $to],
-            ['number', '=', null],
         ])->get();
         foreach ($timesheets as $timesheet) {
             $newTimesheet = $timesheet->duplicate();
+            $newTimesheet->status = TrackingTimesheet::STATUS_TRACKED;
+            $newTimesheet->number = null;
+            $newTimesheet->note = null;
+            $newTimesheet->approver_id = null;
+            $newTimesheet->submitter_on = null;
+            $newTimesheet->notification_date = null;
             $newTimesheet->is_manually = true;
             $newTimesheet->from = Carbon::now()->startOf('week');
             $newTimesheet->to = Carbon::now()->endOf('week');
