@@ -2057,7 +2057,10 @@ export default {
             })
             .then(() => {
                 this.date = moment().format(this.dateFormat);
-            });
+            })
+            .then(async () => await this.$store.dispatch('Timesheet/getTimesheet', {
+                ...this.dateRange,
+            }));
         },
         resetSaveAsTemplate() {
             this.newTemplate.name = '';
