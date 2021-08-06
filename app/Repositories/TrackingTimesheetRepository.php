@@ -607,7 +607,7 @@ class TrackingTimesheetRepository
             $newTimesheet->number = null;
             $newTimesheet->note = null;
             $newTimesheet->approver_id = null;
-            $newTimesheet->submitter_on = null;
+            $newTimesheet->submitted_on = null;
             $newTimesheet->notification_date = null;
             $newTimesheet->is_manually = true;
             $newTimesheet->from = Carbon::now()->startOf('week');
