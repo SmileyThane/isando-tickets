@@ -109,11 +109,11 @@ class TrackingTimesheet extends Model
         });
 
         static::deleting(function($trackingTimesheet) {
-            if (!$trackingTimesheet->is_manually) {
-                Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->update(['timesheet_id' => null]);
-            } else {
+//            if (!$trackingTimesheet->is_manually) {
+//                Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->update(['timesheet_id' => null]);
+//            } else {
                 Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->delete();
-            }
+//            }
             $trackingTimesheet->Times()->delete();
         });
 
