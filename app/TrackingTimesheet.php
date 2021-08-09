@@ -5,7 +5,6 @@ namespace App;
 use App\Repositories\TrackingTimesheetRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 class TrackingTimesheet extends Model
 {
@@ -68,6 +67,10 @@ class TrackingTimesheet extends Model
 
     public function getTotalTimeAttribute() {
         $items = $this->Times()->get();
+        if (!count($items)) {
+            $this->genTimes();
+            $items = $this->Times()->get();
+        }
         $total = 0;
         foreach ($items as $item) {
 //            $dateTime = $item->date . ' ' . $item->time;

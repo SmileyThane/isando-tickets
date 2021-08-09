@@ -339,13 +339,13 @@ class TrackingTimesheetRepository
     }
 
     public static function recalculate($tracker, $allowCreating = true, $service = null, $entity_id = null, $entity_type = null, $team_id = null, $company_id = null) {
-        Log::debug($tracker);
-        Log::debug($service);
-        Log::debug($entity_id);
-        Log::debug($entity_type);
+        Log::debug('Tracker: ' . $tracker);
+        Log::debug('Service: ' . $service);
+        Log::debug('Entity_id: ' . $entity_id);
+        Log::debug('Entity_type' . $entity_type);
         $entity_id = $entity_id ?? $tracker->entity_id;
         $entity_type = $entity_type ?? $tracker->entity_type;
-        $team_id = $team_id ?? ($tracker->entity ? $tracker->entity->team_id ? $tracker->entity->team_id : $tracker->entity->to_team_id : null);
+        $team_id = $team_id ?? ($tracker->entity ? ($tracker->entity->team_id ? $tracker->entity->team_id : $tracker->entity->to_team_id) : null);
         $company_id = $company_id ?? $tracker->company_id;
         $sameTrackers = Tracking::where([
             ['user_id', '=', $tracker->user_id],
@@ -367,10 +367,10 @@ class TrackingTimesheetRepository
         } else {
             $sameTrackers->whereDoesntHave('Services');
         }
-        Log::debug($sameTrackers->toSql());
+        Log::debug('SQL: ' . $sameTrackers->toSql());
         Log::debug($sameTrackers->getBindings());
         $sameTrackers = $sameTrackers->get();
-        Log::debug($sameTrackers->count());
+        Log::debug('Count same trackers: ' . $sameTrackers->count());
         $timeByDay = self::calcTimeByTrackers($sameTrackers);
         // search timesheet
         $timesheet = TrackingTimesheet::where([
@@ -393,25 +393,30 @@ class TrackingTimesheetRepository
                 }
             });
 //            dd($timesheet->toSql(), $timesheet->getBindings(), $timesheet->get());
-        Log::debug($timesheet->toSql());
+        Log::debug('SQL: ' . $timesheet->toSql());
         Log::debug($timesheet->getBindings());
         $timesheet = $timesheet->first();
+        Log::debug('Timesheet: ' . $timesheet);
         if (!$timesheet) {
             if ($allowCreating) {
                 Log::debug('Create a new timesheet');
                 // create new timesheet
-                $timesheet = new TrackingTimesheet();
-                $timesheet->user_id = $tracker->user_id;
-                $timesheet->company_id = $company_id;
-                $timesheet->team_id = $team_id;
-                $timesheet->entity_id = $entity_id;
-                $timesheet->entity_type = $entity_type;
-                $timesheet->is_manually = false;
-                $timesheet->service_id = $service ? $service->id : null;
-                $timesheet->from = Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATE_FORMAT);
-                $timesheet->to = Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATE_FORMAT);
-                $timesheet->save();
-                $timesheet->genTimes(); // to generating empty time fields
+                try {
+                    $timesheet = new TrackingTimesheet();
+                    $timesheet->user_id = $tracker->user_id;
+                    $timesheet->company_id = $company_id;
+                    $timesheet->team_id = $team_id;
+                    $timesheet->entity_id = $entity_id;
+                    $timesheet->entity_type = $entity_type;
+                    $timesheet->is_manually = false;
+                    $timesheet->service_id = $service ? $service->id : null;
+                    $timesheet->from = Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATE_FORMAT);
+                    $timesheet->to = Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATE_FORMAT);
+                    $timesheet->save();
+                    $timesheet->genTimes(); // to generating empty time fields
+                } catch (\Exception $exception) {
+                    Log::error($exception);
+                }
                 foreach ($sameTrackers as $track) {
                     $track->timesheet_id = $timesheet->id;
                     $track->save();
@@ -427,9 +432,10 @@ class TrackingTimesheetRepository
             }
             self::setTimesheetTime($timesheet->id, $timeByDay);
         }
-        if ($timesheet && $timesheet->is_empty) {
-            $timesheet->delete();
-        }
+        Log::debug('Timesheet: ' . $timesheet);
+//        if ($timesheet && $timesheet->is_empty) {
+//            $timesheet->delete();
+//        }
         return true;
     }
 

@@ -267,6 +267,10 @@ class TrackingRepository
         if ($request->has('billed')) { $tracking->billed = $request->billed; }
         if ($request->has('entity') && $request->entity && $request->entity_type) {
             $tracking->entity_id = $request->entity['id'];
+            if (is_null($tracking->entity_id)) {
+                $tracking->team_id = null;
+                $tracking->rate = 0;
+            }
             $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
             if ($tracking->entity_type === TrackingProject::class) {
                 $project = TrackingProject::find($request->entity['id']);

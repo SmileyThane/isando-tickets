@@ -923,7 +923,9 @@
                             v-else
                             disabled
                         >
-                            {{getTrackingProjectLabel}}:<br>{{ $helpers.string.shortenText(item.entity.name, 35) }}
+                            <span v-if="item.entity && item.entity.name">
+                                {{getTrackingProjectLabel}}:<br>{{ $helpers.string.shortenText(item.entity.name, 35) }}
+                            </span>
                         </v-btn>
                     </template>
                     <template v-else>
