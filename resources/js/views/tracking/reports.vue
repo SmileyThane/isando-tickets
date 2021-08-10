@@ -190,7 +190,7 @@
                                         :step="1"
                                         :columns="2"
                                         mode="range"
-                                        @input="activePeriod = null; genPreview(); resetSelectedReport()"
+                                        @input="activePeriod = null; debounceGenPreview(); resetSelectedReport()"
                                     ></vc-date-picker>
                                 </div>
                             </div>
@@ -223,7 +223,7 @@
                     item-value="value"
                     v-model="builder.sort"
                     return-object
-                    @input="genPreview(); resetSelectedReport()"
+                    @input="debounceGenPreview(); resetSelectedReport()"
                 >
                     <template v-slot:item="{ parent, item, on, attrs }">
                         <span>
@@ -336,7 +336,7 @@
                                     clearable
                                     style="max-width: 900px; width: 100%"
                                     v-model="filter.selected"
-                                    @input="genPreview(); resetSelectedReport()"
+                                    @input="debounceGenPreview(); resetSelectedReport()"
                                 ></v-select>
                                 <v-btn
                                     color="danger"
@@ -412,7 +412,7 @@
         <v-card class="d-flex flex-column">
 
             <v-treeview
-                :items="reportData.entities"
+                :items="reportData.entities.g1"
                 item-children="children"
                 item-key="name"
                 dense
@@ -1114,7 +1114,10 @@ export default {
                     { text: this.$store.state.lang.lang_map.tracking.report.passed, value: 'passed' },
                     { text: '', value: 'data-table-expand' },
                 ],
-                entities: []
+                entities: {
+                    g1: [],
+                    g2: [],
+                }
             },
             dialogExportPDF: false,
             dialogExportCSV: false,
@@ -1278,6 +1281,7 @@ export default {
         this.$store.dispatch('Languages/getLanguageList');
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
         this.debounceGetReports = _.debounce(this.__getReports, 1000);
+        this.debounceGenPreview = _.debounce(this.genPreview, 1000);
     },
     mounted() {
         let that = this;
@@ -1377,7 +1381,7 @@ export default {
                 });
             }
             this.activePeriod = null;
-            this.genPreview();
+            this.debounceGenPreview();
             this.resetSelectedReport();
         },
         onClickOutsideHandler() {
@@ -1417,11 +1421,12 @@ export default {
                     this.reportData.entities = data;
                     this.dialogEdit = {};
                     const self = this;
-                    data.map(i => function () {
+                    console.log(data);
+                    data.g1.map(i => function () {
                        self.dialogEdit[i.id] = false;
                        self.dialogDelete[i.id] = false;
                     });
-                    this.report.pdf.coworkers = [...new Set(this.calculateCoworkers(data))].sort().join(', ');
+                    this.report.pdf.coworkers = [...new Set(this.calculateCoworkers(data.g1))].sort().join(', ');
                 })
                 .catch(err => {
                     console.log(err);
@@ -1509,7 +1514,7 @@ export default {
             })
                 .then(successResult => {
                     if (successResult) {
-                        this.genPreview();
+                        this.debounceGenPreview();
                     }
                 });
         },
@@ -1605,17 +1610,28 @@ export default {
                 return str.substring(0, maxLength - 3) + '...';
             }
             return str;
-        }
+        },
+        normalizeData(entries, items = []) {
+            if (!entries) return seconds;
+            entries.map(i => {
+                if (i.children) {
+                    items = items.concat(this.normalizeData(i.children));
+                } else {
+                    items.push(i);
+                }
+            });
+            return items;
+        },
     },
     computed: {
         totalTime: function() {
-            return this.calculateTime(this.reportData.entities);
+            return this.calculateTime(this.reportData.entities.g1);
         },
         totalRevenue: function() {
-            return this.calculateRevenue(this.reportData.entities);
+            return this.calculateRevenue(this.reportData.entities.g1);
         },
         doughnutData: function() {
-            if (this.reportData.entities && this.reportData.entities.length) {
+            if (this.reportData.entities && this.reportData.entities.g1 && this.reportData.entities.g1.length) {
                 let data = {
                     labels: [],
                     datasets: []
@@ -1623,7 +1639,7 @@ export default {
                 data.datasets = [];
                 let values = [];
                 let labels = [];
-                this.reportData.entities.map(i => {
+                this.reportData.entities.g1.map(i => {
                     let client = '';
                     if (i.client) {
                         client = this.substr(i.client, 20) + ": \n";
@@ -1652,7 +1668,7 @@ export default {
             return null;
         },
         barData: function() {
-            if (this.reportData.entities && this.reportData.entities.length) {
+            if (this.reportData.entities.g2 && this.reportData.entities.g2.length) {
                 let data = {
                     labels: [],
                     datasets: []
@@ -1661,7 +1677,7 @@ export default {
                 let values = [];
                 let labels = [];
                 let colors = [];
-                this.reportData.entities.map(i => {
+                this.reportData.entities.g2.map(i => {
                     let client = '';
                     if (i.client) {
                         client = this.substr(i.client, 20) + ": \n";
@@ -1819,13 +1835,13 @@ export default {
     },
     watch: {
         'builder.round': function() {
-            this.genPreview();
+            this.debounceGenPreview();
         },
         'builder.filters': function() {
-            this.genPreview();
+            this.debounceGenPreview();
         },
         'builder.group': function() {
-            this.genPreview();
+            this.debounceGenPreview();
         },
         'builder': function () {
             const dateFormat = 'dddd DD/MM/YYYY';
