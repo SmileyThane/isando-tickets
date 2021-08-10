@@ -703,8 +703,20 @@
                 loading-text="Loading... Please wait"
                 v-model="selected"
                 hide-default-footer
+                show-group-by
                 :items-per-page="countRecordsOnTable"
             >
+                <template v-slot:group.header="{ group, groupBy, items, isOpen, toggle, remove }">
+                    <th colspan="13">
+                        <v-icon @click="toggle">{{ isOpen ? 'mdi-minus' : 'mdi-plus' }}</v-icon>
+                        <template v-if="group">
+                            <template v-if="group.name">{{ group.name }}</template>
+                            <template v-else>{{ group }}</template>
+                        </template>
+                        <template v-else>Without {{ groupBy[0] === 'service.name' ? 'service': groupBy[0] === 'entity.name' ? 'project' : groupBy[0] }}</template>
+                        <v-icon @click="remove">mdi-close</v-icon>
+                    </th>
+                </template>
                 <template v-slot:body.prepend="{ headers }">
                     <tr class="highlight">
                         <td :class="{'text-end': header.time >= 0}" v-for="header in headers" :style="{
@@ -948,7 +960,7 @@
                         #{{ value }}
                     </template>
                 </template>
-                <template v-slot:item.service="{ isMobile, item, header, value }">
+                <template v-slot:item.service.name="{ isMobile, item, header, value }">
                     <template v-if="['archived', 'pending'].indexOf(item.status) !== -1 || !item.is_manually">
                         <span v-if="item.service">{{ item.service.name }}</span>
                     </template>
@@ -1552,6 +1564,12 @@ tr.highlight {
 >>> td.text-end .time-field__small {
     float: right;
 }
+>>> .v-data-table-header th.sortable span:first-child {
+    order: 1;
+}
+>>> .v-data-table-header th.sortable span:last-child {
+    order: 3;
+}
 </style>
 
 <script>
@@ -1692,6 +1710,9 @@ export default {
         this.$store.dispatch('Products/getProductList', { search: null });
     },
     methods: {
+        log(data, groupBy) {
+            console.log(data, groupBy);
+        },
         async _getTimesheet () {
             this.loading = true;
             await this.$store.dispatch('Timesheet/getTimesheet', {
@@ -1859,10 +1880,11 @@ export default {
             }
             let headers = [
                 {
-                    text: this.$store.state.lang.lang_map.tracking.timesheet.projects,
+                    text: '', // this.$store.state.lang.lang_map.tracking.timesheet.project,
                     align: 'start',
                     value: 'entity.name',
                     width: '20%',
+                    groupable: true,
                 }
             ];
             if ([this.STATUS_TRACKED].indexOf(this.typeOfItems) !== -1) {
@@ -1871,20 +1893,23 @@ export default {
                         align: 'start',
                         value: 'status',
                         width: '3%',
+                        groupable: false,
                     },
                     {
                         text: '',
                         align: 'start',
                         value: 'number',
                         width: '3%',
+                        groupable: false,
                     });
             }
             if (this.showEditServices) {
                 headers.push({
-                    text: '',
+                    text: '', // this.$store.state.lang.lang_map.tracking.timesheet.service,
                     align: 'end',
-                    value: 'service',
+                    value: 'service.name',
                     width: '10%',
+                    groupable: true,
                 });
             }
             headers = headers.concat([{
@@ -1892,6 +1917,7 @@ export default {
                     align: 'start',
                     value: 'is_manually',
                     width: '3%',
+                    groupable: false,
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.mon,
@@ -1901,6 +1927,7 @@ export default {
                     sortable: false,
                     time: days[0],
                     date: dates[0],
+                    groupable: false,
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.tue,
@@ -1910,6 +1937,7 @@ export default {
                     sortable: false,
                     time: days[1],
                     date: dates[1],
+                    groupable: false,
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.wed,
@@ -1919,6 +1947,7 @@ export default {
                     sortable: false,
                     time: days[2],
                     date: dates[2],
+                    groupable: false,
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.thu,
@@ -1928,6 +1957,7 @@ export default {
                     sortable: false,
                     time: days[3],
                     date: dates[3],
+                    groupable: false,
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.fri,
@@ -1937,6 +1967,7 @@ export default {
                     sortable: false,
                     time: days[4],
                     date: dates[4],
+                    groupable: false,
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.sat,
@@ -1946,6 +1977,7 @@ export default {
                     sortable: false,
                     time: days[5],
                     date: dates[5],
+                    groupable: false,
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.timesheet.sun,
@@ -1955,17 +1987,19 @@ export default {
                     sortable: false,
                     time: days[6],
                     date: dates[6],
+                    groupable: false,
                 },
                 {
                     text: 'Total',
                     align: 'end',
                     value: 'total',
                     width: '3%',
+                    groupable: false,
                     time: days.reduce((acc, val) => acc + val, 0),
                 },
             ]);
             if ([this.STATUS_REJECTED].indexOf(this.typeOfItems) !== -1) {
-                headers.push({ text: 'Note', align: 'start', value: 'note', width: '10%' });
+                headers.push({ text: 'Note', align: 'start', value: 'note', width: '10%', groupable: false, });
                 return headers;
             }
             return headers;

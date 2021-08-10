@@ -308,6 +308,8 @@ class LanguageSeeder extends Seeder
                                 'resubmit_for_approval' => 'Re-submit selected for approval',
                                 'approve_selected' => 'Approve selected',
                                 'reject_selected' => 'Reject selected',
+                                'project' => 'Project',
+                                'service' => 'Service',
                             ]
                         ],
                     'ticket_statuses' =>
@@ -1236,7 +1238,9 @@ class LanguageSeeder extends Seeder
                                 'submit_for_approval' => 'Submit for approval',
                                 'resubmit_for_approval' => 'Re-submit for approval',
                                 'approve_selected' => 'Approve selected',
-                                'reject_selected' => 'Reject selected'
+                                'reject_selected' => 'Reject selected',
+                                'project' => 'Projekt',
+                                'service' => 'Service',
                             ]
                         ],
                         'ticket_statuses' => [
