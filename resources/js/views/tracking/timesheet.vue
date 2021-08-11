@@ -929,6 +929,7 @@
                             {{ $helpers.string.shortenText(item.entity.name, 20) }}
                         </v-btn>
                         <v-btn
+                            :color="item.entity.color"
                             tile
                             small
                             text
