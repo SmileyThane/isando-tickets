@@ -1066,19 +1066,6 @@ export default {
             ],
             chart: {
                 options: {
-                    scaleShowValues: true,
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }],
-                        xAxes: [{
-                            ticks: {
-                                autoSkip: false
-                            }
-                        }]
-                    },
                     responsive: true,
                     maintainAspectRatio: true,
                     percentageInnerCutout : 90,
@@ -1642,11 +1629,11 @@ export default {
                 this.reportData.entities.g1.map(i => {
                     let client = '';
                     if (i.client) {
-                        client = this.substr(i.client, 20) + ": \n";
+                        client = this.substr(i.client, 200) + ": \n";
                     }
-                    data.labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    data.labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
-                        labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
@@ -1680,11 +1667,11 @@ export default {
                 this.reportData.entities.g2.map(i => {
                     let client = '';
                     if (i.client) {
-                        client = this.substr(i.client, 20) + ": \n";
+                        client = this.substr(i.client, 17) + ": \n";
                     }
-                    data.labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    data.labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
-                        labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push(
