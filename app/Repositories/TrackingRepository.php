@@ -14,6 +14,7 @@ use App\TrackingTimesheet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -102,6 +103,7 @@ class TrackingRepository
 
     public function all(Request $request)
     {
+//        DB::enableQueryLog();
         if (!Auth::user()->employee->hasPermissionId([
             Permission::TRACKER_VIEW_OWN_TIME_ACCESS,
             Permission::TRACKER_VIEW_TEAM_TIME_ACCESS,
@@ -126,20 +128,19 @@ class TrackingRepository
         }
 
         $tracking
-            ->where(function($query) {
-                $query->where('status', '!=', Tracking::$STATUS_ARCHIVED)
-                    ->orWhereNull('status');
+            ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
+            ->where(function ($query) use ($request) {
+                $query->where('date_from', '>=', Carbon::parse($request->date_from)->startOfDay()->format('Y-m-d H:i:s'))
+                    ->where('date_from', '<=', Carbon::parse($request->date_to)->endOfDay()->format('Y-m-d H:i:s'));
             })
-            ->whereBetween('date_from', [
-                Carbon::parse($request->date_from)->startOfDay(),
-                Carbon::parse($request->date_to)->endOfDay()
-            ])
-            ->with('Timesheet')
-            ->with('Tags.Translates')
+//            ->with('Timesheet')
+            ->with('Tags.Translates:name,lang,color')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
+//            ->select('id', 'user_id', 'team_id', 'company_id', 'entity_id', 'entity_type', 'is_manual', 'description', 'date_from', 'date_to', 'status', 'billable')
             ->orderBy('id', 'desc');
-
-        return $tracking->get();
+        $tracking = $tracking->get();
+//        dd(DB::getQueryLog());
+        return $tracking;
     }
 
     public function find($id)
@@ -299,10 +300,13 @@ class TrackingRepository
                 $tracking->Tags()->attach($tag['id']);
             }
         }
+        $tracking->refresh();
 //        dd($oldTracking, $oldTracking->service, $tracking, $tracking->service);
         Log::debug('==========================================================================================');
-        TrackingTimesheetRepository::recalculate($oldTracking, false, $oldService, $oldEntityId, $oldEntityType, $oldTeamId, $oldCompanyId);
+        Log::debug('Recalculate new track');
         TrackingTimesheetRepository::recalculate($tracking);
+        Log::debug('Recalculate old track');
+        TrackingTimesheetRepository::recalculate($oldTracking, false, $oldService, $oldEntityId, $oldEntityType, $oldTeamId, $oldCompanyId);
         return Tracking::where('id', '=', $tracking->id)
             ->with('Tags.Translates')
             ->with('User:id,name,surname,middle_name,number,avatar_url')

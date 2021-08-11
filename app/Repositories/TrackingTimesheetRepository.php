@@ -19,6 +19,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
@@ -339,6 +340,7 @@ class TrackingTimesheetRepository
     }
 
     public static function recalculate($tracker, $allowCreating = true, $service = null, $entity_id = null, $entity_type = null, $team_id = null, $company_id = null) {
+        $tracker->refresh();
         Log::debug('Tracker: ' . $tracker);
         Log::debug('Service: ' . $service);
         Log::debug('Entity_id: ' . $entity_id);
@@ -367,6 +369,7 @@ class TrackingTimesheetRepository
         } else {
             $sameTrackers->whereDoesntHave('Services');
         }
+//        dd($tracker, $sameTrackers->toSql(), $sameTrackers->getBindings());
         Log::debug('SQL: ' . $sameTrackers->toSql());
         Log::debug($sameTrackers->getBindings());
         $sameTrackers = $sameTrackers->get();
@@ -422,20 +425,31 @@ class TrackingTimesheetRepository
                     $track->save();
                 }
                 self::setTimesheetTime($timesheet->id, $timeByDay);
+                $timesheet->refresh();
             }
         } else {
-            Log::debug('Update a exists timesheet');
+            Log::debug('Update an exists timesheet');
             // update exists timesheet
-            foreach ($sameTrackers as $track) {
-                $track->timesheet_id = $timesheet->id;
-                $track->save();
-            }
+            DB::table('tracking')
+                ->whereIn('id', $sameTrackers->pluck('id')->all())
+                ->update([
+                    'timesheet_id' => $timesheet->id,
+                ]);
+//            foreach ($sameTrackers as $track) {
+//                $track->timesheet_id = $timesheet->id;
+//                $track->save();
+//            }
             self::setTimesheetTime($timesheet->id, $timeByDay);
+            $timesheet->refresh();
+        }
+        if ($timesheet) {
+            $timesheet = TrackingTimesheet::where('id', '=', $timesheet->id)->first();
         }
         Log::debug('Timesheet: ' . $timesheet);
-//        if ($timesheet && $timesheet->is_empty) {
-//            $timesheet->delete();
-//        }
+        if ($timesheet && $timesheet->is_empty) {
+//            dd(222, $timesheet, $timesheet->is_empty, $sameTrackers);
+            $timesheet->delete();
+        }
         return true;
     }
 
