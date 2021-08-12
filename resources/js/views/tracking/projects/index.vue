@@ -27,7 +27,7 @@
             <template v-slot:top>
 
                 <v-row>
-                    <v-col sm="12" md="8">
+                    <v-col sm="12" md="6">
                         <v-text-field
                             @input="debounceGetProjects"
                             v-model="trackingProjectSearch"
@@ -47,6 +47,13 @@
                             v-model="options.itemsPerPage"
                             @change="updateItemsCount"
                         ></v-select>
+                    </v-col>
+                    <v-col sm="12" md="2">
+                        <v-checkbox
+                            v-model="includeArchives"
+                            label="Include archives"
+                            @click="debounceGetProjects()"
+                        ></v-checkbox>
                     </v-col>
                     <v-col sm="12" md="2" class="pt-6">
                         <v-btn
@@ -249,7 +256,8 @@ export default {
                 product: null,
                 color: this.$helpers.color.genRandomColor()
             },
-            colorMenu: false
+            colorMenu: false,
+            includeArchives: false,
         }
     },
     created() {
@@ -288,7 +296,8 @@ export default {
                 page: this.options.page,
                 search: this.trackingProjectSearch,
                 direction: this.options.sortDesc[0],
-                column: this.options.sortBy[0]
+                column: this.options.sortBy[0],
+                includeArchives: this.includeArchives,
             })
                 .then(({ data, total, last_page }) => {
                     this.projects = data
