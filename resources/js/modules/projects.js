@@ -45,6 +45,14 @@ export default {
                         dispatch('getProjectList', state.filter);
                     }
                 });
+        },
+        removeArchive({commit, dispatch, state}, project) {
+            return axios.delete(`/api/tracking/projects/${project.id}`)
+                .then(({ data: { data, success } }) => {
+                    if (success) {
+                        dispatch('getProjectList', state.filter);
+                    }
+                });
         }
     },
     mutations: {

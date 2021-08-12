@@ -41,7 +41,7 @@ class TrackingProject extends Model
     }
 
     public function Timesheet() {
-        return $this->hasMany(TrackingTimesheet::class, 'project_id', 'id');
+        return $this->morphMany('App\TrackingTimesheet', 'entity');
     }
 
     public function getNameAttribute() {

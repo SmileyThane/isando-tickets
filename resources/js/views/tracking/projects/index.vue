@@ -93,20 +93,75 @@
                 </span> {{ props.item.revenue }}
             </template>
             <template v-slot:item.actions="props">
-                <v-btn
-                    v-if="$helpers.auth.checkPermissionByIds([58]) && props.item.status==='archived'"
-                    icon
-                    @click.stop="toggleArchive(props.item)"
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            v-if="$helpers.auth.checkPermissionByIds([58]) && props.item.status==='archived'"
+                            icon
+                            @click.stop="toggleArchive(props.item)"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <v-icon>mdi-archive-arrow-up-outline</v-icon>
+                        </v-btn>
+                        <v-btn
+                            v-else-if="$helpers.auth.checkPermissionByIds([58])"
+                            icon
+                            @click.stop="toggleArchive(props.item)"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <v-icon>mdi-archive-arrow-down-outline</v-icon>
+                        </v-btn>
+                    </template>
+                    <span v-if="props.item.status==='archived'">Extract</span>
+                    <span v-else>Archive</span>
+                </v-tooltip>
+                <v-dialog
+                    v-model="removeDialog[props.item.id]"
+                    width="500"
                 >
-                    <v-icon>mdi-archive-arrow-up-outline</v-icon>
-                </v-btn>
-                <v-btn
-                    v-else-if="$helpers.auth.checkPermissionByIds([58])"
-                    icon
-                    @click.stop="toggleArchive(props.item)"
-                >
-                    <v-icon>mdi-archive-arrow-down-outline</v-icon>
-                </v-btn>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            v-if="$helpers.auth.checkPermissionByIds([58])"
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <v-icon>mdi-trash-can</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <v-card>
+                        <v-card-title class="text-h5 grey lighten-2">
+                            Delete project
+                        </v-card-title>
+
+                        <v-card-text>
+                            Are you sure you want to delete the project?
+                        </v-card-text>
+
+                        <v-divider></v-divider>
+
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="success"
+                                text
+                                @click="removeArchive(props.item); removeDialog[props.item.id] = false"
+                            >
+                                Yes
+                            </v-btn>
+                            <v-btn
+                                color="error"
+                                text
+                                @click="removeDialog[props.item.id] = false"
+                            >
+                                No
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
             </template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
@@ -258,6 +313,7 @@ export default {
             },
             colorMenu: false,
             includeArchives: false,
+            removeDialog: {},
         }
     },
     created() {
@@ -354,6 +410,9 @@ export default {
         },
         toggleArchive(project) {
             this.$store.dispatch('Projects/toggleArchive', project);
+        },
+        removeArchive(project) {
+            this.$store.dispatch('Projects/removeArchive', project);
         }
     },
     watch: {
