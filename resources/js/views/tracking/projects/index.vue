@@ -137,7 +137,7 @@
                             Delete project
                         </v-card-title>
 
-                        <v-card-text>
+                        <v-card-text class="mt-4">
                             Are you sure you want to delete the project?
                         </v-card-text>
 
