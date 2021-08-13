@@ -263,7 +263,7 @@
 </template>
 
 <style scoped>
-* {
+*:not(.v-icon) {
     font-size: 14px !important;
 }
 </style>

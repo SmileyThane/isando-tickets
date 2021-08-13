@@ -775,7 +775,7 @@
 .v-data-table__wrapper tr td.text-start:nth-child(6):after {
     /*content: "—";*/
 }
-* {
+*:not(.v-icon) {
     font-size: 14px !important;
 }
 </style>

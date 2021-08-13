@@ -296,7 +296,7 @@
 >>>.v-treeview--dense .v-treeview-node__label {
     max-width: 80%;
 }
-* {
+*:not(.v-icon) {
     font-size: 14px !important;
 }
 </style>
