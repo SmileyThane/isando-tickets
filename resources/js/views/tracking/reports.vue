@@ -851,7 +851,7 @@
     </v-container>
 </template>
 
-<style>
+<style scoped>
 .border-right {
     border-right: thin solid rgba(0,0,0,.12);
 }

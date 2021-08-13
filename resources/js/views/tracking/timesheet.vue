@@ -1571,6 +1571,9 @@ tr.highlight {
 >>> .v-data-table-header th.sortable span:last-child {
     order: 3;
 }
+* {
+    font-size: 14px !important;
+}
 </style>
 
 <script>

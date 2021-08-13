@@ -414,6 +414,10 @@
     </v-container>
 </template>
 
+<style scoped>
+
+</style>
+
 <script>
 import EventBus from "../../components/EventBus";
 import _ from 'lodash';

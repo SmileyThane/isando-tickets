@@ -756,7 +756,7 @@
     </v-container>
 </template>
 
-<style>
+<style scoped>
 .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:before,
 .date-picker__without-line.v-text-field:not(.v-input__has-state):hover>.v-input__control>.v-input__slot:before,
 .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:after{
@@ -774,6 +774,9 @@
 }
 .v-data-table__wrapper tr td.text-start:nth-child(6):after {
     /*content: "—";*/
+}
+* {
+    font-size: 14px !important;
 }
 </style>
 

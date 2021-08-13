@@ -296,6 +296,9 @@
 >>>.v-treeview--dense .v-treeview-node__label {
     max-width: 80%;
 }
+* {
+    font-size: 14px !important;
+}
 </style>
 
 <style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
