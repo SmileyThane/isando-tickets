@@ -929,7 +929,7 @@ export default {
                 dow: 1,
             },
         });
-        this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
+        this.debounceGetTracking = _.debounce(this.__getTracking, 100);
         this.debounceSave = _.debounce(this.save, 500);
         if (this.$helpers.localStorage.getKey('dateRange', 'tracking')) {
             this.dateRange = this.$helpers.localStorage.getKey('dateRange', 'tracking');
