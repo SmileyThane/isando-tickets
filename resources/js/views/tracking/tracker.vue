@@ -22,6 +22,50 @@
                 <v-toolbar>
                     <!-- Timer mode-->
                     <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="mode">
+                        <div class="mx-1 d-flex flex-column">
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        v-if="!$helpers.auth.checkPermissionByIds([47])"
+                                        fab
+                                        x-small
+                                        :icon="!mode"
+                                        :color="themeBgColor"
+                                        @click="mode=true"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <v-icon v-bind:class="{ 'white--text': mode }">mdi-clock</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span v-text="langMap.tracking.tracker.timer"></span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        v-if="!$helpers.auth.checkPermissionByIds([47])"
+                                        fab
+                                        x-small
+                                        :icon="mode"
+                                        :color="themeBgColor"
+                                        @click="mode=false"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span v-text="langMap.tracking.tracker.manual"></span>
+                            </v-tooltip>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <ProjectBtn
+                                key="timerPanelProjectKey"
+                                :color="themeBgColor"
+                                :onChoosable="handlerProjectTimerPanel"
+                                v-model="timerPanel.entity"
+                            ></ProjectBtn>
+                        </div>
                         <div class="mx-2 align-self-center">
                             <v-select
                                 :items="$store.getters['Services/getServices']"
@@ -45,14 +89,6 @@
                                 v-model="timerPanel.description"
                                 style="max-width: 1000px"
                             ></v-text-field>
-                        </div>
-                        <div class="mx-3 align-self-center">
-                            <ProjectBtn
-                                key="timerPanelProjectKey"
-                                :color="themeBgColor"
-                                :onChoosable="handlerProjectTimerPanel"
-                                v-model="timerPanel.entity"
-                            ></ProjectBtn>
                         </div>
                         <div class="mx-2 align-self-center">
                             <TagBtn
@@ -98,11 +134,13 @@
                                 <span v-if="timerPanel.start">{{ langMap.tracking.tracker.stop }}</span>
                             </v-btn>
                         </div>
+                    </div>
+                    <!-- Manual mode-->
+                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!$helpers.auth.checkPermissionByIds([47]) && !mode">
                         <div class="mx-1 d-flex flex-column">
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
-                                        v-if="!$helpers.auth.checkPermissionByIds([47])"
                                         fab
                                         x-small
                                         :icon="!mode"
@@ -119,7 +157,6 @@
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-btn
-                                        v-if="!$helpers.auth.checkPermissionByIds([47])"
                                         fab
                                         x-small
                                         :icon="mode"
@@ -134,9 +171,14 @@
                                 <span v-text="langMap.tracking.tracker.manual"></span>
                             </v-tooltip>
                         </div>
-                    </div>
-                    <!-- Manual mode-->
-                    <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!$helpers.auth.checkPermissionByIds([47]) && !mode">
+                        <div class="mx-1 align-self-center">
+                            <ProjectBtn
+                                key="manualPanelProjectKey"
+                                :color="themeBgColor"
+                                :onChoosable="handlerProjectManualPanel"
+                                v-model="manualPanel.entity"
+                            ></ProjectBtn>
+                        </div>
                         <div class="mx-2 align-self-center">
                             <v-select
                                 :items="$store.getters['Services/getServices']"
@@ -160,14 +202,6 @@
                                 v-model="manualPanel.description"
                                 style="max-width: 1000px"
                             ></v-text-field>
-                        </div>
-                        <div class="mx-1 align-self-center">
-                            <ProjectBtn
-                                key="manualPanelProjectKey"
-                                :color="themeBgColor"
-                                :onChoosable="handlerProjectManualPanel"
-                                v-model="manualPanel.entity"
-                            ></ProjectBtn>
                         </div>
                         <div class="mx-1 align-self-center">
                             <TagBtn
@@ -266,40 +300,6 @@
                             >
                                 {{langMap.tracking.tracker.add}}
                             </v-btn>
-                        </div>
-                        <div class="mx-1 d-flex flex-column">
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn
-                                        fab
-                                        x-small
-                                        :icon="!mode"
-                                        :color="themeBgColor"
-                                        @click="mode=true"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    >
-                                        <v-icon v-bind:class="{ 'white--text': mode }">mdi-clock</v-icon>
-                                    </v-btn>
-                                </template>
-                                <span v-text="langMap.tracking.tracker.timer"></span>
-                            </v-tooltip>
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn
-                                        fab
-                                        x-small
-                                        :icon="mode"
-                                        :color="themeBgColor"
-                                        @click="mode=false"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    >
-                                        <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
-                                    </v-btn>
-                                </template>
-                                <span v-text="langMap.tracking.tracker.manual"></span>
-                            </v-tooltip>
                         </div>
                     </div>
                 </v-toolbar>
