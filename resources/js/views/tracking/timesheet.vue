@@ -935,6 +935,7 @@
                             text
                             v-else
                             disabled
+                            :style="{ color: item.entity && item.entity.color ? item.entity.color+'!important' : themeBgColor+'!important' }"
                         >
                             <span v-if="item.entity && item.entity.name">
                                 {{getTrackingProjectLabel}}:<br>{{ $helpers.string.shortenText(item.entity.name, 35) }}
