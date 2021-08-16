@@ -1050,7 +1050,7 @@ export default {
                         }
                         return false;
                     }
-                    this.tracking.splice(index, 0, data.data);
+                    this.tracking.splice(0, 0, data.data);
                     return data;
                 })
                 .finally(() => {
