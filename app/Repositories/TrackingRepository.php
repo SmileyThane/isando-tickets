@@ -139,12 +139,14 @@ class TrackingRepository
         $tracking
             ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
             ->where('date_from', '>=', Carbon::parse($request->date_from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
-            ->where('date_to', '<=', Carbon::parse($request->date_to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))
+            ->where(function($query) use ($request) {
+                $query->where('date_to', '<=', Carbon::parse($request->date_to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))
+                    ->orWhereNull('date_to');
+            })
 
 //            ->with('Timesheet')
             ->with('Tags.Translates:name,lang,color')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
-            ->orderBy('date_to', 'desc')
             ->orderBy('date_from', 'desc')
             ->limit(15)
             ->offset($request->get('offset', 0));
@@ -374,16 +376,6 @@ class TrackingRepository
             if ($newTracking->entity_type === Ticket::class) {
                 $newTracking->team_id = $newTracking->entity->to_team_id;
             }
-//            $timesheet = TrackingTimesheet::find($tracking->timesheet_id);
-//            $newTimesheet = TrackingTimesheet::where([
-//                ['entity_id', '=', $timesheet->entity_id],
-//                ['entity_type', '=', $timesheet->entity_type],
-//                ['user_id', '=', $timesheet->user_id],
-//                ['team_id', '=', $timesheet->team_id],
-//                ['company_id', '=', $timesheet->company_id],
-//                ['is_manually', '=', !$timesheet->is_manually],
-//            ])->first();
-//            $newTracking->timesheet_id = $newTimesheet ? $newTimesheet->id : null;
             $newTracking->save();
             TrackingTimesheetRepository::recalculate($newTracking);
             if ($tracking->service) {
