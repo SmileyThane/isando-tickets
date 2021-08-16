@@ -1050,7 +1050,7 @@ export default {
                         }
                         return false;
                     }
-                    this.tracking = this.tracking.concat(data.data);
+                    this.tracking.splice(index, 0, data.data);
                     return data;
                 })
                 .finally(() => {
@@ -1100,7 +1100,8 @@ export default {
         __duplicateTracking(id) {
             return axios.post(`/api/tracking/tracker/${id}/duplicate`)
                 .then(({ data }) => {
-                    this.debounceGetTracking();
+                    // this.debounceGetTracking();
+                    this.tracking.splice(0, 0, data.data);
                     return data;
                 });
         },

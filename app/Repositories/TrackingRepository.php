@@ -391,7 +391,10 @@ class TrackingRepository
             }
             TrackingTimesheetRepository::recalculate($tracking);
             $this->logTracking($tracking->id, TrackingLogger::DUPLICATE, $tracking, $newTracking);
-            return $newTracking;
+            return Tracking::where('id', '=', $newTracking->id)
+                ->with('Tags.Translates:name,lang,color')
+                ->with('User:id,name,surname,middle_name,number,avatar_url')
+                ->first();
         }
         return false;
     }
