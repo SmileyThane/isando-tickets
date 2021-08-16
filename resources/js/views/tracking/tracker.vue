@@ -1043,8 +1043,6 @@ export default {
                     if (!data.success) {
                         if (data.error) {
                             this.debounceGetTracking();
-                            this.resetManualPanel();
-                            this.loadingCreateTrack = false;
                             const error = Object.keys(data.error)[0];
                             this.snackbarMessage = data.error[error].pop();
                             this.actionColor = 'error'
@@ -1052,10 +1050,12 @@ export default {
                         }
                         return false;
                     }
-                    this.debounceGetTracking();
-                    this.resetManualPanel();
-                    this.loadingCreateTrack = false;
+                    this.tracking = this.tracking.concat(data.data);
                     return data;
+                })
+                .finally(() => {
+                    this.loadingCreateTrack = false;
+                    this.resetManualPanel();
                 });
         },
         __updateTrackingById(id, data) {
@@ -1085,8 +1085,15 @@ export default {
         __deleteTrackingById(id) {
             this.loadingDeleteTrack = true;
             return axios.delete(`/api/tracking/tracker/${id}`)
+                .then(() => {
+                    const indexes = this.tracking.filter(i => i.id === id);
+                    indexes.map(i => {
+                        const index = this.tracking.findIndex(item => item.id === id);
+                        this.tracking.splice(index, 1);
+                    });
+                })
                 .finally(e => {
-                    this.debounceGetTracking();
+                    // this.debounceGetTracking();
                     this.loadingDeleteTrack = false;
                 });
         },
