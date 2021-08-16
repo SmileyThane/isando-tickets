@@ -27,7 +27,7 @@ class TrackingRepository
             'description' => 'nullable|string',
             'date_from' => 'required|string',
             'date_to' => 'nullable|string',
-            'status' => 'required|string|in:started,paused,stopped',
+            'status' => 'required|integer|in:0,1,2,3',
             'billable' => 'boolean',
             'billed' => 'boolean',
             'tags' => 'array|nullable',
@@ -39,7 +39,7 @@ class TrackingRepository
             'description' => 'nullable|string',
             'date_from' => 'nullable|string',
             'date_to' => 'nullable|string',
-            'status' => 'nullable|string|in:started,paused,stopped',
+            'status' => 'nullable|integer|in:0,1,2,3',
             'billable' => 'boolean',
             'billed' => 'boolean',
             'tags' => 'array|nullable',
@@ -132,8 +132,8 @@ class TrackingRepository
 
         $tracking
             ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
-            ->whereDate('date_from', '>=', Carbon::parse($request->date_from)->startOfDay())
-            ->whereDate('date_from', '<=', Carbon::parse($request->date_to)->endOfDay())
+            ->where('date_from', '>=', Carbon::parse($request->date_from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
+            ->where('date_to', '<=', Carbon::parse($request->date_to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))
 
 //            ->with('Timesheet')
             ->with('Tags.Translates:name,lang,color')
@@ -406,6 +406,6 @@ class TrackingRepository
     public function getCurrentUserTracking()
     {
         $user = Auth::user();
-        return $user->tracking()->where('status', '=', 'started')->get();
+        return $user->tracking()->where('status', '=', Tracking::$STATUS_STARTED)->get();
     }
 }

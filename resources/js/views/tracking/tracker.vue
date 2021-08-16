@@ -673,7 +673,7 @@
                                                         <v-btn
                                                             depressed
                                                             color="error"
-                                                            v-if="row.status == 'started'"
+                                                            v-if="row.status == STATUS_STARTED"
                                                             @click="actionStopTracking(row.id)"
                                                             :disabled="row.readonly"
                                                         >
@@ -682,7 +682,7 @@
                                                         <v-btn
                                                             depressed
                                                             :color="themeBgColor"
-                                                            v-if="row.status == 'stopped'"
+                                                            v-if="row.status == STATUS_STOPPED"
                                                             @click="actionStartTrackingAsId(row.id)"
                                                             :disabled="row.readonly"
                                                         >
@@ -800,6 +800,10 @@ export default {
     },
     data() {
         return {
+            STATUS_STARTED: 0,
+            STATUS_STOPPED: 1,
+            STATUS_PAUSED: 2,
+            STATUS_ARCHIVED: 3,
             loading: false,
             attemptRepeat: 0,
             tz: {
@@ -898,7 +902,7 @@ export default {
                 date_from: moment().format('YYYY-MM-DDTHH:mm:ss'),
                 date_to: moment().add(15, 'minutes').format('YYYY-MM-DDTHH:mm:ss'),
                 date: moment().format('YYYY-MM-DDTHH:mm:ss'),
-                status: 'started',
+                status: 0,
                 timeStart: '00:00:00'
             },
             nameLimit: 255,
@@ -912,7 +916,7 @@ export default {
                 entity: null,
                 entity_type: null,
                 tags: [],
-                status: 'started',
+                status: 0,
                 date_from: moment(),
                 date_to: null,
                 date: moment()
@@ -1069,7 +1073,7 @@ export default {
                 });
         },
         actionCreateTrack() {
-            this.manualPanel.status = 'stopped';
+            this.manualPanel.status = this.STATUS_STOPPED;
             let data = this.manualPanel;
             data.date = moment(data.date_from).format(this.dateTimeFormat);
             data.date_from = moment(data.date_from).format(this.dateTimeFormat);
@@ -1080,7 +1084,7 @@ export default {
             // start
             if (!this.timerPanel.start) {
                 this.timerPanel.trackId = null;
-                this.timerPanel.status = 'started';
+                this.timerPanel.status = this.STATUS_STARTED;
                 this.timerPanel.start = moment().format(this.dateTimeFormat);
                 this.timerPanel.date = moment().format(this.dateTimeFormat);
                 this.timerPanel.date_from = moment().format(this.dateTimeFormat);
@@ -1100,9 +1104,9 @@ export default {
                 this.timerPanel.date_to = moment().format(this.dateTimeFormat);
                 this.timerPanel.timeStart = this.timerPanel.start;
                 this.timerPanel.start = null;
-                this.timerPanel.status = 'stopped';
+                this.timerPanel.status = this.STATUS_STOPPED;
                 const index = this.tracking.findIndex(i => i.id === this.timerPanel.trackId);
-                this.tracking[index].status = 'stopped';
+                this.tracking[index].status = this.STATUS_STOPPED;
                 if (this.timerPanel.trackId) {
                     this.__updateTrackingById(this.timerPanel.trackId, this.timerPanel);
                 } else {
@@ -1122,11 +1126,11 @@ export default {
                 this.timerPanel.start = null;
                 this.resetTimerPanel();
                 const index = this.tracking.findIndex(i => i.id === trackerId);
-                this.tracking[index].status = 'stopped';
+                this.tracking[index].status = this.STATUS_STOPPED;
                 this.tracking[index].date_to = moment().format(this.dateTimeFormat);
             }
             this.__updateTrackingById(trackerId, {
-                status: 'stopped',
+                status: this.STATUS_STOPPED,
                 date_to: moment().format(this.dateTimeFormat)
             });
         },
@@ -1137,7 +1141,7 @@ export default {
                         this.__updateTrackingById(data.data.id, {
                             date_from: moment().format(this.dateTimeFormat),
                             date_to: null,
-                            status: 'started'
+                            status: this.STATUS_STARTED
                         });
                     }
                 });
@@ -1391,7 +1395,7 @@ export default {
         globalTimer: function () {
             // Update DataTable passed field
             this.tracking.filter(i => {
-                return i.status === 'started';
+                return i.status === this.STATUS_STARTED;
             }).forEach(i => {
                 const index = this.tracking.indexOf(i);
                 this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment(), true);
