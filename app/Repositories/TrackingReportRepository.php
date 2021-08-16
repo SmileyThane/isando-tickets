@@ -287,7 +287,10 @@ class TrackingReportRepository
         $grouping = $result['grouping'];
         $tracks = $result['tracks'];
 
-        if ($grouping->isEmpty()) return $tracks;
+        if ($grouping->isEmpty()) return [
+            'g1' => $tracks,
+            'g2' => $tracks,
+        ];
 
         $group = $grouping->shift();
         $items = $this->makeList($group, $tracks);
