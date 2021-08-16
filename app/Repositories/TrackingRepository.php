@@ -130,6 +130,12 @@ class TrackingRepository
             $tracking->whereIn('user_id', explode(',', $request->get('team')));
         }
 
+        if ($request->has('users') && $request->users) {
+            $users = explode(',', $request->users);
+            $users = collect($users);
+            $tracking->whereIn('user_id', $users);
+        }
+
         $tracking
             ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
             ->where('date_from', '>=', Carbon::parse($request->date_from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
@@ -138,7 +144,10 @@ class TrackingRepository
 //            ->with('Timesheet')
             ->with('Tags.Translates:name,lang,color')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
-            ->orderBy('id', 'desc');
+            ->orderBy('date_to', 'desc')
+            ->orderBy('date_from', 'desc')
+            ->limit(15)
+            ->offset($request->get('offset', 0));
         return
             $tracking->get();
 //        dd(DB::getQueryLog());

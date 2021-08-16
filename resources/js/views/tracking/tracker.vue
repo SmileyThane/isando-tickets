@@ -326,6 +326,7 @@
                         single-line
                         style="min-width: 300px"
                         class="mt-4"
+                        @change="resetLazyLoad(); debounceGetTracking()"
                     >
                         <template v-slot:item="{ parent, item, on, attrs }">
                             <div class="d-flex">
@@ -411,6 +412,7 @@
             <v-expansion-panels
                 v-model="panels"
                 multiple
+                id="tracking-container"
             >
                 <v-expansion-panel
                     v-for="(panelDate, index) in getPanelDates"
@@ -751,6 +753,18 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
             </v-expansion-panels>
+            <div class="d-flex flex-grow-1 justify-center">
+                <v-btn
+                    v-if="this.tracking.length"
+                    class="ma-auto my-4"
+                    :loading="loading"
+                    :disabled="loading || !loadMoreAvailable"
+                    @click="__getTracking()"
+                    :color="themeBgColor"
+                >
+                    Load more
+                </v-btn>
+            </div>
         </template>
 
     </v-container>
@@ -924,7 +938,9 @@ export default {
             globalTimer: null,
             isLoadingTags: false,
             isLoadingProject: false,
-            teamFilter: []
+            teamFilter: [],
+            offset: 0,
+            loadMoreAvailable: true,
         }
     },
     created: function () {
@@ -952,6 +968,13 @@ export default {
     },
     mounted() {
         this.__globalTimer();
+        this.$store.dispatch('getCurrentUser')
+            .then(() => {
+                const currentUser = this.$store.getters['getCurrentUser'];
+                if (currentUser) {
+                    this.teamFilter.push(currentUser.id);
+                }
+            });
         this.debounceGetTracking();
         this.$store.dispatch('Tracking/getSettings');
         this.$store.dispatch('Projects/getProjectList', { search: null });
@@ -970,13 +993,6 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
-        this.$store.dispatch('getCurrentUser')
-            .then(() => {
-                const currentUser = this.$store.getters['getCurrentUser'];
-                if (currentUser) {
-                    this.teamFilter.push(currentUser.id);
-                }
-            });
     },
     methods: {
         __globalTimer() {
@@ -990,15 +1006,24 @@ export default {
             this.loading = true;
             const queryParams = new URLSearchParams({
                 date_from: moment(this.dateRange.start).format(this.dateFormat) || null,
-                date_to: moment(this.dateRange.end).format(this.dateFormat) || null
+                date_to: moment(this.dateRange.end).format(this.dateFormat) || null,
+                users: this.teamFilter.join(','),
+                offset: this.offset,
             });
             return axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
                 .then(({ data }) => {
-                    this.tracking = data.data.map(i => ({
+                    if (this.offset === 0) {
+                        this.tracking = [];
+                    }
+                    this.tracking = this.tracking.concat(data.data.map(i => ({
                         ...i,
                         date: moment(i.date_from).format('YYYY-MM-DD'),
                         date_picker: false
-                    }));
+                    })));
+                    this.offset += data.data.length;
+                    if (data.data.length === 0) {
+                        this.loadMoreAvailable = false;
+                    }
                     this.loading = false;
                     this.attemptRepeat = 0;
                     return data;
@@ -1184,6 +1209,11 @@ export default {
             this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
             this.dateRangePicker = false;
             this.debounceGetTracking();
+            this.resetLazyLoad();
+        },
+        resetLazyLoad() {
+            this.offset = 0;
+            this.loadMoreAvailable = true;
         },
         handlerProjectTimerPanel(data) {
             this.timerPanel.entity = data.project;
