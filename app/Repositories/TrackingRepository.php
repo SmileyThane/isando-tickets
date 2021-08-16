@@ -103,22 +103,24 @@ class TrackingRepository
 
     public function all(Request $request)
     {
+        $permissionIds = Auth::user()->employee->getPermissionIds();
 //        DB::enableQueryLog();
-        if (!Auth::user()->employee->hasPermissionId([
-            Permission::TRACKER_VIEW_OWN_TIME_ACCESS,
-            Permission::TRACKER_VIEW_TEAM_TIME_ACCESS,
-            Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS,
-        ])) {
+
+        if (!in_array(Permission::TRACKER_VIEW_OWN_TIME_ACCESS, $permissionIds)  ||
+            !in_array(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS, $permissionIds) ||
+            !in_array(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS, $permissionIds)
+        ) {
             throw new \Exception('Access denied');
         }
 
         // User
         $tracking = Tracking::SimpleUser();
-        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+
+        if (in_array(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS, $permissionIds)) {
             // Manager
             $tracking = Tracking::TeamManager();
         }
-        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+        if (in_array(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS, $permissionIds)) {
             // Company Admin
             $tracking = Tracking::CompanyAdmin();
         }
@@ -136,11 +138,10 @@ class TrackingRepository
 //            ->with('Timesheet')
             ->with('Tags.Translates:name,lang,color')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
-//            ->select('id', 'user_id', 'team_id', 'company_id', 'entity_id', 'entity_type', 'is_manual', 'description', 'date_from', 'date_to', 'status', 'billable')
-            ->orderBy('id', 'desc');
-        $tracking = $tracking->get();
+            ->orderBy('id', 'desc')
+;
+         return $tracking->get();
 //        dd(DB::getQueryLog());
-        return $tracking;
     }
 
     public function find($id)
