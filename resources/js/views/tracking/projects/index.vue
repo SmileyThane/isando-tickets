@@ -27,7 +27,7 @@
             <template v-slot:top>
 
                 <v-row>
-                    <v-col sm="12" md="8">
+                    <v-col sm="12" md="6">
                         <v-text-field
                             @input="debounceGetProjects"
                             v-model="trackingProjectSearch"
@@ -47,6 +47,13 @@
                             v-model="options.itemsPerPage"
                             @change="updateItemsCount"
                         ></v-select>
+                    </v-col>
+                    <v-col sm="12" md="2">
+                        <v-checkbox
+                            v-model="includeArchives"
+                            label="Include archives"
+                            @click="debounceGetProjects()"
+                        ></v-checkbox>
                     </v-col>
                     <v-col sm="12" md="2" class="pt-6">
                         <v-btn
@@ -86,20 +93,75 @@
                 </span> {{ props.item.revenue }}
             </template>
             <template v-slot:item.actions="props">
-                <v-btn
-                    v-if="$helpers.auth.checkPermissionByIds([58]) && props.item.status==='archived'"
-                    icon
-                    @click.stop="toggleArchive(props.item)"
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            v-if="$helpers.auth.checkPermissionByIds([58]) && props.item.status==='archived'"
+                            icon
+                            @click.stop="toggleArchive(props.item)"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <v-icon>mdi-archive-arrow-up-outline</v-icon>
+                        </v-btn>
+                        <v-btn
+                            v-else-if="$helpers.auth.checkPermissionByIds([58])"
+                            icon
+                            @click.stop="toggleArchive(props.item)"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <v-icon>mdi-archive-arrow-down-outline</v-icon>
+                        </v-btn>
+                    </template>
+                    <span v-if="props.item.status==='archived'">Extract</span>
+                    <span v-else>Archive</span>
+                </v-tooltip>
+                <v-dialog
+                    v-model="removeDialog[props.item.id]"
+                    width="500"
                 >
-                    <v-icon>mdi-archive-arrow-up-outline</v-icon>
-                </v-btn>
-                <v-btn
-                    v-else-if="$helpers.auth.checkPermissionByIds([58])"
-                    icon
-                    @click.stop="toggleArchive(props.item)"
-                >
-                    <v-icon>mdi-archive-arrow-down-outline</v-icon>
-                </v-btn>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            v-if="$helpers.auth.checkPermissionByIds([58])"
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                            <v-icon>mdi-trash-can</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <v-card>
+                        <v-card-title class="text-h5 grey lighten-2">
+                            Delete project
+                        </v-card-title>
+
+                        <v-card-text class="mt-4">
+                            Are you sure you want to delete the project?
+                        </v-card-text>
+
+                        <v-divider></v-divider>
+
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="success"
+                                text
+                                @click="removeArchive(props.item); removeDialog[props.item.id] = false"
+                            >
+                                Yes
+                            </v-btn>
+                            <v-btn
+                                color="error"
+                                text
+                                @click="removeDialog[props.item.id] = false"
+                            >
+                                No
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
             </template>
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length">
@@ -200,6 +262,12 @@
     </v-container>
 </template>
 
+<style scoped>
+*:not(.v-icon) {
+    font-size: 14px !important;
+}
+</style>
+
 <script>
 import EventBus from "../../../components/EventBus";
 import _ from "lodash";
@@ -249,7 +317,9 @@ export default {
                 product: null,
                 color: this.$helpers.color.genRandomColor()
             },
-            colorMenu: false
+            colorMenu: false,
+            includeArchives: false,
+            removeDialog: {},
         }
     },
     created() {
@@ -288,7 +358,8 @@ export default {
                 page: this.options.page,
                 search: this.trackingProjectSearch,
                 direction: this.options.sortDesc[0],
-                column: this.options.sortBy[0]
+                column: this.options.sortBy[0],
+                includeArchives: this.includeArchives,
             })
                 .then(({ data, total, last_page }) => {
                     this.projects = data
@@ -345,6 +416,9 @@ export default {
         },
         toggleArchive(project) {
             this.$store.dispatch('Projects/toggleArchive', project);
+        },
+        removeArchive(project) {
+            this.$store.dispatch('Projects/removeArchive', project);
         }
     },
     watch: {

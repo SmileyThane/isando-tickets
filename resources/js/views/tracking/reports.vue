@@ -190,7 +190,7 @@
                                         :step="1"
                                         :columns="2"
                                         mode="range"
-                                        @input="activePeriod = null; genPreview(); resetSelectedReport()"
+                                        @input="activePeriod = null; debounceGenPreview(); resetSelectedReport()"
                                     ></vc-date-picker>
                                 </div>
                             </div>
@@ -223,7 +223,7 @@
                     item-value="value"
                     v-model="builder.sort"
                     return-object
-                    @input="genPreview(); resetSelectedReport()"
+                    @input="debounceGenPreview(); resetSelectedReport()"
                 >
                     <template v-slot:item="{ parent, item, on, attrs }">
                         <span>
@@ -336,7 +336,7 @@
                                     clearable
                                     style="max-width: 900px; width: 100%"
                                     v-model="filter.selected"
-                                    @input="genPreview(); resetSelectedReport()"
+                                    @input="debounceGenPreview(); resetSelectedReport()"
                                 ></v-select>
                                 <v-btn
                                     color="danger"
@@ -412,7 +412,7 @@
         <v-card class="d-flex flex-column">
 
             <v-treeview
-                :items="reportData.entities"
+                :items="reportData.entities.g1"
                 item-children="children"
                 item-key="name"
                 dense
@@ -444,7 +444,17 @@
                                         <v-icon v-if="item.entity && item.service" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
                                         <span v-if="item.service">{{ item.service.name }}</span>
                                         <v-icon v-if="(item.service && item.description) || (item.entity && item.description)" class="ma-1" x-small>mdi-checkbox-blank-circle</v-icon>
-                                        <span v-if="item.description">{{ item.description }}</span>
+                                        <span v-if="item.description">
+                                            <v-tooltip top>
+                                              <template v-slot:activator="{ on, attrs }">
+                                                <span
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                >{{ $helpers.string.shortenText(item.description, 60) }}</span>
+                                              </template>
+                                              <span>{{ item.description }}</span>
+                                            </v-tooltip>
+                                        </span>
                                     </td>
                                     <td class="pa-2" align="right" width="10%">
                                         <TagField
@@ -841,7 +851,7 @@
     </v-container>
 </template>
 
-<style>
+<style scoped>
 .border-right {
     border-right: thin solid rgba(0,0,0,.12);
 }
@@ -921,6 +931,7 @@ export default {
     data() {
         const self = this;
         return {
+            dateFormat: 'YYYY-MM-DD',
             langMap: this.$store.state.lang.lang_map,
             themeFgColor: this.$store.state.themeFgColor,
             themeBgColor: this.$store.state.themeBgColor,
@@ -932,8 +943,8 @@ export default {
             builder: {
                 reportName: 'Report',
                 period: {
-                    start: moment().subtract(1, 'months').format('YYYY-MM-DD'),
-                    end: moment().format('YYYY-MM-DD')
+                    start: moment().subtract(1, 'months').format('YYYY-MM-DDTHH:mm:ss'),
+                    end: moment().format('YYYY-MM-DDTHH:mm:ss')
                 },
                 round: 0,
                 sort: {
@@ -1055,19 +1066,6 @@ export default {
             ],
             chart: {
                 options: {
-                    scaleShowValues: true,
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }],
-                        xAxes: [{
-                            ticks: {
-                                autoSkip: false
-                            }
-                        }]
-                    },
                     responsive: true,
                     maintainAspectRatio: true,
                     percentageInnerCutout : 90,
@@ -1103,7 +1101,10 @@ export default {
                     { text: this.$store.state.lang.lang_map.tracking.report.passed, value: 'passed' },
                     { text: '', value: 'data-table-expand' },
                 ],
-                entities: []
+                entities: {
+                    g1: [],
+                    g2: [],
+                }
             },
             dialogExportPDF: false,
             dialogExportCSV: false,
@@ -1258,6 +1259,7 @@ export default {
                 dow: 1,
             },
         });
+        moment.tz.setDefault('Etc/UTC');
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Services/getServicesList', { search: null });
         this.$store.dispatch('Projects/getProjectList', { search: null });
@@ -1266,6 +1268,7 @@ export default {
         this.$store.dispatch('Languages/getLanguageList');
         this.debounceGetSettings = _.debounce(this.__getSettings, 1000);
         this.debounceGetReports = _.debounce(this.__getReports, 1000);
+        this.debounceGenPreview = _.debounce(this.genPreview, 1000);
     },
     mounted() {
         let that = this;
@@ -1347,13 +1350,14 @@ export default {
                     start = null;
                     end = moment().endOf('years');
             }
-            this.builder.period.start = start ? moment(start).toDate() : start;
-            this.builder.period.end = moment(end).toDate();
+            this.builder.period.start = start ? moment(start).format(this.dateFormat) : start;
+            this.builder.period.end = moment(end).format(this.dateFormat);
+            console.log(this.builder.period);
             const calendar = this.$refs.calendar;
             if (calendar) {
                 await calendar.updateValue({
-                    start: this.builder.period.start ? moment(this.builder.period.start).toDate() : moment('2020-01-01').toDate(),
-                    end: moment(this.builder.period.end).toDate()
+                    start: this.builder.period.start ? moment(this.builder.period.start).format(this.dateFormat) : moment('2020-01-01').format(this.dateFormat),
+                    end: moment(this.builder.period.end).format(this.dateFormat)
                 }, {
                     formatInput: true,
                     hidePopover: false
@@ -1364,7 +1368,7 @@ export default {
                 });
             }
             this.activePeriod = null;
-            this.genPreview();
+            this.debounceGenPreview();
             this.resetSelectedReport();
         },
         onClickOutsideHandler() {
@@ -1404,11 +1408,12 @@ export default {
                     this.reportData.entities = data;
                     this.dialogEdit = {};
                     const self = this;
-                    data.map(i => function () {
+                    console.log(data);
+                    data.g1.map(i => function () {
                        self.dialogEdit[i.id] = false;
                        self.dialogDelete[i.id] = false;
                     });
-                    this.report.pdf.coworkers = [...new Set(this.calculateCoworkers(data))].sort().join(', ');
+                    this.report.pdf.coworkers = [...new Set(this.calculateCoworkers(data.g1))].sort().join(', ');
                 })
                 .catch(err => {
                     console.log(err);
@@ -1496,7 +1501,7 @@ export default {
             })
                 .then(successResult => {
                     if (successResult) {
-                        this.genPreview();
+                        this.debounceGenPreview();
                     }
                 });
         },
@@ -1592,17 +1597,28 @@ export default {
                 return str.substring(0, maxLength - 3) + '...';
             }
             return str;
-        }
+        },
+        normalizeData(entries, items = []) {
+            if (!entries) return seconds;
+            entries.map(i => {
+                if (i.children) {
+                    items = items.concat(this.normalizeData(i.children));
+                } else {
+                    items.push(i);
+                }
+            });
+            return items;
+        },
     },
     computed: {
         totalTime: function() {
-            return this.calculateTime(this.reportData.entities);
+            return this.calculateTime(this.reportData.entities.g1);
         },
         totalRevenue: function() {
-            return this.calculateRevenue(this.reportData.entities);
+            return this.calculateRevenue(this.reportData.entities.g1);
         },
         doughnutData: function() {
-            if (this.reportData.entities && this.reportData.entities.length) {
+            if (this.reportData.entities && this.reportData.entities.g1 && this.reportData.entities.g1.length) {
                 let data = {
                     labels: [],
                     datasets: []
@@ -1610,14 +1626,14 @@ export default {
                 data.datasets = [];
                 let values = [];
                 let labels = [];
-                this.reportData.entities.map(i => {
+                this.reportData.entities.g1.map(i => {
                     let client = '';
                     if (i.client) {
-                        client = this.substr(i.client, 20) + ": \n";
+                        client = this.substr(i.client, 200) + ": \n";
                     }
-                    data.labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    data.labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
-                        labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
@@ -1639,7 +1655,7 @@ export default {
             return null;
         },
         barData: function() {
-            if (this.reportData.entities && this.reportData.entities.length) {
+            if (this.reportData.entities.g2 && this.reportData.entities.g2.length) {
                 let data = {
                     labels: [],
                     datasets: []
@@ -1648,14 +1664,14 @@ export default {
                 let values = [];
                 let labels = [];
                 let colors = [];
-                this.reportData.entities.map(i => {
+                this.reportData.entities.g2.map(i => {
                     let client = '';
                     if (i.client) {
-                        client = this.substr(i.client, 20) + ": \n";
+                        client = this.substr(i.client, 17) + ": \n";
                     }
-                    data.labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    data.labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
-                        labels.push(client + this.substr(i.name, 20) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push(
@@ -1806,13 +1822,13 @@ export default {
     },
     watch: {
         'builder.round': function() {
-            this.genPreview();
+            this.debounceGenPreview();
         },
         'builder.filters': function() {
-            this.genPreview();
+            this.debounceGenPreview();
         },
         'builder.group': function() {
-            this.genPreview();
+            this.debounceGenPreview();
         },
         'builder': function () {
             const dateFormat = 'dddd DD/MM/YYYY';
@@ -1831,13 +1847,13 @@ export default {
             if (calendar) {
                 if (moment(this.builder.period.start).format('YYYY-MM') !== moment(this.builder.period.end).format('YYYY-MM')) {
                     calendar.$refs.calendar.showPageRange({
-                        from: moment(this.builder.period.start).toDate(),
-                        to: moment(this.builder.period.end).toDate()
+                        from: moment(this.builder.period.start).format(this.dateFormat),
+                        to: moment(this.builder.period.end).format(this.dateFormat)
                     });
                 } else {
                     calendar.$refs.calendar.showPageRange({
-                        from: moment(this.builder.period.start).subtract(1, 'months').toDate(),
-                        to: moment(this.builder.period.end).toDate()
+                        from: moment(this.builder.period.start).subtract(1, 'months').format(this.dateFormat),
+                        to: moment(this.builder.period.end).format(this.dateFormat)
                     });
                 }
             }

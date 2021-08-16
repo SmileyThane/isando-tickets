@@ -14,6 +14,8 @@ use App\TrackingTimesheet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class TrackingRepository
@@ -59,7 +61,8 @@ class TrackingRepository
         return true;
     }
 
-    private function acl() {
+    private function acl()
+    {
         $isLicensed = false;
         $roleId = null;
         $teams = [];
@@ -101,21 +104,24 @@ class TrackingRepository
 
     public function all(Request $request)
     {
-        if (!Auth::user()->employee->hasPermissionId([
-            Permission::TRACKER_VIEW_OWN_TIME_ACCESS,
-            Permission::TRACKER_VIEW_TEAM_TIME_ACCESS,
-            Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS,
-        ])) {
+        $permissionIds = Auth::user()->employee->getPermissionIds();
+//        DB::enableQueryLog();
+
+        if (!in_array(Permission::TRACKER_VIEW_OWN_TIME_ACCESS, $permissionIds) ||
+            !in_array(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS, $permissionIds) ||
+            !in_array(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS, $permissionIds)
+        ) {
             throw new \Exception('Access denied');
         }
 
         // User
         $tracking = Tracking::SimpleUser();
-        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+
+        if (in_array(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS, $permissionIds)) {
             // Manager
             $tracking = Tracking::TeamManager();
         }
-        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+        if (in_array(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS, $permissionIds)) {
             // Company Admin
             $tracking = Tracking::CompanyAdmin();
         }
@@ -125,20 +131,17 @@ class TrackingRepository
         }
 
         $tracking
-            ->where(function($query) {
-                $query->where('status', '!=', Tracking::$STATUS_ARCHIVED)
-                    ->orWhereNull('status');
-            })
-            ->whereBetween('date_from', [
-                Carbon::parse($request->date_from)->startOfDay(),
-                Carbon::parse($request->date_to)->endOfDay()
-            ])
-            ->with('Timesheet')
-            ->with('Tags.Translates')
+            ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
+            ->whereDate('date_from', '>=', Carbon::parse($request->date_from)->startOfDay())
+            ->whereDate('date_from', '<=', Carbon::parse($request->date_to)->endOfDay())
+
+//            ->with('Timesheet')
+            ->with('Tags.Translates:name,lang,color')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
             ->orderBy('id', 'desc');
-
-        return $tracking->get();
+        return
+            $tracking->get();
+//        dd(DB::getQueryLog());
     }
 
     public function find($id)
@@ -155,7 +158,9 @@ class TrackingRepository
         }
         $tracking = new Tracking();
         $tracking->user_id = Auth::user()->id;
-        if ($request->has('description')) { $tracking->description = $request->description; }
+        if ($request->has('description')) {
+            $tracking->description = $request->description;
+        }
         $tracking->date_from = Carbon::parse($request->date_from)->format(Tracking::$DATETIME_FORMAT);
         if ($request->has('date_from') && $request->has('date_to') && !is_null($request->date_to)) {
             if (Carbon::parse($request->date_from)->gt(Carbon::parse($request->date_to))) {
@@ -174,7 +179,9 @@ class TrackingRepository
                 }
             }
         }
-        if ($request->has('billed')) { $tracking->billed = $request->billed; }
+        if ($request->has('billed')) {
+            $tracking->billed = $request->billed;
+        }
         if ($request->has('entity') && $request->entity && $request->entity_type) {
             $tracking->entity_id = $request->entity['id'];
             $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
@@ -221,7 +228,6 @@ class TrackingRepository
     public function update(Request $request, Tracking $tracking)
     {
         $trackingDiff = Carbon::parse($tracking->date_from)->diffInSeconds(Carbon::now());
-
         if (
             !Auth::user()->employee->hasPermissionId([Permission::TRACKER_EDIT_DELETE_OWN_TIME_UNLIMITED_ACCESS])
             && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_2W_ACCESS)
@@ -235,12 +241,19 @@ class TrackingRepository
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_DELETE_OWN_TIME_1W_ACCESS) && $trackingDiff > 60 * 60 * 24 * 7) {
             throw new \Exception('Access denied');
         }
-        if ($tracking->user_id !== Auth::user()->id  && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_TEAM_TIME_ACCESS)) {
+        if ($tracking->user_id !== Auth::user()->id && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_EDIT_TEAM_TIME_ACCESS)) {
             throw new \Exception('Access denied');
         }
 
         $oldTracking = $tracking;
-        if ($request->has('description')) { $tracking->description = $request->description; }
+        $oldService = $tracking->service;
+        $oldEntityId = $tracking->entity_id;
+        $oldEntityType = $tracking->entity_type;
+        $oldTeamId = $tracking->team_id;
+        $oldCompanyId = $tracking->company_id;
+        if ($request->has('description')) {
+            $tracking->description = $request->description;
+        }
         if ($request->has('date_from')) {
             if (!$request->has('date_to') && Carbon::parse($request->date_from)->gt(Carbon::parse($tracking->date_to))) {
                 throw new \Exception('The date from must be a date before date to.');
@@ -259,9 +272,15 @@ class TrackingRepository
         if ($request->has('billable') && Auth::user()->employee->hasPermissionId(46)) {
             $tracking->billable = $request->billable;
         }
-        if ($request->has('billed')) { $tracking->billed = $request->billed; }
+        if ($request->has('billed')) {
+            $tracking->billed = $request->billed;
+        }
         if ($request->has('entity') && $request->entity && $request->entity_type) {
             $tracking->entity_id = $request->entity['id'];
+            if (is_null($tracking->entity_id)) {
+                $tracking->team_id = null;
+                $tracking->rate = 0;
+            }
             $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
             if ($tracking->entity_type === TrackingProject::class) {
                 $project = TrackingProject::find($request->entity['id']);
@@ -290,10 +309,17 @@ class TrackingRepository
                 $tracking->Tags()->attach($tag['id']);
             }
         }
-        TrackingTimesheetRepository::recalculate($oldTracking);
+        $tracking->refresh();
+//        dd($oldTracking, $oldTracking->service, $tracking, $tracking->service);
+        Log::debug('==========================================================================================');
+        Log::debug('Recalculate new track');
         TrackingTimesheetRepository::recalculate($tracking);
-        return Tracking::where('id', '=', $tracking->id)->with('Tags.Translates')
-            ->with('User:id,name,surname,middle_name,number,avatar_url')->first();;
+        Log::debug('Recalculate old track');
+        TrackingTimesheetRepository::recalculate($oldTracking, false, $oldService, $oldEntityId, $oldEntityType, $oldTeamId, $oldCompanyId);
+        return Tracking::where('id', '=', $tracking->id)
+            ->with('Tags.Translates')
+            ->with('User:id,name,surname,middle_name,number,avatar_url')
+            ->first();
     }
 
     public function delete(Tracking $tracking)
@@ -313,13 +339,14 @@ class TrackingRepository
             throw new \Exception('Access denied');
         }
 
-        if ($tracking->user_id !== Auth::user()->id  && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_DELETE_TEAM_TIME_ACCESS)) {
+        if ($tracking->user_id !== Auth::user()->id && !Auth::user()->employee->hasPermissionId(Permission::TRACKER_DELETE_TEAM_TIME_ACCESS)) {
             throw new \Exception('Access denied');
         }
         $oldTracking = $tracking;
+        $oldService = $oldTracking->service;
         $this->logTracking($tracking->id, TrackingLogger::DELETE, $tracking, null);
         $tracking->delete();
-        TrackingTimesheetRepository::recalculate($oldTracking);
+        TrackingTimesheetRepository::recalculate($oldTracking, false, $oldService);
         return true;
     }
 
@@ -358,7 +385,8 @@ class TrackingRepository
         return false;
     }
 
-    protected function logTracking($trackingId, $action, $from = null, $to = null) {
+    protected function logTracking($trackingId, $action, $from = null, $to = null)
+    {
         if ($action === TrackingLogger::UPDATE_TAGS && empty($from) && empty($to)) {
             return false;
         }
@@ -375,7 +403,8 @@ class TrackingRepository
         }
     }
 
-    public function getCurrentUserTracking() {
+    public function getCurrentUserTracking()
+    {
         $user = Auth::user();
         return $user->tracking()->where('status', '=', 'started')->get();
     }

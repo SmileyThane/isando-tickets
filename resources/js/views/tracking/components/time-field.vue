@@ -78,6 +78,9 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     background: none;
     display: none;
 }
+*:not(.v-icon) {
+    font-size: 14px !important;
+}
 </style>
 
 <script>

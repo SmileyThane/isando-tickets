@@ -127,6 +127,12 @@
     </v-menu>
 </template>
 
+<style scoped>
+*:not(.v-icon) {
+    font-size: 14px !important;
+}
+</style>
+
 <script>
 
 import _ from 'lodash';

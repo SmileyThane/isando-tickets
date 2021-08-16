@@ -44,9 +44,16 @@ class TrackingProjectRepository
 
     public function all(Request $request)
     {
+        $includeArchives = $request->get('includeArchives', false);
         $trackingProjects = collect([]);
         if (Auth::user()->employee->getPermissionIds(54, 55)) {
             $trackingProjects = TrackingProject::with('Team');
+            if ($includeArchives === 'false' || !$includeArchives) {
+                $trackingProjects->where(function ($query) {
+                    $query->where('status', '<>', TrackingProject::$STATUS_ARCHIVED)
+                        ->orWhereNull('status');
+                });
+            }
             if (Auth::user()->employee->hasPermissionId([Permission::CLIENT_GROUPS_DEPENDENCY])) {
                 $assignedClientIds = [];
                 $assignedProductIds = [];

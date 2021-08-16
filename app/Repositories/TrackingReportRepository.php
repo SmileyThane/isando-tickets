@@ -292,7 +292,11 @@ class TrackingReportRepository
         $group = $grouping->shift();
         $items = $this->makeList($group, $tracks);
 
-        return array_values($this->makeStructure($grouping->toArray(), 0, $items));
+        $items2 = $this->makeList($group === 'project' ? 'service' : 'project', $tracks);
+        return [
+            'g1' => array_values($this->makeStructure($grouping->toArray(), 0, $items)),
+            'g2' => array_values($this->makeStructure([], 0, $items2)),
+        ];
 
     }
 

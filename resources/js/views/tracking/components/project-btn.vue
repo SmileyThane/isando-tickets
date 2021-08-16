@@ -296,6 +296,9 @@
 >>>.v-treeview--dense .v-treeview-node__label {
     max-width: 80%;
 }
+*:not(.v-icon) {
+    font-size: 14px !important;
+}
 </style>
 
 <style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>
@@ -478,7 +481,7 @@ export default {
             }
         },
         createProjectValid() {
-            return this.form.name && this.form.client && this.form.color;
+            return this.form.project && this.form.client && this.form.color;
         },
         getTrackingProjectLabel() {
             const { settings } = this.$store.getters['Tracking/getSettings'];

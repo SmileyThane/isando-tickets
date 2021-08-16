@@ -252,7 +252,7 @@
     </v-container>
 </template>
 
-<style>
+<style scoped>
 .top-projects__info {
     position: relative;
     top: 30%;

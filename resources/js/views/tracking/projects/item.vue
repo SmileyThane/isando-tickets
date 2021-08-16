@@ -395,6 +395,12 @@
     </v-container>
 </template>
 
+<style scoped>
+*:not(.v-icon) {
+    font-size: 14px !important;
+}
+</style>
+
 <script>
 import EventBus from "../../../components/EventBus";
 import moment from "moment";

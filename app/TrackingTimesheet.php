@@ -5,7 +5,6 @@ namespace App;
 use App\Repositories\TrackingTimesheetRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 class TrackingTimesheet extends Model
 {
@@ -23,7 +22,8 @@ class TrackingTimesheet extends Model
 
     protected $appends = [
         'total_time',
-        'entity'
+        'entity',
+        'is_empty'
     ];
 
     protected $casts = [
@@ -67,6 +67,10 @@ class TrackingTimesheet extends Model
 
     public function getTotalTimeAttribute() {
         $items = $this->Times()->get();
+        if (!count($items)) {
+            $this->genTimes();
+            $items = $this->Times()->get();
+        }
         $total = 0;
         foreach ($items as $item) {
 //            $dateTime = $item->date . ' ' . $item->time;
@@ -79,6 +83,10 @@ class TrackingTimesheet extends Model
             }
         }
         return $total; // in seconds
+    }
+
+    public function getIsEmptyAttribute() {
+        return $this->total_time === 0;
     }
 
     public static function boot() {
@@ -101,11 +109,11 @@ class TrackingTimesheet extends Model
         });
 
         static::deleting(function($trackingTimesheet) {
-            if (!$trackingTimesheet->is_manually) {
-                Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->update(['timesheet_id' => null]);
-            } else {
+//            if (!$trackingTimesheet->is_manually) {
+//                Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->update(['timesheet_id' => null]);
+//            } else {
                 Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->delete();
-            }
+//            }
             $trackingTimesheet->Times()->delete();
         });
 

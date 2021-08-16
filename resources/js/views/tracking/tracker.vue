@@ -756,7 +756,7 @@
     </v-container>
 </template>
 
-<style>
+<style scoped>
 .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:before,
 .date-picker__without-line.v-text-field:not(.v-input__has-state):hover>.v-input__control>.v-input__slot:before,
 .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:after{
@@ -774,6 +774,9 @@
 }
 .v-data-table__wrapper tr td.text-start:nth-child(6):after {
     /*content: "—";*/
+}
+*:not(.v-icon) {
+    font-size: 14px !important;
 }
 </style>
 
@@ -926,7 +929,7 @@ export default {
                 dow: 1,
             },
         });
-        this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
+        this.debounceGetTracking = _.debounce(this.__getTracking, 100);
         this.debounceSave = _.debounce(this.save, 500);
         if (this.$helpers.localStorage.getKey('dateRange', 'tracking')) {
             this.dateRange = this.$helpers.localStorage.getKey('dateRange', 'tracking');
@@ -1172,6 +1175,8 @@ export default {
             };
         },
         handlerDateRange() {
+            this.dateRange.start = moment(this.dateRange.start).format(this.dateFormat);
+            this.dateRange.end = moment(this.dateRange.end).format(this.dateFormat);
             this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
             this.dateRangePicker = false;
             this.debounceGetTracking();
