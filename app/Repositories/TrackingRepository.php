@@ -132,8 +132,8 @@ class TrackingRepository
 
         $tracking
             ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
-            ->whereDate('date_from', '>=', Carbon::parse($request->date_from)->startOfDay()->unix())
-            ->whereDate('date_from', '<=', Carbon::parse($request->date_to)->endOfDay()->unix())
+            ->whereDate('date_from', '>=', Carbon::parse($request->date_from)->startOfDay())
+            ->whereDate('date_from', '<=', Carbon::parse($request->date_to)->endOfDay())
 
 //            ->with('Timesheet')
             ->with('Tags.Translates:name,lang,color')
