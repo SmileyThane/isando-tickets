@@ -643,7 +643,7 @@
 
             <v-card-actions
                 class="white justify-center"
-                v-if="reportData.entities && reportData.entities.length"
+                v-if="reportData.entities.g1 && reportData.entities.g1.length"
             >
                 <v-dialog
                     v-model="dialogExportPDF"
