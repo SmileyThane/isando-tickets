@@ -1042,7 +1042,7 @@ export default {
                     // }
                     if (!data.success) {
                         if (data.error) {
-                            this.debounceGetTracking();
+                            // this.debounceGetTracking();
                             const error = Object.keys(data.error)[0];
                             this.snackbarMessage = data.error[error].pop();
                             this.actionColor = 'error'
@@ -1050,10 +1050,12 @@ export default {
                         }
                         return false;
                     }
-                    this.tracking.splice(0, 0, data.data);
+                    // this.tracking.splice(0, 0, data.data);
                     return data;
                 })
                 .finally(() => {
+                    this.resetLazyLoad();
+                    this.debounceGetTracking();
                     this.loadingCreateTrack = false;
                     this.resetManualPanel();
                 });
