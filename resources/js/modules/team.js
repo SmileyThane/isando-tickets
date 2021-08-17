@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import * as ColorHelper from '../helpers/color';
 
 export default {
     namespaced: true,
@@ -28,35 +27,47 @@ export default {
                     return success;
                 })
         },
-        getCoworkers({commit}, { search }) {
-            const queryParams = new URLSearchParams({
-                search: search ?? ''
-            });
-            axios.get(`/api/tracking/coworkers?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data: coworkers } }) => {
-                    if (success) {
-                        commit('GET_COWORKERS', coworkers)
-                    }
-                })
+        getCoworkers({commit, state}, { search }) {
+            if (state.coworkers.length && !search) {
+                return state.coworkers;
+            } else {
+                const queryParams = new URLSearchParams({
+                    search: search ?? ''
+                });
+                axios.get(`/api/tracking/coworkers?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
+                    .then(({ data: { success, data: coworkers } }) => {
+                        if (success) {
+                            commit('GET_COWORKERS', coworkers)
+                        }
+                    })
+            }
         },
-        getManagedTeams({ commit }, { withEmployee = false }) {
+        getManagedTeams({ commit, state }, { withEmployee = false }) {
             if (!withEmployee) withEmployee = false;
-            return axios.get(`/api/tracking/managed_teams?withEmployee=${withEmployee}`)
-                .then(({ data: { success, data } }) => {
-                    if (success) {
-                        commit('SET_MANAGED_TEAMS', data);
-                    }
-                    return success;
-                });
+            if (state.managedTeams.length) {
+                return state.managedTeams;
+            } else {
+                return axios.get(`/api/tracking/managed_teams?withEmployee=${withEmployee}`)
+                    .then(({ data: { success, data } }) => {
+                        if (success) {
+                            commit('SET_MANAGED_TEAMS', data);
+                        }
+                        return success;
+                    });
+            }
         },
-        getTeamManagers({ commit }) {
-            return axios.get(`/api/tracking/team_managers`)
-                .then(({ data: { success, data } }) => {
-                    if (success) {
-                        commit('SET_TEAM_MANAGERS', data);
-                    }
-                    return success;
-                });
+        getTeamManagers({ commit, state }) {
+            if (state.teamManagers.length) {
+                return state.teamManagers;
+            } else {
+                return axios.get(`/api/tracking/team_managers`)
+                    .then(({ data: { success, data } }) => {
+                        if (success) {
+                            commit('SET_TEAM_MANAGERS', data);
+                        }
+                        return success;
+                    });
+            }
         }
     },
     mutations: {

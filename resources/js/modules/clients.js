@@ -6,16 +6,20 @@ export default {
         clients: []
     },
     actions: {
-        getClientList({commit}, { search }) {
-            const queryParams = new URLSearchParams({
-                search: search ?? ''
-            });
-            axios.get(`/api/tracking/clients?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data: { data: clients } } }) => {
-                    if (success) {
-                        commit('GET_CLIENTS', clients)
-                    }
-                })
+        getClientList({commit, state}, { search }) {
+            if (state.clients.length && !search) {
+                return state.clients;
+            } else {
+                const queryParams = new URLSearchParams({
+                    search: search ?? ''
+                });
+                axios.get(`/api/tracking/clients?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
+                    .then(({ data: { success, data: { data: clients } } }) => {
+                        if (success) {
+                            commit('GET_CLIENTS', clients)
+                        }
+                    })
+            }
         }
     },
     mutations: {

@@ -6,19 +6,24 @@ export default {
         tags: []
     },
     actions: {
-        getTagList({commit}) {
-            axios.get('/api/tags', { retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data: tags }}) => {
-                    if (success) {
-                        commit('GET_TAGS', tags)
-                    }
-                })
+        getTagList({commit, state}) {
+            if (state.tags.length) {
+                return state.tags;
+            } else {
+                axios.get('/api/tags', { retry: 5, retryDelay: 1000 })
+                    .then(({ data: { success, data: tags }}) => {
+                        if (success) {
+                            commit('GET_TAGS', tags)
+                        }
+                    })
+            }
         },
         createTag({commit, dispatch}, tag) {
             return axios.post('/api/tags', tag, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
-                        dispatch('getTagList');
+                        // dispatch('getTagList');
+                        commit('ADD_TAG', data);
                         return data;
                     }
                     return false;
@@ -28,7 +33,8 @@ export default {
             return axios.patch(`/api/tags/${tag.id}`, tag, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success, data } }) => {
                     if (success) {
-                        dispatch('getTagList');
+                        // dispatch('getTagList');
+                        commit('UPDATE_TAG', data);
                         return data;
                     }
                     return false;
@@ -38,7 +44,8 @@ export default {
             return axios.delete(`/api/tags/${tagId}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { success } }) => {
                    if (success) {
-                       dispatch('getTagList');
+                       // dispatch('getTagList');
+                       commit('REMOVE_TAG', tagId);
                        return true;
                    }
                    return false;
@@ -49,7 +56,8 @@ export default {
             return axios.patch(`/api/tags/${id}/translate`, {lang, name}, { retry: 5, retryDelay: 1000 })
                 .then(({data: { data, success }}) => {
                     if (success) {
-                        dispatch('getTagList');
+                        // dispatch('getTagList');
+                        commit('UPDATE_TAG', data);
                     }
                 });
         }
@@ -57,6 +65,17 @@ export default {
     mutations: {
         GET_TAGS(state, tags) {
             state.tags = tags
+        },
+        ADD_TAG(state, tag) {
+            state.tags.splice(0, 0, tag);
+        },
+        REMOVE_TAG(state, tagId) {
+            const index = state.tags.findIndex(i => i.id === tagId);
+            state.tags.splice(index, 1);
+        },
+        UPDATE_TAG(state, tag) {
+            const index = state.tags.findIndex(i => i.id === tag.id);
+            state.tags.splice(index, 1, tag);
         }
     },
     getters: {

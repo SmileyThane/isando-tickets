@@ -41,7 +41,9 @@ class TagRepository
 
     public function find(Tag $tag)
     {
-        return $tag;
+        return Tag::with('translates')
+            ->where('id', '=', $tag->id)
+            ->first();
     }
 
     public function create(Request $request)
@@ -61,7 +63,9 @@ class TagRepository
             ]);
             $tagTranslation->save();
         }
-        return $tag;
+        return Tag::with('translates')
+            ->where('id', '=', $tag->id)
+            ->first();
     }
 
     public function update(Request $request, Tag $tag)
@@ -73,7 +77,9 @@ class TagRepository
             $tag->color = $request->color;
         }
         $tag->save();
-        return $tag;
+        return Tag::with('translates')
+            ->where('id', '=', $tag->id)
+            ->first();
     }
 
     public function delete(Tag $tag)
@@ -103,6 +109,8 @@ class TagRepository
         $tagTranslation->color = $tag->color;
         $tagTranslation->name = $request->name;
         $tagTranslation->save();
-        return $tagTranslation;
+        return Tag::with('translates')
+            ->where('id', '=', $tag->id)
+            ->first();
     }
 }

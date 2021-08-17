@@ -17,41 +17,45 @@ export default {
         reports: [],
     },
     actions: {
-        getSettings({ commit }) {
-            return axios.get('/api/tracking/settings', { retry: 5, retryDelay: 1000 })
-                .then(({ data: { data, success }}) => {
-                    if (success) {
-                        if (
-                          !data.settings?.timesheetWeek
-                          || (data.settings?.timesheetWeek && !data.settings?.timesheetWeek.length)
-                        ) {
-                            if (!data.settings) {
-                                data.settings = {
-                                    enableTimesheet: false,
-                                    timesheetWeek: [],
-                                    customRounding: [],
-                                    projectType: 0,
-                                };
+        getSettings({ commit, state }) {
+            if (state.settings.length) {
+                return state.settings;
+            } else {
+                return axios.get('/api/tracking/settings', { retry: 5, retryDelay: 1000 })
+                    .then(({ data: { data, success }}) => {
+                        if (success) {
+                            if (
+                                !data.settings?.timesheetWeek
+                                || (data.settings?.timesheetWeek && !data.settings?.timesheetWeek.length)
+                            ) {
+                                if (!data.settings) {
+                                    data.settings = {
+                                        enableTimesheet: false,
+                                        timesheetWeek: [],
+                                        customRounding: [],
+                                        projectType: 0,
+                                    };
+                                }
+                                data.settings.timesheetWeek = [];
+                                for (let i = 0; i < 7; i++) {
+                                    data.settings.timesheetWeek.push({
+                                        dayOfWeek: i,
+                                        workTime: {
+                                            start: moment().startOf('days').set({ hours: 8 }).format(),
+                                            end: moment().startOf('days').set({ hours: 18 }).format(),
+                                        },
+                                        lunchTime: {
+                                            start: moment().startOf('days').set({ hours: 12 }).format(),
+                                            end: moment().startOf('days').set({ hours: 13 }).format(),
+                                        }
+                                    });
+                                }
                             }
-                            data.settings.timesheetWeek = [];
-                            for (let i = 0; i < 7; i++) {
-                                data.settings.timesheetWeek.push({
-                                    dayOfWeek: i,
-                                    workTime: {
-                                        start: moment().startOf('days').set({ hours: 8 }).format(),
-                                        end: moment().startOf('days').set({ hours: 18 }).format(),
-                                    },
-                                    lunchTime: {
-                                        start: moment().startOf('days').set({ hours: 12 }).format(),
-                                        end: moment().startOf('days').set({ hours: 13 }).format(),
-                                    }
-                                });
-                            }
+                            commit('SET_SETTINGS', data);
                         }
-                        commit('SET_SETTINGS', data);
-                    }
-                    return success;
-                });
+                        return success;
+                    });
+            }
         },
         updateSettings({ commit, dispatch }, { currency, settings }) {
             return axios.patch('/api/tracking/settings', {currency, settings}, { retry: 5, retryDelay: 1000 })
