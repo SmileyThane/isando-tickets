@@ -1704,7 +1704,7 @@ export default {
             that.themeBgColor = color;
         });
         this.debounceGetCurrentUser();
-        this.debounceGetTimesheet();
+        // this.debounceGetTimesheet();
         this.debounceGetProjects();
         this.debounceGetTickets();
         this.debounceGetManagedTeams();

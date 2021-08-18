@@ -81,7 +81,6 @@ export default {
                 });
         },
         getAllGroupedByStatus({ commit }, { userId }) {
-            console.log(userId);
             axios.get('/api/tracking/timesheet/status')
                 .then(({ data: { success, data } }) => {
                     if (success) {
