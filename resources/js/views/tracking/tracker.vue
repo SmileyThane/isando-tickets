@@ -78,6 +78,7 @@
                                 style="max-width: 150px;"
                                 outlined
                                 dense
+                                @blur="saveChangesFromTimer"
                             ></v-select>
                         </div>
                         <div class="flex-grow-1 align-self-center">
@@ -88,6 +89,7 @@
                                 :placeholder="langMap.tracking.tracker.timer_panel_description"
                                 v-model="timerPanel.description"
                                 style="max-width: 1000px"
+                                @blur="saveChangesFromTimer"
                             ></v-text-field>
                         </div>
                         <div class="mx-2 align-self-center">
@@ -95,6 +97,7 @@
                                 key="timerPanelTagKey"
                                 :color="themeBgColor"
                                 :onChoosable="handlerTagsTimerPanel"
+                                @blur="saveChangesFromTimer"
                                 v-model="timerPanel.tags"
                             >
                             </TagBtn>
@@ -106,7 +109,7 @@
                                 :icon="!timerPanel.billable"
                                 x-small
                                 :color="themeBgColor"
-                                @click="timerPanel.billable = !timerPanel.billable"
+                                @click="timerPanel.billable = !timerPanel.billable; saveChangesFromTimer()"
                             >
                                 <v-icon center v-bind:class="{ 'white--text': timerPanel.billable }">
                                     mdi-currency-usd
@@ -120,6 +123,7 @@
                                 dense
                                 hide-details="auto"
                                 readonly
+                                @blur="saveChangesFromTimer"
                             ></v-text-field>
                         </div>
                         <div class="mx-3 align-self-center">
@@ -772,25 +776,25 @@
 </template>
 
 <style scoped>
-.date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:before,
+>>> .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:before,
 .date-picker__without-line.v-text-field:not(.v-input__has-state):hover>.v-input__control>.v-input__slot:before,
 .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:after{
     border: none !important;
 }
-.dateRangePicker input {
+>>> .dateRangePicker input {
     text-align: center;
 }
-.v-data-table-header {
+>>> .v-data-table-header {
     /*display: none;*/
 }
-.v-expansion-panel-header {
+>>> .v-expansion-panel-header {
     min-height: 40px !important;
     padding: 14px 24px !important;
 }
-.v-data-table__wrapper tr td.text-start:nth-child(6):after {
+>>> .v-data-table__wrapper tr td.text-start:nth-child(6):after {
     /*content: "—";*/
 }
-*:not(.v-icon) {
+>>> *:not(.v-icon) {
     font-size: 14px !important;
 }
 </style>
@@ -1271,6 +1275,14 @@ export default {
                     month: moment(item.date_from).month(),
                 }).format(this.dateTimeFormat);
             }
+            if (this.timerPanel.trackId && item.id === this.timerPanel.trackId) {
+                this.timerPanel.entity_type = item.entity_type;
+                this.timerPanel.entity = item.entity;
+                this.timerPanel.description = item.description;
+                this.timerPanel.service = item.service;
+                this.timerPanel.tags = item.tags;
+                this.timerPanel.billable = item.billable;
+            }
             this.__updateTrackingById(item.id, item);
         },
         cancel () {
@@ -1316,6 +1328,19 @@ export default {
                     year: moment(dateFrom).year(),
                     month: moment(dateFrom).month(),
                 }).format(this.dateTimeFormat);
+            }
+        },
+        saveChangesFromTimer() {
+            if (this.timerPanel.trackId) {
+                this.__updateTrackingById(this.timerPanel.trackId, {
+                    entity: this.timerPanel.entity,
+                    entity_id: this.timerPanel.entity ? this.timerPanel.entity.id : null,
+                    entity_type: this.timerPanel.entity_type,
+                    description: this.timerPanel.description,
+                    service: this.timerPanel.service,
+                    tags: this.timerPanel.tags,
+                    billable: this.timerPanel.billable,
+                });
             }
         }
     },
@@ -1452,6 +1477,7 @@ export default {
         },
         'timerPanel.entity': function () {
             this.timerPanel.entity_type = this.timerPanel.entity && this.timerPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
+            this.saveChangesFromTimer();
         },
         'manualPanel.entity': function () {
             this.manualPanel.entity_type = this.manualPanel && this.manualPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';

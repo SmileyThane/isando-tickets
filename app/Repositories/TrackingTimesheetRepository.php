@@ -341,6 +341,7 @@ class TrackingTimesheetRepository
 
     public static function recalculate($tracker, $allowCreating = true, $service = null, $entity_id = null, $entity_type = null, $team_id = null, $company_id = null) {
         $tracker->refresh();
+        if ($tracker->status === Tracking::$STATUS_STARTED) return false;
         Log::debug('Tracker: ' . $tracker);
         Log::debug('Service: ' . $service);
         Log::debug('Entity_id: ' . $entity_id);
