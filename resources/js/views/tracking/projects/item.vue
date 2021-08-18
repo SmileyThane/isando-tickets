@@ -18,7 +18,7 @@
             >
                 <v-list-item three-line>
                     <v-list-item-content>
-                        <div class="overline mb-4">
+                        <div class="mb-4 project">
                             {{ getTrackingProjectLabel }}
                         </div>
                         <v-list-item-title class="headline mb-1">
@@ -396,8 +396,12 @@
 </template>
 
 <style scoped>
-*:not(.v-icon) {
+>>> *:not(.v-icon) {
     font-size: 14px !important;
+}
+>>> .project {
+    font-size: 18px !important;
+    font-weight: 500;
 }
 </style>
 

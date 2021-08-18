@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container fluid class="tracking-timesheet">
         <v-snackbar
             :bottom="true"
             :right="true"
@@ -1573,7 +1573,11 @@ tr.highlight {
 >>> .v-data-table-header th.sortable span:last-child {
     order: 3;
 }
-*:not(.v-icon) {
+>>> .tracking-timesheet *:not(.v-icon),
+.v-list-item * {
+    font-size: 14px !important;
+}
+>>> label, input, div * {
     font-size: 14px !important;
 }
 </style>
