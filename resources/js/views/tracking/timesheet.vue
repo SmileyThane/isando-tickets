@@ -1716,9 +1716,6 @@ export default {
         this.$store.dispatch('Products/getProductList', { search: null });
     },
     methods: {
-        log(data, groupBy) {
-            console.log(data, groupBy);
-        },
         async _getTimesheet () {
             this.loading = true;
             await this.$store.dispatch('Timesheet/getTimesheet', {
@@ -2081,7 +2078,6 @@ export default {
 
         },
         chooseProjectHandler(data) {
-            console.log(data);
             this.form.entity_id = data.project && data.project.id ? data.project.id : null;
             this.form.entity_type = data.project && data.project.from ? 'App\\Ticket' : 'App\\TrackingProject';
         },
