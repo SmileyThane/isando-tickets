@@ -513,12 +513,13 @@
                                             </td>
                                             <td
                                                 class="px-3 py-0"
+                                                align="center"
                                                 :width="headers.find(i => i.value === 'entity').width"
                                             >
-                                                <span v-if="row.entity && row.entity.client">
+                                                <template v-if="row.entity && row.entity.client">
                                                     {{ row.entity.client.name }}
-                                                </span>
-                                                <span v-else-if="row.entity">{{ row.entity.from_company_name }}</span>
+                                                </template>
+                                                <template v-else-if="row.entity">{{ row.entity.from_company_name }}</template>
                                             </td>
                                             <td
                                                 class="px-3 py-0"
@@ -853,22 +854,24 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.tracker.description,
                     align: 'start',
                     value: 'description',
-                    width: '80%'
+                    width: '28%',
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.company,
+                    align: 'center',
                     value: 'entity',
-                    width: '20%'
+                    width: '15%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.project_name_ticket_name,
+                    align: 'center',
                     value: 'entity.name',
-                    width: '20%'
+                    width: '15%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.tag,
                     value: 'tags',
-                    width: '3%'
+                    width: '12%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.billable,
@@ -883,7 +886,7 @@ export default {
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.end,
                     value: 'date_to',
-                    width: '2%'
+                    width: '3%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.passed,
@@ -899,7 +902,7 @@ export default {
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.actions,
                     value: 'actions',
-                    width: '10%',
+                    width: '6%',
                     sortable: false
                 }
             ],
