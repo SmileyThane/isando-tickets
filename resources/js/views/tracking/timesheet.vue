@@ -1340,6 +1340,7 @@
                     v-if="[STATUS_TRACKED].indexOf(typeOfItems) !== -1"
                     class="mx-2"
                     small
+                    :disabled="checkCurrentWeek"
                     :style="{ color: $helpers.color.invertColor(themeBgColor)}"
                     :color="themeBgColor"
                     @click="copyLastWeek"
@@ -2194,6 +2195,12 @@ export default {
         },
     },
     computed: {
+        checkCurrentWeek () {
+            if (this.date && moment(this.date).isSameOrAfter(moment().startOf('week')) && moment(this.date).isSameOrBefore(moment().endOf('week'))) {
+                return true;
+            }
+            return false;
+        },
         exportAvailable () {
             return !!(this.selected.length ? this.selected : this.expandedManagerData).map(i => i.id).length;
         },
