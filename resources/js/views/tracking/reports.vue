@@ -1593,7 +1593,7 @@ export default {
             return true;
         },
         substr(str, maxLength) {
-            if (str.length >= maxLength - 3) {
+            if (str && str.length >= maxLength - 3) {
                 return str.substring(0, maxLength - 3) + '...';
             }
             return str;
@@ -1631,9 +1631,12 @@ export default {
                     if (i.client) {
                         client = this.substr(i.client, 200) + ": \n";
                     }
-                    data.labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
                         labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        data.labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    } else if(i.entity && i.entity.name) {
+                        labels.push(client + this.substr(i.entity.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        data.labels.push(client + this.substr(i.entity.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
@@ -1669,9 +1672,12 @@ export default {
                     if (i.client) {
                         client = this.substr(i.client, 17) + ": \n";
                     }
-                    data.labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
+                        data.labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                         labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    } else if(i.entity && i.entity.name) {
+                        data.labels.push(client + this.substr(i.entity.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + this.substr(i.entity.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push(
