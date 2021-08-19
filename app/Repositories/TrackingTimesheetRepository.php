@@ -619,8 +619,8 @@ class TrackingTimesheetRepository
     public function copyPreviousWeek(User $user, $from, $to) {
         $timesheets = TrackingTimesheet::where([
             ['user_id', '=', $user->id],
-            ['from', '<=', $from],
-            ['to', '>=', $to],
+            ['from', '<=', Carbon::parse($from)->startOf('week')->subtract('week', 1)->format(Tracking::$DATETIME_FORMAT)],
+            ['to', '>=', Carbon::parse($to)->startOf('week')->subtract('week', 1)->format(Tracking::$DATETIME_FORMAT)],
         ])->get();
         foreach ($timesheets as $timesheet) {
             $newTimesheet = $timesheet->duplicate();
@@ -631,8 +631,8 @@ class TrackingTimesheetRepository
             $newTimesheet->submitted_on = null;
             $newTimesheet->notification_date = null;
             $newTimesheet->is_manually = true;
-            $newTimesheet->from = Carbon::now()->startOf('week');
-            $newTimesheet->to = Carbon::now()->endOf('week');
+            $newTimesheet->from = Carbon::parse($from)->startOf('week');
+            $newTimesheet->to = Carbon::parse($to)->endOf('week');
             $newTimesheet->save();
             $this->genTrackersByTimesheet($newTimesheet);
         }
