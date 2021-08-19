@@ -1217,6 +1217,7 @@
                     small
                     :style="{ color: $helpers.color.invertColor(themeBgColor)}"
                     :color="themeBgColor"
+                    :loading="loadingCopyWeek"
                     @click="copyLastWeek"
                 >
                     Copy previous week
@@ -1555,6 +1556,7 @@ export default {
                 rejected: 'rejected',
                 archived: 'archived',
             },
+            loadingCopyWeek: false,
         }
     },
     created () {
@@ -1972,16 +1974,14 @@ export default {
             }
         },
         copyLastWeek() {
+            this.loadingCopyWeek = true;
             this.$store.dispatch('Timesheet/copyLastWeek', {
                 from: this.dateRange.start,
                 to: this.dateRange.end,
             })
-            .then(() => {
-                this.date = moment().format(this.dateFormat);
-            })
-            .then(async () => await this.$store.dispatch('Timesheet/getTimesheet', {
-                ...this.dateRange,
-            }));
+            .finally(() => {
+                this.loadingCopyWeek = false;
+            });
         },
         resetSaveAsTemplate() {
             this.newTemplate.name = '';
