@@ -124,9 +124,9 @@
 .v-input--is-disabled.v-text-field>.v-input__control>.v-input__slot:before {
     border: none;
 }
- *:not(.v-icon) {
-     font-size: 14px !important;
- }
+>>>*:not(.v-icon) {
+ font-size: 14px !important;
+}
 </style>
 
 <script>

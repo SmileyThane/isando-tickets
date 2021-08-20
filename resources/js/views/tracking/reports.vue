@@ -643,7 +643,7 @@
 
             <v-card-actions
                 class="white justify-center"
-                v-if="reportData.entities && reportData.entities.length"
+                v-if="reportData.entities.g1 && reportData.entities.g1.length"
             >
                 <v-dialog
                     v-model="dialogExportPDF"
@@ -852,44 +852,44 @@
 </template>
 
 <style scoped>
-.border-right {
+>>>.border-right {
     border-right: thin solid rgba(0,0,0,.12);
 }
-.width-10 {
+>>>.width-10 {
     width: 10%;
     max-width: 10%;
     min-width: 10%;
 }
-.v-expansion-panel {
+>>>.v-expansion-panel {
     border-color: rgba(0, 0, 0, 0.42);
     border-width: 1px;
     border-style: solid;
 }
-.v-btn.square {
+>>>.v-btn.square {
     min-width: 100px !important;
     min-height: 64px !important;
 }
-.v-btn.square i {
+>>>.v-btn.square i {
     width: 100%;
     padding-bottom: 5px;
 }
-.v-btn.square > span {
+>>>.v-btn.square > span {
     flex-direction: column;
 }
-.dragNDrop {
+>>>.dragNDrop {
     border-width: 1px;
     border-style: dashed;
     border-color: white;
 }
-.dragNDrop button {
+>>>.dragNDrop button {
     cursor: move;
 }
-.dragNDrop.active {
+>>>.dragNDrop.active {
     border-width: 1px;
     border-style: dashed;
     border-color: rgba(0,0,0,.12);
 }
-.dragNDrop:not(.common) > button:not(:last-of-type):after {
+>>>.dragNDrop:not(.common) > button:not(:last-of-type):after {
     font: normal normal normal 24px/1 "Material Design Icons";
     text-transform: none !important;
     speak: none;
@@ -903,6 +903,12 @@
     font-weight: bold;
     color: #a1a3a4;
     transform: translateY(-50%);
+}
+>>> *:not(.v-icon) {
+    font-size: 14px!important;
+}
+>>> .v-btn__content {
+    font-size: 12px!important;
 }
 </style>
 
@@ -1593,7 +1599,7 @@ export default {
             return true;
         },
         substr(str, maxLength) {
-            if (str.length >= maxLength - 3) {
+            if (str && str.length >= maxLength - 3) {
                 return str.substring(0, maxLength - 3) + '...';
             }
             return str;
@@ -1631,9 +1637,12 @@ export default {
                     if (i.client) {
                         client = this.substr(i.client, 200) + ": \n";
                     }
-                    data.labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
                         labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        data.labels.push(client + this.substr(i.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    } else if(i.entity && i.entity.name) {
+                        labels.push(client + this.substr(i.entity.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        data.labels.push(client + this.substr(i.entity.name, 200) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push((this.calculateTime(i.children) / 60 / 60).toFixed(2));
@@ -1669,9 +1678,12 @@ export default {
                     if (i.client) {
                         client = this.substr(i.client, 17) + ": \n";
                     }
-                    data.labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     if (i.name) {
+                        data.labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                         labels.push(client + this.substr(i.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                    } else if(i.entity && i.entity.name) {
+                        data.labels.push(client + this.substr(i.entity.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
+                        labels.push(client + this.substr(i.entity.name, 15) ?? moment(i.date_from).format('ddd DD MMM YYYY'));
                     }
                     if (i.children) {
                         values.push(

@@ -27,7 +27,7 @@ class TrackingRepository
             'description' => 'nullable|string',
             'date_from' => 'required|string',
             'date_to' => 'nullable|string',
-            'status' => 'required|string|in:started,paused,stopped',
+            'status' => 'required|integer|in:0,1,2,3',
             'billable' => 'boolean',
             'billed' => 'boolean',
             'tags' => 'array|nullable',
@@ -39,7 +39,7 @@ class TrackingRepository
             'description' => 'nullable|string',
             'date_from' => 'nullable|string',
             'date_to' => 'nullable|string',
-            'status' => 'nullable|string|in:started,paused,stopped',
+            'status' => 'nullable|integer|in:0,1,2,3',
             'billable' => 'boolean',
             'billed' => 'boolean',
             'tags' => 'array|nullable',
@@ -130,15 +130,26 @@ class TrackingRepository
             $tracking->whereIn('user_id', explode(',', $request->get('team')));
         }
 
+        if ($request->has('users') && $request->users) {
+            $users = explode(',', $request->users);
+            $users = collect($users);
+            $tracking->whereIn('user_id', $users);
+        }
+
         $tracking
             ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
-            ->whereDate('date_from', '>=', Carbon::parse($request->date_from)->startOfDay())
-            ->whereDate('date_from', '<=', Carbon::parse($request->date_to)->endOfDay())
+            ->where('date_from', '>=', Carbon::parse($request->date_from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
+            ->where(function($query) use ($request) {
+                $query->where('date_to', '<=', Carbon::parse($request->date_to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))
+                    ->orWhereNull('date_to');
+            })
 
 //            ->with('Timesheet')
             ->with('Tags.Translates:name,lang,color')
             ->with('User:id,name,surname,middle_name,number,avatar_url')
-            ->orderBy('id', 'desc');
+            ->orderBy('date_from', 'desc')
+            ->limit(15)
+            ->offset($request->get('offset', 0));
         return
             $tracking->get();
 //        dd(DB::getQueryLog());
@@ -221,8 +232,10 @@ class TrackingRepository
         }
 
         TrackingTimesheetRepository::recalculate($tracking);
-        return Tracking::where('id', '=', $tracking->id)->with('Tags.Translates')
-            ->with('User:id,name,surname,middle_name,number,avatar_url')->first();
+        return Tracking::where('id', '=', $tracking->id)
+            ->with('Tags.Translates:name,lang,color')
+            ->with('User:id,name,surname,middle_name,number,avatar_url')
+            ->first();
     }
 
     public function update(Request $request, Tracking $tracking)
@@ -363,16 +376,6 @@ class TrackingRepository
             if ($newTracking->entity_type === Ticket::class) {
                 $newTracking->team_id = $newTracking->entity->to_team_id;
             }
-//            $timesheet = TrackingTimesheet::find($tracking->timesheet_id);
-//            $newTimesheet = TrackingTimesheet::where([
-//                ['entity_id', '=', $timesheet->entity_id],
-//                ['entity_type', '=', $timesheet->entity_type],
-//                ['user_id', '=', $timesheet->user_id],
-//                ['team_id', '=', $timesheet->team_id],
-//                ['company_id', '=', $timesheet->company_id],
-//                ['is_manually', '=', !$timesheet->is_manually],
-//            ])->first();
-//            $newTracking->timesheet_id = $newTimesheet ? $newTimesheet->id : null;
             $newTracking->save();
             TrackingTimesheetRepository::recalculate($newTracking);
             if ($tracking->service) {
@@ -380,7 +383,10 @@ class TrackingRepository
             }
             TrackingTimesheetRepository::recalculate($tracking);
             $this->logTracking($tracking->id, TrackingLogger::DUPLICATE, $tracking, $newTracking);
-            return $newTracking;
+            return Tracking::where('id', '=', $newTracking->id)
+                ->with('Tags.Translates:name,lang,color')
+                ->with('User:id,name,surname,middle_name,number,avatar_url')
+                ->first();
         }
         return false;
     }
@@ -406,6 +412,6 @@ class TrackingRepository
     public function getCurrentUserTracking()
     {
         $user = Auth::user();
-        return $user->tracking()->where('status', '=', 'started')->get();
+        return $user->tracking()->where('status', '=', Tracking::$STATUS_STARTED)->get();
     }
 }

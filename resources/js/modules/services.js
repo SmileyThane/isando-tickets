@@ -7,17 +7,24 @@ export default {
         search: null
     },
     actions: {
-        getServicesList({commit}, { search }) {
-            commit('SET_SEARCH', search);
-            const queryParams = new URLSearchParams({
-                search: search ?? ''
-            });
-            axios.get(`/api/services?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data: services } }) => {
-                    if (success) {
-                        commit('GET_SERVICES', services)
-                    }
-                })
+        getServicesList({commit, state}, { search }) {
+            if (state.services.length) {
+                if (search && search.length) {
+                    return state.services.filter(i => i.name.includes(search))
+                }
+                return state.services;
+            } else {
+                commit('SET_SEARCH', search);
+                const queryParams = new URLSearchParams({
+                    search: search ?? ''
+                });
+                axios.get(`/api/services?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
+                    .then(({ data: { success, data: services } }) => {
+                        if (success) {
+                            commit('GET_SERVICES', services)
+                        }
+                    })
+            }
         },
         createService({commit, dispatch, state}, {name}) {
             return axios.post('/api/services', {name}, { retry: 5, retryDelay: 1000 })

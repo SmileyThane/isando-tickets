@@ -197,7 +197,11 @@ class PDF extends FPDF {
 
             foreach($data as $keyRow => $row) {
                 foreach ($row as $keyColumn => $column) {
-                    $table->easyCell($this->fixCharacters($column), 'border:B;border-width:0.1');
+                    $style = 'border:B;border-width:0.1';
+                    if (in_array($keyColumn, ['start', 'end', 'total'])) {
+                        $style .= ';align:R';
+                    }
+                    $table->easyCell($this->fixCharacters($column), $style);
                 }
                 $table->printRow(false);
             }

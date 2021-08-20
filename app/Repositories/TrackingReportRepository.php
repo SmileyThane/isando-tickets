@@ -287,7 +287,10 @@ class TrackingReportRepository
         $grouping = $result['grouping'];
         $tracks = $result['tracks'];
 
-        if ($grouping->isEmpty()) return $tracks;
+        if ($grouping->isEmpty()) return [
+            'g1' => $tracks,
+            'g2' => $tracks,
+        ];
 
         $group = $grouping->shift();
         $items = $this->makeList($group, $tracks);
@@ -366,7 +369,7 @@ class TrackingReportRepository
                 'date' => Carbon::parse($entity['date_from'])->format('d M Y'),
                 'start' => $this->timeInDecimal ? $this->convertTimeToDecimal($start) : $start,
                 'end' => $this->timeInDecimal ? $this->convertTimeToDecimal($end) : $end,
-                'total' => $this->timeInDecimal ? $entity['passed_decimal'] : $total,
+                'total' => $this->timeInDecimal ? number_format($entity['passed_decimal'], 2) : $total,
                 'coworker' => $entity['user']['full_name'],
                 'customer' => isset($entity['entity']) && isset($entity['entity']['client'])
                     ? $entity['entity']['client']['name']
@@ -480,9 +483,9 @@ class TrackingReportRepository
         $reportName = $request->get('name', 'Report');
         $headers = [
             ['slug' => 'date', 'text' => 'Date', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 7, 'resizable' => false],
-            ['slug' => 'start', 'text' => 'Start', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
-            ['slug' => 'end', 'text' => 'End', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
-            ['slug' => 'total', 'text' => 'Total', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
+            ['slug' => 'start', 'text' => 'Start', 'style' => 'align:R;border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
+            ['slug' => 'end', 'text' => 'End', 'style' => 'align:R;border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
+            ['slug' => 'total', 'text' => 'Total', 'style' => 'align:R;border:B;border-width:1;font-style:B', 'width' => 4, 'resizable' => false],
             ['slug' => 'coworker', 'text' => 'Co-worker', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 11, 'resizable' => true],
             ['slug' => 'client', 'text' => 'Customer', 'style' => 'border:B;border-width:1;font-style:B', 'width' => 16, 'resizable' => true],
             ['slug' => 'project', 'text' => $this->getProjectLabel(), 'style' => 'border:B;border-width:1;font-style:B', 'width' => 17, 'resizable' => true],

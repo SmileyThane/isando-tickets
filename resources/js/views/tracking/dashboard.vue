@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container fluid class="tracking-dashboard">
         <v-snackbar
             :bottom="true"
             :right="true"
@@ -262,6 +262,21 @@
 }
 .v-expansion-panel:not(.v-expansion-panel--active.v-item--active) {
     max-height: 55px;
+}
+.v-expansion-panel {
+    border: 1px solid rgba(0, 0, 0, 0.38);
+}
+.v-expansion-panel:hover {
+    border: 1px solid rgba(0, 0, 0, 0.78);
+}
+>>>*:not(.v-icon) {
+    font-size: 14px !important;
+}
+</style>
+
+<style>
+.tracking-dashboard .vc-pane-layout *, .tracking-dashboard .v-list-item__content * {
+    font-size: 14px !important;
 }
 </style>
 

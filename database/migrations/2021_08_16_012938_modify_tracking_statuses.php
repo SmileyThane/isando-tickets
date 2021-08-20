@@ -15,11 +15,11 @@ class ModifyTrackingStatuses extends Migration
     public function up()
     {
         if (Tracking::count() > 0) {
-            Tracking::query()->update(['status' => 3]);
+            Tracking::query()->update(['status' => Tracking::$STATUS_STOPPED]);
         }
 
         Schema::table('tracking', static function (Blueprint $table) {
-            $table->integer('status')->default(3)->change();
+            $table->integer('status')->default(Tracking::$STATUS_STOPPED)->change();
         });
     }
 

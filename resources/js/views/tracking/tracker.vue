@@ -22,82 +22,6 @@
                 <v-toolbar>
                     <!-- Timer mode-->
                     <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="mode">
-                        <div class="mx-2 align-self-center">
-                            <v-select
-                                :items="$store.getters['Services/getServices']"
-                                :placeholder="langMap.tracking.tracker.service_type"
-                                hide-details
-                                item-text="name"
-                                item-value="id"
-                                v-model="timerPanel.service"
-                                return-object
-                                style="max-width: 150px;"
-                                outlined
-                                dense
-                            ></v-select>
-                        </div>
-                        <div class="flex-grow-1 align-self-center">
-                            <v-text-field
-                                outlined
-                                dense
-                                hide-details="auto"
-                                :placeholder="langMap.tracking.tracker.timer_panel_description"
-                                v-model="timerPanel.description"
-                                style="max-width: 1000px"
-                            ></v-text-field>
-                        </div>
-                        <div class="mx-3 align-self-center">
-                            <ProjectBtn
-                                key="timerPanelProjectKey"
-                                :color="themeBgColor"
-                                :onChoosable="handlerProjectTimerPanel"
-                                v-model="timerPanel.entity"
-                            ></ProjectBtn>
-                        </div>
-                        <div class="mx-2 align-self-center">
-                            <TagBtn
-                                key="timerPanelTagKey"
-                                :color="themeBgColor"
-                                :onChoosable="handlerTagsTimerPanel"
-                                v-model="timerPanel.tags"
-                            >
-                            </TagBtn>
-                        </div>
-                        <div class="mx-2 align-self-center">
-                            <v-btn
-                                v-if="$helpers.auth.checkPermissionByIds([46])"
-                                fab
-                                :icon="!timerPanel.billable"
-                                x-small
-                                :color="themeBgColor"
-                                @click="timerPanel.billable = !timerPanel.billable"
-                            >
-                                <v-icon center v-bind:class="{ 'white--text': timerPanel.billable }">
-                                    mdi-currency-usd
-                                </v-icon>
-                            </v-btn>
-                        </div>
-                        <div class="mx-3 align-self-center" style="max-width: 100px">
-                            <v-text-field
-                                v-model="timerPanel.passedSeconds"
-                                placeholder="00:00:00"
-                                dense
-                                hide-details="auto"
-                                readonly
-                            ></v-text-field>
-                        </div>
-                        <div class="mx-3 align-self-center">
-                            <v-btn
-                                tile
-                                small
-                                :color="!timerPanel.start ? themeBgColor : 'error'"
-                                style="color: white"
-                                @click="actionStartNewTrack()"
-                            >
-                                <span v-if="!timerPanel.start">{{ langMap.tracking.tracker.start }}</span>
-                                <span v-if="timerPanel.start">{{ langMap.tracking.tracker.stop }}</span>
-                            </v-btn>
-                        </div>
                         <div class="mx-1 d-flex flex-column">
                             <v-tooltip top>
                                 <template v-slot:activator="{ on, attrs }">
@@ -134,9 +58,131 @@
                                 <span v-text="langMap.tracking.tracker.manual"></span>
                             </v-tooltip>
                         </div>
+                        <div class="mx-3 align-self-center">
+                            <ProjectBtn
+                                key="timerPanelProjectKey"
+                                :color="themeBgColor"
+                                :onChoosable="handlerProjectTimerPanel"
+                                v-model="timerPanel.entity"
+                            ></ProjectBtn>
+                        </div>
+                        <div class="mx-2 align-self-center">
+                            <v-select
+                                :items="$store.getters['Services/getServices']"
+                                :placeholder="langMap.tracking.tracker.service_type"
+                                hide-details
+                                item-text="name"
+                                item-value="id"
+                                v-model="timerPanel.service"
+                                return-object
+                                style="max-width: 150px;"
+                                outlined
+                                dense
+                                @blur="saveChangesFromTimer"
+                            ></v-select>
+                        </div>
+                        <div class="flex-grow-1 align-self-center">
+                            <v-text-field
+                                outlined
+                                dense
+                                hide-details="auto"
+                                :placeholder="langMap.tracking.tracker.timer_panel_description"
+                                v-model="timerPanel.description"
+                                style="max-width: 1000px"
+                                @blur="saveChangesFromTimer"
+                            ></v-text-field>
+                        </div>
+                        <div class="mx-2 align-self-center">
+                            <TagBtn
+                                key="timerPanelTagKey"
+                                :color="themeBgColor"
+                                :onChoosable="handlerTagsTimerPanel"
+                                @blur="saveChangesFromTimer"
+                                v-model="timerPanel.tags"
+                            >
+                            </TagBtn>
+                        </div>
+                        <div class="mx-2 align-self-center">
+                            <v-btn
+                                v-if="$helpers.auth.checkPermissionByIds([46])"
+                                fab
+                                :icon="!timerPanel.billable"
+                                x-small
+                                :color="themeBgColor"
+                                @click="timerPanel.billable = !timerPanel.billable; saveChangesFromTimer()"
+                            >
+                                <v-icon center v-bind:class="{ 'white--text': timerPanel.billable }">
+                                    mdi-currency-usd
+                                </v-icon>
+                            </v-btn>
+                        </div>
+                        <div class="mx-3 align-self-center" style="max-width: 100px">
+                            <v-text-field
+                                v-model="timerPanel.passedSeconds"
+                                placeholder="00:00:00"
+                                dense
+                                hide-details="auto"
+                                readonly
+                                @blur="saveChangesFromTimer"
+                            ></v-text-field>
+                        </div>
+                        <div class="mx-3 align-self-center">
+                            <v-btn
+                                tile
+                                small
+                                :color="!timerPanel.start ? themeBgColor : 'error'"
+                                style="color: white"
+                                @click="actionStartNewTrack()"
+                            >
+                                <span v-if="!timerPanel.start">{{ langMap.tracking.tracker.start }}</span>
+                                <span v-if="timerPanel.start">{{ langMap.tracking.tracker.stop }}</span>
+                            </v-btn>
+                        </div>
                     </div>
                     <!-- Manual mode-->
                     <div class="d-flex align-start flex-wrap flex-row" style="width: 100%" v-if="!$helpers.auth.checkPermissionByIds([47]) && !mode">
+                        <div class="mx-1 d-flex flex-column">
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        fab
+                                        x-small
+                                        :icon="!mode"
+                                        :color="themeBgColor"
+                                        @click="mode=true"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <v-icon v-bind:class="{ 'white--text': mode }">mdi-clock</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span v-text="langMap.tracking.tracker.timer"></span>
+                            </v-tooltip>
+                            <v-tooltip top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        fab
+                                        x-small
+                                        :icon="mode"
+                                        :color="themeBgColor"
+                                        @click="mode=false"
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span v-text="langMap.tracking.tracker.manual"></span>
+                            </v-tooltip>
+                        </div>
+                        <div class="mx-1 align-self-center">
+                            <ProjectBtn
+                                key="manualPanelProjectKey"
+                                :color="themeBgColor"
+                                :onChoosable="handlerProjectManualPanel"
+                                v-model="manualPanel.entity"
+                            ></ProjectBtn>
+                        </div>
                         <div class="mx-2 align-self-center">
                             <v-select
                                 :items="$store.getters['Services/getServices']"
@@ -160,14 +206,6 @@
                                 v-model="manualPanel.description"
                                 style="max-width: 1000px"
                             ></v-text-field>
-                        </div>
-                        <div class="mx-1 align-self-center">
-                            <ProjectBtn
-                                key="manualPanelProjectKey"
-                                :color="themeBgColor"
-                                :onChoosable="handlerProjectManualPanel"
-                                v-model="manualPanel.entity"
-                            ></ProjectBtn>
                         </div>
                         <div class="mx-1 align-self-center">
                             <TagBtn
@@ -267,40 +305,6 @@
                                 {{langMap.tracking.tracker.add}}
                             </v-btn>
                         </div>
-                        <div class="mx-1 d-flex flex-column">
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn
-                                        fab
-                                        x-small
-                                        :icon="!mode"
-                                        :color="themeBgColor"
-                                        @click="mode=true"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    >
-                                        <v-icon v-bind:class="{ 'white--text': mode }">mdi-clock</v-icon>
-                                    </v-btn>
-                                </template>
-                                <span v-text="langMap.tracking.tracker.timer"></span>
-                            </v-tooltip>
-                            <v-tooltip top>
-                                <template v-slot:activator="{ on, attrs }">
-                                    <v-btn
-                                        fab
-                                        x-small
-                                        :icon="mode"
-                                        :color="themeBgColor"
-                                        @click="mode=false"
-                                        v-bind="attrs"
-                                        v-on="on"
-                                    >
-                                        <v-icon v-bind:class="{ 'white--text': !mode }">mdi-format-list-bulleted-square</v-icon>
-                                    </v-btn>
-                                </template>
-                                <span v-text="langMap.tracking.tracker.manual"></span>
-                            </v-tooltip>
-                        </div>
                     </div>
                 </v-toolbar>
             </v-card>
@@ -326,6 +330,7 @@
                         single-line
                         style="min-width: 300px"
                         class="mt-4"
+                        @change="resetLazyLoad(); debounceGetTracking()"
                     >
                         <template v-slot:item="{ parent, item, on, attrs }">
                             <div class="d-flex">
@@ -411,6 +416,7 @@
             <v-expansion-panels
                 v-model="panels"
                 multiple
+                id="tracking-container"
             >
                 <v-expansion-panel
                     v-for="(panelDate, index) in getPanelDates"
@@ -444,6 +450,45 @@
                                         <tr v-for="row in props.items">
                                             <td class="px-3 py-0" v-if="hasPermission([42])">
                                                 <Avatar :user="row.user" :color="row.user.color"></Avatar>
+                                            </td>
+                                            <td
+                                                class="px-3 py-0"
+                                                align="center"
+                                                :width="headers.find(i => i.value === 'entity.name').width"
+                                            >
+                                                <v-edit-dialog
+                                                    v-if="isEditable(row)"
+                                                    @save="debounceSave(row, 'entity', row.entity)"
+                                                    @cancel="cancel"
+                                                    @open="open"
+                                                    @close="debounceSave(row, 'entity', row.entity)"
+                                                >
+                                                    <ProjectBtn
+                                                        :key="row.id"
+                                                        :color="row.entity && row.entity.color ? row.entity.color : themeBgColor"
+                                                        v-model="row.entity"
+                                                        @blur="debounceSave(row, 'entity', row.entity)"
+                                                        @input="debounceSave(row, 'entity', row.entity)"
+                                                    ></ProjectBtn>
+                                                </v-edit-dialog>
+                                                <div v-else>
+                                                    <div
+                                                        v-if="row.entity"
+                                                        :style="{color: row.entity && row.entity.color ? row.entity.color : themeBgColor}"
+                                                    >
+                                                        {{$helpers.string.shortenText(row.entity.name, 35)}}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td
+                                                class="px-3 py-0"
+                                                align="center"
+                                                :width="headers.find(i => i.value === 'entity').width"
+                                            >
+                                                <template v-if="row.entity && row.entity.client">
+                                                    {{ row.entity.client.name }}
+                                                </template>
+                                                <template v-else-if="row.entity">{{ row.entity.from_company_name }}</template>
                                             </td>
                                             <td
                                                 class="px-3 py-0"
@@ -507,44 +552,6 @@
                                                     <span v-else>
                                                         {{ row.description }}
                                                     </span>
-                                                </div>
-                                            </td>
-                                            <td
-                                                class="px-3 py-0"
-                                                :width="headers.find(i => i.value === 'entity').width"
-                                            >
-                                                <span v-if="row.entity && row.entity.client">
-                                                    {{ row.entity.client.name }}
-                                                </span>
-                                                <span v-else-if="row.entity">{{ row.entity.from_company_name }}</span>
-                                            </td>
-                                            <td
-                                                class="px-3 py-0"
-                                                align="center"
-                                                :width="headers.find(i => i.value === 'entity.name').width"
-                                            >
-                                                <v-edit-dialog
-                                                    v-if="isEditable(row)"
-                                                    @save="debounceSave(row, 'entity', row.entity)"
-                                                    @cancel="cancel"
-                                                    @open="open"
-                                                    @close="debounceSave(row, 'entity', row.entity)"
-                                                >
-                                                    <ProjectBtn
-                                                        :key="row.id"
-                                                        :color="row.entity && row.entity.color ? row.entity.color : themeBgColor"
-                                                        v-model="row.entity"
-                                                        @blur="debounceSave(row, 'entity', row.entity)"
-                                                        @input="debounceSave(row, 'entity', row.entity)"
-                                                    ></ProjectBtn>
-                                                </v-edit-dialog>
-                                                <div v-else>
-                                                    <div
-                                                        v-if="row.entity"
-                                                        :style="{color: row.entity && row.entity.color ? row.entity.color : themeBgColor}"
-                                                    >
-                                                        {{$helpers.string.shortenText(row.entity.name, 35)}}
-                                                    </div>
                                                 </div>
                                             </td>
                                             <td
@@ -673,7 +680,7 @@
                                                         <v-btn
                                                             depressed
                                                             color="error"
-                                                            v-if="row.status == 'started'"
+                                                            v-if="row.status == STATUS_STARTED"
                                                             @click="actionStopTracking(row.id)"
                                                             :disabled="row.readonly"
                                                         >
@@ -682,7 +689,7 @@
                                                         <v-btn
                                                             depressed
                                                             :color="themeBgColor"
-                                                            v-if="row.status == 'stopped'"
+                                                            v-if="row.status == STATUS_STOPPED"
                                                             @click="actionStartTrackingAsId(row.id)"
                                                             :disabled="row.readonly"
                                                         >
@@ -751,31 +758,43 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
             </v-expansion-panels>
+            <div class="d-flex flex-grow-1 justify-center">
+                <v-btn
+                    v-if="this.tracking.length"
+                    class="ma-auto my-4"
+                    :loading="loading"
+                    :disabled="loading || !loadMoreAvailable"
+                    @click="__getTracking()"
+                    :color="themeBgColor"
+                >
+                    Load more
+                </v-btn>
+            </div>
         </template>
 
     </v-container>
 </template>
 
 <style scoped>
-.date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:before,
+>>> .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:before,
 .date-picker__without-line.v-text-field:not(.v-input__has-state):hover>.v-input__control>.v-input__slot:before,
 .date-picker__without-line.v-text-field>.v-input__control>.v-input__slot:after{
     border: none !important;
 }
-.dateRangePicker input {
+>>> .dateRangePicker input {
     text-align: center;
 }
-.v-data-table-header {
+>>> .v-data-table-header {
     /*display: none;*/
 }
-.v-expansion-panel-header {
+>>> .v-expansion-panel-header {
     min-height: 40px !important;
     padding: 14px 24px !important;
 }
-.v-data-table__wrapper tr td.text-start:nth-child(6):after {
+>>> .v-data-table__wrapper tr td.text-start:nth-child(6):after {
     /*content: "—";*/
 }
-*:not(.v-icon) {
+>>> *:not(.v-icon) {
     font-size: 14px !important;
 }
 </style>
@@ -800,6 +819,10 @@ export default {
     },
     data() {
         return {
+            STATUS_STARTED: 0,
+            STATUS_STOPPED: 1,
+            STATUS_PAUSED: 2,
+            STATUS_ARCHIVED: 3,
             loading: false,
             attemptRepeat: 0,
             tz: {
@@ -835,22 +858,24 @@ export default {
                     text: this.$store.state.lang.lang_map.tracking.tracker.description,
                     align: 'start',
                     value: 'description',
-                    width: '80%'
+                    width: '28%',
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.company,
+                    align: 'center',
                     value: 'entity',
-                    width: '20%'
+                    width: '15%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.project_name_ticket_name,
+                    align: 'center',
                     value: 'entity.name',
-                    width: '20%'
+                    width: '15%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.tag,
                     value: 'tags',
-                    width: '3%'
+                    width: '12%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.billable,
@@ -865,7 +890,7 @@ export default {
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.end,
                     value: 'date_to',
-                    width: '2%'
+                    width: '3%'
                 },
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.passed,
@@ -881,7 +906,7 @@ export default {
                 {
                     text: this.$store.state.lang.lang_map.tracking.tracker.actions,
                     value: 'actions',
-                    width: '10%',
+                    width: '6%',
                     sortable: false
                 }
             ],
@@ -898,7 +923,7 @@ export default {
                 date_from: moment().format('YYYY-MM-DDTHH:mm:ss'),
                 date_to: moment().add(15, 'minutes').format('YYYY-MM-DDTHH:mm:ss'),
                 date: moment().format('YYYY-MM-DDTHH:mm:ss'),
-                status: 'started',
+                status: 0,
                 timeStart: '00:00:00'
             },
             nameLimit: 255,
@@ -912,7 +937,7 @@ export default {
                 entity: null,
                 entity_type: null,
                 tags: [],
-                status: 'started',
+                status: 0,
                 date_from: moment(),
                 date_to: null,
                 date: moment()
@@ -920,7 +945,9 @@ export default {
             globalTimer: null,
             isLoadingTags: false,
             isLoadingProject: false,
-            teamFilter: []
+            teamFilter: [],
+            offset: 0,
+            loadMoreAvailable: true,
         }
     },
     created: function () {
@@ -929,7 +956,7 @@ export default {
                 dow: 1,
             },
         });
-        this.debounceGetTracking = _.debounce(this.__getTracking, 100);
+        this.debounceGetTracking = _.debounce(this.__getTracking, 1000);
         this.debounceSave = _.debounce(this.save, 500);
         if (this.$helpers.localStorage.getKey('dateRange', 'tracking')) {
             this.dateRange = this.$helpers.localStorage.getKey('dateRange', 'tracking');
@@ -948,6 +975,13 @@ export default {
     },
     mounted() {
         this.__globalTimer();
+        this.$store.dispatch('getCurrentUser')
+            .then(() => {
+                const currentUser = this.$store.getters['getCurrentUser'];
+                if (currentUser) {
+                    this.teamFilter.push(currentUser.id);
+                }
+            });
         this.debounceGetTracking();
         this.$store.dispatch('Tracking/getSettings');
         this.$store.dispatch('Projects/getProjectList', { search: null });
@@ -966,13 +1000,6 @@ export default {
         EventBus.$on('update-theme-bg-color', function (color) {
             that.themeBgColor = color;
         });
-        this.$store.dispatch('getCurrentUser')
-            .then(() => {
-                const currentUser = this.$store.getters['getCurrentUser'];
-                if (currentUser) {
-                    this.teamFilter.push(currentUser.id);
-                }
-            });
     },
     methods: {
         __globalTimer() {
@@ -986,15 +1013,24 @@ export default {
             this.loading = true;
             const queryParams = new URLSearchParams({
                 date_from: moment(this.dateRange.start).format(this.dateFormat) || null,
-                date_to: moment(this.dateRange.end).format(this.dateFormat) || null
+                date_to: moment(this.dateRange.end).format(this.dateFormat) || null,
+                users: this.teamFilter.join(','),
+                offset: this.offset,
             });
             return axios.get(`/api/tracking/tracker?${queryParams.toString()}`)
                 .then(({ data }) => {
-                    this.tracking = data.data.map(i => ({
+                    if (this.offset === 0) {
+                        this.tracking = [];
+                    }
+                    this.tracking = this.tracking.concat(data.data.map(i => ({
                         ...i,
                         date: moment(i.date_from).format('YYYY-MM-DD'),
                         date_picker: false
-                    }));
+                    })));
+                    this.offset += data.data.length;
+                    if (data.data.length === 0) {
+                        this.loadMoreAvailable = false;
+                    }
                     this.loading = false;
                     this.attemptRepeat = 0;
                     return data;
@@ -1013,9 +1049,7 @@ export default {
                     // }
                     if (!data.success) {
                         if (data.error) {
-                            this.debounceGetTracking();
-                            this.resetManualPanel();
-                            this.loadingCreateTrack = false;
+                            // this.debounceGetTracking();
                             const error = Object.keys(data.error)[0];
                             this.snackbarMessage = data.error[error].pop();
                             this.actionColor = 'error'
@@ -1023,10 +1057,14 @@ export default {
                         }
                         return false;
                     }
-                    this.debounceGetTracking();
-                    this.resetManualPanel();
-                    this.loadingCreateTrack = false;
+                    // this.tracking.splice(0, 0, data.data);
                     return data;
+                })
+                .finally(() => {
+                    this.resetLazyLoad();
+                    this.debounceGetTracking();
+                    this.loadingCreateTrack = false;
+                    this.resetManualPanel();
                 });
         },
         __updateTrackingById(id, data) {
@@ -1056,20 +1094,28 @@ export default {
         __deleteTrackingById(id) {
             this.loadingDeleteTrack = true;
             return axios.delete(`/api/tracking/tracker/${id}`)
+                .then(() => {
+                    const indexes = this.tracking.filter(i => i.id === id);
+                    indexes.map(i => {
+                        const index = this.tracking.findIndex(item => item.id === id);
+                        this.tracking.splice(index, 1);
+                    });
+                })
                 .finally(e => {
-                    this.debounceGetTracking();
+                    // this.debounceGetTracking();
                     this.loadingDeleteTrack = false;
                 });
         },
         __duplicateTracking(id) {
             return axios.post(`/api/tracking/tracker/${id}/duplicate`)
                 .then(({ data }) => {
-                    this.debounceGetTracking();
+                    // this.debounceGetTracking();
+                    this.tracking.splice(0, 0, data.data);
                     return data;
                 });
         },
         actionCreateTrack() {
-            this.manualPanel.status = 'stopped';
+            this.manualPanel.status = this.STATUS_STOPPED;
             let data = this.manualPanel;
             data.date = moment(data.date_from).format(this.dateTimeFormat);
             data.date_from = moment(data.date_from).format(this.dateTimeFormat);
@@ -1080,7 +1126,7 @@ export default {
             // start
             if (!this.timerPanel.start) {
                 this.timerPanel.trackId = null;
-                this.timerPanel.status = 'started';
+                this.timerPanel.status = this.STATUS_STARTED;
                 this.timerPanel.start = moment().format(this.dateTimeFormat);
                 this.timerPanel.date = moment().format(this.dateTimeFormat);
                 this.timerPanel.date_from = moment().format(this.dateTimeFormat);
@@ -1100,9 +1146,9 @@ export default {
                 this.timerPanel.date_to = moment().format(this.dateTimeFormat);
                 this.timerPanel.timeStart = this.timerPanel.start;
                 this.timerPanel.start = null;
-                this.timerPanel.status = 'stopped';
+                this.timerPanel.status = this.STATUS_STOPPED;
                 const index = this.tracking.findIndex(i => i.id === this.timerPanel.trackId);
-                this.tracking[index].status = 'stopped';
+                this.tracking[index].status = this.STATUS_STOPPED;
                 if (this.timerPanel.trackId) {
                     this.__updateTrackingById(this.timerPanel.trackId, this.timerPanel);
                 } else {
@@ -1122,11 +1168,11 @@ export default {
                 this.timerPanel.start = null;
                 this.resetTimerPanel();
                 const index = this.tracking.findIndex(i => i.id === trackerId);
-                this.tracking[index].status = 'stopped';
+                this.tracking[index].status = this.STATUS_STOPPED;
                 this.tracking[index].date_to = moment().format(this.dateTimeFormat);
             }
             this.__updateTrackingById(trackerId, {
-                status: 'stopped',
+                status: this.STATUS_STOPPED,
                 date_to: moment().format(this.dateTimeFormat)
             });
         },
@@ -1137,7 +1183,7 @@ export default {
                         this.__updateTrackingById(data.data.id, {
                             date_from: moment().format(this.dateTimeFormat),
                             date_to: null,
-                            status: 'started'
+                            status: this.STATUS_STARTED
                         });
                     }
                 });
@@ -1180,6 +1226,11 @@ export default {
             this.$helpers.localStorage.storeKey('dateRange', this.dateRange, 'tracking');
             this.dateRangePicker = false;
             this.debounceGetTracking();
+            this.resetLazyLoad();
+        },
+        resetLazyLoad() {
+            this.offset = 0;
+            this.loadMoreAvailable = true;
         },
         handlerProjectTimerPanel(data) {
             this.timerPanel.entity = data.project;
@@ -1223,6 +1274,14 @@ export default {
                     year: moment(item.date_from).year(),
                     month: moment(item.date_from).month(),
                 }).format(this.dateTimeFormat);
+            }
+            if (this.timerPanel.trackId && item.id === this.timerPanel.trackId) {
+                this.timerPanel.entity_type = item.entity_type;
+                this.timerPanel.entity = item.entity;
+                this.timerPanel.description = item.description;
+                this.timerPanel.service = item.service;
+                this.timerPanel.tags = item.tags;
+                this.timerPanel.billable = item.billable;
             }
             this.__updateTrackingById(item.id, item);
         },
@@ -1269,6 +1328,19 @@ export default {
                     year: moment(dateFrom).year(),
                     month: moment(dateFrom).month(),
                 }).format(this.dateTimeFormat);
+            }
+        },
+        saveChangesFromTimer() {
+            if (this.timerPanel.trackId) {
+                this.__updateTrackingById(this.timerPanel.trackId, {
+                    entity: this.timerPanel.entity,
+                    entity_id: this.timerPanel.entity ? this.timerPanel.entity.id : null,
+                    entity_type: this.timerPanel.entity_type,
+                    description: this.timerPanel.description,
+                    service: this.timerPanel.service,
+                    tags: this.timerPanel.tags,
+                    billable: this.timerPanel.billable,
+                });
             }
         }
     },
@@ -1391,7 +1463,7 @@ export default {
         globalTimer: function () {
             // Update DataTable passed field
             this.tracking.filter(i => {
-                return i.status === 'started';
+                return i.status === this.STATUS_STARTED;
             }).forEach(i => {
                 const index = this.tracking.indexOf(i);
                 this.tracking[index].passed = this.$helpers.time.getSecBetweenDates(i.date_from, moment(), true);
@@ -1405,6 +1477,7 @@ export default {
         },
         'timerPanel.entity': function () {
             this.timerPanel.entity_type = this.timerPanel.entity && this.timerPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';
+            this.saveChangesFromTimer();
         },
         'manualPanel.entity': function () {
             this.manualPanel.entity_type = this.manualPanel && this.manualPanel.entity.from ? "App\\Ticket" : 'App\\TrackingProject';

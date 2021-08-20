@@ -4,16 +4,20 @@ export default {
         products: []
     },
     actions: {
-        getProductList({commit}, { search }) {
-            const queryParams = new URLSearchParams({
-                search: search ?? ''
-            });
-            axios.get(`/api/product?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
-                .then(({ data: { success, data: products } }) => {
-                    if (success) {
-                        commit('GET_PRODUCTS', products.data)
-                    }
-                })
+        getProductList({commit, state}, { search }) {
+            if (state.products.length && !search) {
+                return state.products;
+            } else {
+                const queryParams = new URLSearchParams({
+                    search: search ?? ''
+                });
+                axios.get(`/api/product?${queryParams.toString()}`, { retry: 5, retryDelay: 1000 })
+                    .then(({ data: { success, data: products } }) => {
+                        if (success) {
+                            commit('GET_PRODUCTS', products.data)
+                        }
+                    })
+            }
         }
     },
     mutations: {
