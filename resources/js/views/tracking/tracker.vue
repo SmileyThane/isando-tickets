@@ -453,6 +453,45 @@
                                             </td>
                                             <td
                                                 class="px-3 py-0"
+                                                align="center"
+                                                :width="headers.find(i => i.value === 'entity.name').width"
+                                            >
+                                                <v-edit-dialog
+                                                    v-if="isEditable(row)"
+                                                    @save="debounceSave(row, 'entity', row.entity)"
+                                                    @cancel="cancel"
+                                                    @open="open"
+                                                    @close="debounceSave(row, 'entity', row.entity)"
+                                                >
+                                                    <ProjectBtn
+                                                        :key="row.id"
+                                                        :color="row.entity && row.entity.color ? row.entity.color : themeBgColor"
+                                                        v-model="row.entity"
+                                                        @blur="debounceSave(row, 'entity', row.entity)"
+                                                        @input="debounceSave(row, 'entity', row.entity)"
+                                                    ></ProjectBtn>
+                                                </v-edit-dialog>
+                                                <div v-else>
+                                                    <div
+                                                        v-if="row.entity"
+                                                        :style="{color: row.entity && row.entity.color ? row.entity.color : themeBgColor}"
+                                                    >
+                                                        {{$helpers.string.shortenText(row.entity.name, 35)}}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td
+                                                class="px-3 py-0"
+                                                align="center"
+                                                :width="headers.find(i => i.value === 'entity').width"
+                                            >
+                                                <template v-if="row.entity && row.entity.client">
+                                                    {{ row.entity.client.name }}
+                                                </template>
+                                                <template v-else-if="row.entity">{{ row.entity.from_company_name }}</template>
+                                            </td>
+                                            <td
+                                                class="px-3 py-0"
                                                 :width="headers.find(i => i.value === 'description').width"
                                             >
                                                 <v-edit-dialog
@@ -513,45 +552,6 @@
                                                     <span v-else>
                                                         {{ row.description }}
                                                     </span>
-                                                </div>
-                                            </td>
-                                            <td
-                                                class="px-3 py-0"
-                                                align="center"
-                                                :width="headers.find(i => i.value === 'entity').width"
-                                            >
-                                                <template v-if="row.entity && row.entity.client">
-                                                    {{ row.entity.client.name }}
-                                                </template>
-                                                <template v-else-if="row.entity">{{ row.entity.from_company_name }}</template>
-                                            </td>
-                                            <td
-                                                class="px-3 py-0"
-                                                align="center"
-                                                :width="headers.find(i => i.value === 'entity.name').width"
-                                            >
-                                                <v-edit-dialog
-                                                    v-if="isEditable(row)"
-                                                    @save="debounceSave(row, 'entity', row.entity)"
-                                                    @cancel="cancel"
-                                                    @open="open"
-                                                    @close="debounceSave(row, 'entity', row.entity)"
-                                                >
-                                                    <ProjectBtn
-                                                        :key="row.id"
-                                                        :color="row.entity && row.entity.color ? row.entity.color : themeBgColor"
-                                                        v-model="row.entity"
-                                                        @blur="debounceSave(row, 'entity', row.entity)"
-                                                        @input="debounceSave(row, 'entity', row.entity)"
-                                                    ></ProjectBtn>
-                                                </v-edit-dialog>
-                                                <div v-else>
-                                                    <div
-                                                        v-if="row.entity"
-                                                        :style="{color: row.entity && row.entity.color ? row.entity.color : themeBgColor}"
-                                                    >
-                                                        {{$helpers.string.shortenText(row.entity.name, 35)}}
-                                                    </div>
                                                 </div>
                                             </td>
                                             <td
