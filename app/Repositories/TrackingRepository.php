@@ -198,10 +198,10 @@ class TrackingRepository
             $tracking->entity_type = $request->entity_type ?? TrackingProject::class;
         }
         $tracking->company_id = Auth::user()->employee->companyData->id;
-        $team = Team::whereHas('employees', function ($query) {
-            return $query->where('company_user_id', '=', Auth::user()->employee->id);
-        })->first();
-        $tracking->team_id = $team ? $team->id : null;
+//        $team = Team::whereHas('employees', function ($query) {
+//            return $query->where('company_user_id', '=', Auth::user()->employee->id);
+//        })->first();
+//        $tracking->team_id = $team ? $team->id : null;
         $tracking->save();
         if ($request->has('service') && !is_null($request->service)) {
             if (!is_null($request->service)) {
@@ -228,6 +228,11 @@ class TrackingRepository
         if ($tracking->entity_type === Ticket::class) {
             $tracking->rate = $tracking->entity->billedBy ? $tracking->entity->billedBy->cost : 0;
             $tracking->team_id = $tracking->entity->to_team_id;
+            $tracking->save();
+        }
+
+        if (is_null($tracking->entity_id)) {
+            $tracking->team_id = null;
             $tracking->save();
         }
 
@@ -304,6 +309,14 @@ class TrackingRepository
                 $tracking->rate = $tracking->entity->billedBy ? $tracking->entity->billedBy->cost : 0;
                 $tracking->team_id = $tracking->entity->to_team_id;
             }
+            if (is_null($tracking->entity_id)) {
+                $tracking->team_id = null;
+                $tracking->save();
+            }
+        }
+        if (is_null($tracking->entity_id)) {
+            $tracking->team_id = null;
+            $tracking->save();
         }
         if ($request->has('service')) {
             if (!is_null($request->service)) {

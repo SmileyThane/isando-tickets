@@ -425,8 +425,8 @@ class TrackingTimesheetRepository
                     $track->timesheet_id = $timesheet->id;
                     $track->save();
                 }
-                self::setTimesheetTime($timesheet->id, $timeByDay);
                 $timesheet->refresh();
+                self::setTimesheetTime($timesheet->id, $timeByDay);
             }
         } else {
             Log::debug('Update an exists timesheet');
