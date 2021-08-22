@@ -38,7 +38,9 @@ export default {
             return axios.delete(`/api/tracking/timesheet/${id}`, { retry: 5, retryDelay: 1000 })
                 .then(({ data: { data, success } }) => {
                     if (success) {
-                        dispatch('getTimesheet', state.params);
+                        const index = state.timesheet.findIndex(i => i.id === id);
+                        state.timesheet.splice(index, 1);
+                        // dispatch('getTimesheet', state.params);
                     }
                     return success;
                 })
