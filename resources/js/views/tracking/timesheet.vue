@@ -757,32 +757,137 @@
                 </template>
                 <template v-slot:header.data-table-select="{ header }"></template>
                 <template v-slot:header.mon="{ header }">
-                    {{ header.text }}<br>
-                    {{ header.date }}
+                    <v-tooltip top v-if="invalidWeekday[0]">
+                        <template v-slot:activator="{ on, attrs }">
+                            <span
+                                class="red--text"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                {{ header.text }}<br>
+                                {{ header.date }}
+                            </span>
+                        </template>
+                        <span>More than 24h per day entered</span>
+                    </v-tooltip>
+                    <span v-else>
+                        {{ header.text }}<br>
+                        {{ header.date }}
+                    </span>
                 </template>
                 <template v-slot:header.tue="{ header }">
-                    {{ header.text }}<br>
-                    {{ header.date }}
+                    <v-tooltip top v-if="invalidWeekday[1]">
+                        <template v-slot:activator="{ on, attrs }">
+                            <span
+                                class="red--text"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                {{ header.text }}<br>
+                                {{ header.date }}
+                            </span>
+                        </template>
+                        <span>More than 24h per day entered</span>
+                    </v-tooltip>
+                    <span v-else>
+                        {{ header.text }}<br>
+                        {{ header.date }}
+                    </span>
                 </template>
                 <template v-slot:header.wed="{ header }">
-                    {{ header.text }}<br>
-                    {{ header.date }}
+                    <v-tooltip top v-if="invalidWeekday[2]">
+                        <template v-slot:activator="{ on, attrs }">
+                            <span
+                                class="red--text"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                {{ header.text }}<br>
+                                {{ header.date }}
+                            </span>
+                        </template>
+                        <span>More than 24h per day entered</span>
+                    </v-tooltip>
+                    <span v-else>
+                        {{ header.text }}<br>
+                        {{ header.date }}
+                    </span>
                 </template>
                 <template v-slot:header.thu="{ header }">
-                    {{ header.text }}<br>
-                    {{ header.date }}
+                    <v-tooltip top v-if="invalidWeekday[3]">
+                        <template v-slot:activator="{ on, attrs }">
+                            <span
+                                class="red--text"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                {{ header.text }}<br>
+                                {{ header.date }}
+                            </span>
+                        </template>
+                        <span>More than 24h per day entered</span>
+                    </v-tooltip>
+                    <span v-else>
+                        {{ header.text }}<br>
+                        {{ header.date }}
+                    </span>
                 </template>
                 <template v-slot:header.fri="{ header }">
-                    {{ header.text }}<br>
-                    {{ header.date }}
+                    <v-tooltip top v-if="invalidWeekday[4]">
+                        <template v-slot:activator="{ on, attrs }">
+                            <span
+                                class="red--text"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                {{ header.text }}<br>
+                                {{ header.date }}
+                            </span>
+                        </template>
+                        <span>More than 24h per day entered</span>
+                    </v-tooltip>
+                    <span v-else>
+                        {{ header.text }}<br>
+                        {{ header.date }}
+                    </span>
                 </template>
                 <template v-slot:header.sat="{ header }">
-                    {{ header.text }}<br>
-                    {{ header.date }}
+                    <v-tooltip top v-if="invalidWeekday[5]">
+                        <template v-slot:activator="{ on, attrs }">
+                            <span
+                                class="red--text"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                {{ header.text }}<br>
+                                {{ header.date }}
+                            </span>
+                        </template>
+                        <span>More than 24h per day entered</span>
+                    </v-tooltip>
+                    <span v-else>
+                        {{ header.text }}<br>
+                        {{ header.date }}
+                    </span>
                 </template>
                 <template v-slot:header.sun="{ header }">
-                    {{ header.text }}<br>
-                    {{ header.date }}
+                    <v-tooltip top v-if="invalidWeekday[6]">
+                        <template v-slot:activator="{ on, attrs }">
+                            <span
+                                class="red--text"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                                {{ header.text }}<br>
+                                {{ header.date }}
+                            </span>
+                        </template>
+                        <span>More than 24h per day entered</span>
+                    </v-tooltip>
+                    <span v-else>
+                        {{ header.text }}<br>
+                        {{ header.date }}
+                    </span>
                 </template>
 
                 <template v-slot:item.data-table-select="{ item }">
@@ -1455,6 +1560,9 @@
 >>> label, input, div * {
     font-size: 14px !important;
 }
+>>> .v-data-table-header th *, .v-tooltip__content {
+    font-size: 12px !important;
+}
 </style>
 
 <script>
@@ -1557,6 +1665,7 @@ export default {
                 archived: 'archived',
             },
             loadingCopyWeek: false,
+            invalidWeekday: [false, false, false, false, false, false, false],
         }
     },
     created () {
@@ -1724,10 +1833,43 @@ export default {
                     // this.debounceGetTimesheet();
                 });
         },
+        validateTimesheet(timesheet, weekday, value) {
+            const limitByDay = 24 * 60 * 60; // 24h in seconds
+            let timeByDay = 0;
+            this.getTimesheet.filter(t => t.id !== timesheet.id).map(timesheet => {
+                const dayOfWeek = timesheet.times[weekday];
+                timeByDay += this.convertTimeToSec(dayOfWeek.time);
+            });
+            timeByDay += this.convertTimeToSec(value);
+            return timeByDay <= limitByDay;
+        },
+        convertTimeToSec (time) {
+            const items = time.split(':', 3);
+            let seconds = 0;
+            if (items && items[0]) {
+                seconds += parseInt(items[0]) * 60 * 60;
+            }
+            if (items && items[1]) {
+                seconds += parseInt(items[1]) * 60;
+            }
+            if (items && items[2]) {
+                seconds += parseInt(items[2]);
+            }
+            return seconds;
+        },
         saveChanges (item, index, newValue) {
-            item.times[index].dateTime = newValue;
-            item.times[index].time = moment(newValue).format('HH:mm:ss');
-            return this.saveTimesheet(item);
+            if (!this.validateTimesheet(item, index, moment(newValue).format('HH:mm:ss'))) {
+                this.snackbarMessage = 'It is not possible to add more than 24 hours per day';
+                this.actionColor = 'error'
+                this.snackbar = true;
+                this.invalidWeekday[index] = true;
+                // this.debounceGetTimesheet();
+            } else {
+                this.invalidWeekday[index] = false;
+                item.times[index].dateTime = newValue;
+                item.times[index].time = moment(newValue).format('HH:mm:ss');
+                return this.saveTimesheet(item);
+            }
         },
         submitItems (status) {
             if (this.selected.length) {
