@@ -1079,6 +1079,13 @@ export default {
                         display: false,
                         position: 'right'
                     },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
                     tooltips: {
                         callbacks: {
                             title: function (tooltipItem, data, a, b) {
