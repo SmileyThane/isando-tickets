@@ -330,11 +330,12 @@ export default {
         this.debounceGetTeams = _.debounce(this.__getTeams, 1000);
         this.options.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking') ?? 10;
         this.footerProps.itemsPerPage = this.$helpers.localStorage.getKey('itemsPerPage', 'tracking') ?? 10;
+        this.debounceGetSettings();
+        this.$store.commit('setPageName', this.getTrackingProjectsLabel);
     },
     mounted() {
         this.debounceGetProducts();
         this.debounceGetClients();
-        this.debounceGetSettings();
         this.debounceGetTeams();
         let self = this;
         EventBus.$on('update-theme-color', function (color) {

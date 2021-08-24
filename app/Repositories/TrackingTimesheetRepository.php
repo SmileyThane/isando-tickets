@@ -45,8 +45,8 @@ class TrackingTimesheetRepository
                 TrackingTimesheet::STATUS_UNSUBMITTED,
             ])
             ->where(function ($q) use ($request) {
-                $q->where('from', '<=', Carbon::parse($request->end))
-                    ->where('to', '>=', Carbon::parse($request->start));
+                $q->where('from', '<=', Carbon::parse($request->end)->format(Tracking::$DATE_FORMAT))
+                    ->where('to', '>=', Carbon::parse($request->start)->format(Tracking::$DATE_FORMAT));
             });
 
         if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
@@ -425,8 +425,8 @@ class TrackingTimesheetRepository
                     $track->timesheet_id = $timesheet->id;
                     $track->save();
                 }
-                self::setTimesheetTime($timesheet->id, $timeByDay);
                 $timesheet->refresh();
+                self::setTimesheetTime($timesheet->id, $timeByDay);
             }
         } else {
             Log::debug('Update an exists timesheet');
