@@ -168,6 +168,7 @@ class TrackingRepository
             throw new \Exception('Access denied');
         }
         $tracking = new Tracking();
+        $tracking->is_manual = true;
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) {
             $tracking->description = $request->description;
@@ -326,6 +327,7 @@ class TrackingRepository
                 $tracking->Services()->sync([]);
             }
         }
+        $tracking->is_manual = true;
         $tracking->save();
         $this->logTracking($tracking->id, TrackingLogger::UPDATE, $oldTracking, $tracking);
         if ($request->has('tags')) {
