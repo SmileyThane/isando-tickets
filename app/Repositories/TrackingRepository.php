@@ -270,6 +270,7 @@ class TrackingRepository
         $oldEntityType = $tracking->entity_type;
         $oldTeamId = $tracking->team_id;
         $oldCompanyId = $tracking->company_id;
+        $oldIsManual = $tracking->is_manual;
         if ($request->has('description')) {
             $tracking->description = $request->description;
         }
@@ -338,12 +339,18 @@ class TrackingRepository
             }
         }
         $tracking->refresh();
+        $timesheetId = $tracking->timesheet_id;
 //        dd($oldTracking, $oldTracking->service, $tracking, $tracking->service);
         Log::debug('==========================================================================================');
         Log::debug('Recalculate new track');
         TrackingTimesheetRepository::recalculate($tracking);
+        if (!is_null($timesheetId) && $timesheetId !== $tracking->timesheet_id) {
+            $track = Tracking::where('timesheet_id', '=', $timesheetId)->first();
+            TrackingTimesheetRepository::recalculate($track, false);
+        }
         Log::debug('Recalculate old track');
-        TrackingTimesheetRepository::recalculate($oldTracking, false, $oldService, $oldEntityId, $oldEntityType, $oldTeamId, $oldCompanyId);
+        TrackingTimesheetRepository::recalculate($oldTracking, false, $oldService,
+            $oldEntityId, $oldEntityType, $oldTeamId, $oldCompanyId, $oldIsManual);
         return Tracking::where('id', '=', $tracking->id)
             ->with('Tags.Translates')
             ->with('User:id,name,surname,middle_name,number,avatar_url')

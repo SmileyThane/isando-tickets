@@ -339,7 +339,9 @@ class TrackingTimesheetRepository
         }
     }
 
-    public static function recalculate($tracker, $allowCreating = true, $service = null, $entity_id = null, $entity_type = null, $team_id = null, $company_id = null) {
+    public static function recalculate($tracker, $allowCreating = true, $service = 0,
+                                       $entity_id = null, $entity_type = null, $team_id = null,
+                                       $company_id = null, $is_manual = null) {
         $tracker->refresh();
         if ($tracker->status === Tracking::$STATUS_STARTED) return false;
         Log::debug('Tracker: ' . $tracker);
@@ -350,19 +352,20 @@ class TrackingTimesheetRepository
         $entity_type = $entity_type ?? $tracker->entity_type;
         $team_id = $team_id ?? ($tracker->entity ? ($tracker->entity->team_id ? $tracker->entity->team_id : $tracker->entity->to_team_id) : null);
         $company_id = $company_id ?? $tracker->company_id;
+//        $is_manual = $is_manual ?? $tracker->is_manual;
         $sameTrackers = Tracking::where([
             ['user_id', '=', $tracker->user_id],
             ['team_id', '=', $team_id],
             ['company_id', '=', $company_id],
             ['entity_id', '=', $entity_id],
             ['entity_type', '=', $entity_type],
-            ['is_manual', '=', $tracker->is_manual],
+//            ['is_manual', '=', $is_manual],
             ['date_from', '>=', Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATETIME_FORMAT)],
             ['date_to', '<=', Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATETIME_FORMAT)],
             ['status', '<>', Tracking::$STATUS_ARCHIVED],
 //            ['billable', '=', $tracker->billable],
         ]);
-        $service = $service ?? $tracker->service;
+        $service = $service !== 0 ? $service : $tracker->service;
         if ($service) {
             $sameTrackers->whereHas('Services', function($subquery) use ($service) {
                 $subquery->where('services.id', '=', $service->id);
@@ -383,7 +386,7 @@ class TrackingTimesheetRepository
             ['user_id', '=', $tracker->user_id],
             ['team_id', '=', $team_id],
             ['company_id', '=', $company_id],
-            ['is_manually', '=', !$tracker->is_manual],
+//            ['is_manually', '=', !$is_manual],
 //            ['billable', '=', $tracker->billable],
             ['from', '=', Carbon::parse($tracker->date_from)->startOf('weeks')->format(Tracking::$DATE_FORMAT)],
             ['to', '=', Carbon::parse($tracker->date_to)->endOf('weeks')->format(Tracking::$DATE_FORMAT)],
@@ -553,7 +556,7 @@ class TrackingTimesheetRepository
                 ['company_id', '=', $companyId],
                 ['entity_id', '=', $entityId],
                 ['entity_type', '=', $entityType],
-                ['is_manual', '=', false],
+//                ['is_manual', '=', false],
             ])
                 ->where(function ($query) use ($from, $to) {
                     $query->where('date_from', '<=', $to)
