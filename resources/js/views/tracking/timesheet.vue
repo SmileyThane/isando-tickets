@@ -83,9 +83,6 @@
                     hide-details
                 ></v-checkbox>
             </div>
-            <div class="d-inline-flex flex-grow-1 mt-2 mx-4">
-                {{ dateRangeText }}
-            </div>
             <div class="d-inline-flex flex-grow-1">
                 <v-select
                     class="mx-4"
@@ -124,7 +121,7 @@
                 </v-select>
             </div>
             <div class="d-inline-flex flex-grow-1 mx-4">
-                <div class="d-flex flex-row">
+                <div class="d-flex flex-row flex-grow-1" style="max-width: 360px;">
                     <div class="d-inline-flex">
                         <v-btn
                             icon
@@ -133,7 +130,7 @@
                             <v-icon>mdi-chevron-left</v-icon>
                         </v-btn>
                     </div>
-                    <div class="d-inline-flex">
+                    <div class="d-inline-flex flex-grow-1">
                         <v-menu
                             ref="menu"
                             v-model="menuDate"
@@ -144,14 +141,14 @@
                         >
                             <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                    v-model="selectedDateText"
+                                    v-model="dateRangeText"
                                     prepend-icon="mdi-calendar"
                                     readonly
                                     hide-details
                                     v-bind="attrs"
                                     v-on="on"
                                     class="mt-0 pt-0"
-                                    style="max-width: 120px"
+                                    style="max-width: 200px"
                                 ></v-text-field>
                             </template>
                             <v-date-picker
@@ -169,6 +166,13 @@
                             @click="date = moment(date).add(viewType === 'daily' ? 1 : 7, 'days').format(dateFormat)"
                         >
                             <v-icon>mdi-chevron-right</v-icon>
+                        </v-btn>
+                        <v-btn
+                            @click="date = moment().format(dateFormat)"
+                            :color="themeBgColor"
+                            small
+                        >
+                            This week
                         </v-btn>
                     </div>
                 </div>
