@@ -120,7 +120,11 @@ class TrackingTimesheet extends Model
         static::updating(function($trackingTimesheet) {
             $trackings = Tracking::where('timesheet_id', '=', $trackingTimesheet->id)->get();
             foreach ($trackings as $tracking) {
-                $tracking->Services()->sync([$trackingTimesheet->service_id]);
+                if (is_null($trackingTimesheet->service_id)) {
+                    $tracking->Services()->sync([]);
+                } else {
+                    $tracking->Services()->sync([$trackingTimesheet->service_id]);
+                }
             }
         });
     }
