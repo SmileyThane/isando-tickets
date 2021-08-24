@@ -905,7 +905,7 @@
     transform: translateY(-50%);
 }
 >>> *:not(.v-icon) {
-    font-size: 14px!important;
+    font-size: 12px!important;
 }
 >>> .v-btn__content {
     font-size: 12px!important;

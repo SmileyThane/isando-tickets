@@ -297,7 +297,7 @@
     max-width: 80%;
 }
 >>>*:not(.v-icon) {
-    font-size: 13px !important;
+    font-size: 12px !important;
 }
 </style>
 

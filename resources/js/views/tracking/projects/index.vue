@@ -264,7 +264,7 @@
 
 <style scoped>
 >>> *:not(.v-icon) {
-    font-size: 14px !important;
+    font-size: 12px !important;
 }
 </style>
 
