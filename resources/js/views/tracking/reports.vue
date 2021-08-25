@@ -1275,7 +1275,7 @@ export default {
         moment.tz.setDefault('Etc/UTC');
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Services/getServicesList', { search: null });
-        this.$store.dispatch('Projects/getProjectList', { search: null });
+        this.$store.dispatch('Projects/getProjectList', { search: null, includeArchives: true });
         this.$store.dispatch('Team/getCoworkers', { search: null });
         this.$store.dispatch('Tags/getTagList', { search: null });
         this.$store.dispatch('Languages/getLanguageList');
