@@ -107,8 +107,8 @@ class TrackingRepository
         $permissionIds = Auth::user()->employee->getPermissionIds();
 //        DB::enableQueryLog();
 
-        if (!in_array(Permission::TRACKER_VIEW_OWN_TIME_ACCESS, $permissionIds) ||
-            !in_array(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS, $permissionIds) ||
+        if (!in_array(Permission::TRACKER_VIEW_OWN_TIME_ACCESS, $permissionIds) &&
+            !in_array(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS, $permissionIds) &&
             !in_array(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS, $permissionIds)
         ) {
             throw new \Exception('Access denied');
