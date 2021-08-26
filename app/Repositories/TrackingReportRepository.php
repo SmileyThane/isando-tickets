@@ -95,11 +95,12 @@ class TrackingReportRepository
         }
 
         $tracking = Tracking::with('User.employee.assignedToTeams')
-            ->with('Tags.Translates')
-            ->where(function($query) {
-                $query->where('status', '!=', Tracking::$STATUS_ARCHIVED)
-                    ->orWhereNull('status');
-            });
+            ->with('Tags.Translates');
+//            ->where(function($query) {
+//                $query
+//                    ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
+//                    ->orWhereNull('status');
+//            });
 
         if (in_array(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS, $permissionIds)) {
             // Company Admin
