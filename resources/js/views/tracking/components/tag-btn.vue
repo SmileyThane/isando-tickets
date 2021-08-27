@@ -128,8 +128,8 @@
 </template>
 
 <style scoped>
-*:not(.v-icon) {
-    font-size: 14px !important;
+>>> *:not(.v-icon) {
+    font-size: 12px !important;
 }
 </style>
 

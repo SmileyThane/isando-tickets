@@ -107,8 +107,8 @@ class TrackingRepository
         $permissionIds = Auth::user()->employee->getPermissionIds();
 //        DB::enableQueryLog();
 
-        if (!in_array(Permission::TRACKER_VIEW_OWN_TIME_ACCESS, $permissionIds) ||
-            !in_array(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS, $permissionIds) ||
+        if (!in_array(Permission::TRACKER_VIEW_OWN_TIME_ACCESS, $permissionIds) &&
+            !in_array(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS, $permissionIds) &&
             !in_array(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS, $permissionIds)
         ) {
             throw new \Exception('Access denied');
@@ -168,6 +168,7 @@ class TrackingRepository
             throw new \Exception('Access denied');
         }
         $tracking = new Tracking();
+        $tracking->is_manual = true;
         $tracking->user_id = Auth::user()->id;
         if ($request->has('description')) {
             $tracking->description = $request->description;
@@ -269,6 +270,7 @@ class TrackingRepository
         $oldEntityType = $tracking->entity_type;
         $oldTeamId = $tracking->team_id;
         $oldCompanyId = $tracking->company_id;
+        $oldIsManual = $tracking->is_manual;
         if ($request->has('description')) {
             $tracking->description = $request->description;
         }
@@ -326,6 +328,7 @@ class TrackingRepository
                 $tracking->Services()->sync([]);
             }
         }
+        $tracking->is_manual = true;
         $tracking->save();
         $this->logTracking($tracking->id, TrackingLogger::UPDATE, $oldTracking, $tracking);
         if ($request->has('tags')) {
@@ -336,12 +339,18 @@ class TrackingRepository
             }
         }
         $tracking->refresh();
+        $timesheetId = $tracking->timesheet_id;
 //        dd($oldTracking, $oldTracking->service, $tracking, $tracking->service);
         Log::debug('==========================================================================================');
         Log::debug('Recalculate new track');
         TrackingTimesheetRepository::recalculate($tracking);
+        if (!is_null($timesheetId) && $timesheetId !== $tracking->timesheet_id) {
+            $track = Tracking::where('timesheet_id', '=', $timesheetId)->first();
+            TrackingTimesheetRepository::recalculate($track, false);
+        }
         Log::debug('Recalculate old track');
-        TrackingTimesheetRepository::recalculate($oldTracking, false, $oldService, $oldEntityId, $oldEntityType, $oldTeamId, $oldCompanyId);
+        TrackingTimesheetRepository::recalculate($oldTracking, false, $oldService,
+            $oldEntityId, $oldEntityType, $oldTeamId, $oldCompanyId, $oldIsManual);
         return Tracking::where('id', '=', $tracking->id)
             ->with('Tags.Translates')
             ->with('User:id,name,surname,middle_name,number,avatar_url')

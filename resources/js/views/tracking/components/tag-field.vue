@@ -20,22 +20,22 @@
         ref="tagSelector"
         :style="{ width: `${width}px` }"
         :clearable="isFocused"
-        class="mt-3"
+        class="mt-3 tag-field"
     >
         <template v-slot:no-data>
             <v-list-item>
-                            <span class="subheading d-flex justify-start mr-auto">
-                                {{ langMap.tracking.tag_btn.create }}&nbsp;
-                                <v-chip
-                                    label
-                                    small
-                                    :color="form.color"
-                                    :text-color="$helpers.color.invertColor(form.color)"
-                                    @click.stop.prevent="onClickNewTag"
-                                >
-                                    {{ form.name }}
-                                </v-chip>
-                            </span>
+                <span class="subheading d-flex justify-start mr-auto">
+                    {{ langMap.tracking.tag_btn.create }}&nbsp;
+                    <v-chip
+                        label
+                        small
+                        :color="form.color"
+                        :text-color="$helpers.color.invertColor(form.color)"
+                        @click.stop.prevent="onClickNewTag"
+                    >
+                        {{ form.name }}
+                    </v-chip>
+                </span>
 
                 <v-card
                     :style="{ background: form.color, width: '30px', height: '30px' }"
@@ -120,12 +120,15 @@
 >>>.v-input--is-disabled .v-input__append-inner {
     display: none;
 }
->>>.v-input--is-disabled.v-text-field>.v-input__control>.v-input__slot:after,
-.v-input--is-disabled.v-text-field>.v-input__control>.v-input__slot:before {
-    border: none;
+>>> .tag-field * {
+    border: none !important;
 }
->>>*:not(.v-icon) {
- font-size: 14px !important;
+>>> .v-input--is-disabled.v-text-field>.v-input__control>.v-input__slot:after,
+.v-input--is-disabled.v-text-field>.v-input__control>.v-input__slot:before {
+    border: none !important;
+}
+>>> *:not(.v-icon) {
+ font-size: 12px !important;
 }
 </style>
 

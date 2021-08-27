@@ -85,25 +85,27 @@ class TrackingReportRepository
 
     protected function getData(Request $request) {
 
-        if (!Auth::user()->employee->hasPermissionId([
-            Permission::TRACKER_REPORT_VIEW_OWN_TIME_ACCESS,
-            Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS,
-            Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS
-        ])) {
+        $permissionIds = Auth::user()->employee->getPermissionIds();
+
+        if (!in_array(Permission::TRACKER_REPORT_VIEW_OWN_TIME_ACCESS, $permissionIds) &&
+            !in_array(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS, $permissionIds) &&
+            !in_array(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS, $permissionIds)
+        ) {
             throw new \Exception('Access denied');
         }
 
         $tracking = Tracking::with('User.employee.assignedToTeams')
-            ->with('Tags.Translates')
-            ->where(function($query) {
-                $query->where('status', '!=', Tracking::$STATUS_ARCHIVED)
-                    ->orWhereNull('status');
-            });
+            ->with('Tags.Translates');
+//            ->where(function($query) {
+//                $query
+//                    ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
+//                    ->orWhereNull('status');
+//            });
 
-        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS)) {
+        if (in_array(Permission::TRACKER_REPORT_VIEW_COMPANY_TIME_ACCESS, $permissionIds)) {
             // Company Admin
             $tracking = $tracking->CompanyAdmin();
-        } elseif (Auth::user()->employee->hasPermissionId(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS)) {
+        } elseif (in_array(Permission::TRACKER_REPORT_VIEW_TEAM_TIME_ACCESS, $permissionIds)) {
             // Manager
             $tracking = $tracking->TeamManager();
         } else {

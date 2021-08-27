@@ -270,13 +270,13 @@
     border: 1px solid rgba(0, 0, 0, 0.78);
 }
 >>>*:not(.v-icon) {
-    font-size: 14px !important;
+    font-size: 12px !important;
 }
 </style>
 
 <style>
 .tracking-dashboard .vc-pane-layout *, .tracking-dashboard .v-list-item__content * {
-    font-size: 14px !important;
+    font-size: 12px !important;
 }
 </style>
 

@@ -905,7 +905,7 @@
     transform: translateY(-50%);
 }
 >>> *:not(.v-icon) {
-    font-size: 14px!important;
+    font-size: 12px!important;
 }
 >>> .v-btn__content {
     font-size: 12px!important;
@@ -1078,6 +1078,13 @@ export default {
                     legend: {
                         display: false,
                         position: 'right'
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
                     },
                     tooltips: {
                         callbacks: {
@@ -1268,7 +1275,7 @@ export default {
         moment.tz.setDefault('Etc/UTC');
         this.$store.dispatch('Clients/getClientList', { search: null });
         this.$store.dispatch('Services/getServicesList', { search: null });
-        this.$store.dispatch('Projects/getProjectList', { search: null });
+        this.$store.dispatch('Projects/getProjectList', { search: null, includeArchives: true });
         this.$store.dispatch('Team/getCoworkers', { search: null });
         this.$store.dispatch('Tags/getTagList', { search: null });
         this.$store.dispatch('Languages/getLanguageList');

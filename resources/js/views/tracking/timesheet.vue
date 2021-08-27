@@ -83,9 +83,6 @@
                     hide-details
                 ></v-checkbox>
             </div>
-            <div class="d-inline-flex flex-grow-1 mt-2 mx-4">
-                {{ dateRangeText }}
-            </div>
             <div class="d-inline-flex flex-grow-1">
                 <v-select
                     class="mx-4"
@@ -124,7 +121,7 @@
                 </v-select>
             </div>
             <div class="d-inline-flex flex-grow-1 mx-4">
-                <div class="d-flex flex-row">
+                <div class="d-flex flex-row flex-grow-1" style="max-width: 360px;">
                     <div class="d-inline-flex">
                         <v-btn
                             icon
@@ -133,7 +130,7 @@
                             <v-icon>mdi-chevron-left</v-icon>
                         </v-btn>
                     </div>
-                    <div class="d-inline-flex">
+                    <div class="d-inline-flex flex-grow-1">
                         <v-menu
                             ref="menu"
                             v-model="menuDate"
@@ -144,14 +141,14 @@
                         >
                             <template v-slot:activator="{ on, attrs }">
                                 <v-text-field
-                                    v-model="selectedDateText"
+                                    v-model="dateRangeText"
                                     prepend-icon="mdi-calendar"
                                     readonly
                                     hide-details
                                     v-bind="attrs"
                                     v-on="on"
                                     class="mt-0 pt-0"
-                                    style="max-width: 120px"
+                                    style="max-width: 200px"
                                 ></v-text-field>
                             </template>
                             <v-date-picker
@@ -169,6 +166,13 @@
                             @click="date = moment(date).add(viewType === 'daily' ? 1 : 7, 'days').format(dateFormat)"
                         >
                             <v-icon>mdi-chevron-right</v-icon>
+                        </v-btn>
+                        <v-btn
+                            @click="date = moment().format(dateFormat)"
+                            :color="themeBgColor"
+                            small
+                        >
+                            This week
                         </v-btn>
                     </div>
                 </div>
@@ -1536,11 +1540,11 @@
 }
 
 >>> .time-field__small input {
-    font-size: 14px;
+    font-size: 12px !important;;
 }
 
 >>> .time-field__small button .v-icon {
-    font-size: 14px;
+    font-size: 12px !important;
     width: 14px;
     height: 14px;
 }
@@ -1555,12 +1559,25 @@
 }
 >>> .tracking-timesheet *:not(.v-icon),
 .v-list-item * {
-    font-size: 14px !important;
+    font-size: 12px !important;
 }
->>> label, input, div * {
-    font-size: 14px !important;
+>>> label, input, div *:not(.v-icon), *:not(.v-icon),
+th *:not(.v-icon) td, th, td *:not(.v-icon), .v-tooltip__content,
+.v-list-item__content *:not(.v-icon),
+.v-data-table>.v-data-table__wrapper>table>tbody>tr>td {
+    font-size: 12px !important;
 }
->>> .v-data-table-header th *, .v-tooltip__content {
+*:not(.v-icon) {
+    font-size: 12px !important;
+}
+.v-data-table>.v-data-table__wrapper>table>tbody>tr>td {
+    font-size: 12px !important;
+}
+</style>
+
+<style>
+.v-list-item__title,
+.v-data-table>.v-data-table__wrapper>table>tbody>tr>td {
     font-size: 12px !important;
 }
 </style>
