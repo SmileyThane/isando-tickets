@@ -689,7 +689,7 @@
                                                         <v-btn
                                                             depressed
                                                             :color="themeBgColor"
-                                                            v-if="row.status == STATUS_STOPPED"
+                                                            v-else
                                                             @click="actionStartTrackingAsId(row.id)"
                                                             :disabled="row.readonly"
                                                         >

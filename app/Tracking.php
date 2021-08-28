@@ -75,7 +75,13 @@ class Tracking extends Model
     }
 
     public function getReadonlyAttribute() {
-        if (is_null($this->timesheet_status) || in_array($this->timesheet_status, [TrackingTimesheet::STATUS_TRACKED, TrackingTimesheet::STATUS_REJECTED])) {
+        if ($this->status === self::$STATUS_ARCHIVED) {
+            return true;
+        }
+        if (
+            is_null($this->timesheet_status)
+            || in_array($this->timesheet_status, [TrackingTimesheet::STATUS_TRACKED, TrackingTimesheet::STATUS_REJECTED])
+        ) {
             return false;
         }
         return true;
@@ -86,7 +92,7 @@ class Tracking extends Model
     }
 
     public function getPassedAttribute() {
-        return Carbon::parse($this->date_from)->diffInSeconds($this->status !== self::$STATUS_STOPPED ? now() : Carbon::parse($this->date_to));
+        return Carbon::parse($this->date_from)->diffInSeconds($this->status === self::$STATUS_STARTED ? now() : Carbon::parse($this->date_to));
     }
 
     public function getPassedDecimalAttribute() {
