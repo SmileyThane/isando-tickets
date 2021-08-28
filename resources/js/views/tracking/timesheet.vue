@@ -2060,10 +2060,13 @@ export default {
                 note: this.rejectReason,
             })
                 .then(() => {
-                    this.loadingBtn = false;
                     this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
+                    this.debounceGetTimesheetByStatus();
                     this.debounceGetTimesheet();
                     return null;
+                })
+                .finally(() => {
+                    this.loadingBtn = false;
                 });
             this.rejectReason = '';
         },
@@ -2075,10 +2078,13 @@ export default {
                 approver_id: this.currentUser.id,
             })
                 .then(() => {
-                    this.loadingBtn = false;
                     this.$store.dispatch('Timesheet/getCountTimesheetForApproval');
+                    this.debounceGetTimesheetByStatus();
                     this.debounceGetTimesheet();
                     return null;
+                })
+                .finally(() => {
+                    this.loadingBtn = false;
                 });
             this.rejectReason = '';
         },
