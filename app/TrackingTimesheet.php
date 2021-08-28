@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class TrackingTimesheet extends Model
 {
-    const STATUS_TRACKED = 'tracked';
-    const STATUS_PENDING = 'pending';
-    const STATUS_REJECTED = 'rejected';
-    const STATUS_UNSUBMITTED = 'unsubmitted';
-    const STATUS_ARCHIVED = 'archived';
-    const STATUS_APPROVED = 'approved';
+    const STATUS_TRACKED = 0;
+    const STATUS_PENDING = 1;
+    const STATUS_REJECTED = 2;
+    const STATUS_ARCHIVED = 3;
+    const STATUS_APPROVED = 4;
+    const STATUS_UNSUBMITTED = 5;
 
     protected $fillable = [
         'entity_id',

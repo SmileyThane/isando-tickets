@@ -86,6 +86,8 @@ class TrackingTimesheetRepository
     }
 
     public function getAllGroupedByStatus(Request $request) {
+        $permissionIds = Auth::user()->employee->getPermissionIds();
+
         $query = TrackingTimesheet::with('User')
             ->with('Service')
             ->with('Approver')
@@ -99,7 +101,7 @@ class TrackingTimesheetRepository
                 TrackingTimesheet::STATUS_ARCHIVED,
             ]);
 
-        if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS)) {
+        if (in_array(Permission::TRACKER_VIEW_TEAM_TIME_ACCESS, $permissionIds)) {
             // Manager
             $teams = $teams = Team::whereHas('employees', function ($q) {
                 return $q
@@ -111,7 +113,7 @@ class TrackingTimesheetRepository
                     $query->whereNull('approver_id')
                         ->orWhere('approver_id', '=', Auth::user()->id);
                 });
-        } else if (Auth::user()->employee->hasPermissionId(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS)) {
+        } else if (in_array(Permission::TRACKER_VIEW_COMPANY_TIME_ACCESS, $permissionIds)) {
             // Company Admin
             $company = Auth::user()->employee()
                 ->whereDoesntHave('assignedToClients')->where('is_clientable', false)

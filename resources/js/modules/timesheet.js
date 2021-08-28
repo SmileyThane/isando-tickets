@@ -149,14 +149,21 @@ export default {
             state.countForApproval = params;
         },
         SET_GROUPED_TIMESHEET(state, { data, userId }) {
-            state.timesheetArchived = data.filter(i => i.user_id === userId && i.status === 'archived');
-            state.timesheetPending = data.filter(i => i.user_id === userId && i.status === 'pending');
-            state.timesheetRejected = data.filter(i => i.user_id === userId && i.status === 'rejected');
-            state.timesheetRequest = data.filter(i => ((i.approver_id === null || i.approver_id === userId) && i.status !== 'tracked'));
+            state.timesheetArchived = data.filter(i => i.user_id === userId && i.status === 3);
+            state.timesheetPending = data.filter(i => i.user_id === userId && i.status === 1);
+            state.timesheetRejected = data.filter(i => i.user_id === userId && i.status === 2);
+            state.timesheetRequest = data.filter(i => ((i.approver_id === null || i.approver_id === userId) && i.status !== 0));
         },
         SET_TIMESHEET_TEMPLATES(state, data) {
             state.timesheet_templates = data;
         },
+        SET_STATUS(state, ids, status) {
+            state.timesheet.filter(i => ids.includes(i)).map(i => i.status = status);
+            state.timesheetPending.filter(i => ids.includes(i)).map(i => i.status = status);
+            state.timesheetRejected.filter(i => ids.includes(i)).map(i => i.status = status);
+            state.timesheetArchived.filter(i => ids.includes(i)).map(i => i.status = status);
+            state.timesheetRequest.filter(i => ids.includes(i)).map(i => i.status = status);
+        }
     },
     getters: {
         getTimesheet(state) {
