@@ -4,8 +4,8 @@ export default {
         products: []
     },
     actions: {
-        getProductList({commit, state}, { search }) {
-            if (state.products.length && !search) {
+        getProductList({commit, state}, { search, force = false }) {
+            if (state.products.length && !search && !force) {
                 return state.products;
             } else {
                 const queryParams = new URLSearchParams({
