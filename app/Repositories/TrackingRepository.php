@@ -137,7 +137,7 @@ class TrackingRepository
         }
 
         $tracking
-            ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
+//            ->where('status', '!=', Tracking::$STATUS_ARCHIVED)
             ->where('date_from', '>=', Carbon::parse($request->date_from)->startOfDay()->format(Tracking::$DATETIME_FORMAT))
             ->where(function($query) use ($request) {
                 $query->where('date_to', '<=', Carbon::parse($request->date_to)->endOfDay()->format(Tracking::$DATETIME_FORMAT))

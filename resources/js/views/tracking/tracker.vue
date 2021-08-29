@@ -571,8 +571,7 @@
                                                 :width="headers.find(i => i.value === 'billable').width"
                                             >
                                                 <v-btn
-                                                    v-if="isEditable(row)"
-                                                    :disabled="!$helpers.auth.checkPermissionByIds([46])"
+                                                    :disabled="!isEditable(row) || !$helpers.auth.checkPermissionByIds([46])"
                                                     fab
                                                     :icon="!row.billable"
                                                     x-small
@@ -689,7 +688,7 @@
                                                         <v-btn
                                                             depressed
                                                             :color="themeBgColor"
-                                                            v-if="row.status == STATUS_STOPPED"
+                                                            v-else
                                                             @click="actionStartTrackingAsId(row.id)"
                                                             :disabled="row.readonly"
                                                         >
